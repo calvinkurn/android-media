@@ -69,8 +69,8 @@ class SellerHomeViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    private val mViewModel: SellerHomeViewModel by lazy {
-        SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
+    private fun createViewModel(): SellerHomeViewModel {
+        return SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
                 getShopLocationUseCase, getCardDataUseCase, getLineGraphDataUseCase, getProgressDataUseCase,
                 getPostDataUseCase, getCarouselDataUseCase, Dispatchers.Unconfined)
     }
@@ -86,15 +86,15 @@ class SellerHomeViewModelTest {
             getTickerUseCase.executeOnBackground()
         } returns tickerList
 
-
+        val viewModel = createViewModel()
         runBlocking {
-            mViewModel.getTicker()
+            viewModel.getTicker()
             delay(100)
             coVerify {
                 getTickerUseCase.executeOnBackground()
             }
         }
-        assertEquals(Success(tickerList), mViewModel.homeTicker.value)
+        assertEquals(Success(tickerList), viewModel.homeTicker.value)
     }
 
     @Test
@@ -111,8 +111,8 @@ class SellerHomeViewModelTest {
         coEvery {
             getShopStatusUseCase.executeOnBackground()
         } returns shopStatus
-
-        mViewModel.getShopStatus()
+        val viewModel = createViewModel()
+        viewModel.getShopStatus()
 
         delay(100)
         coVerify {
@@ -122,7 +122,7 @@ class SellerHomeViewModelTest {
             getShopStatusUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(shopStatus), mViewModel.shopStatus.value)
+        assertEquals(Success(shopStatus), viewModel.shopStatus.value)
     }
 
     @Test
@@ -141,7 +141,8 @@ class SellerHomeViewModelTest {
             getShopStatusUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getShopStatus()
+        val viewModel = createViewModel()
+        viewModel.getShopStatus()
 
         coVerify {
             userSession.shopId
@@ -151,7 +152,7 @@ class SellerHomeViewModelTest {
             getShopStatusUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.shopStatus.value is Fail)
+        assert(viewModel.shopStatus.value is Fail)
     }
 
     @Test
@@ -169,7 +170,8 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         } returns layoutList
 
-        mViewModel.getWidgetLayout()
+        val viewModel = createViewModel()
+        viewModel.getWidgetLayout()
 
         delay(100)
         coVerify {
@@ -179,7 +181,7 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(layoutList), mViewModel.widgetLayout.value)
+        assertEquals(Success(layoutList), viewModel.widgetLayout.value)
     }
 
     @Test
@@ -197,7 +199,8 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getWidgetLayout()
+        val viewModel = createViewModel()
+        viewModel.getWidgetLayout()
 
         coVerify {
             userSession.shopId
@@ -207,7 +210,7 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.widgetLayout.value is Fail)
+        assert(viewModel.widgetLayout.value is Fail)
     }
 
     @Test
@@ -225,7 +228,8 @@ class SellerHomeViewModelTest {
             getShopLocationUseCase.executeOnBackground()
         } returns shopLocation
 
-        mViewModel.getShopLocation()
+        val viewModel = createViewModel()
+        viewModel.getShopLocation()
 
         delay(100)
         coVerify {
@@ -235,7 +239,7 @@ class SellerHomeViewModelTest {
             getShopLocationUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(shopLocation), mViewModel.shopLocation.value)
+        assertEquals(Success(shopLocation), viewModel.shopLocation.value)
     }
 
     @Test
@@ -253,14 +257,15 @@ class SellerHomeViewModelTest {
             getShopLocationUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getShopLocation()
+        val viewModel = createViewModel()
+        viewModel.getShopLocation()
 
         delay(100)
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.shopLocation.value is Fail)
+        assert(viewModel.shopLocation.value is Fail)
     }
 
     @Test
@@ -281,8 +286,9 @@ class SellerHomeViewModelTest {
             getCardDataUseCase.executeOnBackground()
         } returns cardDataResult
 
+        val viewModel = createViewModel()
         runBlocking {
-            mViewModel.getCardWidgetData(dataKeys)
+            viewModel.getCardWidgetData(dataKeys)
             delay(100)
             verify {
                 userSession.shopId
@@ -294,7 +300,7 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(cardDataResult)
         assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, mViewModel.cardWidgetData.value)
+        assertEquals(expectedResult, viewModel.cardWidgetData.value)
     }
 
     @Test
@@ -312,14 +318,15 @@ class SellerHomeViewModelTest {
             userSession.shopId
         } returns shopId
 
+        val viewModel = createViewModel()
         runBlocking {
             coEvery {
                 getCardDataUseCase.executeOnBackground()
             } throws throwable
-            mViewModel.getCardWidgetData(dataKeys)
+            viewModel.getCardWidgetData(dataKeys)
 
             delay(300)
-            val result = mViewModel.cardWidgetData.value
+            val result = viewModel.cardWidgetData.value
             assert(result is Fail)
         }
     }
@@ -342,7 +349,8 @@ class SellerHomeViewModelTest {
             getLineGraphDataUseCase.executeOnBackground()
         } returns lineGraphDataResult
 
-        mViewModel.getLineGraphWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getLineGraphWidgetData(dataKeys)
 
         delay(100)
         coVerify {
@@ -354,7 +362,7 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(lineGraphDataResult)
         assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, mViewModel.lineGraphWidgetData.value)
+        assertEquals(expectedResult, viewModel.lineGraphWidgetData.value)
     }
 
     @Test
@@ -375,14 +383,15 @@ class SellerHomeViewModelTest {
             getLineGraphDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getLineGraphWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getLineGraphWidgetData(dataKeys)
 
         delay (100)
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.lineGraphWidgetData.value is Fail)
+        assert(viewModel.lineGraphWidgetData.value is Fail)
     }
 
     @Test
@@ -402,7 +411,8 @@ class SellerHomeViewModelTest {
             getProgressDataUseCase.executeOnBackground()
         } returns progressDataList
 
-        mViewModel.getProgressWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getProgressWidgetData(dataKeys)
 
         delay (100)
         coVerify {
@@ -411,7 +421,7 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(progressDataList)
         assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, mViewModel.progressWidgetData.value)
+        assertEquals(expectedResult, viewModel.progressWidgetData.value)
     }
 
     @Test
@@ -431,14 +441,15 @@ class SellerHomeViewModelTest {
             getProgressDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getProgressWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getProgressWidgetData(dataKeys)
 
         delay (100)
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.progressWidgetData.value is Fail)
+        assert(viewModel.progressWidgetData.value is Fail)
     }
 
     @Test
@@ -459,7 +470,8 @@ class SellerHomeViewModelTest {
             getPostDataUseCase.executeOnBackground()
         } returns postList
 
-        mViewModel.getPostWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getPostWidgetData(dataKeys)
 
         delay (100)
         coVerify {
@@ -472,7 +484,7 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(postList)
         assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, mViewModel.postListWidgetData.value)
+        assertEquals(expectedResult, viewModel.postListWidgetData.value)
     }
 
     @Test
@@ -493,8 +505,9 @@ class SellerHomeViewModelTest {
             getPostDataUseCase.executeOnBackground()
         } throws exception
 
+        val viewModel = createViewModel()
         runBlocking {
-            mViewModel.getPostWidgetData(dataKeys)
+            viewModel.getPostWidgetData(dataKeys)
             delay (100)
             verify {
                 userSession.shopId
@@ -504,7 +517,7 @@ class SellerHomeViewModelTest {
             }
         }
 
-        assert(mViewModel.postListWidgetData.value is Fail)
+        assert(viewModel.postListWidgetData.value is Fail)
     }
 
     @Test
@@ -518,8 +531,9 @@ class SellerHomeViewModelTest {
             getCarouselDataUseCase.executeOnBackground()
         } returns carouselList
 
+        val viewModel = createViewModel()
         runBlocking {
-            mViewModel.getCarouselWidgetData(dataKeys)
+            viewModel.getCarouselWidgetData(dataKeys)
 
             delay (100)
             coVerify {
@@ -529,7 +543,7 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(carouselList)
         assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, mViewModel.carouselWidgetData.value)
+        assertEquals(expectedResult, viewModel.carouselWidgetData.value)
     }
 
     @Test
@@ -543,13 +557,14 @@ class SellerHomeViewModelTest {
             getCarouselDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getCarouselWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getCarouselWidgetData(dataKeys)
 
         delay(100)
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.carouselWidgetData.value is Fail)
+        assert(viewModel.carouselWidgetData.value is Fail)
     }
 }

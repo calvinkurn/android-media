@@ -43,27 +43,28 @@ class SellerHomeActivityViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    private val mViewModel by lazy {
+    private fun createViewModel() =
         SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, Dispatchers.Unconfined)
-    }
+
 
     @Test
     fun `get notifications then returns success result`() {
 
         val notifications = NotificationUiModel(NotificationChatUiModel(), NotificationCenterUnreadUiModel(),
-                NotificationSellerOrderStatusUiModel())
+            NotificationSellerOrderStatusUiModel())
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
         } returns notifications
 
+        val viewModel = createViewModel()
         runBlocking {
-            mViewModel.getNotifications()
+            viewModel.getNotifications()
             delay(100)
             coVerify {
                 getNotificationUseCase.executeOnBackground()
             }
-            assertEquals(Success(notifications), mViewModel.notifications.value)
+            assertEquals(Success(notifications), viewModel.notifications.value)
         }
     }
 
@@ -76,7 +77,8 @@ class SellerHomeActivityViewModelTest {
             getNotificationUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getNotifications()
+        val viewModel = createViewModel()
+        viewModel.getNotifications()
 
         coVerify {
             getNotificationUseCase.executeOnBackground()
@@ -84,7 +86,7 @@ class SellerHomeActivityViewModelTest {
 
         delay(100)
 
-        assert(mViewModel.notifications.value is Fail)
+        assert(viewModel.notifications.value is Fail)
     }
 
     @Test
@@ -102,8 +104,9 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         } returns shopInfo
 
+        val viewModel = createViewModel()
         runBlocking {
-            mViewModel.getShopInfo()
+            viewModel.getShopInfo()
             delay(100)
             coVerify {
                 userSession.userId
@@ -113,7 +116,7 @@ class SellerHomeActivityViewModelTest {
             }
         }
 
-        assertEquals(Success(shopInfo), mViewModel.shopInfo.value)
+        assertEquals(Success(shopInfo), viewModel.shopInfo.value)
     }
 
     @Test
@@ -131,7 +134,8 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getShopInfo()
+        val viewModel = createViewModel()
+        viewModel.getShopInfo()
 
         verify {
             userSession.userId
@@ -143,7 +147,7 @@ class SellerHomeActivityViewModelTest {
 
         delay(100)
 
-        assert(mViewModel.shopInfo.value is Fail)
+        assert(viewModel.shopInfo.value is Fail)
     }
 
     @Test
