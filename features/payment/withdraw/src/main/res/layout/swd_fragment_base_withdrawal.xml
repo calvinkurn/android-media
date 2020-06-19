@@ -151,7 +151,7 @@
 
         <ImageView
             android:id="@+id/ivLockButton"
-            android:layout_width="@dimen/dp_12"
+            android:layout_width="@dimen/swp_dp_12"
             android:layout_height="@dimen/spacing_lvl4"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
@@ -164,8 +164,8 @@
 
         <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/iv_emptySaldo"
-            android:layout_width="@dimen/dp_200"
-            android:layout_height="@dimen/dp_200"
+            android:layout_width="@dimen/swp_empty_saldo_image_size"
+            android:layout_height="@dimen/swp_empty_saldo_image_size"
             android:layout_marginTop="@dimen/spacing_lvl7"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

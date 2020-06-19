@@ -95,7 +95,7 @@
             android:layout_width="@dimen/swd_success_image_size"
             android:layout_height="@dimen/swd_success_image_size"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:src="@drawable/swd_img_sucs_page"
+            app:srcCompat="@drawable/swd_img_sucs_page"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barrier" />

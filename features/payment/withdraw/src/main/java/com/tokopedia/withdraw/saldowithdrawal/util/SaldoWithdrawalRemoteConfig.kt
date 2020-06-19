@@ -14,5 +14,4 @@ class SaldoWithdrawalRemoteConfig @Inject constructor(
         private const val REKENING_PREMIUM_LOGO_AVAILABLE_TO_ALL = "app_rekening_premium_logo_visible_to_all"
     }
 
-
 }
