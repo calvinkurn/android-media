@@ -57,8 +57,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: ProgressBar
     var pageEndPoint = ""
-    private lateinit var bottomSheet: BottomSheetUnify
     private var componentPosition: Int? = null
+    private val bottomSheet = BottomSheetUnify()
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -112,7 +112,16 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         mProgressBar = view.findViewById(R.id.progressBar)
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
-        bottomSheet = BottomSheetUnify()
+
+        this.fragmentManager?.let {
+            bottomSheet.apply {
+                showCloseIcon = true
+                val child = View.inflate(view.context, R.layout.mobile_verification_bottom_sheet_layout, null)
+                setChild(child)
+                show(it, null)
+            }
+        }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -129,7 +138,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.getDiscoveryData()
 
         setUpObserver()
-//        showMobileVerificationBottomSheet()
     }
 
     fun reSync() {
@@ -320,19 +328,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             }
         } else {
             activity?.startActivityForResult(RouteManager.getIntent(activity, "tokopedia-android-internal://global/add-phone"), 4321)
-        }
-    }
-
-    private fun showMobileVerificationBottomSheet() {
-        this.fragmentManager?.let { fm ->
-            bottomSheet.apply {
-                isDragable = true
-                isHideable = true
-                setTitle("sdfdgfhgj")
-                val child = View.inflate(context, R.layout.mobile_verification_bottom_sheet_layout, null)
-                setChild(child)
-                show(fm, null)
-            }
         }
     }
 }
