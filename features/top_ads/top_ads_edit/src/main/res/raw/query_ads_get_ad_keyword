@@ -13,9 +13,6 @@ query topAdsListKeyword($source: String!, $filter: TopAdsKeywordFilterReq) {
         status
         price_bid
       }
-      pagination {
-        next_cursor
-      }
     }
   }
 }

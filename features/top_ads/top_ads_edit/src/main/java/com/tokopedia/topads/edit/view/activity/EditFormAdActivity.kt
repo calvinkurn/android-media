@@ -1,5 +1,6 @@
 package com.tokopedia.topads.edit.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
@@ -27,6 +28,8 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
     lateinit var viewModel: EditFormDefaultViewModel
     private lateinit var adapter: TopAdsEditPagerAdapter
     var list: ArrayList<Fragment> = ArrayList()
+
+    private val EDIT_GROUP_REUEST_CODE = 47
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +64,8 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         }
 
         viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup)
+        val returnIntent = Intent()
+        setResult(EDIT_GROUP_REUEST_CODE, returnIntent)
         finish()
     }
 

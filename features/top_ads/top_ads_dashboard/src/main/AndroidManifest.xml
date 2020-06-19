@@ -8,7 +8,7 @@
             android:name=".view.activity.TopAdsDashboardActivity"
             android:label="@string/top_ads_title_dashboard"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Green" >
+            android:theme="@style/Theme.White" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -71,6 +71,16 @@
         <activity
             android:name=".view.activity.TopAdsPaymentCreditActivity"
             android:label="@string/title_top_ads_add_credit"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.TopAdsGroupDetailViewActivity"
+            android:label="@string/topads_group_detail"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.HiddenTrialActivity"
+            android:label="@string/top_ads_title_dashboard"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
     </application>

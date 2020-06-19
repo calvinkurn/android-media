@@ -1,0 +1,269 @@
+package com.tokopedia.topads.auto.view.widget
+
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.topads.auto.R
+import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
+import com.tokopedia.topads.auto.di.AutoAdsComponent
+import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
+import com.tokopedia.topads.auto.internal.AutoAdsStatus
+import com.tokopedia.topads.auto.internal.NonDeliveryReason
+import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
+import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
+import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
+import com.tokopedia.topads.auto.view.sheet.ManualAdsConfirmationSheet
+import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
+import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.topads_auto_edit_status_active_widget.view.*
+import javax.inject.Inject
+
+/**
+ * Created by Pika on 16/5/20.
+ */
+class AutoAdsWidget : CardUnify {
+    private var baseLayout: ConstraintLayout? = null
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private var fromEdit: Int = 0
+
+    @Inject
+    lateinit var factory: AutoAdsWidgetViewModelFactory
+    private var currentBudget = 0
+
+    val requestType = "auto_ads"
+    val source = "update_auto_ads"
+
+    private val budgetViewModel by lazy {
+        ViewModelProviders.of(context as BaseActivity, factory).get(DailyBudgetViewModel::class.java)
+
+    }
+    private val widgetViewModel by lazy {
+        ViewModelProviders.of(context as BaseActivity, factory).get(AutoAdsWidgetViewModel::class.java)
+    }
+
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        initView(context)
+        renderUI()
+    }
+
+    private fun renderUI() {
+        widgetViewModel.autoAdsData.observe(context as BaseActivity, Observer {
+            currentBudget = it.dailyBudget
+            if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+                widgetViewModel.getNotDeliveredReason(userSession.shopId)
+            } else
+                setUiComponent(it.status, it.dailyUsage)
+        })
+        widgetViewModel.adsDeliveryStatus.observe(context as BaseActivity, Observer {
+            if (it.status == 2)
+                setUi(it.statusDetail)
+        })
+    }
+
+    private fun setUiComponent(status: Int, dailyUsage: Int) {
+        when (status) {
+            AutoAdsStatus.STATUS_ACTIVE -> setActive(dailyUsage)
+            AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE -> setInProgress()
+            AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE -> setInProgress()
+            AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE -> setInProgress()
+        }
+    }
+
+    private fun setUi(statusDetail: String) {
+        when (statusDetail) {
+            NonDeliveryReason.no_balance.name -> setNoBalanceView()
+            NonDeliveryReason.out_of_stock.name -> setOutOfStockView()
+            NonDeliveryReason.run_out_budget.name -> setOutOfBudgetView()
+            NonDeliveryReason.shop_inactive.name -> setShopInactiveView()
+        }
+    }
+
+    private fun setShopInactiveView() {
+        val view = LayoutInflater.from(context).inflate(
+                R.layout.topads_auto_edit_status_merchantclosed_widget,
+                this,
+                false
+        )
+        baseLayout?.addView(view)
+        val MORE_INFO = " Cek Status"
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                RouteManager.route(context, context.getString(R.string.more_info))
+            }
+        }
+        setSpannable(MORE_INFO, view, clickableSpan)
+        setSwitchAction(view)
+    }
+
+    private fun setOutOfBudgetView() {
+        val view = LayoutInflater.from(context).inflate(
+                R.layout.topads_auto_edit_status_outofdaily_budget,
+                this,
+                false
+        )
+        baseLayout?.addView(view)
+        setSwitchAction(view)
+    }
+
+    private fun setOutOfStockView() {
+        val view = LayoutInflater.from(context).inflate(
+                R.layout.topads_auto_edit_status_outofstock_widget,
+                this,
+                false
+        )
+        baseLayout?.addView(view)
+        val MORE_INFO = " Tambah Stok"
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                RouteManager.route(context, context.getString(R.string.more_info))
+
+            }
+        }
+        setSpannable(MORE_INFO, view, clickableSpan)
+        setSwitchAction(view)
+    }
+
+    private fun setSpannable(moreInfo: String, view: View, clickableSpan: ClickableSpan) {
+        val desc = view.findViewById<TextView>(R.id.status_desc)
+        val spannableText = SpannableString(moreInfo)
+        val startIndex = 0
+        val endIndex = spannableText.length
+        spannableText.setSpan(resources.getColor(com.tokopedia.design.R.color.tkpd_light_green), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        desc.movementMethod = LinkMovementMethod.getInstance()
+        desc.append(spannableText)
+    }
+
+    private fun setSwitchAction(view: View) {
+        val switch = view.findViewById<SwitchUnify>(R.id.btn_switch)
+        val setting = view.findViewById<ImageView>(R.id.setting)
+        switch.isChecked = true
+        if (fromEdit == 1) {
+            setting.visibility = View.GONE
+            switch.visibility = View.VISIBLE
+            switch.setOnClickListener {
+                val manual = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
+                manual.show()
+                manual.dismissed = { switch.isChecked = !switch.isChecked }
+            }
+        } else {
+            switch.visibility = View.INVISIBLE
+            setting.setOnClickListener {
+                startEditActivity()
+            }
+        }
+    }
+
+    private fun setNoBalanceView() {
+        val view = LayoutInflater.from(context).inflate(
+                R.layout.topads_auto_edit_status_outofcredit_widget,
+                this,
+                false
+        )
+        baseLayout?.addView(view)
+        val MORE_INFO = " TopUp Sekarang"
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                RouteManager.route(context, context.getString(R.string.more_info))
+
+            }
+        }
+        setSpannable(MORE_INFO, view, clickableSpan)
+        setSwitchAction(view)
+    }
+
+    private fun setInProgress() {
+        val view = LayoutInflater.from(context).inflate(
+                R.layout.topads_auto_edit_status_progress_widget,
+                this,
+                false
+        )
+        baseLayout?.addView(view)
+    }
+
+    private fun setActive(dailyUsage: Int) {
+        val view = LayoutInflater.from(context).inflate(
+                R.layout.topads_auto_edit_status_active_widget,
+                this,
+                false
+        )
+        baseLayout?.addView(view)
+        view.let { it ->
+            it.progress_status1.text = "Rp $dailyUsage"
+            it.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), currentBudget)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                progress_bar.setProgress(dailyUsage, true)
+            } else {
+                progress_bar.progress = dailyUsage
+            }
+            it.btn_switch.isChecked = true
+            if (fromEdit == 1) {
+                setting.visibility = View.GONE
+                it.btn_switch.visibility = View.VISIBLE
+                it.btn_switch.setOnClickListener {
+                    val man = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
+                    man.show()
+                    man.dismissed = {
+                        man.dismissed = { it.btn_switch.isChecked = !it.btn_switch.isChecked }
+
+                    }
+                }
+            } else {
+                it.btn_switch.visibility = View.INVISIBLE
+                it.setting.setOnClickListener {
+                    startEditActivity()
+                }
+            }
+        }
+    }
+
+    private fun startEditActivity() {
+        context.startActivity(Intent(context, EditBudgetAutoAdsActivity::class.java))
+    }
+
+    private fun switchToManual() {
+        budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
+                AutoAdsBaseBudgetFragment.TOGGLE_ON,
+                AutoAdsBaseBudgetFragment.CHANNEL,
+                currentBudget,
+                userSession.shopId.toInt(),
+                AutoAdsBaseBudgetFragment.SOURCE))
+        )
+    }
+
+    fun loadData(fromEdit: Int) {
+        this.fromEdit = fromEdit
+        widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
+    }
+
+    private fun initView(context: Context) {
+        getComponent(context).inject(this)
+        View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
+        baseLayout = findViewById(R.id.base_layout)
+    }
+
+    private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
+
+}

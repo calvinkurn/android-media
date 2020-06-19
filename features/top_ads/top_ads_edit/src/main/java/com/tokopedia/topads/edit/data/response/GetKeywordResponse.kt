@@ -20,9 +20,6 @@ data class GetKeywordResponse(
 
     data class Data(
 
-            @field:SerializedName("pagination")
-            val pagination: Pagination = Pagination(),
-
             @field:SerializedName("keywords")
             val keywords: List<KeywordsItem> = listOf()
     )
@@ -37,13 +34,6 @@ data class GetKeywordResponse(
 
             @field:SerializedName("title")
             val title: String? = null
-    )
-
-
-    data class Pagination(
-
-            @field:SerializedName("next_cursor")
-            val nextCursor: String? = null
     )
 
     data class KeywordsItem(

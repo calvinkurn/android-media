@@ -34,17 +34,11 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                                              private val dispatcher: CoroutineDispatcher,
                                              private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    val REQUEST_CODE_CONFIRMATION = 8903
-    val KEY_DAILY_BUDGET = "BUDGET"
-    val KEY_AUTOADS_STATUS = "AUTOADS_STATUS"
-    val REQUEST_CODE_AD_OPTION = 3
-    val SELECTED_OPTION = "selected_option"
     val CHANNEL = "topchat"
     val SOURCE = "one_click_promo"
     val autoAdsData = MutableLiveData<TopAdsAutoAds.Response.TopAdsAutoAdsData>()
 
-      fun getAdsState(onSuccess: ((AdCreationOption) -> Unit),
-                      onError: ((Throwable) -> Unit)) {
+      fun getAdsState(onSuccess: ((AdCreationOption) -> Unit)) {
         launchCatchError(
                 block = {
                     val data = withContext(Dispatchers.IO) {
@@ -59,7 +53,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                     }
                 },
                 onError = {
-                    onError(it)
+                    it.printStackTrace()
                 }
         )
     }
@@ -98,8 +92,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
         }
     }
 
-    fun getAutoAdsStatus(onSuccess: ((AutoAdsResponse) -> Unit),
-                         onError: ((Throwable) -> Unit)) {
+    fun getAutoAdsStatus(onSuccess: ((AutoAdsResponse) -> Unit)) {
         launchCatchError(
                 block = {
                     val data = withContext(Dispatchers.IO) {
@@ -114,7 +107,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                     }
                 },
                 onError = {
-                    onError(it)
+                    it.printStackTrace()
                 }
         )
 

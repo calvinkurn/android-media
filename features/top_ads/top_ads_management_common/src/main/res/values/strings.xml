@@ -33,4 +33,32 @@
     <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %d</string>
 
 
+    <string name="topads_common_cancel_btn">Batalkan</string>
+    <string name="topads_common_title_product_ad_edit">Ubah Iklan Produk</string>
+    <string name="topads_common_save_butt"> Simpan</string>
+    <string name="topads_common_batal">Batal</string>
+    <string name="topads_common_mulai_beriklan">Mulai Beriklan</string>
+
+    <string name="topads_group_detail">Detail Grup</string>
+    <string name="topads_hari_ini">Hari ini</string>
+    <string name="topads_common_produk_terjual">Produk Terjual</string>
+    <string name="topads_common_persentase_klik">Persentase Klik</string>
+    <string name="topads_common_pendapatan">Pendapatan</string>
+    <string name="topads_common_klik">Klik</string>
+    <string name="topads_common_pengeluaran">Pengeluaran</string>
+    <string name="topads_common_tampil">Tampil</string>
+
+
+    <string name="topads_common_ads_active">\u25CF Aktif</string>
+    <string name="topads_common_ads_deactive">\u25CF Tidak Aktif</string>
+    <string name="topads_common_ads_inprogress">\u25CF Dalam Proses</string>
+    <string name="topads_common_ads_not_delivered">\u25CF Tidak tampil</string>
+
+    <string name="topads_common_kata_kunci">Kata Kunci (%d)</string>
+    <string name="topads_common_product">Produck (%d)</string>
+    <string name="topads_common_kata_kunci_neg">Kata Kunci Negatif (%d)</string>
+    <string name="topads_dash_group_item_progress_status"> dari Rp %d</string>
+
+
+
 </resources>

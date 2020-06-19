@@ -1,0 +1,18 @@
+mutation topAdsEditGroupBulk($action: String!, $shopID: String!, $source: String, $groups: [EditGroupBulkInput]!) {
+  topAdsEditGroupBulk(action: $action, shopID: $shopID, source: $source, groups: $groups) {
+    data {
+      action
+      shopID
+      groups {
+        groupID
+        status
+        statusDesc
+      }
+    }
+    errors {
+      code
+      detail
+      title
+    }
+  }
+}

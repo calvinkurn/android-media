@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
+import com.tokopedia.topads.auto.data.network.response.NonDeliveryResponse
 import com.tokopedia.topads.auto.data.network.response.TopAdsAutoAds
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,6 +27,7 @@ class AutoAdsWidgetViewModel(
 ) : BaseViewModel(dispatcher) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
+    val adsDeliveryStatus = MutableLiveData<NonDeliveryResponse.TopAdsGetShopStatus.DataItem>()
 
     fun getAutoAdsStatus(shopId: Int) {
         launchCatchError(block = {
@@ -44,8 +46,27 @@ class AutoAdsWidgetViewModel(
         }
     }
 
+    fun getNotDeliveredReason(shopID:String) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO) {
+                val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_TOPADS_NONDELIVERY_REASON],
+                        NonDeliveryResponse::class.java, mapOf(SHOPID to shopID,ADTYPE to "1"), false)
+                val cacheStrategy = GraphqlCacheStrategy
+                        .Builder(CacheType.ALWAYS_CLOUD).build()
+                repository.getReseponse(listOf(request), cacheStrategy)
+            }
+            data.getSuccessData<NonDeliveryResponse>().topAdsGetShopStatus.data.let{
+                adsDeliveryStatus.postValue(it[0])
+            }
+        }) {
+            it.printStackTrace()
+        }
+    }
+
     companion object {
         val SHOP_ID = "shopId"
+        val SHOPID = "shopID"
+        val ADTYPE = "adTypes"
     }
 
 }

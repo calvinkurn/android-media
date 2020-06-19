@@ -18,7 +18,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
-import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
+import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
@@ -70,16 +70,16 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == DailyBudgetFragment.REQUEST_CODE_AD_OPTION) {
-            if (data != null) {
-                when (data.getIntExtra(DailyBudgetFragment.SELECTED_OPTION, -1)) {
-                    TopAdsAddingOption.GROUP_OPT -> onSummaryGroupClicked()
-                    TopAdsAddingOption.PRODUCT_OPT -> gotoCreateProductAd()
-                    TopAdsAddingOption.KEYWORDS_OPT -> gotoCreateKeyword()
-                }
-                finish()
-            }
-        }
+//        if (requestCode == AutoAdsBaseBudgetFragment.REQUEST_CODE_AD_OPTION) {
+//            if (data != null) {
+//                when (data.getIntExtra(AutoAdsBaseBudgetFragment.SELECTED_OPTION, -1)) {
+//                    TopAdsAddingOption.GROUP_OPT -> onSummaryGroupClicked()
+//                    TopAdsAddingOption.PRODUCT_OPT -> gotoCreateProductAd()
+//                    TopAdsAddingOption.KEYWORDS_OPT -> gotoCreateKeyword()
+//                }
+//                finish()
+//            }
+//        }
     }
 
     private fun autoAds() {

@@ -19,6 +19,10 @@ data class ResponseBidInfo(
 
         ) {
             data class DataItem(
+
+                    @field:SerializedName("id")
+                    val adId: Int = 0,
+
                     @field:SerializedName("suggestion_bid")
                     val suggestionBid: Int = 0,
 

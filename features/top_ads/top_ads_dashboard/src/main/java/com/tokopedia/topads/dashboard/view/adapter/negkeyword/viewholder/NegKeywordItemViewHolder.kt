@@ -1,0 +1,67 @@
+package com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewholder
+
+import android.view.View
+import androidx.annotation.LayoutRes
+import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
+import com.tokopedia.unifycomponents.Label
+import kotlinx.android.synthetic.main.topads_dash_item_neg_keyword_card.view.*
+import kotlinx.android.synthetic.main.topads_dash_item_neg_keyword_card.view.btn_switch
+import kotlinx.android.synthetic.main.topads_dash_item_neg_keyword_card.view.card_view
+import kotlinx.android.synthetic.main.topads_dash_item_neg_keyword_card.view.check_box
+import kotlinx.android.synthetic.main.topads_dash_item_neg_keyword_card.view.item_card
+import kotlinx.android.synthetic.main.topads_dash_item_neg_keyword_card.view.label
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
+
+
+/**
+ * Created by Pika on 7/6/20.
+ */
+
+class NegKeywordItemViewHolder(val view: View,
+                               var onSwitchAction: ((pos: Int, isChecked: Boolean) -> Unit),
+                               var onSelectMode: ((select: Boolean) -> Unit)) : NegKeywordViewHolder<NegKeywordItemViewModel>(view) {
+
+    companion object {
+        @LayoutRes
+        var LAYOUT = R.layout.topads_dash_item_neg_keyword_card
+    }
+
+    override fun bind(item: NegKeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean) {
+        item.let {
+            if (selectMode) {
+                view.btn_switch.visibility = View.GONE
+                view.check_box.visibility = View.VISIBLE
+            } else {
+                view.card_view?.setCardBackgroundColor(view.context.resources.getColor(R.color.white))
+                view.btn_switch.visibility = View.VISIBLE
+                view.check_box.visibility = View.GONE
+            }
+            view.key_title.text = it.result.keywordTag
+            view.label.text = it.result.keywordTypeDesc
+            view.label.setLabelType(Label.GENERAL_LIGHT_GREEN)
+            view.check_box.isChecked = item.isChecked
+            view.btn_switch.isChecked = it.result.keywordStatus == 1
+            view.btn_switch.setOnCheckedChangeListener { buttonView, isChecked ->
+                onSwitchAction.invoke(adapterPosition, isChecked)
+            }
+            view.item_card.setOnClickListener {
+                if(selectMode){
+                    view.check_box.isChecked = !view.check_box.isChecked
+                    item.isChecked =  view.check_box.isChecked
+                    if ( view.check_box.isChecked)
+                        view.card_view?.setCardBackgroundColor(view.context.resources.getColor(R.color.topads_select_color))
+                    else
+                        view.card_view?.setCardBackgroundColor(view.context.resources.getColor(R.color.white))
+                }
+            }
+            view.item_card.setOnLongClickListener {
+                item.isChecked = true
+                view.check_box.isChecked = true
+                view.card_view.setCardBackgroundColor(view.context.resources.getColor(R.color.topads_select_color))
+                onSelectMode.invoke(true)
+                true
+            }
+        }
+    }
+}

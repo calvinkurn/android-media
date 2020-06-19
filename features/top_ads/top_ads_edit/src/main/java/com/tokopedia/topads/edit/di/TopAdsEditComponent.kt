@@ -26,5 +26,6 @@ interface TopAdsEditComponent {
     fun inject(editKeywordsFragment: EditKeywordsFragment)
     fun inject(negKeywordAdsListFragment: NegKeywordAdsListFragment)
     fun inject(editFormAdActivity: EditFormAdActivity)
+    fun inject(editFormWithoutGroupFragment: EditFormWithoutGroupFragment)
 }
 

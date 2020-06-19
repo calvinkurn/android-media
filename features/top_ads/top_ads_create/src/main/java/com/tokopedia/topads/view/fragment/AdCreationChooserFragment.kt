@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
-import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
+import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
+import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.data.response.AutoAdsResponse
@@ -26,13 +26,12 @@ import javax.inject.Inject
 class AdCreationChooserFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var viewModel: AdChooserViewModel
     private var adStatus = 0
     var dailyBudget = 0
-    var autoAdsStatusDes = ""
     var current_auto_ads_status = 0
-    val TOGGLE_ON = "toggle_on"
     val TOGGLE_OFF = "toggle_off"
     val REQUEST_CODE = 0
 
@@ -46,7 +45,6 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         }
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(AdChooserViewModel::class.java)
         return inflater.inflate(resources.getLayout(R.layout.topads_create_ads_chooser_fragment), container, false)
@@ -54,11 +52,8 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getAdsState(this::onSuccess, this::onError)
-        viewModel.getAutoAdsStatus(this::onSuccessAutoAds, this::getAutoAdsError)
-    }
-
-    private fun onError(e: Throwable) {
+        viewModel.getAdsState(this::onSuccess)
+        viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
     }
 
     private fun onSuccess(data: AdCreationOption) {
@@ -83,7 +78,6 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
             200 -> inProgress()
             else -> autoAdsDisableConfirm()
         }
-
     }
 
     private fun setActiveStatus(adsActive: Int, bg: Int) {
@@ -91,28 +85,25 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         tv_shop_status.setBackgroundResource(bg)
     }
 
-    private fun getAutoAdsError(e: Throwable) {
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.autoAdsData.observe(this, Observer {
-            viewModel.getAutoAdsStatus(this::onSuccessAutoAds, this::getAutoAdsError)
+            viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
 
         })
         auto_ads.setOnClickListener {
-            if (adStatus == 4 /*&& autoAdsStatusDes == "Aktif"*/) {
-                val intent = Intent(context, SettingBudgetAdsActivity::class.java)
-                intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, dailyBudget)
-                intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, current_auto_ads_status)
+            if (adStatus == 4) {
+                val intent = Intent(context, EditBudgetAutoAdsActivity::class.java)
+                intent.putExtra(AutoAdsBaseBudgetFragment.KEY_DAILY_BUDGET, dailyBudget)
+                intent.putExtra(AutoAdsBaseBudgetFragment.KEY_AUTOADS_STATUS, current_auto_ads_status)
                 startActivityForResult(intent, REQUEST_CODE)
             }
-            if (adStatus == 3)//manual ad user
+            if (adStatus == 3 || adStatus == 2)//manual ad user/ no ads case
             {
                 RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
             }
         }
         manual_ads.setOnClickListener {
-            if (adStatus == 3) {
+            if (adStatus == 3 || adStatus == 2) {
                 startActivity(Intent(activity, StepperActivity::class.java))
             }
             if (adStatus == 4) {
@@ -147,11 +138,6 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     }
 
-    fun autoAdsClick() {
-        viewModel.postAutoAds(TOGGLE_ON, 100)
-
-    }
-
     fun manualAdsClick() {
         viewModel.postAutoAds(TOGGLE_OFF, 100)
 
@@ -159,7 +145,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        viewModel.getAutoAdsStatus(this::onSuccessAutoAds, this::getAutoAdsError)
+        viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
 
     }
 

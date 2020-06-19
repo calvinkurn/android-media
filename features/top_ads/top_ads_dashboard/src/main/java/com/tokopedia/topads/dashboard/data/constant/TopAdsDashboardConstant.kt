@@ -1,5 +1,7 @@
 package com.tokopedia.topads.dashboard.data.constant
 
+import com.tokopedia.design.base.BaseToaster
+
 object TopAdsDashboardConstant {
     const val PARAM_TYPE = "type"
     const val PARAM_START_DATE = "start_date"
@@ -27,4 +29,54 @@ object TopAdsDashboardConstant {
 
     const val URL_ONECLICKPROMO = "https://ta.tokopedia.com/v2/manage/oneclickpromo"
     const val AUTO_TOPUP_INACTIVE: Int = 0
+
+    const val ACTIVE = "Aktif"
+    const val TIDAK_TAMPIL = "Tidak Tampil"
+    const val TIDAK_AKTIF = "Tidak Aktif"
+
+    const val ACTION = "action"
+    const val GROUPS = "groups"
+    const val KEYWORDS = "keywords"
+    const val ACTION_ACTIVATE = "toggle_on"
+    const val ACTION_DEACTIVATE = "toggle_off"
+    const val ACTION_DELETE = "delete"
+    const val SOURCE_DASH = "dashboard"
+    const val ACTION_MOVE = "move_group"
+    const val AD_ID = "ads"
+    const val KEYWORD_TYPE_PHRASE = 11
+    const val KEYWORD_TYPE_EXACT = 21
+    const val KEYWORD_TYPE_NEGATIVE_PHRASE = 12
+    const val KEYWORD_TYPE_NEGATIVE_EXACT = 22
+    const val TIDAK_DIBATASI = "Tidak Dibatasi"
+    const val GROUP_ID = "group_id"
+    const val PRICE_DAILY = "daily_budget"
+    const val GROUP_STATUS = "group_status"
+    const val PRICE_SPEND = "price_spent"
+    const val NOT_VALID = "nont_valid"
+    const val IS_ACTIVE = "is_active"
+    const val GROUP_NAME = "group_name"
+    const val GROUP_TOTAL = "group_total"
+    const val groupId = "groupId"
+    const val groupName = "groupName"
+    const val groupStatus = "status"
+    const val priceBid = "price_bid"
+    const val priceDaily = "price_daily"
+    const val CUSTOM_DATE = 5
+    const val DATE_RANGE_PRODUK = "dateRangeSelectedProduct"
+    const val DATE_RANGE_BERANDA = "dateRangeSelectedBeranda"
+    const val DATE_RANGE_DETAIL = "dateRangeSelectedDetail"
+    const val START_DATE_PRODUCT = "startDatePro"
+    const val END_DATE_PRODUCT = "endDatePro"
+    const val START_DATE_BERANDA = "startDateBeranda"
+    const val END_DATE_BERANDA = "endDateBeranad"
+    const val START_DATE_DETAIL = "startDateDetail"
+    const val END_DATE_DETAIL = "endDateDetail"
+    const val EMPTY_SEARCH_VIEW = true
+    const val PRODUK = "Produk"
+    const val KATA_KUNCI = "Kata Kunci"
+    const val NEG_KATA_KUNCI = "Kata Negatif"
+    const val GRUP = "Grup"
+    const val TANPA_GRUP = "Tanpa Grup"
+    const val TOASTER_DURATION :Long = 2000
+    const val EXPIRE = "expiryDate"
 }

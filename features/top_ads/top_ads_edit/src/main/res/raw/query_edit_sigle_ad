@@ -1,0 +1,13 @@
+mutation topAdsPatchPromo($input: TopAdsPatchPromoParam!) {
+  topAdsPatchPromo(input: $input) {
+    data {
+      adID
+      priceBid
+    }
+    errors {
+      code
+      detail
+      title
+    }
+  }
+}

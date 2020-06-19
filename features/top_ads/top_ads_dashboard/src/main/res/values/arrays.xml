@@ -15,4 +15,26 @@
         <item>@string/topads_menu_help</item>
         <item>@string/topads_menu_seller_centre</item>
     </string-array>
+
+    <string-array name="top_ads_sort_value">
+        <item>impression</item>
+        <item>click</item>
+        <item>ctr</item>
+        <item>profit</item>
+        <item>cpc</item>
+
+    </string-array>
+
+    <string-array name="top_ads_sort_option">
+        <item>Terbaru</item>
+        <item>Terpakai Tertinggi</item>
+        <item>Tampil Tertinggi</item>
+        <item>Tampil Terendah</item>
+        <item>Klik Tertinggi</item>
+        <item>Klik Terendah</item>
+        <item>Biaya Maks Tertinggi</item>
+        <item>Anggaran Harian Tertinggi</item>
+    </string-array>
+
+
 </resources>

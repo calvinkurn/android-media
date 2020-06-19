@@ -1,0 +1,122 @@
+package com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder
+
+import android.content.Intent
+import android.util.Log
+import android.view.View
+import androidx.annotation.LayoutRes
+import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NOT_VALID
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
+import com.tokopedia.topads.dashboard.data.model.groupitem.DataItem
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
+import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
+
+
+/**
+ * Created by Pika on 2/6/20.
+ */
+
+class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
+                               var actionDelete: ((pos: Int) -> Unit),
+                               var actionStatusChange: ((pos: Int, status: Int) -> Unit)) : GroupItemsViewHolder<GroupItemsItemViewModel>(view) {
+
+    companion object {
+        @LayoutRes
+        var LAYOUT = R.layout.topads_dash_item_with_group_card
+    }
+
+    override fun bind(item: GroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean) {
+        item.let {
+
+            if (selectedMode) {
+                view.img_menu.visibility = View.GONE
+                view.check_box.visibility = View.VISIBLE
+            } else {
+                view.card_view.setCardBackgroundColor(view.context.resources.getColor(R.color.white))
+                view.img_menu.visibility = View.VISIBLE
+                view.check_box.visibility = View.GONE
+            }
+            when (it.data.groupStatusDesc) {
+                ACTIVE -> view.label.setLabelType(Label.GENERAL_DARK_GREEN)
+                TIDAK_AKTIF -> view.label.setLabelType(Label.GENERAL_LIGHT_ORANGE)
+                TIDAK_TAMPIL -> view.label.setLabelType(Label.GENERAL_LIGHT_GREY)
+            }
+            view.group_title.text = it.data.groupName
+            view.label.text = it.data.groupStatusDesc
+            view.tampil_count.text = it.data.statTotalImpression
+            view.klik_count.text = it.data.statTotalClick
+            view.persentase_klik_count.text = it.data.statTotalCtr
+            view.pengeluaran_count.text = it.data.statTotalSpent
+            view.pendapatan_count.text = it.data.statTotalConversion
+            view.produk_terjual_count.text = it.data.statTotalSold
+            view.total_item.text = it.data.totalItem.toString()
+            view.key_count.text = it.data.totalKeyword.toString()
+            setProgressBar(it.data)
+
+     //       view.check_box.isChecked = it.isChecked
+
+            view.item_card?.setOnClickListener { _ ->
+                if (!selectedMode) {
+                    val intent = Intent(view.context, TopAdsGroupDetailViewActivity::class.java)
+                    intent.putExtra(TopAdsDashboardConstant.GROUP_NAME, item.data.groupName)
+                    intent.putExtra(TopAdsDashboardConstant.GROUP_ID, item.data.groupId)
+                    intent.putExtra(TopAdsDashboardConstant.GROUP_STATUS, item.data.groupStatusDesc)
+                    intent.putExtra(TopAdsDashboardConstant.PRICE_DAILY, item.data.groupPriceDaily)
+                    intent.putExtra(TopAdsDashboardConstant.IS_ACTIVE, item.data.groupStatus)
+                    if (item.data.groupPriceDailyBar.isNotEmpty())
+                        intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, item.data.groupPriceDailySpentFmt)
+                    else
+                        intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, NOT_VALID)
+                    view.context.startActivity(intent)
+                } else {
+                    view.check_box.isChecked = !view.check_box.isChecked
+                    it.isChecked = view.check_box.isChecked
+                    if (view.check_box.isChecked)
+                        view.card_view.setCardBackgroundColor(view.context.resources.getColor(R.color.topads_select_color))
+                    else
+                        view.card_view.setCardBackgroundColor(view.context.resources.getColor(R.color.white))
+                }
+            }
+            view.item_card.setOnLongClickListener {
+                item.isChecked = true
+                view.check_box.setOnCheckedChangeListener(null)
+                view.check_box.isChecked = true
+                view.card_view.setCardBackgroundColor(view.context.resources.getColor(R.color.topads_select_color))
+                selectMode.invoke(true)
+                true
+            }
+        }
+
+        view.img_menu.setOnClickListener {
+            val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.groupStatus, true, item.data.groupName,
+                    item.data.groupId, item.data.groupStatusDesc, item.data.groupPriceBid, item.data.groupPriceDaily)
+            sheet.show()
+            sheet.onDeleteClick = {
+                actionDelete(adapterPosition)
+            }
+            sheet.changeStatus = {
+                actionStatusChange(adapterPosition, it)
+            }
+        }
+    }
+
+    private fun setProgressBar(data: DataItem) {
+        if (data.groupPriceDailyBar.isNotEmpty()) {
+            view.progress_layout.visibility = View.VISIBLE
+            view.progress_bar.progressBarColorType = ProgressBarUnify.COLOR_GREEN
+            view.progress_bar.setValue(data.groupPriceDailySpentFmt.replace("Rp", "").trim().toInt(), true)
+            view.progress_status1.text = data.groupPriceDailySpentFmt
+            view.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), data.groupPriceDaily)
+        } else {
+            view.progress_layout.visibility = View.GONE
+        }
+    }
+
+}

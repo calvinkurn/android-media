@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
+import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.edit.data.param.DataSuggestions
 import com.tokopedia.topads.edit.data.response.*
 import com.tokopedia.topads.edit.usecase.*
@@ -22,6 +23,7 @@ class EditFormDefaultViewModel @Inject constructor(
         private val getAdsUseCase: GetAdsUseCase,
         private val getAdKeywordUseCase: GetAdKeywordUseCase,
         private val groupInfoUseCase: GroupInfoUseCase,
+        private val editSingleAdUseCase: EditSingleAdUseCase,
         private val topAdsCreateUseCase: TopAdsCreateUseCase) : BaseViewModel(dispatcher) {
 
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
@@ -40,6 +42,16 @@ class EditFormDefaultViewModel @Inject constructor(
         bidInfoUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topadsBidInfo.data)
+                },
+                { throwable ->
+                    throwable.printStackTrace()
+                })
+    }
+
+    fun editSingleAd(adId: String, priceBid: Float, priceDaily: Float) {
+        editSingleAdUseCase.setParams(adId,priceBid,priceDaily)
+        editSingleAdUseCase.executeQuerySafeMode(
+                {
                 },
                 { throwable ->
                     throwable.printStackTrace()
@@ -109,6 +121,7 @@ class EditFormDefaultViewModel @Inject constructor(
         getAdKeywordUseCase.cancelJobs()
         groupInfoUseCase.cancelJobs()
         topAdsCreateUseCase.cancelJobs()
+        editSingleAdUseCase.cancelJobs()
     }
 }
 
