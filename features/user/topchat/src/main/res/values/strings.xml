@@ -117,7 +117,7 @@ yang ditemukan</string>
     <string name="menu_chat_filter">Filter</string>
     <string name="menu_chat_setting">Pengaturan</string>
     <string name="menu_chat_search">Pencarian</string>
-    <string name="search_chat_by_username">Cari nama pengguna</string>
+    <string name="search_chat_hint">Cari di Chat</string>
 
     <string name="filter_chat_all">Semua</string>
     <string name="filter_chat_unread">Belum Dibaca</string>
