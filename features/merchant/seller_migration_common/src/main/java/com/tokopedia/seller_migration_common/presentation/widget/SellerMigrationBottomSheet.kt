@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 abstract class SellerMigrationBottomSheet(private val titles: List<String> = emptyList(),
                                           private val contents: List<String> = emptyList(),
                                           private val images: ArrayList<String> = arrayListOf(),
+                                          private val showWarningCard: Boolean = true,
                                           private val onGoToSellerAppClicked: (type: String) -> Unit = {},
                                           private val onLearnMoreClicked: () -> Unit = {}) : BottomSheetUnify() {
 
@@ -81,10 +82,12 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
     }
 
     private fun setupWarningCard() {
-        val remoteConfigDate = getSellerMigrationDate(context)
-        if(remoteConfigDate.isNotBlank()) {
-            sellerMigrationWarningCard.show()
-            sellerMigrationWarningDate.text = remoteConfigDate
+        if (showWarningCard) {
+            val remoteConfigDate = getSellerMigrationDate(context)
+            if(remoteConfigDate.isNotBlank()) {
+                sellerMigrationWarningCard.show()
+                sellerMigrationWarningDate.text = remoteConfigDate
+            }
         }
     }
 

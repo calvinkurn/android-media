@@ -10,7 +10,7 @@ class SellerMigrationVoucherTokoBottomSheet(titles: List<String>,
                                             images: ArrayList<String>,
                                             onGoToSellerAppClicked: (type: String) -> Unit,
                                             onLearnMoreClicked: () -> Unit)
-    : SellerMigrationBottomSheet(titles, contents, images, onGoToSellerAppClicked, onLearnMoreClicked) {
+    : SellerMigrationBottomSheet(titles, contents, images, false, onGoToSellerAppClicked, onLearnMoreClicked) {
 
     companion object {
         fun createNewInstance(context: Context,
