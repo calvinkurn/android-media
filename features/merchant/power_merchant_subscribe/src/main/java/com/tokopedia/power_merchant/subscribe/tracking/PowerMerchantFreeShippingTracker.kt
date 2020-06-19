@@ -139,7 +139,7 @@ object PowerMerchantFreeShippingTracker {
         val transitionPeriod = freeShippingStatus.isTransitionPeriod
 
         return when {
-            transitionPeriod && !isActive -> EVENT_LABEL_TRANSITION_PERIOD
+            transitionPeriod -> EVENT_LABEL_TRANSITION_PERIOD
             !powerMerchant -> EVENT_LABEL_BBO_INACTIVE
             isActive -> EVENT_LABEL_BBO_ACTIVE
             isEligible -> EVENT_LABEL_BBO_ELIGIBLE
