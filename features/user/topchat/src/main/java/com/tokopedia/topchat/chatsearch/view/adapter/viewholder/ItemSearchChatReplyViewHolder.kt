@@ -17,8 +17,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class ItemSearchChatReplyViewHolder(
-        itemView: View?,
-        private val listener: ItemSearchChatViewHolder.Listener?
+        itemView: View?
 ) : AbstractViewHolder<ChatReplyUiModel>(itemView) {
 
     private val userName: Typography? = itemView?.findViewById(R.id.user_name)
@@ -83,7 +82,6 @@ class ItemSearchChatReplyViewHolder(
         itemView.setOnClickListener {
             val chatRoomIntent = RouteManager.getIntent(it.context, ApplinkConst.TOPCHAT, element.msgId.toString())
             it.context.startActivity(chatRoomIntent)
-            listener?.finishSearchActivity()
         }
     }
 

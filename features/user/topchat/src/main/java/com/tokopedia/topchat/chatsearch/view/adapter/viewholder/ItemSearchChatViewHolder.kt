@@ -13,8 +13,7 @@ import com.tokopedia.topchat.chatsearch.view.uimodel.SearchResultUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 class ItemSearchChatViewHolder(
-        itemView: View?,
-        private val listener: Listener?
+        itemView: View?
 ) : AbstractViewHolder<SearchResultUiModel>(itemView) {
 
     private var counter: Typography? = itemView?.findViewById(R.id.unread_counter)
@@ -22,10 +21,6 @@ class ItemSearchChatViewHolder(
     private var message: Typography? = itemView?.findViewById(R.id.message)
     private var time: Typography? = itemView?.findViewById(R.id.time)
     private var thumbnail: SquareImageView? = itemView?.findViewById(R.id.thumbnail)
-
-    interface Listener {
-        fun finishSearchActivity()
-    }
 
     override fun bind(element: SearchResultUiModel) {
         hideUnusedElement()
@@ -65,7 +60,6 @@ class ItemSearchChatViewHolder(
         itemView.setOnClickListener {
             val chatRoomIntent = RouteManager.getIntent(it.context, ApplinkConst.TOPCHAT, element.msgId.toString())
             it.context.startActivity(chatRoomIntent)
-            listener?.finishSearchActivity()
         }
     }
 
