@@ -142,6 +142,7 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             "            childs\n" +
             "            url\n" +
             "            image_url\n" +
+            "            image_url_300\n" +
             "            image_url_700\n" +
             "            price\n" +
             "            price_range\n" +
@@ -452,5 +453,20 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             "            }\n" +
             "        }\n" +
             "    }\n" +
+            "\n" +
+            "   searchInspirationWidget(params:$params){\n" +
+            "       data{\n" +
+            "           title\n" +
+            "           type\n" +
+            "           position\n" +
+            "           options{\n" +
+            "               text\n" +
+            "               img\n" +
+            "               url\n" +
+            "               color\n" +
+            "               applink\n" +
+            "           }\n" +
+            "       }\n" +
+            "   }"+
             "}\n";
 }

@@ -2,6 +2,7 @@ package com.tokopedia.applink;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +38,9 @@ public class RouteManager {
 
     public static final String BRANCH = "branch";
     public static final String BRANCH_FORCE_NEW_SESSION = "branch_force_new_session";
+
+    public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
+    private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
 
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
@@ -82,7 +86,13 @@ public class RouteManager {
         ApplinkLogger.getInstance(context).appendTrace("Building explicit intent...");
         Intent intent = buildInternalImplicitIntent(context, deeplink);
         List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, 0);
-        if (resolveInfos == null || resolveInfos.size() == 0) {
+
+        Uri uri = Uri.parse(deeplink);
+        final boolean shouldRedirectToSellerApp = uri.getBooleanQueryParameter(KEY_REDIRECT_TO_SELLER_APP, false);
+
+        if (shouldRedirectToSellerApp && !GlobalConfig.isSellerApp()) {
+            return getIntentRedirectSellerApp(context, uri);
+        } else if (resolveInfos == null || resolveInfos.size() == 0) {
             // intent cannot be viewed in app
             ApplinkLogger.getInstance(context).appendTrace("Intent cannot be viewed in app");
             ApplinkLogger.getInstance(context).appendTrace("Explicit intent result:\nnull");
@@ -100,7 +110,6 @@ public class RouteManager {
 
             // return the first intent only.
             if (resolveInfos.size() > 0) {
-                Uri uri = Uri.parse(deeplink);
                 Intent activityIntent = new Intent();
                 activityIntent.setClassName(context.getPackageName(), resolveInfos.get(0).activityInfo.name);
                 activityIntent.setData(uri);
@@ -118,6 +127,28 @@ public class RouteManager {
                 return null;
             }
 
+        }
+    }
+
+    /**
+     * Create intent redirect to sellerapp
+     * If sellerapp not installed yet then open sellerapp on google playstore
+     * */
+    private static Intent getIntentRedirectSellerApp(Context context, Uri uri) {
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
+        if (null != intent) {
+            intent.setData(uri);
+            return intent;
+        } else {
+            return getIntentToPlayStore(SELLER_APP_PACKAGE_NAME);
+        }
+    }
+
+    private static Intent getIntentToPlayStore(String packageName) {
+        try {
+            return new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
+        } catch (ActivityNotFoundException e) {
+            return new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName));
         }
     }
 
@@ -161,12 +192,19 @@ public class RouteManager {
         } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("AirBnB deeplink supported, redirect to AirBnB deeplink handler");
             ApplinkLogger.getInstance(context).save();
-            if (context instanceof Activity) {
-                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity((Activity) context, mappedDeeplink, queryParamBundle);
+
+            Uri uri = Uri.parse(mappedDeeplink);
+            boolean shouldRedirectToSellerApp = uri.getBooleanQueryParameter(KEY_REDIRECT_TO_SELLER_APP, false);
+            if (shouldRedirectToSellerApp && !GlobalConfig.isSellerApp()) { //create intent to redirect to sellerapp
+                intent = buildInternalExplicitIntent(context, mappedDeeplink);
             } else {
-                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
+                if (context instanceof Activity) {
+                    ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity((Activity) context, mappedDeeplink, queryParamBundle);
+                } else {
+                    ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
+                }
+                return true;
             }
-            return true;
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
             intent = buildInternalImplicitIntent(context, mappedDeeplink);

@@ -16,6 +16,7 @@
 
     <!--Merchant Seller-->
     <string name="merchant_seller">Penjualan</string>
+    <string name="favorite_shop">Toko Favorit</string>
 
     <!--Digital Topup-->
     <string name="instant_loan_title">Dana Instan</string>
@@ -33,6 +34,7 @@
 
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
+    <string name="payment_instant_debit_bca_title">Instant Debit BCA</string>
     <string name="title_wishlist">Wishlist</string>
 
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>

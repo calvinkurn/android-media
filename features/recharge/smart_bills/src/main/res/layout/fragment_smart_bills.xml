@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/smart_bills_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/smart_bills_checkout_view_container"
+        android:fillViewport="true">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/smart_bills_checkout_view_container"
+            android:fillViewport="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_smart_bills"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:closeButtonVisibility="gone"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tickerType="announcement" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_smart_bills_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_lvl4"
+                    android:text="@string/smart_bills_title"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticker_smart_bills"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold" />
+
+                <LinearLayout
+                    android:id="@+id/view_smart_bills_select_all_checkbox_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl5"
+                    android:layout_marginRight="@dimen/spacing_lvl4"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_smart_bills_title">
+
+                    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                        android:id="@+id/cb_smart_bills_select_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/smart_bills_select_all"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_smart_bills_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl2"
+                    app:layout_constraintTop_toBottomOf="@id/view_smart_bills_select_all_checkbox_container" />
+
+                <include
+                    android:id="@+id/view_smart_bills_shimmering"
+                    layout="@layout/view_smart_bills_shimmering"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_smart_bills_title"
+                    tools:visibility="visible" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/smart_bills_checkout_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:cardElevation="@dimen/spacing_lvl2">
+
+        <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+            android:id="@+id/smart_bills_checkout_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4" />
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

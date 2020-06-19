@@ -195,4 +195,9 @@ class AttachInvoiceSentViewModel : SendableViewModel,
         this.isError = true
     }
 
+    override fun finishLoading() {
+        this.isLoading = false
+        this.isError = false
+    }
+
 }
