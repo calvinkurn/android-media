@@ -70,6 +70,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:background="@color/grey_separator"
             android:maxLines="1"
+            app:typographyType="small"
             android:paddingLeft="@dimen/dp_4"
             android:paddingTop="@dimen/dp_3"
             android:paddingRight="@dimen/dp_4"
