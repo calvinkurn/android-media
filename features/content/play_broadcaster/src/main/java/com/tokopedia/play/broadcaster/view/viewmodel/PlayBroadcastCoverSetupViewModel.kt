@@ -20,9 +20,7 @@ import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.util.*
@@ -140,7 +138,13 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
     }
 
     fun setCroppingCover(coverUri: Uri, source: CoverSourceEnum) {
-        _observableCropState.value = CoverSetupState.Cropping(coverUri, source)
+//        _observableCropState.value = CoverSetupState.Cropping(coverUri, source)
+
+        //TODO("Remove mock behavior")
+        launch {
+            delay(1500)
+            _observableCropState.value = CoverSetupState.Cropping(coverUri, source)
+        }
     }
 
     fun setCroppingCover(bitmap: Bitmap, source: CoverSourceEnum) {

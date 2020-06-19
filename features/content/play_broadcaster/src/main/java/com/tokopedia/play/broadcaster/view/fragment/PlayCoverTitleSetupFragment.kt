@@ -139,6 +139,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     }
 
     private fun onGetCoverFromProduct(productId: Long, imageUrl: String) {
+        showCoverCropLayout(null)
         scope.launch {
             val originalImageUrl = viewModel.getOriginalImageUrl(productId, imageUrl)
             Glide.with(requireContext())
@@ -232,7 +233,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                 .show(childFragmentManager)
     }
 
-    private fun showCoverCropLayout(coverImageUri: Uri) {
+    private fun showCoverCropLayout(coverImageUri: Uri?) {
         requestGalleryPermission(REQUEST_CODE_PERMISSION_START_CROP_COVER)
 
         coverSetupView.hide()
