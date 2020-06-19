@@ -62,7 +62,7 @@ class HotelCancellationViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelCancellationViewModel.getCancellationData("", "")
+        hotelCancellationViewModel.getCancellationData("")
 
         //then
         assert(hotelCancellationViewModel.cancellationData.value is Success)
@@ -83,7 +83,7 @@ class HotelCancellationViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelCancellationViewModel.getCancellationData("", "", false)
+        hotelCancellationViewModel.getCancellationData("", false)
 
         //then
         assert(hotelCancellationViewModel.cancellationData.value is Success)
@@ -102,7 +102,7 @@ class HotelCancellationViewModelTest {
         } returns graphqlFailResponse
 
         //when
-        hotelCancellationViewModel.getCancellationData("", "", true)
+        hotelCancellationViewModel.getCancellationData("", true)
 
         //then
             assert(hotelCancellationViewModel.cancellationData.value is Fail)
@@ -122,7 +122,7 @@ class HotelCancellationViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelCancellationViewModel.submitCancellationData("", HotelCancellationSubmitParam())
+        hotelCancellationViewModel.submitCancellationData(HotelCancellationSubmitParam())
 
         //then
         assert(hotelCancellationViewModel.cancellationSubmitData.value is Success)
@@ -143,7 +143,7 @@ class HotelCancellationViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelCancellationViewModel.submitCancellationData("", HotelCancellationSubmitParam())
+        hotelCancellationViewModel.submitCancellationData(HotelCancellationSubmitParam())
 
         //then
         assert(hotelCancellationViewModel.cancellationSubmitData.value is Success)
@@ -162,7 +162,7 @@ class HotelCancellationViewModelTest {
         } returns graphqlFailResponse
 
         //when
-        hotelCancellationViewModel.submitCancellationData("", HotelCancellationSubmitParam())
+        hotelCancellationViewModel.submitCancellationData(HotelCancellationSubmitParam())
 
         //then
         assert(hotelCancellationViewModel.cancellationSubmitData.value is Fail)
