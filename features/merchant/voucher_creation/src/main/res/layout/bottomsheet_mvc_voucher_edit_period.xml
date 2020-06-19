@@ -67,7 +67,7 @@
         android:id="@+id/edtMvcStartDate"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/mvc_edit_period_margin_top"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"

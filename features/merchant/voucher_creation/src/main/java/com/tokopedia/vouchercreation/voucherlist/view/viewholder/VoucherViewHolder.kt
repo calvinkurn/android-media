@@ -103,7 +103,7 @@ class VoucherViewHolder(
                     if (element.type != VoucherTypeConst.FREE_ONGKIR) {
                         btnMvcVoucherCta?.visible()
                     } else {
-                        btnMvcVoucherCta?.gone()
+                        btnMvcVoucherCta?.invisible()
                     }
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
