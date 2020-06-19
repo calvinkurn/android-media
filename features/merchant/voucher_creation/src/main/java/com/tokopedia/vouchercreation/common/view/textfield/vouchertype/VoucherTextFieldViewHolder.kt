@@ -80,6 +80,9 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     minAlertErrorMessage = "${String.format(context.resources.getString(element.minAlertRes, element.minValue.toString()))}%"
                     maxAlertErrorMessage = "${String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))}%"
 
+                    setError(false)
+                    setMessage(maxAlertErrorMessage)
+
                     appendText(context.resources.getString(R.string.mvc_percent).toBlankOrString())
                 }
             }
