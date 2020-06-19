@@ -46,7 +46,7 @@
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/textViewNotifyMe"
+        android:id="@+id/verify_btn"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_16"

@@ -35,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -58,7 +59,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var mProgressBar: ProgressBar
     var pageEndPoint = ""
     private var componentPosition: Int? = null
-    private val bottomSheet = BottomSheetUnify()
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -112,16 +112,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         mProgressBar = view.findViewById(R.id.progressBar)
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
-
-        this.fragmentManager?.let {
-            bottomSheet.apply {
-                showCloseIcon = true
-                val child = View.inflate(view.context, R.layout.mobile_verification_bottom_sheet_layout, null)
-                setChild(child)
-                show(it, null)
-            }
-        }
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -138,6 +128,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.getDiscoveryData()
 
         setUpObserver()
+
     }
 
     fun reSync() {
@@ -327,6 +318,22 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 discoveryAdapter.getViewModelAtPosition(it)?.componentAction()
             }
         } else {
+            showVerificationBottomSheet()
+        }
+    }
+
+    private fun showVerificationBottomSheet() {
+        val closeableBottomSheetDialog = BottomSheetUnify()
+        val childView = View.inflate(context, R.layout.mobile_verification_bottom_sheet_layout, null)
+        this.fragmentManager?.let {
+            closeableBottomSheetDialog.apply {
+                showCloseIcon = true
+                setChild(childView)
+                show(it, null)
+            }
+        }
+        childView.findViewById<UnifyButton>(R.id.verify_btn).setOnClickListener {
+            closeableBottomSheetDialog.dismiss()
             activity?.startActivityForResult(RouteManager.getIntent(activity, "tokopedia-android-internal://global/add-phone"), 4321)
         }
     }
