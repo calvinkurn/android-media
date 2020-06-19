@@ -6,18 +6,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemTrustMarkAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_digital_home_trustmark.view.*
 
-class RechargeHomepageTrustMarkViewHolder(itemView: View?, val onItemBindListener: OnItemBindListener) :
-        AbstractViewHolder<RechargeHomepageSections.Section>(itemView) {
+class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemBindListener) :
+        AbstractViewHolder<RechargeHomepageTrustMarkModel>(itemView) {
 
-    override fun bind(element: RechargeHomepageSections.Section) {
+    override fun bind(element: RechargeHomepageTrustMarkModel) {
+        val section = element.section
         with (itemView) {
-            if (element.items.isEmpty()) {
+            if (section.items.isEmpty()) {
                 digital_homepage_trust_mark_container.hide()
             } else {
                 digital_homepage_trust_mark_container.show()
@@ -28,12 +30,13 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val onItemBindListene
                 while (rv_digital_homepage_trust_mark.itemDecorationCount > 0) {
                     rv_digital_homepage_trust_mark.removeItemDecorationAt(0)
                 }
+                // TODO: Hide decoration on last item
                 rv_digital_homepage_trust_mark.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
 
-                // Only use first 2 items or less
-                val trustMarkItems: List<RechargeHomepageSections.Item> = when (element.items.size) {
-                    in 1..2 -> element.items
-                    else -> element.items.subList(0, 2)
+                // Only use first 3 items or less
+                val trustMarkItems: List<RechargeHomepageSections.Item> = when (section.items.size) {
+                    in 1..3 -> section.items
+                    else -> section.items.subList(0, 3)
                 }
                 rv_digital_homepage_trust_mark.adapter =
                         RechargeItemTrustMarkAdapter(trustMarkItems)

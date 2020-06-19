@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -24,10 +25,7 @@ import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
-import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
-import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
@@ -35,12 +33,14 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactor
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
-class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Section, DigitalHomePageTypeFactory>(),
+class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTypeFactory>(),
         OnItemBindListener,
         DigitalHomePageTransactionViewHolder.TransactionListener,
         SearchInputView.FocusChangeListener {
@@ -165,7 +165,7 @@ class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Sectio
         viewModel.rechargeHomepageSections.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    renderList(it.data.sections)
+                    renderList(it.data)
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -227,23 +227,83 @@ class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Sectio
         trackingUtil.eventRecommendationImpression(elements)
     }
 
-    override fun onRechargeCategoryItemClicked(element: RechargeHomepageSections.Item, position: Int) {
+    override fun onRechargeFavoriteAllItemClicked() {
+        // TODO: Set favorites see all redirect
+    }
 
+    override fun onRechargeBannerAllItemClicked() {
+        // TODO: Set banner see all redirect
     }
 
     override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
-
+        // TODO: Click tracking
+        RouteManager.route(context, element.applink)
     }
 
     override fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String) {
+        // TODO: Impression tracking
+    }
 
+    override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
+        // Do nothing
+    }
+
+    override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
+        // Do nothing
+    }
+
+    override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
+        // Do nothing
+    }
+
+    // TODO: Add lego banner click listener; current default is to 6 image
+    override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+
+    }
+
+    override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+
+    }
+
+    override fun onClickGridThreeImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+
+    }
+
+    // TODO: Add lego banner item impression listener; current default is to 6 image
+    override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    // TODO: Add lego banner section impression listener; current default is to 6 image
+    override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
+        // Do nothing
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
         return DigitalHomePageTypeFactory(this, this)
     }
 
-    override fun onItemClicked(t: RechargeHomepageSections.Section) {
+    override fun onItemClicked(t: Visitable<*>) {
         // do nothing
     }
 

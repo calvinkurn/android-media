@@ -7,10 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 
-class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
+class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
                                  val transactionListener: DigitalHomePageTransactionViewHolder.TransactionListener?)
-    : BaseAdapterTypeFactory() {
+    : BaseAdapterTypeFactory(), HomeComponentTypeFactory {
 
     fun type(digitalHomePageBannerModel: DigitalHomePageBannerModel): Int {
         return DigitalHomePageBannerViewHolder.LAYOUT
@@ -48,36 +52,48 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
         return DigitalHomePageRecommendationViewHolder.LAYOUT
     }
 
-    fun type(section: RechargeHomepageSections.Section): Int {
-        // Map section based on template
-        // TODO: Finish the rest of the sections and add them to the list
-        with (RechargeHomepageSections.Companion) {
-            return when (section.template) {
-//                SECTION_TOP_BANNER ->
-//                SECTION_TOP_BANNER_EMPTY ->
-                SECTION_TOP_ICONS -> RechargeHomepageFavoriteViewHolder.LAYOUT
-                SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryViewHolder.LAYOUT
-                SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkViewHolder.LAYOUT
-//                SECTION_URGENCY_WIDGET ->
-//                SECTION_VIDEO_HIGHLIGHT ->
-//                SECTION_VIDEO_HIGHLIGHTS ->
-//                SECTION_SINGLE_BANNER ->
-//                SECTION_COUNTDOWN_SINGLE_BANNER ->
-//                SECTION_DUAL_BANNERS ->
-//                SECTION_LEGO_BANNERS ->
-//                SECTION_PRODUCT_CARD_ROW ->
-//                SECTION_COUNTDOWN_PRODUCT_BANNER ->
-                else -> 0
-            }
-        }
+    fun type(bannerModel: RechargeHomepageBannerModel): Int {
+        return RechargeHomepageBannerViewHolder.LAYOUT
+    }
+
+    fun type(emptyBannerModel: RechargeHomepageBannerEmptyModel): Int {
+        return RechargeHomepageBannerViewHolder.LAYOUT_EMPTY
+    }
+
+    fun type(favoriteModel: RechargeHomepageFavoriteModel): Int {
+        return RechargeHomepageFavoriteViewHolder.LAYOUT
+    }
+
+    fun type(categoryModel: RechargeHomepageCategoryModel): Int {
+        return RechargeHomepageCategoryViewHolder.LAYOUT
+    }
+
+    fun type(trustMarkModel: RechargeHomepageTrustMarkModel): Int {
+        return RechargeHomepageTrustMarkViewHolder.LAYOUT
+    }
+
+    fun type(videoHighlightModel: RechargeHomepageVideoHighlightModel): Int {
+        return RechargeHomepageVideoHighlightViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
+        return DynamicLegoBannerViewHolder.LAYOUT
+    }
+
+    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
+        return 0
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             // TODO: Finish the rest of viewholders and add them to the list
-            RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, onItemBindListener)
-            RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, onItemBindListener)
-            RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, onItemBindListener)
+            RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, listener)
+            RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, listener)
+            RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, listener)
+            RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
+            RechargeHomepageBannerViewHolder.LAYOUT_EMPTY -> RechargeHomepageBannerViewHolder(parent, listener, true)
+            RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
+            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, listener, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

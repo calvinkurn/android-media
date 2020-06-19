@@ -16,14 +16,14 @@ class DigitalHomePageCategoryViewHolder(itemView: View?, val onItemBindListener:
 
     override fun bind(element: DigitalHomePageCategoryModel?) {
         val layoutManager = LinearLayoutManager(itemView.context)
-        itemView.category_recycler_view.layoutManager = layoutManager
+        itemView.rv_recharge_home_category.layoutManager = layoutManager
         if (element?.isLoaded == true) {
             itemView.categoryShimmering.hide()
-            itemView.category_recycler_view.show()
-            itemView.category_recycler_view.adapter = DigitalItemCategoryAdapter(element.listSubtitle, onItemBindListener)
+            itemView.rv_recharge_home_category.show()
+            itemView.rv_recharge_home_category.adapter = DigitalItemCategoryAdapter(element.listSubtitle, onItemBindListener)
         } else {
             itemView.categoryShimmering.show()
-            itemView.category_recycler_view.hide()
+            itemView.rv_recharge_home_category.hide()
         }
     }
 

@@ -25,7 +25,7 @@ class DigitalHomePageFavoriteViewHolder(itemView: View?, val onItemBindListener:
                 with (element.data.section) {
                     itemView.digital_homepage_favorites_shimmering.hide()
                     itemView.digital_homepage_favorites_container.show()
-                    itemView.digital_homepage_favorites_title.text = title
+                    itemView.tv_recharge_home_favorites_title.text = title
                     itemView.rv_digital_homepage_favorites.adapter = DigitalItemFavoriteAdapter(items, onItemBindListener)
                     onItemBindListener.onSectionItemImpression(items, BEHAVIORAL_CATEGORY_IMPRESSION)
                 }

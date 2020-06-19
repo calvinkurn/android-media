@@ -6,15 +6,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_CLICK
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.layout_digital_home_category_item_submenu.view.*
 
-class RechargeItemCategoryAdapter(val items: List<RechargeHomepageSections.Item>, val onItemBindListener: OnItemBindListener)
+class RechargeItemCategoryAdapter(val items: List<RechargeHomepageSections.Item>, val listener: OnItemBindListener)
     : RecyclerView.Adapter<RechargeItemCategoryAdapter.DigitalItemSubmenuCategoryViewHolder>() {
 
     override fun onBindViewHolder(viewHolder: DigitalItemSubmenuCategoryViewHolder, position: Int) {
-        viewHolder.bind(items[position], onItemBindListener)
+        viewHolder.bind(items[position], listener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): DigitalItemSubmenuCategoryViewHolder {
@@ -31,7 +32,7 @@ class RechargeItemCategoryAdapter(val items: List<RechargeHomepageSections.Item>
             itemView.category_image.loadImage(element.mediaUrl)
             itemView.category_name.text = element.title
             itemView.setOnClickListener {
-                onItemBindListener.onRechargeCategoryItemClicked(element, adapterPosition + 1)
+                onItemBindListener.onRechargeSectionItemClicked(element, adapterPosition, DYNAMIC_ICON_CLICK)
             }
         }
 

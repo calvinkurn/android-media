@@ -1,10 +1,12 @@
 query rechargeGetDynamicPage($enablePersonalize: Boolean) {
   rechargeGetDynamicPage(platformID:31, enablePersonalize: $enablePersonalize){
     sections {
+      id
       title
       sub_title
       template
       items {
+        id
         title
         sub_title
         content

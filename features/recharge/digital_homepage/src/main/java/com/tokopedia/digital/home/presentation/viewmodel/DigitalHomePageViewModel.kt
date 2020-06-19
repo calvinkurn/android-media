@@ -2,9 +2,11 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
+import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -22,8 +24,8 @@ class DigitalHomePageViewModel @Inject constructor(
         private val dispatcher: DigitalHomePageDispatchersProvider)
     : BaseViewModel(dispatcher.Main) {
 
-    private val mutableRechargeHomepageSections = MutableLiveData<Result<RechargeHomepageSections>>()
-    val rechargeHomepageSections: LiveData<Result<RechargeHomepageSections>>
+    private val mutableRechargeHomepageSections = MutableLiveData<Result<List<Visitable<*>>>>()
+    val rechargeHomepageSections: LiveData<Result<List<Visitable<*>>>>
         get() = mutableRechargeHomepageSections
 
     fun getRechargeHomepageSections(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
@@ -34,13 +36,8 @@ class DigitalHomePageViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeHomepageSections.Response>().response
 
-            // TODO: Adjust filter with addition of sections & remove filter when all sections are done
-            data.sections = data.sections.filter {
-                it.template == RechargeHomepageSections.SECTION_TOP_ICONS ||
-                it.template == RechargeHomepageSections.SECTION_DYNAMIC_ICONS ||
-                it.template == RechargeHomepageSections.SECTION_DUAL_ICONS
-            }
-            mutableRechargeHomepageSections.postValue(Success(data))
+            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(data.sections).filterNotNull()
+            mutableRechargeHomepageSections.postValue(Success(mappedData))
         }) {
             mutableRechargeHomepageSections.postValue(Fail(it))
         }
@@ -52,5 +49,20 @@ class DigitalHomePageViewModel @Inject constructor(
 
     companion object {
         const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE = "enablePersonalize"
+
+        const val SECTION_TOP_BANNER = "TOP_BANNER"
+        const val SECTION_TOP_BANNER_EMPTY = "TOP_BANNER_EMPTY"
+        const val SECTION_TOP_ICONS = "TOP_ICONS"
+        const val SECTION_DYNAMIC_ICONS = "DYNAMIC_ICONS"
+        const val SECTION_DUAL_ICONS = "DUAL_ICONS"
+        const val SECTION_URGENCY_WIDGET = "URGENCY_WIDGET"
+        const val SECTION_VIDEO_HIGHLIGHT = "VIDEO_HIGHLIGHT"
+        const val SECTION_VIDEO_HIGHLIGHTS = "VIDEO_HIGHLIGHTS"
+        const val SECTION_SINGLE_BANNER = "SINGLE_BANNER"
+        const val SECTION_COUNTDOWN_SINGLE_BANNER = "COUNTDOWN_SINGLE_BANNER"
+        const val SECTION_DUAL_BANNERS = "DUAL_BANNERS"
+        const val SECTION_LEGO_BANNERS = "LEGO_BANNERS"
+        const val SECTION_PRODUCT_CARD_ROW = "PRODUCT_CARD_ROW"
+        const val SECTION_COUNTDOWN_PRODUCT_BANNER = "COUNTDOWN_PRODUCT_BANNER"
     }
 }
