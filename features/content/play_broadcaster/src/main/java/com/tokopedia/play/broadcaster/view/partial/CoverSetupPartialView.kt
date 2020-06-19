@@ -29,6 +29,7 @@ class CoverSetupPartialView(
         get() = etCoverTitle.text?.toString() ?: ""
         set(value) {
             etCoverTitle.setText(value)
+            etCoverTitle.setSelection(etCoverTitle.length())
         }
 
     private val ivCoverImage: ImageView = findViewById(R.id.iv_cover_image)
@@ -45,7 +46,10 @@ class CoverSetupPartialView(
     init {
         llChangeCover.setOnClickListener { listener.onImageAreaClicked(this) }
         ivCoverImage.setOnClickListener { listener.onImageAreaClicked(this) }
-        btnNext.setOnClickListener { listener.onNextButtonClicked(this, coverTitle) }
+        btnNext.setOnClickListener {
+            etCoverTitle.clearFocus()
+            listener.onNextButtonClicked(this, coverTitle)
+        }
 
         setupTitleTextField()
         tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), coverTitle)
@@ -59,6 +63,10 @@ class CoverSetupPartialView(
 
     fun hide() {
         rootView.hide()
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        btnNext.isLoading = isLoading
     }
 
     fun setImage(uri: Uri?) {

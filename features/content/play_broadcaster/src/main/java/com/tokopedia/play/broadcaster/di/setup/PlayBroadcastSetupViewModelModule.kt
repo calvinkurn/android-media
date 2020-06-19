@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,7 +18,12 @@ abstract class PlayBroadcastSetupViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(PlayBroadcastSetupViewModel::class)
-    abstract fun getPlayPrepareViewModel(viewModel: PlayBroadcastSetupViewModel): ViewModel
+    abstract fun getPlayBroadcastSetupViewModel(viewModel: PlayBroadcastSetupViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayBroadcastPrepareViewModel::class)
+    abstract fun getPlayPrepareViewModel(viewModel: PlayBroadcastPrepareViewModel): ViewModel
 
     @Binds
     @IntoMap

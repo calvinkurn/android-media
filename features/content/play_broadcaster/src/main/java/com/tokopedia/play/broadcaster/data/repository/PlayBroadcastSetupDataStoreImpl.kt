@@ -2,11 +2,20 @@ package com.tokopedia.play.broadcaster.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.play.broadcaster.domain.usecase.AddMediaUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class PlayBroadcastSetupDataStoreImpl @Inject constructor() : PlayBroadcastSetupDataStore {
+class PlayBroadcastSetupDataStoreImpl @Inject constructor(
+        private val dispatcher: CoroutineDispatcherProvider,
+        private val addProductTagUseCase: AddProductTagUseCase,
+        private val addMediaUseCase: AddMediaUseCase
+) : PlayBroadcastSetupDataStore {
 
     private val selectedProductMap = mutableMapOf<Long, ProductContentUiModel>()
 
@@ -42,6 +51,24 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor() : PlayBroadcastSetup
         return selectedProductMap.size
     }
 
+    override suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit> {
+        return try {
+            addProductTag(channelId)
+            NetworkResult.Success(Unit)
+        } catch (e: Throwable) {
+            NetworkResult.Fail(e)
+        }
+    }
+
+    private suspend fun addProductTag(channelId: String) = withContext(dispatcher.io) {
+        return@withContext addProductTagUseCase.apply {
+            params = AddProductTagUseCase.createParams(
+                    channelId = channelId,
+                    productIds = selectedProductMap.keys.map { it.toString() }
+            )
+        }.executeOnBackground()
+    }
+
     private fun updateSelectedProducts() {
         _selectedProductsLiveData.value = selectedProductMap.values.toList()
     }
@@ -59,5 +86,23 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor() : PlayBroadcastSetup
 
     override fun setCover(cover: PlayCoverUiModel) {
         _selectedCoverLiveData.value = cover
+    }
+
+    override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
+        return try {
+            updateCover(channelId)
+            NetworkResult.Success(Unit)
+        } catch (e: Throwable) {
+            NetworkResult.Fail(e)
+        }
+    }
+
+    private suspend fun updateCover(channelId: String) = withContext(dispatcher.io) {
+        return@withContext addMediaUseCase.apply {
+            params = AddMediaUseCase.createParams(
+                    channelId = channelId,
+                    coverUrl = getSelectedCover()?.coverImage?.path ?: throw IllegalStateException("Cover url must not be null")
+            )
+        }.executeOnBackground()
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.data.repository
 import androidx.lifecycle.LiveData
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 
 interface PlayBroadcastSetupDataStore {
 
@@ -19,6 +20,8 @@ interface PlayBroadcastSetupDataStore {
 
     fun getTotalSelectedProduct(): Int
 
+    suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit>
+
     /**
      * Cover
      */
@@ -27,4 +30,6 @@ interface PlayBroadcastSetupDataStore {
     fun getSelectedCover(): PlayCoverUiModel?
 
     fun setCover(cover: PlayCoverUiModel)
+
+    suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit>
 }

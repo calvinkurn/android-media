@@ -12,12 +12,14 @@ import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -51,6 +53,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
         get() = setupDataStore.getObservableSelectedProducts()
+
+    val observableUploadProductEvent: LiveData<NetworkResult<Event<Unit>>>
+        get() = _observableUploadProductEvent
+    private val _observableUploadProductEvent = MutableLiveData<NetworkResult<Event<Unit>>>()
 
     val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
 
@@ -99,6 +105,20 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
+    fun uploadProduct(channelId: String) {
+        _observableUploadProductEvent.value = NetworkResult.Loading
+//        scope.launch {
+//            val result = setupDataStore.uploadSelectedProducts(channelId)
+//                if (result is NetworkResult.Success) _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
+//                else if (result is NetworkResult.Fail) _observableUploadProductEvent.value = result
+//        }
+        //TODO("Remove Mock Behavior")
+        scope.launch {
+            delay(3500)
+            _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
+        }
+    }
+
     /**
      * Search
      */
@@ -127,9 +147,13 @@ class PlayEtalasePickerViewModel @Inject constructor(
         return setupDataStore.isProductSelected(productId)
     }
 
-    private fun isSelectable(): SelectableState {
-        return if (setupDataStore.getTotalSelectedProduct() < maxProduct) Selectable
-        else NotSelectable(SelectForbiddenException("Oops, kamu sudah memilih $maxProduct produk"))
+    private fun isSelectable(shouldSelect: Boolean): SelectableState {
+        if (_observableUploadProductEvent.value is NetworkResult.Loading) return NotSelectable(SelectForbiddenException("Product is uploading"))
+
+        return if (shouldSelect) {
+            if (setupDataStore.getTotalSelectedProduct() < maxProduct) Selectable
+            else NotSelectable(SelectForbiddenException("Oops, kamu sudah memilih $maxProduct produk"))
+        } else Selectable
     }
 
     private suspend fun fetchEtalaseProduct(etalaseId: String, page: Int): PageResult<EtalaseContentUiModel> = withContext(dispatcher.computation) {
