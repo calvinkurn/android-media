@@ -500,4 +500,9 @@ public interface ApplinkConst {
         String EXTRA_SUBTITLE = "subtitle";
         String EXTRA_BUTTON = "button";
     }
+
+    interface ResCenter {
+        String MOBILE =  "/mobile";
+        String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
+    }
 }
