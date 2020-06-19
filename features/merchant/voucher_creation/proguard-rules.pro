@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--dontwarn com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment.**
+-dontwarn com.tokopedia.vouchercreation.voucherlist.**
