@@ -46,7 +46,10 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         }
 
         override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
-//            populateSetupData(selectedProducts, cover)
+            viewModel.saveCompleteChannel(
+                    productList = dataStore.getSelectedProducts(),
+                    cover = dataStore.getSelectedCover() ?: throw IllegalStateException("Cover must be set")
+            )
             openFinalPreparationPage()
         }
     }

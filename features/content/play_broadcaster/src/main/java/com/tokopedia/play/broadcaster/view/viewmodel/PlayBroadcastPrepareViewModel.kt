@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -53,13 +52,12 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     }
 
     fun saveCompleteChannel(productList: List<ProductContentUiModel>,
-                            coverUri: Uri,
-                            title: String) {
+                            cover: PlayCoverUiModel) {
         scope.launch {
             _observableSetupChannel.value = ChannelSetupUiModel(
                     cover = PlayCoverUiModel(
-                            coverImage = coverUri,
-                            title = title,
+                            coverImage = cover.coverImage,
+                            title = cover.title,
                             state = SetupDataState.Uploaded,
                             source = CoverSourceEnum.NONE
                     ),
