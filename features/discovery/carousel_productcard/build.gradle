@@ -23,7 +23,7 @@ buildscript {
 android {
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
     packagingOptions {
@@ -50,7 +50,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
 
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
 
 }

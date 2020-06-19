@@ -21,13 +21,6 @@
             android:background="@android:color/white"
             app:elevation="0dp">
 
-            <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/productManageSellerMigrationTicker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tickerType="announcement"/>
-
             <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
                 android:id="@+id/topAdsWidgetFreeClaim"
                 android:layout_width="match_parent"

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
+import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.utils.network.NetworkTrafficUtils;
 
 import java.util.Locale;
@@ -29,7 +30,7 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
     private long lastSumTx = 0;
     private long lastSumRx = 0;
 
-    private Thread threadSession;
+    private boolean running;
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -44,11 +45,12 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
 
     @Override
     public void onActivityResumed(Activity activity) {
-        if (threadSession != null && threadSession.isAlive()) {
+        if (running) {
             return;
         }
-        threadSession = new Thread(() -> checkSession(activity.getClass().getSimpleName()));
-        threadSession.start();
+        running = true;
+        String connectionType = DeviceConnectionInfo.getConnectionType(activity);
+        new Thread(() -> checkSession(activity.getClass().getSimpleName(), connectionType)).start();
     }
 
     @Override
@@ -71,16 +73,18 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
         // No-op
     }
 
-    private void checkSession(String activityName) {
+    private void checkSession(String activityName, String connectionType) {
+        running = true;
         long currentMillis = System.currentTimeMillis();
         long minSessionTimeMillis = currentMillis - INTERVAL_SESSION;
         if (lastSessionMillis < minSessionTimeMillis) {
             sessionCount++;
             logSession(activityName, currentMillis);
-            logDataUsage(activityName, currentMillis);
+            logDataUsage(activityName, connectionType, currentMillis);
             lastSessionMillis = System.currentTimeMillis();
             openedPageCount = 0;
         }
+        running = false;
     }
 
     private void logSession(String activityName, long currentMillis) {
@@ -97,7 +101,7 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
         return String.format(Locale.ENGLISH, TIME_FORMAT, diffTimeInMillis);
     }
 
-    private void logDataUsage(String activityName, long currentMillis) {
+    private void logDataUsage(String activityName, String connectionType, long currentMillis) {
         int uid = android.os.Process.myUid();
         long bootTx = NetworkTrafficUtils.INSTANCE.getUidTxBytes(uid);
         long bootRx = NetworkTrafficUtils.INSTANCE.getUidRxBytes(uid);
@@ -121,8 +125,9 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
         long sumNetwork = sumDiffTx + sumDiffRx;
 
         updateLastSumTraffic(bootTx, bootRx);
-        Timber.w("P1#DATA_USAGE#%s;count=%s;open_page_total=%s;open_page=%s;diff_time=%s;net=%s;tx=%s;rx=%s;sum_net=%s;sum_tx=%s;sum_rx=%s;boot_net=%s;boot_tx=%s;boot_rx=%s",
+        Timber.w("P1#DATA_USAGE#%s;count=%s;open_page_total=%s;open_page=%s;diff_time=%s;conn_info='%s';net=%s;tx=%s;rx=%s;sum_net=%s;sum_tx=%s;sum_rx=%s;boot_net=%s;boot_tx=%s;boot_rx=%s",
                 activityName, sessionCount, openedPageCountTotal, openedPageCount, getDiffDuration(lastSessionMillis, currentMillis),
+                connectionType,
                 getFormattedMBSize(network), getFormattedMBSize(diffTx), getFormattedMBSize(diffRx),
                 getFormattedMBSize(sumNetwork), getFormattedMBSize(sumDiffTx), getFormattedMBSize(sumDiffRx),
                 getFormattedMBSize(bootNetwork), getFormattedMBSize(bootTx), getFormattedMBSize(bootRx));

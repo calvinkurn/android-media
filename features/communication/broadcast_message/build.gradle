@@ -28,7 +28,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
@@ -43,9 +43,6 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
-
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     testImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {

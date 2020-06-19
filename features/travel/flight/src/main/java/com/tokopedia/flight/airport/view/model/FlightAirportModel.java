@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory;
+import com.tokopedia.flight.airportv2.presentation.adapter.FlightAirportAdapterTypeFactory;
 
 import java.util.List;
 

@@ -13,7 +13,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.favorite.R;
 import com.tokopedia.favorite.utils.TrackingConst;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
@@ -25,7 +25,7 @@ import com.tokopedia.track.TrackApp;
 
 public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.listview_manage_favorited_shop;
+    public static final int LAYOUT = R.layout.favorite_listview_manage_favorited_shop;
 
     private FavoriteShopViewModel favoriteShop;
     private Context context;

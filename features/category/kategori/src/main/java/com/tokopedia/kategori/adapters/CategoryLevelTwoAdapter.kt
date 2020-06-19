@@ -70,7 +70,11 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     }
 
     override fun getItemViewType(position: Int): Int {
-        return list[position].itemType ?: 0
+        return if (position < itemCount) {
+            list[position].itemType ?: 0
+        } else {
+            0
+        }
     }
 
     override fun getItemCount(): Int {
@@ -147,7 +151,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
             if (it.isEmpty()) {
                 val shape = GradientDrawable()
                 shape.cornerRadius = 17.0f
-                shape.setColor(productHeaderViewHolder.itemView.context.resources.getColor(R.color.Blue_B500))
+                shape.setColor(productHeaderViewHolder.itemView.context.resources.getColor(R.color.category_Blue_B500))
                 productHeaderViewHolder.productHeaderRoot.background = shape
             } else {
                 setDrawableRoundedImage(productHeaderViewHolder.productHeaderRoot, it)

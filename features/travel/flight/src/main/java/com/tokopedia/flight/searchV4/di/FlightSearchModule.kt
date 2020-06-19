@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flight.R
 import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.data.cloud.FlightSearchDataCloudSource
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -30,10 +28,6 @@ class FlightSearchModule {
     @Named(FlightSearchDataCloudSource.NAMED_FLIGHT_SEARCH_COMBINE_QUERY)
     fun provideFlightSearchCombineQuery(@ApplicationContext context: Context) =
             GraphqlHelper.loadRawString(context.resources, R.raw.flight_search_combine)
-
-    @Provides
-    @FlightSearchScope
-    fun provideGraphqlCoroutineRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
     @FlightSearchScope

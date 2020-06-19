@@ -53,6 +53,7 @@ import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -123,13 +124,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
-        Chucker.registerDefaultCrashHandler(new ChuckerCollector(this, false));
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
 
-        FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
@@ -138,13 +137,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         createAndCallPreSeq();
         super.onCreate();
 
-        initGqlNWClient();
         createAndCallPostSeq();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
 
-        initBlockCanary();
     }
 
     private void registerActivityLifecycleCallbacks() {
@@ -210,6 +207,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initReact();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         PersistentCacheManager.init(ConsumerMainApplication.this);
+        Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
+        FpmLogger.init(ConsumerMainApplication.this);
         return true;
     }
 
@@ -229,7 +228,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = MainParentActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
-        com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
+        if(com.tokopedia.config.GlobalConfig.DEBUG) {
+            com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
+        }
         generateConsumerAppNetworkKeys();
     }
 
@@ -264,7 +265,29 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
+        getAmplificationPushData();
+        initBlockCanary();
         return true;
+    }
+
+    private void getAmplificationPushData() {
+        /*
+         * Amplification of push notification.
+         * fetch all of cm_push_notification's
+         * push notification data that aren't rendered yet.
+         * then, put all of push_data into local storage.
+         * */
+        if (getAmplificationRemoteConfig()) {
+            try {
+                AmplificationDataSource.invoke(ConsumerMainApplication.this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Boolean getAmplificationRemoteConfig() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, true);
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {
@@ -272,8 +295,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
     }
-
-
 
     private boolean isMainProcess() {
         ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);

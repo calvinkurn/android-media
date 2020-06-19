@@ -8,8 +8,10 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetAllShopInfoUseCase @Inject constructor(
@@ -40,34 +42,34 @@ class GetAllShopInfoUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getSuspendSettingShopInfo(userId: Int): ShopInfo {
+    private suspend fun getSuspendSettingShopInfo(userId: Int): ShopInfo = withContext(Dispatchers.IO) {
         getSettingShopInfoUseCase.params = GetSettingShopInfoUseCase.createRequestParams(userId)
-        return getSettingShopInfoUseCase.executeOnBackground()
+        return@withContext getSettingShopInfoUseCase.executeOnBackground()
     }
 
-    private suspend fun getSuspendShopType(shopId: Int): ShopType {
+    private suspend fun getSuspendShopType(shopId: Int): ShopType = withContext(Dispatchers.IO) {
         shopStatusTypeUseCase.params = ShopStatusTypeUseCase.createRequestParams(shopId)
-        return shopStatusTypeUseCase.executeOnBackground()
+        return@withContext shopStatusTypeUseCase.executeOnBackground()
     }
 
-    private suspend fun getSuspendShopTotalFollowers(shopId: Int): Int {
+    private suspend fun getSuspendShopTotalFollowers(shopId: Int): Int = withContext(Dispatchers.IO) {
         getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
-        return getShopTotalFollowersUseCase.executeOnBackground()
+        return@withContext getShopTotalFollowersUseCase.executeOnBackground()
     }
 
-    private suspend fun getSuspendShopBadge(shopId: Int): String {
+    private suspend fun getSuspendShopBadge(shopId: Int): String = withContext(Dispatchers.IO) {
         getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
-        return getShopBadgeUseCase.executeOnBackground()
+        return@withContext getShopBadgeUseCase.executeOnBackground()
     }
 
-    private suspend fun getSuspendTopAdsDeposit(shopId: Int): Float {
+    private suspend fun getSuspendTopAdsDeposit(shopId: Int): Float = withContext(Dispatchers.IO) {
         topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(shopId)
-        return topAdsDashboardDepositUseCase.executeOnBackground()
+        return@withContext topAdsDashboardDepositUseCase.executeOnBackground()
     }
 
-    private suspend fun getSuspendTopAdsAutoTopup(shopId: String): Boolean {
+    private suspend fun getSuspendTopAdsAutoTopup(shopId: String): Boolean = withContext(Dispatchers.IO) {
         topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(shopId)
-        return topAdsAutoTopupUseCase.executeOnBackground()
+        return@withContext topAdsAutoTopupUseCase.executeOnBackground()
     }
 
     private fun mapToSettingShopInfo(shopInfo: ShopInfo,

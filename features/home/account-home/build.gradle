@@ -87,7 +87,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -121,7 +121,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
-    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation project(rootProject.ext.libraries.playCore)
     androidTestImplementation rootProject.ext.firebase.core
 

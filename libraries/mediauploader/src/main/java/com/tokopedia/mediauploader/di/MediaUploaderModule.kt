@@ -10,7 +10,8 @@ import com.tokopedia.mediauploader.domain.UploaderUseCase
 import dagger.Module
 import dagger.Provides
 
-@Module class MediaUploaderModule {
+@Module (includes = [MediaUploaderNetworkModule::class])
+class MediaUploaderModule {
 
     @Provides
     fun provideMediaRepository(): MediaRepository {

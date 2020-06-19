@@ -724,14 +724,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Nullable
     private FlightDashboardModel cloneViewModel(FlightDashboardModel currentDashboardViewModel) {
-        FlightDashboardModel viewModel = null;
-        try {
-            viewModel = (FlightDashboardModel) currentDashboardViewModel.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to Clone FlightDashboardViewModel");
-        }
-        return viewModel;
+        return (FlightDashboardModel) currentDashboardViewModel.clone();
     }
 
     @Override

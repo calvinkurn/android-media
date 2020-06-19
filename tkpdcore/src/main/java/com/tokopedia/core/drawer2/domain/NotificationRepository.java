@@ -1,7 +1,6 @@
 package com.tokopedia.core.drawer2.domain;
 
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
-import com.tokopedia.core.drawer2.data.viewmodel.TopChatNotificationModel;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import rx.Observable;

@@ -26,14 +26,19 @@ import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMa
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
+import com.tokopedia.search.result.presentation.model.RelatedViewModel;
+import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -63,6 +68,8 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import kotlin.collections.CollectionsKt;
+import kotlin.jvm.functions.Function1;
 import rx.Subscriber;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
@@ -76,7 +83,9 @@ final class ProductListPresenter
         extends BaseDaggerPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
 
-    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6, 8);
+    private static final List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 4, 5, 6, 8);
+    private static final List<String> showBroadMatchResponseCodeList = Arrays.asList("4", "5");
+    private static final List<String> generalSearchTrackingRelatedKeywordResponseCodeList = Arrays.asList("3", "4", "5", "6");
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
@@ -101,9 +110,14 @@ final class ProductListPresenter
     private int totalData = 0;
     private boolean hasLoadData = false;
     private boolean useRatingString = false;
+    private String responseCode = "";
+    private int topAdsCount = 1;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
+    private List<InspirationCardViewModel> inspirationCardViewModel;
+    private SuggestionViewModel suggestionViewModel = null;
+    private RelatedViewModel relatedViewModel = null;
 
     @Inject
     ProductListPresenter(
@@ -438,9 +452,9 @@ final class ProductListPresenter
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
             if (productViewModel.getProductList().isEmpty()) {
-                getViewToRemoveLoading();
+                getViewToProcessEmptyResultDuringLoadMore();
             } else {
-                getViewToShowMoreData(searchParameter, productViewModel);
+                getViewToShowMoreData(searchParameter, searchProductModel, productViewModel);
             }
 
             setTotalData(productViewModel.getTotalData());
@@ -458,15 +472,25 @@ final class ProductListPresenter
         return list != null && !list.isEmpty();
     }
 
-    private void getViewToRemoveLoading() {
+    private void getViewToProcessEmptyResultDuringLoadMore() {
+        List<Visitable> list = new ArrayList<>();
+        processSuggestionAndBroadMatch(list);
+
         getView().removeLoading();
+        getView().addProductList(list);
     }
 
-    private void getViewToShowMoreData(Map<String, Object> searchParameter, ProductViewModel productViewModel) {
+    private void getViewToShowMoreData(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
         productList.addAll(list);
 
+        processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
+
+        boolean isLastPage = isLastPage(searchProductModel.getSearchProduct());
+        if (isLastPage && isShowBroadMatch()) {
+            processSuggestionAndBroadMatch(list);
+        }
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -499,6 +523,7 @@ final class ProductListPresenter
                     item.setPrice(topAds.getProduct().getPriceFormat());
                     item.setShopCity(topAds.getShop().getLocation());
                     item.setImageUrl(topAds.getProduct().getImage().getS_ecs());
+                    item.setImageUrl300(topAds.getProduct().getImage().getM_ecs());
                     item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
                     item.setWishlisted(topAds.getProduct().isWishlist());
                     item.setRatingString(useRatingString ? topAds.getProduct().getProductRatingFormat() : "");
@@ -512,8 +537,10 @@ final class ProductListPresenter
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     item.setFreeOngkirViewModel(mapFreeOngkir(topAds.getProduct().getFreeOngkir()));
+                    item.setPosition(topAdsCount);
                     list.add(i, item);
                     j++;
+                    topAdsCount++;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -679,13 +706,17 @@ final class ProductListPresenter
 
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
+        setResponseCode(productViewModel.getResponseCode());
+        setSuggestionViewModel(productViewModel.getSuggestionModel());
+        setRelatedViewModel(productViewModel.getRelatedViewModel());
+
         sendTrackingNoSearchResult(productViewModel);
+
         getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
-            getViewToShowRecommendationItem();
             getView().hideBottomNavigation();
         } else {
             getViewToShowProductList(searchParameter, searchProductModel, productViewModel);
@@ -710,8 +741,8 @@ final class ProductListPresenter
     private void sendTrackingNoSearchResult(ProductViewModel productViewModel) {
         try {
             String alternativeKeyword = "";
-            if (productViewModel.getRelatedSearchModel() != null) {
-                alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+            if (productViewModel.getRelatedViewModel() != null) {
+                alternativeKeyword = productViewModel.getRelatedViewModel().getRelatedKeyword();
             }
             int resultCode = Integer.parseInt(productViewModel.getResponseCode());
             if (searchNoResultCodeList.contains(resultCode)) {
@@ -734,11 +765,73 @@ final class ProductListPresenter
         return productViewModel;
     }
 
+    private void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    private void setSuggestionViewModel(SuggestionViewModel suggestionViewModel) {
+        this.suggestionViewModel = suggestionViewModel;
+    }
+
+    private void setRelatedViewModel(RelatedViewModel relatedViewModel) {
+        this.relatedViewModel = relatedViewModel;
+    }
+
     private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
-        if (productViewModel.getErrorMessage() != null && !productViewModel.getErrorMessage().isEmpty()) {
-            getViewToHandleEmptySearchWithErrorMessage(searchProduct);
+        if (isShowBroadMatch()) {
+            getViewToShowBroadMatchToReplaceEmptySearch();
         } else {
-            getViewToShowEmptySearch(productViewModel);
+            if (productViewModel.getErrorMessage() != null && !productViewModel.getErrorMessage().isEmpty()) {
+                getViewToHandleEmptySearchWithErrorMessage(searchProduct);
+            } else {
+                getViewToShowEmptySearch(productViewModel);
+            }
+
+            getViewToShowRecommendationItem();
+        }
+    }
+
+    private boolean isShowBroadMatch() {
+        return showBroadMatchResponseCodeList.contains(responseCode)
+                && relatedViewModel != null
+                && !relatedViewModel.getBroadMatchViewModelList().isEmpty();
+    }
+
+    private void getViewToShowBroadMatchToReplaceEmptySearch() {
+        List<Visitable> visitableList = new ArrayList<>();
+
+        processSuggestionAndBroadMatch(visitableList);
+
+        getView().removeLoading();
+        getView().setProductList(visitableList);
+    }
+
+    private void processSuggestionAndBroadMatch(List<Visitable> visitableList) {
+        if (suggestionViewModel != null && !textIsEmpty(suggestionViewModel.getSuggestionText())) {
+            visitableList.add(suggestionViewModel);
+
+            suggestionViewModel = null;
+        }
+
+        if (relatedViewModel != null) {
+            visitableList.addAll(relatedViewModel.getBroadMatchViewModelList());
+            trackBroadMatchImpression();
+
+            relatedViewModel = null;
+        }
+    }
+
+    private void trackBroadMatchImpression() {
+        for (BroadMatchViewModel broadMatchViewModel: relatedViewModel.getBroadMatchViewModelList()) {
+            List<Object> broadMatchItemAsImpressionObjectDataLayer = new ArrayList<>();
+
+            for(BroadMatchItemViewModel broadMatchItemViewModel: broadMatchViewModel.getBroadMatchItemViewModelList())
+                broadMatchItemAsImpressionObjectDataLayer.add(broadMatchItemViewModel.asImpressionObjectDataLayer());
+
+            getView().trackBroadMatchImpression(
+                    broadMatchViewModel.getKeyword(),
+                    broadMatchItemAsImpressionObjectDataLayer
+            );
         }
     }
 
@@ -813,10 +906,12 @@ final class ProductListPresenter
         if (!isTickerHasDismissed
                 && !textIsEmpty(productViewModel.getTickerModel().getText())) {
             list.add(productViewModel.getTickerModel());
-            getView().trackEventImpressionSortPriceMinTicker();
+            int typeId = productViewModel.getTickerModel().getTypeId();
+            getView().trackEventImpressionTicker(typeId);
         }
 
-        if (!textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
+        if (!isShowBroadMatch()
+            && !textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
             list.add(productViewModel.getSuggestionModel());
         }
 
@@ -837,11 +932,9 @@ final class ProductListPresenter
             }
         }
 
+        topAdsCount = 1;
         productList = convertToListOfVisitable(productViewModel);
         list.addAll(productList);
-        if (productViewModel.getRelatedSearchModel() != null) {
-            list.add(productViewModel.getRelatedSearchModel());
-        }
 
         if (!textIsEmpty(productViewModel.getAdditionalParams())) {
             additionalParams = productViewModel.getAdditionalParams();
@@ -849,6 +942,13 @@ final class ProductListPresenter
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
         processInspirationCarouselPosition(searchParameter, list);
+
+        inspirationCardViewModel = productViewModel.getInspirationCardViewModel();
+        processInspirationCardPosition(searchParameter, list);
+
+        if (isLastPage(searchProduct) && isShowBroadMatch()) {
+            processSuggestionAndBroadMatch(list);
+        }
 
         getView().removeLoading();
         getView().setProductList(list);
@@ -862,6 +962,12 @@ final class ProductListPresenter
 
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
+        boolean hasNextPage = startFrom < searchProduct.getCount();
+
+        return !hasNextPage;
     }
 
     private boolean shouldShowCpmShop(ProductViewModel productViewModel) {
@@ -904,6 +1010,33 @@ final class ProductListPresenter
                 + "Gunakan <a href=\"" + liteUrl + "\">browser</a>";
 
         return new BannedProductsTickerViewModel(htmlErrorMessage);
+    }
+
+    private void processInspirationCardPosition(Map<String, Object> searchParameter, List<Visitable> list) {
+        if (inspirationCardViewModel.size() > 0) {
+            Iterator<InspirationCardViewModel> inspirationCardViewModelIterator = inspirationCardViewModel.iterator();
+
+            while(inspirationCardViewModelIterator.hasNext()) {
+                InspirationCardViewModel data = inspirationCardViewModelIterator.next();
+
+                if (data.getPosition() <= 0) {
+                    inspirationCardViewModelIterator.remove();
+                    continue;
+                }
+
+                if (data.getPosition() <= productList.size()) {
+                    try {
+                        Visitable product = productList.get(data.getPosition() - 1);
+                        list.add(list.indexOf(product) + 1, data);
+                        inspirationCardViewModelIterator.remove();
+                    }
+                    catch (Exception exception) {
+                        exception.printStackTrace();
+                        getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), exception);
+                    }
+                }
+            }
+        }
     }
 
     private void processInspirationCarouselPosition(Map<String, Object> searchParameter, List<Visitable> list) {
@@ -1015,7 +1148,7 @@ final class ProductListPresenter
         String alternativeKeyword = SearchEventTracking.NONE;
 
         if (isAlternativeKeywordFromRelated(productViewModel)) {
-            alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+            alternativeKeyword = getAlternativeKeywordFromRelated(productViewModel.getRelatedViewModel());
         }
         else if (isAlternativeKeywordFromSuggestion(productViewModel)) {
             alternativeKeyword = productViewModel.getSuggestionModel().getSuggestion();
@@ -1027,12 +1160,43 @@ final class ProductListPresenter
     private boolean isAlternativeKeywordFromRelated(ProductViewModel productViewModel) {
         String responseCode = productViewModel.getResponseCode();
 
-        boolean isResponseCodeForRelatedKeyword = responseCode.equals("3") || responseCode.equals("6");
-        boolean relatedKeywordIsNotEmpty =
-                productViewModel.getRelatedSearchModel() != null
-                && !productViewModel.getRelatedSearchModel().getRelatedKeyword().isEmpty();
+        boolean isResponseCodeForRelatedKeyword = generalSearchTrackingRelatedKeywordResponseCodeList.contains(responseCode);
+        boolean canConstructAlternativeKeywordFromRelated = canConstructAlternativeKeywordFromRelated(productViewModel);
 
-        return isResponseCodeForRelatedKeyword && relatedKeywordIsNotEmpty;
+        return isResponseCodeForRelatedKeyword && canConstructAlternativeKeywordFromRelated;
+    }
+
+    private boolean canConstructAlternativeKeywordFromRelated(ProductViewModel productViewModel) {
+        RelatedViewModel relatedViewModel = productViewModel.getRelatedViewModel();
+
+        if (relatedViewModel == null) return false;
+
+        String relatedKeyword = relatedViewModel.getRelatedKeyword();
+        List<BroadMatchViewModel> broadMatchViewModelList = relatedViewModel.getBroadMatchViewModelList();
+
+        return !relatedKeyword.isEmpty() || !broadMatchViewModelList.isEmpty();
+    }
+
+    private String getAlternativeKeywordFromRelated(RelatedViewModel relatedViewModel) {
+        String broadMatchKeywords = "";
+
+        if (!relatedViewModel.getBroadMatchViewModelList().isEmpty()) {
+            broadMatchKeywords = joinToString(relatedViewModel.getBroadMatchViewModelList(), ",", BroadMatchViewModel::getKeyword);
+        }
+
+        boolean shouldAppendComma =
+                !relatedViewModel.getRelatedKeyword().isEmpty()
+                && !broadMatchKeywords.isEmpty();
+
+        return relatedViewModel.getRelatedKeyword()
+                + (shouldAppendComma ? "," : "")
+                + broadMatchKeywords;
+    }
+
+    private <T> String joinToString(Iterable<T> list, String separator, Function1<T, CharSequence> transform) {
+        if (list == null) return "";
+
+        return CollectionsKt.joinToString(list, separator, "", "", -1, "...", transform);
     }
 
     private boolean isAlternativeKeywordFromSuggestion(ProductViewModel productViewModel) {
@@ -1219,12 +1383,12 @@ final class ProductListPresenter
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
+    public void onProductImpressed(ProductItemViewModel item) {
         if (getView() == null || item == null) return;
 
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
-            getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
+            getView().sendTopAdsGTMTrackingProductImpression(item);
         } else if (enableTrackingViewPort) {
             getView().sendProductImpressionTrackingEvent(item);
         }
@@ -1241,7 +1405,7 @@ final class ProductListPresenter
 
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
-            getView().sendTopAdsGTMTrackingProductClick(item, adapterPosition);
+            getView().sendTopAdsGTMTrackingProductClick(item);
         }
         else {
             getView().sendGTMTrackingProductClick(item, adapterPosition, getUserId());

@@ -13,7 +13,7 @@ data class SomEditAwbResponse (
 
         @SerializedName("errors")
         @Expose
-        val listError: List<Error> = listOf()
+        var listError: List<Error> = listOf()
 ) {
 
     data class Data (
@@ -31,5 +31,5 @@ data class SomEditAwbResponse (
     data class Error(
             @SerializedName("message")
             @Expose
-            val message: String = "")
+            var message: String = "")
 }

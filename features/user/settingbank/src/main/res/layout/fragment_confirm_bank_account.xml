@@ -192,7 +192,7 @@
         app:typographyType="body_3" />
 
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/btn_uploadOrConfirmDocument"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
@@ -207,7 +207,6 @@
         tools:text="@string/button_next"
         android:textColor="@color/sbank_btn_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:typographyType="heading_5"
         tools:visibility="visible" />
 
 

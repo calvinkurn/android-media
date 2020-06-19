@@ -10,6 +10,7 @@ import android.os.CountDownTimer
 import android.view.*
 import android.webkit.WebView
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AlertDialog
@@ -25,8 +26,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
@@ -41,6 +41,8 @@ import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
@@ -394,7 +396,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
+                    startActivity(intent)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
@@ -665,16 +668,23 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     private fun loadWebViewInBottomsheet(data: String, title: String) {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activity)
-        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, true)
+        val bottomSheet = BottomSheetUnify()
+        bottomSheet.setShowListener {
+            val sideMargin = 16.toPx()
+            bottomSheet.bottomSheetWrapper.setPadding(0, 0, 0, 0)
+            (bottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, sideMargin)
+        }
+        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
         val webView = view.findViewById<WebView>(R.id.catalog_webview)
-        val closeBtn = view.findViewById<ImageView>(R.id.close_button)
-        val titleView: Typography = view.findViewById(R.id.title_closeable)
         webView.loadData(data, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        closeBtn.setOnClickListener { v: View? -> bottomSheet.dismiss() }
-        titleView.text = title
-        bottomSheet.setCustomContentView(view, title, false)
-        bottomSheet.show()
+        bottomSheet.apply {
+            setChild(view)
+            setTitle(title)
+            showCloseIcon = true
+            isDragable = true
+            isHideable = true
+        }
+        bottomSheet.show(childFragmentManager, "")
     }
 
     override fun gotoSendGiftPage(id: Int, title: String, pointStr: String, banner: String) {

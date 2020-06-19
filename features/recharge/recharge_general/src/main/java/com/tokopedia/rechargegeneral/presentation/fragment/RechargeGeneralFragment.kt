@@ -51,7 +51,6 @@ import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
-import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
@@ -195,6 +194,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     renderInitialData()
                 }
                 is Fail -> {
+                    hideLoading()
                     var throwable = it.throwable
                     if (throwable.message == NULL_PRODUCT_ERROR)
                         throwable = MessageErrorException(getString(R.string.selection_null_product_error))
@@ -210,7 +210,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     if (hasFavoriteNumbers) {
                         updateFavoriteNumberInputField()
                     }
-                    adapter.hideLoading()
+                    hideLoading()
                 }
                 is Fail -> {
                     val previousOperatorId = operatorId
@@ -224,7 +224,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         operator_select.setInputText(defaultOperatorName, false)
                         getProductList(menuId, operatorId)
                     } else {
-                        adapter.hideLoading()
+                        hideLoading()
                     }
                     NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.selection_null_product_error))
                 }
@@ -272,6 +272,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         recharge_general_enquiry_button.isEnabled = false
         recharge_general_enquiry_button.setOnClickListener {
             enquire()
+        }
+
+        recharge_general_swipe_refresh_layout.setOnRefreshListener{
+            recharge_general_swipe_refresh_layout.isRefreshing = true
+            loadData()
         }
 
         loadData()
@@ -334,11 +339,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     operatorCluster = getClusterOfOperatorId(operatorClusters, operatorId)?.name ?: ""
                     renderOperatorCluster(operatorClusters)
 
-                    val operatorGroup = groups.first { it.name == operatorCluster }
-                    val isOperatorHidden = operatorClusters.style == OPERATOR_TYPE_HIDDEN
-                    renderOperatorList(operatorGroup, isOperatorHidden, operatorClusters.text)
+                    val operatorGroup = groups.firstOrNull { it.name == operatorCluster }
+                    operatorGroup?.run {
+                        val isOperatorHidden = operatorClusters.style == OPERATOR_TYPE_HIDDEN
+                        renderOperatorList(operatorGroup, isOperatorHidden, operatorClusters.text)
 
-                    if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
+                        if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
+                    }
                 }
             }
         }
@@ -696,8 +703,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 tab_layout.show()
 
                 // Hide widget title
-                (product_view_pager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
-                (product_view_pager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
+                (product_view_pager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
+                (product_view_pager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
             }
             product_view_pager.show()
         } else {
@@ -836,7 +843,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.processMenuDetail(data)
         with (data.catalog) {
             (activity as? BaseSimpleActivity)?.updateTitle(label)
-            rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName, categoryId.toString())
+            rechargeAnalytics.eventOpenScreen(
+                    userSession.isLoggedIn,
+                    categoryName,
+                    categoryId.toString())
         }
         renderTickers(data.tickers)
         // Set recommendation data if available
@@ -844,6 +854,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             setupAutoFillData(data.recommendations[0])
         }
         renderFooter(data)
+    }
+
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        // do nothing
     }
 
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
@@ -868,7 +882,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onMenuDetailError(error: Throwable) {
-        showGetListError(error)
+
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
@@ -1007,6 +1021,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     fun onBackPressed() {
         rechargeGeneralAnalytics.eventClickBackButton(categoryName, operatorName)
+    }
+
+    private fun hideLoading() {
+        recharge_general_swipe_refresh_layout.isEnabled = true
+        recharge_general_swipe_refresh_layout.isRefreshing = false
+        adapter.hideLoading()
     }
 
     override fun getScreenName(): String {

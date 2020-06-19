@@ -18,7 +18,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
 import com.tokopedia.seller.transaction.neworder.view.presenter.GetOrderService;
 import com.tokopedia.seller.transaction.neworder.view.presenter.OrderWidgetJobService;
@@ -29,6 +28,8 @@ import java.util.ArrayList;
  * Implementation of App Widget functionality.
  */
 public class NewOrderWidget extends AppWidgetProvider {
+
+    private static final String FROM_WIDGET_TAG = "from widget";
 
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                        int[] appWidgetIds, DataOrderViewWidget dataOrderViewWidget) {
@@ -48,7 +49,7 @@ public class NewOrderWidget extends AppWidgetProvider {
                 views.setEmptyView(R.id.list_order, R.id.view_no_result);
                 views.setTextViewText(R.id.count_order, String.valueOf(dataOrderViewWidget.getDataOrderCount()));
                 Intent intentOrder = RouteManager.getIntent(context, ApplinkConst.SELLER_NEW_ORDER);
-                intentOrder.putExtra(ActivitySellingTransaction.FROM_WIDGET_TAG, true);
+                intentOrder.putExtra(FROM_WIDGET_TAG, true);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentOrder, 0);
                 views.setOnClickPendingIntent(R.id.container_order_count, pendingIntent);
 

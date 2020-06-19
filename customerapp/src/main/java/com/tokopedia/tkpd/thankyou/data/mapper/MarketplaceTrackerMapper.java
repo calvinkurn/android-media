@@ -61,6 +61,9 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
     private static final String TYPE_LOGISTIC_VOUCHER = "logistic";
     private static final String NOT_SET = "(not set)";
 
+    private static final String EVENT_LABEL_REGULAR_CHECKOUT = "regular checkout";
+    private static final String EVENT_LABEL_OCC = "occ";
+
     public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes, RequestParams requestParams) {
         this.sessionHandler = sessionHandler;
         this.shopTypes = shopTypes;
@@ -184,7 +187,11 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
-        purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
+        if (paymentData.getPaymentFeatures() != null && paymentData.getPaymentFeatures().contains(EVENT_LABEL_OCC)) {
+            purchase.setEventLabel(EVENT_LABEL_OCC);
+        } else {
+            purchase.setEventLabel(EVENT_LABEL_REGULAR_CHECKOUT);
+        }
         purchase.setShopType(checkShopTypeForMarketplace(shopTypes.get(position)));
         purchase.setEventAction(generateEventAction(checkShopTypeForMarketplace(shopTypes.get(position)), paymentType));
         purchase.setShopId(getShopId(orderData));

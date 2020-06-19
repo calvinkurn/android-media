@@ -14,7 +14,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 
 class MixTopTrackerTest : Spek({
     InstantTaskExecutorRuleSpek(this)
-
+    val userId = "1234"
     val testTracker = mockk<TestTracker>(relaxed = true)
     val positionOnWidgetHome = 5
     val channel = DynamicHomeChannel.Channels(
@@ -78,11 +78,53 @@ class MixTopTrackerTest : Spek({
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
                         "eventAction", "click view all on dynamic channel top carousel",
-                        "eventLabel", channel.header.name
+                        "eventLabel", channel.id + " - " + channel.header.name
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopSeeAllClick(channel.header.name))
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopSeeAllClick(channel.id, channel.header.name))
+                Assert.assertEquals(result, true)
+            }
+        }
+    }
+
+    Feature("Click see more card tracker"){
+        Scenario("Click on see more"){
+            Given("the real data"){
+                every { testTracker.getTracker() } returns DataLayer.mapOf(
+                        "event", "clickHomepage",
+                        "eventCategory", "homepage",
+                        "eventAction", "click view all card on dynamic channel top carousel",
+                        "eventLabel", channel.id + " - " + channel.header.name,
+                        "currentSite", "tokopediamarketplace",
+                        "screenName", "/",
+                        "userId", userId,
+                        "businessUnit", "home & browse"
+                )
+            }
+            Then("must true") {
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopSeeAllCardClick(channel.id, channel.header.name, userId))
+                Assert.assertEquals(result, true)
+            }
+        }
+    }
+
+    Feature("Click banner background tracker"){
+        Scenario("Click on banner background"){
+            Given("the real data"){
+                every { testTracker.getTracker() } returns DataLayer.mapOf(
+                        "event", "clickHomepage",
+                        "eventCategory", "homepage",
+                        "eventAction", "click on background dynamic channel top carousel",
+                        "eventLabel", channel.id + " - " + channel.header.name,
+                        "currentSite", "tokopediamarketplace",
+                        "screenName", "/",
+                        "userId", userId,
+                        "businessUnit", "home & browse"
+                )
+            }
+            Then("must true") {
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getBackgroundClick(channel, userId))
                 Assert.assertEquals(result, true)
             }
         }
@@ -95,11 +137,11 @@ class MixTopTrackerTest : Spek({
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
                         "eventAction", "click Cek Sekarang on dynamic channel top carousel",
-                        "eventLabel", channel.header.name
+                        "eventLabel", channel.id + " - " + channel.header.name
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopButtonClick(channel.header.name, channel.banner.cta.text))
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopButtonClick(channel.id, channel.header.name, channel.banner.cta.text))
                 Assert.assertEquals(result, true)
             }
         }

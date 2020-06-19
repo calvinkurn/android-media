@@ -41,7 +41,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
@@ -61,7 +61,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.dagger
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation rootProject.ext.supportLibDependencies.supportV4
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps

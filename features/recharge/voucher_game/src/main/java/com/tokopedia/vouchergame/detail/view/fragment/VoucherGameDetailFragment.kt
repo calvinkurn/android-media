@@ -234,7 +234,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.processMenuDetail(data)
         if (data.catalog.label.isNotEmpty()) {
             voucherGameAnalytics.categoryName = data.catalog.label
-            (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+            (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
     }
 
@@ -251,6 +251,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onMenuDetailError(error: Throwable) {
 
+    }
+
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        //do nothing
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
@@ -522,8 +526,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
+            getMenuDetail(it)
             voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                    com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                    R.raw.query_voucher_game_products),
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }
@@ -594,10 +599,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        processCheckout()
+        processCheckoutData()
     }
 
-    private fun processCheckout() {
+    private fun processCheckoutData() {
         // Setup checkout pass data
         if (::voucherGameExtraParam.isInitialized) {
             selectedProduct?.run {

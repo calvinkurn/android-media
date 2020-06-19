@@ -41,8 +41,10 @@ import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
+import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
@@ -107,10 +109,15 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private View routeManagerButton;
     private EditText editTextRouteManager;
+    private EditText editTextChangeVersionName;
+    private EditText editTextChangeVersionCode;
+    private View changeVersionButton;
 
+    private TextView vGoToScreenRecorder;
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
+    private TextView vGoToTopAdsDebugger;
     private TextView vGoToApplinkDebugger;
     private TextView vGoToFpm;
     private TextView vGoToCassava;
@@ -120,6 +127,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoToIrisSendLogDB;
     private CheckBox toggleAnalytics;
     private CheckBox toggleApplinkNotif;
+    private CheckBox toggleTopAdsNotif;
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
 
@@ -199,9 +207,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         resetOnBoarding = findViewById(R.id.reset_onboarding);
         testOnBoarding = findViewById(R.id.test_onboarding);
 
+        vGoToScreenRecorder = findViewById(R.id.goto_screen_recorder);
+
         vGoTochuck = findViewById(R.id.goto_chuck);
         toggleChuck = findViewById(R.id.toggle_chuck);
 
+        vGoToTopAdsDebugger = findViewById(R.id.goto_topads_debugger);
         vGoToApplinkDebugger = findViewById(R.id.goto_applink_debugger);
         vGoToFpm = findViewById(R.id.goto_fpm);
         vGoToCassava = findViewById(R.id.goto_cassava);
@@ -212,6 +223,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleAnalytics = findViewById(R.id.toggle_analytics);
         toggleApplinkNotif = findViewById(R.id.toggle_applink_debugger_notif);
+        toggleTopAdsNotif = findViewById(R.id.toggle_topads_debugger_notif);
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
 
@@ -239,6 +251,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         editTextRouteManager = findViewById(R.id.et_route_manager);
         routeManagerButton = findViewById(R.id.btn_route_manager);
 
+        editTextChangeVersionName = findViewById(R.id.et_change_version_name);
+        editTextChangeVersionCode = findViewById(R.id.et_change_version_code);
+        changeVersionButton = findViewById(R.id.btn_change_version);
+        editTextChangeVersionName.setText(GlobalConfig.VERSION_NAME);
+        editTextChangeVersionCode.setText(String.valueOf(GlobalConfig.VERSION_CODE));
+
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
         groupChatLogToggle = findViewById(R.id.groupchat_log);
@@ -253,6 +271,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
 
+        validateIfSellerapp();
     }
 
     private void initListener() {
@@ -266,12 +285,14 @@ public class DeveloperOptionActivity extends BaseActivity {
             throw new RuntimeException("Throw Runtime Exception");
         });
 
-        vDevOptionRN.setOnClickListener(v ->
+        vDevOptionRN.setOnClickListener(v -> {
+            if (!GlobalConfig.isSellerApp()) {
                 RouteManager.route(this,
                         ApplinkConst.SETTING_DEVELOPER_OPTIONS
                                 .replace("{type}", RN_DEV_LOGGER)
-                ));
-
+                );
+            }
+        });
 
         resetOnBoarding.setOnClickListener(v -> {
             userSession.setFirstTimeUser(true);
@@ -368,12 +389,44 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
+        changeVersionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String versionCode = editTextChangeVersionCode.getText().toString();
+                String versionName = editTextChangeVersionName.getText().toString();
+                if (TextUtils.isEmpty(versionCode)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Version Code should not be empty", Toast.LENGTH_SHORT).show();
+                } else if (TextUtils.isEmpty(versionName)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Version Name should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        GlobalConfig.VERSION_NAME = versionName;
+                        GlobalConfig.VERSION_CODE = Integer.parseInt(versionCode);
+                        Toast.makeText(DeveloperOptionActivity.this,
+                                "Version has been changed: " + versionName + " - " + versionCode, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(DeveloperOptionActivity.this,
+                                e.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
         SharedPreferences cache = getSharedPreferences(CHUCK_ENABLED);
 
         toggleChuck.setChecked(cache.getBoolean(IS_CHUCK_ENABLED, false));
 
         toggleChuck.setOnCheckedChangeListener((compoundButton, state) -> {
             cache.edit().putBoolean(IS_CHUCK_ENABLED, state).apply();
+        });
+
+        vGoToScreenRecorder.setOnClickListener(new OneOnClick() {
+            @Override
+            public void oneOnClick(View view) {
+                RouteManager.route(DeveloperOptionActivity.this, ApplinkConstInternalGlobal.SCREEN_RECORDER);
+            }
         });
 
         vGoTochuck.setOnClickListener(new OneOnClick() {
@@ -388,6 +441,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
             notificationManagerCompat.notify(777,notifReview);
                 });
+
+        toggleTopAdsNotif.setChecked(TopAdsLogger.getInstance(this).isNotificationEnabled());
+        toggleTopAdsNotif.setOnCheckedChangeListener((compoundButton, state) -> TopAdsLogger.getInstance(this).enableNotification(state));
+
+        vGoToTopAdsDebugger.setOnClickListener(v -> TopAdsLogger.getInstance(this).openActivity());
 
         toggleApplinkNotif.setChecked(ApplinkLogger.getInstance(this).isNotificationEnabled());
         toggleApplinkNotif.setOnCheckedChangeListener((compoundButton, state) -> ApplinkLogger.getInstance(this).enableNotification(state));
@@ -560,6 +618,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         SharedPreferences.Editor editor = groupChatSf.edit();
         editor.putBoolean(LOG_GROUPCHAT, check);
         editor.apply();
+    }
+
+    private void validateIfSellerapp() {
+        if (GlobalConfig.isSellerApp() && vDevOptionRN != null) {
+            vDevOptionRN.setVisibility(View.GONE);
+        }
     }
 
     private SharedPreferences getSharedPreferences(String name) {

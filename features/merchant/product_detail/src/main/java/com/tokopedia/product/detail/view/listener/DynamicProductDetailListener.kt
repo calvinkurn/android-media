@@ -7,9 +7,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -28,6 +30,7 @@ interface DynamicProductDetailListener {
     fun showAlertCampaignEnded()
     fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun onSwipePicture(swipeDirection: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
+    fun shouldShowWishlist(): Boolean
 
     /**
      * ProductInfoViewHolder
@@ -43,6 +46,11 @@ interface DynamicProductDetailListener {
      */
     fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?)
     fun onLastDiscussionClicked(talkId:String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onDiscussionRefreshClicked()
+    fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel)
+    fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
+    fun goToTalkReply(questionId: String, componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
+    fun onUserDetailsClicked(userId: String)
 
     /**
      * ProductReviewViewHolder
@@ -113,4 +121,20 @@ interface DynamicProductDetailListener {
      */
     fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel)
     fun showAlertUpcomingEnded()
+
+    /**
+     * ProductMiniShopInfoViewHolder
+     */
+    fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * ProductMediaViewHolder
+     */
+    fun onImageReviewMediaClicked(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * ProductTickerViewHolder
+     */
+    fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?)
 }

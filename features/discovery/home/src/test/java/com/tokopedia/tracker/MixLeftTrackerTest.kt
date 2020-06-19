@@ -14,7 +14,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 
 class MixLeftTrackerTest : Spek({
     InstantTaskExecutorRuleSpek(this)
-
+    val userId = "1234"
     val testTracker = mockk<TestTracker>(relaxed = true)
     val positionOnWidgetHome = 5
     val channel = DynamicHomeChannel.Channels(
@@ -78,11 +78,32 @@ class MixLeftTrackerTest : Spek({
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
                         "eventAction", "click view all on dynamic channel left carousel",
-                        "eventLabel", channel.header.name
+                        "eventLabel", channel.id + " - " + channel.header.name
                 )
             }
             Then("must true") {
                 val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftClickLoadMore(channel))
+                Assert.assertEquals(result, true)
+            }
+        }
+    }
+
+    Feature("Click see more card tracker"){
+        Scenario("Click on see more"){
+            Given("the real data"){
+                every { testTracker.getTracker() } returns DataLayer.mapOf(
+                        "event", "clickHomepage",
+                        "eventCategory", "homepage",
+                        "eventAction", "click view all card on dynamic channel left carousel",
+                        "eventLabel", channel.id + " - " + channel.header.name,
+                        "currentSite", "tokopediamarketplace",
+                        "screenName", "/",
+                        "userId", userId,
+                        "businessUnit", "home & browse"
+                )
+            }
+            Then("must true") {
+                val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftClickLoadMoreCard(channel, userId))
                 Assert.assertEquals(result, true)
             }
         }
@@ -130,6 +151,7 @@ class MixLeftTrackerTest : Spek({
     }
 
     Feature("View product tracker"){
+        val pos = 0
         Scenario("View on product"){
             Given("the real tracker data"){
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
@@ -153,39 +175,13 @@ class MixLeftTrackerTest : Spek({
                                         "dimension84", "21370",
                                         "list", "/ - p1 - dynamic channel left carousel - Testing Left - topads",
                                         "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left - topads"
-                                ),
-                                DataLayer.mapOf(
-                                        "name", "Monster Mass Iron Labs 90 Capsules IronLabs MonsterMass 90Caps 90 Caps",
-                                        "id","183822484",
-                                        "price", "200000",
-                                        "brand", "none / other",
-                                        "variant","none / other",
-                                        "category", "none / other",
-                                        "position", "2",
-                                        "dimension83", "bebas ongkir",
-                                        "dimension84", "21370",
-                                        "list", "/ - p1 - dynamic channel left carousel - Testing Left",
-                                        "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left"
-                                ),
-                                DataLayer.mapOf(
-                                        "name", "Samsung Galaxy A30S [4GB/64GB] - Garansi Resmi Indonesia",
-                                        "id", "558833181",
-                                        "price", "2715000",
-                                        "brand", "none / other",
-                                        "variant","none / other",
-                                        "category", "none / other",
-                                        "position", "3",
-                                        "dimension83", "bebas ongkir",
-                                        "dimension84", "21370",
-                                        "list", "/ - p1 - dynamic channel left carousel - Testing Left",
-                                        "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left"
                                 )
                             )
                     )
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftProductView(channel,false))
+                val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftProductView(channel, channel.grids[pos], pos))
                 Assert.assertEquals(result, true)
             }
         }

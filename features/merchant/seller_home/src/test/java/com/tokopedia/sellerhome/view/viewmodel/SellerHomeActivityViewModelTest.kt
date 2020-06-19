@@ -1,21 +1,23 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 
 /**
  * Created By @ilhamsuaib on 24/03/20
@@ -65,11 +67,13 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get notifications then returns failed result`() {
+    fun `get notifications then returns failed result`() = runBlocking {
+
+        val throwable = MessageErrorException()
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
-        } throws Throwable()
+        } throws throwable
 
         mViewModel.getNotifications()
 
@@ -77,7 +81,9 @@ class SellerHomeActivityViewModelTest {
             getNotificationUseCase.executeOnBackground()
         }
 
-        assertTrue(mViewModel.notifications.value is Fail)
+        delay(100)
+
+        assert(mViewModel.notifications.value is Fail)
     }
 
     @Test
@@ -109,8 +115,9 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get shop info then returns failed result`() {
+    fun `get shop info then returns failed result`() = runBlocking {
         val userId = "123456"
+        val throwable = MessageErrorException()
 
         getShopInfoUseCase.params = GetShopInfoUseCase.getRequestParam(userId)
 
@@ -120,7 +127,7 @@ class SellerHomeActivityViewModelTest {
 
         coEvery {
             getShopInfoUseCase.executeOnBackground()
-        } throws Throwable()
+        } throws throwable
 
         mViewModel.getShopInfo()
 
@@ -132,6 +139,47 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         }
 
-        assertTrue(mViewModel.shopInfo.value is Fail)
+        delay(100)
+
+        assert(mViewModel.shopInfo.value is Fail)
+    }
+
+    @Test
+    fun `execute launch in custom base view model with custom onError block without custom context`() = runBlocking {
+        val customOnErrorViewModel = CustomOnErrorViewModel(Job())
+        customOnErrorViewModel.noCustomContext()
+        delay(100)
+        assert(customOnErrorViewModel.mockLiveData.value is Fail)
+    }
+
+    @Test
+    fun `execute launch in custom base view model with custom onError block with custom context`() = runBlocking {
+        val customOnErrorViewModel = CustomOnErrorViewModel(Job())
+        customOnErrorViewModel.withCustomContext()
+        delay(100)
+        assert(customOnErrorViewModel.mockLiveData.value is Fail)
+    }
+
+    inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(Dispatchers.Unconfined) {
+
+        private val _mockLiveData = MutableLiveData<Result<Any>>()
+        val mockLiveData: LiveData<Result<Any>>
+            get() = _mockLiveData
+
+        fun noCustomContext() = executeCall(_mockLiveData, onError = {
+            _mockLiveData.value = Fail(it)
+        }, block = {
+            getResult()
+        })
+
+        fun withCustomContext() = executeCall(_mockLiveData, job, onError = {
+            _mockLiveData.value = Fail(it)
+        }, block = {
+            getResult()
+        })
+
+        private fun getResult(): Any {
+            throw RuntimeException()
+        }
     }
 }

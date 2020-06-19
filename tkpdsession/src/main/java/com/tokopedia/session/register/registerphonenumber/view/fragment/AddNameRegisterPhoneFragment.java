@@ -21,7 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;

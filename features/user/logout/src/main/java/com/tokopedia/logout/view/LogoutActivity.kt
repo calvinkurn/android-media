@@ -2,6 +2,7 @@ package com.tokopedia.logout.view
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -20,7 +21,6 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -28,8 +28,6 @@ import com.tokopedia.core.gcm.FCMCacheManager
 import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.core.util.AppWidgetUtil
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iris.Iris
-import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
@@ -62,7 +60,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private var mIris: Iris? = null
     private var tetraDebugger: TetraDebugger? = null
 
     override fun getNewFragment(): Fragment? = null
@@ -81,7 +78,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         getParams()
 
-        initIris()
         initTetraDebugger()
         initObservable()
         initGoogleClient()
@@ -104,11 +100,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }.build()
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
-
-    private fun initIris() {
-        mIris = getInstance(applicationContext)
-        mIris?.initialize()
     }
 
     private fun initTetraDebugger() {
@@ -158,13 +149,15 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
 
-        mIris?.setUserId("")
-
         tetraDebugger?.setUserId("")
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
-                RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
+                val mIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+                startActivity(mIntent)
+                finish()
             } else {
                 RouteManager.route(this, ApplinkConst.HOME)
             }

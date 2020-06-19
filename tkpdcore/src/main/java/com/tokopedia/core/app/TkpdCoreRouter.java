@@ -18,39 +18,11 @@ public interface TkpdCoreRouter {
 
     void onLogout(AppComponent appComponent);
 
-    void goToCreateMerchantRedirect(Context context);
-
     Intent getRegisterIntent(Context context);
 
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getSplashScreenIntent(Context context);
-
-    Class getSellingActivityClass();
-
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getActivitySellingTransactionNewOrder(Context context);
-
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getActivitySellingTransactionConfirmShipping(Context context);
-
-    Intent getActivitySellingTransactionShippingStatus(Context context);
-
-    Intent getActivitySellingTransactionList(Context context);
-
-    Intent getActivitySellingTransactionOpportunity(Context context, String query);
-
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getResolutionCenterIntentSeller(Context context);
 
     Intent getPhoneVerificationActivationIntent(Context context);
 

@@ -11,6 +11,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
     fun type(data: ProductShopInfoDataModel): Int
     fun type(data: ProductDiscussionDataModel): Int
+    fun type(data: ProductDiscussionMostHelpfulDataModel): Int
     fun type(data: ProductInfoDataModel): Int
     fun type(data: ProductGeneralInfoDataModel): Int
     fun type(data: ProductMerchantVoucherDataModel): Int
@@ -21,5 +22,10 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: PageErrorDataModel): Int
     fun type(data: VariantDataModel): Int
     fun type(data: ProductNotifyMeDataModel): Int
+    fun type(data: ProductMediaDataModel): Int
+    fun type(data: ProductContentDataModel): Int
+    fun type(data: ProductMiniSocialProofDataModel): Int
+    fun type(data: ProductMiniShopInfoDataModel): Int
+    fun type(data: ProductTickerInfoDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

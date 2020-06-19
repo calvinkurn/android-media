@@ -478,7 +478,9 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
             startActivityForResult(intent, REQUEST_PRODUCT_ITEM_CLICK)
         }
         if (item.isTopAds) {
-            ImpresionTask().execute(item.productClickTrackingUrl)
+            activity?.let {
+                ImpresionTask(it::class.qualifiedName).execute(item.productClickTrackingUrl)
+            }
         }
     }
 

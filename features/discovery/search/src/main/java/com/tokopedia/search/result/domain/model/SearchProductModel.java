@@ -40,6 +40,10 @@ public class SearchProductModel {
     @Expose
     private SearchInspirationCarousel searchInspirationCarousel = new SearchInspirationCarousel();
 
+    @SerializedName("searchInspirationWidget")
+    @Expose
+    private SearchInspirationCard searchInspirationCard = new SearchInspirationCard();
+
     public CpmModel getCpmModel() {
         return cpmModel;
     }
@@ -74,6 +78,10 @@ public class SearchProductModel {
 
     public SearchInspirationCarousel getSearchInspirationCarousel() {
         return searchInspirationCarousel;
+    }
+
+    public SearchInspirationCard getSearchInspirationCard() {
+        return searchInspirationCard;
     }
 
     public static class SearchProduct {
@@ -237,9 +245,20 @@ public class SearchProductModel {
 
     public static class OtherRelated {
         @SerializedName("keyword")
+        @Expose
         private String keyword;
+
         @SerializedName("url")
+        @Expose
         private String url;
+
+        @SerializedName("applink")
+        @Expose
+        private String applink;
+
+        @SerializedName("product")
+        @Expose
+        private List<OtherRelatedProduct> otherRelatedProductList;
 
         public String getKeyword() {
             return keyword;
@@ -255,6 +274,89 @@ public class SearchProductModel {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public List<OtherRelatedProduct> getOtherRelatedProductList() {
+            return otherRelatedProductList;
+        }
+    }
+
+    public static class OtherRelatedProduct {
+
+        @SerializedName("id")
+        @Expose
+        private String id = "";
+
+        @SerializedName("name")
+        @Expose
+        private String name = "";
+
+        @SerializedName("price")
+        @Expose
+        private int price = 0;
+
+        @SerializedName("image_url")
+        @Expose
+        private String imageUrl = "";
+
+        @SerializedName("rating")
+        @Expose
+        private int rating;
+
+        @SerializedName("count_review")
+        @Expose
+        private int countReview;
+
+        @SerializedName("url")
+        @Expose
+        private String url;
+
+        @SerializedName("applink")
+        @Expose
+        private String applink;
+
+        @SerializedName("price_str")
+        @Expose
+        private String priceString;
+
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public int getRating() {
+            return rating;
+        }
+
+        public int getCountReview() {
+            return countReview;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public String getPriceString() {
+            return priceString;
         }
     }
 
@@ -361,6 +463,9 @@ public class SearchProductModel {
         @SerializedName("query")
         @Expose
         private String query;
+        @SerializedName("type_id")
+        @Expose
+        private int typeId;
 
         public String getText() {
             return text;
@@ -369,6 +474,8 @@ public class SearchProductModel {
         public String getQuery() {
             return query;
         }
+
+        public int getTypeId() { return typeId; }
     }
 
     public static class Suggestion {
@@ -444,9 +551,12 @@ public class SearchProductModel {
         @SerializedName("image_url")
         @Expose
         private String imageUrl;
+        @SerializedName("image_url_300")
+        @Expose
+        private String imageUrl300;
         @SerializedName("image_url_700")
         @Expose
-        private String imageUrlLarge;
+        private String imageUrl700;
         @SerializedName("price")
         @Expose
         private String price;
@@ -565,8 +675,12 @@ public class SearchProductModel {
             return imageUrl;
         }
 
-        public String getImageUrlLarge() {
-            return imageUrlLarge;
+        public String getImageUrl300() {
+            return imageUrl300;
+        }
+
+        public String getImageUrl700() {
+            return imageUrl700;
         }
 
         public String getPrice() {
@@ -1161,6 +1275,82 @@ public class SearchProductModel {
 
         public String getPriceStr() {
             return priceStr;
+        }
+    }
+
+    public static class SearchInspirationCard {
+        @SerializedName("data")
+        private List<InspirationCardData> data = new ArrayList<>();
+
+        public List<InspirationCardData> getData() {
+            return data;
+        }
+    }
+
+    public static class InspirationCardData {
+        @SerializedName("title")
+        private String title = "";
+
+        @SerializedName("type")
+        private String type = "";
+
+        @SerializedName("position")
+        private int position = 0;
+
+        @SerializedName("options")
+        private List<InspirationCardOption> inspiratioWidgetOptions = new ArrayList<>();
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public List<InspirationCardOption> getInspiratioWidgetOptions() {
+            return inspiratioWidgetOptions;
+        }
+    }
+
+    public static class InspirationCardOption {
+        @SerializedName("text")
+        private String text = "";
+
+        @SerializedName("img")
+        private String img = "";
+
+        @SerializedName("url")
+        private String url = "";
+
+        @SerializedName("color")
+        private String color = "";
+
+        @SerializedName("applink")
+        private String applink = "";
+
+        public String getText() {
+            return text;
+        }
+
+        public String getImg() {
+            return img;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public String getApplink() {
+            return applink;
         }
     }
 }

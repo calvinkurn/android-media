@@ -271,6 +271,22 @@ class FlightFilterViewModelTest {
     }
 
     @Test
+    fun resetFilter_withNullFilter_shouldResetFilterModel() {
+        //given
+        val flightFilterViewModel = FlightFilterViewModel(flightSearchCountUseCase, flightSearchStatisticsUseCase, TravelTestDispatcherProvider())
+
+        //when
+        flightFilterViewModel.resetFilter()
+
+        //then
+        val actualFilterModel = flightFilterViewModel.filterModel.value ?: FlightFilterModel()
+        assert(!actualFilterModel.isHasFilter)
+        assert(actualFilterModel.priceMin == 0)
+        assert(actualFilterModel.airlineList.isEmpty())
+        assert(flightFilterViewModel.selectedSort.value == FlightFilterViewModel.SORT_DEFAULT_VALUE)
+    }
+
+    @Test
     fun resetFilter_shouldReturnDefaultFilterModel() {
         //when
         flightFilterViewModel.resetFilter()

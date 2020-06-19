@@ -126,7 +126,7 @@ class ContainerFragment : Fragment() {
     }
 
     private fun showFragment(fragment: Fragment?, page: PageFragment, title: String) {
-        if (null == fragment) {
+        if (null == fragment || !isAdded) {
             return
         }
 

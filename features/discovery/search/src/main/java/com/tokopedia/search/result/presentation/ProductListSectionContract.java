@@ -44,7 +44,7 @@ public interface ProductListSectionContract {
 
         void trackEventImpressionBannedProducts(boolean isEmptySearch);
 
-        void trackEventImpressionSortPriceMinTicker();
+        void trackEventImpressionTicker(int typeId);
 
         void backToTop();
 
@@ -148,9 +148,9 @@ public interface ProductListSectionContract {
 
         void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
 
-        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition);
+        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item);
 
-        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition);
+        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
 
         void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
 
@@ -165,6 +165,8 @@ public interface ProductListSectionContract {
         void startRenderPerformanceMonitoring();
 
         void sendProductImpressionTrackingEvent(ProductItemViewModel item);
+
+        void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -203,7 +205,7 @@ public interface ProductListSectionContract {
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
 
-        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
+        void onProductImpressed(ProductItemViewModel item);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
 

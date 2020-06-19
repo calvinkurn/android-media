@@ -4,8 +4,6 @@
     <item name="group_pos" type="id" />
     <item name="child_pos" type="id" />
 
-    <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
-    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="key_moengage">LNCME8HVKUEJIGXE2N0698H0</string>
     <string name="app_id">126665634029576</string>
     <string name="app_name">Tokopedia</string>
@@ -2033,8 +2031,6 @@ di Tokopedia Sekarang!</string>
     <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
     <string name="error_data_not_found">Data tidak ditemukan.</string>
-    <string name="title_opportunity_list">Peluang</string>
-    <string name="accept_replacement">Ambil Peluang</string>
     <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
     <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
 
@@ -2056,7 +2052,6 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_logout">Keluar</string>
     <string name="drawer_title_confirm_shipping">Konfirmasi Pengiriman</string>
     <string name="drawer_title_list_selling">Daftar Penjualan</string>
-    <string name="drawer_title_opportunity">Peluang</string>
     <string name="drawer_title_add_product">Tambah Produk</string>
     <string name="drawer_title_product_list">Daftar Produk</string>
     <string name="drawer_title_draft_list">Draft Produk</string>

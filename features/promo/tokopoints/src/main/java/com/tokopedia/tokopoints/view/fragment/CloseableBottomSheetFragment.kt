@@ -1,10 +1,7 @@
 package com.tokopedia.tokopoints.view.fragment
 
-import android.app.Activity
 import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +10,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.IntDef
 import androidx.fragment.app.Fragment
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
-import javax.annotation.Resource
 
 class CloseableBottomSheetFragment private constructor(private val fragment: Fragment, private val isCloseable: Boolean, @CloseableBottomSheetState private var mState : Int , private val title: String , private val closableCallBack: ClosableCallback?) : BottomSheetDialogFragment() {
 
