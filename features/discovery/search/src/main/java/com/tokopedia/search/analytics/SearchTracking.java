@@ -836,4 +836,13 @@ public class SearchTracking {
                 )
         );
     }
+
+    public static void trackEventClickInspirationCardOption(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+            SearchEventTracking.Event.SEARCH_RESULT,
+            SearchEventTracking.Category.SEARCH_RESULT,
+            SearchEventTracking.Action.CLICK_INSPIRATION_CARD,
+            label
+        );
+    }
 }

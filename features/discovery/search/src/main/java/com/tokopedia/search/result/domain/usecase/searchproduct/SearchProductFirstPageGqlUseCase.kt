@@ -410,6 +410,20 @@ class SearchProductFirstPageGqlUseCase(
                         }
                     }
                 }
+               searchInspirationWidget(params:${'$'}params){
+                   data {
+                       title
+                       type
+                       position
+                       options {
+                           text
+                           img
+                           url
+                           color
+                           applink
+                       }
+                   }
+               }
             }"""
     }
 }

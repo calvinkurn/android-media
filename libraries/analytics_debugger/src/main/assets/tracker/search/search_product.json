@@ -116,6 +116,12 @@
       "eventCategory": "search result",
       "eventAction": "click - ticker",
       "eventLabel": "{{.* - .*}}"
+    },
+    {
+      "event": "clickSearchResult",
+      "eventCategory": "search result",
+      "eventAction": "click inspiration card",
+      "eventLabel": "{{.* - .* - .*}}"
     }
   ]
 }

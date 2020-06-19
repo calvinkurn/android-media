@@ -44,6 +44,10 @@ public class SearchProductModel {
     @Expose
     private SearchInspirationCarousel searchInspirationCarousel = new SearchInspirationCarousel();
 
+    @SerializedName("searchInspirationWidget")
+    @Expose
+    private SearchInspirationCard searchInspirationCard = new SearchInspirationCard();
+
     public CpmModel getCpmModel() {
         return cpmModel;
     }
@@ -83,6 +87,10 @@ public class SearchProductModel {
 
     public SearchInspirationCarousel getSearchInspirationCarousel() {
         return searchInspirationCarousel;
+    }
+
+    public SearchInspirationCard getSearchInspirationCard() {
+        return searchInspirationCard;
     }
 
     public static class SearchProduct {
@@ -1276,6 +1284,82 @@ public class SearchProductModel {
 
         public String getPriceStr() {
             return priceStr;
+        }
+    }
+
+    public static class SearchInspirationCard {
+        @SerializedName("data")
+        private List<InspirationCardData> data = new ArrayList<>();
+
+        public List<InspirationCardData> getData() {
+            return data;
+        }
+    }
+
+    public static class InspirationCardData {
+        @SerializedName("title")
+        private String title = "";
+
+        @SerializedName("type")
+        private String type = "";
+
+        @SerializedName("position")
+        private int position = 0;
+
+        @SerializedName("options")
+        private List<InspirationCardOption> inspiratioWidgetOptions = new ArrayList<>();
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public List<InspirationCardOption> getInspiratioWidgetOptions() {
+            return inspiratioWidgetOptions;
+        }
+    }
+
+    public static class InspirationCardOption {
+        @SerializedName("text")
+        private String text = "";
+
+        @SerializedName("img")
+        private String img = "";
+
+        @SerializedName("url")
+        private String url = "";
+
+        @SerializedName("color")
+        private String color = "";
+
+        @SerializedName("applink")
+        private String applink = "";
+
+        public String getText() {
+            return text;
+        }
+
+        public String getImg() {
+            return img;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public String getApplink() {
+            return applink;
         }
     }
 }
