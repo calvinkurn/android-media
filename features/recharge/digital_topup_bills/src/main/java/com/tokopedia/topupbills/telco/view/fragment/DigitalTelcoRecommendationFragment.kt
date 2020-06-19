@@ -13,8 +13,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupAnalytics
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
+import com.tokopedia.topupbills.telco.view.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoRecentTransactionWidget
 import javax.inject.Inject
@@ -42,7 +42,7 @@ class DigitalTelcoRecommendationFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(DigitalTopupComponent::class.java).inject(this)
+        getComponent(DigitalTelcoComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.view.di
+package com.tokopedia.topupbills.common.di
 
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy

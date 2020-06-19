@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.common
+package com.tokopedia.topupbills.common.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.topupbills.data.TopupBillsPromo

@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.common
+package com.tokopedia.topupbills.common.analytics
 
 /**
  * @author by resakemal on 05/07/19.

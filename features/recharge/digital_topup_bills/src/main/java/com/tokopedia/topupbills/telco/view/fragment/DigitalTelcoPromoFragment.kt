@@ -19,8 +19,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupAnalytics
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
+import com.tokopedia.topupbills.telco.view.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -48,7 +48,7 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(DigitalTopupComponent::class.java).inject(this)
+        getComponent(DigitalTelcoComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

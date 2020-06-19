@@ -14,16 +14,17 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.view.bottomsheet.TopupBillsMenuBottomSheets
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupAnalytics
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
+import com.tokopedia.topupbills.telco.view.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.view.fragment.DigitalBaseTelcoFragment
+
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 
-open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<DigitalTopupComponent>,
+open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<DigitalTelcoComponent>,
         TopupBillsMenuBottomSheets.MenuListener {
 
     @Inject

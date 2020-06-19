@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.di.DigitalTelcoComponent
+import com.tokopedia.topupbills.telco.view.di.DigitalTelcoInstance
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoPostpaidFragment
 
 /**
@@ -15,7 +15,7 @@ import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoPostpaidFragment
  * RouteManager.route(this, ApplinkConsInternalDigital.PRODUCT_TEMPLATE, 17, 3, telcopost)
  */
 
-class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTopupComponent> {
+class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTelcoComponent> {
 
     var categoryId = ""
 
@@ -34,8 +34,8 @@ class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTopupComp
         return DigitalTelcoPostpaidFragment.newInstance(digitalTelcoExtraParam)
     }
 
-    override fun getComponent(): DigitalTopupComponent {
-        return DigitalTopupInstance.getComponent(application)
+    override fun getComponent(): DigitalTelcoComponent {
+        return DigitalTelcoInstance.getComponent(application)
     }
 
     override fun sendTrackingDotsMenuTelco(userId: String) {

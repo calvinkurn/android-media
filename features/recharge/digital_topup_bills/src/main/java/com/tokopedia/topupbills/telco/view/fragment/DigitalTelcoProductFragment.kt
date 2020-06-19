@@ -19,8 +19,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
+import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
 import com.tokopedia.topupbills.telco.data.TelcoFilterTagComponent
 import com.tokopedia.topupbills.telco.data.TelcoProduct
@@ -28,7 +28,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalTelcoFilterBottomSheet
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.topupbills.telco.view.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.model.TelcoFilterData
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
@@ -92,7 +92,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(DigitalTopupComponent::class.java).inject(this)
+        getComponent(DigitalTelcoComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

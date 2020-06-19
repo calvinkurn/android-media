@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.view.activity
+package com.tokopedia.topupbills.searchnumber.view
 
 import android.app.Activity
 import android.content.Intent
@@ -6,28 +6,26 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
-import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment
+import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
+import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchInstance
 import java.util.*
 
 /**
  * @author rizkyfadillah on 10/4/2017.
  */
 
-class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity(), HasComponent<DigitalTopupComponent> {
+class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity(), HasComponent<DigitalTelcoSearchComponent> {
 
     override fun getScreenName(): String? {
         return DigitalSearchNumberActivity::class.java.simpleName
     }
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
-        return DigitalSearchNumberFragment
-                .newInstance(clientNumberType, number, numberList)
+        return DigitalSearchNumberFragment.newInstance(clientNumberType, number, numberList)
     }
 
-    override fun getComponent(): DigitalTopupComponent {
-        return DigitalTopupInstance.getComponent(application)
+    override fun getComponent(): DigitalTelcoSearchComponent {
+        return DigitalTelcoSearchInstance.getComponent(application)
     }
 
     companion object {

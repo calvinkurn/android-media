@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.view.fragment
+package com.tokopedia.topupbills.searchnumber.view
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -15,9 +15,9 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupAnalytics
+import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
 import kotlinx.android.synthetic.main.fragment_search_number_telco.*
 import java.util.*
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
 
 
     override fun initInjector() {
-        getComponent(DigitalTopupComponent::class.java).inject(this)
+        getComponent(DigitalTelcoSearchComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String? {

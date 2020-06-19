@@ -1,7 +1,7 @@
 package com.tokopedia.topupbills.telco.view.di
 
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.topupbills.common.DigitalTopupAnalytics
+import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import dagger.Module
 import dagger.Provides
 
@@ -9,15 +9,15 @@ import dagger.Provides
  * Created by nabillasabbaha on 07/05/19.
  */
 @Module
-class DigitalTopupModule {
+class DigitalTelcoModule {
 
-    @DigitalTopupScope
+    @DigitalTelcoScope
     @Provides
     fun providePermissionCheckerHelper(): PermissionCheckerHelper {
         return PermissionCheckerHelper()
     }
 
-    @DigitalTopupScope
+    @DigitalTelcoScope
     @Provides
     fun provideDigitalTopupAnalytics(): DigitalTopupAnalytics {
         return DigitalTopupAnalytics()

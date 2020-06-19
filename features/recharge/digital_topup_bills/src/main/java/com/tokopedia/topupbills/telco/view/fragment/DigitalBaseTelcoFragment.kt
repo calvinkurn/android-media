@@ -25,13 +25,13 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupAnalytics
-import com.tokopedia.topupbills.common.DigitalTopupEventTracking
+import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
+import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.topupbills.telco.view.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
@@ -62,7 +62,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
     override fun initInjector() {
-        getComponent(DigitalTopupComponent::class.java).inject(this)
+        getComponent(DigitalTelcoComponent::class.java).inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
