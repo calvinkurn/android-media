@@ -9,10 +9,12 @@ class GetShopFreeShippingStatusUseCase @Inject constructor(
     private val getShopFreeShippingEligibilityUseCase: GetShopFreeShippingEligibilityUseCase
 ) {
     companion object {
+        private const val PARAM_USER_ID = "userID"
         private const val PARAM_SHOP_ID = "shopIDs"
 
-        fun createRequestParams(shopIds: List<Int>): RequestParams {
+        fun createRequestParams(userId: Int, shopIds: List<Int>): RequestParams {
             return RequestParams().apply {
+                putInt(PARAM_USER_ID, userId)
                 putObject(PARAM_SHOP_ID, shopIds)
             }
         }
@@ -20,7 +22,7 @@ class GetShopFreeShippingStatusUseCase @Inject constructor(
 
     suspend fun execute(requestParams: RequestParams): ShopFreeShippingStatus {
         val active = getShopFreeShippingInfoUseCase.execute(requestParams).first().freeShipping.isActive
-        val eligible = getShopFreeShippingEligibilityUseCase.execute(requestParams).first().status
-        return ShopFreeShippingStatus(active, eligible)
+        val freeShipping = getShopFreeShippingEligibilityUseCase.execute(requestParams).first()
+        return ShopFreeShippingStatus(active, freeShipping.status, freeShipping.statusEligible)
     }
 }

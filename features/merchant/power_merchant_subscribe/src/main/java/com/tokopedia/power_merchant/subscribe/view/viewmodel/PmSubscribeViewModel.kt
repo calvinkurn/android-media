@@ -6,11 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.power_merchant.subscribe.common.coroutine.CoroutineDispatchers
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
-import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_IDLE
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
@@ -117,23 +115,23 @@ class PmSubscribeViewModel @Inject constructor(
 
     private suspend fun getShopFreeShippingStatus(): PowerMerchantFreeShippingStatus {
         return withContext(dispatchers.io) {
+            val userId = userSession.userId.toIntOrZero()
             val shopId = userSession.shopId.toIntOrZero()
             val pmStatus = _getPmStatusInfoResult.value as? Success<PowerMerchantStatus>
-            val shopScore = pmStatus?.data?.shopScore?.data?.value.orZero()
+            val isPowerMerchantIdle = pmStatus?.data?.goldGetPmOsStatus?.result?.data?.isPowerMerchantIdle() ?: false
 
-            val params = GetShopFreeShippingStatusUseCase.createRequestParams(listOf(shopId))
+            val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
             val freeShipping = getShopFreeShippingStatusUseCase.execute(params)
 
             val isActive = freeShipping.active
-            val isEligible = freeShipping.eligible
+            val isEligible = freeShipping.isEligible()
             val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
-            val isShopScoreEligible = shopScore >= MINIMUM_SCORE_ACTIVATE_IDLE
 
             PowerMerchantFreeShippingStatus(
                 isActive,
                 isEligible,
                 isTransitionPeriod,
-                isShopScoreEligible
+                isPowerMerchantIdle
             )
         }
     }

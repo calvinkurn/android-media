@@ -14,6 +14,7 @@ internal object GetShopFreeShippingEligibility {
                 shops{
                     shopID
                     status
+                    statusEligible
                 }
             }
         }
