@@ -76,11 +76,6 @@ class PlayBroadcastFragment @Inject constructor(
         }
     }
 
-    override fun onDestroy() {
-        parentViewModel.getPlayPusher().destroy()
-        super.onDestroy()
-    }
-
     //region observe
     /**
      * Observe

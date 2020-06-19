@@ -45,7 +45,7 @@ class PlayBroadcastViewModel  @Inject constructor(
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
         get() = _observableTotalLike
-    val observableLiveInfoState: LiveData<Event<PlayPusherInfoState>>
+    val observableLiveInfoState: LiveData<PlayPusherInfoState>
         get() = _observableLiveInfoState
     val observableLiveNetworkState: LiveData<Event<PlayPusherNetworkState>>
         get() = _observableLiveNetworkState
@@ -64,8 +64,6 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     val configuration: ConfigurationUiModel?
         get() = _observableConfigInfo.value
-    val channelInfo: ChannelInfoUiModel?
-        get() = _observableChannelInfo.value
     val shareInfo: ShareUiModel?
         get() = _observableShareInfo.value
 
@@ -87,9 +85,9 @@ class PlayBroadcastViewModel  @Inject constructor(
             value = Event(it)
         }
     }
-    private val _observableLiveInfoState = MediatorLiveData<Event<PlayPusherInfoState>>().apply {
+    private val _observableLiveInfoState = MediatorLiveData<PlayPusherInfoState>().apply {
         addSource(playPusher.getObservablePlayPusherInfoState()) {
-            value = Event(it)
+            value = it
         }
     }
     private val _observablePermissionState = MediatorLiveData<PlayPermissionState>().apply {
@@ -152,7 +150,7 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     // TODO("get channel, still waiting for the API to finish")
     fun getChannel(channelId: Int): ChannelInfoUiModel {
-        val channelInfo = PlayBroadcastMocker.getMockActiveChannel()
+        val channelInfo = PlayBroadcastMocker.getMockUnStartedChannel()
         _observableChannelInfo.value = channelInfo
         _observableTotalView.value = PlayBroadcastMocker.getMockTotalView()
         _observableTotalLike.value = PlayBroadcastMocker.getMockTotalLike()

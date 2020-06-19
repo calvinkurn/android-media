@@ -16,6 +16,8 @@ class PlayPusherTimer(val context: Context,
     var timeoutList: List<Timeout> = Timeout.Default()
     var pauseDuration: Long? = null
 
+    private var lastTimeLeftInMillis: Long = 0
+
     private var countDownTimer: PlayCountDownTimer = getCountDownTimer(duration)
     private var localStorage: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -24,6 +26,7 @@ class PlayPusherTimer(val context: Context,
     }
 
     fun stop() {
+        callback.onCountDownFinish(getTimeElapsed())
         countDownTimer.cancel()
     }
 
@@ -47,16 +50,22 @@ class PlayPusherTimer(val context: Context,
     private fun getCountDownTimer(liveStreamDuration: Long): PlayCountDownTimer {
         return object : PlayCountDownTimer(liveStreamDuration, DEFAULT_INTERVAL) {
             override fun onFinish() {
-                callback.onCountDownFinish()
+                callback.onCountDownFinish(getTimeElapsed())
             }
 
             override fun onTick(millisUntilFinished: Long) {
+                lastTimeLeftInMillis = millisUntilFinished
                 val timeout = timeoutList.firstOrNull { millisUntilFinished in it.minMillis..it.maxMillis }
                 if (timeout != null) callback.onCountDownAlmostFinish(timeout.minute)
                 else callback.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
             }
         }
     }
+
+    private fun getTimeElapsed(): String = millisToMinuteSecond(
+            getTimeElapsedInMillis()
+    )
+    private fun getTimeElapsedInMillis(): Long = duration - lastTimeLeftInMillis
 
     private fun millisToMinuteSecond(millis: Long) = String.format("%02d:%02d",
             millisToMinute(millis),

@@ -82,9 +82,9 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
                 _observableInfoState.postValue(PlayPusherInfoState.AlmostFinish(minutesUntilFinished))
             }
 
-            override fun onCountDownFinish() {
+            override fun onCountDownFinish(timeElapsed: String) {
                 stopPush()
-                _observableInfoState.postValue(PlayPusherInfoState.Finish)
+                _observableInfoState.postValue(PlayPusherInfoState.Finish(timeElapsed))
             }
 
             override fun onReachMaximumPauseDuration() {

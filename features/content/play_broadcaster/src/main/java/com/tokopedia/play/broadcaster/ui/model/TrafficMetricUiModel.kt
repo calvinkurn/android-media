@@ -5,6 +5,6 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 
 data class TrafficMetricUiModel(
-        val trafficMetricEnum: TrafficMetricsEnum? = null,
-        val liveTrafficMetricCount: String = ""
+        val metricLabel: TrafficMetricsEnum,
+        val metricCount: String
 )
