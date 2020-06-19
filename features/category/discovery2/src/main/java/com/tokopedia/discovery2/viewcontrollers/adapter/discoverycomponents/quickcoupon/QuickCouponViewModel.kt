@@ -21,6 +21,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     private val couponAppliedStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val userLoggedInLiveData: MutableLiveData<Boolean?> = MutableLiveData()
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
+    private val phoneVerificationStatus: MutableLiveData<Boolean> = MutableLiveData()
 
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
@@ -36,6 +37,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     fun getCouponStatus() = couponAppliedStatus
     fun isUserLoggedIn() = userLoggedInLiveData
     fun getComponentPosition() = componentPosition
+    fun getPhoneVerificationStatus() = phoneVerificationStatus
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -73,13 +75,17 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     override fun componentAction() {
         super.componentAction()
-        applyQuickCoupon()
+//        applyQuickCoupon()
     }
 
     private fun applyQuickCoupon() {
         clickCouponLiveData.value?.realCode?.let { promoCode ->
             launchCatchError(block = {
-                quickCouponUseCase.applyQuickCoupon(promoCode).applyCouponData?.let {
+                quickCouponUseCase.applyQuickCoupon(promoCode).applyCouponData?.let { applyCouponData ->
+                    applyCouponData.success?.let {
+                        couponAppliedStatus.value = it
+                    }
+
                 }
             }, onError = {
                 it.printStackTrace()
@@ -91,11 +97,12 @@ class QuickCouponViewModel(val application: Application, private val components:
         launchCatchError(
                 block = {
                     quickCouponUseCase.getMobileVerificationStatus().verificationStatus?.let {
-                        couponAppliedStatus.value = true
+                        it.phoneVerified?.let { status ->
+                            phoneVerificationStatus.value = status
+                        }
                     }
                 },
                 onError = {
-                    couponAppliedStatus.value = false
                     it.printStackTrace()
                 }
         )

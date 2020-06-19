@@ -44,8 +44,13 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             quickCouponViewModel.getComponentPosition().observe(viewlifecycleOwner, Observer {
                 componentPosition = it
             })
+
+            quickCouponViewModel.getPhoneVerificationStatus().observe(viewlifecycleOwner, Observer {
+                handlePhoneVerification(it)
+            })
         }
     }
+
 
     private fun userLoggedInStatus(it: Boolean?) {
         if (it == true) {
@@ -62,7 +67,6 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
         } else {
             applyButton.show()
         }
-
         titleTextView.text = quickCouponViewModel.getCouponTitle()
     }
 
@@ -70,5 +74,12 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
         when (v) {
             applyButton -> quickCouponViewModel.onClaimCouponClick()
         }
+    }
+
+    private fun handlePhoneVerification(phoneStatus: Boolean?) {
+        phoneStatus?.let {
+            (fragment as DiscoveryFragment).phoneVerificationResponseCallBack(it)
+        }
+
     }
 }
