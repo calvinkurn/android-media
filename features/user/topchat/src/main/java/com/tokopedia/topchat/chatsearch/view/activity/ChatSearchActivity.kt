@@ -93,6 +93,10 @@ class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponen
         txtToolbarTittle?.hide()
     }
 
+    override fun hideKeyboard() {
+        KeyboardHandler.hideSoftKeyboard(this)
+    }
+
     private fun initWindowBackground() {
         window.decorView.setBackgroundColor(Color.WHITE)
     }

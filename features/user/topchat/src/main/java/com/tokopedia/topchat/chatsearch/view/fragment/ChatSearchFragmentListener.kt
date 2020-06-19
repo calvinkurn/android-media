@@ -6,4 +6,5 @@ import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatV
 interface ChatSearchFragmentListener : EmptySearchChatViewHolder.Listener {
     fun onClickContactLoadMore(query: String, firstPageContacts: GetChatSearchResponse)
     fun showSearchBar()
+    fun hideKeyboard()
 }

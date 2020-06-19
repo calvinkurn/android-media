@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatsearch.view.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -61,6 +62,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         listener?.showSearchBar()
+        updateTouchListener(view)
         if (savedInstanceState == null && !alreadyLoaded) {
             super.onViewCreated(view, savedInstanceState)
             showRecentSearch()
@@ -71,6 +73,16 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
             viewModel.resetLiveData()
             setupRecyclerView()
             setupObserver()
+        }
+    }
+
+    private fun updateTouchListener(view: View) {
+        view.setOnTouchListener { _, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN,
+                MotionEvent.ACTION_MOVE -> listener?.hideKeyboard()
+            }
+            false
         }
     }
 
