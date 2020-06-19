@@ -4,8 +4,7 @@ import com.tokopedia.home_component.model.ReminderData
 
 interface SalamWidgetListener {
     fun onSalamWidgetClickListener(reminderData: ReminderData)
-    fun onSalamWidgetDeclineClickListener(reminderData: ReminderData)
-    fun onSalamWidgetDeclineTrackingListener(reminderData: ReminderData)
+    fun onSalamWidgetDeclineClickListener(reminderData: ReminderData, toggleTracking: Boolean = false)
     fun onSalamWidgetImpressionListener(reminderData: ReminderData)
     fun getSalamWidget()
 }

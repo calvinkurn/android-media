@@ -6,11 +6,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.listener.RechargeRecommendationListener
+import com.tokopedia.home_component.listener.ReminderWidgetListener
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import kotlinx.android.synthetic.main.home_component_reminder_widget.view.*
-import com.tokopedia.home_component.listener.SalamWidgetListener
-import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.kotlin.extensions.view.*
 
 /**
@@ -19,8 +17,7 @@ import com.tokopedia.kotlin.extensions.view.*
 
 class ReminderWidgetViewHolder(
         itemView: View,
-        private val rechargeListener: RechargeRecommendationListener,
-        private val salamListener : SalamWidgetListener
+        val reminderWidgetListener : ReminderWidgetListener
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
     companion object {
@@ -40,11 +37,7 @@ class ReminderWidgetViewHolder(
         with(itemView) {
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
-                if(element.source == ReminderEnum.RECHARGE) {
-                    rechargeListener.getRechargeRecommendation()
-                } else if(element.source == ReminderEnum.SALAM){
-                    salamListener.getSalamWidget()
-                }
+                reminderWidgetListener.getReminderWidget(element.source)
             } else {
                 home_reminder_recommendation_loading.hide()
 
@@ -69,32 +62,18 @@ class ReminderWidgetViewHolder(
                 }
 
                 btn_reminder_recommendation.setOnClickListener {
-                    if(element.source == ReminderEnum.RECHARGE) {
-                        rechargeListener.onRechargeRecommendationClickListener(reminder)
-                        rechargeListener.onRechargeRecommendationDeclineClickListener(reminder)
-                    } else if(element.source == ReminderEnum.SALAM){
-                        salamListener.onSalamWidgetClickListener(reminder)
-                    }
+                    reminderWidgetListener.onReminderWidgetClickListener(element)
+                    reminderWidgetListener.onReminderWidgetDeclineClickListener(element, false)
                 }
 
                 addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
-                        if(element.source == ReminderEnum.RECHARGE) {
-                            rechargeListener.onRechargeRecommendationImpressionListener(reminder)
-                        } else if(element.source == ReminderEnum.SALAM){
-                            salamListener.onSalamWidgetImpressionListener(reminder)
-                        }
+                        reminderWidgetListener.onReminderWidgetImpressionListener(element)
                     }
                 })
 
                 ic_close_reminder_recommendation.setOnClickListener {
-                    if(element.source == ReminderEnum.RECHARGE) {
-                        rechargeListener.onRechargeRecommendationDeclineTrackingListener(reminder)
-                        rechargeListener.onRechargeRecommendationDeclineClickListener(reminder)
-                    } else if(element.source == ReminderEnum.SALAM){
-                        salamListener.onSalamWidgetDeclineClickListener(reminder)
-                        salamListener.onSalamWidgetDeclineTrackingListener(reminder)
-                    }
+                    reminderWidgetListener.onReminderWidgetDeclineClickListener(element, true)
                 }
             }
         }

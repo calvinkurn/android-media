@@ -35,7 +35,7 @@ object ReminderWidgetMapper {
                                     appLink = it.appLink,
                                     backgroundColor = it.backgroundColor,
                                     buttonText = it.buttonText,
-                                    id = it.iD.toString(),
+                                    id = it.id.toString(),
                                     iconURL = it.iconURL,
                                     link = it.link,
                                     mainText = it.mainText,
@@ -48,7 +48,7 @@ object ReminderWidgetMapper {
     }
 
     fun isSalamWidgetAvailable(salamWidgetData: SalamWidgetData):Boolean{
-        return (salamWidgetData.iD!=0 && salamWidgetData.backgroundColor.isNotEmpty() &&
+        return (salamWidgetData.id!=0 && salamWidgetData.backgroundColor.isNotEmpty() &&
                 salamWidgetData.appLink.isNotEmpty() && salamWidgetData.buttonText.isNotEmpty() &&
                 salamWidgetData.iconURL.isNotEmpty() && salamWidgetData.mainText.isNotEmpty() &&
                 salamWidgetData.subText.isNotEmpty() && salamWidgetData.title.isNotEmpty())

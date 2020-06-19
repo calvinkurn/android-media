@@ -56,7 +56,6 @@ import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.design.keyboard.KeyboardHelper.OnKeyboardVisibilityChangedListener
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
@@ -72,11 +71,9 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRec
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
-import com.tokopedia.home.analytics.v2.MixLeftComponentTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
-import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapHomeChannelToComponent
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -125,7 +122,6 @@ import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEgg
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -152,8 +148,6 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -906,8 +900,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 RecommendationListCarouselComponentCallback(getHomeViewModel(), this),
                 MixLeftComponentCallback(this),
                 MixTopComponentCallback(this),
-                RechargeRecommendationCallback(context,getHomeViewModel(),this),
-                SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession()))
+                HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
+                        SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()

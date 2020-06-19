@@ -24,17 +24,18 @@ class RechargeRecommendationCallback (val context: Context?, val viewModel: Home
         }
     }
 
-    override fun onRechargeRecommendationDeclineClickListener(reminderData: ReminderData) {
+    override fun onRechargeRecommendationDeclineClickListener(reminderData: ReminderData,toggleTracking: Boolean) {
         // Trigger decline listener to remove widget from homepage
+
+        if(toggleTracking){
+            RechargeRecommendationTracking.homeRechargeRecommendationOnCloseTracker(
+                    mapRemindertoRechargeRecommendationData(reminderData))
+        }
+
         val requestParams = mapOf(
                 DeclineRechargeRecommendationUseCase.PARAM_UUID to reminderData.UUID,
                 DeclineRechargeRecommendationUseCase.PARAM_CONTENT_ID to reminderData.id)
         viewModel.declineRechargeRecommendationItem(requestParams)
-    }
-
-    override fun onRechargeRecommendationDeclineTrackingListener(reminderData: ReminderData) {
-        RechargeRecommendationTracking.homeRechargeRecommendationOnCloseTracker(
-                mapRemindertoRechargeRecommendationData(reminderData))
     }
 
     override fun onRechargeRecommendationImpressionListener(reminderData: ReminderData) {

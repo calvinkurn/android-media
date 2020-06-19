@@ -19,7 +19,7 @@ data class SalamWidgetData(
     val buttonText: String = "",
     @Expose
     @SerializedName("ID")
-    val iD: Int = 0,
+    val id: Int = 0,
     @Expose
     @SerializedName("IconURL")
     val iconURL: String = "",

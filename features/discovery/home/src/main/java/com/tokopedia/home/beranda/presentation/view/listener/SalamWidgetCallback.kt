@@ -26,7 +26,12 @@ class SalamWidgetCallback (val context: Context?, val viewModel: HomeViewModel,
         }
     }
 
-    override fun onSalamWidgetDeclineClickListener(reminderData: ReminderData) {
+    override fun onSalamWidgetDeclineClickListener(reminderData: ReminderData, toggleTracking:Boolean) {
+
+        if (toggleTracking){
+            SalamWidgetTracking.homeSalamWidgetOnCloseTracker(mapRemindertoSalamWidgetData(reminderData))
+        }
+
         val requestParams = mapOf(
                 DeclineSalamWIdgetUseCase.PARAM_WIDGET_ID to reminderData.id.toInt()
         )
@@ -41,10 +46,6 @@ class SalamWidgetCallback (val context: Context?, val viewModel: HomeViewModel,
         }
     }
 
-    override fun onSalamWidgetDeclineTrackingListener(reminderData: ReminderData) {
-        SalamWidgetTracking.homeSalamWidgetOnCloseTracker(mapRemindertoSalamWidgetData(reminderData))
-    }
-
     override fun getSalamWidget() {
         viewModel.getSalamWidget()
     }
@@ -52,7 +53,7 @@ class SalamWidgetCallback (val context: Context?, val viewModel: HomeViewModel,
     private fun mapRemindertoSalamWidgetData(reminderData: ReminderData): SalamWidgetData {
         reminderData.let {
             return SalamWidgetData(
-                    iD = it.id.toInt(),
+                    id = it.id.toInt(),
                     mainText = it.mainText,
                     subText = it.subText,
                     appLink = it.appLink,

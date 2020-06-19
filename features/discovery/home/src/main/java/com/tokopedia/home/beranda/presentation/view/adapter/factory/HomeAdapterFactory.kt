@@ -55,8 +55,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val recommendationListCarouselListener: RecommendationListCarouselListener,
                          private val mixLeftComponentListener: MixLeftComponentListener,
                          private val mixTopComponentListener: MixTopComponentListener,
-                         private val rechargeRecommendationListener: RechargeRecommendationListener,
-                         private val salamWidgetListener: SalamWidgetListener
+                         private val reminderWidgetListener: ReminderWidgetListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -320,7 +319,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             mixTopComponentListener
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
-                    ReminderWidgetViewHolder(view,rechargeRecommendationListener,salamWidgetListener)
+                    ReminderWidgetViewHolder(view,reminderWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

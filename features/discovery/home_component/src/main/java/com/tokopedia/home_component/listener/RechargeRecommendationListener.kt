@@ -4,8 +4,7 @@ import com.tokopedia.home_component.model.ReminderData
 
 interface RechargeRecommendationListener {
     fun onRechargeRecommendationClickListener(reminderData: ReminderData)
-    fun onRechargeRecommendationDeclineClickListener(reminderData: ReminderData)
-    fun onRechargeRecommendationDeclineTrackingListener(reminderData: ReminderData)
+    fun onRechargeRecommendationDeclineClickListener(reminderData: ReminderData, toggleTracking: Boolean = false)
     fun onRechargeRecommendationImpressionListener(reminderData: ReminderData)
     fun getRechargeRecommendation()
 
