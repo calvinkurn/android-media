@@ -32,6 +32,17 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
+    var title: String
+        get() = observableSetupChannel.value?.cover?.title ?: throw IllegalStateException("Cover / Cover Title is null")
+        set(value) {
+            val currentValue = _observableSetupChannel.value
+            _observableSetupChannel.value = currentValue?.copy(
+                    cover = currentValue.cover.copy(
+                            title = value
+                    )
+            )
+        }
+
     val observableFollowers: LiveData<FollowerDataUiModel>
         get() = _observableFollowers
     private val _observableFollowers = MutableLiveData<FollowerDataUiModel>()
@@ -72,16 +83,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
             delay(3000)
             _observableCreateLiveStream.value = NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
         }
-    }
-
-    fun setupChannelWithData(
-            selectedProducts: List<ProductContentUiModel>,
-            cover: PlayCoverUiModel
-    ) {
-        _observableSetupChannel.value = ChannelSetupUiModel(
-                cover = cover,
-                selectedProductList = selectedProducts
-        )
     }
 
     private fun selectedProductIds(productList: List<ProductContentUiModel>): List<String> = productList.map { it.id.toString() }.toList()

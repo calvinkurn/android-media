@@ -16,8 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -129,13 +127,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         RouteManager.route(
                 context,
                 String.format(APPLINK_WEBVIEW_FORMAT, ApplinkConst.WEBVIEW, TERMS_CONDITION_URL)
-        )
-    }
-
-    private fun populateSetupData(selectedProducts: List<ProductContentUiModel>, cover: PlayCoverUiModel) {
-        viewModel.setupChannelWithData(
-                selectedProducts = selectedProducts,
-                cover = cover
         )
     }
 

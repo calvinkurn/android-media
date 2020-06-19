@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastEditTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -42,6 +43,8 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
+
+    private lateinit var editTitleBottomSheet: PlayBroadcastEditTitleBottomSheet
 
     private lateinit var exitDialog: DialogUnify
 
@@ -145,7 +148,9 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun openEditCoverPage() {
-
+        getEditTitleBottomSheet().apply {
+            setCoverTitle(prepareViewModel.title)
+        }.show(childFragmentManager)
     }
 
     private fun doCopyShareLink() {
@@ -186,5 +191,17 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun showDialogWhenActionClose() {
         getExitDialog().show()
+    }
+
+    private fun getEditTitleBottomSheet(): PlayBroadcastEditTitleBottomSheet {
+        if (!::editTitleBottomSheet.isInitialized) {
+            editTitleBottomSheet = PlayBroadcastEditTitleBottomSheet()
+            editTitleBottomSheet.setListener(object : PlayBroadcastEditTitleBottomSheet.Listener {
+                override fun onSaveEditedTitle(title: String) {
+                    prepareViewModel.title = title
+                }
+            })
+        }
+        return editTitleBottomSheet
     }
 }

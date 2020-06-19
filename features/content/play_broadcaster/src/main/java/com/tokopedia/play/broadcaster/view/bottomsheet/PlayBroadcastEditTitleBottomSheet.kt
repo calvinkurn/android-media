@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -15,18 +16,38 @@ import kotlinx.android.synthetic.main.bottom_sheet_play_broadcast_edit_title.*
  */
 class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
 
-    lateinit var listener: Listener
-    private var liveTitle: String = ""
+    private var mListener: Listener? = null
+
+    private val title: String
+        get() = etPlayCoverTitleText.text.toString()
+
+    private val args: Bundle
+        get() {
+            if (arguments == null) arguments = Bundle()
+            return arguments!!
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        liveTitle = arguments?.getString(EXTRA_CURRENT_TITLE) ?: ""
+//        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         initBottomSheet()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+    }
+
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, TAG)
+    }
+
+    fun setCoverTitle(title: String) {
+        args.putString(EXTRA_CURRENT_TITLE, title)
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     private fun initBottomSheet() {
@@ -48,7 +69,7 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
                 0,
                 bottomSheetWrapper.paddingBottom)
 
-        etPlayCoverTitleText.setText(liveTitle)
+        etPlayCoverTitleText.setText(arguments?.getString(EXTRA_CURRENT_TITLE).orEmpty())
         etPlayCoverTitleText.setSingleLine(false)
         etPlayCoverTitleText.filters = arrayOf(InputFilter.LengthFilter(PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE))
         etPlayCoverTitleText.addTextChangedListener(object : TextWatcher {
@@ -57,14 +78,13 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
-                liveTitle = text.toString()
                 setupTitleCounter()
                 setupSaveButton()
             }
         })
         setupTitleCounter()
         btnPlayPrepareBroadcastSave.setOnClickListener {
-            listener.onSaveEditedTitle(etPlayCoverTitleText.text.toString())
+            mListener?.onSaveEditedTitle(title)
             dismiss()
         }
 
@@ -73,12 +93,12 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
 
     private fun setupTitleCounter() {
         tvPlayTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                liveTitle.length, PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE)
+                title.length, PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE)
     }
 
     private fun setupSaveButton() {
-        btnPlayPrepareBroadcastSave.isEnabled = liveTitle.isNotEmpty() &&
-                liveTitle.length <= PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE
+        btnPlayPrepareBroadcastSave.isEnabled = title.isNotEmpty() &&
+                title.length <= PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE
     }
 
     interface Listener {
@@ -89,12 +109,5 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
         private const val EXTRA_CURRENT_TITLE = "EXTRA_CURRENT_TITLE"
 
         const val TAG = "TagPlayBroadcastEditTitleBottomSheet"
-
-        fun getInstance(title: String): PlayBroadcastEditTitleBottomSheet =
-                PlayBroadcastEditTitleBottomSheet().also {
-                    it.arguments = Bundle().apply {
-                        putString(EXTRA_CURRENT_TITLE, title)
-                    }
-                }
     }
 }
