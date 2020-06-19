@@ -10,7 +10,8 @@ import android.util.Log;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
-import com.tkpd.library.utils.URLParser;
+import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
@@ -427,8 +428,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
                     Intent intentHome = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Intent intentPhoneVerif = ((TkpdCoreRouter) MainApplication.getAppContext())
-                            .getPhoneVerificationActivationIntent(context);
+                    Intent intentPhoneVerif = PhoneVerificationActivationActivity.getCallingIntent(context);
 
                     context.startActivities(new Intent[]
                             {

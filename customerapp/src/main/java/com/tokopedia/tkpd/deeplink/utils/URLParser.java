@@ -1,4 +1,4 @@
-package com.tkpd.library.utils;
+package com.tokopedia.tkpd.deeplink.utils;
 
 import android.net.Uri;
 

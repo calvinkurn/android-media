@@ -1,4 +1,4 @@
-package com.tokopedia.core.reputationproduct.util;
+package com.tokopedia.seller.home.view;
 
 import android.content.Context;
 import android.graphics.Color;

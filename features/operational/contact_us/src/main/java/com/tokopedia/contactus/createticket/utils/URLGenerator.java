@@ -1,4 +1,4 @@
-package com.tokopedia.core.loyaltysystem.util;
+package com.tokopedia.contactus.createticket.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
