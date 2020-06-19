@@ -14,8 +14,12 @@ import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStoreImpl
+import com.tokopedia.play.broadcaster.util.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
+import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
+import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -51,4 +55,12 @@ class PlayBroadcastSetupModule {
 
     @Provides
     fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = CommonCoroutineDispatcherProvider()
+
+    @Provides
+    @PlayBroadcastSetupScope
+    fun provideCoverImageUtil(@ApplicationContext context: Context): PlayCoverImageUtil = PlayCoverImageUtilImpl(context)
+
+    @Provides
+    @PlayBroadcastSetupScope
+    fun provideCoverImageTransformer(): ImageTransformer = PlayMinimumCoverImageTransformer()
 }

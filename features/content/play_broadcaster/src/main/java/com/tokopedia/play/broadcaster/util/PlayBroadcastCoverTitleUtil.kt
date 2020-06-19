@@ -2,31 +2,33 @@ package com.tokopedia.play.broadcaster.util
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import android.provider.MediaStore
-import android.widget.ImageView
-import java.io.ByteArrayOutputStream
+import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
+import java.io.File
+import java.io.FileOutputStream
 
 /**
  * @author by furqan on 12/06/2020
  */
+class PlayCoverImageUtilImpl(context: Context) : PlayCoverImageUtil {
+
+    private val cacheDir = context.applicationContext.cacheDir
+    private val playCoverImageFile = File(cacheDir, TEMP_COVER_NAME)
+
+    override fun getImagePathFromBitmap(image: Bitmap): Uri {
+        val fileOutputStream = FileOutputStream(playCoverImageFile)
+        fileOutputStream.use {
+            image.compress(Bitmap.CompressFormat.JPEG, 100, it)
+        }
+
+        return Uri.fromFile(playCoverImageFile)
+    }
+
+    companion object {
+        private const val TEMP_COVER_NAME = "temp_cover.png"
+    }
+}
+
 object PlayBroadcastCoverTitleUtil {
     const val MAX_LENGTH_LIVE_TITLE = 38
-    private const val COVER_TITLE = "PlayCover"
-
-    fun getBitmapFromImageView(imageView: ImageView): Bitmap =
-            (imageView.drawable as BitmapDrawable).bitmap
-
-    fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(
-                context.contentResolver,
-                bitmap,
-                COVER_TITLE,
-                null
-        )
-        return Uri.parse(path.toString())
-    }
 }

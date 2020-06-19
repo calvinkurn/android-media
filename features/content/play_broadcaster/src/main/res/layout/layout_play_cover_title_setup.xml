@@ -21,6 +21,18 @@
         app:layout_constraintBottom_toTopOf="@id/v_divider"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_image"
+        android:layout_width="@dimen/play_unify_loading_size"
+        android:layout_height="@dimen/play_unify_loading_size"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/iv_cover_image"
+        app:layout_constraintEnd_toEndOf="@id/iv_cover_image"
+        app:layout_constraintStart_toStartOf="@id/iv_cover_image"
+        app:layout_constraintTop_toTopOf="@id/iv_cover_image"
+        />
+
+
     <LinearLayout
         android:id="@+id/ll_change_cover"
         android:layout_width="@dimen/play_change_cover_button_height"

@@ -1,40 +1,34 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.RectF
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.AsyncTask
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
+import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_HEIGHT
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_WIDTH
+import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
+import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.user.session.UserSessionInterface
-import com.yalantis.ucrop.callback.BitmapCropCallback
-import com.yalantis.ucrop.model.CropParameters
-import com.yalantis.ucrop.model.ExifInfo
-import com.yalantis.ucrop.model.ImageState
-import com.yalantis.ucrop.task.BitmapCropTask
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import java.io.File
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /**
  * @author by furqan on 09/06/2020
@@ -44,21 +38,49 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val uploadImageUseCase: UploadImageUseCase<PlayCoverUploadEntity>,
         private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
-        private val userSession: UserSessionInterface)
-    : BaseViewModel(dispatcher.main) {
+        private val userSession: UserSessionInterface,
+        private val coverImageUtil: PlayCoverImageUtil,
+        private val coverImageTransformer: ImageTransformer
+) : BaseViewModel(dispatcher.main) {
+
+    val cropState: CoverSetupState
+        get() {
+            return _observableCropState.value ?: CoverSetupState.Blank
+        }
+
+    val coverUri: Uri?
+        get() {
+            return when(val cropState = observableCropState.value) {
+                is CoverSetupState.Cropped -> cropState.coverImage
+                is CoverSetupState.Cropping -> cropState.coverImage
+                else -> null
+            }
+        }
+
+    private val source: CoverSourceEnum
+        get() {
+            return when (val currentCropState = _observableCropState.value) {
+                is CoverSetupState.Cropped -> currentCropState.coverSource
+                is CoverSetupState.Cropping -> currentCropState.coverSource
+                else -> CoverSourceEnum.NONE
+            }
+        }
+
+    val observableCropState: LiveData<CoverSetupState>
+        get() = _observableCropState
+    private val _observableCropState = MediatorLiveData<CoverSetupState>().apply {
+        addSource(setupDataStore.getObservableSelectedCover()) {
+            value = if (it?.coverImage == null) CoverSetupState.Blank else CoverSetupState.Cropped(it.coverImage, it.source)
+        }
+    }
+
+    val observableCoverTitle: LiveData<String>
+        get() = Transformations.map(setupDataStore.getObservableSelectedCover()) {
+            it.title
+        }
 
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
         get() = setupDataStore.getObservableSelectedProducts()
-
-    val observableSelectedCover: LiveData<PlayCoverUiModel>
-        get() = setupDataStore.getObservableSelectedCover()
-
-    private val mutableOriginalImageUri = MutableLiveData<Uri>()
-    val originalImageUri: LiveData<Uri>
-        get() = mutableOriginalImageUri
-    private val mutableImageEcsLink = MutableLiveData<String>()
-    val imageEcsLink: LiveData<String>
-        get() = mutableImageEcsLink
 
     val maxTitleChars: Int
         get() = MAX_CHARS
@@ -67,112 +89,96 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
         return coverTitle.isNotEmpty() && coverTitle.length <= MAX_CHARS
     }
 
-    fun getOriginalImageUrl(context: Context, productId: Long, resizedImageUrl: String) {
+    suspend fun getOriginalImageUrl(productId: Long, resizedImageUrl: String): String? = suspendCancellableCoroutine {
         launchCatchError(dispatcher.io, block = {
             val originalImageUrlList = getOriginalProductImageUseCase.apply {
                 params = GetOriginalProductImageUseCase.createParams(productId)
             }.executeOnBackground()
+            yield()
             val resizedUrlLastSegments = resizedImageUrl.split("/")
                     .let { it[it.lastIndex] }
             val originalImageUrl = originalImageUrlList.first {
                 it.contains(resizedUrlLastSegments)
             }
-            getBitmapFromUrl(context, originalImageUrl)
-        }) {
-            it.printStackTrace()
+            it.resume(originalImageUrl)
+        }) { err ->
+            err.printStackTrace()
+            it.resumeWithException(err)
         }
     }
 
-    fun uploadCover(imagePath: String) {
-        launchCatchError(dispatcher.io, block = {
-            val params = hashMapOf<String, RequestBody>()
-            params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
-            params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_700)
-            params[PARAM_ID] = RequestBody.create(MediaType.parse(TEXT_PLAIN),
-                    "${userSession.userId}${UUID.randomUUID()}${System.currentTimeMillis()}")
+    fun uploadCover(imageUri: Uri, coverTitle: String) {
+        launchCatchError(block = {
+            val url = withContext(dispatcher.io) {
+                val params = hashMapOf<String, RequestBody>()
+                params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
+                params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_700)
+                params[PARAM_ID] = RequestBody.create(MediaType.parse(TEXT_PLAIN),
+                        "${userSession.userId}${UUID.randomUUID()}${System.currentTimeMillis()}")
 
-            val dataUploadedImage = uploadImageUseCase
-                    .createObservable(uploadImageUseCase.createRequestParam(
-                            imagePath,
-                            DEFAULT_UPLOAD_PATH,
-                            DEFAULT_UPLOAD_TYPE,
-                            params))
-                    .toBlocking()
-                    .first()
-                    .dataResultImageUpload
+                val dataUploadedImage = uploadImageUseCase
+                        .createObservable(uploadImageUseCase.createRequestParam(
+                                imageUri.path,
+                                DEFAULT_UPLOAD_PATH,
+                                DEFAULT_UPLOAD_TYPE,
+                                params))
+                        .toBlocking()
+                        .first()
+                        .dataResultImageUpload
 
-            var url = dataUploadedImage.data.picSrc
-            if (url.contains(DEFAULT_RESOLUTION)) {
-                url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_700)
+                dataUploadedImage.data.picSrc.let {
+                    if (it.contains(DEFAULT_RESOLUTION)) it.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_700)
+                    else it
+                }
             }
-            mutableImageEcsLink.postValue(url)
+
+            setupDataStore.setCover(
+                    PlayCoverUiModel(coverImage = Uri.parse(url), title = coverTitle, source = source, state = SetupDataState.Uploaded))
         }) {
             it.printStackTrace()
         }
     }
 
-    /**
-     * The Crop Task already runs in background, so we don't need to use coroutine
-     */
-    fun cropImage(context: Context, imagePath: String, cropRect: RectF,
-                  currentImageRect: RectF, currentScale: Float, currentAngle: Float,
-                  exifInfo: ExifInfo, viewBitmap: Bitmap, callback: BitmapCropCallback) {
-        val isPng = ImageUtils.isPng(imagePath)
-        val imageOutputDirectory = ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, isPng)
-        val imageState = ImageState(cropRect, currentImageRect,
-                currentScale, currentAngle)
-        val cropParams = CropParameters(ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT,
-                DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY,
-                imagePath, imageOutputDirectory.absolutePath, exifInfo)
+    fun setCroppingCover(coverUri: Uri, source: CoverSourceEnum) {
+        _observableCropState.value = CoverSetupState.Cropping(coverUri, source)
+    }
 
-        BitmapCropTask(context, viewBitmap, imageState, cropParams, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    fun setCroppingCover(bitmap: Bitmap, source: CoverSourceEnum) {
+        setCroppingCover(
+                getImagePathFromBitmap(bitmap),
+                source
+        )
+    }
+
+    fun setCroppedCover(coverUri: Uri) {
+        val imageValidated = validateImageMinSize(coverUri)
+        _observableCropState.value = CoverSetupState.Cropped(imageValidated, source)
+    }
+
+    fun removeCover() {
+        _observableCropState.value = CoverSetupState.Blank
+    }
+
+    fun saveCover(imagePath: Uri?, coverTitle: String) {
+        setupDataStore.setCover(
+                PlayCoverUiModel(
+                        coverImage = imagePath,
+                        title = coverTitle,
+                        source = source,
+                        state = SetupDataState.Draft
+                )
+        )
     }
 
     /**
      * Make sure new image won't be smaller than required minimum size
      */
-    fun validateImageMinSize(imageUri: Uri): Uri {
-        val imageFile = File(imageUri.path)
-        val isPng = ImageUtils.isPng(imageFile.absolutePath)
-        val imageBitmap = ImageUtils.getBitmapFromPath(imageFile.absolutePath, ImageUtils.DEF_WIDTH,
-                ImageUtils.DEF_HEIGHT, false)
-        var newBitmap: Bitmap? = null
-        var newImageFile: File? = null
-        try {
-            if (imageBitmap.width < MINIMUM_COVER_WIDTH || imageBitmap.height < MINIMUM_COVER_HEIGHT) {
-                newBitmap = Bitmap.createScaledBitmap(imageBitmap, MINIMUM_COVER_WIDTH, MINIMUM_COVER_HEIGHT, false)
-            }
-            newBitmap?.let {
-                newImageFile = ImageUtils.writeImageToTkpdPath(
-                        ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA,
-                        it, isPng)
-            }
-        } catch (t: Throwable) {
-            t.printStackTrace()
-        } finally {
-            imageBitmap.recycle()
-            newBitmap?.recycle()
-            System.gc()
-        }
-
-        return newImageFile?.let {
-            imageFile.delete()
-            Uri.fromFile(it)
-        } ?: imageUri
+    private fun validateImageMinSize(imageUri: Uri): Uri {
+        return coverImageTransformer.transformImageFromUri(imageUri)
     }
 
-    private fun getBitmapFromUrl(context: Context, imageUrl: String) {
-        Glide.with(context)
-                .asBitmap()
-                .load(imageUrl)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        mutableOriginalImageUri.postValue(PlayBroadcastCoverTitleUtil
-                                .getImageUriFromBitmap(context, resource))
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                })
+    private fun getImagePathFromBitmap(bitmap: Bitmap): Uri {
+        return coverImageUtil.getImagePathFromBitmap(bitmap)
     }
 
     companion object {
@@ -187,9 +193,6 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
         private const val RESOLUTION_700 = "700"
 
         private const val MAX_CHARS = 38
-
-        private const val DEFAULT_COMPRESS_QUALITY = 90
-        private val DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG
     }
 
 }

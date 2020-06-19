@@ -3,8 +3,8 @@ package com.tokopedia.play.broadcaster.di.setup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import dagger.Binds
@@ -59,6 +59,6 @@ abstract class PlayBroadcastSetupFragmentModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayBroadcastChooseCoverBottomSheet::class)
-    abstract fun getPlayBroadcastChooseCoverBottomSheet(fragment: PlayBroadcastChooseCoverBottomSheet): Fragment
+    @FragmentKey(PlayCoverImageChooserBottomSheet::class)
+    abstract fun getPlayBroadcastChooseCoverBottomSheet(fragment: PlayCoverImageChooserBottomSheet): Fragment
 }

@@ -24,7 +24,7 @@ interface PlayBroadcastSetupDataStore {
      */
     fun getObservableSelectedCover(): LiveData<PlayCoverUiModel>
 
-    fun getSelectedCover(): PlayCoverUiModel
+    fun getSelectedCover(): PlayCoverUiModel?
 
     fun setCover(cover: PlayCoverUiModel)
 }
