@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
@@ -68,8 +69,9 @@ class OtherMenuViewModel @Inject constructor(
 
         launchCatchError(block = {
             val isFreeShippingActive = withContext(Dispatchers.IO) {
-                val shopId = userSession.shopId.toInt()
-                val params = GetShopFreeShippingStatusUseCase.createRequestParams(listOf(shopId))
+                val userId = userSession.userId.toIntOrZero()
+                val shopId = userSession.shopId.toIntOrZero()
+                val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
                 getShopFreeShippingInfoUseCase.execute(params).first().freeShipping.isActive
             }
 

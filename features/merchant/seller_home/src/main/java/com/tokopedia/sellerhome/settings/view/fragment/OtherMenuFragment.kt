@@ -274,7 +274,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         observe(otherMenuViewModel.isFreeShippingActive) { freeShippingActive ->
             otherMenuViewHolder?.setupFreeShippingLayout(
                 fragmentManager,
-                freeShippingActive
+                freeShippingActive,
+                userSession
             )
         }
     }

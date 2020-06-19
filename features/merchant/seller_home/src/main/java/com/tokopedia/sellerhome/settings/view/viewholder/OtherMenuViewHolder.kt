@@ -22,13 +22,13 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.*
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
 import kotlinx.android.synthetic.main.setting_balance_topads.view.*
 import kotlinx.android.synthetic.main.setting_partial_main_info_success.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
-import kotlinx.android.synthetic.main.setting_partial_shop_info_success.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
@@ -110,16 +110,22 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    fun setupFreeShippingLayout(fm: FragmentManager?, freeShippingActive: Boolean) {
+    fun setupFreeShippingLayout(
+        fm: FragmentManager?,
+        freeShippingActive: Boolean,
+        user: UserSessionInterface
+    ) {
         val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
         val freeShippingLayout = itemView.shopInfoLayout.freeShippingLayout
 
         freeShippingLayout.setOnClickListener {
             freeShippingBottomSheet.show(fm)
+            SettingFreeShippingTracker.trackFreeShippingClick(user)
         }
 
         if(freeShippingActive) {
             freeShippingLayout.show()
+            SettingFreeShippingTracker.trackFreeShippingImpression(user)
         } else {
             freeShippingLayout.hide()
         }
