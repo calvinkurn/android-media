@@ -98,10 +98,17 @@ class ChatSearchViewModel @Inject constructor(
         if (isFirstPage()) {
             firstContactSearchResults = searchContactResponse
         }
-        if (isFirstPage() && searchListHeader != null) {
-            val searchResults: MutableList<Visitable<*>> = searchContactResponse.searchResults.subList(0, 5).toMutableList()
-            searchResults.add(BigDividerUiModel())
-            searchResults.add(0, searchListHeader)
+        if (isFirstPage()) {
+            val searchResults: MutableList<Visitable<*>> = ArrayList()
+            if (searchListHeader != null) {
+                searchResults.add(searchListHeader)
+            }
+            if (searchContactResponse.searchResults.size > 5) {
+                searchResults.addAll(searchContactResponse.searchResults.subList(0, 5).toMutableList())
+                searchResults.add(BigDividerUiModel())
+            } else {
+                searchResults.addAll(searchContactResponse.searchResults)
+            }
             if (replyHeader != null) {
                 searchResults.add(replyHeader)
                 searchResults.addAll(response.replySearchResults)

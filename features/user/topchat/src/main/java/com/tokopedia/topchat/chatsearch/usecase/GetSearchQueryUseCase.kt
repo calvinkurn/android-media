@@ -62,8 +62,9 @@ class GetSearchQueryUseCase @Inject constructor(
     private fun createReplyHeader(response: GetMultiChatSearchResponse, page: Int): SearchListHeaderUiModel? {
         if (page != 1) return null
         val contactCount = response.replySearchResults.size
-        if (contactCount > 5) {
-            return SearchListHeaderUiModel(SearchListHeaderUiModel.TITLE_REPLY, response.replyCount, true)
+        val replyCount = if (contactCount > 5) response.replyCount else ""
+        if (contactCount > 0) {
+            return SearchListHeaderUiModel(SearchListHeaderUiModel.TITLE_REPLY, replyCount, true)
         }
         return null
     }
