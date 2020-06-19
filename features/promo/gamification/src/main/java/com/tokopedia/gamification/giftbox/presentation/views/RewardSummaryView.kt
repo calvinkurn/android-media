@@ -135,27 +135,10 @@ class RewardSummaryView : FrameLayout {
         val list = mutableListOf<RewardSummaryItem>()
         list.addAll(rewardSummaryItemList)
 
-        val filteredItems = rewardSummaryItemList.filter { it.benfit?.isBigPrize ?: false }
+        val filteredItems = rewardSummaryItemList.filter { it.benfit.isBigPrize }
         list.removeAll(filteredItems)
         list.addAll(filteredItems)
 
-//        val items = arrayListOf<RewardSummaryItem>()
-//        items.apply {
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-//        }
         rvAdapter.dataList.clear()
         rvAdapter.dataList.addAll(list)
         rvAdapter.notifyDataSetChanged()

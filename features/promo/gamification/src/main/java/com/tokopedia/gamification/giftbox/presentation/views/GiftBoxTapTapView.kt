@@ -12,9 +12,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-
 import com.tokopedia.gamification.R
-import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 
@@ -56,22 +54,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         super.initViews()
     }
 
-    override fun handleTapOnGiftBox() {
-        //todo Rahul needs to be deleted
-//        if (isTimeOut) {
-//            //Do nothing
-//        } else if (isGiftTapAble) {
-//            if (isBoxAlreadyOpened) {
-//                secondTimeBoxOpenAnimation()
-//            } else {
-//                //first time animations
-//                isGiftTapAble = false
-//                isBoxAlreadyOpened = true
-//                firstTimeBoxOpenAnimation()
-//                targetTapCount = getRandomNumber()
-//            }
-//        }
-    }
+    override fun handleTapOnGiftBox() {}
 
     fun firstTimeBoxOpenAnimation() {
         boxCallback?.onBoxScaleDownAnimationStart()
@@ -79,45 +62,11 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         startBoxOpenAnimation()
     }
 
-    //-----------NEW CODE STARTS===============
-    fun showRewardAnimation(){
-        showRewardsForNextTap()
-        boxBounceAnimation().start()
-        //todo Rahul set isGiftTapAble = true here as well, when animation ends
-        //todo Rahul enable disableConfettiAnimation after animation is ended before enabling tap
-    }
-    fun showConfettiAnimation(){
+    fun showConfettiAnimation() {
         showParticleAnimation()
         val bounceAnim = boxBounceAnimation()
         bounceAnim.addListener(onEnd = { isGiftTapAble = true })
         bounceAnim.start()
-    }
-
-    //-----------NEW CODE ENDS===============
-
-
-    fun secondTimeBoxOpenAnimation() {
-        //show particles or show prize based on random number
-        //todo Rahul later hasRewardFromBackend
-        //todo Reset the tap count next rewards are dissappeared
-        //todo need to handle rapid taps
-        val hasRewardFromBackend = true
-        isGiftTapAble = false
-
-        if (tapCount == targetTapCount && hasRewardFromBackend) {
-            //show reward
-            resetTapCount()
-            showRewardsForNextTap()
-            boxBounceAnimation().start()
-        } else {
-            // show confetti
-            showParticleAnimation()
-            val bounceAnim = boxBounceAnimation()
-            bounceAnim.addListener(onEnd = { isGiftTapAble = true })
-            bounceAnim.start()
-        }
-        incrementTapCount()
-
     }
 
     fun boxBounceAnimation(): Animator {
@@ -129,28 +78,6 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         bounceAnimDown.duration = duration
         bounceAnimDown.interpolator = CubicBezierInterpolator(.645, 0.045, .355, 1.0)
         return bounceAnimDown
-    }
-
-    fun showRewardsForNextTap():Animator {
-        //todo Rahul take care of these !!
-        if(true){
-            return boxRewardCallback?.showPointsWithCoupons()!!
-        }
-        val rand = (0..2).random()
-        when (rand) {
-            0 -> {
-                //showPoints
-                return boxRewardCallback?.showPoints()!!
-            }
-            1 -> {
-                //showPointsWithCoupons
-                return boxRewardCallback?.showPointsWithCoupons()!!
-            }
-            else -> {
-                //showCoupons
-                return boxRewardCallback?.showCoupons()!!
-            }
-        }
     }
 
     fun incrementTapCount() {
@@ -232,7 +159,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             TOTAL_ASYNC_IMAGES -= 1
         }
 
-        if(glowImageShadowUrl!=null) {
+        if (glowImageShadowUrl != null) {
             Glide.with(this)
                     .load(glowImageShadowUrl)
                     .dontAnimate()
@@ -251,13 +178,13 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                         }
                     })
                     .into(imageBoxGlow)
-        }else{
+        } else {
             TOTAL_ASYNC_IMAGES -= 1
         }
 
 //        var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_7
 //        if (state == TokenUserState.ACTIVE) {
-            var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_0
+        var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_0
 //        }
 
         Glide.with(this)

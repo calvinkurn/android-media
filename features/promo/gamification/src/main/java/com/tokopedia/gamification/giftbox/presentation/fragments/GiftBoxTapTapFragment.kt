@@ -173,6 +173,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 } else {
                     animatorSet.playTogether(rewardAnim)
                 }
+                rewardAnim.addListener(onEnd = { afterRewardAnimationEnds() })
                 animatorSet.startDelay = startDelay
                 animatorSet.start()
             }
@@ -198,6 +199,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             }
         }
 
+        //todo Rahul need to delete this callback
         (giftBoxDailyView as GiftBoxTapTapView).boxRewardCallback = object : GiftBoxDailyView.BoxRewardCallback {
             override fun showPoints(): Animator {
                 val anim1 = rewardContainer.showSingleLargeRewardAnimationFadeOut()
