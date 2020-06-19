@@ -318,7 +318,11 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun saveShipmentLocation(shopId: Int, postalCode: String, courierOrigin: Int,
                                      addrStreet: String, lat: String, long: String) {
-        viewModel.saveShippingLocation(shopId, postalCode, courierOrigin, addrStreet, lat, long)
+        viewModel.saveShippingLocation(
+                viewModel.getSaveShopShippingLocationData(
+                        shopId, postalCode, courierOrigin, addrStreet, lat, long
+                )
+        )
     }
 
     private fun closeKeyboard() {

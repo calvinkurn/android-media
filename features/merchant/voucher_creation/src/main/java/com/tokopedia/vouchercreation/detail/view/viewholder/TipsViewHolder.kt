@@ -33,7 +33,7 @@ class TipsViewHolder(
     override fun bind(element: TipsUiModel) {
         with(itemView) {
             val text = element.tips.parseAsHtml()
-            val greenColor = context.getResColor(R.color.light_G500)
+            val greenColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.light_G500)
             val spannableStringColor = ForegroundColorSpan(greenColor)
             val spannableString = SpannableString(text)
             val clickableSpan = object : ClickableSpan() {

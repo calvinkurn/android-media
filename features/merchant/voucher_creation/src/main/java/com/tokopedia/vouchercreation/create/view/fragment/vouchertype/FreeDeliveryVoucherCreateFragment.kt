@@ -163,6 +163,8 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
         return inflater.inflate(R.layout.fragment_voucher_promotion_type, container, false)
     }
 
+    override fun getRecyclerViewResourceId(): Int = R.id.rvMvcVoucherType
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()

@@ -43,7 +43,7 @@ import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
 import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity
-import kotlinx.android.synthetic.main.fragment_base_list.*
+import kotlinx.android.synthetic.main.fragment_mvc_base_list.*
 import javax.inject.Inject
 
 class ReviewVoucherFragment : BaseDetailFragment() {
@@ -176,7 +176,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var isPromoCodeEligible = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_base_list, container, false)
+        return inflater.inflate(R.layout.fragment_mvc_base_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

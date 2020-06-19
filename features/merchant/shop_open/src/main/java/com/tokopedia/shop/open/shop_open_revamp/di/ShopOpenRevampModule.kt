@@ -8,6 +8,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.common.GQLQueryConstant
+import com.tokopedia.shop.open.shop_open_revamp.common.ShopOpenDispatcherProvider
+import com.tokopedia.shop.open.shop_open_revamp.common.ShopOpenDispatcherProviderImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -34,7 +36,7 @@ class ShopOpenRevampModule {
 
     @ShopOpenRevampScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideDispatcherProvider(): ShopOpenDispatcherProvider = ShopOpenDispatcherProviderImpl()
 
     @ShopOpenRevampScope
     @Provides
