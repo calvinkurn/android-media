@@ -228,7 +228,6 @@ ext {
             liveness                        : ":features:user:liveness",
             fcm_common                      : ":features:fcm_common",
             tkpdcore                        : ":tkpdcore",
-            tkpdinbox                       : ":tkpdinbox",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",

@@ -223,7 +223,6 @@ include "features:user:vote"
 include "features:fcm_common"
 
 include "tkpdcore"
-include "tkpdinbox"
 include "tkpdsession"
 include "tkpddesign"
 include "tkpdseller"

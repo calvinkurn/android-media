@@ -130,6 +130,15 @@ public class GetUserInfoDomainData {
         this.createdPassword = createdPassword;
     }
 
+    public boolean isPhoneVerified() {
+        return phoneVerified;
+    }
+
+    public void setPhoneVerified(boolean phoneVerified) {
+        this.phoneVerified = phoneVerified;
+    }
+
+
     public void setRoles(List<Integer> roles) {
         this.roles = roles;
     }
