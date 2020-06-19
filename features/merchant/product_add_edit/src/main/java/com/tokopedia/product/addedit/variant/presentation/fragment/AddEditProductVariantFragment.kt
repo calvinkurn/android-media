@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -415,6 +416,9 @@ class AddEditProductVariantFragment :
             variantValuePicker?.showKnob = true
             val variantValuePickerLayout = VariantDetailValuesPicker(context)
             variantValuePickerLayout.setLayoutPosition(layoutPosition)
+            variantValuePicker?.setShowListener {
+                variantValuePicker?.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+            }
 
             selectedVariantUnit?.run { variantValuePickerLayout.setSelectedVariantUnit(this) }
 
@@ -449,6 +453,11 @@ class AddEditProductVariantFragment :
         variantCustomValueInputLayout.setOnButtonSaveClickListener(this)
         variantCustomValueInputLayout.setupVariantCustomInputLayout(layoutPosition, variantId)
         variantCustomValueInputForm?.setChild(variantCustomValueInputLayout)
+
+        variantCustomValueInputForm?.setShowListener {
+            variantCustomValueInputForm?.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        }
+
         variantCustomValueInputForm?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_CUSTOM_VALUE_INPUT_FORM)
     }
 
@@ -504,7 +513,7 @@ class AddEditProductVariantFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(this, Observer { productInputModel ->
-            val categoryId = productInputModel.detailInputModel.categoryId
+            val categoryId = "3427"
             viewModel.getCategoryVariantCombination(categoryId)
         })
     }

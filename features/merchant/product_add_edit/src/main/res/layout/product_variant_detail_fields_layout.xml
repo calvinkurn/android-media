@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_unit_value_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,6 +41,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tfu_stock_field"
         app:layout_constraintTop_toBottomOf="@id/tv_unit_value_label"
+        app:text_field_input_type="number"
         app:text_field_label="@string/label_variant_price"
         app:text_field_label_static="true"
         app:text_field_prepend_text="Rp" />
@@ -56,6 +57,7 @@
         app:layout_constraintLeft_toRightOf="@id/tfu_price_field"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_unit_value_label"
+        app:text_field_input_type="number"
         app:text_field_label="@string/label_variant_stock"
         app:text_field_label_static="true" />
 

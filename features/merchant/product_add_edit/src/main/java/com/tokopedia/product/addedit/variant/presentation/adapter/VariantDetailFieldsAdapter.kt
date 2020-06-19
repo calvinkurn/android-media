@@ -9,10 +9,9 @@ import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInp
 class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInputTypeFactoryImpl) :
         BaseAdapter<VariantDetailInputTypeFactoryImpl>(variantDetailTypeFactoryImpl) {
 
-    fun addUnitValueHeader(unitValueHeader: String): Int {
-        visitables.add(VariantDetailHeaderViewModel(unitValueHeader))
-        val position = this.lastIndex
-        notifyItemInserted(position)
+    fun addUnitValueHeader(unitValueHeader: String, position: Int): Int {
+        visitables.add(VariantDetailHeaderViewModel(unitValueHeader, position))
+        notifyItemInserted(this.lastIndex)
         return position
     }
 
@@ -23,8 +22,30 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         return position
     }
 
-    fun updateAllField(variantDetailFieldMapLayout: HashMap<Int, VariantDetailInputLayoutModel>) {
+    fun collapseUnitValueHeader(adapterPosition: Int, fieldSize: Int) {
+        val targetPosition = adapterPosition + 1
+        for (i in 1..fieldSize) {
+            visitables.removeAt(targetPosition)
+            notifyItemRemoved(targetPosition)
+        }
+    }
+
+    fun expandDetailFields(adapterPosition: Int, inputLayoutModels: List<VariantDetailInputLayoutModel>) {
+        val targetPosition = adapterPosition + 1
+        val viewModels = mutableListOf<VariantDetailFieldsViewModel>()
+        inputLayoutModels.forEach { viewModels.add(VariantDetailFieldsViewModel(it)) }
+        visitables.addAll(targetPosition, viewModels)
+        notifyItemRangeInserted(targetPosition, viewModels.size)
+    }
+
+    fun updateDetailInputField(adapterPosition: Int, variantDetailInputModel: VariantDetailInputLayoutModel) {
+        val variantDetailFieldsViewModel = VariantDetailFieldsViewModel(variantDetailInputModel)
+        notifyElement(adapterPosition, variantDetailFieldsViewModel)
+    }
+
+    fun updateSkuVisibilityStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isVisible: Boolean) {
         variantDetailFieldMapLayout.forEach { (adapterPosition, variantDetailInputModel) ->
+            variantDetailInputModel.isSkuFieldVisible = isVisible
             val variantDetailFieldsViewModel = VariantDetailFieldsViewModel(variantDetailInputModel)
             notifyElement(adapterPosition, variantDetailFieldsViewModel)
         }
