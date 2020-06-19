@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -25,6 +26,8 @@ import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.bottomsheet.SelectDateRageBottomSheet
+import com.tokopedia.statistic.presentation.view.viewhelper.StatisticLayoutManager
+import com.tokopedia.statistic.presentation.view.viewhelper.setOnTabSelectedListener
 import com.tokopedia.statistic.presentation.view.viewmodel.StatisticViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -42,10 +45,8 @@ import javax.inject.Inject
 class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener {
 
     companion object {
-        private const val DEFAULT_START_DAYS = 7L
-        private const val DEFAULT_END_DAYS = 1L
+        private const val DEFAULT_START_DAYS = 6L
         private const val TOAST_DURATION = 5000L
-        private const val DELAY_FETCH_VISIBLE_WIDGET_DATA = 500L
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
 
@@ -60,13 +61,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val mViewModel: StatisticViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
+    private val mLayoutManager by lazy { StatisticLayoutManager(context, 2) }
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private val dateRangeBottomSheet by lazy { SelectDateRageBottomSheet(requireContext(), childFragmentManager) }
     private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
-    private val defaultEndDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DAYS))
+    private val defaultEndDate = Date()
 
+    private var tabItems = emptyList<Pair<String, String>>()
     private var isFirstLoad = true
     private var isErrorToastShown = false
+    private var isUserScrolling = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.fragment_stc_statistic, container, false)
@@ -151,9 +155,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
 
         setDefaultRange()
-
         setupRecyclerView()
 
+        tabLayoutStc.customTabMode = TabLayout.MODE_SCROLLABLE
         swipeRefreshStc.setOnRefreshListener {
             reloadPage()
         }
@@ -177,7 +181,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setupRecyclerView() = view?.run {
-        val gridLayoutManager = GridLayoutManager(context, 2).apply {
+        with(mLayoutManager) {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return try {
@@ -188,16 +192,22 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                     }
                 }
             }
+
+            setOnScrollVertically {
+                showTabLayout()
+                selectTabOnScrolling()
+            }
         }
-        recyclerView.layoutManager = gridLayoutManager
+        recyclerView.layoutManager = mLayoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                isUserScrolling = newState != RecyclerView.SCROLL_STATE_IDLE
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     requestVisibleWidgetsData()
                 }
-                super.onScrollStateChanged(recyclerView, newState)
             }
         })
+
         (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
@@ -246,9 +256,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun requestVisibleWidgetsData() {
-        val layoutManager = recyclerView.layoutManager as GridLayoutManager
-        val firstVisible: Int = layoutManager.findFirstVisibleItemPosition()
-        val lastVisible: Int = layoutManager.findLastVisibleItemPosition()
+        val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
+        val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
 
         val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
         adapter.data.forEachIndexed { index, widget ->
@@ -260,11 +269,35 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
+    private fun showTabLayout() = view?.run {
+        val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
+        if (firstVisible > 0) {
+            appBarStc.visible()
+        } else {
+            appBarStc.gone()
+        }
+    }
+
+    private fun selectTabOnScrolling() {
+        val firstVisible: Int = mLayoutManager.findFirstCompletelyVisibleItemPosition()
+        if (firstVisible == RecyclerView.NO_POSITION) return
+
+        val mostTopVisibleWidget: BaseWidgetUiModel<*> = adapter.data[firstVisible]
+        val widgetPair: Pair<String, String> = Pair(mostTopVisibleWidget.title, mostTopVisibleWidget.dataKey)
+        val tabPair: Pair<String, String> = tabItems.firstOrNull {
+            it.second == widgetPair.second || it.second == widgetPair.first
+        } ?: return
+        val tabIndex: Int = tabItems.map { it.first }.distinct().indexOfFirst { it == tabPair.first }
+        view?.tabLayoutStc?.tabLayout?.getTabAt(tabIndex)?.select()
+    }
+
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         recyclerView.visible()
         view?.globalErrorStc?.gone()
+
         super.clearAllData()
         super.renderList(widgets)
+        setupTabItems()
 
         if (isFirstLoad) {
             recyclerView.post {
@@ -273,6 +306,45 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             isFirstLoad = false
         } else {
             requestVisibleWidgetsData()
+        }
+    }
+
+    private fun setupTabItems() = view?.run {
+        tabLayoutStc.tabLayout.removeAllTabs()
+        var sectionTitle = ""
+        tabItems = adapter.data.map {
+            return@map if (it.widgetType == WidgetType.SECTION) {
+                tabLayoutStc.addNewTab(it.title)
+                sectionTitle = it.title
+                Pair(it.title, it.title)
+            } else {
+                Pair(sectionTitle, it.dataKey)
+            }
+        }
+        tabLayoutStc.tabLayout.setOnTabSelectedListener { tab ->
+            scrollToPosition()
+        }
+        selectTabOnScrolling()
+    }
+
+    private fun scrollToPosition() = view?.run {
+        if (isUserScrolling) return@run
+
+        val selectedTabIndex = tabLayoutStc.tabLayout.selectedTabPosition
+        val tabTitle: String = try {
+            tabItems.map { it.first }.distinct()[selectedTabIndex]
+        } catch (e: IndexOutOfBoundsException) {
+            ""
+        }
+        val adapterIndex: Int = adapter.data.indexOfFirst { it.title == tabTitle }
+        if (adapterIndex != RecyclerView.NO_POSITION) {
+            mLayoutManager.scrollToPositionWithOffset(adapterIndex, tabLayoutStc.height)
+            recyclerView.post {
+                requestVisibleWidgetsData()
+            }
+        }
+        if (selectedTabIndex == 0) {
+            appBarStc.gone()
         }
     }
 
@@ -372,12 +444,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 }
 
         showErrorToaster()
-        view?.postDelayed({
+        recyclerView.post {
             requestVisibleWidgetsData()
-        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
+        }
     }
 
-    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
+    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState() {
         forEach { widgetData ->
             adapter.data.find { it.dataKey == widgetData.dataKey }?.let { widget ->
                 if (widget is W) {
@@ -386,9 +458,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 }
             }
         }
-        view?.postDelayed({
+        recyclerView.post {
             requestVisibleWidgetsData()
-        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
+        }
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
@@ -415,7 +487,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Success -> result.data.setOnSuccessWidgetState()
                 is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
             }
         })
