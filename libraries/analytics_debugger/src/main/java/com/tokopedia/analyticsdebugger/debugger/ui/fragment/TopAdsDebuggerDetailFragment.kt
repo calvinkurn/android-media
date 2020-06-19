@@ -43,7 +43,7 @@ class TopAdsDebuggerDetailFragment : TkpdBaseV4Fragment() {
 
         var result = ""
         for (param in params) {
-            result += "\n$param: ${uri.getQueryParameter(param)}"
+            result += "\n$param:\n${uri.getQueryParameter(param)}\n"
         }
         return result
     }
