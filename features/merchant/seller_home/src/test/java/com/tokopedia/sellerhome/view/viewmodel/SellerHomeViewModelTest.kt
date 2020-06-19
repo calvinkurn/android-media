@@ -298,7 +298,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get card widget data then returns failed result`() = runBlocking {
+    fun `get card widget data then returns failed result`()  {
         val shopId = "12345"
         val dataKeys = listOf("a", "b", "c")
         val startDate = "02-03-20202"
@@ -316,9 +316,9 @@ class SellerHomeViewModelTest {
             getCardDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getCardWidgetData(dataKeys)
-
-        delay(100)
+        runBlocking {
+            mViewModel.getCardWidgetData(dataKeys)
+        }
 
         val result = mViewModel.cardWidgetData.value
         assert(result is Fail)
