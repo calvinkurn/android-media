@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -210,6 +211,9 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
                     is Success -> {
                         val validation = result.data
                         if (!validation.checkHasError()) {
+                            activity?.run {
+                                KeyboardHandler.hideSoftKeyboard(this)
+                            }
                             onNext(currentTargetType, couponName, promoCodeText)
                         } else {
                             validation.couponNameError.run {

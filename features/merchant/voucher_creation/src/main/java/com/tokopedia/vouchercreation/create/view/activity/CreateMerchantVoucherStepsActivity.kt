@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -309,6 +310,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             setBackgroundColor(Color.TRANSPARENT)
             try {
                 addRightIcon(R.drawable.ic_tips).setOnClickListener {
+                    KeyboardHandler.hideSoftKeyboard(this@CreateMerchantVoucherStepsActivity)
                     bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment::javaClass.name)
                     VoucherCreationTracking.sendCreateVoucherClickTracking(
                             step = currentStepPosition,

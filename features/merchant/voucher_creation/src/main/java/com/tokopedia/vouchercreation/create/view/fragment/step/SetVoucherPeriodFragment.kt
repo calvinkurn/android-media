@@ -17,6 +17,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.convertToDate
@@ -230,6 +231,9 @@ class SetVoucherPeriodFragment : Fragment() {
                             if (!validation.getIsHaveError()) {
                                 startDateTextField?.removeError()
                                 endDateTextField?.removeError()
+                                activity?.run {
+                                    KeyboardHandler.hideSoftKeyboard(this)
+                                }
                                 onNext(startDate, endDate, startHour, endHour)
                             } else {
                                 if (validation.dateStartError.isNotBlank() || validation.hourStartError.isNotBlank()) {

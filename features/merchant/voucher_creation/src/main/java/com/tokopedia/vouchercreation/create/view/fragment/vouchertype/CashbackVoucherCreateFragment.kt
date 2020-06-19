@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -368,6 +369,9 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                         is Success -> {
                             val validation = result.data
                             if (!validation.getIsHaveError()) {
+                                activity?.run {
+                                    KeyboardHandler.hideSoftKeyboard(this)
+                                }
                                 onNextStep(voucherImageType, getRupiahValue(rupiahMinimumPurchaseTextFieldModel), getRupiahValue(rupiahVoucherQuotaTextFieldModel))
                             } else {
                                 validation.run {
@@ -405,6 +409,9 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                         is Success -> {
                             val validation = result.data
                             if (!validation.getIsHaveError()) {
+                                activity?.run {
+                                    KeyboardHandler.hideSoftKeyboard(this)
+                                }
                                 onNextStep(voucherImageType, getPercentageValue(percentageMinimumPurchaseTextFieldModel), getPercentageValue(percentageVoucherQuotaTextFieldModel))
                             } else {
                                 validation.run {
@@ -467,6 +474,9 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             if (checkIfValuesAreCorrect(cashbackPercentageInfoUiModel.minimumDiscount, cashbackPercentageInfoUiModel.maximumDiscount)) {
                 validatePercentageValues()
             } else {
+                activity?.run {
+                    KeyboardHandler.hideSoftKeyboard(this)
+                }
                 percentageExpenseBottomSheet?.show(childFragmentManager, CashbackExpenseInfoBottomSheetFragment::class.java.name)
             }
         } else {
@@ -522,6 +532,9 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                 action = VoucherCreationAnalyticConstant.EventAction.Click.TOOLTIP_SPENDING_ESTIMATION,
                 userId = userSession.userId
         )
+        activity?.run {
+            KeyboardHandler.hideSoftKeyboard(this)
+        }
         expensesInfoBottomSheetFragment.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
     }
 
