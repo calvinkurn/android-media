@@ -146,7 +146,6 @@ android {
         warningsAsErrors false
         abortOnError false
         check lintchecks
-        baseline file("lint-baseline.xml")
     }
 
     signingConfigs {
