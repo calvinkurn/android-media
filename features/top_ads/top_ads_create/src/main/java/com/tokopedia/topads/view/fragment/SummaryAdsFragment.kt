@@ -41,7 +41,7 @@ import javax.inject.Inject
  */
 
 private const val CLICK_IKLANKAN_BUTTON = "click-iklankan"
-
+private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: %s"
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var viewModel: SummaryViewModel
@@ -142,7 +142,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 selectedkeywordTags.add(keywordsList[index].keywordTag)
             }
 
-            var eventLabel = "product_id:" + selectedProductIds.joinToString(",") + ",keyword:" + selectedkeywordTags.joinToString("::") + ",keyword_id:" + selectedkeywordIds.joinToString("::")
+            var eventLabel = PRODUCT_INFO.format(selectedProductIds.joinToString(","), selectedkeywordTags.joinToString("::"), selectedkeywordIds.joinToString(","))
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, eventLabel)
         }
         suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
