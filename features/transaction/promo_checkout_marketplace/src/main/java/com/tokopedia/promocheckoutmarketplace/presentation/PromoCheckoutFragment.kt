@@ -128,7 +128,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
-        const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 500L
+        const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 250L
         const val NO_DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 0L
 
         fun createInstance(pageSource: Int,
@@ -546,7 +546,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             snapToPromoInput()
             showBottomsheetJob?.cancel()
             showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
-                delay(if (keyboardHeight > 0) NO_DELAY_SHOW_BOTTOMSHEET_IN_MILIS else DELAY_SHOW_BOTTOMSHEET_IN_MILIS)
+                delay(DELAY_SHOW_BOTTOMSHEET_IN_MILIS)
                 initializePromoLastSeenRecyclerView(data.uiData.promoLastSeenItemUiModelList)
 
                 // Determine available space height for bottomsheet if soft keyboard open
