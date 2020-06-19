@@ -65,7 +65,7 @@ class TopchatUploadImageUseCase @Inject constructor(
     }
 
     private fun onErrorUploadImage(result: UploadResult.Error, image: ImageUploadViewModel) {
-        val error = Throwable("Something went wrong")
+        val error = Throwable(result.message)
         onError?.invoke(error, image)
     }
 

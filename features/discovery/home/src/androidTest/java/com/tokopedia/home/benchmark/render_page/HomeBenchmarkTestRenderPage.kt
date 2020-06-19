@@ -6,13 +6,10 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.home.R
 import com.tokopedia.home.benchmark.DynamicChannelGenerator.createLego6
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicLegoBannerViewHolder
-import com.tokopedia.home.environment.InstrumentationHomeTestActivity
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.OldDynamicLegoBannerViewHolder
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,7 +24,7 @@ class HomeBenchmarkTestRenderPage {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val root = FrameLayout(context)
         val view = LayoutInflater.from(context).inflate(R.layout.home_dc_lego_banner, root, false)
-        val dynamicLegoBannerViewHolder = DynamicLegoBannerViewHolder(
+        val dynamicLegoBannerViewHolder = OldDynamicLegoBannerViewHolder(
                 view, null, null)
         lego6ChannelDataModel.channel = createLego6()
 
