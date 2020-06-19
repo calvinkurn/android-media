@@ -86,7 +86,7 @@ class PmSubscribeViewModel @Inject constructor(
 
                     val isActive = freeShipping.active
                     val isEligible = freeShipping.eligible
-                    val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
+                    val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
                     val isShopScoreEligible = shopScore >= MINIMUM_SCORE_ACTIVATE_IDLE
 
                     PowerMerchantFreeShippingStatus(
@@ -120,14 +120,14 @@ class PmSubscribeViewModel @Inject constructor(
 
     fun trackFreeShippingImpression() {
         if(!freeShippingImpressionTracked) {
-            val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
+            val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
             PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(userSession, isTransitionPeriod)
             freeShippingImpressionTracked = true
         }
     }
 
     fun trackFreeShippingClick() {
-        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
+        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         PowerMerchantFreeShippingTracker.sendClickFreeShipping(userSession, isTransitionPeriod)
     }
 
