@@ -1,8 +1,11 @@
 package com.tkpd.remoteresourcerequest.type
 
 import android.util.DisplayMetrics
-import com.tkpd.remoteresourcerequest.utils.CSVArrayListHelper
 import com.tkpd.remoteresourcerequest.utils.Constants
+import com.tkpd.remoteresourcerequest.utils.Constants.AUDIO_ARRAY
+import com.tkpd.remoteresourcerequest.utils.Constants.MULTI_DPI_ARRAY
+import com.tkpd.remoteresourcerequest.utils.Constants.NO_DPI_ARRAY
+import com.tkpd.remoteresourcerequest.utils.Constants.SINGLE_DPI_ARRAY
 import com.tkpd.remoteresourcerequest.utils.DensityFinder
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 
@@ -68,7 +71,7 @@ data class SingleDPIImageType(
     }
 
     override val relativeFilePath =
-            commonPath.format(CSVArrayListHelper.SINGLE_DPI_ARRAY, remoteFileName)
+            commonPath.format(SINGLE_DPI_ARRAY, remoteFileName)
     override var densityType = DisplayMetrics.DENSITY_MEDIUM
 
 }
@@ -83,7 +86,7 @@ data class NoDPIImageType(
     }
 
     override val relativeFilePath =
-            commonPath.format(CSVArrayListHelper.NO_DPI_ARRAY, remoteFileName)
+            commonPath.format(NO_DPI_ARRAY, remoteFileName)
     override var densityType = 0
 }
 
@@ -112,6 +115,20 @@ object ImageTypeMapper {
             1 -> SingleDPIImageType(deferredImageView, deferredImageView.mRemoteFileName)
             2 -> NoDPIImageType(deferredImageView, deferredImageView.mRemoteFileName)
             else -> MultiDPIImageType(deferredImageView, deferredImageView.mRemoteFileName)
+        }
+    }
+
+}
+
+object ResourceTypeMapper {
+
+    fun getResourceType(fileType: String, fileName: String): RequestedResourceType {
+        return when (fileType) {
+            MULTI_DPI_ARRAY -> MultiDPIImageType(null, fileName)
+            SINGLE_DPI_ARRAY -> SingleDPIImageType(null, fileName)
+            NO_DPI_ARRAY -> NoDPIImageType(null, fileName)
+            AUDIO_ARRAY -> AudioType(fileName)
+            else -> PendingType(fileName)
         }
     }
 

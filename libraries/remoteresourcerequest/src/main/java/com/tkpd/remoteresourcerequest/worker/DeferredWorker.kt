@@ -17,8 +17,7 @@ import kotlin.coroutines.resume
 class DeferredWorker(val context: Context, params: WorkerParameters) :
         CoroutineWorker(context, params), CoroutineScope {
 
-    private val resourceDownloadManager =
-            ResourceDownloadManager.getManager()
+    private val resourceDownloadManager = ResourceDownloadManager.getManager()
     private val deferredWorkerHelper = DeferredWorkerHelper(context)
 
     override suspend fun doWork(): Result {
@@ -41,19 +40,15 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
         }
         deferredList.clear()
 
-        if (isDeferredWorkCompleted(
-                        context,
-                        resId
-                )
-        ) {
+        if (isDeferredWorkCompleted(context, resId)) {
             resourceDownloadManager.logCurrentState(
-                    context.getString(R.string.worker_completed_message).format(WORKER_TAG, list.size)
+                    context.getString(R.string.rem_res_req_worker_completed_message).format(WORKER_TAG, list.size)
             )
             return Result.success()
 
         }
         resourceDownloadManager.logCurrentState(
-                context.getString(R.string.worker_retry_message).format(WORKER_TAG)
+                context.getString(R.string.rem_res_req_worker_retry_message).format(WORKER_TAG)
         )
         return Result.retry()
     }
@@ -66,8 +61,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                 resourceType.isRequestedFromWorker = true
                 resourceDownloadManager.startDownload(
                         resourceType,
-                        object :
-                                DeferredTaskCallback {
+                        object : DeferredTaskCallback {
                             override fun onTaskCompleted(resourceUrl: String?, filePath: String?) {
                                 cont.resume(true)
                             }
@@ -76,7 +70,6 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                                 cont.resume(false)
                             }
                         })
-
             }
 
     companion object : CoroutineScope {
@@ -95,11 +88,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
         ) {
             try {
                 launch {
-                    if (!isDeferredWorkCompleted(
-                                    context,
-                                    resourceId
-                            )
-                    ) {
+                    if (!isDeferredWorkCompleted(context, resourceId)) {
                         val pushWorker = OneTimeWorkRequest
                                 .Builder(DeferredWorker::class.java)
                                 .setConstraints(getWorkerConstraints())
@@ -108,25 +97,23 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                                         30 * 60 * 1000,
                                         TimeUnit.MILLISECONDS
                                 )
-                                .setInputData(
-                                        createInputData(resourceId)
-                                )
+                                .setInputData(createInputData(resourceId))
                                 .build()
                         WorkManager.getInstance()
                                 .enqueueUniqueWork(WORKER_TAG, ExistingWorkPolicy.KEEP, pushWorker)
                         resourceDownloadManager.logCurrentState(
-                                context.getString(R.string.worker_scheduled_message).format(WORKER_TAG)
+                                context.getString(R.string.rem_res_req_worker_scheduled_message).format(WORKER_TAG)
                         )
                     } else {
                         resourceDownloadManager.logCurrentState(
-                                context.getString(R.string.worker_schedule_not_required_message)
+                                context.getString(R.string.rem_res_req_worker_schedule_not_required_message)
                                         .format(WORKER_TAG)
                         )
                     }
                 }
             } catch (ex: Exception) {
                 resourceDownloadManager.logCurrentState(
-                        context.getString(R.string.worker_schedule_not_required_message)
+                        context.getString(R.string.rem_res_req_worker_schedule_not_required_message)
                                 .format(WORKER_TAG)
                 )
 
@@ -134,10 +121,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
             }
         }
 
-        private fun isDeferredWorkCompleted(
-                context: Context,
-                resourceId: Int
-        ): Boolean {
+        private fun isDeferredWorkCompleted(context: Context, resourceId: Int): Boolean {
             return DeferredWorkerHelper(context)
                     .getPendingDeferredResourceURLs(resourceId).isEmpty()
         }

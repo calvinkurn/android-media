@@ -13,9 +13,9 @@ import org.junit.Test
 
 class DensityFinderTest {
 
-    val context = mockk<Context>()
-    var metrics = mockk<DisplayMetrics>(relaxed = true)
-    val mockRes = mockk<Resources>()
+    private val context = mockk<Context>()
+    private var metrics = mockk<DisplayMetrics>(relaxed = true)
+    private val mockRes = mockk<Resources>()
 
     @Before
     fun setUp() {
@@ -117,7 +117,6 @@ class DensityFinderTest {
         DensityFinder.initializeDensityPath(context)
         val density = DensityFinder.densityUrlPath
         assertEquals("mdpi", density)
-
     }
 
     @After

@@ -10,17 +10,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 
-class DeferredWorkerHelper(
-        val context: Context
-) {
-
-    companion object {
-        private const val FILE_NAME_INDEX = 0
-        private const val FILE_TYPE_INDEX = 1
-        private const val FILE_VERSION_INDEX = 2
-        private const val IS_FILE_USED_ANYWHERE_INDEX = 3
-    }
-
+class DeferredWorkerHelper(val context: Context) {
     private var resourceDB: ResourceDB = ResourceDB.getDatabase(context)
 
     internal fun getPendingDeferredResourceURLs(
@@ -59,7 +49,7 @@ class DeferredWorkerHelper(
         return pendingList
     }
 
-    private fun getDeferredResourceFromFile(
+    internal fun getDeferredResourceFromFile(
             @RawRes resourceId: Int
     ): ArrayList<RequestedResourceType> {
         val resUrl = arrayListOf<RequestedResourceType>()
@@ -74,15 +64,10 @@ class DeferredWorkerHelper(
             reader.readLine()
             var line: String?
             while (reader.readLine().also { line = it } != null) {
-                val row = line?.split(",")
-                if (!row.isNullOrEmpty()) {
+                val singleCSVEntry = line
+                if (!singleCSVEntry.isNullOrEmpty()) {
                     val fileTypeObject =
-                            CSVArrayListHelper.getResourceTypeObject(
-                                    row[FILE_NAME_INDEX],
-                                    row[FILE_TYPE_INDEX],
-                                    row[FILE_VERSION_INDEX],
-                                    row[IS_FILE_USED_ANYWHERE_INDEX]
-                            )
+                            CSVArrayListHelper.getResourceTypeObject(singleCSVEntry)
 
                     resUrl.add(fileTypeObject)
                 }
@@ -90,7 +75,7 @@ class DeferredWorkerHelper(
             }
         } catch (e: IOException) {
             throw IOException(
-                    context.getString(R.string.msg_unable_to_read_file)
+                    context.getString(R.string.rem_res_req_msg_unable_to_read_file)
             )
         } finally {
             inputStream?.close()

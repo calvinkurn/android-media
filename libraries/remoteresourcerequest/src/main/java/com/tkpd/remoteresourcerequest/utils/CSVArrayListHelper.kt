@@ -1,41 +1,40 @@
 package com.tkpd.remoteresourcerequest.utils
 
-import com.tkpd.remoteresourcerequest.type.*
+import com.tkpd.remoteresourcerequest.type.RequestedResourceType
+import com.tkpd.remoteresourcerequest.type.ResourceTypeMapper
 
 
 class CSVArrayListHelper {
 
     companion object {
-        private const val MULTI_DPI_ARRAY = "multiDpi"
-        const val SINGLE_DPI_ARRAY = "singleDpi"
-        const val NO_DPI_ARRAY = "noDpi"
-        private const val AUDIO_ARRAY = "audio"
 
-        fun getResourceTypeObject(
-            name: String,
-            type: String,
-            version: String,
-            isUsed: String
-        ): RequestedResourceType {
+        private const val FILE_NAME_INDEX = 0
+        private const val FILE_TYPE_INDEX = 1
+        private const val FILE_VERSION_INDEX = 2
+        private const val IS_FILE_USED_ANYWHERE_INDEX = 3
 
-            val fileName = extractProperString(name)
+        private const val CSV_SEPARATOR = ","
+        private const val FILE_NOT_USED_ANYWHERE = "n"
 
-            val fileTypeObject = when (extractProperString(type)) {
-                MULTI_DPI_ARRAY -> MultiDPIImageType(null, fileName)
-                SINGLE_DPI_ARRAY -> SingleDPIImageType(null, fileName)
-                NO_DPI_ARRAY -> NoDPIImageType(null, fileName)
-                AUDIO_ARRAY -> AudioType(fileName)
-                else -> PendingType(fileName)
-            }
-            fileTypeObject.resourceVersion = extractProperString(version)
-            val isUsedAnywhere = extractProperString(isUsed)
-            fileTypeObject.isUsedAnywhere = !isUsedAnywhere.equals("n", ignoreCase = true)
-            return fileTypeObject
+        fun getResourceTypeObject(singleCSVEntry: String): RequestedResourceType {
+            val resourceInfo = singleCSVEntry.split(CSV_SEPARATOR)
+            return getResourceTypeInternal(resourceInfo[FILE_NAME_INDEX].trim(),
+                    resourceInfo[FILE_TYPE_INDEX].trim(),
+                    resourceInfo[FILE_VERSION_INDEX].trim(),
+                    resourceInfo[IS_FILE_USED_ANYWHERE_INDEX].trim())
         }
 
-        private fun extractProperString(csvString: String): String {
-            val name = csvString.trim()
-            return name.substring(1, name.length - 1)
+        private fun getResourceTypeInternal(fileName: String,
+                                            fileType: String,
+                                            fileVersion: String,
+                                            isUsed: String): RequestedResourceType {
+
+            val fileTypeObject = ResourceTypeMapper
+                    .getResourceType(fileType, fileName)
+
+            fileTypeObject.resourceVersion = fileVersion
+            fileTypeObject.isUsedAnywhere = !isUsed.equals(FILE_NOT_USED_ANYWHERE, true)
+            return fileTypeObject
         }
     }
 

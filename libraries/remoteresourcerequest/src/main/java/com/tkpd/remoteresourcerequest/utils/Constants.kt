@@ -14,5 +14,9 @@ object Constants {
             "at least once!!!!"
     const val CORRUPT_FILE_MESSAGE = "Corrupt downloaded file!!"
 
+    const val MULTI_DPI_ARRAY = "multiDpi"
+    const val SINGLE_DPI_ARRAY = "singleDpi"
+    const val NO_DPI_ARRAY = "noDpi"
+    const val AUDIO_ARRAY = "audio"
 
 }

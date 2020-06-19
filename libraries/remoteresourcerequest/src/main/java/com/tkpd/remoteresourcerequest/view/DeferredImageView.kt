@@ -63,14 +63,14 @@ class DeferredImageView : AppCompatImageView {
                 R.styleable.DeferredImageView_remoteFileName
         ) ?: mRemoteFileName
         dpiSupportType =
-                typedArray.getInt(R.styleable.DeferredImageView_imageDpiSupportType, 0)
+                typedArray.getInt(R.styleable.DeferredImageView_imageDpiSupportType, dpiSupportType)
         typedArray.recycle()
         downloadAndSetResource()
     }
 
     private fun downloadAndSetResource() {
         check(mRemoteFileName.isNotEmpty()) {
-            context.getString(R.string.exception_file_name_not_found)
+            context.getString(R.string.rem_res_req_exception_file_name_not_found)
         }
         task?.let { it.deferredImageView?.clear() }
         //start with originally no image

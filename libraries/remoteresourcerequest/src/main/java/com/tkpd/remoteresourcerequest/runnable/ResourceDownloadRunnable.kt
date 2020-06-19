@@ -172,7 +172,7 @@ class ResourceDownloadRunnable(
         try {
             out = FileOutputStream(file)
             out.write(byteArray)
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             e.printStackTrace()
         } finally {
             out?.flush()
