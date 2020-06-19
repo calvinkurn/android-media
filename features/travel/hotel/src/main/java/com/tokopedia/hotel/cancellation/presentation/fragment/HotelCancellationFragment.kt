@@ -87,7 +87,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
     }
 
     private fun getCancellationData() {
-        cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_hotel_cancellation_data), invoiceId)
+        cancellationViewModel.getCancellationData(invoiceId)
     }
 
     override fun onResume() {

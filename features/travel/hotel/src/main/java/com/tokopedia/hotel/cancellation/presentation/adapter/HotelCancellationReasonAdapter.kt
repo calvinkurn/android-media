@@ -99,8 +99,8 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
                 hotel_cancellation_reason_free_text_tf.textFieldInput.addTextChangedListener(object : TextWatcher{
                     override fun afterTextChanged(s: Editable?) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            delay(300)
-                            if (s.toString().trim().length >= 10) {
+                            delay(TYPE_EDITTEXT_DELAY_MS.toLong())
+                            if (s.toString().trim().length >= MIN_EDITTEXT_CHAR) {
                                 hotel_cancellation_reason_free_text_tf.setError(false)
                                 hotel_cancellation_reason_free_text_tf.setMessage("")
                                 listener?.onTypeFreeTextAndMoreThan10Words(true, s.toString())
@@ -130,5 +130,8 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
     companion object {
         const val TYPE_HEADER = 99990
         const val TYPE_ITEM = 20
+
+        const val TYPE_EDITTEXT_DELAY_MS = 300
+        const val MIN_EDITTEXT_CHAR = 10
     }
 }

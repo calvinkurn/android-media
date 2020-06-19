@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.cancellation.presentation.fragment
 
-import android.app.Activity
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
@@ -9,14 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
@@ -109,7 +106,7 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
     }
 
     private fun getCancellationData() {
-        cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_hotel_cancellation_data), invoiceId, false)
+        cancellationViewModel.getCancellationData(invoiceId, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -161,9 +158,9 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
 
     private fun showConfirmationDialog(cancelCartId: String, confirmationButton: HotelCancellationModel.ConfirmationButton,
                                        hotelCancellationModel: HotelCancellationModel) {
-        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: "0"
-        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: "0"
-        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: "0"
+        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: HOTEL_DEFAULT_AMOUNT_ZERO
+        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: HOTEL_DEFAULT_AMOUNT_ZERO
+        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: HOTEL_DEFAULT_AMOUNT_ZERO
         val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(confirmationButton.title)
         dialog.setDescription(confirmationButton.desc)
@@ -190,6 +187,7 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
             inflater.inflate(R.layout.fragment_hotel_cancellation_reason, container, false)
 
     companion object {
+        const val HOTEL_DEFAULT_AMOUNT_ZERO = "0"
         const val HOTEL_CANCELLATION_REASON_SCREEN_NAME = "/hotel/ordercancelreason"
         private const val EXTRA_INVOICE_ID = "extra_invoice_id"
         fun getInstance(invoiceId: String): HotelCancellationReasonFragment =

@@ -63,10 +63,10 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             isOrderNotFound = it.getBoolean(EXTRA_HOTEL_CANCELLATION_IS_ORDER_NOT_FOUND, false)
 
             cancellationSubmitParam = it.getParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_PARAM) ?: HotelCancellationSubmitParam()
-            invoiceId = it.getString(EXTRA_HOTEL_CANCELLATION_INVOICE_ID) ?: "0"
-            orderAmount = it.getString(EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT) ?: "0"
-            cancellationFee = it.getString(EXTRA_HOTEL_CANCELLATION_FEE) ?: "0"
-            refundAmount = it.getString(EXTRA_HOTEL_REFUND_AMOUNT) ?: "0"
+            invoiceId = it.getString(EXTRA_HOTEL_CANCELLATION_INVOICE_ID) ?: HOTEL_DEFAULT_AMOUNT_ZERO
+            orderAmount = it.getString(EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT) ?: HOTEL_DEFAULT_AMOUNT_ZERO
+            cancellationFee = it.getString(EXTRA_HOTEL_CANCELLATION_FEE) ?: HOTEL_DEFAULT_AMOUNT_ZERO
+            refundAmount = it.getString(EXTRA_HOTEL_REFUND_AMOUNT) ?: HOTEL_DEFAULT_AMOUNT_ZERO
         }
 
         activity?.run {
@@ -97,8 +97,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     private fun submitCancellation() {
         showLoadingState()
         (activity as HotelCancellationConfirmationActivity).setPageTitle("")
-        cancellationViewModel.submitCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_submit_hotel_cancellation),
-                cancellationSubmitParam)
+        cancellationViewModel.submitCancellationData(cancellationSubmitParam)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -132,7 +131,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             hotel_cancellation_confirmation_iv.setImageResource(R.drawable.ic_hotel_cancellation_success)
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_success))
         } else {
-            if (isOrderNotFound) hotel_cancellation_confirmation_iv.setImageResource(R.drawable.ic_order_not_found)
+            if (isOrderNotFound) hotel_cancellation_confirmation_iv.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
             else hotel_cancellation_confirmation_iv.setImageResource(R.drawable.ic_hotel_cancellation_error)
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_failed))
         }
@@ -168,6 +167,9 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
         const val HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME = "/hotel/ordercancelresult"
         const val RETRY_SUBMISSION = "RETRYSUBMISSION"
         const val REDIRECT_REQUEST_CODE = 33
+
+        const val HOTEL_DEFAULT_AMOUNT_ZERO = "0"
+
         fun getInstance(invoiceId: String, orderAmount: String, cancellationFee: String, refundAmount: String,
                         cancellationSubmitParam: HotelCancellationSubmitParam): HotelCancellationConfirmationFragment =
                 HotelCancellationConfirmationFragment().also {
