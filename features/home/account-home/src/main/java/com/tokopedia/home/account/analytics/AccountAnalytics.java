@@ -514,4 +514,34 @@ public class AccountAnalytics {
         trackerMap.put(EVENT_LABEL, "");
         return trackerMap;
     }
+
+    public void sendClickSellerMigration(String title, String userId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(EVENT, AccountConstants.Analytics.CLICK_SELLER_MIGRATION_EVENT_NAME);
+        data.put(EVENT_CATEGORY, AccountConstants.Analytics.CLICK_SELLER_MIGRATION_EVENT_CATEGORY);
+        data.put(EVENT_ACTION, AccountConstants.Analytics.CLICK + " " + title.toLowerCase());
+        data.put(EVENT_LABEL, "");
+        data.put("userId", userId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(data);
+    }
+
+    public void sendClickSellerMigrationMoveToSellerApp(String type, String userId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(EVENT, AccountConstants.Analytics.CLICK_SELLER_MIGRATION_EVENT_NAME);
+        data.put(EVENT_CATEGORY, AccountConstants.Analytics.CLICK_SELLER_MIGRATION_EVENT_CATEGORY);
+        data.put(EVENT_ACTION, AccountConstants.Analytics.CLICK_GO_TO_SELLERAPP + " - " + AccountConstants.Analytics.MVC_SHEET);
+        data.put(EVENT_LABEL, type);
+        data.put("userId", userId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(data);
+    }
+
+    public void sendClickSellerMigrationLearnMore(String userId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(EVENT, AccountConstants.Analytics.CLICK_SELLER_MIGRATION_EVENT_NAME);
+        data.put(EVENT_CATEGORY, AccountConstants.Analytics.CLICK_SELLER_MIGRATION_EVENT_CATEGORY);
+        data.put(EVENT_ACTION, ACTION_CLICK_LEARN_MORE + " - " + AccountConstants.Analytics.MVC_SHEET);
+        data.put(EVENT_LABEL, "");
+        data.put("userId", userId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(data);
+    }
 }

@@ -24,7 +24,14 @@ import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
 abstract class SellerMigrationBottomSheet(private val titles: List<String> = emptyList(),
                                           private val contents: List<String> = emptyList(),
-                                          private val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
+                                          private val images: ArrayList<String> = arrayListOf(),
+                                          private val onGoToSellerAppClicked: (type: String) -> Unit = {},
+                                          private val onLearnMoreClicked: () -> Unit = {}) : BottomSheetUnify() {
+
+    companion object {
+        private const val SELLERAPP = "seller app"
+        private const val PLAYSTORE = "playstore"
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -117,8 +124,10 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
                 if(intent != null) {
                     intent.putExtra(SELLER_MIGRATION_KEY_AUTO_LOGIN, true)
                     activity?.startActivity(intent)
+                    onGoToSellerAppClicked(SELLERAPP)
                 } else {
                     activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+                    onGoToSellerAppClicked(PLAYSTORE)
                 }
             } catch (anfe: ActivityNotFoundException) {
                 activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
@@ -127,6 +136,7 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
     }
 
     private fun goToInformationWebview(link: String) : Boolean {
+        onLearnMoreClicked.invoke()
         return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
     }
 }

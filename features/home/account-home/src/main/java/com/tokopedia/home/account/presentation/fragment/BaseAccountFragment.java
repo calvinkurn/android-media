@@ -83,7 +83,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
 
-    private AccountAnalytics accountAnalytics;
+    protected AccountAnalytics accountAnalytics;
     UserSession userSession;
     private AffiliatePreference affiliatePreference;
     private TrackingQueue trackingQueue;
