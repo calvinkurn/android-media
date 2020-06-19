@@ -57,13 +57,14 @@ class SellerHomeActivityViewModelTest {
             getNotificationUseCase.executeOnBackground()
         } returns notifications
 
-        mViewModel.getNotifications()
-
-        coVerify {
-            getNotificationUseCase.executeOnBackground()
+        runBlocking {
+            mViewModel.getNotifications()
+            delay(100)
+            coVerify {
+                getNotificationUseCase.executeOnBackground()
+            }
+            assertEquals(Success(notifications), mViewModel.notifications.value)
         }
-
-        assertEquals(Success(notifications), mViewModel.notifications.value)
     }
 
     @Test
