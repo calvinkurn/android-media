@@ -234,6 +234,7 @@
 /libraries/iris/										@tokopedia/android-gatekeeper-analytic
 /libraries/kotlin_extensions/							@tokopedia/core-team
 /libraries/linker/										@tokopedia/core-team
+/libraries/lint/										@tokopedia/minion-darth
 /libraries/locationmanager/								@tokopedia/core-team
 /libraries/logger/										@tokopedia/core-team
 /libraries/oms/											@tokopedia/core-team
