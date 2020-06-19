@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
+import com.tokopedia.thankyou_native.recommendationdigital.analytics.DigitalRecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendationdigital.di.component.DaggerDigitalRecommendationComponent
 import com.tokopedia.thankyou_native.recommendationdigital.model.DigitalRecommendationList
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
@@ -33,8 +34,8 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     private lateinit var fragment: BaseDaggerFragment
 
-//    @Inject
-//    lateinit var analytics: dagger.Lazy<RecommendationAnalytics>
+    @Inject
+    lateinit var analytics: dagger.Lazy<DigitalRecommendationAnalytics>
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -84,26 +85,8 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     override fun loadRecommendation(fragment: BaseDaggerFragment) {
         this.fragment = fragment
         startViewModelObserver()
-        viewModel.getDigitalRecommendationData(5,"1")
+        viewModel.getDigitalRecommendationData(5, "1")
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        return false
-        //when (requestCode) {
-//            WishList.REQUEST_FROM_PDP -> {
-//                if (data != null) {
-//                    val wishListStatusFromPdp = data
-//                            .getBooleanExtra(WishList.PDP_WIHSLIST_STATUS_IS_WISHLIST, false)
-//                    val position = data.getIntExtra(WishList.PDP_EXTRA_UPDATED_POSITION, -1)
-//                    //updateWishListedItemStatus(position, wishListStatusFromPdp)
-//                }
-//                true
-//            }
-//            else -> false
-  //      }
-    }
-
-
 
     private fun startViewModelObserver() {
         if (!isObserverAttached)
@@ -124,13 +107,13 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         adapter.notifyDataSetChanged()
     }
 
-    private fun setupRecyclerView(recommendationItemList:  List<RecommendationsItem>,
+    private fun setupRecyclerView(recommendationItemList: List<RecommendationsItem>,
                                   title: String?) {
         listener = getRecommendationListener()
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,
                 false)
-        adapter = DigitalRecommendationAdapter(recommendationItemList , listener!!)
+        adapter = DigitalRecommendationAdapter(recommendationItemList, listener!!)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(ProductCardDefaultDecorator())
     }
@@ -139,15 +122,20 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     private fun getRecommendationListener(): DigitalRecommendationViewListener {
         return object : DigitalRecommendationViewListener {
             override fun onDigitalProductClick(item: RecommendationsItem, position: Int) {
-                    onRecomProductClick(item, position)
+                onRecomProductClick(item, position)
+            }
+
+            override fun onDigitalProductImpression(item: RecommendationsItem, position: Int) {
+                analytics.get().sendDigitalRecommendationItemDisplayed(item, position)
             }
         }
+
     }
 
 
     private fun onRecomProductClick(item: RecommendationsItem, position: Int) {
         RouteManager.route(context, item.appLink)
-       // analytics.get().sendRecommendationItemClick(item, position = position + 1)
+        analytics.get().sendDigitalRecommendationItemClick(item, position = position + 1)
     }
 
 

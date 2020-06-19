@@ -37,9 +37,9 @@ class ThanksPageAnalyticsFragment : BaseDaggerFragment() {
 
     private fun postThanksPageLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
-//        thankYouPageAnalytics.get().sendThankYouPageDataLoadEvent(thanksPageData)
-//        thankYouPageAnalytics.get().appsFlyerPurchaseEvent(thanksPageData)
-//        thankYouPageAnalytics.get().sendBranchIOEvent(thanksPageData)
+        thankYouPageAnalytics.get().sendThankYouPageDataLoadEvent(thanksPageData)
+        thankYouPageAnalytics.get().appsFlyerPurchaseEvent(thanksPageData)
+        thankYouPageAnalytics.get().sendBranchIOEvent(thanksPageData)
     }
 
     companion object {

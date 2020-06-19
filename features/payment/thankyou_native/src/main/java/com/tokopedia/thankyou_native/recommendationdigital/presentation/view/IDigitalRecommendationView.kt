@@ -5,5 +5,5 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
 interface IDigitalRecommendationView {
     fun loadRecommendation(fragment: BaseDaggerFragment)
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) : Boolean
+
 }

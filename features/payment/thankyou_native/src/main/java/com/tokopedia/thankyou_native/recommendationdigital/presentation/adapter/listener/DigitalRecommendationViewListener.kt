@@ -5,5 +5,6 @@ import com.tokopedia.thankyou_native.recommendationdigital.model.Recommendations
 
 interface DigitalRecommendationViewListener  {
     fun onDigitalProductClick(item: RecommendationsItem, position: Int)
+    fun onDigitalProductImpression(item: RecommendationsItem, position: Int)
 
 }

@@ -15,10 +15,10 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     var data: RecommendationsItem? = null
-    set(value) {
-        field = value
-        if (value != null) renderWidget(value)
-    }
+        set(value) {
+            field = value
+            if (value != null) renderWidget(value)
+        }
 
     init {
         View.inflate(context, getLayout(), this)
@@ -27,6 +27,14 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     fun renderWidget(element: RecommendationsItem) {
         renderImage(element)
         renderProduct(element)
+
+        if ("history".equals(element.type, ignoreCase = true)) {
+            renderTitle(element.productName)
+        } else if ("recommendation".equals(element.type, ignoreCase = true)) {
+            renderTitle(element.description)
+        } else {
+            renderTitle(element)
+        }
         renderTitle(element)
         renderSubtitle(element)
         //renderFooter(element)
@@ -49,7 +57,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         if (element.productName.isNullOrBlank()) {
             if (element.description.isNullOrBlank()) {
                 thanks_dg_rec_text_sub.visibility = View.GONE
-            }else{
+            } else {
                 thanks_dg_rec_text_sub.visibility = View.VISIBLE
                 thanks_dg_rec_text_sub.text = element.description
             }
@@ -58,15 +66,16 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_text_sub.text = element.productName
         }
 
-//        if (element.description.isNullOrBlank()) {
-//            if ((hasPrice(element) || hasTagLabel(element))) {
-//                thanks_dg_rec_text_sub.maxLines = 2
-//            } else {
-//                thanks_dg_rec_text_sub.maxLines = 3
-//            }
-//        } else {
-//            thanks_dg_rec_text_sub.maxLines = 1
-//        }
+    }
+
+    open fun renderTitle(productName: String?) {
+        if (productName.isNullOrBlank()) {
+            thanks_dg_rec_text_sub.visibility = View.GONE
+        } else {
+            thanks_dg_rec_text_sub.visibility = View.VISIBLE
+            thanks_dg_rec_text_sub.text = productName
+        }
+
     }
 
     open fun renderSubtitle(element: RecommendationsItem) {
@@ -77,88 +86,8 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_text_desc.text = element.clientNumber
         }
 
-//        if (element.title1st.isEmpty() &&
-//                element.tagName.isEmpty()) {
-//            if (hasPrice(element) || hasTagLabel(element)) {
-//                subtitle.maxLines = 2
-//            } else {
-//                subtitle.maxLines = 3
-//            }
-//        } else {
-//            subtitle.maxLines = 1
-//        }
     }
-//
-//    open fun renderFooter(element: RecommendationsItem) {
-//        if (hasPrice(element) || hasTagLabel(element)) {
-//            footer.visibility = View.VISIBLE
-//            renderLabel(element)
-//            renderPrice(element)
-//        } else {
-//            footer.visibility = View.GONE
-//        }
-//    }
 
-//    open fun hasTagLabel(element: RecommendationsItem): Boolean {
-//        return element.tagName.isNotEmpty()
-//    }
-
-    open fun hasPrice(element: RecommendationsItem): Boolean {
-        return element.productPrice.toZeroIfNull() > 0
-//                || element.pricePrefix.isNotEmpty()
-//                || element.originalPrice.isNotEmpty()
-    }
-//
-//    open fun renderPrice(element: RecommendationsItem) {
-//        if (hasPrice(element)) {
-//
-//            if (element.pricePrefix.isEmpty()) {
-//                pricePrefix.visibility = View.GONE
-//            } else {
-//                pricePrefix.visibility = View.VISIBLE
-//                pricePrefix.text = element.pricePrefix
-//            }
-//
-//            if (element.originalPrice.isEmpty()) {
-//                strikeThroughPrice.visibility = View.GONE
-//            } else {
-//                strikeThroughPrice.visibility = View.VISIBLE
-//                strikeThroughPrice.text = element.originalPrice
-//                strikeThroughPrice.paintFlags = strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-//            }
-//
-//            if (element.price.isEmpty()) {
-//                price.visibility = View.GONE
-//            } else {
-//                price.visibility = View.VISIBLE
-//                price.text = element.price
-//            }
-//
-//        } else {
-//            price.visibility = View.GONE
-//            pricePrefix.visibility = View.GONE
-//            strikeThroughPrice.visibility = View.GONE
-//        }
-//    }
-//
-//    open fun renderLabel(element: RecommendationsItem) {
-//        if (hasTagLabel(element)) {
-//            tagLine.visibility = View.VISIBLE
-//            tagLine.setLabel(element.tagName)
-//            when (element.tagType) {
-//                1 -> tagLine.setLabelType(Label.GENERAL_LIGHT_RED)
-//                2 -> tagLine.setLabelType(Label.GENERAL_LIGHT_GREEN)
-//                3 -> tagLine.setLabelType(Label.GENERAL_LIGHT_BLUE)
-//                4 -> tagLine.setLabelType(Label.GENERAL_LIGHT_ORANGE)
-//                5 -> tagLine.setLabelType(Label.GENERAL_LIGHT_GREY)
-//                else -> {
-//                    tagLine.visibility = View.GONE
-//                }
-//            }
-//        } else {
-//            tagLine.visibility = View.GONE
-//        }
-//    }
 
     open fun getLayout(): Int {
         return R.layout.thank_digital_recommendation_item
