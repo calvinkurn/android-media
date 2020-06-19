@@ -148,7 +148,7 @@ class SellerHomeActivityViewModelTest {
     fun `execute launch in custom base view model with custom onError block without custom context`() = runBlocking {
         val customOnErrorViewModel = CustomOnErrorViewModel(Job())
         customOnErrorViewModel.noCustomContext()
-        delay(100)
+        delay(300)
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 
@@ -156,7 +156,7 @@ class SellerHomeActivityViewModelTest {
     fun `execute launch in custom base view model with custom onError block with custom context`() = runBlocking {
         val customOnErrorViewModel = CustomOnErrorViewModel(Job())
         customOnErrorViewModel.withCustomContext()
-        delay(100)
+        delay(300)
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 

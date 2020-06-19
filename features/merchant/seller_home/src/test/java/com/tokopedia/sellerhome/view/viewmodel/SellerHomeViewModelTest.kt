@@ -76,7 +76,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get ticker should success`() {
+    fun `get ticker should success`() = runBlocking {
         val tickerList = listOf(
                 TickerUiModel("", "", "", "", "", "",
                         "", "", "", "", "", "", "")
@@ -96,7 +96,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get shop status should success`() {
+    fun `get shop status should success`() = runBlocking {
         val shopStatus = GetShopStatusResponse()
         val shopId = "123456"
 
@@ -124,7 +124,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get shop status should failed`() {
+    fun `get shop status should failed`() = runBlocking {
         val throwable = MessageErrorException("error")
         val shopId = "123456"
 
@@ -152,7 +152,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get widget layout should success`() {
+    fun `get widget layout should success`() = runBlocking {
         val layoutList: List<BaseWidgetUiModel<*>> = emptyList()
         val shopId = "123456"
 
@@ -180,7 +180,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get widget layout should failed`() {
+    fun `get widget layout should failed`() = runBlocking {
         val throwable = MessageErrorException("error message")
         val shopId = "123456"
 
@@ -208,7 +208,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get shop location then returns success result`() {
+    fun `get shop location then returns success result`() = runBlocking {
         val shopId = "123456"
         getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
 
@@ -236,7 +236,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get shop location then returns failed result`() {
+    fun `get shop location then returns failed result`() = runBlocking {
         val throwable = MessageErrorException("error message")
         val shopId = "123456"
 
@@ -260,7 +260,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get card widget data then returns success result`() {
+    fun `get card widget data then returns success result`() = runBlocking {
         val shopId = 12345
         val dataKeys = listOf("a", "b", "c")
         val startDate = "02-03-20202"
@@ -320,7 +320,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get line graph widget data then returns success result`() {
+    fun `get line graph widget data then returns success result`() = runBlocking {
         val shopId = "12345"
         val dataKeys = listOf("x", "y", "z")
         val startDate = "02-03-20202"
@@ -353,7 +353,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get line graph widget data then returns failed result`() {
+    fun `get line graph widget data then returns failed result`() = runBlocking {
         val shopId = "12345"
         val dataKeys = listOf("x", "y", "z")
         val startDate = "02-03-20202"
@@ -380,7 +380,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get progress widget data then returns success result`() {
+    fun `get progress widget data then returns success result`() = runBlocking {
         val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
@@ -408,7 +408,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get progress widget data then returns failed result`() {
+    fun `get progress widget data then returns failed result`() = runBlocking {
         val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
@@ -520,7 +520,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get carousel widget data then returns failed results`() {
+    fun `get carousel widget data then returns failed results`() = runBlocking{
         val dataKeys = listOf(anyString(), anyString(), anyString(), anyString())
         val throwable = MessageErrorException("error")
 
