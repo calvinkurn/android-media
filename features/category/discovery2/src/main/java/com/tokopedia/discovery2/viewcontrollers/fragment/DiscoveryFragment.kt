@@ -1,5 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
@@ -31,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -53,6 +57,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: ProgressBar
     var pageEndPoint = ""
+    private lateinit var bottomSheet: BottomSheetUnify
+    private var componentPosition: Int? = null
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -106,6 +112,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         mProgressBar = view.findViewById(R.id.progressBar)
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
+        bottomSheet = BottomSheetUnify()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -122,6 +129,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.getDiscoveryData()
 
         setUpObserver()
+//        showMobileVerificationBottomSheet()
     }
 
     fun reSync() {
@@ -183,7 +191,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         })
+
+        discoveryViewModel.phoneVerificationLiveStatus().observe(viewLifecycleOwner, Observer {
+            phoneVerificationResponseCallBack(it)
+        })
     }
+
 
     private fun setPageInfo(data: PageInfo?) {
         typographyHeader.text = data?.name
@@ -277,5 +290,49 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryAdapter.clearListViewModel()
         discoveryViewModel.clearPageData()
         discoveryViewModel.getDiscoveryData()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            1234 -> if (resultCode == Activity.RESULT_OK) {
+                checkUserMobileVerification()
+            }
+            4321 -> if (resultCode == Activity.RESULT_OK) {
+                phoneVerificationResponseCallBack(true)
+            }
+        }
+    }
+
+    private fun checkUserMobileVerification() {
+        discoveryViewModel.checkMobileVerificationStatus()
+    }
+
+    fun quickCouponLoginScreen(componentPosition: Int) {
+        this.componentPosition = componentPosition
+        activity?.startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), 1234)
+    }
+
+    private fun phoneVerificationResponseCallBack(verificationStatus: Boolean) {
+        if (verificationStatus) {
+            componentPosition?.let {
+                discoveryAdapter.getViewModelAtPosition(it)?.componentAction()
+            }
+        } else {
+            activity?.startActivityForResult(RouteManager.getIntent(activity, "tokopedia-android-internal://global/add-phone"), 4321)
+        }
+    }
+
+    private fun showMobileVerificationBottomSheet() {
+        this.fragmentManager?.let { fm ->
+            bottomSheet.apply {
+                isDragable = true
+                isHideable = true
+                setTitle("sdfdgfhgj")
+                val child = View.inflate(context, R.layout.mobile_verification_bottom_sheet_layout, null)
+                setChild(child)
+                show(fm, null)
+            }
+        }
     }
 }

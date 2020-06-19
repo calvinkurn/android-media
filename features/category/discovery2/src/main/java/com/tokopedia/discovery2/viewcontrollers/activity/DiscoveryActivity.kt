@@ -112,4 +112,8 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             Crashlytics.log(TAG + " " + intent?.data?.lastPathSegment)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 }

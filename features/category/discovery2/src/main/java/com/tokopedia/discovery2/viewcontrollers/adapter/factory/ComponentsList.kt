@@ -44,7 +44,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ShimmerProductCard(R.layout.discovery_shimmer_product_card_layout, ComponentNames.ShimmerProductCard.componentName),
     Shimmer(R.layout.discovery_shimmer_layout, ComponentNames.Shimmer.componentName),
     LoadMore(R.layout.discovery_progress_bar_layout, ComponentNames.LoadMore.componentName),
-    QuickCoupon(R.layout.quick_couponlayout, ComponentNames.QuickCoupon.componentName),
+    QuickCoupon(R.layout.quick_coupon_layout, ComponentNames.QuickCoupon.componentName),
 
     // CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     // Product Card Revamp

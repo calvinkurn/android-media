@@ -54,4 +54,8 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <include
+        android:id="@+id/bottomsheet_container"
+        layout="@layout/bottom_sheet_layout" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

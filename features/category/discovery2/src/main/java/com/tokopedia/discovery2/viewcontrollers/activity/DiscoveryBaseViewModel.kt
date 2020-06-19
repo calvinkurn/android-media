@@ -29,4 +29,8 @@ abstract class DiscoveryBaseViewModel() {
     fun onDetachToViewHolder() {
 
     }
+
+    open fun componentAction() {
+
+    }
 }

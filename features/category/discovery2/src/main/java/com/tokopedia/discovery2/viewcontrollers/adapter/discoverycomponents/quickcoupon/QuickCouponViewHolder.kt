@@ -1,12 +1,74 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon
 
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
 
-class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), View.OnClickListener {
+    private var applyButton: UnifyButton = itemView.findViewById(R.id.apply_btn)
+    private var titleTextView: TextView = itemView.findViewById(R.id.title_tv)
+    private var componentPosition: Int? = null
+
+    private lateinit var quickCouponViewModel: QuickCouponViewModel
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
+        quickCouponViewModel = discoveryBaseViewModel as QuickCouponViewModel
+        initView()
+    }
 
+    private fun initView() {
+        applyButton.setOnClickListener(this)
+    }
+
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        super.setUpObservers(lifecycleOwner)
+        lifecycleOwner?.let { viewlifecycleOwner ->
+
+            quickCouponViewModel.getCouponStatus().observe(viewlifecycleOwner, Observer {
+                updateCouponStatusUI(it)
+            })
+
+            quickCouponViewModel.isUserLoggedIn().observe(viewlifecycleOwner, Observer {
+                userLoggedInStatus(it)
+            })
+
+            quickCouponViewModel.getComponentPosition().observe(viewlifecycleOwner, Observer {
+                componentPosition = it
+            })
+        }
+    }
+
+    private fun userLoggedInStatus(it: Boolean?) {
+        if (it == true) {
+            quickCouponViewModel.checkMobileVerificationStatus()
+        } else {
+            componentPosition?.let { position -> (fragment as DiscoveryFragment).quickCouponLoginScreen(position) }
+        }
+    }
+
+
+    private fun updateCouponStatusUI(it: Boolean) {
+        if (it) {
+            applyButton.hide()
+        } else {
+            applyButton.show()
+        }
+
+        titleTextView.text = quickCouponViewModel.getCouponTitle()
+    }
+
+    override fun onClick(v: View?) {
+        when (v) {
+            applyButton -> quickCouponViewModel.onClaimCouponClick()
+        }
     }
 }

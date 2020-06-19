@@ -1,20 +1,26 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class QuickCouponViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+    private val clickCouponLiveData: MutableLiveData<ClickCouponData> = MutableLiveData()
+    private val couponAppliedStatus: MutableLiveData<Boolean> = MutableLiveData()
+    private val userLoggedInLiveData: MutableLiveData<Boolean?> = MutableLiveData()
+    private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
 
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
@@ -24,7 +30,13 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     init {
         initDaggerInject()
+        componentPosition.value = position
     }
+
+    fun getCouponStatus() = couponAppliedStatus
+    fun isUserLoggedIn() = userLoggedInLiveData
+    fun getComponentPosition() = componentPosition
+
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         fetchCouponDetailData()
@@ -32,16 +44,21 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     private fun fetchCouponDetailData() {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
-                quickCouponUseCase.getCouponDetail(components.pageEndPoint)
-
+            quickCouponUseCase.getCouponDetail(components.pageEndPoint).clickCouponData?.let {
+                clickCouponLiveData.value = it
+                updateCouponAppliedStatus()
             }
-
-
         }, onError = {
             it.printStackTrace()
         })
     }
+
+    private fun updateCouponAppliedStatus() {
+        couponAppliedStatus.value = clickCouponLiveData.value?.couponApplied == true
+    }
+
+
+    fun getCouponTitle(): String? = if (couponAppliedStatus.value == true) clickCouponLiveData.value?.messageUsingSuccess else clickCouponLiveData.value?.catalogTitle
 
     override fun initDaggerInject() {
         DaggerDiscoveryComponent.builder()
@@ -50,5 +67,37 @@ class QuickCouponViewModel(val application: Application, private val components:
                 .inject(this)
     }
 
+    fun onClaimCouponClick() {
+        userLoggedInLiveData.value = UserSession(application).isLoggedIn
+    }
 
+    override fun componentAction() {
+        super.componentAction()
+        applyQuickCoupon()
+    }
+
+    private fun applyQuickCoupon() {
+        clickCouponLiveData.value?.realCode?.let { promoCode ->
+            launchCatchError(block = {
+                quickCouponUseCase.applyQuickCoupon(promoCode).applyCouponData?.let {
+                }
+            }, onError = {
+                it.printStackTrace()
+            })
+        }
+    }
+
+    fun checkMobileVerificationStatus() {
+        launchCatchError(
+                block = {
+                    quickCouponUseCase.getMobileVerificationStatus().verificationStatus?.let {
+                        couponAppliedStatus.value = true
+                    }
+                },
+                onError = {
+                    couponAppliedStatus.value = false
+                    it.printStackTrace()
+                }
+        )
+    }
 }
