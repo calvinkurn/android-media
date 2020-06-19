@@ -95,6 +95,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
         tilEmail = view.findViewById(R.id.til_email);
         registerButton = view.findViewById(R.id.register_button);
 
+        userSession = new UserSession(getActivity());
         initialPresenter();
         initView(view);
         return view;
@@ -103,8 +104,6 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        userSession = new UserSession(getActivity());
-
         if (getArguments().getBoolean(ARGS_AUTO_RESET)) {
             onSuccessResetPassword();
         }

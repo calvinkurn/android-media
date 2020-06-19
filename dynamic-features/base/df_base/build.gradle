@@ -52,6 +52,9 @@ dependencies {
     //Base
     implementation project(rootProject.ext.features.onboarding)
     //Category
+    implementation project(rootProject.ext.features.exploreCategory)
+    implementation project(rootProject.ext.features.catalog)
+    implementation project(rootProject.ext.features.kategori)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
     //Content
     implementation project(rootProject.ext.features.affiliate)
@@ -68,6 +71,7 @@ dependencies {
     implementation project(rootProject.ext.features.rechargeCreditCard)
     implementation project(rootProject.ext.features.digitalEmoney)
     implementation project(rootProject.ext.features.digitalBrizzi)
+    implementation project(rootProject.ext.features.smartBills)
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
@@ -86,6 +90,7 @@ dependencies {
     //Merchant
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.favorite)
     //Operational
 
     //Payment
@@ -100,7 +105,7 @@ dependencies {
     implementation project(rootProject.ext.features.hotel)
     //User
     implementation project(rootProject.ext.features.changePhoneNumber)
-    implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
@@ -116,4 +121,6 @@ dependencies {
     implementation project(rootProject.ext.features.orderhistory)
     //Logistic
     implementation project(rootProject.ext.features.logisticorder)
+    //Transaction
+    implementation project(rootProject.ext.features.checkout)
 }

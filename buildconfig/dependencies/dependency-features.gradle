@@ -49,6 +49,7 @@ ext {
             rechargeGeneral                 : ":features:recharge:recharge_general",
             rechargeOcr                     : ":features:recharge:rechargeocr",
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
+            smartBills                      : ":features:recharge:smart_bills",
             voucherGame                     : ":features:recharge:voucher_game",
 
             commonTravel                    : ":features:travel:common_travel",
@@ -152,6 +153,7 @@ ext {
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
             csat_rating                       : ":features:operational:csat_rating",
+            discovery2                       : ":features:category:discovery2",
 
             commonPayment                   : ":features:payment:common_payment",
             thankYouNative                  : ":features:payment:thankyou_native",
@@ -191,12 +193,13 @@ ext {
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
             buyerorder                      : ":features:transaction:buyerorder",
+            oneclickcheckout                : ":features:transaction:oneclickcheckout",
 
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",
             attachcommon                   : ":features:user:attachcommon",
-            changepassword                  : ":features:user:changepassword",
+            managepassword                  : ":features:user:managepassword",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             chatcommon                      : ":features:user:chat_common",

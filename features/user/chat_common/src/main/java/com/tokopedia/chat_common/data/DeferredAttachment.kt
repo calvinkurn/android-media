@@ -8,6 +8,7 @@ interface DeferredAttachment {
 
     fun updateData(attribute: Any?)
     fun syncError()
+    fun finishLoading()
 
     companion object {
         const val PAYLOAD_DEFERRED = "payload_deferred"
