@@ -54,7 +54,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
         }
     }
 
-    fun navigateContact() {
+    private fun navigateContact() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             activity?.let {
                 permissionCheckerHelper.checkPermission(it,
@@ -101,6 +101,12 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onSearchDone(text: String?) {
+        text?.let {
+            pickOrderClientNumber(text)
         }
     }
 
