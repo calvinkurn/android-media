@@ -64,10 +64,10 @@ class ProductSelectableViewHolder(
         itemView.setOnClickListener {
             if (cbSelected.isEnabled) {
                 val isSelecting = !cbSelected.isChecked
-                if (isSelecting) when (val state = item.isSelectable()) {
+                when (val state = item.isSelectable(isSelecting)) {
                     Selectable -> triggerCheckbox()
                     is NotSelectable -> listener?.onProductSelectError(state.reason)
-                } else triggerCheckbox()
+                }
             }
         }
 

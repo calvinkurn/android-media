@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
@@ -92,6 +93,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
         observeProductsInSelectedEtalase()
         observeSelectedProducts()
+        observeUploadProduct()
     }
 
     override fun onInterceptBackPressed(): Boolean {
@@ -117,8 +119,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 showSelectedProductPage()
             }
 
-            override fun onNextButtonClicked(nextBtnView: View) {
-                showCoverTitlePage(nextBtnView)
+            override fun onNextButtonClicked() {
+                uploadProduct()
             }
         })
     }
@@ -154,6 +156,28 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 bottomSheetCoordinator.goBack()
             }
         })
+    }
+
+    private fun uploadProduct() {
+        viewModel.uploadProduct(bottomSheetCoordinator.channelId)
+    }
+
+    private fun onSelectedProductChanged() {
+        selectableProductAdapter.notifyDataSetChanged()
+    }
+
+    private fun showSelectedProductPage() {
+        if (selectedProductPage.isShown) return
+
+        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
+        selectedProductPage.show()
+    }
+
+    private fun showCoverTitlePage(nextBtnView: View) {
+        bottomSheetCoordinator.navigateToFragment(
+                fragmentClass = PlayCoverTitleSetupFragment::class.java,
+                sharedElements = listOf(nextBtnView)
+        )
     }
 
     /**
@@ -194,22 +218,23 @@ class PlayEtalaseDetailFragment @Inject constructor(
         })
     }
 
-    private fun onSelectedProductChanged() {
-        selectableProductAdapter.notifyDataSetChanged()
-    }
-
-    private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) return
-
-        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
-        selectedProductPage.show()
-    }
-
-    private fun showCoverTitlePage(nextBtnView: View) {
-        bottomSheetCoordinator.navigateToFragment(
-                fragmentClass = PlayCoverTitleSetupFragment::class.java,
-                sharedElements = listOf(nextBtnView)
-        )
+    private fun observeUploadProduct() {
+        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                NetworkResult.Loading -> bottomActionView.setLoading(true)
+                is NetworkResult.Fail -> {
+                    bottomActionView.setLoading(false)
+                    Toaster.make(requireView(), it.error.localizedMessage)
+                }
+                is NetworkResult.Success -> {
+                    val data = it.data.getContentIfNotHandled()
+                    if (data != null) {
+                        bottomActionView.setLoading(false)
+                        showCoverTitlePage(bottomActionView.getButtonView())
+                    }
+                }
+            }
+        })
     }
 
     /**

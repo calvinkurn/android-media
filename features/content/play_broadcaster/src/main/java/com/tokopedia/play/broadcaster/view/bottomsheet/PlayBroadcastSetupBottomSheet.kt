@@ -27,7 +27,7 @@ import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import java.util.*
 import javax.inject.Inject
@@ -43,7 +43,7 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private lateinit var parentViewModel: PlayBroadcastSetupViewModel
+    private lateinit var broadcastViewModel: PlayBroadcastViewModel
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
     private lateinit var flFragment: FrameLayout
@@ -52,6 +52,9 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
+
+    override val channelId: String
+        get() = broadcastViewModel.channelId
 
     private var mListener: Listener? = null
 
@@ -81,7 +84,7 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
 
         super.onCreate(savedInstanceState)
 //        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
+        broadcastViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 

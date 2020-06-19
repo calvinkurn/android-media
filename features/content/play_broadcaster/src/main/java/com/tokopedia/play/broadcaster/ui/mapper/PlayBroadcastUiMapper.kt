@@ -32,7 +32,7 @@ object PlayBroadcastUiMapper {
     fun mapProductList(
             productsResponse: GetProductsByEtalaseResponse.GetShopProductData,
             isSelectedHandler: (Long) -> Boolean,
-            isSelectableHandler: () -> SelectableState
+            isSelectableHandler: (Boolean) -> SelectableState
     ) = productsResponse.data.map {
         ProductContentUiModel(
                 id = it.productId.toLong(),

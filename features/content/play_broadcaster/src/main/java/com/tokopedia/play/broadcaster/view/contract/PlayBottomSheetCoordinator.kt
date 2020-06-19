@@ -7,6 +7,8 @@ import android.net.Uri
  */
 interface PlayBottomSheetCoordinator : PlayBaseCoordinator {
 
+    val channelId: String
+
     fun goBack()
 
     fun saveCoverAndTitle(coverUri: Uri, coverUrl: String, liveTitle: String)
