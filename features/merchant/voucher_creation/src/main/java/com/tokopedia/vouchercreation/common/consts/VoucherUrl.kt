@@ -6,6 +6,6 @@ object VoucherUrl {
 
     @JvmField
     val HOST = TokopediaUrl.getInstance().MOBILEWEB
-    const val HELP = "help/browse/t-1004-promosi"
+    const val HELP = "help/article/voucher-toko-saya-tidak-dapat-dibuat"
     val HELP_URL = "$HOST$HELP"
 }
