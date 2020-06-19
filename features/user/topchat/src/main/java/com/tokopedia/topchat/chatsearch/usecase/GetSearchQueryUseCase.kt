@@ -72,8 +72,10 @@ class GetSearchQueryUseCase @Inject constructor(
     private fun createContactLoadMore(response: GetMultiChatSearchResponse, page: Int): SearchListHeaderUiModel? {
         if (page != 1) return null
         val contactCount = response.contactSearchResults.size
-        if (contactCount > 5) {
-            return SearchListHeaderUiModel(SearchListHeaderUiModel.TITLE_CONTACT, response.contactCount)
+        val replyCount = if (contactCount > 5) response.contactCount else ""
+        val hideCta =  contactCount <= 5
+        if (contactCount > 0) {
+            return SearchListHeaderUiModel(SearchListHeaderUiModel.TITLE_CONTACT, replyCount, hideCta)
         }
         return null
     }
