@@ -54,10 +54,10 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
         listener.onEtalaseBound(item.id)
         vClickArea.setOnClickListener {
-            listener.onEtalaseClicked(item.id, (0 until rvProductPreview.childCount).map {
+            listener.onEtalaseClicked(item.id, (0 until rvProductPreview.childCount).mapNotNull {
                 val childView = rvProductPreview.getChildAt(it)
-                val viewHolder = rvProductPreview.getChildViewHolder(childView) as ProductPreviewViewHolder
-                viewHolder.ivImage
+                val viewHolder = rvProductPreview.getChildViewHolder(childView)
+                if (viewHolder is ProductPreviewViewHolder) viewHolder.ivImage else null
             })
         }
         tvEtalaseTitle.text = item.name
