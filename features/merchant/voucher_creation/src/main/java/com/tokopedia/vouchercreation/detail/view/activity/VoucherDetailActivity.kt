@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.getIntIntentExtra
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.detail.view.fragment.DuplicateVoucherFragment
 import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
 
 /**
@@ -21,25 +20,12 @@ import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
 class VoucherDetailActivity : BaseActivity() {
 
     companion object {
-        private const val PAGE_TYPE = "page_type"
         const val VOUCHER_ID = "voucher_id"
-        const val DETAIL_PAGE = 0
-        const val DUPLICATE_PAGE = 1
 
-        fun createDetailIntent(context: Context, pageType: Int): Intent {
-            return Intent(context, VoucherDetailActivity::class.java).apply {
-                putExtra(PAGE_TYPE, pageType)
-            }
-        }
-
-        fun createDuplicateIntent(context: Context, pageType: Int): Intent {
-            return Intent(context, VoucherDetailActivity::class.java).apply {
-                putExtra(PAGE_TYPE, pageType)
-            }
+        fun createDetailIntent(context: Context): Intent {
+            return Intent(context, VoucherDetailActivity::class.java)
         }
     }
-
-    private val pageType by getIntIntentExtra(PAGE_TYPE, DETAIL_PAGE)
 
     private val voucherId by getIntIntentExtra(VOUCHER_ID, 0)
 
@@ -59,13 +45,7 @@ class VoucherDetailActivity : BaseActivity() {
                 .commitNowAllowingStateLoss()
     }
 
-    private fun getPageFragment(): Fragment {
-        return if (pageType == DETAIL_PAGE) {
-            VoucherDetailFragment.newInstance(voucherId)
-        } else {
-            DuplicateVoucherFragment.newInstance()
-        }
-    }
+    private fun getPageFragment(): Fragment = VoucherDetailFragment.newInstance(voucherId)
 
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

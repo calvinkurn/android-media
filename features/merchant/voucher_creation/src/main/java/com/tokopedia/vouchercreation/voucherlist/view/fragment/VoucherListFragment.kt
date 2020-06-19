@@ -291,7 +291,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     override fun onVoucherClickListener(voucherId: Int) {
         context?.run {
             startActivity(
-                    VoucherDetailActivity.createDetailIntent(this, VoucherDetailActivity.DETAIL_PAGE)
+                    VoucherDetailActivity.createDetailIntent(this)
                             .putExtra(VoucherDetailActivity.VOUCHER_ID, voucherId))
         }
     }
@@ -516,7 +516,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun viewVoucherDetail(voucherId: Int) {
         activity?.let {
             startActivity(
-                    VoucherDetailActivity.createDetailIntent(it, VoucherDetailActivity.DETAIL_PAGE)
+                    VoucherDetailActivity.createDetailIntent(it)
                             .putExtra(VoucherDetailActivity.VOUCHER_ID, voucherId))
         }
     }
