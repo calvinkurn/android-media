@@ -18,11 +18,9 @@ class TrafficMetricViewHolder(view: View) : BaseViewHolder(view) {
     private val playSummaryInfoCount = itemView.findViewById<TextView>(R.id.tv_item_play_summary_count_info)
 
     fun bind(trafficMetricUiModel: TrafficMetricUiModel) {
-        if (trafficMetricUiModel.trafficMetricEnum != null) {
-            playSummaryInfoIcon.setImageResource(trafficMetricUiModel.trafficMetricEnum.thumbnailRes)
-            playSummaryInfoDescription.text = itemView.resources.getString(trafficMetricUiModel.trafficMetricEnum.descriptionRes)
-        }
-        playSummaryInfoCount.text = trafficMetricUiModel.liveTrafficMetricCount
+        playSummaryInfoIcon.setImageResource(trafficMetricUiModel.metricLabel.thumbnailRes)
+        playSummaryInfoDescription.text = itemView.resources.getString(trafficMetricUiModel.metricLabel.descriptionRes)
+        playSummaryInfoCount.text = trafficMetricUiModel.metricCount
     }
 
     companion object {

@@ -194,8 +194,8 @@ abstract class BaseTracking {
             map[KEY_NAME] = promotion.name
             map[KEY_CREATIVE] = promotion.creative
             map[KEY_POSITION] = promotion.position
-            map[KEY_PROMO_ID] = promotion.promoIds
-            map[KEY_PROMO_CODE] = promotion.promoCodes
+            if(promotion.promoIds.isNotBlank()) map[KEY_PROMO_ID] = promotion.promoIds
+            if(promotion.promoCodes.isNotBlank()) map[KEY_PROMO_CODE] = promotion.promoCodes
             return map
         }
 
@@ -280,29 +280,30 @@ abstract class BaseTracking {
             eventAction: String,
             eventLabel: String,
             channelId: String,
-            affinity: String,
-            attribution: String,
-            categoryId: String,
-            shopId: String,
-            campaignCode: String,
+            affinity: String = "",
+            attribution: String = "",
+            categoryId: String = "",
+            shopId: String = "",
+            campaignCode: String = "",
             promotions: List<Promotion>,
             userId: String = ""
     ): Map<String, Any>{
-        return DataLayer.mapOf(
+        val dataLayer = DataLayer.mapOf(
                 Event.KEY, event,
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
                 Label.CHANNEL_LABEL, channelId,
-                Label.AFFINITY_LABEL, affinity,
-                Label.ATTRIBUTION_LABEL, attribution,
-                Label.CATEGORY_LABEL, categoryId,
-                Label.SHOP_LABEL, shopId,
-                Label.CAMPAIGN_CODE, campaignCode,
-                UserId.KEY, userId,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions),
                 ChannelId.KEY, channelId
         )
+        if(affinity.isNotBlank()) dataLayer[Label.AFFINITY_LABEL] = affinity
+        if(attribution.isNotBlank()) dataLayer[Label.ATTRIBUTION_LABEL] = attribution
+        if(categoryId.isNotBlank()) dataLayer[Label.CATEGORY_LABEL] = categoryId
+        if(shopId.isNotBlank()) dataLayer[Label.SHOP_LABEL] = shopId
+        if(campaignCode.isNotBlank()) dataLayer[Label.CAMPAIGN_CODE] = campaignCode
+        if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
+        return dataLayer
     }
 
     open fun getBasicProductClick(

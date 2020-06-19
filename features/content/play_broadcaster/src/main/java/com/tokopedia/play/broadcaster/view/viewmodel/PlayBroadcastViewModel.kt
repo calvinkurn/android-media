@@ -45,7 +45,7 @@ class PlayBroadcastViewModel  @Inject constructor(
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
         get() = _observableTotalLike
-    val observableLiveInfoState: LiveData<Event<PlayPusherInfoState>>
+    val observableLiveInfoState: LiveData<PlayPusherInfoState>
         get() = _observableLiveInfoState
     val observableLiveNetworkState: LiveData<Event<PlayPusherNetworkState>>
         get() = _observableLiveNetworkState
@@ -64,8 +64,6 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     val configuration: ConfigurationUiModel?
         get() = _observableConfigInfo.value
-    val channelInfo: ChannelInfoUiModel?
-        get() = _observableChannelInfo.value
     val shareInfo: ShareUiModel?
         get() = _observableShareInfo.value
 
@@ -87,9 +85,9 @@ class PlayBroadcastViewModel  @Inject constructor(
             value = Event(it)
         }
     }
-    private val _observableLiveInfoState = MediatorLiveData<Event<PlayPusherInfoState>>().apply {
+    private val _observableLiveInfoState = MediatorLiveData<PlayPusherInfoState>().apply {
         addSource(playPusher.getObservablePlayPusherInfoState()) {
-            value = Event(it)
+            value = it
         }
     }
     private val _observablePermissionState = MediatorLiveData<PlayPermissionState>().apply {
@@ -120,19 +118,24 @@ class PlayBroadcastViewModel  @Inject constructor(
             val configurationUiModel = PlayBroadcastMocker.getMockConfiguration()
             _observableConfigInfo.value = configurationUiModel
 
+            // TODO("tidying later, still waiting for the API to finish")
+            if (configurationUiModel.haveOnGoingLive) {
+                getChannel(configurationUiModel.activeChannelId)
+            }
+
+            // TODO("match local countdown timer with socket")
             playPusher.addMaxStreamDuration(configurationUiModel.durationConfig.duration)
             playPusher.addMaxPauseDuration(configurationUiModel.durationConfig.pauseDuration)
         }
     }
 
+    // TODO("tidying later, still waiting for the API to finish")
     fun startPrepareChannel() {
         scope.launch {
             if (configuration?.streamAllowed == true
                     && configuration?.haveOnGoingLive == false
                     && configuration?.draftChannelId == 0) {
                 createChannel()
-            } else {
-
             }
         }
     }
@@ -145,40 +148,40 @@ class PlayBroadcastViewModel  @Inject constructor(
         }.executeOnBackground()
     }
 
-    fun getChannel(channelId: String): ChannelInfoUiModel {
-        val channelInfo = PlayBroadcastMocker.getMockActiveChannel()
+    // TODO("get channel, still waiting for the API to finish")
+    fun getChannel(channelId: Int): ChannelInfoUiModel {
+        val channelInfo = PlayBroadcastMocker.getMockUnStartedChannel()
         _observableChannelInfo.value = channelInfo
         _observableTotalView.value = PlayBroadcastMocker.getMockTotalView()
         _observableTotalLike.value = PlayBroadcastMocker.getMockTotalLike()
-        startWebSocket(
-                channelInfo
-        )
         return channelInfo
     }
 
     private fun updateChannelStatus(status: PlayChannelStatus) {
-        // TODO("update channel status")
+        // TODO("update channel status, still waiting for the API to finish")
     }
 
     fun startPushBroadcast(ingestUrl: String) {
         scope.launch {
             if (ingestUrl.isNotEmpty()) {
-                playPusher.startPush(ingestUrl)
+                startWebSocket()
                 updateChannelStatus(PlayChannelStatus.Active)
+                playPusher.startPush(ingestUrl)
             }
         }
     }
 
     fun stopPushBroadcast() {
         scope.launch {
+            updateChannelStatus(PlayChannelStatus.Finish)
             playPusher.stopPush()
             playPusher.stopPreview()
-            updateChannelStatus(PlayChannelStatus.InActive)
         }
     }
 
-    private fun startWebSocket(channelInfo: ChannelInfoUiModel) {
+    private fun startWebSocket() {
         // TODO("connect socket")
+        // TODO("retrieve & update count down")
     }
 
     private suspend fun onRetrievedNewChat(newChat: PlayChatUiModel) = withContext(dispatcher.main) {

@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.C
@@ -18,20 +18,21 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader
 import com.google.android.exoplayer2.util.Util
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.widget.playBannerCarousel.helper.GravitySnapHelper
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
 import com.tokopedia.play_common.widget.playBannerCarousel.model.ViewPlayerModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.BasePlayBannerCarouselModel
 import com.tokopedia.play_common.widget.playBannerCarousel.viewHolder.PlayBannerCarouselItemViewHolder
-import kotlinx.android.synthetic.main.item_play_banner_carousel.view.*
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
@@ -57,6 +58,10 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
      */
     private val videoPlayers: MutableList<ViewPlayerModel> = mutableListOf()
 
+    /**
+     * Previous position
+     */
+    private val previousPosition = mutableListOf<Int>()
 
     /**
      * variable declaration
@@ -65,6 +70,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     private val mediaObjects: MutableList<BasePlayBannerCarouselModel> = mutableListOf()
     private val mediaObjectsLastPosition = mutableListOf<Int>()
     private var isAutoPlay: Boolean = false
+    private var delay: Int = 2500 // default from PO
     private val masterJob = Job()
 
     override val coroutineContext: CoroutineContext
@@ -81,6 +87,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             override fun onChildViewAttachedToWindow(view: View) {}
 
             override fun onChildViewDetachedFromWindow(view: View) {
+                log(this::class.simpleName ?: "", "On Detach From Window: ${view.tag}")
                 resetVideoView(view.tag)
             }
         })
@@ -112,21 +119,50 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 return
             }
 
-            // if there is more than 2 list-item on the screen
+            // if there is more than n list-item on the screen
             // check percentage view visible < 49% will take the second item and third item
             // else will take first item and second item
             for(i in startPosition .. endPosition){
-                if(getVisibleVideoSurfaceWidth(i) > 0) targetPositions.add(i)
+                if(getVisibleVideoSurfaceWidth(i) > 0 && mediaObjects[i] is PlayBannerCarouselItemDataModel && (mediaObjects[i] as PlayBannerCarouselItemDataModel).widgetType != PlayBannerWidgetType.UPCOMING) targetPositions.add(i)
                 if(targetPositions.size == videoPlayers.size) break
             }
 
-            for (i in 0 until targetPositions.size){
+            log(this::class.simpleName ?: "", "Position play: $targetPositions")
+
+            // find new position
+            val newPositions = targetPositions.filter { !previousPosition.contains(it) }
+
+            log(this::class.simpleName ?: "", "New Position: $newPositions")
+
+            if(newPositions.isEmpty()){
+                // find prev contain target position
+                previousPosition.clear()
+                for (targetPosition in targetPositions){
+                    if(previousPosition.contains(targetPosition)){
+                        previousPosition.add(targetPosition)
+                    }
+                }
+
+                // find videoPlayer not playing and stop it
                 for (videoPlayer in videoPlayers){
-                    val playPosition = targetPositions[i]
-                    if(targetPositions.contains(videoPlayer.position)){
-                        /* do nothing */
-                    } else {
+                    if(!targetPositions.contains(videoPlayer.position)){
                         removeVideoView(videoPlayer)
+                    }
+                }
+
+                return
+            }
+
+            previousPosition.clear()
+            previousPosition.addAll(targetPositions)
+
+            for (playPosition in newPositions){
+                for (videoPlayer in videoPlayers){
+                    log(this::class.simpleName ?: "", "New Position Contains : ${videoPlayer.position}")
+                    if(!targetPositions.contains(videoPlayer.position)){
+                        log(this::class.simpleName ?: "", "On Remove Video View: at ${videoPlayer.position}")
+                        removeVideoView(videoPlayer)
+                        log(this::class.simpleName ?: "", "On Play Video: $playPosition")
                         playVideo(videoPlayer, playPosition)
                         break
                     }
@@ -142,19 +178,26 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         if(holder is PlayBannerCarouselItemViewHolder){
             removeVideoView(videoPlayer)
             val exoPlayer = videoPlayer.videoPlayer
-            holder.playerView.player = exoPlayer
             val mediaUrl: String = (mediaObjects[playPosition] as PlayBannerCarouselItemDataModel).videoUrl
             val videoSource: MediaSource = getMediaSourceBySource(context, Uri.parse(mediaUrl), "Tokopedia Android $playPosition")
             videoPlayer.position = playPosition
             videoPlayer.viewHolderParent = holder.itemView
-            exoPlayer?.prepare(videoSource)
             videoPlayer.autoPlayJob = launch {
-                exoPlayer?.seekTo(mediaObjectsLastPosition[playPosition].toLong())
-                exoPlayer?.playWhenReady = false
-                delay(3000)
-                exoPlayer?.playWhenReady = true
+                exoPlayer.seekTo(mediaObjectsLastPosition[playPosition].toLong())
+                delay(2500)
+                launch(Dispatchers.Main){
+                    exoPlayer.prepare(videoSource)
+                    exoPlayer.playWhenReady = true
+                }
             }
             videoPlayer.autoPlayJob?.start()
+        }
+    }
+
+    private fun addVideoView(videoPlayer: ViewPlayerModel){
+        val holder = videoPlayer.viewHolderParent?.tag
+        if(holder != null && holder is PlayBannerCarouselItemViewHolder && videoPlayer.videoView.parent == null){
+            holder.containerPlayer.addView(videoPlayer.videoView)
         }
     }
 
@@ -179,12 +222,12 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     // Remove the old player
     private fun removeVideoView(videoPlayer: ViewPlayerModel) {
         val playPosition = videoPlayer.position
-        val viewHolder = videoPlayer.viewHolderParent?.tag
-        if (viewHolder != null && viewHolder is PlayBannerCarouselItemViewHolder) {
-            viewHolder.playerView.player = null
-            viewHolder.thumbnail.show()
-            mediaObjectsLastPosition[playPosition] = videoPlayer.videoPlayer?.currentPosition?.toInt() ?: 0
-            videoPlayer.videoPlayer?.stop(true)
+        val parent: ViewGroup = (videoPlayer.videoView.parent as? ViewGroup) ?: return
+        val index = parent.indexOfChild(videoPlayer.videoView)
+        if (index >= 0) {
+            parent.removeViewAt(index)
+            mediaObjectsLastPosition[playPosition] = videoPlayer.videoPlayer.currentPosition.toInt()
+            videoPlayer.videoPlayer.stop(true)
         }
         videoPlayer.position = -1
         videoPlayer.viewHolderParent = null
@@ -192,9 +235,9 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     }
 
     private fun resetVideoView(viewHolder: Any?) {
-        if(viewHolder != null && viewHolder is PlayBannerCarouselItemViewHolder && viewHolder.playerView.player != null){
+        if(viewHolder != null && viewHolder is PlayBannerCarouselItemViewHolder){
             for (videoPlayer in videoPlayers){
-                if(videoPlayer.viewHolderParent == viewHolder){
+                if(videoPlayer.viewHolderParent == viewHolder && videoPlayer.videoView.parent != null){
                     removeVideoView(videoPlayer)
                     return
                 }
@@ -204,9 +247,10 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
     fun releasePlayer() {
         for(videoPlayer in videoPlayers){
-            videoPlayer.videoPlayer?.release()
+            videoPlayer.videoPlayer.release()
         }
         resetVideoPlayer()
+        coroutineContext.cancelChildren()
     }
 
     fun resetVideoPlayer(){
@@ -229,7 +273,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         // clear old players
         for (videoPlayer in videoPlayers){
             videoPlayer.autoPlayJob?.cancel()
-            videoPlayer.videoPlayer?.release()
+            videoPlayer.videoPlayer.release()
             removeVideoView(videoPlayer)
         }
         videoPlayers.clear()
@@ -237,30 +281,35 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         for(i in 0 until autoPlayAmount){
             val exoPlayer = SimpleExoPlayer.Builder(context).build()
             exoPlayer.volume = 0f
-            val videoPlayer = ViewPlayerModel(exoPlayer, -1)
+
+            val videoSurfaceView = PlayerView(this.context)
+            videoSurfaceView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            videoSurfaceView.player = exoPlayer
+            videoSurfaceView.useController = false
+
+            val videoPlayer = ViewPlayerModel(videoSurfaceView, exoPlayer,-1)
             exoPlayer.addListener(object : Player.EventListener {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     when (playbackState) {
-                        Player.STATE_BUFFERING -> {
-                            Log.d(this::class.simpleName, "Player $i Buffering")
-                        }
+                        Player.STATE_BUFFERING -> { }
                         Player.STATE_ENDED -> {
-                            videoPlayer.videoPlayer?.seekTo(0)
+                            videoPlayer.videoPlayer.seekTo(0)
                         }
                         Player.STATE_IDLE -> { }
                         Player.STATE_READY -> {
-                            Log.d(this::class.simpleName, "Player $i Ready")
-                            val viewHolder = videoPlayer.viewHolderParent
-                            if(viewHolder?.tag is PlayBannerCarouselItemViewHolder){
-                                viewHolder.thumbnail.hide()
-                            }
+                            addVideoView(videoPlayer)
                         }
                         else -> { }
                     }
                 }
             })
+
             videoPlayers.add(videoPlayer)
         }
+    }
+
+    fun setDelay(delay: Int){
+        this.delay = delay
     }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri, appName: String): MediaSource {
@@ -287,6 +336,10 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 return if (dataType == C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE) RETRY_COUNT_LIVE else RETRY_COUNT_DEFAULT
             }
         }
+    }
+
+    private fun log(tag: String, message: String){
+        Timber.tag(tag).e(message)
     }
 
     companion object{

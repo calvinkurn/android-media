@@ -147,7 +147,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
                 override fun successLoad() {
                     if(playBannerCarouselDataModel.gradients.isNotEmpty()){
                         parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
-                    } else {
+                    } else if(playBannerCarouselDataModel.backgroundUrl.isNotBlank()){
                         parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
                     }
                     backgroundLoader.hide()
@@ -156,7 +156,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
                 override fun failedLoad() {
                     if(playBannerCarouselDataModel.gradients.isNotEmpty()){
                         parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
-                    } else {
+                    } else if(playBannerCarouselDataModel.backgroundUrl.isNotBlank()){
                         parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
                     }
                     backgroundLoader.hide()

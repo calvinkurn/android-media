@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
+import com.tokopedia.play.broadcaster.data.model.Metrics
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
@@ -80,4 +81,14 @@ object PlayBroadcastUiMapper {
                     channelId = channelId,
                     ingestUrl = media.ingestUrl,
                     streamUrl = media.streamUrl)
+
+    fun mapToLiveTrafficUiMetrics(metrics: Metrics): List<TrafficMetricUiModel> = mutableListOf(
+                TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, metrics.visitChannel),
+                TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, metrics.likeChannel),
+                TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, metrics.visitShop),
+                TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, metrics.visitPDP),
+                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, metrics.addToCart),
+                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, metrics.paymentVerified),
+                TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop)
+        )
 }

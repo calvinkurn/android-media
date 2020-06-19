@@ -4,21 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
+import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.partial.SummaryInfoPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import kotlinx.android.synthetic.main.fragment_play_broadcaster_summary.*
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 
@@ -31,143 +28,70 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private val trafficMetricReportAdapter = TrafficMetricReportAdapter()
+    private lateinit var summaryInfoView: SummaryInfoPartialView
+    private lateinit var btnFinish: UnifyButton
+
+    override fun getScreenName(): String = "Play Summary Page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        arguments?.let { it ->
-            it.getString(KEY_CHANNEL_ID)?.let {channelId ->
-                parentViewModel.getChannel(channelId)
-            }
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_play_broadcaster_summary, container, false)
+        val view = inflater.inflate(R.layout.fragment_play_broadcast_summary, container, false)
+
+        observeChannelInfo()
+        observeLiveDuration()
+        observeLiveTrafficMetrics()
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpView()
+        initView(view)
+        setupView(view)
     }
 
-    private fun setUpView() {
+    private fun initView(view: View) {
+        with(view) {
+            summaryInfoView = SummaryInfoPartialView(this as ViewGroup)
+            btnFinish = findViewById(R.id.btn_finish)
+        }
+    }
+
+    private fun setupView(view: View) {
         broadcastCoordinator.showActionBar(false)
-        rv_play_summary_live_information.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        rv_play_summary_live_information.removeItemDecorations()
-        rv_play_summary_live_information.adapter = trafficMetricReportAdapter
-        renderDuration()
-        setUpFinishButton()
+        btnFinish.setOnClickListener { activity?.finish() }
+        summaryInfoView.entranceAnimation(view as ViewGroup)
     }
 
-    override fun getScreenName(): String = ""
+    private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
+        summaryInfoView.setChannelTitle(channelInfo.title)
+        summaryInfoView.setChannelCover(channelInfo.coverUrl)
+    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeChannelInfo()
-        observeTotalViews()
-        observeTotalLikes()
-        observeLiveTrafficMetrics()
+    private fun setSummaryInfo(dataList: List<TrafficMetricUiModel>) {
+        summaryInfoView.setSummaryInfo(dataList)
+    }
+
+    private fun setLiveDuration(timeElapsed: String) {
+        summaryInfoView.setLiveDuration(timeElapsed)
     }
 
     private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
-            viewModel.getLiveTrafficMetrics(it.channelId)
-            renderTitleAndCover(it)
-        })
-    }
-
-    private fun observeTotalViews() {
-        parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
-    }
-
-    private fun observeTotalLikes() {
-        parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer(this::setChannelInfo))
     }
 
     private fun observeLiveTrafficMetrics() {
-        viewModel.observableTrafficMetricsUiModel.observe(viewLifecycleOwner, Observer(::renderTrafficMetrics))
+        viewModel.observableTrafficMetrics.observe(viewLifecycleOwner, Observer(this::setSummaryInfo))
     }
 
-    private fun setTotalView(totalView: TotalViewUiModel) {
-        if (viewModel.observableTrafficMetricsUiModel.value.isNullOrEmpty()) {
-            trafficMetricReportAdapter.addItemAndAnimateChanges(
-                    TrafficMetricUiModel(trafficMetricEnum = TrafficMetricsEnum.TOTAL_VIEWS,
-                            liveTrafficMetricCount = totalView.totalView))
-        }
-    }
-
-    private fun setTotalLike(totalLike: TotalLikeUiModel) {
-        if (viewModel.observableTrafficMetricsUiModel.value.isNullOrEmpty()) {
-            trafficMetricReportAdapter.addItemAndAnimateChanges(
-                    TrafficMetricUiModel(
-                            trafficMetricEnum = TrafficMetricsEnum.VIDEO_LIKES,
-                            liveTrafficMetricCount = totalLike.totalLike))
-        }
-    }
-
-    private fun renderTitleAndCover(channelInfoUiModel: ChannelInfoUiModel) {
-        tv_play_summary_live_title.text = channelInfoUiModel.title
-        iv_play_summary_cover.loadImage(channelInfoUiModel.coverUrl)
-        entranceAnimation(view)
-    }
-
-    private fun renderDuration() {
-        arguments?.let { it ->
-            it.getString(KEY_LIVE_DURATION)?.let { duration -> tv_play_summary_live_duration.text = duration }
-        }
-    }
-
-    private fun renderTicker(title: String, description: String) {
-        ticker_live_summary.show()
-        ticker_live_summary.tickerTitle = title
-        ticker_live_summary.setHtmlDescription(description)
-    }
-
-    private fun setUpFinishButton() {
-        btn_play_summary_finish.setOnClickListener {
-            //put action here
-            activity?.finish()
-        }
-    }
-
-    private fun renderTrafficMetrics(trafficMetricUiModels: List<TrafficMetricUiModel>) {
-        if (trafficMetricUiModels.isNotEmpty()) {
-            trafficMetricReportAdapter.clearAllItemsAndAnimateChanges()
-            trafficMetricReportAdapter.setItemsAndAnimateChanges(trafficMetricUiModels)
-        }
-    }
-
-    private fun entranceAnimation(v: View?) {
-        v?.let {
-            it.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    val animationOffset = resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
-                    val animationDuration = resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
-
-                    layout_live_summary_info.translationY = animationOffset
-                    layout_live_summary_info_overflow.translationY = animationOffset
-                    layout_live_summary_meta.translationY = -animationOffset
-                    layout_live_summary_info.animate().translationYBy(-animationOffset).setDuration(animationDuration)
-                    layout_live_summary_meta.animate().translationYBy(animationOffset).setDuration(animationDuration)
-                    layout_live_summary_info_overflow.animate().translationYBy(-animationOffset).setDuration(animationDuration)
-                }
-            })
-        }
-    }
-
-    private fun <T : RecyclerView> T.removeItemDecorations() {
-        while (itemDecorationCount > 0) {
-            removeItemDecorationAt(0)
-        }
-    }
-
-    companion object {
-        const val KEY_CHANNEL_ID = "key_channel_id"
-        const val KEY_LIVE_DURATION = "key_live_duration"
+    private fun observeLiveDuration() {
+        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer {
+            if (it is PlayPusherInfoState.Finish) setLiveDuration(it.timeElapsed)
+        })
     }
 }

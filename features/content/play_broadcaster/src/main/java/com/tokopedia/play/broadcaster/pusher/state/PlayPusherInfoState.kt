@@ -10,7 +10,7 @@ sealed class PlayPusherInfoState {
 
     data class AlmostFinish(val minutesUntilFinished: Long) : PlayPusherInfoState()
 
-    object Finish : PlayPusherInfoState()
+    data class Finish(val timeElapsed: String) : PlayPusherInfoState()
 
     data class Error(val errorType: PlayPusherErrorType) : PlayPusherInfoState()
 }

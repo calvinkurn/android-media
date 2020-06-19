@@ -136,7 +136,6 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun openBroadcastLivePage(liveStreamInfo: LiveStreamInfoUiModel) {
         broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                 Bundle().apply {
-                    putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, liveStreamInfo.channelId)
                     putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, liveStreamInfo.ingestUrl)
                 })
     }

@@ -15,6 +15,8 @@ import kotlin.random.Random
  */
 object PlayBroadcastMocker {
 
+    private const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
+
     /**
      * Follower
      */
@@ -79,7 +81,6 @@ object PlayBroadcastMocker {
 
     fun getMockConfiguration() = ConfigurationUiModel(
             streamAllowed = true,
-            activeOnOtherDevices = false, // IsLiveActive
             haveOnGoingLive = false, // activeChannelId != 0
             activeChannelId = 0,
             draftChannelId = 12,
@@ -95,13 +96,17 @@ object PlayBroadcastMocker {
             )
     )
 
-    fun getMockActiveChannel() = ChannelInfoUiModel(
+    fun getMockUnStartedChannel() = getMockChannel(PlayChannelStatus.UnStarted)
+
+    fun getMockPausedChannel() = getMockChannel(PlayChannelStatus.Pause)
+
+    private fun getMockChannel(status: PlayChannelStatus) = ChannelInfoUiModel(
             channelId = "1234",
             title = "Klarififikasi Bisa Tebak Siapa?",
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
             coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-            ingestUrl = "rtmp://192.168.0.110:1935/stream/",
-            status = PlayChannelStatus.Active
+            ingestUrl = LOCAL_RTMP_URL,
+            status = status
     )
 
     fun getMockTotalView() = TotalViewUiModel(
@@ -114,7 +119,7 @@ object PlayBroadcastMocker {
 
     fun getLiveStreamingInfo() = LiveStreamInfoUiModel(
             "1234",
-            ingestUrl = "rtmp://192.168.0.110:1935/stream/",
+            ingestUrl = LOCAL_RTMP_URL,
             streamUrl = "rtmp://test"
     )
 
@@ -146,5 +151,15 @@ object PlayBroadcastMocker {
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
             imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
             redirectUrl = "https://www.tokopedia.com/play/channels/1234"
+    )
+
+    fun getMetricSummary(): List<TrafficMetricUiModel> = listOf(
+            TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, "2328"),
+            TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, "1800"),
+            TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, "1200"),
+            TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, "1042"),
+            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, "320"),
+            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, "200"),
+            TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, "50")
     )
 }
