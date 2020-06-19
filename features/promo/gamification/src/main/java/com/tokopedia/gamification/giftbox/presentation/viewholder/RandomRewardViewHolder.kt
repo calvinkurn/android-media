@@ -4,9 +4,9 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gamification.R
-import com.tokopedia.gamification.giftbox.presentation.entities.SimpleReward
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.image.ImageUtils
 
 
 class RandomRewardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -17,9 +17,11 @@ class RandomRewardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private val image: AppCompatImageView = itemView.findViewById(R.id.image)
     private val tvTitle: Typography = itemView.findViewById(R.id.tvTitle)
 
-    fun bind(simpleReward: SimpleReward) {
-        if(!simpleReward.imageUrl.isNullOrEmpty())
-            ImageUtils.loadImage(image, simpleReward.imageUrl)
-        tvTitle.text = simpleReward.text
+    fun bind(benfit: CrackBenefitEntity) {
+        when (benfit.benefitType) {
+            BenefitType.COUPON -> image.setImageResource(R.drawable.gami_coupon)
+            BenefitType.OVO -> image.setImageResource(R.drawable.gami_ovo)
+        }
+        tvTitle.text = benfit.text
     }
 }

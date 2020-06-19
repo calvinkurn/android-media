@@ -60,4 +60,5 @@
     <string name="gami_hadiah_yang_didapatkan">Hadiah yang didapatkan</string>
     <string name="gami_kamu_melewatkan">Yaah, kamu belum dapat hadiah</string>
     <string name="gami_coba_ikutan">Coba ikutan Kotak Kejutan lagi di kesempatan berikutnya.</string>
+    <string name="gami_pakai_kupon">Pakai Kupon %s</string>
 </resources>

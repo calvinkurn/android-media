@@ -25,7 +25,7 @@ class CouponAdapter(val couponList: ArrayList<GetCouponDetail>, val isTablet: Bo
     }
 }
 
-class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+open class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         val LAYOUT = com.tokopedia.gamification.R.layout.list_item_coupons
@@ -55,6 +55,5 @@ class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         data.imageUrl?.let {
             ImageUtils.loadImage(imageView, it)
         }
-
     }
 }

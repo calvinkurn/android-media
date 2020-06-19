@@ -1,12 +1,10 @@
-package com.tokopedia.promotionstarget.presentation.ui.views
+package com.tokopedia.promoui.common
 
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.promotionstarget.presentation.dpToPx
-
 
 class CouponImageView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

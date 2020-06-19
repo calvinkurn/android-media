@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
@@ -24,7 +25,8 @@ import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
-import com.tokopedia.gamification.giftbox.presentation.entities.SimpleReward
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.OVO
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
@@ -340,7 +342,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                             val benefits = responseCrackResultEntity.crackResultEntity?.benefits
 
                             if (responseCrackResultEntity.crackResultEntity != null) {
-                                updateRewardStateAndRewards(couponDetailEntity?.couponList, benefits, responseCrackResultEntity.crackResultEntity.imageUrl)
+                                updateRewardStateAndRewards(couponDetailEntity?.couponMap, benefits, responseCrackResultEntity.crackResultEntity.imageUrl)
 
                                 if (!isTimeOut) {
                                     if (!getTapTapView().isBoxAlreadyOpened) {
@@ -529,6 +531,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         btnInactiveFirst = v.findViewById(R.id.btnInactiveFirst)
         imageInactiveBg = v.findViewById(R.id.imageInactiveBg)
 
+        rewardSummary.visibility = View.GONE
+
         super.initViews(v)
         setShadows()
         setDynamicSize()
@@ -553,7 +557,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun rewardSummaryAnimation():Animator {
+    fun rewardSummaryAnimation(): Animator {
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(rewardSummary, alphaProp)
 
@@ -570,6 +574,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val time = seconds * 1000L
         minuteCountDownTimer = object : CountDownTimer(time, 1000) {
             override fun onFinish() {
+                rewardSummary.visibility = View.VISIBLE
                 timeUpAnimation()
                 (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
             }
@@ -762,16 +767,16 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         return giftBoxDailyView as GiftBoxTapTapView
     }
 
-    fun updateRewardStateAndRewards(couponDetailList: ArrayList<GetCouponDetail>?,
+    fun updateRewardStateAndRewards(couponDetailMap: HashMap<String, GetCouponDetail>?,
                                     benefits: List<CrackBenefitEntity>?,
                                     imageUrl: String?) {
         var hasPoints = false
         var hasCoupons = false
 
-        if (!couponDetailList.isNullOrEmpty()) {
+        if (!couponDetailMap.isNullOrEmpty()) {
             hasCoupons = true
             rewardContainer.couponList.clear()
-            rewardContainer.couponList.addAll(couponDetailList)
+            rewardContainer.couponList.addAll(couponDetailMap.values)
             rewardContainer.couponAdapter.notifyDataSetChanged()
         }
 
@@ -779,7 +784,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         var iconUrl: String? = ""
         benefits?.let {
             it.forEach { benefit ->
-                if (benefit.benefitType != "coupons") {
+                if (benefit.benefitType != COUPON) {
                     hasPoints = true
                     iconUrl = imageUrl
 
@@ -789,16 +794,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     }
                     GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
 
-                    rewardItems.add(RewardSummaryItem(null, SimpleReward(iconUrl, benefit.text)))
+                    rewardItems.add(RewardSummaryItem(null, benefit))
 
-                } else if (benefit.benefitType == "coupon") {
-                    benefit.referenceID?.let {
-                        GtmEvents.viewRewards(it, userSession?.userId)
-                    }
+                } else if (benefit.benefitType == COUPON) {
+                    benefit.referenceID?.let {refId->
+                        GtmEvents.viewRewards(refId, userSession?.userId)
 
-                    if (!couponDetailList.isNullOrEmpty()) {
-                        couponDetailList.forEach { couponDetail ->
-                            rewardItems.add(RewardSummaryItem(couponDetail, null))
+                        if (!couponDetailMap.isNullOrEmpty()) {
+                            val couponDetail = couponDetailMap["id_$refId"]
+                            rewardItems.add(RewardSummaryItem(couponDetail, benefit))
                         }
                     }
                 }
@@ -823,4 +827,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(COUPON, OVO)
+annotation class BenefitType {
+    companion object {
+        const val COUPON = "coupon"
+        const val OVO = "ovo_points"
+    }
 }

@@ -20,6 +20,8 @@ import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
+import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxTapTapFragment
 import com.tokopedia.gamification.giftbox.presentation.helpers.*
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_ONLY
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_WITH_POINTS
@@ -116,7 +118,7 @@ class RewardContainer : FrameLayout {
         var hasCoupons = false
 
         //set coupons if available
-        val list = rewardEntity.couponDetailResponse?.couponList
+        val list = rewardEntity.couponDetailResponse?.couponMap?.values
         if (list != null && list.isNotEmpty()) {
             hasCoupons = true
             couponList.clear()
@@ -128,7 +130,7 @@ class RewardContainer : FrameLayout {
         var iconUrl: String? = ""
         rewardEntity.gamiCrack.benefits?.let {
             it.forEach { benefit ->
-                if (benefit.benefitType != "coupon") {
+                if (benefit.benefitType != BenefitType.COUPON) {
                     hasPoints = true
                     tvSmallReward.text = benefit.text
                     if (!benefit.color.isNullOrEmpty()) {
@@ -136,7 +138,7 @@ class RewardContainer : FrameLayout {
                     }
                     GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
                     iconUrl = benefit.imageUrl
-                } else if (benefit.benefitType == "coupon") {
+                } else if (benefit.benefitType == BenefitType.COUPON) {
                     benefit.referenceID?.let {
                         GtmEvents.viewRewards(it.toString(), userSession?.userId)
                     }

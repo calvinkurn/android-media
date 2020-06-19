@@ -1,14 +1,12 @@
-package com.tokopedia.promotionstarget.presentation.ui.views
+package com.tokopedia.promoui.common
 
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.view.View
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.promotionstarget.R
-import com.tokopedia.promotionstarget.presentation.dpToPx
 
 class CouponView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -60,7 +58,7 @@ class CouponView @JvmOverloads constructor(
         bottomPaint.color = Color.WHITE
         bottomPaint.isAntiAlias = true
 
-        shadowColor = ContextCompat.getColor(context, R.color.t_promo_shadow_color)
+        shadowColor = ContextCompat.getColor(context, R.color.promo_ui_com_shadow_color)
     }
 
 
@@ -71,15 +69,27 @@ class CouponView @JvmOverloads constructor(
     }
 
     fun drawBottomRoundBg(canvas: Canvas) {
-        bottomRoundPath.reset()
-        bottomRectF.top = findViewById<AppCompatImageView>(R.id.appCompatImageView).bottom.toFloat()
-        bottomRectF.left = bottomPadding.toFloat()
-        bottomRectF.right = width - bottomPadding.toFloat()
-        bottomRectF.bottom = height - bottomPadding.toFloat()
-        val radii = floatArrayOf(0f, 0f, 0f, 0f, cornerRadius, cornerRadius, cornerRadius, cornerRadius)
-        bottomRoundPath.addRoundRect(bottomRectF, radii, Path.Direction.CW)
 
-        canvas.drawPath(bottomRoundPath, bottomPaint)
+        var bottomOfBigImage = 0f
+        if (childCount > 0) {
+            val range = 0 until childCount
+            for (i in range) {
+                if (getChildAt(i) is CouponImageView) {
+                    bottomOfBigImage = getChildAt(i).bottom.toFloat()
+                    break
+                }
+            }
+            bottomRoundPath.reset()
+            bottomRectF.top = bottomOfBigImage
+            bottomRectF.left = bottomPadding.toFloat()
+            bottomRectF.right = width - bottomPadding.toFloat()
+            bottomRectF.bottom = height - bottomPadding.toFloat()
+            val radii = floatArrayOf(0f, 0f, 0f, 0f, cornerRadius, cornerRadius, cornerRadius, cornerRadius)
+            bottomRoundPath.addRoundRect(bottomRectF, radii, Path.Direction.CW)
+
+            canvas.drawPath(bottomRoundPath, bottomPaint)
+        }
+
     }
 
     fun drawShadow(canvas: Canvas) {
@@ -117,4 +127,8 @@ class CouponView @JvmOverloads constructor(
         shadowPath.lineTo((width + shadowEndOffset), (height + shadowBottomOffset))                   // BL -> BR
         shadowPath.lineTo((width + shadowEndOffset), shadowStartY + shadowTopOffset)               // BR -> TR
     }
+}
+
+fun View.dpToPx(dp: Int): Float {
+    return dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT).toFloat()
 }

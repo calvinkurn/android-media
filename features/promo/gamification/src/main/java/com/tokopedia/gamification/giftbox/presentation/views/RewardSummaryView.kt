@@ -17,7 +17,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.presentation.adapter.RewardSummaryAdapter
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
-import com.tokopedia.gamification.giftbox.presentation.entities.SimpleReward
 import com.tokopedia.gamification.giftbox.presentation.helpers.RewardItemDecoration
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.gamification.giftbox.presentation.views.RewardButtonType.Companion.DEFAULT
@@ -90,6 +89,7 @@ class RewardSummaryView : FrameLayout {
         rvRewards.adapter = rvAdapter
     }
 
+    //todo Rahul - create buttons at runtime
     fun setButtons(rewardButtons: List<RewardButton>?) {
         if (!rewardButtons.isNullOrEmpty()) {
             rewardButtons.forEach { rb ->
@@ -113,7 +113,7 @@ class RewardSummaryView : FrameLayout {
         if (rewardSummaryItemList.isEmpty()) {
             showEmpty()
         } else {
-            setRewardSummaryData()
+            setRewardSummaryData(rewardSummaryItemList)
         }
     }
 
@@ -125,31 +125,39 @@ class RewardSummaryView : FrameLayout {
         llButton.animate().alpha(1f).setDuration(300L).start()
     }
 
-    private fun setRewardSummaryData() {
+    private fun setRewardSummaryData(rewardSummaryItemList: List<RewardSummaryItem>) {
         viewFlipper.displayedChild = CONTAINER_REWARD
         btnFirst.visibility = View.VISIBLE
 
         viewFlipper.alpha = 1f
         llButton.alpha = 1f
 
-        val items = arrayListOf<RewardSummaryItem>()
-        items.apply {
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
-        }
-        rvAdapter.dataList.addAll(items)
+        val list = mutableListOf<RewardSummaryItem>()
+        list.addAll(rewardSummaryItemList)
+
+        val filteredItems = rewardSummaryItemList.filter { it.benfit?.isBigPrize ?: false }
+        list.removeAll(filteredItems)
+        list.addAll(filteredItems)
+
+//        val items = arrayListOf<RewardSummaryItem>()
+//        items.apply {
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//            add(RewardSummaryItem(null, SimpleReward("", "Lorem ipsum")))
+//        }
+        rvAdapter.dataList.clear()
+        rvAdapter.dataList.addAll(list)
         rvAdapter.notifyDataSetChanged()
     }
 

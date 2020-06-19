@@ -2,7 +2,7 @@ package com.tokopedia.gamification.giftbox.data.entities
 
 import com.google.gson.annotations.SerializedName
 
-data class CouponDetailResponse(val couponList: ArrayList<GetCouponDetail>?)
+data class CouponDetailResponse(val couponMap: HashMap<String,GetCouponDetail>?)
 data class GetCouponDetail(
         @SerializedName("id") val id: Int,
         @SerializedName("minimumUsageLabel") val minimumUsageLabel: String?,
