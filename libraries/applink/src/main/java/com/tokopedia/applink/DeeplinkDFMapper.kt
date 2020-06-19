@@ -72,7 +72,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOU
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PREFERENCE_EDIT
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PREFERENCE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
@@ -299,6 +302,11 @@ object DeeplinkDFMapper : CoroutineScope {
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.path_checkout))
             add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.path_checkout_address_selection))
+            add(DFP({
+                it.startsWith(ONE_CLICK_CHECKOUT) ||
+                        it.startsWith(PREFERENCE_LIST) ||
+                        it.startsWith(PREFERENCE_EDIT)
+            }, DF_BASE, R.string.title_one_click_checkout))
         }
     }
 
