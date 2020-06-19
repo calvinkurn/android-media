@@ -459,9 +459,9 @@ class TrackingHotelUtil {
 
     fun viewHotelCancellationPage(context: Context?, invoiceId: String, hotelCancellationModel: HotelCancellationModel, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: "0"
-        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: "0"
-        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: "0"
+        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
         val eventLabel = "$HOTEL_LABEL - $invoiceId - $orderAmount - $cancellationFee - $refundAmount"
         map.addGeneralEvent(VIEW_HOTEL_IRIS, VIEW_CANCELLATION_PAGE, eventLabel)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
@@ -469,9 +469,9 @@ class TrackingHotelUtil {
 
     fun clickNextOnCancellationPage(context: Context?, invoiceId: String, hotelCancellationModel: HotelCancellationModel, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: "0"
-        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: "0"
-        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: "0"
+        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
         val eventLabel = "$HOTEL_LABEL - $invoiceId - $orderAmount - $cancellationFee - $refundAmount"
         map.addGeneralEvent(CLICK_HOTEL, CLICK_NEXT_ON_CANCELLATION_PAGE, eventLabel)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
@@ -525,5 +525,9 @@ class TrackingHotelUtil {
         this[EVENT_ACTION] = action
         this[EVENT_LABEL] = label
         return this
+    }
+
+    companion object {
+        const val HOTEL_DEFAULT_VALUE_ZERO_STRING = "0"
     }
 }
