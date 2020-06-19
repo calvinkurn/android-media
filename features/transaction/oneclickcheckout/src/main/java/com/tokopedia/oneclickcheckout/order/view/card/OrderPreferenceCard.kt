@@ -22,6 +22,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -118,7 +119,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     tvShippingDuration?.setOnClickListener { }
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                            ?: 0, false)
+                            ?: 0, false).removeDecimalSuffix()
                     tvShippingPrice?.setOnClickListener {
                         listener.chooseCourier()
                     }
@@ -154,8 +155,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                             tvShippingPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
                             tvShippingSlashPrice?.gone()
                         } else {
-                            tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price - shipping.logisticPromoViewModel.benefitAmount, false)
-                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price, false)
+                            tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price - shipping.logisticPromoViewModel.benefitAmount, false).removeDecimalSuffix()
+                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price, false).removeDecimalSuffix()
                             tvShippingSlashPrice?.paintFlags?.let {
                                 tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
                             }
@@ -176,7 +177,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingChangeDuration?.gone()
                     tvShippingCourierLbl?.visible()
                     tvShippingCourier?.text = "${shipping.shipperName} - ${CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                            ?: 0, false)}"
+                            ?: 0, false).removeDecimalSuffix()}"
                     tvShippingCourier?.setOnClickListener {
                         listener.chooseCourier()
                     }
@@ -207,8 +208,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                             tvShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping_with_price)
                             tvShippingSlashPrice?.gone()
                         } else {
-                            tvShippingCourier?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false)
-                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false)
+                            tvShippingCourier?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
+                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
                             tvShippingSlashPrice?.paintFlags?.let {
                                 tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
                             }

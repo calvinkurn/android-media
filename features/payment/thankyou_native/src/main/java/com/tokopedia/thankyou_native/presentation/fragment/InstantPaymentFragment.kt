@@ -107,6 +107,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                 gotoOrderList(thanksPageData.thanksCustomization.customOrderUrlApp)
             }
         }
+        btnShopAgain.setOnClickListener { gotoHomePage() }
     }
 
     private fun observeViewModel() {

@@ -176,7 +176,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 else -> {
                     if (progressDialog == null) {
                         progressDialog = AlertDialog.Builder(context!!)
-                                .setView(R.layout.purchase_platform_progress_dialog_view)
+                                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
                                 .setCancelable(false)
                                 .create()
                     }
@@ -377,7 +377,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                                     setTitle(getString(R.string.lbl_delete_preference_title))
                                     setDescription(getString(R.string.lbl_delete_preference_desc))
                                     setPrimaryCTAText(getString(R.string.lbl_delete_preference_ok))
-                                    setSecondaryCTAText(getString(R.string.text_button_negative))
+                                    setSecondaryCTAText(getString(com.tokopedia.purchase_platform.common.R.string.text_button_negative))
                                     setPrimaryCTAClickListener {
                                         preferenceListAnalytics.eventClickDeletePreferenceFromTrashBin()
                                         dismiss()

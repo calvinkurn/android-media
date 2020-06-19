@@ -453,5 +453,20 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             "            }\n" +
             "        }\n" +
             "    }\n" +
+            "\n" +
+            "   searchInspirationWidget(params:$params){\n" +
+            "       data{\n" +
+            "           title\n" +
+            "           type\n" +
+            "           position\n" +
+            "           options{\n" +
+            "               text\n" +
+            "               img\n" +
+            "               url\n" +
+            "               color\n" +
+            "               applink\n" +
+            "           }\n" +
+            "       }\n" +
+            "   }"+
             "}\n";
 }

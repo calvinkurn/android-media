@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:background="@drawable/transaction_checkout_green_button_rounded_unify_new"
+            android:background="@drawable/checkout_module_green_button_rounded_unify_new"
             android:foreground="?selectableItemBackground"
             android:paddingLeft="@dimen/dp_27"
             android:paddingTop="@dimen/dp_9"

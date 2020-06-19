@@ -49,7 +49,7 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
             if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) return getDigitalTemplateNavigation(context, deeplink)
-            else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+            else return deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
         } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)) {
             return getDigitalSmartcardNavigation(deeplink)
         } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTBILLS)) {

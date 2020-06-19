@@ -18,6 +18,9 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATALOG
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
@@ -66,8 +69,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKE
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PREFERENCE_EDIT
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PREFERENCE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
@@ -141,8 +149,11 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ONBOARDING) }, DF_BASE, R.string.applink_title_affiliate))
             // Category
             add(DFP({ it.startsWith(TRADEIN) }, DF_CATEGORY_TRADE_IN, R.string.applink_title_tradein))
+            add(DFP({ it.startsWith(INTERNAL_BELANJA_CATEGORY) }, DF_BASE, R.string.label_kategori))
             add(DFP({ it.startsWith(FINAL_PRICE) }, DF_CATEGORY_TRADE_IN, R.string.applink_harga_final))
             add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DF_CATEGORY_TRADE_IN, R.string.money_in))
+            add(DFP({ it.startsWith(INTERNAL_EXPLORE_CATEGORY) }, DF_BASE, R.string.applink_title_explore_category))
+            add(DFP({ it.startsWith(INTERNAL_CATALOG) }, DF_BASE, R.string.applink_title_catalog))
 
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DF_BASE, R.string.applink_title_age_restriction))
 
@@ -197,6 +208,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
+            add(DFP({ it.startsWith(FAVORITE) }, DF_BASE, R.string.favorite_shop))
 
             add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.MANAGE_PRODUCT }))
@@ -286,6 +298,15 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(SHIPPING_CONFIRMATION) }, DF_BASE, R.string.path_shipping_confirmation))
             add(DFP({ it.startsWith(ORDER_TRACKING) }, DF_BASE, R.string.path_order_tracking))
+
+            // Transaction
+            add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.path_checkout))
+            add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.path_checkout_address_selection))
+            add(DFP({
+                it.startsWith(ONE_CLICK_CHECKOUT) ||
+                        it.startsWith(PREFERENCE_LIST) ||
+                        it.startsWith(PREFERENCE_EDIT)
+            }, DF_BASE, R.string.title_one_click_checkout))
         }
     }
 

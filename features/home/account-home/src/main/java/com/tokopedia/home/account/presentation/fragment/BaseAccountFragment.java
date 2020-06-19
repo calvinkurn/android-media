@@ -70,6 +70,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_TOK
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
+import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 /**
@@ -140,6 +141,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
+        }else if(applink.equals(RESCENTER_BUYER)){
+            return true;
         }
 
         return false;
