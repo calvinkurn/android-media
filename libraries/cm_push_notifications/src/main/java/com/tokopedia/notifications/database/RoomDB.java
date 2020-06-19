@@ -63,7 +63,7 @@ public abstract class RoomDB extends RoomDatabase {
                     "`carousel` TEXT NOT NULL, `grid` TEXT NOT NULL, `productInfo` TEXT NOT NULL, " +
                     "`parentId` INTEGER NOT NULL, `campaignUserToken` TEXT, `notificationStatus`" +
                     " INTEGER NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, " +
-                    "`notificationMode` INTEGER NOT NULL, `is_test` INTEGER NOT NULL, `transId` TEXT," +
+                    "`notificationMode` INTEGER NOT NULL, `is_test` INTEGER, `transId` TEXT," +
                     " `userTransId` TEXT, `userId` TEXT, `shopId` TEXT, `notifcenterBlastId` TEXT," +
                     " `webhook_params` TEXT, `media_fallback_url` TEXT, `media_high_quality_url`" +
                     " TEXT, `media_medium_quality_url` TEXT, `media_low_quality_url` TEXT, " +
