@@ -939,7 +939,7 @@ object DynamicProductDetailTracking {
                     "productName" to (productInfo?.getProductName ?: ""),
                     "productId" to productInfo?.basic?.getProductId(),
                     "productUrl" to productInfo?.basic?.url,
-                    "productDepplinkUrl" to deeplinkUrl,
+                    "productDeeplinkUrl" to deeplinkUrl,
                     "productImageUrl" to imageUrl,
                     "productPrice" to productInfo?.data?.price?.value,
                     "isOfficialStore" to productInfo?.data?.isOS,
@@ -1232,6 +1232,7 @@ object DynamicProductDetailTracking {
             val subCategoryNameLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.name ?: ""
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
+            val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
 
             val categoryIdLevel3 = productInfo?.basic?.category?.detail?.getOrNull(2)?.id ?: ""
             val categoryNameLevel3 = productInfo?.basic?.category?.detail?.getOrNull(2)?.name ?: ""
@@ -1251,6 +1252,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_NAME , productInfo?.getProductName,
                     ProductTrackingConstant.Tracking.KEY_GROUP_NAME , categoryNameLevel3,
                     ProductTrackingConstant.Tracking.KEY_GROUP_ID , categoryIdLevel3,
+                    ProductTrackingConstant.Tracking.CATEGORY , categoryNameLevel1,
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
                     ProductTrackingConstant.Tracking.KEY_DETAIl, DataLayer.mapOf(
