@@ -76,7 +76,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get ticker should success`() = runBlocking {
+    fun `get ticker should success`() {
         val tickerList = listOf(
                 TickerUiModel("", "", "", "", "", "",
                         "", "", "", "", "", "", "")
@@ -86,12 +86,14 @@ class SellerHomeViewModelTest {
             getTickerUseCase.executeOnBackground()
         } returns tickerList
 
-        mViewModel.getTicker()
 
-        coVerify {
-            getTickerUseCase.executeOnBackground()
+        runBlocking {
+            mViewModel.getTicker()
+            delay(100)
+            coVerify {
+                getTickerUseCase.executeOnBackground()
+            }
         }
-
         assertEquals(Success(tickerList), mViewModel.homeTicker.value)
     }
 
@@ -116,6 +118,7 @@ class SellerHomeViewModelTest {
             userSession.shopId
         }
 
+        delay(100)
         coVerify {
             getShopStatusUseCase.executeOnBackground()
         }
@@ -134,6 +137,7 @@ class SellerHomeViewModelTest {
             userSession.shopId
         } returns shopId
 
+        delay(100)
         coEvery {
             getShopStatusUseCase.executeOnBackground()
         } throws throwable
@@ -228,6 +232,7 @@ class SellerHomeViewModelTest {
             userSession.shopId
         }
 
+        delay(100)
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
@@ -252,6 +257,7 @@ class SellerHomeViewModelTest {
 
         mViewModel.getShopLocation()
 
+        delay(100)
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
@@ -279,14 +285,14 @@ class SellerHomeViewModelTest {
 
         runBlocking {
             mViewModel.getCardWidgetData(dataKeys)
-        }
+            verify {
+                userSession.shopId
+            }
 
-        verify {
-            userSession.shopId
-        }
-
-        coVerify {
-            getCardDataUseCase.executeOnBackground()
+            delay(100)
+            coVerify {
+                getCardDataUseCase.executeOnBackground()
+            }
         }
 
         val expectedResult = Success(cardDataResult)
@@ -345,6 +351,7 @@ class SellerHomeViewModelTest {
             userSession.shopId
         }
 
+        delay(100)
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
@@ -374,6 +381,7 @@ class SellerHomeViewModelTest {
 
         mViewModel.getLineGraphWidgetData(dataKeys)
 
+        delay (100)
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
@@ -400,6 +408,7 @@ class SellerHomeViewModelTest {
 
         mViewModel.getProgressWidgetData(dataKeys)
 
+        delay (100)
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
@@ -428,6 +437,7 @@ class SellerHomeViewModelTest {
 
         mViewModel.getProgressWidgetData(dataKeys)
 
+        delay (100)
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
@@ -459,6 +469,7 @@ class SellerHomeViewModelTest {
             userSession.shopId
         }
 
+        delay (100)
         coVerify {
             getPostDataUseCase.executeOnBackground()
         }
@@ -488,14 +499,14 @@ class SellerHomeViewModelTest {
 
         runBlocking {
             mViewModel.getPostWidgetData(dataKeys)
-        }
+            verify {
+                userSession.shopId
+            }
 
-        verify {
-            userSession.shopId
-        }
-
-        coVerify {
-            getPostDataUseCase.executeOnBackground()
+            delay (100)
+            coVerify {
+                getPostDataUseCase.executeOnBackground()
+            }
         }
 
         assert(mViewModel.postListWidgetData.value is Fail)
@@ -512,10 +523,13 @@ class SellerHomeViewModelTest {
             getCarouselDataUseCase.executeOnBackground()
         } returns carouselList
 
-        mViewModel.getCarouselWidgetData(dataKeys)
+        runBlocking {
+            mViewModel.getCarouselWidgetData(dataKeys)
 
-        coVerify {
-            getCarouselDataUseCase.executeOnBackground()
+            delay (100)
+            coVerify {
+                getCarouselDataUseCase.executeOnBackground()
+            }
         }
 
         val expectedResult = Success(carouselList)
@@ -536,6 +550,7 @@ class SellerHomeViewModelTest {
 
         mViewModel.getCarouselWidgetData(dataKeys)
 
+        delay(100)
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
         }
