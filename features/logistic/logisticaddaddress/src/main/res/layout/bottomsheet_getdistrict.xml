@@ -232,7 +232,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_12"
             android:contentDescription="@string/invalid_img_description"
-            tools:srcCompat="@drawable/ic_invalid_location" />
+            app:remoteFileName="tokopedia_konslet.png" />
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/invalid_button"

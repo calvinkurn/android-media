@@ -115,6 +115,7 @@ public class RemoteConfigKey {
     public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";
     public static final String HOME_GEOLOCATION_COMPONENT_DESCRIPTION = "android_customer_home_geolocation_component_description";
     public static final String SHOW_HOME_GEOLOCATION_COMPONENT = "android_customer_show_home_geolocation_component";
+    public static final String HOME_USE_GLOBAL_COMPONENT = "android_customer_home_use_global_component";
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
@@ -129,7 +130,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
-    public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
     public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
@@ -220,9 +220,9 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
 
-    public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
-
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
+
+    public static final String ENABLE_TICKER_CHARGE_BO = "enable_ticker_editshipping";
 }

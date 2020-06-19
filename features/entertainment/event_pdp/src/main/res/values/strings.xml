@@ -27,6 +27,7 @@
     <string name="ent_pdp_share_web_link">https://www.tokopedia.com/events/detail/%s</string>
     <string name="ent_pdp_share_app_link">tokopedia://events/detail/%s</string>
     <string name="ent_pdp_choose_date_bottom_sheet">Pilih Tanggal</string>
+    <string name="ent_pdp_empty_package">Mohon maaf tiket saat ini sedang tidak tersedia</string>
 
 
     <string name="ent_event_checkout_title_page">Ringkasan Pemesanan</string>
