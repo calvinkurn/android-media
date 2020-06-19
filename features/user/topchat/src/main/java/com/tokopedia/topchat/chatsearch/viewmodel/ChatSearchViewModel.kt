@@ -106,12 +106,13 @@ class ChatSearchViewModel @Inject constructor(
                 searchResults.add(searchListHeader)
                 if (searchContactResponse.searchResults.size > 5) {
                     searchResults.addAll(searchContactResponse.searchResults.subList(0, 5).toMutableList())
+                    searchResults.add(BigDividerUiModel())
                 } else {
                     searchResults.addAll(searchContactResponse.searchResults)
                 }
             }
             if (replyHeader != null) {
-                if (searchResults.isNotEmpty()) {
+                if (searchResults.size < 7) {
                     searchResults.add(BigDividerUiModel())
                 }
                 searchResults.add(replyHeader)
