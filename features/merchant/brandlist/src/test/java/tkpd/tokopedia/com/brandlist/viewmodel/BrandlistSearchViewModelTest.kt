@@ -12,12 +12,13 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
-import kotlinx.coroutines.Dispatchers
+//import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import tkpd.tokopedia.com.brandlist.TestDispatcherProvider
 
 @ExperimentalCoroutinesApi
 class BrandlistSearchViewModelTest {
@@ -31,15 +32,15 @@ class BrandlistSearchViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatchers by lazy {
-        Dispatchers.Unconfined
-    }
+//    private val dispatchers by lazy {
+//        Dispatchers.Unconfined
+//    }
 
     private val viewModel by lazy {
         BrandlistSearchViewModel(
                 getBrandlistPopularBrandUseCase,
                 getBrandlistAllBrandUseCase,
-                dispatchers
+                TestDispatcherProvider()
         )
     }
 
@@ -80,13 +81,14 @@ class BrandlistSearchViewModelTest {
         coEvery {
             getBrandlistAllBrandUseCase.executeOnBackground()
         } returns OfficialStoreAllBrands()
-        val categoryId = 0
+//        val categoryId = 0
         val offset = 0
         val query = "Samsung"
-        val sortType = 1
+//        val sortType = 1
         val firstLetter = ""
         val brandSize = 10
-        viewModel.searchBrand(categoryId, offset, query, brandSize, sortType, firstLetter)
+
+        viewModel.searchBrand(offset, query, brandSize, firstLetter)
         coVerify {
             getBrandlistAllBrandUseCase.executeOnBackground()
         }
@@ -99,8 +101,8 @@ class BrandlistSearchViewModelTest {
         coEvery {
             getBrandlistPopularBrandUseCase.executeOnBackground()
         } returns OfficialStoreBrandsRecommendation()
-        val userId = 640
-        val categoryIds = "0"
+        val userId = "640"
+        val categoryIds: ArrayList<Int> = arrayListOf(1, 2, 3)
         viewModel.searchRecommendation(userId, categoryIds)
         coVerify {
             getBrandlistPopularBrandUseCase.executeOnBackground()
@@ -114,13 +116,15 @@ class BrandlistSearchViewModelTest {
         coEvery {
             getBrandlistAllBrandUseCase.executeOnBackground()
         } returns OfficialStoreAllBrands()
-        val categoryId = 0
+
+//        val categoryId = 0
         val offset = 0
         val query = ""
         val sortType = 1
         val firstLetter = "A"
         val brandSize = 10
-        viewModel.searchAllBrands(categoryId, offset, query, brandSize, sortType, firstLetter)
+
+        viewModel.searchAllBrands(offset, query, brandSize, sortType, firstLetter)
         coVerify {
             getBrandlistAllBrandUseCase.executeOnBackground()
         }
