@@ -235,32 +235,29 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun showBottomSheetSuccess(freeShipping: PowerMerchantFreeShippingStatus) {
         val freeShippingEligible = freeShipping.isEligible
+        val chargePeriod = !freeShipping.isTransitionPeriod
+        val showFreeShipping = freeShippingEligible && chargePeriod
         val imgUrl = IMG_URL_BS_SUCCESS
-        val bottomSheetModel: MerchantCommonBottomSheet.BottomSheetModel =
-                if (shopStatusModel.isTransitionPeriod()) {
-                    val headerString = getString(R.string.pm_label_bs_success_header_transition)
-                    val descString = getString(R.string.pm_label_bs_success_desc_transition)
-                    val btnString = getString(R.string.pm_label_bs_success_button_transition)
-                    MerchantCommonBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, "")
-                } else {
-                    val headerString = getString(R.string.pm_label_bs_success_header)
-                    val descString = if(freeShippingEligible) {
-                        getString(R.string.power_merchant_success_free_shipping_description)
-                    } else {
-                        getString(R.string.pm_label_bs_success_desc)
-                    }
-                    val btnString = if(freeShippingEligible) {
-                        getString(R.string.power_merchant_free_shipping_learn_more)
-                    } else {
-                        getString(R.string.pm_label_bs_success_button)
-                    }
-                    MerchantCommonBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, PM_SUBSCRIBE_SUCCESS)
-                }
+
+        val headerString = getString(R.string.pm_label_bs_success_header)
+        val descString = if(showFreeShipping) {
+            getString(R.string.power_merchant_success_free_shipping_description)
+        } else {
+            getString(R.string.pm_label_bs_success_desc)
+        }
+        val btnString = if(showFreeShipping) {
+            getString(R.string.power_merchant_free_shipping_learn_more)
+        } else {
+            getString(R.string.pm_label_bs_success_button)
+        }
+
+        val bottomSheetModel = MerchantCommonBottomSheet.BottomSheetModel(
+            headerString, descString, imgUrl, btnString, PM_SUBSCRIBE_SUCCESS)
 
         bottomSheetCommon = MerchantCommonBottomSheet.newInstance(bottomSheetModel)
         bottomSheetCommon.setListener(object : MerchantCommonBottomSheet.BottomSheetListener {
             override fun onBottomSheetButtonClicked() {
-                openFreeShippingPage(freeShippingEligible)
+                openFreeShippingPage(showFreeShipping)
                 bottomSheetCommon.dismiss()
                 refreshData()
             }
@@ -268,8 +265,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheetCommon.show(childFragmentManager, "power_merchant_success")
     }
 
-    private fun openFreeShippingPage(freeShippingEligible: Boolean) {
-        if(freeShippingEligible) {
+    private fun openFreeShippingPage(showFreeShipping: Boolean) {
+        if(showFreeShipping) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
                 PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
         }
