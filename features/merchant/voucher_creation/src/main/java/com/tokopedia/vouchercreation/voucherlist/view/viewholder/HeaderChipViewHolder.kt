@@ -51,10 +51,10 @@ class HeaderChipViewHolder(
         itemView.itemChipMvc.run {
             if (isActive) {
                 chipType = ChipsUnify.TYPE_SELECTED
-                chip_right_icon.setImageResource(R.drawable.unify_chips_ic_chevron_selected)
+                chip_right_icon.setImageResource(com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_chevron_selected)
             } else {
                 chipType = ChipsUnify.TYPE_NORMAL
-                chip_right_icon.setImageResource(R.drawable.unify_chips_ic_chevron_normal)
+                chip_right_icon.setImageResource(com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_chevron_normal)
             }
         }
     }

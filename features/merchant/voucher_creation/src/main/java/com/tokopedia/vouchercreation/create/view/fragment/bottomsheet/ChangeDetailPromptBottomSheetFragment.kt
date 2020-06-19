@@ -31,7 +31,7 @@ class ChangeDetailPromptBottomSheetFragment(context: Context,
 
     private val cancelDescription = context.getString(R.string.mvc_review_back_redirect).toBlankOrString()
     private val clickableSpan = context.getString(R.string.mvc_review_back_redirect_clickable).toBlankOrString()
-    private val spanColor = context.getResColor(R.color.light_G500)
+    private val spanColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.light_G500)
 
     private var onBackButtonClicked: () -> Unit = {}
 

@@ -59,14 +59,14 @@ class HeaderChipsView : RecyclerView {
                 if (position == 0) {
                     val isVisible = chipAdapter.items[position].isVisible
                     if (isVisible) {
-                        outRect.left = view.resources.getDimensionPixelSize(R.dimen.layout_lvl2)
+                        outRect.left = view.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
                     } else {
-                        outRect.left = view.resources.getDimensionPixelSize(R.dimen.layout_lvl1)
+                        outRect.left = view.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
                     }
                 }
 
                 if (position == chipAdapter.itemCount.minus(1)) {
-                    outRect.right = view.resources.getDimensionPixelSize(R.dimen.layout_lvl1)
+                    outRect.right = view.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
                 }
             }
         }

@@ -87,9 +87,9 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
     private fun View.setupBorderColor() {
         resources?.run {
             val borderColorRes = if (isItemEnabled) {
-                R.color.Green_G400
+                com.tokopedia.unifyprinciples.R.color.Green_G400
             } else {
-                R.color.Neutral_N75
+                com.tokopedia.unifyprinciples.R.color.Neutral_N75
             }
             (background as GradientDrawable).setStroke(
                     getDimension(R.dimen.mvc_create_target_card_border_width).toInt().orZero(),

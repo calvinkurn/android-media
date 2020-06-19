@@ -60,10 +60,10 @@ class DownloadVoucherBottomSheet(
             super.getItemOffsets(outRect, view, parent, state)
             val position = parent.getChildAdapterPosition(view)
             if (position == 0) {
-                outRect.top = view.resources.getDimensionPixelSize(R.dimen.layout_lvl1)
+                outRect.top = view.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
             }
             if (position == mAdapter.itemCount.minus(1)) {
-                outRect.bottom = view.resources.getDimensionPixelSize(R.dimen.layout_lvl2)
+                outRect.bottom = view.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
             }
         }
     }

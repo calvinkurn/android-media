@@ -27,7 +27,7 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
     open var extraWidget : List<Visitable<F>> = listOf()
 
     @LayoutRes
-    open var layoutRes: Int = R.layout.fragment_base_list
+    open var layoutRes: Int = R.layout.fragment_mvc_base_list
 
     abstract fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType)
 
@@ -38,6 +38,8 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(layoutRes, container, false)
     }
+
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
