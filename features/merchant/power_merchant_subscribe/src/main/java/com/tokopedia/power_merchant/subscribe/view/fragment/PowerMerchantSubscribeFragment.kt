@@ -38,6 +38,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
@@ -239,6 +240,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val showFreeShipping = freeShippingEligible && chargePeriod
         val imgUrl = IMG_URL_BS_SUCCESS
 
+        if(showFreeShipping) {
+            PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(userSessionInterface)
+        }
+
         val headerString = getString(R.string.pm_label_bs_success_header)
         val descString = if(showFreeShipping) {
             getString(R.string.power_merchant_success_free_shipping_description)
@@ -267,6 +272,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun openFreeShippingPage(showFreeShipping: Boolean) {
         if(showFreeShipping) {
+            PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(userSessionInterface)
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
                 PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
         }
