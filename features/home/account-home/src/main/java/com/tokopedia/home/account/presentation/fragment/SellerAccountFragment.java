@@ -254,12 +254,15 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
         if (item.getMenu().equalsIgnoreCase(getString(R.string.title_menu_voucher_toko))) {
+            sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
             showSellerMigrationVoucherTokoBottomSheet();
             accountAnalytics.sendClickSellerMigration(getString(R.string.title_menu_voucher_toko), userSession.getUserId());
+        } else {
+            super.onMenuListClicked(item);
         }
     }
+
     @Override
     public void onProductRecommendationClicked(@NotNull RecommendationItem product, int adapterPosition, String widgetTitle) {
 
@@ -281,10 +284,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void setupSellerMigrationTicker() {
-        if(isSellerMigrationEnabled(this.getContext())) {
+        if (isSellerMigrationEnabled(this.getContext())) {
             migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title));
             String remoteConfigDate = getSellerMigrationDate(this.getContext());
-            if(remoteConfigDate.isEmpty()) {
+            if (remoteConfigDate.isEmpty()) {
                 migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
             } else {
                 migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate));
@@ -306,7 +309,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void openSellerMigrationBottomSheet() {
-        if(getContext() != null) {
+        if (getContext() != null) {
             BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationAccountBottomSheet.Companion.createNewInstance(getContext());
             sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
         }
