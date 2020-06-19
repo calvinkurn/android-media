@@ -81,8 +81,8 @@ class TestBottomNav {
         val lottieAnimation4 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_CART))
         assertThat(lottieAnimation4.progress, Matchers.greaterThan(0.9f))
 
-        val lottieAnimation5 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_ACCOUNT))
-        assertThat(lottieAnimation5.progress, Matchers.greaterThan(0.9f))
+//        val lottieAnimation5 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_ACCOUNT))
+//        assertThat(lottieAnimation5.progress, Matchers.greaterThan(0.9f))
     }
 
     @Test
