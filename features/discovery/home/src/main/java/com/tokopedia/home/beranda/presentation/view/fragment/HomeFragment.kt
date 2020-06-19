@@ -56,7 +56,6 @@ import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.design.keyboard.KeyboardHelper.OnKeyboardVisibilityChangedListener
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
@@ -154,8 +153,6 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -197,6 +194,8 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val PERFORMANCE_PAGE_NAME_HOME = "home"
         private var lock = Object()
+        private const val ENABLE_ASYNC_HOME_DAGGER = "android_async_home_dagger"
+
         var HIDE_TICKER = false
         private var HIDE_GEO = false
         private const val SOURCE_ACCOUNT = "account"
@@ -280,15 +279,25 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        var homeDaggerWeave = object : WeaveInterface{
-            override fun execute(): Any {
-                return initHomePageFlows()
-            }
-        }
-        Weaver.executeWeaveCoRoutineWithFirebase(homeDaggerWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_DAGGER, context.applicationContext)
+        createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         requestStatusBarDark()
+    }
+
+    private fun createDaggerComponent(){
+        val enableAsyncDaggerCompInit = getRemoteConfig().getBoolean(ENABLE_ASYNC_HOME_DAGGER, false)
+        if(enableAsyncDaggerCompInit) {
+            var homeDaggerWeave = object : WeaveInterface {
+                override fun execute(): Any {
+                    return initHomePageFlows()
+                }
+            }
+            Weaver.executeWeaveCoRoutineNow(homeDaggerWeave)
+        }
+        else{
+            initHomePageFlows()
+        }
     }
 
     private fun requestStatusBarDark() {
