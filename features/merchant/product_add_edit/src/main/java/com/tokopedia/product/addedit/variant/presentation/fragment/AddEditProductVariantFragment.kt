@@ -47,8 +47,6 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.AddEditProductVariantSizechartDialogFragment
-import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantViewModel
 import com.tokopedia.product.addedit.variant.presentation.widget.CustomVariantUnitValueForm
@@ -147,6 +145,7 @@ class AddEditProductVariantFragment :
         observeGetCategoryVariantCombinationResult()
         observeProductInputModel()
         observeInputStatus()
+        observeSizechartVisibility()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -222,6 +221,8 @@ class AddEditProductVariantFragment :
                 viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnitValues)
             }
         }
+
+        viewModel.updateSizechartFieldVisibility(variantDetail)
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail) {
@@ -243,6 +244,8 @@ class AddEditProductVariantFragment :
         if (variantId == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoLayout.hide()
         }
+
+        viewModel.updateSizechartFieldVisibility(variantDetail)
     }
 
     private fun setupVariantValueSection(layoutPosition: Int, variantTypeDetail: VariantDetail, selectedVariantUnitValues: List<UnitValue>) {
@@ -513,7 +516,7 @@ class AddEditProductVariantFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(this, Observer { productInputModel ->
-            val categoryId = "3427"
+            val categoryId = productInputModel.detailInputModel.categoryId
             viewModel.getCategoryVariantCombination(categoryId)
         })
     }
@@ -538,6 +541,12 @@ class AddEditProductVariantFragment :
     private fun observeInputStatus() {
         viewModel.isInputValid.observe(this, Observer {
             buttonSave.isEnabled = it
+        })
+    }
+
+    private fun observeSizechartVisibility() {
+        viewModel.isVariantSizechartVisible.observe(this, Observer {
+            layoutSizechart.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 

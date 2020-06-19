@@ -1,8 +1,10 @@
 package com.tokopedia.product.addedit.variant.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.product.addedit.common.util.setPrimarySelected
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_COUNT
@@ -11,30 +13,34 @@ import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputMo
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import kotlinx.android.synthetic.main.item_multiple_variant_edit_select.view.*
 
-class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnFieldClickListener)
+class SelectVariantMainViewHolder(itemView: View, val clickListener: OnFieldClickListener)
     : RecyclerView.ViewHolder(itemView) {
 
     interface OnFieldClickListener {
-        fun onFieldClicked(selectionPosition: Int, optionPosition: Int, value: Boolean)
+        fun onFieldClicked(level1Position: Int, level2Position: Int, value: Boolean)
     }
 
     private var levelCount = 0
     private var dataList: ArrayList<ListItemUnify> = arrayListOf()
+    private var context: Context? = null
 
-    fun bindData(selectedItem: List<Boolean>, selections: List<SelectionInputModel>) {
+    fun bindData(selectedItemMap: MutableList<Boolean>, selections: List<SelectionInputModel>) {
         levelCount = selections.size
-        dataList = mapToListItems(selectedItem, selections)
+        dataList = mapToListItems(selectedItemMap, selections)
+        context = itemView.context
         itemView.listUnifySelection.setData(dataList)
         itemView.listUnifySelection.onLoadFinish {
             itemView.listUnifySelection.setOnItemClickListener { _, _, position, _ ->
-                val checkedItem = dataList[position]
-                checkedItem.listRightCheckbox?.performClick()
+                val selectedItem = dataList[position]
+                selectedItem.listRightRadiobtn?.performClick()
             }
 
             dataList.forEachIndexed { position, listItemUnify ->
-                listItemUnify.listRightCheckbox?.isChecked = selectedItem[position] ?: false
-                listItemUnify.listRightCheckbox?.setOnClickListener {
-                    val isChecked = listItemUnify.listRightCheckbox?.isChecked ?: false
+                val isPositionChecked = selectedItemMap.getOrNull(position) ?: false
+                listItemUnify.setPrimarySelected(context, isPositionChecked)
+
+                listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    val isChecked = listItemUnify.listRightRadiobtn?.isChecked ?: false
                     clickListener.onFieldClicked(adapterPosition, position, isChecked)
                 }
             }
@@ -78,7 +84,7 @@ class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnF
 
     private fun createListItem(text: String): ListItemUnify {
         val listItem = ListItemUnify(text, "")
-        listItem.setVariant(null, ListItemUnify.CHECKBOX, text)
+        listItem.setVariant(null, ListItemUnify.RADIO_BUTTON, text)
         listItem.isBold = false
         return listItem
     }

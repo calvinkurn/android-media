@@ -10,6 +10,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import kotlinx.coroutines.CoroutineDispatcher
 import java.math.BigInteger
@@ -78,6 +79,31 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         if (inputLayoutModelMap.containsKey(fieldPosition)) inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
     }
 
+    fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {
+        // get combination from selected input
+        inputModel.selection.forEachIndexed { index, values ->
+            values.forEach { value ->
+                // set new variant value to selected combination
+                val combination = listOf(index, value.key)
+                if (value.value) {
+                    setProductVariantByCombination(combination, inputModel)
+                }
+            }
+        }
+    }
+
+    private fun setProductVariantByCombination(combination: List<Int>, inputModel: MultipleVariantEditInputModel) {
+        val variantInputModel = productInputModel.value?.variantInputModel?.products
+        // search product variant by comparing combination
+        val productVariant = variantInputModel?.findLast { it.combination == combination }
+        // set value if found
+        productVariant?.let {
+            it.price = inputModel.price
+            it.stock = inputModel.stock
+            it.sku = inputModel.sku
+        }
+    }
+
     fun updateSkuVisibilityStatus(isVisible: Boolean) {
         inputLayoutModelMap.forEach {
             it.value.isSkuFieldVisible = isVisible
@@ -87,10 +113,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun getVariantDetailHeaderData(headerPosition: Int): MutableList<VariantDetailInputLayoutModel> {
         val dataMap = inputLayoutModelMap.filterValues { it.headerPosition == headerPosition }
         return dataMap.values.toMutableList()
-    }
-
-    fun getVariantDetailFieldMap(): HashMap<Int, VariantDetailInputLayoutModel> {
-        return this.inputLayoutModelMap
     }
 
     fun getAvailableFields(): Map<Int, VariantDetailInputLayoutModel> {

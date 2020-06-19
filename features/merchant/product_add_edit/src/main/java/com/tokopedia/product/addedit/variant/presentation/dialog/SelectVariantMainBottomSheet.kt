@@ -8,31 +8,28 @@ import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVariantEditSelectTypeAdapter
-import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.SelectVariantMainTypeAdapter
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_select_bottom_sheet_content.view.*
+import kotlinx.android.synthetic.main.add_edit_product_select_variant_main_bottom_sheet_content.view.*
 
-class MultipleVariantEditSelectBottomSheet(
-        private val multipleVariantEditListener: MultipleVariantEditListener
-): BottomSheetUnify(), MultipleVariantEditInputBottomSheet.MultipleVariantEditInputListener {
+class SelectVariantMainBottomSheet(
+        private val listener: SelectVariantMainListener
+): BottomSheetUnify() {
 
     companion object {
-        const val TAG = "Tag Multiple Variant Edit Select"
+        const val TAG = "Tag Select Variant Main"
     }
 
     private var contentView: View? = null
-    private var selectAdapter: MultipleVariantEditSelectTypeAdapter? = null
-    private var enableEditSku = true
+    private var selectAdapter: SelectVariantMainTypeAdapter? = null
 
-    interface MultipleVariantEditListener {
-        fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
+    interface SelectVariantMainListener {
+        fun onSelectVariantMainFinished(combination: List<Int>)
     }
 
     init {
-        selectAdapter = MultipleVariantEditSelectTypeAdapter()
+        selectAdapter = SelectVariantMainTypeAdapter()
         setBehaviorAsKnob()
     }
 
@@ -48,24 +45,15 @@ class MultipleVariantEditSelectBottomSheet(
         addMarginTitle()
     }
 
-    override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
-        multipleVariantEditInputModel.selection = selectAdapter?.getSelectedData().orEmpty()
-        multipleVariantEditListener.onMultipleEditFinished(multipleVariantEditInputModel)
-    }
-
     fun setData(items: VariantInputModel?) {
         items?.run {
             selectAdapter?.setData(this)
         }
     }
 
-    fun setEnableEditSku(enabled: Boolean) {
-        enableEditSku = enabled
-    }
-
     fun show(manager: FragmentManager?) {
         manager?.run {
-            super.show(this , MultipleVariantEditInputBottomSheet.TAG)
+            super.show(this , TAG)
         }
     }
 
@@ -90,23 +78,17 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     private fun initChildLayout() {
-        setTitle(getString(R.string.label_variant_multiple_select_bottom_sheet_title))
+        setTitle(getString(R.string.label_variant_main_select_bottom_sheet_title))
         contentView = View.inflate(context,
-                R.layout.add_edit_product_multiple_variant_edit_select_bottom_sheet_content, null)
-        contentView?.recyclerViewVariantCheck?.apply {
+                R.layout.add_edit_product_select_variant_main_bottom_sheet_content, null)
+        contentView?.recyclerViewVariantMain?.apply {
             setHasFixedSize(true)
             adapter = selectAdapter
             layoutManager = LinearLayoutManager(context)
         }
-        contentView?.buttonNext?.setOnClickListener {
+        contentView?.buttonSave?.setOnClickListener {
             dismiss()
-            val multipleVariantEditSelectBottomSheet =
-                    MultipleVariantEditInputBottomSheet(enableEditSku, this)
-            multipleVariantEditSelectBottomSheet.show(fragmentManager)
-        }
-        contentView?.checkboxSelectAll?.setOnClickListener {
-            val isSelected = (it as CheckboxUnify).isChecked
-            selectAdapter?.setAllDataSelected(isSelected)
+            listener.onSelectVariantMainFinished(selectAdapter?.getSelectedData().orEmpty())
         }
         setChild(contentView)
     }
