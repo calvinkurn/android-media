@@ -235,15 +235,11 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         coverSetupView.show()
         coverCropView.hide()
 
-        if (coverImageUri != null) coverSetupView.setImage(coverImageUri)
+        coverSetupView.setImage(coverImageUri)
     }
 
-    private fun renderCoverTitleLayout(resultImageUri: Uri?) {
-        resultImageUri?.let {
-            coverSetupView.setImage(it)
-        }
-
-        coverSetupView.updateViewState()
+    private fun removeCover() {
+        viewModel.removeCover()
     }
 
     private fun renderCoverCropLayout(imageUri: Uri) {
@@ -252,7 +248,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
 
     private fun onCancelCropImage() {
         showInitCoverLayout(null)
-        renderCoverTitleLayout(null)
+        removeCover()
 //        when (coverSource) {
 //            CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
 //            else -> openCoverChooser()

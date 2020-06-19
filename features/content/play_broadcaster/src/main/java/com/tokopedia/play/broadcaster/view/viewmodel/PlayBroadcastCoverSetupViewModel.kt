@@ -52,11 +52,20 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
             }
         }
 
+    private val source: CoverSourceEnum
+        get() {
+            return when (val currentCropState = _observableCropState.value) {
+                is CoverSetupState.Cropped -> currentCropState.coverSource
+                is CoverSetupState.Cropping -> currentCropState.coverSource
+                else -> CoverSourceEnum.NONE
+            }
+        }
+
     val observableCropState: LiveData<CoverSetupState>
         get() = _observableCropState
     private val _observableCropState = MediatorLiveData<CoverSetupState>().apply {
         addSource(setupDataStore.getObservableSelectedCover()) {
-            value = if (it?.coverImage == null) CoverSetupState.Blank else CoverSetupState.Cropped(it.coverImage)
+            value = if (it?.coverImage == null) CoverSetupState.Blank else CoverSetupState.Cropped(it.coverImage, it.source)
         }
     }
 
@@ -118,7 +127,8 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
                 }
             }
 
-            setupDataStore.setCover(PlayCoverUiModel(Uri.parse(url), coverTitle, SetupDataState.Uploaded))
+            setupDataStore.setCover(
+                    PlayCoverUiModel(coverImage = Uri.parse(url), title = coverTitle, source = source, state = SetupDataState.Uploaded))
         }) {
             it.printStackTrace()
         }
@@ -137,12 +147,21 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
 
     fun setCroppedCover(coverUri: Uri) {
         val imageValidated = validateImageMinSize(coverUri)
-        _observableCropState.value = CoverSetupState.Cropped(imageValidated)
+        _observableCropState.value = CoverSetupState.Cropped(imageValidated, source)
+    }
+
+    fun removeCover() {
+        _observableCropState.value = CoverSetupState.Blank
     }
 
     fun saveCover(imagePath: Uri?, coverTitle: String) {
         setupDataStore.setCover(
-                PlayCoverUiModel(imagePath, coverTitle, SetupDataState.Draft)
+                PlayCoverUiModel(
+                        coverImage = imagePath,
+                        title = coverTitle,
+                        source = source,
+                        state = SetupDataState.Draft
+                )
         )
     }
 

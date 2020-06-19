@@ -9,5 +9,6 @@ import com.tokopedia.play.broadcaster.view.state.SetupDataState
 data class PlayCoverUiModel(
         val coverImage: Uri?,
         val title: String,
-        val state: SetupDataState
+        val state: SetupDataState,
+        val source: CoverSourceEnum
 )

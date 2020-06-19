@@ -55,8 +55,9 @@ class CoverSetupPartialView(
         rootView.hide()
     }
 
-    fun setImage(uri: Uri) {
-        ivCoverImage.loadImage(uri.toString())
+    fun setImage(uri: Uri?) {
+        if (uri != null) ivCoverImage.loadImage(uri.toString())
+        else ivCoverImage.setImageDrawable(null)
     }
 
     fun setMaxTitleChar(maxChar: Int) {

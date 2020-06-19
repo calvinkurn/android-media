@@ -60,7 +60,8 @@ class PlayBroadcastSetupViewModel @Inject constructor(
                     cover = PlayCoverUiModel(
                             coverImage = coverUri,
                             title = title,
-                            state = SetupDataState.Uploaded
+                            state = SetupDataState.Uploaded,
+                            source = CoverSourceEnum.NONE
                     ),
                     selectedProductList = productList
             )
