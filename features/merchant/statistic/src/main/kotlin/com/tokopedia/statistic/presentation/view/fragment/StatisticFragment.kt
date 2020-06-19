@@ -1,6 +1,5 @@
 package com.tokopedia.statistic.presentation.view.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -15,7 +14,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -274,18 +272,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun showTabLayout() = view?.run {
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
         if (firstVisible > 0) {
-            tabLayoutStc.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            setAppBarElevation(context.dpToPx(4))
+            appBarStc.visible()
         } else {
-            setAppBarElevation(0f)
-            tabLayoutStc.layoutParams.height = 0
-        }
-        tabLayoutStc.requestLayout()
-    }
-
-    private fun setAppBarElevation(elevation: Float) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            view?.appBarStc?.elevation = elevation
+            appBarStc.gone()
         }
     }
 
@@ -349,10 +338,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
         val adapterIndex: Int = adapter.data.indexOfFirst { it.title == tabTitle }
         if (adapterIndex != RecyclerView.NO_POSITION) {
-            mLayoutManager.scrollToPositionWithOffset(adapterIndex, 0)
+            mLayoutManager.scrollToPositionWithOffset(adapterIndex, tabLayoutStc.height)
             recyclerView.post {
                 requestVisibleWidgetsData()
             }
+        }
+        if (selectedTabIndex == 0) {
+            appBarStc.gone()
         }
     }
 
