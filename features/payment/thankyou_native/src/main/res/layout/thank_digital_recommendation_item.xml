@@ -22,8 +22,9 @@
             android:id="@+id/thanks_dg_rec_image"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:scaleType="fitCenter"
+            android:layout_marginTop="6dp"
+            android:scaleType="fitStart"
+            android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,13 +32,12 @@
             android:id="@+id/thanks_dh_rec_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="8dp"
-            android:gravity="center_vertical"
+            android:gravity="top"
             app:layout_constraintLeft_toRightOf="@id/thanks_dg_rec_image"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/thanks_dg_rec_image"
             app:typographyType="heading_5" />
 
         <com.tokopedia.unifyprinciples.Typography

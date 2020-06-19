@@ -198,6 +198,13 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         activity?.finish()
     }
 
+    override fun gotoHomePage(applink: String) {
+        RouteManager.route(context, applink, "")
+        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent()
+        activity?.finish()
+    }
+
+
     override fun gotoPaymentWaitingPage() {
         val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
         val paymentListIntent = RouteManager.getIntent(context, ApplinkConst.PMS, "")

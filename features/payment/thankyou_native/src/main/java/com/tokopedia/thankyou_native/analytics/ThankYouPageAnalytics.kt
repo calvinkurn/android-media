@@ -2,6 +2,9 @@ package com.tokopedia.thankyou_native.analytics
 
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -22,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import javax.inject.Inject
+
 
 class ThankYouPageAnalytics @Inject constructor(
         @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
@@ -51,6 +55,29 @@ class ThankYouPageAnalytics @Inject constructor(
         }, onError = {
             it.printStackTrace()
         })
+    }
+
+    fun sendigitalThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
+        this.thanksPageData = thanksPageData
+        CoroutineScope(mainDispatcher).launchCatchError(block = {
+            withContext(bgDispatcher) {
+                thanksPageData.shopOrder.forEach { shopOrder ->
+                    processDataForGTM(thanksPageData.thanksCustomization.trackingData)
+                }
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+    private fun processDataForGTM(eventData: String) {
+        val gson = Gson()
+        val eventList: JsonArray = gson.fromJson(eventData, object : TypeToken<JsonArray>() {}.type)
+
+        eventList.forEach { data ->
+            val eventMap: Map<String, Any> = gson.fromJson(data, object : TypeToken<Map<String, Any>>(){}.type)
+            analyticTracker.sendEnhanceEcommerceEvent(eventMap)
+        }
     }
 
     private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
@@ -165,6 +192,7 @@ class ThankYouPageAnalytics @Inject constructor(
                 ))
     }
 
+
     fun appsFlyerPurchaseEvent(thanksPageData: ThanksPageData) {
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
@@ -200,7 +228,10 @@ class ThankYouPageAnalytics @Inject constructor(
                 afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
                 afValue[AFInAppEventType.ORDER_ID] = orderIds
                 afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
-                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = ThankPageTypeMapper.getThankPageType(thanksPageData)
+                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+                    DigitalThankPage -> DIGITAL
+                    else -> MARKET_PLACE
+                }
                 afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
                 afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
                 afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
@@ -234,7 +265,10 @@ class ThankYouPageAnalytics @Inject constructor(
                     branchIOPayment.setOrderId(shopOrder.orderId)
                     branchIOPayment.setShipping(shopOrder.shippingAmount.toString())
                     branchIOPayment.setRevenue(thanksPageData.amount.toString())
-                    branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE)
+                    branchIOPayment.setProductType(when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+                        DigitalThankPage -> LinkerConstants.PRODUCTTYPE_DIGITAL
+                        else -> LinkerConstants.PRODUCTTYPE_MARKETPLACE
+                    })
                     branchIOPayment.isNewBuyer = thanksPageData.isNewUser
                     branchIOPayment.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
                     var price = 0F
@@ -260,19 +294,19 @@ class ThankYouPageAnalytics @Inject constructor(
         }, onError = { it.printStackTrace() })
     }
 
-    private fun getCategoryLevel1(category: String?) : String{
-        return if(category.isNullOrBlank()){
+    private fun getCategoryLevel1(category: String?): String {
+        return if (category.isNullOrBlank()) {
             ""
-        }else{
+        } else {
             category.split("_")[0]
         }
     }
 
-    private fun addSlashInCategory(category: String?) : String{
-        return if(category.isNullOrBlank()){
+    private fun addSlashInCategory(category: String?): String {
+        return if (category.isNullOrBlank()) {
             ""
-        }else{
-            category.replace("_"," / ")
+        } else {
+            category.replace("_", " / ")
         }
     }
 

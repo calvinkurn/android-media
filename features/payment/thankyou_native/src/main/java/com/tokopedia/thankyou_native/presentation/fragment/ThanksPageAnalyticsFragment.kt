@@ -3,7 +3,11 @@ package com.tokopedia.thankyou_native.presentation.fragment
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
+import com.tokopedia.thankyou_native.data.mapper.DigitalThankPage
+import com.tokopedia.thankyou_native.data.mapper.MarketPlaceThankPage
+import com.tokopedia.thankyou_native.data.mapper.ThankPageTypeMapper
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import javax.inject.Inject
@@ -37,7 +41,11 @@ class ThanksPageAnalyticsFragment : BaseDaggerFragment() {
 
     private fun postThanksPageLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
-        thankYouPageAnalytics.get().sendThankYouPageDataLoadEvent(thanksPageData)
+        when(ThankPageTypeMapper.getThankPageType(thanksPageData)){
+            MarketPlaceThankPage -> thankYouPageAnalytics.get().sendThankYouPageDataLoadEvent(thanksPageData)
+            else-> thankYouPageAnalytics.get().sendigitalThankYouPageDataLoadEvent(thanksPageData)
+        }
+
         thankYouPageAnalytics.get().appsFlyerPurchaseEvent(thanksPageData)
         thankYouPageAnalytics.get().sendBranchIOEvent(thanksPageData)
     }

@@ -107,7 +107,13 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                 gotoOrderList(thanksPageData.thanksCustomization.customOrderUrlApp)
             }
         }
-        btnShopAgain.setOnClickListener { gotoHomePage() }
+        btnShopAgain.setOnClickListener {
+            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
+                gotoHomePage()
+            } else {
+                gotoHomePage(thanksPageData.thanksCustomization.customHomeUrlApp)
+            }
+        }
     }
 
     private fun observeViewModel() {
