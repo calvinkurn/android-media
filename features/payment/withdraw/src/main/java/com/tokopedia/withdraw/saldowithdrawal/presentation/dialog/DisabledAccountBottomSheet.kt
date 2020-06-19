@@ -25,15 +25,12 @@ class DisabledAccountBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         setChild(childView)
         childView.findViewById<View>(R.id.btnCheckPremiumProgram).setOnClickListener {
             WithdrawConstant.openRekeningAccountInfoPage(context, userSession.get())
         }
     }
+
 
     private fun initInjector() {
         activity?.let {

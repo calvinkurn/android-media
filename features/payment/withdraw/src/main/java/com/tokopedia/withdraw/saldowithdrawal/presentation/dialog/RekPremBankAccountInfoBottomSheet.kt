@@ -34,20 +34,6 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-    }
-
-    private fun initInjector() {
-        activity?.let {
-            DaggerWithdrawComponent.builder()
-                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                    .build().inject(this)
-        } ?: run {
-            dismiss()
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         setChild(childView)
         context?.let { context ->
             addBulletToTextView(context, R.string.swd_premium_account_info_line_one,
@@ -59,6 +45,19 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
             childView.findViewById<View>(R.id.btnJoinPremiumAccount).setOnClickListener {
                 WithdrawConstant.openRekeningAccountInfoPage(context, userSession.get())
             }
+            childView.findViewById<View>(R.id.tvMoreInfo).setOnClickListener {
+                //todo pending from business side
+            }
+        }
+    }
+
+    private fun initInjector() {
+        activity?.let {
+            DaggerWithdrawComponent.builder()
+                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                    .build().inject(this)
+        } ?: run {
+            dismiss()
         }
     }
 

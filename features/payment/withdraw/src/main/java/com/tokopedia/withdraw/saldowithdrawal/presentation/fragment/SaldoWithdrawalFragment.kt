@@ -448,8 +448,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     }
 
     private fun openUserVerificationScreen() {
-        withdrawalRequest.showJoinRekeningWidget = true
-        withdrawalRequest.isJoinRekeningPremium = false
         val OTP_TYPE_ADD_BANK_ACCOUNT = 120
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
         val bundle = Bundle()

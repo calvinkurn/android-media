@@ -64,20 +64,10 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
                 dismiss()
         }
         initInjector()
+        addDataToUI()
     }
 
-    private fun initInjector() {
-        activity?.let {
-            DaggerWithdrawComponent.builder()
-                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                    .build().inject(this)
-        } ?: run {
-            dismiss()
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun addDataToUI() {
         childView.findViewById<TextView>(R.id.tvJoinRekeningTitle).text = joinRekeningPremium.title
         context?.let {
             getDescription(it, childView.findViewById(R.id.descriptionBulletContainer))
@@ -94,7 +84,16 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
             dismiss()
             callback?.onWithdrawalAndJoinRekening(false)
         }
+    }
 
+    private fun initInjector() {
+        activity?.let {
+            DaggerWithdrawComponent.builder()
+                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                    .build().inject(this)
+        } ?: run {
+            dismiss()
+        }
     }
 
     private fun getDescription(context: Context, container: LinearLayout) {
