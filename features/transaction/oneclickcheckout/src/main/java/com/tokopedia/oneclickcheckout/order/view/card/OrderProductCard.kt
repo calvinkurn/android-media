@@ -16,6 +16,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -211,7 +212,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
             }
         }
-        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
+        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false).removeDecimalSuffix()
 
         if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
             ivFreeShipping?.let {
