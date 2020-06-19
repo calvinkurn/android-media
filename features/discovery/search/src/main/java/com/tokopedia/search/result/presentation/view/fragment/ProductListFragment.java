@@ -939,7 +939,7 @@ public class ProductListFragment
         productCardOptionsModel.setWishlisted(item.isWishlisted());
         productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
         productCardOptionsModel.setProductId(item.getProductID() == null ? "" : item.getProductID());
-        productCardOptionsModel.setTopAds(item.isTopAds());
+        productCardOptionsModel.setTopAds(item.isTopAds() || item.isOrganicAds());
         productCardOptionsModel.setTopAdsWishlistUrl(item.getTopadsWishlistUrl() == null ? "" : item.getTopadsWishlistUrl());
         productCardOptionsModel.setRecommendation(false);
         productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
