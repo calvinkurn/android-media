@@ -44,9 +44,15 @@
         android:id="@+id/tvFeedbackDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        layout="@layout/partial_feedback_user_review_detail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivOptionReviewFeedback"/>
+        app:layout_constraintTop_toTopOf="@+id/tvFeedbackUser"
+        app:layout_constraintStart_toEndOf="@id/tvFeedbackUser"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        tools:text="Hari ini"/>
 
     <include
         android:id="@+id/partialFeedbackVariantReviewDetail"

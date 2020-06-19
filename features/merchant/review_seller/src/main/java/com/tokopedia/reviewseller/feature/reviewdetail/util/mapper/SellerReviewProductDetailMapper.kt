@@ -152,7 +152,7 @@ object SellerReviewProductDetailMapper {
 
 
     private fun mapToItemSortFilter(data: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>, oldData: List<SortFilterItemWrapper>): ArrayList<SortFilterItemWrapper> {
-        val itemSortFilterList = ArrayList<SortFilterItem>()
+        val itemSortFilterList = ArrayList<SortFilterItemWrapper>()
         val maxItemSortFilter = 6
         val updatedData = updateNewDataWithOldData(data,oldData)
         val maxData = updatedData.take(maxItemSortFilter)
@@ -173,7 +173,7 @@ object SellerReviewProductDetailMapper {
             topic to lastState
         }
 
-       return updatedData
+        return updatedData
     }
 
     fun mapToItemImageSlider(attachmentList: List<FeedbackUiModel.Attachment>?): Pair<List<String>, List<String>> {
