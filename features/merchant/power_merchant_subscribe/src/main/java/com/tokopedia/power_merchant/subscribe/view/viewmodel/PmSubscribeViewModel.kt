@@ -46,8 +46,6 @@ class PmSubscribeViewModel @Inject constructor(
     private val _getPmFreeShippingStatusResult = MutableLiveData<Result<PowerMerchantFreeShippingStatus>>()
     private val _onActivatePmSuccess = MutableLiveData<Result<PowerMerchantFreeShippingStatus>>()
 
-    private var freeShippingImpressionTracked = false
-
     fun getPmStatusInfo(){
         showLoading()
 
@@ -97,16 +95,15 @@ class PmSubscribeViewModel @Inject constructor(
     }
 
     fun trackFreeShippingImpression() {
-        if(!freeShippingImpressionTracked) {
-            val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
-            PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(userSession, isTransitionPeriod)
-            freeShippingImpressionTracked = true
+        (_getPmFreeShippingStatusResult.value as? Success<PowerMerchantFreeShippingStatus>)?.data?.let {
+            PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(userSession, it)
         }
     }
 
     fun trackFreeShippingClick() {
-        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
-        PowerMerchantFreeShippingTracker.sendClickFreeShipping(userSession, isTransitionPeriod)
+        (_getPmFreeShippingStatusResult.value as? Success<PowerMerchantFreeShippingStatus>)?.data?.let {
+            PowerMerchantFreeShippingTracker.sendClickFreeShipping(userSession, it)
+        }
     }
 
     fun detachView() {
