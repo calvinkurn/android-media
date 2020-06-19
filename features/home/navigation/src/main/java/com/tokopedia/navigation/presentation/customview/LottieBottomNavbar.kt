@@ -18,7 +18,6 @@ import com.tokopedia.navigation.R
 
 private const val DEFAULT_HEIGHT = 56f
 private const val DEFAULT_ICON_PADDING = 2
-private const val DEFAULT_ICON_SIZE = 24f
 private const val DEFAULT_TEXT_SIZE = 10f
 
 class LottieBottomNavbar : LinearLayout {
@@ -175,13 +174,23 @@ class LottieBottomNavbar : LinearLayout {
             icon.tag = context.getString(R.string.tag_lottie_animation_view)+bottomMenu.id
             icon.layoutParams = imgLayoutParam
             icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
-            icon.setAnimation(bottomMenu.animName)
+            bottomMenu.animName?.let {
+                icon.setAnimation(bottomMenu.animName)
+            }
+            bottomMenu.imageName?.let {
+                icon.setImageResource(it)
+            }
             iconList.add(index, icon)
 
             val imageContainer = FrameLayout(context)
             val fLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
             imageContainer.layoutParams = fLayoutParams
             imageContainer.addView(icon)
+            if (menu[index].imageName != null) {
+                imageContainer.setPadding(0, resources.getDimensionPixelOffset(R.dimen.dp_4), 0, resources.getDimensionPixelOffset(R.dimen.dp_3))
+            } else {
+                imageContainer.setPadding(0, 0, 0, 0)
+            }
 
             if (bottomMenu.useBadge) {
                 val badge: View = LayoutInflater.from(context)
@@ -208,6 +217,7 @@ class LottieBottomNavbar : LinearLayout {
             } else {
                 title.setTextColor(buttonColor)
             }
+
             titleList.add(index, title)
             buttonContainer.addView(title)
 
@@ -234,8 +244,8 @@ class LottieBottomNavbar : LinearLayout {
         Handler().post {
             if (listener?.menuClicked(index, bottomMenu.id) == true) {
                 changeColor(index)
+                selectedItem = index
             }
-            selectedItem = index
         }
     }
 
@@ -257,11 +267,13 @@ class LottieBottomNavbar : LinearLayout {
 
         // change currently selected item color
         val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
-        iconList[newPosition].setAnimation(menu[newPosition].animName)
+        menu[newPosition].animName?.let {
+            iconList[newPosition].setAnimation(it)
+        }
         iconList[newPosition].repeatCount = 0
         iconList[newPosition].setColorFilter(activeSelectedItemColor, PorterDuff.Mode.SRC_ATOP)
 
-        iconList[newPosition].speed = 1f
+        iconList[newPosition].speed = 2f
         iconList[newPosition].playAnimation()
 
         titleList[newPosition].setTextColor(activeSelectedItemColor)
@@ -298,7 +310,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 }
 
-data class BottomMenu(val id: Long, val title: String, val animName: Int, val activeButtonColor: Int, val useBadge: Boolean = true)
+data class BottomMenu(val id: Long, val title: String, val animName: Int? = null, val imageName: Int? = null, val activeButtonColor: Int, val useBadge: Boolean = true)
 interface IBottomClickListener {
     fun menuClicked(position: Int, id: Long): Boolean
     fun menuReselected(position: Int, id: Long)

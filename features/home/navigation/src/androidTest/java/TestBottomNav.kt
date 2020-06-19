@@ -31,6 +31,7 @@ class TestBottomNav {
 
     @Test
     fun testWhenPageInflatedWithoutNotification_bottomNavHome_showAllFiveComponent() {
+        waitForData()
         onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_HOME))))).check(matches(isDisplayed()))
         onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_FEED))))).check(matches(isDisplayed()))
         onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_OS))))).check(matches(isDisplayed()))
@@ -149,7 +150,7 @@ class TestBottomNav {
     private fun getTitleTextViewId(id: Int) = context.getString(R.string.tag_title_textview)+id
 
     private fun waitForData() {
-        Thread.sleep(10000)
+        Thread.sleep(1000000)
     }
 
 }

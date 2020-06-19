@@ -400,13 +400,18 @@ public class MainParentActivity extends BaseActivity implements
     private void afterBottomNavigationInflation(Bundle savedInstanceState){
         bottomNavigation = findViewById(R.id.bottom_navbar);
         bottomNavigation.setMenuClickListener(this);
-        menu.add(new BottomMenu(0L, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(1L, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(2L, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.color.color_active_bottom_nav_os, true));
-        menu.add(new BottomMenu(3L, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), R.raw.bottom_nav_account, R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(0L, getResources().getString(R.string.home), R.raw.bottom_nav_home, null, R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(1L, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, null, R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(2L, getResources().getString(R.string.official), R.raw.bottom_nav_official, null, R.color.color_active_bottom_nav_os, true));
+        menu.add(new BottomMenu(3L, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, null, R.color.color_active_bottom_nav, true));
+        if (userSession.isLoggedIn()) {
+            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), R.raw.bottom_nav_account, null, R.color.color_active_bottom_nav, true));
+        } else {
+            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), null, R.drawable.ic_mainparent_login_enable, R.color.color_active_bottom_nav, true));
+        }
 
         bottomNavigation.setMenu(menu);
+        showSelectedPage();
 
         handleAppLinkBottomNavigation(savedInstanceState);
         initNewFeedClickReceiver();
