@@ -32,7 +32,7 @@
 
     <!--Prompt back-->
     <string name="mvc_create_prompt_back_title">Yakin mau batalkan tambah voucher?</string>
-    <string name="mvc_create_prompt_back_desc">Voucher toko cashback dapat bantu meningkatkan performa kamu, loh.</string>
+    <string name="mvc_create_prompt_back_desc">Voucher Cashback dapat bantu meningkatkan performa kamu, loh.</string>
     <string name="mvc_review_change_confirmation_title">Kamu ingin mengubah detail Voucher Cashback?</string>
     <string name="mvc_review_change_confirmation_detail">Kamu dapat langsung mengubah detail voucher di halaman ini. Periksa kembali sebelum menambahkan voucher.</string>
     <string name="mvc_review_back_redirect">Untuk batalkan pembuatan voucher klik di sini</string>
@@ -79,14 +79,14 @@
     <string name="mvc_create_tips_desc_voucher_name_2">Nama voucher tidak boleh mengandung kata-kata Toped, Tokopedia, Tkpd, Shopee, Bukalapak, BL, Lazada, kata-kata kasar, atau kata yang mengandung unsur SARA.</string>
     <string name="mvc_create_tips_desc_voucher_name_3">Nama voucher tidak akan ditampilkan di sisi pembeli.</string>
     <string name="mvc_create_tips_desc_free_delivery">Gunakan voucher Gratis Ongkir untuk <b>menjangkau pembeli dari berbagai kota di Indonesia</b>, terutama jika barangmu sulit ditemukan di kota-kota lain.</string>
-    <string name="mvc_create_tips_desc_cashback">Pilih voucher cashback jika tokomu ingin mendapatkan <b>lebih banyak pelanggan</b>, namun tetap ingin mempertahankan citra brand toko dan harga barang.</string>
+    <string name="mvc_create_tips_desc_cashback">Pilih Voucher Cashback jika tokomu ingin mendapatkan <b>lebih banyak pelanggan</b>, namun tetap ingin mempertahankan citra brand toko dan harga barang.</string>
     <string name="mvc_create_tips_desc_rupiah">Total transaksi pembeli tidak akan mempengaruhi nominal cashback yang sudah kamu tentukan.</string>
     <string name="mvc_create_tips_desc_percentage">Nilai cashback yang diterima pembeli akan dipengaruhi oleh persentase total transaksi. Kamu juga dapat mengatur nilai maksimal cashback yang diberikan.</string>
     <string name="mvc_create_tips_desc_max_estimation_1">Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam pembelian.</string>
     <string name="mvc_create_tips_desc_max_estimation_2">Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
     <string name="mvc_create_tips_desc_max_estimation_3">Kamu tidak perlu bayar di muka.</string>
     <string name="mvc_tips_title_cashback_benefit">KEGUNAAN VOUCHER CASHBACK</string>
-    <string name="mvc_tips_desc_cashback">Gunakan Voucher cashback untuk mendapatkan <b>lebih banyak pelanggan</b>, dengan tetap menjaga citra brand toko, dan harga barang.</string>
+    <string name="mvc_tips_desc_cashback">Gunakan Voucher Cashback untuk mendapatkan <b>lebih banyak pelanggan</b>, dengan tetap menjaga citra brand toko, dan harga barang.</string>
 
     <!--Step 2-->
     <string name="mvc_create_tips_calculation">Cara perhitungan estimasi pengeluaran</string>
@@ -119,7 +119,7 @@
     <string name="mvc_create_promo_type_bottomsheet_discount_value">&#62; Rp%s</string>
     <string name="mvc_create_promo_type_bottomsheet_desc">Pastikan potongan harga &lt;b>lebih besar dari Rp%s&lt;/b> untuk menarik lebih banyak calon pembeli.</string>
     <string name="mvc_create_promo_type_bottomsheet_change_now">Ubah Sekarang</string>
-    <string name="mvc_create_cashback">Buat Voucher Toko Cashback</string>
+    <string name="mvc_create_cashback">Buat Voucher Cashback</string>
     <string name="mvc_unavailable_ticker">Voucher Gratis Ongkir saat ini hanya tersedia di desktop</string>
 
     <!-- Step 3 -->
@@ -179,7 +179,7 @@
     <string name="mvc_cashback">Cashback</string>
     <string name="mvc_cashback_formatted">Cashback %s</string>
     <string name="mvc_discount_formatted">%s %s</string>
-    <string name="mvc_no_result_found">Voucher yang kamu cari enggak ditemukan</string>
+    <string name="mvc_no_result_found">Voucher yang kamu cari nggak ditemukan</string>
     <string name="mvc_please_try_to_search_again">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
     <string name="mvc_voucher_quota">Kuota voucher</string>
     <string name="mvc_save_changes">Simpan</string>
@@ -295,7 +295,7 @@
     <string name="mvc_detail_quota">Kuota</string>
     <string name="mvc_detail_terms">Syarat Pembelian</string>
     <string name="mvc_detail_period">Periode</string>
-    <string name="mvc_detail_purchase_terms">"Min. pembelian Rp%s - &lt;br>Maks. potongan Rp%s"</string>
+    <string name="mvc_detail_purchase_terms">"Min. pembelian Rp%s &lt;br>Maks. potongan Rp%s"</string>
     <string name="mvc_detail_tips">&lt;b>Voucher kamu akan tampil&lt;/b> di halaman detail produk dan halaman toko. Lihat Tampilan</string>
     <string name="mvc_detail_tips_clickable">Lihat Tampilan</string>
     <string name="mvc_detail_ticker_private">&lt;b>Bagikan voucher&lt;b> untuk menjangkau lebih banyak pembeli. Lihat Tips &amp; Trik</string>
