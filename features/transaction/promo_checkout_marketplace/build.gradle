@@ -10,7 +10,6 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
-        jcenter()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
