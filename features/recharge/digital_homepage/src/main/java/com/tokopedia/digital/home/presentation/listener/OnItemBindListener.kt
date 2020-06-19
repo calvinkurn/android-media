@@ -20,6 +20,7 @@ interface OnItemBindListener: DynamicLegoBannerListener, HomeComponentListener {
     fun onSectionItemImpression(elements: List<DigitalHomePageSectionModel.Item>, sectionType: String)
     fun onRecommendationImpression(elements: List<RecommendationItemEntity>)
 
+    fun onRechargeFavoriteAllItemClicked()
     fun onRechargeBannerAllItemClicked()
     fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String)
     fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String)

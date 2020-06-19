@@ -6,10 +6,10 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.VIDEO_HIGHLIGHT_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.VIDEO_HIGHLIGHT_IMPRESSION
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.*
@@ -63,7 +63,7 @@ class RechargeHomepageVideoHighlightViewHolder(
         live.show()
 
         container.setOnClickListener {
-            RouteManager.route(view.context, item.applink)
+            listener.onRechargeSectionItemClicked(item, adapterPosition, VIDEO_HIGHLIGHT_CLICK)
         }
 
         container.addOnImpressionListener(section){

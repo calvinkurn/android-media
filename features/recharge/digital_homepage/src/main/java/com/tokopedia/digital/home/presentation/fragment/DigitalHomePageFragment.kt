@@ -227,6 +227,10 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         trackingUtil.eventRecommendationImpression(elements)
     }
 
+    override fun onRechargeFavoriteAllItemClicked() {
+        // TODO: Set favorites see all redirect
+    }
+
     override fun onRechargeBannerAllItemClicked() {
         // TODO: Set banner see all redirect
     }

@@ -21,9 +21,8 @@ class RechargeHomepageFavoriteViewHolder(itemView: View?, val listener: OnItemBi
             rv_digital_homepage_favorites.layoutManager = layoutManager
             digital_homepage_favorites_container.show()
             tv_recharge_home_favorites_title.text = section.title
-            // TODO: Set see all redirect
             tv_recharge_home_favorites_see_all.setOnClickListener {
-//                RouteManager.route(itemView.context, "")
+                listener.onRechargeFavoriteAllItemClicked()
             }
             rv_digital_homepage_favorites.adapter = RechargeItemFavoriteAdapter(section.items, listener)
             listener.onRechargeSectionItemImpression(section.items, BEHAVIORAL_CATEGORY_IMPRESSION)
