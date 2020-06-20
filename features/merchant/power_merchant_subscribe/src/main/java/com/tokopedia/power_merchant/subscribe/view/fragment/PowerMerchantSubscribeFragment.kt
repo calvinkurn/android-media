@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
@@ -36,9 +35,6 @@ import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippi
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.ShowLoading
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmSubscribeViewModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PM_F1_ENABLED
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -58,10 +54,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     lateinit var powerMerchantTracking: PowerMerchantTracking
 
     private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
-
-    private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
-    }
 
     override fun getScreenName(): String = ""
 
@@ -93,25 +85,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
-            observeActivatePowerMerchant()
-            observeGetFreeShippingDetail()
-            observeGetPmStatusInfo()
-            observeViewState()
+        observeActivatePowerMerchant()
+        observeGetFreeShippingDetail()
+        observeGetPmStatusInfo()
+        observeViewState()
 
-            setupFreeShippingError()
+        setupFreeShippingError()
 
-            viewModel.getPmStatusInfo()
-        } else {
-            activity?.let {
-                if (userSessionInterface.isGoldMerchant) {
-                    RouteManager.route(it, ApplinkConstInternalMarketplace.GOLD_MERCHANT_MEMBERSHIP)
-                } else {
-                    RouteManager.route(it, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
-                }
-                it.finish()
-            }
-        }
+        viewModel.getPmStatusInfo()
     }
 
     private fun setupFreeShippingError() {
