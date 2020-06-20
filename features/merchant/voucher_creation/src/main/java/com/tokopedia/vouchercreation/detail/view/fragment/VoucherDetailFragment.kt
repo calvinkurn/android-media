@@ -61,18 +61,29 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
+class VoucherDetailFragment : BaseDetailFragment() {
 
     companion object {
-        fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment(voucherId)
+        fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment().apply {
+            val bundle = Bundle().apply {
+                putInt(VOUCHER_ID_KEY, voucherId)
+            }
+            arguments = bundle
+        }
 
         const val DOWNLOAD_REQUEST_CODE = 222
         private const val SHARE_REQUEST_CODE = 225
+
+        private const val VOUCHER_ID_KEY = "voucher_id"
 
         private const val COPY_PROMO_CODE_LABEL = "detail_promo_code"
     }
 
     private var voucherUiModel: VoucherUiModel? = null
+
+    private val voucherId by lazy {
+        arguments?.getInt(VOUCHER_ID_KEY)
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -360,7 +371,9 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
 
     private fun setupView() = view?.run {
         showLoadingState()
-        viewModel.getVoucherDetail(voucherId)
+        voucherId?.run {
+            viewModel.getVoucherDetail(this)
+        }
     }
 
     private fun showLoadingState() {
