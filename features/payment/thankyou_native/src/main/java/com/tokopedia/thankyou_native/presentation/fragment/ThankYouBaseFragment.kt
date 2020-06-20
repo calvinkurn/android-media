@@ -27,7 +27,6 @@ import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListene
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
-import com.tokopedia.thankyou_native.recommendation.presentation.view.WishList
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
 import com.tokopedia.unifycomponents.Toaster

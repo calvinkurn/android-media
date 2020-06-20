@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.analytics
 
+import android.os.Bundle
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
 import com.google.gson.Gson
@@ -75,9 +76,19 @@ class ThankYouPageAnalytics @Inject constructor(
         val eventList: JsonArray = gson.fromJson(eventData, object : TypeToken<JsonArray>() {}.type)
 
         eventList.forEach { data ->
-            val eventMap: Map<String, Any> = gson.fromJson(data, object : TypeToken<Map<String, Any>>(){}.type)
-            analyticTracker.sendEnhanceEcommerceEvent(eventMap)
+            val eventMap: MutableMap<String, Any> = gson.fromJson(data, object : TypeToken<Map<String, Any>>(){}.type)
+            val event =  eventMap.remove("event")?.toString()
+            analyticTracker.sendEnhanceEcommerceEvent(event, getBundleFromMap(eventMap))
         }
+    }
+
+    private fun getBundleFromMap(dataMap: Map<String, Any> ): Bundle{
+        var bundle = Bundle()
+        for (entry in dataMap.entries) {
+            bundle.putString(entry.key, entry.value?.toString())
+        }
+
+        return bundle
     }
 
     private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
