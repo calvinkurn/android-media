@@ -6,6 +6,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
+import android.text.format.Time
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -20,6 +21,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 object ProductDetailUtil {
 
@@ -37,10 +39,6 @@ object ProductDetailUtil {
         }
     }
 }
-
-const val MINUTE_DIVIDER = 60
-const val DAY_DIVIDER_IN_MINUTE = MINUTE_DIVIDER * 24
-
 
 fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {
     val builder = SpannableString(this)
@@ -80,13 +78,17 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
     return builder
 }
 
-fun Int.getRelativeDateByMinute(context: Context): String {
-    val minuteInput = this
+internal fun Int.getRelativeDateByMinute(context: Context): String {
+    if (this == 0) return ""
 
-    return if (minuteInput / DAY_DIVIDER_IN_MINUTE > 0) {
-        context.getString(R.string.shop_chat_speed_in_days, minuteInput / DAY_DIVIDER_IN_MINUTE)
-    } else if (minuteInput / MINUTE_DIVIDER > 0) {
-        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / MINUTE_DIVIDER)
+    val minuteInput = this
+    val minuteDivider = TimeUnit.HOURS.toMinutes(1)
+    val dayInMinute = TimeUnit.DAYS.toMinutes(1)
+
+    return if (minuteInput / dayInMinute > 0) {
+        context.getString(R.string.shop_chat_speed_in_days, minuteInput / dayInMinute)
+    } else if (minuteInput / minuteDivider > 0) {
+        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / minuteDivider)
     } else {
         if (minuteInput > 0) {
             context.getString(R.string.shop_chat_speed_in_minute, minuteInput)
@@ -96,31 +98,31 @@ fun Int.getRelativeDateByMinute(context: Context): String {
     }
 }
 
-fun Int.getRelativeDateByHours(context: Context): String {
+internal fun Int.getRelativeDateByHours(context: Context): String {
     if (this == 0) return ""
 
     val hourInput = this
-    val dayDivider = 24
+    val dayInHours = TimeUnit.DAYS.toHours(1)
 
-    return if (hourInput / dayDivider > 0) {
-        context.getString(R.string.shop_chat_speed_in_days, hourInput/dayDivider)
+    return if (hourInput / dayInHours > 0) {
+        context.getString(R.string.shop_chat_speed_in_days, hourInput / dayInHours)
     } else {
         context.getString(R.string.shop_chat_speed_in_hours, hourInput)
     }
 }
 
-fun String.getRelativeDate(context: Context): String {
+internal fun String.getRelativeDate(context: Context): String {
     if (this.isEmpty()) return ""
 
+    val idLocale = getIdLocale()
     val unixTime = this.toLongOrZero() * 1000
 
     val diff: Long = Calendar.getInstance().timeInMillis / 1000 - this.toLongOrZero()
     val date = Date(unixTime)
 
-    val idLocale = getIdLocale()
     val getYear = date.toFormattedString("yyyy", idLocale)
     val getDaysAndMonth = date.toFormattedString("dd MMM", idLocale)
-    val status: String
+    val getMonthAndYear = date.toFormattedString("MMM yyyy", idLocale)
 
     val minuteDivider: Long = 60
     val hourDivider = minuteDivider * 60
@@ -128,8 +130,10 @@ fun String.getRelativeDate(context: Context): String {
     val monthDivider = dayDivider * 30
     val yearDivider = monthDivider * 12
 
-    status = if (diff / yearDivider > 0) {
+    return if (diff / yearDivider > 0) {
         context.getString(R.string.shop_online_last_date, getYear)
+    } else if (diff / monthDivider >= 3) {
+        context.getString(R.string.shop_online_last_date, getMonthAndYear)
     } else if (diff / dayDivider > 0) {
         val days = diff / dayDivider
         when {
@@ -150,7 +154,6 @@ fun String.getRelativeDate(context: Context): String {
         if (minutes in 0..5) context.getString(R.string.shop_online) else
             context.getString(R.string.shop_online_minute_ago, minutes)
     }
-    return status
 }
 
 infix fun String?.toDate(format: String): String {

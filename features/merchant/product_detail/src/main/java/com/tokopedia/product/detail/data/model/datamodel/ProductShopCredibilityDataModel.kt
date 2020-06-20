@@ -7,8 +7,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.shopfeature.ShopFeature
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
+import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.util.getIdLocale
 import com.tokopedia.product.detail.view.util.getRelativeDateByHours
@@ -45,26 +45,31 @@ class ProductShopCredibilityDataModel(
          */
         val firstPositionData = when {
             shopRating > 0 -> {
-                ShopCredibilityUiData(shopRating.toString(), "rating toko", R.drawable.ic_review_gray)
+                ShopCredibilityUiData(shopRating.toString(), context.getString(R.string.product_shop_rating), R.drawable.ic_review_gray)
             }
             shopInfo?.shopStats?.productSold.toIntOrZero() > 0 -> {
-                ShopCredibilityUiData(shopInfo?.shopStats?.productSold.toString(), "penjualan toko", R.drawable.ic_product_sold_grey)
+                ShopCredibilityUiData(shopInfo?.shopStats?.productSold.toIntOrZero().productThousandFormatted(0), context.getString(R.string.product_shop_transaction), R.drawable.ic_product_sold_grey)
             }
             shopInfo?.activeProduct.orZero() > 0 -> {
-                ShopCredibilityUiData(shopInfo?.activeProduct.toString(), "total produk", R.drawable.ic_product_grey)
+                ShopCredibilityUiData(shopInfo?.activeProduct?.productThousandFormatted(0)
+                        ?: "", context.getString(R.string.product_shop_total_product), R.drawable.ic_product_grey)
             }
             else -> {
                 null
             }
         }
 
-        val createdDated = SimpleDateFormat("yyyy-MM-dd", getIdLocale()).parse(shopInfo?.createdInfo?.shopCreated
-                ?: "").toFormattedString("MMM yyyy", getIdLocale())
+        val createdDated = try {
+            SimpleDateFormat("yyyy-MM-dd", getIdLocale()).parse(shopInfo?.createdInfo?.shopCreated.orEmpty())
+                    .toFormattedString("MMM yyyy", getIdLocale())
+        } catch (e: Throwable) {
+            ""
+        }
 
         val listOfData = mutableListOf(
-                ShopCredibilityUiData(shopSpeed.getRelativeDateByHours(context), "pesanan diproses", R.drawable.ic_time_grey),
-                ShopCredibilityUiData(shopChatSpeed.getRelativeDateByMinute(context), "chat dibalas", R.drawable.ic_chat_grey),
-                ShopCredibilityUiData(createdDated, "mulai jualan", R.drawable.ic_merchant_grey))
+                ShopCredibilityUiData(shopSpeed.getRelativeDateByHours(context), context.getString(R.string.product_shop_process_product), R.drawable.ic_time_grey),
+                ShopCredibilityUiData(shopChatSpeed.getRelativeDateByMinute(context), context.getString(R.string.product_shop_chat_reply), R.drawable.ic_chat_grey),
+                ShopCredibilityUiData(createdDated, context.getString(R.string.product_shop_start_sell), R.drawable.ic_merchant_grey))
 
         // This logic is for fail over purpose
         if (firstPositionData != null) {
