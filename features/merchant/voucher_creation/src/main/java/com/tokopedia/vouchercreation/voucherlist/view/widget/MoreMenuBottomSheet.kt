@@ -81,7 +81,7 @@ class MoreMenuBottomSheet(
             menuAdapter?.clearAllElements()
             menuAdapter?.addElement(getMenuItem)
 
-            setTitle(voucher?.name.orEmpty())
+            setTitle(String.format(context?.getString(R.string.mvc_voucher_name).orEmpty(), voucher?.name.orEmpty()))
             show(fm, TAG)
         }
     }

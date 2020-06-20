@@ -457,7 +457,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     private fun renderVoucherDetailInformation(voucherUiModel: VoucherUiModel) {
         clearAllData()
         with(voucherUiModel) {
-            setToolbarTitle(name)
+            setToolbarTitle(String.format(context?.getString(R.string.mvc_voucher_name).orEmpty(), name))
             val startDate = DateTimeUtils.reformatUnsafeDateTime(startTime, DASH_DATE_FORMAT)
             val endDate = DateTimeUtils.reformatUnsafeDateTime(finishTime, DASH_DATE_FORMAT)
             val startHour = DateTimeUtils.reformatUnsafeDateTime(startTime, HOUR_FORMAT)
