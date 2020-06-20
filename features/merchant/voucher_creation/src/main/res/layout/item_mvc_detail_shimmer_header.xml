@@ -12,7 +12,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:corners="6"/>
+        app:corners="20"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/detailTitleShimmer"
@@ -26,7 +26,7 @@
         app:layout_constraintStart_toEndOf="@+id/detailImageShimmer"
         app:layout_constraintTop_toTopOf="@+id/detailImageShimmer"
         app:layout_constraintBottom_toTopOf="@id/detailStartDateShimmer"
-        app:corners="4"/>
+        app:corners="20"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/detailStartDateShimmer"
@@ -38,7 +38,7 @@
         app:layout_constraintStart_toEndOf="@+id/detailImageShimmer"
         app:layout_constraintTop_toBottomOf="@id/detailTitleShimmer"
         app:layout_constraintBottom_toTopOf="@id/detailStartHourShimmer"
-        app:corners="4"/>
+        app:corners="20"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/detailStartHourShimmer"
@@ -52,7 +52,7 @@
         app:layout_constraintStart_toEndOf="@+id/detailImageShimmer"
         app:layout_constraintTop_toBottomOf="@id/detailStartDateShimmer"
         app:layout_constraintBottom_toBottomOf="@id/detailImageShimmer"
-        app:corners="4"/>
+        app:corners="20"/>
 
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -65,7 +65,7 @@
         app:layout_constraintStart_toEndOf="@+id/detailTitleShimmer"
         app:layout_constraintTop_toBottomOf="@id/detailTitleShimmer"
         app:layout_constraintBottom_toTopOf="@id/detailStartHourShimmer"
-        app:corners="4"/>
+        app:corners="20"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/detailEndHourShimmer"
@@ -79,6 +79,6 @@
         app:layout_constraintStart_toEndOf="@+id/detailTitleShimmer"
         app:layout_constraintTop_toBottomOf="@id/detailStartDateShimmer"
         app:layout_constraintBottom_toBottomOf="@id/detailImageShimmer"
-        app:corners="4"/>
+        app:corners="20"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

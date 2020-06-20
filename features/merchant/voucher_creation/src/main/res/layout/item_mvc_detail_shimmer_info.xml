@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/detailInfoItemShimmer1"
         app:layout_constraintStart_toStartOf="parent"
-        app:corners="4"/>
+        app:corners="20"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/detailInfoItemShimmer1"
@@ -24,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@id/detailInfoTitleShimmer"
         app:layout_constraintBottom_toTopOf="@id/detailInfoItemShimmer2"
         app:layout_constraintStart_toStartOf="parent"
-        app:corners="4"/>
+        app:corners="20"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/detailInfoItemShimmer2"
@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/detailInfoItemShimmer1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:corners="4"/>
+        app:corners="20"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/detailInfoValueShimmer1"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toTopOf="@id/detailInfoItemShimmer1"
         app:layout_constraintBottom_toBottomOf="@id/detailInfoItemShimmer1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:corners="4"/>
+        app:corners="20"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/detailInfoValueShimmer2"
@@ -51,6 +51,6 @@
         app:layout_constraintTop_toTopOf="@id/detailInfoItemShimmer2"
         app:layout_constraintBottom_toBottomOf="@id/detailInfoItemShimmer2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:corners="4"/>
+        app:corners="20"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
