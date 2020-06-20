@@ -30,6 +30,7 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.showcase.ShowCaseBuilder
 import com.tokopedia.showcase.ShowCaseDialog
@@ -170,6 +171,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun getCatalogMenuDetail() {
+        onLoadingMenuDetail(true)
         getMenuDetail(TelcoComponentType.TELCO_PREPAID)
         getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_PREPAID)
     }

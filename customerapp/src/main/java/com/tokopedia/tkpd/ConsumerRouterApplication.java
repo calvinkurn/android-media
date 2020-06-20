@@ -81,8 +81,6 @@ import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.nps.helper.InAppReviewHelper;
-import com.tokopedia.inbox.common.ResolutionRouter;
-import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -202,7 +200,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LinkerRouter,
         DigitalRouter,
         CMRouter,
-        ResolutionRouter,
         KYCRouter {
 
     @Inject
@@ -521,7 +518,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, orderId));
     }
 
     @Override

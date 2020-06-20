@@ -274,6 +274,9 @@
     <string name="bs_desc_info_shop_closed">Chat penjual atau akses Pusat Bantuan jika kamu ada transaksi bermasalah.</string>
     <string name="bs_btn_title">Ajukan Buka Toko</string>
 
+    <!--By Me-->
+    <string name="product_detail_by_me_subtitle">Dapatkan komisi langsung setiap kali teman beli barang dari rekomendasimu.</string>
+
     <!--New Shop Info-->
     <string name="shop_online_days_ago"><![CDATA[Online <b>%1d hari lalu</b>]]></string>
     <string name="shop_online_hours_ago"><![CDATA[Online <b>%1d jam lalu</b>]]></string>

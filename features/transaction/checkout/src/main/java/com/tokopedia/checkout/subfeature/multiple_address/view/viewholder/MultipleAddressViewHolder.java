@@ -60,12 +60,12 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         productName = itemView.findViewById(R.id.product_name);
         productPrice = itemView.findViewById(R.id.product_price);
         shippingDestinationList = itemView.findViewById(R.id.shipping_destination_list);
-        imgFreeReturn = itemView.findViewById(R.id.iv_free_return_icon);
-        tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
-        tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
-        tvCashback = itemView.findViewById(R.id.tv_cashback);
+        imgFreeReturn = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.iv_free_return_icon);
+        tvFreeReturnLabel = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.tv_free_return_label);
+        tvPreOrder = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.tv_pre_order);
+        tvCashback = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.tv_cashback);
         btAddNewShipment = itemView.findViewById(R.id.bt_add_new_shipment);
-        productPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        productPoliciesLayout = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.rl_product_policies_layout);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
 
     }
@@ -89,7 +89,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             imgShopBadge.setVisibility(View.GONE);
         }
 
-        String labelShop = senderName.getContext().getResources().getString(R.string.label_toko) + " ";
+        String labelShop = senderName.getContext().getResources().getString(com.tokopedia.purchase_platform.common.R.string.label_toko) + " ";
         int startLabelShop = labelShop.length();
         String shopName = data.getSenderName();
 
@@ -163,15 +163,15 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
-                .customView(R.layout.show_case_checkout)
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.dp_12)
-                .arrowWidth(R.dimen.dp_16)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.sp_12)
+                .customView(com.tokopedia.logisticcart.R.layout.show_case_checkout)
+                .titleTextColorRes(com.tokopedia.abstraction.R.color.white)
+                .spacingRes(com.tokopedia.abstraction.R.dimen.dp_12)
+                .arrowWidth(com.tokopedia.abstraction.R.dimen.dp_16)
+                .textColorRes(com.tokopedia.abstraction.R.color.grey_400)
+                .shadowColorRes(R.color.checkout_module_shadow)
+                .backgroundContentColorRes(com.tokopedia.abstraction.R.color.black)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.checkout_module_selector_circle_green)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
                 .finishStringRes(R.string.show_case_finish)
                 .useCircleIndicator(true)
                 .clickable(true)
