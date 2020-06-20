@@ -38,6 +38,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
@@ -240,7 +241,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val imgUrl = IMG_URL_BS_SUCCESS
 
         if(showFreeShipping) {
-            viewModel.sendSuccessBottomSheetPopUp()
+            trackSuccessBottomSheetPopUp(freeShipping)
         }
 
         val headerString = getString(R.string.pm_label_bs_success_header)
@@ -261,7 +262,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheetCommon = MerchantCommonBottomSheet.newInstance(bottomSheetModel)
         bottomSheetCommon.setListener(object : MerchantCommonBottomSheet.BottomSheetListener {
             override fun onBottomSheetButtonClicked() {
-                openFreeShippingPage(showFreeShipping)
+                if(showFreeShipping) {
+                    openFreeShippingPage()
+                    trackSuccessBottomSheetClickLearnMore(freeShipping)
+                }
                 bottomSheetCommon.dismiss()
                 refreshData()
             }
@@ -269,12 +273,24 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheetCommon.show(childFragmentManager, "power_merchant_success")
     }
 
-    private fun openFreeShippingPage(showFreeShipping: Boolean) {
-        if(showFreeShipping) {
-            viewModel.sendSuccessBottomSheetClickLearnMore()
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-                PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
-        }
+    private fun openFreeShippingPage() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
+            PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
+    }
+
+    private fun trackSuccessBottomSheetPopUp(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(
+            userSessionInterface,
+            freeShipping
+        )
+    }
+
+    private fun trackSuccessBottomSheetClickLearnMore(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(
+            userSessionInterface,
+            freeShipping
+        )
+
     }
 
     private fun setupBottomSheetCancel(freeShippingEnabled: Boolean) {
@@ -442,7 +458,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                     if(freeShipping.isTransitionPeriod && !freeShipping.isActive) {
                         hideFreeShippingWidget()
                     } else {
-                        viewModel.trackFreeShippingImpression()
+                        trackFreeShippingImpression(freeShipping)
                         showFreeShippingWidget(freeShipping)
                     }
                 }
@@ -451,14 +467,28 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun trackFreeShippingImpression(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(
+            userSessionInterface,
+            freeShipping
+        )
+    }
+
     private fun showFreeShippingWidget(freeShipping: PowerMerchantFreeShippingStatus) {
         freeShippingError.hide()
         freeShippingLayout.apply {
             onClickListener = {
-                viewModel.trackFreeShippingClick()
+                trackFreeShippingClick(freeShipping)
             }
             show(freeShipping)
         }
+    }
+
+    private fun trackFreeShippingClick(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.sendClickFreeShipping(
+            userSessionInterface,
+            freeShipping
+        )
     }
 
     private fun hideFreeShippingWidget() {

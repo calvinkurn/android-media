@@ -8,7 +8,6 @@ import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.power_merchant.subscribe.common.coroutine.CoroutineDispatchers
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
@@ -94,30 +93,6 @@ class PmSubscribeViewModel @Inject constructor(
 
     }
 
-    fun trackFreeShippingImpression() {
-        getPowerMerchantFreeShippingStatus()?.let {
-            PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(userSession, it)
-        }
-    }
-
-    fun trackFreeShippingClick() {
-        getPowerMerchantFreeShippingStatus()?.let {
-            PowerMerchantFreeShippingTracker.sendClickFreeShipping(userSession, it)
-        }
-    }
-
-    fun sendSuccessBottomSheetPopUp() {
-        getPowerMerchantFreeShippingStatus()?.let {
-            PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(userSession, it)
-        }
-    }
-
-    fun sendSuccessBottomSheetClickLearnMore() {
-        getPowerMerchantFreeShippingStatus()?.let {
-            PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(userSession, it)
-        }
-    }
-
     fun detachView() {
         getPowerMerchantStatusUseCase.unsubscribe()
     }
@@ -145,10 +120,6 @@ class PmSubscribeViewModel @Inject constructor(
                 isPowerMerchantActive
             )
         }
-    }
-
-    private fun getPowerMerchantFreeShippingStatus(): PowerMerchantFreeShippingStatus? {
-        return (_getPmFreeShippingStatusResult.value as? Success<PowerMerchantFreeShippingStatus>)?.data
     }
 
     private fun showLoading() {
