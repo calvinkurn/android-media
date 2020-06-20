@@ -25,7 +25,6 @@ import com.tokopedia.power_merchant.subscribe.ACTION_KYC
 import com.tokopedia.power_merchant.subscribe.ACTION_SHOP_SCORE
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
@@ -276,7 +275,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val showFreeShipping = isFreeShippingEligible && chargePeriod
 
         if(showFreeShipping) {
-            PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(userSessionInterface)
+            viewModel.sendSuccessBottomSheetPopUp()
         }
 
         val primaryBtnLabel = if(showFreeShipping) {
@@ -301,7 +300,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheet.setPrimaryButtonClickListener {
             if(showFreeShipping) {
                 openFreeShippingPage()
-                PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(userSessionInterface)
+                viewModel.sendSuccessBottomSheetClickLearnMore()
             }
             bottomSheet.dismiss()
         }
