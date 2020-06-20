@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
@@ -17,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.di.ActivityContextModule
@@ -27,6 +29,9 @@ import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.OVO
+import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.FINISHED
+import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.NOT_STARTED
+import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.STARTED
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
@@ -37,6 +42,7 @@ import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxTapTapView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
 import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -66,9 +72,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     var minuteCountDownTimer: CountDownTimer? = null
     var isTimeOut = false
     val rewardItems = arrayListOf<RewardSummaryItem>()
+    var backButton: BackButton? = null
 
     @RewardContainer.RewardState
     var rewardState: Int = RewardContainer.RewardState.COUPON_ONLY
+
+    @MinuteTimerState
+    var minuteTimerState: Int = NOT_STARTED
+
 
     val CONTAINER_INACTIVE = 2
 
@@ -99,13 +110,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         colorDim = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_dim)
         colorBlackTransParent = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_black_transparent)
-//        showLoader()
-//        v.postDelayed({
-//        hideLoader()
-//            renderHourTimerState()
-//            giftBoxDailyView.startInitialAnimation()?.start()
-//        }, 1000L)
-//        showRewardSummary()
         viewModel.getGiftBoxHome()
         return v
     }
@@ -245,6 +249,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
                     //todo add check for 200 all over api calls
                     if (it.data != null) {
+                        backButton = it.data.gamiTapEggHome?.backButton
 
                         //toolbar
                         val toolbarTitle = it.data.gamiTapEggHome?.tokensUser?.title
@@ -579,6 +584,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val time = seconds * 1000L
         minuteCountDownTimer = object : CountDownTimer(time, 1000) {
             override fun onFinish() {
+                minuteTimerState = FINISHED
                 rewardSummary.visibility = View.VISIBLE
                 timeUpAnimation()
                 (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
@@ -592,6 +598,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
 
         minuteCountDownTimer?.start()
+        minuteTimerState = STARTED
     }
 
     private fun renderBottomHourTimer(timeLeftSeconds: Long) {
@@ -764,9 +771,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    enum class GiftBoxTapTapState {
-        HOUR_TIMER, MINUTE_TIMER, ERROR, NO_INTERNET
-    }
 
     fun getTapTapView(): GiftBoxTapTapView {
         return giftBoxDailyView as GiftBoxTapTapView
@@ -802,7 +806,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     rewardItems.add(RewardSummaryItem(null, benefit))
 
                 } else if (benefit.benefitType == COUPON) {
-                    benefit.referenceID?.let {refId->
+                    benefit.referenceID?.let { refId ->
                         GtmEvents.viewRewards(refId, userSession?.userId)
 
                         if (!couponDetailMap.isNullOrEmpty()) {
@@ -832,6 +836,40 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
+    fun onBackPressed():Boolean {
+        if (minuteTimerState == STARTED && backButton != null && backButton!!.isShow) {
+            showBackDialog(backButton!!)
+            return false
+        }
+        return true
+    }
+
+    private fun showBackDialog(backButton: BackButton) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(backButton.title)
+            dialog.setDescription(backButton.text)
+            dialog.setPrimaryCTAText(backButton.yesText)
+            dialog.setPrimaryCTAClickListener {
+                activity?.finish()
+            }
+            dialog.setSecondaryCTAText(backButton.cancelText)
+            dialog.setSecondaryCTAClickListener {
+                dialog.cancel()
+            }
+            dialog.show()
+        }
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(STARTED, FINISHED, NOT_STARTED)
+annotation class MinuteTimerState {
+    companion object {
+        const val STARTED = 0
+        const val FINISHED = 1
+        const val NOT_STARTED = 2
+    }
 }
 
 @Retention(AnnotationRetention.SOURCE)
