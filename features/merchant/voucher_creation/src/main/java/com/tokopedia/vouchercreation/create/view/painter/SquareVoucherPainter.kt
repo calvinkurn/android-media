@@ -66,7 +66,7 @@ class SquareVoucherPainter(private val context: Context,
     private val shopNamePaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK
-            textSize = 35f
+            textSize = 40f
             typeface = Typeface.DEFAULT_BOLD
         }
     }
@@ -74,7 +74,7 @@ class SquareVoucherPainter(private val context: Context,
     private val promoNamePaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK
-            textSize = 35f
+            textSize = 40f
             typeface = Typeface.DEFAULT_BOLD
         }
     }
@@ -90,7 +90,7 @@ class SquareVoucherPainter(private val context: Context,
     private val promoCodePaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.WHITE
-            textSize = 45f
+            textSize = 50f
             typeface = Typeface.DEFAULT_BOLD
         }
     }
@@ -98,7 +98,7 @@ class SquareVoucherPainter(private val context: Context,
     private val promoPeriodPaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.WHITE
-            textSize = 40f
+            textSize = 45f
         }
     }
 
@@ -274,7 +274,7 @@ class SquareVoucherPainter(private val context: Context,
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value
-                textSize = context.resources.getDimension(type.dimenRes)
+                textSize = context.resources.getDimensionPixelSize(type.dimenRes).toFloat()
 
                 var textColor = Color.BLACK
                 if (type == PostImageTextType.SCALE) {

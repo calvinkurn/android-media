@@ -325,7 +325,7 @@ class VoucherPreviewPainter(private val context: Context,
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value
-                textSize = context.resources.getDimension(type.dimenRes)
+                textSize = context.resources.getDimensionPixelSize(type.dimenRes).toFloat()
                 setTextColor(Color.WHITE)
                 if (type != VoucherImageTextType.VALUE) {
                     layoutParams = linearLayoutParams

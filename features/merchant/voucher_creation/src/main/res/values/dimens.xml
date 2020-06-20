@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- non unify dp -->
     <dimen name="voucher_creation_progressbar_padding_top">6dp</dimen>
     <dimen name="mvc_dimen_20dp">20dp</dimen>
     <dimen name="mvc_dimen_12dp">12dp</dimen>
@@ -48,6 +49,8 @@
     <dimen name="mvc_download_voucher_square_width">160dp</dimen>
     <dimen name="mvc_download_voucher_instastory_width">100dp</dimen>
     <dimen name="mvc_download_voucher_banner_width">215dp</dimen>
+    <dimen name="mvc_success_info_margin">12dp</dimen>
+    <dimen name="mvc_edit_period_margin_top">20dp</dimen>
 
     <!-- shimmer -->
     <dimen name="mvc_detail_shimmer_extra_long_width">185dp</dimen>
@@ -56,6 +59,16 @@
     <dimen name="mvc_detail_shimmer_small_width">54dp</dimen>
     <dimen name="mvc_detail_shimmer_tiny_width">32dp</dimen>
 
+    <!-- general non-unify dp -->
+    <dimen name="mvc_dimen_14dp">14dp</dimen>
+    <dimen name="mvc_dimen_10dp">10dp</dimen>
+    <dimen name="mvc_dimen_minus_8dp">-8dp</dimen>
+    <dimen name="mvc_dimen_100dp">100dp</dimen>
+    <dimen name="mvc_dimen_120dp">120dp</dimen>
+    <dimen name="mvc_dimen_140dp">140dp</dimen>
+    <dimen name="mvc_dimen_6dp">6dp</dimen>
+
+    <!-- font size -->
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>
     <dimen name="mvc_voucher_preview_value_text_size">13sp</dimen>
     <dimen name="mvc_voucher_preview_scale_text_size">6sp</dimen>
@@ -69,15 +82,6 @@
     <dimen name="mvc_create_voucher_promo_name_size">12sp</dimen>
     <dimen name="mvc_voucher_item_header_text_size">10sp</dimen>
     <dimen name="mvc_list_item_name_text_size">14sp</dimen>
-    <dimen name="mvc_dimen_14dp">14dp</dimen>
-    <dimen name="mvc_dimen_10dp">10dp</dimen>
-    <dimen name="mvc_dimen_minus_8dp">-8dp</dimen>
-    <dimen name="mvc_create_voucher_tips_dot_desc_size">14sp</dimen>
-    <dimen name="mvc_dimen_100dp">100dp</dimen>
-    <dimen name="mvc_dimen_120dp">120dp</dimen>
-    <dimen name="mvc_dimen_140dp">140dp</dimen>
-    <dimen name="mvc_dimen_6dp">6dp</dimen>
     <dimen name="mvc_tnc_spacing">5sp</dimen>
-    <dimen name="mvc_success_info_margin">12dp</dimen>
-    <dimen name="mvc_edit_period_margin_top">20dp</dimen>
+    <dimen name="mvc_create_voucher_tips_dot_desc_size">14sp</dimen>
 </resources>
