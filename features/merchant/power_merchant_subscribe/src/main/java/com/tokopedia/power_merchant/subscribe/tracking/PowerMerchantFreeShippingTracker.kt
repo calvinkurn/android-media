@@ -43,7 +43,7 @@ object PowerMerchantFreeShippingTracker {
         user: UserSessionInterface,
         freeShippingStatus: PowerMerchantFreeShippingStatus
     ) {
-        val powerMerchant = user.isGoldMerchant
+        val powerMerchant = freeShippingStatus.isPowerMerchantActive
 
         val eventCategory = getEventCategory()
         val eventName = getImpressionEventName(freeShippingStatus)
@@ -70,7 +70,7 @@ object PowerMerchantFreeShippingTracker {
         user: UserSessionInterface,
         freeShippingStatus: PowerMerchantFreeShippingStatus
     ) {
-        val powerMerchant = user.isGoldMerchant
+        val powerMerchant = freeShippingStatus.isPowerMerchantActive
 
         val eventCategory = getEventCategory()
         val eventName = getClickEventName(freeShippingStatus)
@@ -92,8 +92,11 @@ object PowerMerchantFreeShippingTracker {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendSuccessBottomSheetPopUp(user: UserSessionInterface) {
-        val powerMerchant = user.isGoldMerchant
+    fun sendSuccessBottomSheetPopUp(
+        user: UserSessionInterface,
+        freeShippingStatus: PowerMerchantFreeShippingStatus
+    ) {
+        val powerMerchant = freeShippingStatus.isPowerMerchantActive
         val eventCategory = getEventCategory()
         val shopType = getShopType(powerMerchant)
 
@@ -111,8 +114,11 @@ object PowerMerchantFreeShippingTracker {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendSuccessBottomSheetClickLearnMore(user: UserSessionInterface) {
-        val powerMerchant = user.isGoldMerchant
+    fun sendSuccessBottomSheetClickLearnMore(
+        user: UserSessionInterface,
+        freeShippingStatus: PowerMerchantFreeShippingStatus
+    ) {
+        val powerMerchant = freeShippingStatus.isPowerMerchantActive
         val eventCategory = getEventCategory()
         val shopType = getShopType(powerMerchant)
 

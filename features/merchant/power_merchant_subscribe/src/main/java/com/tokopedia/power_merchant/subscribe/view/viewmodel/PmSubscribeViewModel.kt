@@ -95,14 +95,26 @@ class PmSubscribeViewModel @Inject constructor(
     }
 
     fun trackFreeShippingImpression() {
-        (_getPmFreeShippingStatusResult.value as? Success<PowerMerchantFreeShippingStatus>)?.data?.let {
+        powerMerchantFreeShippingStatus()?.let {
             PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(userSession, it)
         }
     }
 
     fun trackFreeShippingClick() {
-        (_getPmFreeShippingStatusResult.value as? Success<PowerMerchantFreeShippingStatus>)?.data?.let {
+        powerMerchantFreeShippingStatus()?.let {
             PowerMerchantFreeShippingTracker.sendClickFreeShipping(userSession, it)
+        }
+    }
+
+    fun sendSuccessBottomSheetPopUp() {
+        powerMerchantFreeShippingStatus()?.let {
+            PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(userSession, it)
+        }
+    }
+
+    fun sendSuccessBottomSheetClickLearnMore() {
+        powerMerchantFreeShippingStatus()?.let {
+            PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(userSession, it)
         }
     }
 
@@ -115,6 +127,7 @@ class PmSubscribeViewModel @Inject constructor(
             val userId = userSession.userId.toIntOrZero()
             val shopId = userSession.shopId.toIntOrZero()
             val pmStatus = _getPmStatusInfoResult.value as? Success<PowerMerchantStatus>
+            val isPowerMerchantActive = pmStatus?.data?.goldGetPmOsStatus?.result?.data?.isPowerMerchantActive() ?: false
             val isPowerMerchantIdle = pmStatus?.data?.goldGetPmOsStatus?.result?.data?.isPowerMerchantIdle() ?: false
 
             val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
@@ -128,9 +141,14 @@ class PmSubscribeViewModel @Inject constructor(
                 isActive,
                 isEligible,
                 isTransitionPeriod,
-                isPowerMerchantIdle
+                isPowerMerchantIdle,
+                isPowerMerchantActive
             )
         }
+    }
+
+    private fun powerMerchantFreeShippingStatus(): PowerMerchantFreeShippingStatus? {
+        return (_getPmFreeShippingStatusResult.value as? Success<PowerMerchantFreeShippingStatus>)?.data
     }
 
     private fun showLoading() {
