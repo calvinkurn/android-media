@@ -755,6 +755,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 }
                 false
             }
+            clearListener = {
+                clearAllData()
+                loadData(1)
+            }
         }
     }
 
