@@ -25,6 +25,7 @@ import com.tokopedia.power_merchant.subscribe.ACTION_KYC
 import com.tokopedia.power_merchant.subscribe.ACTION_SHOP_SCORE
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
@@ -188,7 +189,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                     if(freeShipping.isTransitionPeriod && !freeShipping.isActive) {
                         hideFreeShippingWidget()
                     } else {
-                        viewModel.trackFreeShippingImpression()
+                        trackFreeShippingImpression(freeShipping)
                         showFreeShippingWidget(freeShipping)
                     }
                 }
@@ -201,7 +202,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         freeShippingError.hide()
         freeShippingLayout.apply {
             onClickListener = {
-                viewModel.trackFreeShippingClick()
+                trackFreeShippingClick(freeShipping)
             }
             show(freeShipping)
         }
@@ -218,6 +219,20 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             progressState = false
             show()
         }
+    }
+
+    private fun trackFreeShippingImpression(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(
+            userSessionInterface,
+            freeShipping
+        )
+    }
+
+    private fun trackFreeShippingClick(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.sendClickFreeShipping(
+            userSessionInterface,
+            freeShipping
+        )
     }
 
     private fun observeGetPmStatusInfo() {
@@ -275,7 +290,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val showFreeShipping = isFreeShippingEligible && chargePeriod
 
         if(showFreeShipping) {
-            viewModel.sendSuccessBottomSheetPopUp()
+            trackSuccessBottomSheetPopUp(freeShipping)
         }
 
         val primaryBtnLabel = if(showFreeShipping) {
@@ -300,7 +315,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheet.setPrimaryButtonClickListener {
             if(showFreeShipping) {
                 openFreeShippingPage()
-                viewModel.sendSuccessBottomSheetClickLearnMore()
+                trackSuccessBottomSheetClickLearnMore(freeShipping)
             }
             bottomSheet.dismiss()
         }
@@ -310,6 +325,21 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private fun openFreeShippingPage() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
             URL_FREE_SHIPPING_INTERIM_PAGE)
+    }
+
+    private fun trackSuccessBottomSheetPopUp(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(
+            userSessionInterface,
+            freeShipping
+        )
+    }
+
+    private fun trackSuccessBottomSheetClickLearnMore(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(
+            userSessionInterface,
+            freeShipping
+        )
+
     }
 
     private fun showBottomSheetCancel() {
