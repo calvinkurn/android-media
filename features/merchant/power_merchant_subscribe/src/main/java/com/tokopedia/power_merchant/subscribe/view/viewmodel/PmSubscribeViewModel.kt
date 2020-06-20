@@ -95,25 +95,25 @@ class PmSubscribeViewModel @Inject constructor(
     }
 
     fun trackFreeShippingImpression() {
-        powerMerchantFreeShippingStatus()?.let {
+        getPowerMerchantFreeShippingStatus()?.let {
             PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(userSession, it)
         }
     }
 
     fun trackFreeShippingClick() {
-        powerMerchantFreeShippingStatus()?.let {
+        getPowerMerchantFreeShippingStatus()?.let {
             PowerMerchantFreeShippingTracker.sendClickFreeShipping(userSession, it)
         }
     }
 
     fun sendSuccessBottomSheetPopUp() {
-        powerMerchantFreeShippingStatus()?.let {
+        getPowerMerchantFreeShippingStatus()?.let {
             PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(userSession, it)
         }
     }
 
     fun sendSuccessBottomSheetClickLearnMore() {
-        powerMerchantFreeShippingStatus()?.let {
+        getPowerMerchantFreeShippingStatus()?.let {
             PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(userSession, it)
         }
     }
@@ -147,7 +147,7 @@ class PmSubscribeViewModel @Inject constructor(
         }
     }
 
-    private fun powerMerchantFreeShippingStatus(): PowerMerchantFreeShippingStatus? {
+    private fun getPowerMerchantFreeShippingStatus(): PowerMerchantFreeShippingStatus? {
         return (_getPmFreeShippingStatusResult.value as? Success<PowerMerchantFreeShippingStatus>)?.data
     }
 
