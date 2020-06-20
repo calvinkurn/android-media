@@ -64,7 +64,7 @@ class ResourceDownloadManager private constructor() {
         private const val KEEP_ALIVE_TIME: Long = 5
         private const val DEFAULT_TIME_OUT = 60L
 
-        const val MANAGER_TAG: String = "ResourceDownloadManager"
+        const val MANAGER_TAG: String = "RDM"
 
         @Volatile
         private var INSTANCE: ResourceDownloadManager? = null
