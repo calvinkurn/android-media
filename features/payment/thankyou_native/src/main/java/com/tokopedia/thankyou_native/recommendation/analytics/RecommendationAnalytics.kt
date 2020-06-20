@@ -110,7 +110,7 @@ class RecommendationAnalytics @Inject constructor(
         const val EVENT_PRODUCT_CLICK = "productClick"
         const val EVENT_CATEGORY_ORDER_COMPLETE = "order complete"
         const val EVENT_ACTION_CLICK_PRODUCT = "click product from product recommendation section"
-        const val EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE = "/recomendation-order complete"
+        const val EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE = "/recommendation-order complete"
 
 
         const val EVENT_PRODUCT_VIEW = "productView"
