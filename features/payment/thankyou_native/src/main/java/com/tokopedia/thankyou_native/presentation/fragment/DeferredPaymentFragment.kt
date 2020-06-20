@@ -20,9 +20,6 @@ import com.tokopedia.thankyou_native.helper.ThanksPageHelper.copyTOClipBoard
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
-import kotlinx.android.synthetic.main.thank_fragment_deferred.btnShopAgain
-import kotlinx.android.synthetic.main.thank_fragment_deferred.recommendationContainer
-import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 
 class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.ThankTimerViewListener {
 
