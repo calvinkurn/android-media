@@ -62,7 +62,11 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
             refreshThanksPageData()
         }
         btnShopAgain.setOnClickListener {
-            gotoHomePage()
+            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
+                gotoHomePage()
+            } else {
+                gotoHomePage(thanksPageData.thanksCustomization.customHomeUrlApp)
+            }
         }
     }
 
