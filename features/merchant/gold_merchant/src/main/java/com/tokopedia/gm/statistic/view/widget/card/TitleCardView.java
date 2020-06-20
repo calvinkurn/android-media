@@ -1,4 +1,4 @@
-package com.tokopedia.design.card;
+package com.tokopedia.gm.statistic.view.widget.card;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -16,8 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
+
 import com.tokopedia.design.loading.LoadingStateView;
+import com.tokopedia.gm.R;
 
 /**
  * Created by hendry on 7/10/2017.

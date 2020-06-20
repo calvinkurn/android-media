@@ -1,4 +1,4 @@
-package com.tokopedia.design.component.ticker;
+package com.tokopedia.loyalty.view.widget;
 
 import android.content.Context;
 import androidx.viewpager.widget.ViewPager;

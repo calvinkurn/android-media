@@ -1,4 +1,4 @@
-package com.tokopedia.design.card;
+package com.tokopedia.gm.statistic.view.widget.card;
 
 import android.content.Context;
 import android.util.AttributeSet;

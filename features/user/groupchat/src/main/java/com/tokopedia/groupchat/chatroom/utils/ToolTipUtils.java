@@ -1,4 +1,4 @@
-package com.tokopedia.design.card;
+package com.tokopedia.groupchat.chatroom.utils;
 
 import android.content.Context;
 import android.graphics.Color;

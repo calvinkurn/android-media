@@ -1,4 +1,4 @@
-package com.tokopedia.design.widget;
+package com.tokopedia.home.account.presentation.view;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -19,7 +19,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
+import com.tokopedia.home.account.R;
+
 
 /**
  * @author by nisie on 14/11/18.

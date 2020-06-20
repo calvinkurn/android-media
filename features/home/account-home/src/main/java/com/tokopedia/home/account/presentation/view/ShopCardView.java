@@ -24,7 +24,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.label.LabelView;
-import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
