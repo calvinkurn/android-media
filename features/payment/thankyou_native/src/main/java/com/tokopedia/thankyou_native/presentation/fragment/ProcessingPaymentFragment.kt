@@ -11,7 +11,17 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.PaymentType
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 import kotlinx.android.synthetic.main.thank_fragment_processing.*
+import kotlinx.android.synthetic.main.thank_fragment_processing.btnCheckPaymentStatus
+import kotlinx.android.synthetic.main.thank_fragment_processing.btnShopAgain
+import kotlinx.android.synthetic.main.thank_fragment_processing.ivPaymentGatewayImage
+import kotlinx.android.synthetic.main.thank_fragment_processing.loadingLayout
+import kotlinx.android.synthetic.main.thank_fragment_processing.recommendationContainer
+import kotlinx.android.synthetic.main.thank_fragment_processing.tvCheckPaymentStatusTitle
+import kotlinx.android.synthetic.main.thank_fragment_processing.tvPaymentGatewayName
+import kotlinx.android.synthetic.main.thank_fragment_processing.tvSeeDetail
+import kotlinx.android.synthetic.main.thank_fragment_processing.tvTotalAmount
 
 class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
@@ -50,6 +60,11 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest)
         tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customWtvText.isNullOrBlank()) {
+            tvCheckPaymentStatusTitle.text = getString(R.string.thank_processing_payment_check_order)
+        } else {
+            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization.customWtvText
+        }
     }
 
     private fun initCheckPaymentWidgetData() {

@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.recommendationdigital.analytics
 
+import android.os.Bundle
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineMainDispatcher
@@ -20,7 +21,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
 
 
     fun sendDigitalRecommendationItemDisplayed(recommendationItem: RecommendationsItem,
-                                        position: Int) {
+                                               position: Int) {
         CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
                     withContext(backgroundDispatcher.get()) {
@@ -28,7 +29,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
                                 KEY_EVENT to EVENT_PRODUCT_VIEW,
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                                 KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
-                                KEY_EVENT_LABEL to recommendationItem.type + " - "+recommendationItem.categoryName + " - "+ position,
+                                KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
                                 KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
                     }
@@ -40,7 +41,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
 
 
     fun sendDigitalRecommendationItemClick(recommendationItem: RecommendationsItem,
-                                    position: Int) {
+                                           position: Int) {
 
         CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
@@ -49,7 +50,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
                                 KEY_EVENT to EVENT_PRODUCT_CLICK,
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                                 KEY_EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT,
-                                KEY_EVENT_LABEL to position,
+                                KEY_EVENT_LABEL to (position + 1),
                                 KEY_E_COMMERCE to getProductClickECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
                     }
@@ -80,14 +81,14 @@ class DigitalRecommendationAnalytics @Inject constructor(
     private fun getProductDataMap(recommendationItem: RecommendationsItem,
                                   position: Int): MutableMap<String, Any?> {
         return mutableMapOf(
-                KEY_PRODUCT_NAME to recommendationItem.productName,
+                KEY_PRODUCT_NAME to recommendationItem.categoryName,
                 KEY_PRODUCT_ID to recommendationItem.productId,
                 KEY_PRODUCT_PRICE to recommendationItem.productPrice.toString(),
                 KEY_PRODUCT_BRAND to "",
                 KEY_PRODUCT_CATEGORY to recommendationItem.categoryName,
                 KEY_PRODUCT_VARIANT to "",
                 KEY_LIST to EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE,
-                KEY_PRODUCT_POSITION to position
+                KEY_PRODUCT_POSITION to (position + 1)
         )
     }
 

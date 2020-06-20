@@ -135,7 +135,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     private fun onRecomProductClick(item: RecommendationsItem, position: Int) {
         RouteManager.route(context, item.appLink)
-        analytics.get().sendDigitalRecommendationItemClick(item, position = position + 1)
+        analytics.get().sendDigitalRecommendationItemClick(item, position)
     }
 
 
