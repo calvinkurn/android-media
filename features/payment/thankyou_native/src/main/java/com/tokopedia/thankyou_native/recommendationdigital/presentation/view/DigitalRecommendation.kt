@@ -85,7 +85,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     override fun loadRecommendation(fragment: BaseDaggerFragment) {
         this.fragment = fragment
         startViewModelObserver()
-        viewModel.getDigitalRecommendationData(5, "1")
+        viewModel.getDigitalRecommendationData(5, "")
     }
 
     private fun startViewModelObserver() {

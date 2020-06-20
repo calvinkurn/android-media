@@ -49,7 +49,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dh_rec_name.visibility = View.GONE
         } else {
             thanks_dh_rec_name.visibility = View.VISIBLE
-            thanks_dh_rec_name.text = element.categoryName.capitalize()
+            thanks_dh_rec_name.text = element.categoryName.capitalize().trim()
         }
     }
 
@@ -59,11 +59,11 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
                 thanks_dg_rec_text_sub.visibility = View.GONE
             } else {
                 thanks_dg_rec_text_sub.visibility = View.VISIBLE
-                thanks_dg_rec_text_sub.text = element.description
+                thanks_dg_rec_text_sub.text = element.description.trim()
             }
         } else {
             thanks_dg_rec_text_sub.visibility = View.VISIBLE
-            thanks_dg_rec_text_sub.text = element.productName
+            thanks_dg_rec_text_sub.text = element.productName.trim()
         }
 
     }
@@ -73,7 +73,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_text_sub.visibility = View.GONE
         } else {
             thanks_dg_rec_text_sub.visibility = View.VISIBLE
-            thanks_dg_rec_text_sub.text = productName
+            thanks_dg_rec_text_sub.text = productName.trim()
         }
 
     }
@@ -83,7 +83,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_text_desc.visibility = View.GONE
         } else {
             thanks_dg_rec_text_desc.visibility = View.VISIBLE
-            thanks_dg_rec_text_desc.text = element.clientNumber
+            thanks_dg_rec_text_desc.text = element.clientNumber.trim()
         }
 
     }
