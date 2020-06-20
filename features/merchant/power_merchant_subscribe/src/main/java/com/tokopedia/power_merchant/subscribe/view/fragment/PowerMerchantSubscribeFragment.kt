@@ -241,7 +241,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val imgUrl = IMG_URL_BS_SUCCESS
 
         if(showFreeShipping) {
-            PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(userSessionInterface)
+            viewModel.sendSuccessBottomSheetPopUp()
         }
 
         val headerString = getString(R.string.pm_label_bs_success_header)
@@ -272,7 +272,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun openFreeShippingPage(showFreeShipping: Boolean) {
         if(showFreeShipping) {
-            PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(userSessionInterface)
+            viewModel.sendSuccessBottomSheetClickLearnMore()
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
                 PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
         }
