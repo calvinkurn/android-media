@@ -444,7 +444,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
                 item.toLowerCase());
     }
 
-    private void sendTracking(String title, String section, String item) {
+    protected void sendTracking(String title, String section, String item) {
         sendTracking(title, section, item, false);
     }
 
