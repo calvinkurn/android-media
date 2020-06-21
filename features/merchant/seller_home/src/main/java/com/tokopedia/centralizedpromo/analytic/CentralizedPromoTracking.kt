@@ -159,5 +159,6 @@ object CentralizedPromoTracking {
                 CURRENT_SITE to TOKOPEDIA_SELLER,
                 USER_ID to userId
         ))
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 }

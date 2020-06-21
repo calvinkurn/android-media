@@ -51,6 +51,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                 context?.run {
                     val view = View.inflate(this, R.layout.mvc_create_promo_code_bottom_sheet_view, null)
                     setChild(view)
+                    setTitle(context.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title).toBlankOrString())
                     setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 }
             }

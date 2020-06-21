@@ -124,19 +124,6 @@ class VoucherDetailFragment : BaseDetailFragment() {
         setHasOptionsMenu(true)
 
         setupView()
-
-        view.addOnImpressionListener(impressHolder) {
-            VoucherCreationTracking.sendOpenScreenTracking(
-                    when(voucherUiModel?.status) {
-                        VoucherStatusConst.NOT_STARTED -> ScreenName.VoucherDetail.UPCOMING
-                        VoucherStatusConst.ONGOING -> ScreenName.VoucherDetail.ONGOING
-                        VoucherStatusConst.ENDED -> ScreenName.VoucherDetail.ENDED
-                        VoucherStatusConst.STOPPED -> ScreenName.VoucherDetail.CANCELLED
-                        else -> return@addOnImpressionListener
-                    },
-                    userSession.isLoggedIn,
-                    userSession.userId)
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -332,6 +319,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                     is Success -> {
                         adapter.clearAllElements()
                         voucherUiModel = result.data
+                        sendOpenScreenTracking()
                         renderVoucherDetailInformation(result.data)
                     }
                     is Fail -> {
@@ -636,6 +624,21 @@ class VoucherDetailFragment : BaseDetailFragment() {
                     errorMessage,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun sendOpenScreenTracking() {
+        view?.addOnImpressionListener(impressHolder) {
+            VoucherCreationTracking.sendOpenScreenTracking(
+                    when(voucherUiModel?.status) {
+                        VoucherStatusConst.NOT_STARTED -> ScreenName.VoucherDetail.UPCOMING
+                        VoucherStatusConst.ONGOING -> ScreenName.VoucherDetail.ONGOING
+                        VoucherStatusConst.ENDED -> ScreenName.VoucherDetail.ENDED
+                        VoucherStatusConst.STOPPED -> ScreenName.VoucherDetail.CANCELLED
+                        else -> return@addOnImpressionListener
+                    },
+                    userSession.isLoggedIn,
+                    userSession.userId)
         }
     }
 

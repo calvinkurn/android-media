@@ -277,6 +277,24 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun onMoreMenuClickListener(voucher: VoucherUiModel) {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action =
+                when(voucher.status) {
+                    VoucherStatusConst.ONGOING -> Click.BURGER_BUTTON_ONGOING
+                    VoucherStatusConst.NOT_STARTED -> Click.BURGER_BUTTON_UPCOMING
+                    VoucherStatusConst.ENDED -> Click.BURGER_BUTTON
+                    VoucherStatusConst.STOPPED -> Click.BURGER_BUTTON
+                    else -> ""
+                },
+                label =
+                when(voucher.status) {
+                    VoucherStatusConst.ENDED -> EventLabel.ENDED
+                    VoucherStatusConst.STOPPED -> EventLabel.CANCELLED
+                    else -> ""
+                },
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
         activity?.run {
             KeyboardHandler.hideSoftKeyboard(this)
         }
@@ -301,8 +319,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 action = Click.VOUCHER_ICON,
                 label =
                         when(status) {
-                            VoucherStatusConst.ONGOING -> VoucherCreationAnalyticConstant.EventLabel.ONGOING
-                            VoucherStatusConst.NOT_STARTED -> VoucherCreationAnalyticConstant.EventLabel.UPCOMING
+                            VoucherStatusConst.ONGOING -> EventLabel.ONGOING
+                            VoucherStatusConst.NOT_STARTED -> EventLabel.UPCOMING
                             else -> ""
                         },
                 isActive = isActiveVoucher,
@@ -329,24 +347,6 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
-        VoucherCreationTracking.sendVoucherListClickTracking(
-                action =
-                        when(voucher.status) {
-                            VoucherStatusConst.ONGOING -> Click.BURGER_BUTTON_ONGOING
-                            VoucherStatusConst.NOT_STARTED -> Click.BURGER_BUTTON_UPCOMING
-                            VoucherStatusConst.ENDED -> Click.BURGER_BUTTON
-                            VoucherStatusConst.STOPPED -> Click.BURGER_BUTTON
-                            else -> ""
-                        },
-                label =
-                        when(voucher.status) {
-                            VoucherStatusConst.ENDED -> EventLabel.ENDED
-                            VoucherStatusConst.STOPPED -> EventLabel.CANCELLED
-                            else -> ""
-                        },
-                isActive = isActiveVoucher,
-                userId = userSession.userId
-        )
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         var moreMenuClickEventAction: String? = null
         when (menu) {

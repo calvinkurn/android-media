@@ -13,7 +13,7 @@ object VoucherCreationTracking {
         val map = mapOf(
                 VoucherCreationAnalyticConstant.Key.EVENT to VoucherCreationAnalyticConstant.Event.OPEN_SCREEN,
                 VoucherCreationAnalyticConstant.Key.SCREEN_NAME to screenName,
-                VoucherCreationAnalyticConstant.Key.IS_LOGGED_IN_STATUS to isLoggedIn,
+                VoucherCreationAnalyticConstant.Key.IS_LOGGED_IN_STATUS to isLoggedIn.toString(),
                 VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER,
                 VoucherCreationAnalyticConstant.Key.USER_ID to userId,
                 VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS

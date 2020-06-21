@@ -47,6 +47,7 @@ class VoucherViewHolder(
 
             imgMvcVoucherType?.setOnClickListener {
                 listener.onVoucherIconClickListener(element.status)
+                listener.onVoucherClickListener(element.id)
             }
             btnMvcMore.setOnClickListener {
                 listener.onMoreMenuClickListener(element)

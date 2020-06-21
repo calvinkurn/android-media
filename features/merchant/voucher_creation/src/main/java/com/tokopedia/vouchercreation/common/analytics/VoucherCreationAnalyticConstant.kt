@@ -67,10 +67,10 @@ object VoucherCreationAnalyticConstant {
     object EventCategory {
 
         object VoucherCreation {
-            const val TARGET = "vouchercreation - target"
-            const val TYPE_BUDGET = "vouchercreation - type & budget"
-            const val PERIOD = "vouchercreation - period"
-            const val REVIEW = "vouchercreation - review"
+            const val TARGET = "voucher creation - target"
+            const val TYPE_BUDGET = "voucher creation - type & budget"
+            const val PERIOD = "voucher creation - period"
+            const val REVIEW = "voucher creation - review"
         }
 
         object VoucherList {

@@ -183,7 +183,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeLiveData()
         VoucherCreationTracking.sendOpenScreenTracking(
-                if (activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false) == true) {
+                if (isDuplicate) {
                     VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.REVIEW
                 } else {
                     VoucherCreationAnalyticConstant.ScreenName.VOUCHER_DUPLICATE_REVIEW

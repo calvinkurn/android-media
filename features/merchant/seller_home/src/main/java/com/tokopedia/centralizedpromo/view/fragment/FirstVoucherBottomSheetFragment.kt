@@ -49,10 +49,10 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         view.addOnImpressionListener(impressHolder) {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetImpression(userSession.userId)
         }
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun initInjector() {

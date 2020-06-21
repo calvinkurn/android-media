@@ -186,14 +186,14 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                 onPrimaryClick = {
                     VoucherCreationTracking.sendCreateVoucherClickTracking(
                             step = VoucherCreationStep.REVIEW,
-                            action = VoucherCreationAnalyticConstant.EventAction.Click.CANCEL_VOUCHER_CREATION_CANCELLED,
+                            action = VoucherCreationAnalyticConstant.EventAction.Click.CANCEL_VOUCHER_CREATION_BACK,
                             userId = userSession.userId
                     )
                 },
                 onSecondaryClick = {
                     VoucherCreationTracking.sendCreateVoucherClickTracking(
                             step = VoucherCreationStep.REVIEW,
-                            action = VoucherCreationAnalyticConstant.EventAction.Click.CANCEL_VOUCHER_CREATION_BACK,
+                            action = VoucherCreationAnalyticConstant.EventAction.Click.CANCEL_VOUCHER_CREATION_CANCELLED,
                             userId = userSession.userId
                     )
                     setResult(Activity.RESULT_OK)
