@@ -26,7 +26,7 @@ data class RechargeHomepageSections (
             val title: String = "",
             @SerializedName("sub_title")
             @Expose
-            val subTitle: String = "",
+            val subtitle: String = "",
             @SerializedName("template")
             @Expose
             val template: String = "",
@@ -44,7 +44,7 @@ data class RechargeHomepageSections (
             val title: String = "",
             @SerializedName("sub_title")
             @Expose
-            val subTitle: String = "",
+            val subtitle: String = "",
             @SerializedName("content")
             @Expose
             val content: String = "",
@@ -75,9 +75,9 @@ data class RechargeHomepageSections (
             @SerializedName("label_3")
             @Expose
             val label3: String = "",
-            @SerializedName("server_data")
+            @SerializedName("server_date")
             @Expose
-            val serverData: String = "",
+            val serverDate: String = "",
             @SerializedName("due_date")
             @Expose
             val dueDate: String = ""
@@ -119,6 +119,12 @@ class RechargeHomepageTrustMarkModel(section: RechargeHomepageSections.Section):
 }
 
 class RechargeHomepageVideoHighlightModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageProductBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }

@@ -28,6 +28,8 @@ object DigitalHomepageTrackingActionConstant {
 
     const val VIDEO_HIGHLIGHT_IMPRESSION = "video highlight impression"
     const val VIDEO_HIGHLIGHT_CLICK = "video highlight click"
+    const val PRODUCT_BANNER_IMPRESSION = "video highlight impression"
+    const val PRODUCT_BANNER_CLICK = "video highlight click"
 }
 
 object DigitalHomepageTrackingLabelConstant {

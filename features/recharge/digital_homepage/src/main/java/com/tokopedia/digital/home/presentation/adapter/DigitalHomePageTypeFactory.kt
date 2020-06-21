@@ -10,6 +10,8 @@ import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 
 class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
@@ -76,11 +78,23 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
         return RechargeHomepageVideoHighlightViewHolder.LAYOUT
     }
 
+    fun type(productBannerModel: RechargeHomepageProductBannerModel): Int {
+        return RechargeHomepageProductBannerViewHolder.LAYOUT
+    }
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
 
     override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
+        return 0
+    }
+
+    override fun type(mixLeftDataModel: MixLeftDataModel): Int {
+        return 0
+    }
+
+    override fun type(mixTopDataModel: MixTopDataModel): Int {
         return 0
     }
 
@@ -94,6 +108,7 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
             RechargeHomepageBannerViewHolder.LAYOUT_EMPTY -> RechargeHomepageBannerViewHolder(parent, listener, true)
             RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
             DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, listener, listener)
+            RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

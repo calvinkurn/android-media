@@ -47,7 +47,7 @@ class RechargeHomepageVideoHighlightViewHolder(
 
     private fun initView(section: RechargeHomepageSections.Section){
         title.text = section.title
-        subTitle.text = section.subTitle
+        subTitle.text = section.subtitle
 
         val item = section.items[0]
         thumbnailView.show()

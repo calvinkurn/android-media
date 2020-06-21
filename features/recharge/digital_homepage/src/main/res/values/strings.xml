@@ -9,4 +9,5 @@
     <string name="digital_home_search_view_hint"><![CDATA[Cari di Topup & Tagihan]]></string>
 
     <string name="recharge_home_banner_see_all_label">Lihat Semua</string>
+    <string name="recharge_home_product_banner_buy_button_label">Beli Sekarang</string>
 </resources>

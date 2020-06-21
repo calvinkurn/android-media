@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import java.util.*
 
 object RechargeHomepageSectionMapper {
     // TODO: Finish section mapper
@@ -19,6 +21,18 @@ object RechargeHomepageSectionMapper {
                     SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
                     SECTION_LEGO_BANNERS -> getDynamicLegoBannerModel(it)
+//                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
+                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(RechargeHomepageSections.Section(
+                            id = 1,
+                            title = "Test",
+                            items = listOf(RechargeHomepageSections.Item(
+                                    title = "Test Product",
+                                    subtitle = "This product is cool",
+                                    label1 = "Rp 10.000",
+                                    label2 = "Rp 15.000",
+                                    label3 = "30%"
+                            ))
+                    ))
                     else -> null
                 }
             }
@@ -30,9 +44,24 @@ object RechargeHomepageSectionMapper {
                 section.id.toString(),
                 section.id.toString(),
                 channelConfig = ChannelConfig(DynamicChannelLayout.LAYOUT_6_IMAGE),
-                channelHeader = ChannelHeader(name = section.title, subtitle = section.subTitle),
+                channelHeader = ChannelHeader(name = section.title, subtitle = section.subtitle),
                 channelGrids = section.items.map { item ->
                     ChannelGrid(item.id.toString(), imageUrl = item.mediaUrl, applink = item.applink)
                 }))
+    }
+
+    fun mapSectionToChannel(section: RechargeHomepageSections.Section): ChannelModel? {
+        with (section) {
+            return if (section.items.isNotEmpty()) {
+                val sectionId = id.toString()
+                val item = items[0]
+                val serverTimeOffset = DateHelper.getExpiredTime(item.serverDate).time - Date().time
+
+                ChannelModel(sectionId, sectionId,
+                        channelHeader = ChannelHeader(sectionId, title, subtitle, item.dueDate),
+                        channelConfig = ChannelConfig(serverTimeOffset = serverTimeOffset)
+                )
+            } else null
+        }
     }
 }

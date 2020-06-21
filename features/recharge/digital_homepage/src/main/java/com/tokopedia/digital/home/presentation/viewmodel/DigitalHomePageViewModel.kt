@@ -36,7 +36,10 @@ class DigitalHomePageViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeHomepageSections.Response>().response
 
-            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(data.sections).filterNotNull()
+            // Filter out sections with no items then map sections based on their types
+            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(data.sections.filter {
+                it.items.isNotEmpty()
+            }).filterNotNull()
             mutableRechargeHomepageSections.postValue(Success(mappedData))
         }) {
             mutableRechargeHomepageSections.postValue(Fail(it))

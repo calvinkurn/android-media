@@ -10,6 +10,7 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActio
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.layout_digital_home_category_item_submenu_frame.view.*
+import kotlinx.android.synthetic.main.view_recharge_home_card_image.view.*
 
 class RechargeItemFavoriteAdapter(val items: List<RechargeHomepageSections.Item>, val listener: OnItemBindListener)
     : RecyclerView.Adapter<RechargeItemFavoriteAdapter.DigitalItemFavoriteViewHolder>() {
@@ -29,7 +30,7 @@ class RechargeItemFavoriteAdapter(val items: List<RechargeHomepageSections.Item>
 
     class DigitalItemFavoriteViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: OnItemBindListener) {
-            itemView.category_frame_image.loadImage(element.mediaUrl)
+            itemView.category_frame_image.card_image.loadImage(element.mediaUrl)
             itemView.category_frame_name.text = element.title
             itemView.setOnClickListener {
                 onItemBindListener.onRechargeSectionItemClicked(element, adapterPosition, BEHAVIORAL_CATEGORY_CLICK)
