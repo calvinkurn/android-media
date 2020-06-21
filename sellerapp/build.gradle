@@ -255,8 +255,6 @@ dependencies {
     implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
-    implementation project(rootProject.ext.features.broadcastMessage)
-    implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.flashsaleManagement)

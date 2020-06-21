@@ -25,9 +25,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
-import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
-import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
-import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.contactus.ContactUsModuleRouter;
@@ -134,9 +131,7 @@ import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
-import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.url.TokopediaUrl;
@@ -147,8 +142,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.Interceptor;
@@ -175,7 +168,6 @@ public abstract class SellerRouterApplication extends MainApplication
         WithdrawRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
-        BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
         UnifiedOrderListRouter,
         CoreNetworkRouter,
@@ -817,24 +809,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public @NonNull
     Intent getFlashSaleDashboardIntent(@NonNull Context context) {
         return FlashSaleInternalRouter.getFlashSaleDashboardActivity(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getBroadcastMessageListIntent(@NonNull Context context) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_BM_CLICK, "");
-        return BroadcastMessageInternalRouter.INSTANCE.getBroadcastMessageListIntent(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getBroadcastMessageAttachProductIntent(@NonNull Context context, @NonNull String shopId,
-                                                         @NonNull String shopName, boolean isSeller,
-                                                         @NonNull List<Integer> selectedIds,
-                                                         @NonNull ArrayList<HashMap<String, String>> hashProducts) {
-        return BroadcastMessageAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
     }
 
     @Override
