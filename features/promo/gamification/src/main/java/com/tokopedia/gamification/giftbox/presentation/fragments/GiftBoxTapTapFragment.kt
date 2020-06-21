@@ -32,6 +32,9 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Com
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.FINISHED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.NOT_STARTED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.STARTED
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.LOBBY
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.EMPTY
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.CRACK_UNLIMITED
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
@@ -274,8 +277,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         //for empty state
                         val state = it.data.gamiTapEggHome?.tokensUser?.state
                         state?.let { tokenUserState ->
-                            when (tokenUserState) {
-                                "empty" -> {
+                            when (tokenUserState.toLowerCase()) {
+                                EMPTY -> {
                                     val title = it.data.gamiTapEggHome?.tokensUser?.text
                                     val desc = it.data.gamiTapEggHome?.tokensUser?.desc
 
@@ -292,24 +295,26 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                         loadInactiveContainer()
                                     }
 
-                                    val actionButtonList = it.data.gamiTapEggHome?.actionButton
-                                    if (!actionButtonList.isNullOrEmpty()) {
-                                        btnInactiveFirst.text = actionButtonList[0].text
+
+                                    it.data.gamiTapEggHome?.actionButton?.let {items->
+                                        if(!items.isNullOrEmpty())
+                                            btnInactiveFirst.text = items[0].text
                                     }
 
                                 }
-                                "lobby" -> {
+                                LOBBY -> {
                                     it.data.gamiTapEggHome?.let { gamiTapEggHome ->
                                         setupLobbyUi(gamiTapEggHome)
                                     }
 
                                 }
-                                "crackUnlimited" -> {
+                                CRACK_UNLIMITED -> {
                                     it.data.gamiTapEggHome?.let { gamiTapEggHome ->
                                         setupCrackUnlimitedUi(gamiTapEggHome)
                                     }
                                 }
                                 else -> {
+                                    activity?.finish()
                                 }
                             }
                         }
@@ -920,5 +925,15 @@ annotation class BenefitType {
     companion object {
         const val COUPON = "coupon"
         const val OVO = "ovo_points"
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(EMPTY, CRACK_UNLIMITED, LOBBY)
+annotation class TokenUserStateTapTap {
+    companion object {
+        const val EMPTY = "empty"
+        const val CRACK_UNLIMITED = "crackunlimited"
+        const val LOBBY = "lobby"
     }
 }

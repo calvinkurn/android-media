@@ -186,7 +186,7 @@ class RewardSummaryView : FrameLayout {
 
                 typography.layoutParams = lp
                 typography.background = ContextCompat.getDrawable(context, R.drawable.gf_bg_green_3d)
-                typography.setTextColor(ContextCompat.getColor(context, R.color.white))
+                typography.setTextColor(ContextCompat.getColor(context, android.R.color.white))
             }
             OUTLINE -> {
                 val lp = LinearLayout.LayoutParams(0, heightSmall)
