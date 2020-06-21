@@ -77,8 +77,8 @@ class ThankYouPageAnalytics @Inject constructor(
 
         eventList.forEach { data ->
             val eventMap: MutableMap<String, Any> = gson.fromJson(data, object : TypeToken<Map<String, Any>>(){}.type)
-            val event =  eventMap.remove("event")?.toString()
-            analyticTracker.sendEnhanceEcommerceEvent(event, getBundleFromMap(eventMap))
+            //val event =  eventMap.remove("event")?.toString()
+            analyticTracker.sendEnhanceEcommerceEvent(eventMap)
         }
     }
 
