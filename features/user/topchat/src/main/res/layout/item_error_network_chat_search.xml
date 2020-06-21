@@ -13,12 +13,11 @@
     <ImageView
             android:id="@+id/iv_icon"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_topchat_210"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:gravity="center_horizontal"
-            android:scaleType="fitCenter"
             app:srcCompat="@drawable/unify_globalerrors_connection"
             tools:ignore="ContentDescription" />
 
@@ -27,15 +26,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="@dimen/dp_topchat_34"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/dp_topchat_34"
             android:gravity="center"
-            android:text="@string/title_empty_chat_search_result"
+            android:layout_marginStart="@dimen/dp_topchat_34"
+            android:layout_marginEnd="@dimen/dp_topchat_34"
             android:textColor="@color/Neutral_N700_96"
             android:textStyle="bold"
             app:typographyType="heading_2"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="@string/msg_network_error_1" />
 
     <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/sub_message_retry"
@@ -44,9 +43,9 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_topchat_12"
             android:gravity="center"
-            android:text="@string/desc_empty_chat_search_result"
             android:textColor="@color/Neutral_N700_68"
             android:textStyle="bold"
+            android:text="@string/desc_sub_error_message"
             app:typographyType="body_2"
             app:typographyWeight="reguler" />
 
@@ -57,7 +56,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:gravity="center"
-            android:text="@string/title_cta_change_chat_search_keywoard"
+            android:text="@string/title_try_again"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled" />
