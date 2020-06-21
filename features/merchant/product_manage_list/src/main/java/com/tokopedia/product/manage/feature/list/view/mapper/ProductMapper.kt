@@ -9,7 +9,7 @@ import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
-import com.tokopedia.product.manage.feature.list.view.model.PriceViewModel
+import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -28,11 +28,11 @@ object ProductMapper {
                 id = it.id,
                 title = it.name,
                 imageUrl = picture?.urlThumbnail,
-                minPrice = PriceViewModel(
+                minPrice = PriceUiModel(
                         price = minPrice.toString(),
                         priceFormatted = minPrice?.getCurrencyFormatted()
                 ),
-                maxPrice = PriceViewModel(
+                maxPrice = PriceUiModel(
                         price = maxPrice.toString(),
                         priceFormatted = maxPrice?.getCurrencyFormatted()
                 ),

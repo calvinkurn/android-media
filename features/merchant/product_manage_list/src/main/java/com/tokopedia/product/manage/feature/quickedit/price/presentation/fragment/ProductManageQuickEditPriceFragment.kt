@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.feature.list.view.model.PriceViewModel
+import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
 import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
@@ -56,7 +56,7 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
             }
             textFieldInput.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
-                    val editedPrice = PriceViewModel(textFieldInput.text.toString(), product.minPrice?.priceFormatted)
+                    val editedPrice = PriceUiModel(textFieldInput.text.toString(), product.minPrice?.priceFormatted)
                     product = product.copy(minPrice = editedPrice)
                     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(textFieldInput.windowToken, 0)

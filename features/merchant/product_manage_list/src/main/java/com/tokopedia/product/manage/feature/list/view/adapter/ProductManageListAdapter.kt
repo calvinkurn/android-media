@@ -7,7 +7,7 @@ import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAd
 import com.tokopedia.product.manage.feature.list.extension.findIndex
 import com.tokopedia.product.manage.feature.list.view.adapter.differ.ProductListDiffer
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
-import com.tokopedia.product.manage.feature.list.view.model.PriceViewModel
+import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -19,7 +19,7 @@ class ProductManageListAdapter(
     fun updatePrice(productId: String, price: String) {
         submitList(productId) {
             val formattedPrice = price.toIntOrZero().getCurrencyFormatted()
-            val editedPrice = PriceViewModel(price, formattedPrice)
+            val editedPrice = PriceUiModel(price, formattedPrice)
             it.copy(minPrice = editedPrice, maxPrice = editedPrice)
         }
     }
@@ -29,8 +29,8 @@ class ProductManageListAdapter(
             val editedMinPrice = editResult.variants.minBy { it.price }?.price.orZero()
             val editedMaxPrice = editResult.variants.maxBy { it.price }?.price.orZero()
 
-            val minPrice = PriceViewModel(editedMinPrice.toString(), editedMinPrice.getCurrencyFormatted())
-            val maxPrice = PriceViewModel(editedMaxPrice.toString(), editedMaxPrice.getCurrencyFormatted())
+            val minPrice = PriceUiModel(editedMinPrice.toString(), editedMinPrice.getCurrencyFormatted())
+            val maxPrice = PriceUiModel(editedMaxPrice.toString(), editedMaxPrice.getCurrencyFormatted())
             it.copy(minPrice = minPrice, maxPrice = maxPrice)
         }
     }
