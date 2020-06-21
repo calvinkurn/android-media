@@ -50,6 +50,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_SELECTION
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
@@ -224,7 +225,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         viewModel.productInputModel.value?.let {
             viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
         }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     fun isEditing(): Boolean {
@@ -448,6 +448,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeImageUrlOrPathList()
         observeVariantList()
         observeIsLoading()
+        observeSaveProductDraft()
     }
 
     override fun onDestroyView() {
@@ -785,6 +786,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 showLoading()
             } else {
                 hideLoading()
+            }
+        })
+    }
+
+    private fun observeSaveProductDraft() {
+        viewModel.saveProductDraftResultLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+                is Fail -> AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
             }
         })
     }
