@@ -12,7 +12,6 @@ class CouponConstraintLayout @JvmOverloads constructor(
 
     private val paint = Paint()
     private val porterDuff = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-    private val rect = RectF()
     private val clipPath = Path()
     private val clipRectF = RectF()
 

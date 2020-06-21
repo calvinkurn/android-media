@@ -25,7 +25,7 @@ import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.InactiveImageLoader
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
-import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
+import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.OVO
@@ -72,6 +72,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     var minuteCountDownTimer: CountDownTimer? = null
     var isTimeOut = false
     val rewardItems = arrayListOf<RewardSummaryItem>()
+    val benefitItems = arrayListOf<CrackBenefitEntity>()
     var backButton: BackButton? = null
 
     @RewardContainer.RewardState
@@ -340,8 +341,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.LOADING -> {
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
-                    val responseCrackResultEntity = it.data?.second
-                    val couponDetailEntity = it.data?.first
+                    val responseCrackResultEntity = it.data
+//                    val couponDetailEntity = it.data?.first
                     if (it.data != null) {
                         val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
                         if (!resultCode.isNullOrEmpty() && resultCode == "200") {
@@ -352,7 +353,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                             val benefits = responseCrackResultEntity.crackResultEntity?.benefits
 
                             if (responseCrackResultEntity.crackResultEntity != null) {
-                                updateRewardStateAndRewards(couponDetailEntity?.couponMap, benefits, responseCrackResultEntity.crackResultEntity.imageUrl)
+                                updateRewardStateAndRewards(benefits, responseCrackResultEntity.crackResultEntity.imageUrl)
 
                                 if (!isTimeOut) {
                                     if (!getTapTapView().isBoxAlreadyOpened) {
@@ -374,6 +375,28 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         }
                     }
                 }
+                LiveDataResult.STATUS.ERROR -> {
+                }
+            }
+        })
+
+        viewModel.couponLiveData.observe(viewLifecycleOwner, Observer { result ->
+            when (result.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    if (result.data?.couponMap != null) {
+//                        benefitItems.sortWith(compareBy { it.isBigPrize })
+                        benefitItems.forEach {
+                            if (it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty()) {
+                                val couponDetail = result.data.couponMap["id_${it.referenceID}"]
+                                rewardItems.add(RewardSummaryItem(couponDetail, it))
+                            } else if (it.benefitType == BenefitType.OVO) {
+                                rewardItems.add(RewardSummaryItem(null, it))
+                            }
+                        }
+                    }
+                    fadeOutWaktuHabisAndShowReward()
+                }
+
                 LiveDataResult.STATUS.ERROR -> {
                 }
             }
@@ -588,6 +611,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 rewardSummary.visibility = View.VISIBLE
                 timeUpAnimation()
                 (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
+                viewModel.getCouponDetails(benefitItems)
             }
 
             override fun onTick(millisUntilFinished: Long) {
@@ -749,15 +773,29 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.playTogether(translateHabisAnim, translateWaktuAnim, colorAnimator, waktuImageAnimation, habisImageAnimation)
         animatorSet.playSequentially(translateHabisAnim, animatorSetAfterCollision, finalImageAnimatorSet)
         animatorSet.interpolator = CubicBezierInterpolator(0.22, 1.0, 0.36, 1.0)
+        animatorSet.start()
 
-        val animatorSetFadeOut = AnimatorSet()
+        //will play after getting coupon detail
+//        val animatorSetFadeOut = AnimatorSet()
+//        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
+//        val fadeOutAnim = ObjectAnimator.ofPropertyValuesHolder(fmWaktuHabis, alphaProp)
+//        fadeOutAnim.duration = 300L
+//        fadeOutAnim.startDelay = 300L
+
+//        animatorSetFadeOut.playSequentially(animatorSet, fadeOutAnim, rewardSummaryAnimation())
+//        animatorSetFadeOut.playSequentially(animatorSet)
+//        animatorSetFadeOut.start()
+    }
+
+    fun fadeOutWaktuHabisAndShowReward(){
+        val animatorSet = AnimatorSet()
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
         val fadeOutAnim = ObjectAnimator.ofPropertyValuesHolder(fmWaktuHabis, alphaProp)
         fadeOutAnim.duration = 300L
         fadeOutAnim.startDelay = 300L
 
-        animatorSetFadeOut.playSequentially(animatorSet, fadeOutAnim, rewardSummaryAnimation())
-        animatorSetFadeOut.start()
+        animatorSet.playSequentially(fadeOutAnim, rewardSummaryAnimation())
+        animatorSet.start()
     }
 
     fun fadeOutViews() {
@@ -776,18 +814,19 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         return giftBoxDailyView as GiftBoxTapTapView
     }
 
-    fun updateRewardStateAndRewards(couponDetailMap: HashMap<String, GetCouponDetail>?,
-                                    benefits: List<CrackBenefitEntity>?,
-                                    imageUrl: String?) {
+    fun updateRewardStateAndRewards(benefits: List<CrackBenefitEntity>?, imageUrl: String?) {
         var hasPoints = false
         var hasCoupons = false
 
-        if (!couponDetailMap.isNullOrEmpty()) {
-            hasCoupons = true
-            rewardContainer.couponList.clear()
-            rewardContainer.couponList.addAll(couponDetailMap.values)
-            rewardContainer.couponAdapter.notifyDataSetChanged()
-        }
+        rewardContainer.couponList.clear()
+
+//        if (!couponDetailMap.isNullOrEmpty()) {
+//            hasCoupons = true
+//            rewardContainer.couponList.clear()
+//            rewardContainer.couponList.addAll(couponDetailMap.values)
+//            rewardContainer.couponAdapter.notifyDataSetChanged()
+//        }
+
 
         //set coins
         var iconUrl: String? = ""
@@ -803,20 +842,23 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     }
                     GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
 
-                    rewardItems.add(RewardSummaryItem(null, benefit))
-
                 } else if (benefit.benefitType == COUPON) {
+                    hasCoupons = true
                     benefit.referenceID?.let { refId ->
                         GtmEvents.viewRewards(refId, userSession?.userId)
+                        rewardContainer.couponList.add(CouponTapTap(imageUrl))
 
-                        if (!couponDetailMap.isNullOrEmpty()) {
-                            val couponDetail = couponDetailMap["id_$refId"]
-                            rewardItems.add(RewardSummaryItem(couponDetail, benefit))
-                        }
+//                        if (!couponDetailMap.isNullOrEmpty()) {
+//                            val couponDetail = couponDetailMap["id_$refId"]
+//                            rewardItems.add(RewardSummaryItem(null, benefit))
+//                        }
                     }
                 }
+//                rewardItems.add(RewardSummaryItem(null, benefit))
+                benefitItems.add(benefit)
             }
         }
+        rewardContainer.couponAdapter.notifyDataSetChanged()
 
         if (hasPoints && hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_WITH_POINTS
@@ -836,7 +878,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun onBackPressed():Boolean {
+    fun onBackPressed(): Boolean {
         if (minuteTimerState == STARTED && backButton != null && backButton!!.isShow) {
             showBackDialog(backButton!!)
             return false

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.giftbox.data.entities.CouponType
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
@@ -42,7 +43,7 @@ class RewardContainer : FrameLayout {
 
     lateinit var couponAdapter: CouponAdapter
 
-    val couponList = ArrayList<GetCouponDetail>()
+    val couponList = ArrayList<CouponType>()
     val FADE_OUT_REWARDS_DURATION = 1000L
     var userSession: UserSession? = null
 

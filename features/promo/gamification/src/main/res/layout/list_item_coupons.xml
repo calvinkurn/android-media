@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clTransaction"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_52"
         android:background="@drawable/gf_bg_bottom_corner"

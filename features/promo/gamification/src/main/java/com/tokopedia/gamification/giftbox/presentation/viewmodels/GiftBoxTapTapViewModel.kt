@@ -2,12 +2,15 @@ package com.tokopedia.gamification.giftbox.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity
 import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.entities.CouponDetailResponse
+import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.domain.CouponDetailUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxTapTapCrackUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxTapTapHomeUseCase
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.taptap.data.entiity.TapTapBaseEntity
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -28,7 +31,8 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     var campaignId: Long = 0
 
     val giftHomeLiveData: MutableLiveData<LiveDataResult<TapTapBaseEntity>> = MutableLiveData()
-    val giftCrackLiveData: MutableLiveData<LiveDataResult<Pair<CouponDetailResponse?, ResponseCrackResultEntity>>> = MutableLiveData()
+    val giftCrackLiveData: MutableLiveData<LiveDataResult<ResponseCrackResultEntity>> = MutableLiveData()
+    val couponLiveData: MutableLiveData<LiveDataResult<CouponDetailResponse>> = MutableLiveData()
 
     fun getGiftBoxHome() {
         giftHomeLiveData.postValue(LiveDataResult.loading())
@@ -42,11 +46,21 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
 
     fun crackGiftBox() {
         launchCatchError(block = {
-            val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId.toLong()))
-            val couponDetail = composeApi(response)
-            giftCrackLiveData.postValue(LiveDataResult.success(Pair(couponDetail, response)))
+            val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
+            giftCrackLiveData.postValue(LiveDataResult.success(response))
         }, onError = {
             giftCrackLiveData.postValue(LiveDataResult.error(it))
+        })
+    }
+
+    fun getCouponDetails(benfitItems: ArrayList<CrackBenefitEntity>) {
+        launchCatchError(block = {
+            val ids = benfitItems.filter { it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty() }
+                    .map { it.referenceID }
+            val data = getCatalogDetail(ids)
+            couponLiveData.postValue(LiveDataResult.success(data))
+        },onError={
+            couponLiveData.postValue(LiveDataResult.error(it))
         })
     }
 
