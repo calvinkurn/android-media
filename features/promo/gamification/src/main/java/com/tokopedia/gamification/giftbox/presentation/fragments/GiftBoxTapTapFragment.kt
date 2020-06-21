@@ -603,8 +603,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         return alphaAnim
     }
 
-    fun startOneMinuteCounter(seconds: Long) {
-        val time = seconds * 1000L
+    fun startOneMinuteCounter(totalSeconds: Long) {
+        val time = totalSeconds * 1000L
         minuteCountDownTimer = object : CountDownTimer(time, 1000) {
             override fun onFinish() {
                 minuteTimerState = FINISHED
@@ -623,6 +623,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         minuteCountDownTimer?.start()
         minuteTimerState = STARTED
+        if (!isBackgroundSoundPlaying()) {
+            playLoopSound()
+        }
+
     }
 
     private fun renderBottomHourTimer(timeLeftSeconds: Long) {
@@ -659,6 +663,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(tvTimer, alphaProp)
         alphaAnim.duration = 500L
         alphaAnim.start()
+
+        playLoopSound()
     }
 
     fun animateTvTimerAndProgressBar() {
@@ -787,7 +793,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 //        animatorSetFadeOut.start()
     }
 
-    fun fadeOutWaktuHabisAndShowReward(){
+    fun fadeOutWaktuHabisAndShowReward() {
         val animatorSet = AnimatorSet()
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
         val fadeOutAnim = ObjectAnimator.ofPropertyValuesHolder(fmWaktuHabis, alphaProp)

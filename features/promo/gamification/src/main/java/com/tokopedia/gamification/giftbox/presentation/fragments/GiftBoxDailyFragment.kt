@@ -491,9 +491,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     override fun playLoopSound() {
-        if (tokenUserState != null && tokenUserState == TokenUserState.ACTIVE) {
-            super.playLoopSound()
-        }
+        // Don't want to play sound
     }
 
     fun renderUiForReminderCheck(remindMeCheckEntity: RemindMeCheckEntity) {

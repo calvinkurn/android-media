@@ -252,9 +252,13 @@ open class GiftBoxBaseFragment : Fragment() {
         if (isSoundEnabled()) {
             context?.let { it ->
                 bgSoundManager = AudioFactory.createAudio(it)
-                bgSoundManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_bg, true)
+                bgSoundManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_bg_tap_60, true)
             }
         }
+    }
+
+    fun isBackgroundSoundPlaying(): Boolean {
+        return bgSoundManager?.mPlayer?.isPlaying ?: false
     }
 
     fun playTapSound() {
