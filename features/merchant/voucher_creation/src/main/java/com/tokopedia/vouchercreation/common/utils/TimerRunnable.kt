@@ -3,13 +3,15 @@ package com.tokopedia.vouchercreation.common.utils
 import android.os.CountDownTimer
 
 class TimerRunnable(remainingTime: Long,
-                    val onRemainingTimeTick: (String) -> Unit) : CountDownTimer(remainingTime, 1000) {
+                    val onRemainingTimeTick: (String) -> Unit) : CountDownTimer(remainingTime, SECOND.toLong()) {
 
     companion object {
         private const val SECOND = 1000
         private const val MINUTE = SECOND * 60
         private const val HOUR = MINUTE * 60
         private const val DAY = HOUR * 24
+
+        private const val TIMER_FORMAT = "%d hari : %dj : %dm : %dd"
     }
 
     override fun onFinish() {
@@ -26,6 +28,6 @@ class TimerRunnable(remainingTime: Long,
         val minutes = (remainingTime % HOUR) / MINUTE
         val seconds = (remainingTime % MINUTE) / SECOND
 
-        return "${days.toInt()} hari : ${hours.toInt()}j : ${minutes.toInt()}m : ${seconds.toInt()}d"
+        return String.format(TIMER_FORMAT, days.toInt(), hours.toInt(), minutes.toInt(), seconds.toInt())
     }
 }
