@@ -1,0 +1,14 @@
+<resources>
+    <string name="screen_recorder_notif_record">Rekam</string>
+    <string name="screen_recorder_notif_finish">Batal</string>
+    <string name="screen_recorder_notif_stop">Berhenti</string>
+    <string name="screen_record_notif_title_recording_screen">Merekam Layar…</string>
+    <string name="screen_record_notif_title_ready_to_record">Siap Merekam Layar (Maks. 1 menit)</string>
+    <string name="screen_record_notif_text_ready_to_record">Gunakan notifikasi untuk mulai merekam layar</string>
+    <string name="screen_record_notif_title_video_create_success">Video Berhasil Dibuat</string>
+    <string name="screen_record_notif_text_video_create_success">Buka file video</string>
+    <string name="screen_record_info_requesting_permissions">Perekam layar membutuhkan izin untuk beroperasi.\nKlik tombol untuk memberikan izin dan mengaktifkan perekam layar.</string>
+    <string name="screen_recorder_access_denied_info">Izin ditolak</string>
+    <string name="screen_recorder_button_activate_text">Aktifkan perekam layar</string>
+    <string name="screen_recorder_os_below_lollipop_info">Maaf fitur ini tidak bisa digunakan untuk android OS sebelum versi 5 (Lollipop)</string>
+</resources>

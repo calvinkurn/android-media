@@ -2,6 +2,8 @@ package com.tokopedia.home.beranda.helper
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 
 fun <T> List<T>?.copy(): List<T>{
     return if(this != null) ArrayList(this)

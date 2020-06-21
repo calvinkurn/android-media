@@ -1,5 +1,7 @@
 package com.tokopedia.basemvvm.repository
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
@@ -93,6 +95,15 @@ open class BaseRepository {
         } catch (t: Throwable) {
             throw t
         }
+    }
+
+    suspend fun <T : Any> getGQLData(gqlQuery: String,
+                                     gqlResponseType: Class<T>,
+                                     gqlParams: Map<String, Any>, queryName: String): Any? {
+        val jsonObject: JsonObject = getGQLData(gqlQuery, JsonObject::class.java, gqlParams)
+        val jsonObject1 = jsonObject.get(queryName)
+        return Gson().fromJson(jsonObject1, gqlResponseType)
+
     }
 
 }
