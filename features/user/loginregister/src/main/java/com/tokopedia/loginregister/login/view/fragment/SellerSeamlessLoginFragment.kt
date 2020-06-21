@@ -7,7 +7,6 @@ import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -251,9 +250,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
             }
             val success = activity?.bindService(i, serviceConnection, Context.BIND_AUTO_CREATE)
             if(success == false)  {
-                val msg = "Success: $success, ServiceConnection: $serviceConnection"
-                Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
-                Timber.w(msg)
+                Timber.w("Success: $success, ServiceConnection: $serviceConnection")
                 moveToNormalLogin()
             }
         }
@@ -298,7 +295,6 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
-            Toast.makeText(activity, "Service Disconnected $name", Toast.LENGTH_LONG).show()
             Timber.w("Service Disconnected $name")
             service = null
             activity?.finish()
