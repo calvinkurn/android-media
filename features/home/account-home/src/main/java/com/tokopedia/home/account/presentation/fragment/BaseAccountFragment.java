@@ -84,7 +84,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
 
-    protected AccountAnalytics accountAnalytics;
+    private AccountAnalytics accountAnalytics;
     UserSession userSession;
     private AffiliatePreference affiliatePreference;
     private TrackingQueue trackingQueue;
@@ -244,7 +244,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     }
 
-    // sini suf
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
         sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());

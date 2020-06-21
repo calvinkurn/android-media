@@ -258,7 +258,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         if (item.getMenu().equalsIgnoreCase(getString(R.string.title_menu_voucher_toko))) {
             sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
             showSellerMigrationVoucherTokoBottomSheet();
-            accountAnalytics.sendClickSellerMigration(getString(R.string.title_menu_voucher_toko), userSession.getUserId());
         } else {
             super.onMenuListClicked(item);
         }
@@ -320,13 +319,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     private void showSellerMigrationVoucherTokoBottomSheet() {
         if (getContext() != null) {
             if (sellerMigrationVoucherTokoBottomSheet == null) {
-                sellerMigrationVoucherTokoBottomSheet = SellerMigrationVoucherTokoBottomSheet.Companion.createNewInstance(getContext(), type -> {
-                    accountAnalytics.sendClickSellerMigrationMoveToSellerApp(type, userSession.getUserId());
-                    return Unit.INSTANCE;
-                }, () -> {
-                    accountAnalytics.sendClickSellerMigrationLearnMore(userSession.getUserId());
-                    return Unit.INSTANCE;
-                });
+                sellerMigrationVoucherTokoBottomSheet = SellerMigrationVoucherTokoBottomSheet.Companion.createNewInstance(getContext());
             }
             sellerMigrationVoucherTokoBottomSheet.show(getChildFragmentManager(), "");
         }
