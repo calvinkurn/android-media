@@ -43,4 +43,6 @@
     <dimen name="gami_dp_43">43dp</dimen>
     <dimen name="gami_dp_40">40dp</dimen>
     <dimen name="gami_dp_12">12dp</dimen>
+    <dimen name="gami_waktu_habis_h_overlap">15dp</dimen>
+    <dimen name="gami_waktu_habis_w_overlap">11dp</dimen>
 </resources>

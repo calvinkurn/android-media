@@ -47,6 +47,7 @@ import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.image.ImageUtils
+import kotlinx.android.synthetic.main.fragment_gift_tap_tap.*
 import javax.inject.Inject
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
@@ -609,9 +610,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             override fun onFinish() {
                 minuteTimerState = FINISHED
                 rewardSummary.visibility = View.VISIBLE
-                timeUpAnimation()
+                val timeUpAnimation = timeUpAnimation()
+                timeUpAnimation.start()
                 (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
-                viewModel.getCouponDetails(benefitItems)
+                giftBoxDailyView.postDelayed({
+                    viewModel.getCouponDetails(benefitItems)
+                },3000L)
             }
 
             override fun onTick(millisUntilFinished: Long) {
@@ -686,18 +690,18 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    fun timeUpAnimation() {
+    fun timeUpAnimation():Animator {
         val height = screenHeight
         val width = screenWidth
 
-        val translateAnimationDuration = 250L
-//        val translateAnimationDuration = 850L
+//        val translateAnimationDuration = 250L
+        val translateAnimationDuration = 850L
 
         //waktu 30% from top and right
         val waktuStartX = width.toFloat()
         val waktuStartY = height * 0.3f
 
-        val waktuFinalX = width * 0.225f
+        val waktuFinalX = width * 0.5f - image_waktu.width / 2f
         val waktuFinalY = height * 0.4234375f
 
 
@@ -705,8 +709,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val habisStartX = -imageHabis.width.toFloat()
         val habisStartY = height * 0.7f
 
-        val habisFinalX = width * 0.199f
-        val habisFinalY = height * 0.4921875f
+        val habisFinalX = width * 0.5f - image_habis.width / 2f - imageWaktu.context.resources.getDimensionPixelSize(R.dimen.gami_waktu_habis_w_overlap)
+//        val habisFinalY = height * 0.4921875f
+        val habisFinalY = waktuFinalY + imageWaktu.height - imageWaktu.context.resources.getDimensionPixelSize(R.dimen.gami_waktu_habis_h_overlap)
 
         val waktuPropX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, waktuStartX, waktuFinalX)
         val waktuPropY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, waktuStartY, waktuFinalY)
@@ -779,18 +784,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.playTogether(translateHabisAnim, translateWaktuAnim, colorAnimator, waktuImageAnimation, habisImageAnimation)
         animatorSet.playSequentially(translateHabisAnim, animatorSetAfterCollision, finalImageAnimatorSet)
         animatorSet.interpolator = CubicBezierInterpolator(0.22, 1.0, 0.36, 1.0)
-        animatorSet.start()
-
-        //will play after getting coupon detail
-//        val animatorSetFadeOut = AnimatorSet()
-//        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
-//        val fadeOutAnim = ObjectAnimator.ofPropertyValuesHolder(fmWaktuHabis, alphaProp)
-//        fadeOutAnim.duration = 300L
-//        fadeOutAnim.startDelay = 300L
-
-//        animatorSetFadeOut.playSequentially(animatorSet, fadeOutAnim, rewardSummaryAnimation())
-//        animatorSetFadeOut.playSequentially(animatorSet)
-//        animatorSetFadeOut.start()
+        return animatorSet
     }
 
     fun fadeOutWaktuHabisAndShowReward() {
