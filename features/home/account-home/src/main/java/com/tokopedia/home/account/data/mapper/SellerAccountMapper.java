@@ -15,7 +15,7 @@ import com.tokopedia.home.account.data.model.PremiumAccountResponse;
 import com.tokopedia.home.account.data.model.ShopInfoLocation;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
@@ -384,8 +384,8 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return menuGridItems;
     }
 
-    private LabelledMenuListViewModel createLabelledMenuList(String title, String label, String description, String appLink, String titleTrack, String sectionTrack) {
-        LabelledMenuListViewModel menuList = new LabelledMenuListViewModel();
+    private LabelledMenuListUiModel createLabelledMenuList(String title, String label, String description, String appLink, String titleTrack, String sectionTrack) {
+        LabelledMenuListUiModel menuList = new LabelledMenuListUiModel();
         menuList.setMenu(title);
         menuList.setLabel(label);
         menuList.setMenuDescription(description);

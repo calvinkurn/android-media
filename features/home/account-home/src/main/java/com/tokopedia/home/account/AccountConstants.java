@@ -171,11 +171,6 @@ public class AccountConstants {
         public static final String CLICK_NOTIF_CENTER = "clickNotifCenter";
         public static final String NOTIF_CENTER = "notif center";
         public static final String NOTIF_CENTER_ACTION = "click on bell on global nav";
-
-        public static final String CLICK_SELLER_MIGRATION_EVENT_NAME = "clickSellerMigration";
-        public static final String CLICK_SELLER_MIGRATION_EVENT_CATEGORY = "seller app migration";
-        public static final String CLICK_GO_TO_SELLERAPP = "click go to seller app";
-        public static final String MVC_SHEET = "mvc sheet";
     }
 
     public interface VccStatus {

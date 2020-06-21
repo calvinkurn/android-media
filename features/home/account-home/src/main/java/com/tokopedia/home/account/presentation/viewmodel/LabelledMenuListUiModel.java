@@ -6,7 +6,7 @@ import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 
 import java.util.Objects;
 
-public class LabelledMenuListViewModel extends MenuListViewModel {
+public class LabelledMenuListUiModel extends MenuListViewModel {
     private String label;
 
     @Override
@@ -22,7 +22,7 @@ public class LabelledMenuListViewModel extends MenuListViewModel {
         this.label = label;
     }
 
-    public LabelledMenuListViewModel() {
+    public LabelledMenuListUiModel() {
     }
 
     @Override
@@ -37,7 +37,7 @@ public class LabelledMenuListViewModel extends MenuListViewModel {
         dest.writeByte((byte) (isUseSeparator() ? 1 : 0));
     }
 
-    protected LabelledMenuListViewModel(Parcel in) {
+    protected LabelledMenuListUiModel(Parcel in) {
         this.setMenu(in.readString());
         this.setMenuDescription(in.readString());
         this.setLabel(in.readString());
@@ -48,15 +48,15 @@ public class LabelledMenuListViewModel extends MenuListViewModel {
         this.setUseSeparator(in.readByte() != 0);
     }
 
-    public static final Creator<LabelledMenuListViewModel> CREATOR = new Creator<LabelledMenuListViewModel>() {
+    public static final Creator<LabelledMenuListUiModel> CREATOR = new Creator<LabelledMenuListUiModel>() {
         @Override
-        public LabelledMenuListViewModel createFromParcel(Parcel source) {
-            return new LabelledMenuListViewModel(source);
+        public LabelledMenuListUiModel createFromParcel(Parcel source) {
+            return new LabelledMenuListUiModel(source);
         }
 
         @Override
-        public LabelledMenuListViewModel[] newArray(int size) {
-            return new LabelledMenuListViewModel[size];
+        public LabelledMenuListUiModel[] newArray(int size) {
+            return new LabelledMenuListUiModel[size];
         }
     };
 }

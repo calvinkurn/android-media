@@ -31,7 +31,7 @@ import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTi
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
@@ -154,7 +154,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         return RecommendationProductViewHolder.Companion.getLAYOUT();
     }
 
-    public int type(LabelledMenuListViewModel vm) {
+    public int type(LabelledMenuListUiModel vm) {
         return LabelledMenuListViewHolder.Companion.getLAYOUT();
     }
 

@@ -6,9 +6,9 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.presentation.listener.AccountItemListener
-import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListViewModel
+import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel
 
-class LabelledMenuListViewHolder(itemView: View, private val listener: AccountItemListener) : AbstractViewHolder<LabelledMenuListViewModel>(itemView) {
+class LabelledMenuListViewHolder(itemView: View, private val listener: AccountItemListener) : AbstractViewHolder<LabelledMenuListUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -25,7 +25,7 @@ class LabelledMenuListViewHolder(itemView: View, private val listener: AccountIt
     private val label: TextView = itemView.findViewById(R.id.label_menu)
     private val separator: View = itemView.findViewById(R.id.separator)
 
-    override fun bind(element: LabelledMenuListViewModel) {
+    override fun bind(element: LabelledMenuListUiModel) {
         layout.setOnClickListener { v ->
             val now = System.currentTimeMillis()
             if (now - lastClickTime >= CLICK_TIME_INTERVAL) {
