@@ -15,7 +15,15 @@ interface BuyerCardContract {
 
         void setTokopoint(String tokopoint);
 
+        void setTokopointTitle(String title);
+
+        void setTokopointImageUrl(String imageUrl);
+
         void setCoupon(String coupons);
+
+        void setCouponTitle(String title);
+
+        void setCouponImageUrl(String imageUrl);
 
         void showProfileProgress(int progress);
 
@@ -28,6 +36,20 @@ interface BuyerCardContract {
         void showBymeIcon();
 
         void setTokoMemberAmount(String tokoMemberAmount);
+
+        void setTokoMemberTitle(String title);
+
+        void setTokomemberImageUrl(String imageUrl);
+
+        void setCardVisibility(int visibility);
+
+        void setVisibilityCenterLayout(int visibility);
+
+        void setVisibilityRightLayout(int visibility);
+
+        void setVisibilityDividerFirst(int visibility);
+
+        void setVisibilityDividerSecond(int visibility);
 
         void setEggImage(String eggImageUrl);
     }

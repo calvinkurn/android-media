@@ -158,15 +158,15 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onBuyerTokopointClicked(BuyerCardViewModel element) {
+    public void onBuyerTokopointClicked(String element) {
         accountAnalytics.eventAccountPromoClick(CREATIVE_TOKOPOINTS, CREATIVE_TOKOPOINTS, POSITION_TOKOPOINT);
-        RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_HOME);
+        RouteManager.route(getContext(), element);
     }
 
     @Override
-    public void onBuyerVoucherClicked(BuyerCardViewModel element) {
+    public void onBuyerVoucherClicked(String element) {
         accountAnalytics.eventAccountPromoClick(CREATIVE_KUPON_SAYA, CREATIVE_KUPON_SAYA, POSITION_KUPON_SAYA);
-        openApplink(ApplinkConst.COUPON_LISTING);
+        openApplink(element);
     }
 
     @Override
@@ -526,9 +526,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onTokomemberClicked() {
+    public void onTokomemberClicked(String url) {
         accountAnalytics.eventAccountPromoClick(CREATIVE_TOKO_MEMBER, CREATIVE_TOKO_MEMBER, POSITION_TOKOMEMBER);
-        openWebview("https://m.tokopedia.com/membership");
+        RouteManager.route(getContext(), url);
     }
 
     @NotNull

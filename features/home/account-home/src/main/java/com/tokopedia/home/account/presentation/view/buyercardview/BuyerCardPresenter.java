@@ -18,7 +18,7 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
 
     @Override
     public void setData(BuyerCard buyerCard) {
-        if(view != null) {
+        if (view != null) {
             if (buyerCard.getProgress() < 100) {
                 view.showProfileProgress(buyerCard.getProgress());
                 view.showIncompleteAvatar(buyerCard.getAvatar());
@@ -30,10 +30,28 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
             }
             view.setAvatarImageUrl(buyerCard.getProgress(), buyerCard.getAvatar());
             view.setName(buyerCard.getUsername());
+            view.setTokopointTitle(buyerCard.getTokopointTitle());
             view.setTokopoint(buyerCard.getTokopointAmount());
+            view.setTokopointImageUrl(buyerCard.getTokopointImageUrl());
+            view.setCouponTitle(buyerCard.getCouponTitle());
             view.setCoupon(buyerCard.getCouponAmount());
+            view.setCouponImageUrl(buyerCard.getCouponImageUrl());
+            view.setTokoMemberTitle(buyerCard.getTokomemberTitle());
             view.setTokoMemberAmount(buyerCard.getTokoMemberAmount());
+            view.setTokomemberImageUrl(buyerCard.getTokomemberImageUrl());
             view.setEggImage(buyerCard.getEggImageUrl());
+
+            if (buyerCard.getTokopointSize() == 0) {
+                view.setCardVisibility(0);
+            }
+            if (buyerCard.getCouponSize() == 0) {
+                view.setVisibilityCenterLayout(0);
+                view.setVisibilityDividerFirst(0);
+            }
+            if (buyerCard.getTokomemberSize() == 0) {
+                view.setVisibilityRightLayout(0);
+                view.setVisibilityDividerSecond(0);
+            }
         }
     }
 }

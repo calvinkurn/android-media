@@ -53,7 +53,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
-    private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
+    private val adapter: BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var fpmBuyer: PerformanceMonitoring? = null
     private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(
@@ -117,8 +117,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                 GraphqlClient.init(it)
                 getData()
             }
-        }
-        else {
+        } else {
             shouldRefreshOnResume = true
         }
     }
@@ -134,9 +133,10 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             model.items?.let {
                 adapter.clearAllElements()
                 adapter.setElement(it)
-                try{
+                try {
                     Toaster.snackBar.dismiss()
-                } catch (e: Exception){}
+                } catch (e: Exception) {
+                }
             }
         } else {
             context?.let {
@@ -280,7 +280,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             }
         }
 
-        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
             }
@@ -297,7 +297,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        val recommendationItem = adapter.list.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel ?: return
+        val recommendationItem = adapter.list.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel
+                ?: return
         recommendationItem.product.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
 
         if (productCardOptionsModel.wishlistResult.isAddWishlist)
@@ -349,8 +350,11 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         context?.let {
             val saldoQuery = GraphqlHelper.loadRawString(it.resources, R.raw
                     .new_query_saldo_balance)
+
+            val rewardQuery = GraphqlHelper.loadRawString(it.resources, R.raw.query_user_rewardshorcut)
+
             presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
-                    .query_buyer_account_home), saldoQuery)
+                    .query_buyer_account_home), saldoQuery, rewardQuery)
         }
     }
 
@@ -373,7 +377,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     fun updateWishlist(wishlistStatusFromPdp: Boolean, position: Int) {
-        if(adapter.list.get(position) is RecommendationProductViewModel){
+        if (adapter.list.get(position) is RecommendationProductViewModel) {
             (adapter.list.get(position) as RecommendationProductViewModel).product.isWishlist = wishlistStatusFromPdp
             adapter.notifyItemChanged(position)
         }

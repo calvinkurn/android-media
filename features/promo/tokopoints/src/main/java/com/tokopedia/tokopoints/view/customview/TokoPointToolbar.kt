@@ -99,8 +99,8 @@ class TokoPointToolbar : Toolbar, View.OnClickListener {
 
     override fun setTitle(title: CharSequence) {
         if (title == "Rewards") return
-        super.setTitle(title)
-        tvToolbarTitle?.text = title
+        super.setTitle("Rewards")
+        tvToolbarTitle?.text = "Rewards"
     }
 
     override fun onClick(v: View) {

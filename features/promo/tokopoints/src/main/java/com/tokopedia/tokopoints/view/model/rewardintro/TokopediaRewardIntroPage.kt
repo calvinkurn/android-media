@@ -6,48 +6,53 @@ import com.google.gson.annotations.SerializedName
 
 data class TokopediaRewardIntroPage(
 
-	@SerializedName("CTA")
-	val cTA: List<CTAItem?>? = null,
+        @SerializedName("resultStatus")
+        val resultStatus: ResultStatus? = null,
 
-	@SerializedName("subtitle")
-	val subtitle: String? = null,
+        @SerializedName("CTA")
+        val cTA: List<CTAItem?>? = null,
 
-	@SerializedName("imageURL")
-	val imageURL: String? = null,
+        @SerializedName("subtitle")
+        val subtitle: String? = null,
 
-	@SerializedName("header")
-	val header: String? = null,
+        @SerializedName("imageURL")
+        val imageURL: String? = null,
 
-	@SerializedName("title")
-	val title: String? = null
-):Parcelable {
-	constructor(parcel: Parcel) : this(
-			parcel.createTypedArrayList(CTAItem),
-			parcel.readString(),
-			parcel.readString(),
-			parcel.readString(),
-			parcel.readString()) {
-	}
+        @SerializedName("header")
+        val header: String? = null,
 
-	override fun writeToParcel(parcel: Parcel, flags: Int) {
-		parcel.writeTypedList(cTA)
-		parcel.writeString(subtitle)
-		parcel.writeString(imageURL)
-		parcel.writeString(header)
-		parcel.writeString(title)
-	}
+        @SerializedName("title")
+        val title: String? = null
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readParcelable(ResultStatus::class.java.classLoader),
+            parcel.createTypedArrayList(CTAItem),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString()) {
+    }
 
-	override fun describeContents(): Int {
-		return 0
-	}
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeParcelable(resultStatus, flags)
+        parcel.writeTypedList(cTA)
+        parcel.writeString(subtitle)
+        parcel.writeString(imageURL)
+        parcel.writeString(header)
+        parcel.writeString(title)
+    }
 
-	companion object CREATOR : Parcelable.Creator<TokopediaRewardIntroPage> {
-		override fun createFromParcel(parcel: Parcel): TokopediaRewardIntroPage {
-			return TokopediaRewardIntroPage(parcel)
-		}
+    override fun describeContents(): Int {
+        return 0
+    }
 
-		override fun newArray(size: Int): Array<TokopediaRewardIntroPage?> {
-			return arrayOfNulls(size)
-		}
-	}
+    companion object CREATOR : Parcelable.Creator<TokopediaRewardIntroPage> {
+        override fun createFromParcel(parcel: Parcel): TokopediaRewardIntroPage {
+            return TokopediaRewardIntroPage(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TokopediaRewardIntroPage?> {
+            return arrayOfNulls(size)
+        }
+    }
 }

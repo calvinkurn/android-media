@@ -1,5 +1,9 @@
 {
   tokopediaRewardIntroPage {
+     resultStatus {
+        code
+        status
+      }
     header
     title
     subtitle

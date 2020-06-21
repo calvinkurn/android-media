@@ -591,11 +591,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     private fun showOnBoardingTooltip(data: TokopediaRewardIntroPage?) {
-        if (data != null) {
+        if (data != null && data.resultStatus?.code=="200") {
             val bundle = Bundle()
             bundle.putParcelable("intro", data)
             startActivity(RewardIntroActivity.getCallingIntent(context!!, bundle))
         }
+        else
+            return
     }
 
     override fun renderTicker(content: SectionContent) {

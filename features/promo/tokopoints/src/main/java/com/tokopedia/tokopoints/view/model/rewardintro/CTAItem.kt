@@ -26,15 +26,15 @@ data class CTAItem(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readString()
-    )
+            parcel.readString()) {
+    }
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeString(appLink)
-        dest?.writeString(icon)
-        dest?.writeString(text)
-        dest?.writeString(type)
-        dest?.writeString(url)
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(appLink)
+        parcel.writeString(icon)
+        parcel.writeString(text)
+        parcel.writeString(type)
+        parcel.writeString(url)
     }
 
     override fun describeContents(): Int {
