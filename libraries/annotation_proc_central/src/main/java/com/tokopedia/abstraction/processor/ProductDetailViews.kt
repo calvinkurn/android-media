@@ -26,7 +26,7 @@ data class ProductDetailViews(
         val shopName: String,
         @Key("shopId")
         val shopId: String,
-        @CustomChecker(ProductDetailViewsChecker::class, "isOnlyOneProduct", Level.ERROR)
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct"])
         @Key("items")
         val items: List<ProductDetailProduct>,
 
@@ -37,7 +37,7 @@ data class ProductDetailViews(
         @DefaultValueString("")
         @Key("currentSite")
         val currentSite: String?,
-        @CustomChecker(ProductDetailViewsChecker::class, "onlyViewItem", Level.ERROR)
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["onlyViewItem"])
         @DefaultValueString("")
         @Key("event")
         val event: String?,
@@ -79,13 +79,13 @@ data class ProductDetailProduct(
         @DefaultValueString("none")
         @Key(Param.ITEM_BRAND)
         val brand: String?,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isPriceNotZero", Level.ERROR)
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero"])
         @Key(Param.PRICE)
         val price: Double,
         @DefaultValueString("IDR")
         @Key(Param.CURRENCY)
         val currency: String?,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isIndexNotZero", Level.ERROR)
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(1)
         @Key(Param.INDEX)
         val index: Long,

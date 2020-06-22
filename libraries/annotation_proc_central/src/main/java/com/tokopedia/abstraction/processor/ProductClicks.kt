@@ -23,14 +23,14 @@ import com.tokopedia.util.logger.GTMLoggerImpl
 data class ProductListClick(
         @DefaultValueString("Search Results")
         val item_list: String,
-        @CustomChecker(ProductListClickChecker::class, "isOnlyOneProduct", Level.ERROR)
+        @CustomChecker(ProductListClickChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct"])
         val items: ArrayList<ProductListClickProduct>,
         @DefaultValueString("")
         val eventCategory: String?,
-        @CustomChecker(ProductListClickChecker::class, "notContainWords", Level.ERROR)
+        @CustomChecker(ProductListClickChecker::class, Level.ERROR, functionName = ["notContainWords"])
         @DefaultValueString("")
         val eventAction: String?,
-        @CustomChecker(ProductListClickChecker::class, "onlySelectContent", Level.ERROR)
+        @CustomChecker(ProductListClickChecker::class, Level.ERROR, functionName = ["onlySelectContent"])
         @DefaultValueString("")
         val event: String?,
         @DefaultValueString("")
@@ -59,7 +59,7 @@ data class ProductListClickProduct(
         @DefaultValueString("none")
         @Key(Param.ITEM_BRAND)
         val brand: String?,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isPriceNotZero", Level.ERROR)
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero", "isPriceNotZero", "isPriceNotZero", "isPriceNotZero"])
         @Key(Param.PRICE)
         val price: Double,
         @DefaultValueString("IDR")
@@ -67,8 +67,11 @@ data class ProductListClickProduct(
         val currency: String?,
         @Key(KEY_DIMENSION_40)
         val keyDimension40: String,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isIndexNotZero", Level.ERROR)
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(0)
         @Key(Param.INDEX)
-        val index: Long
+        val index: Long,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["checkMap"])
+        @DefinedInCollections
+        val stringCollection: HashMap<String, String>
 )

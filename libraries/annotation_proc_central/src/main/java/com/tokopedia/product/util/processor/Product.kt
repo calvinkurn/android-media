@@ -58,7 +58,7 @@ data class Product(
         val name: String,
         @Key(Param.ITEM_ID)
         val id: String,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isPriceNotZero", Level.ERROR)
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero"])
         @Key(Param.PRICE)
         val price: Double,
         @DefaultValueString("none")
@@ -84,7 +84,7 @@ data class Product(
         val dimension81: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_98)
         val dimension98: String,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isIndexNotZero", Level.ERROR)
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(1)
         @Key(Param.INDEX)
         val index: Long

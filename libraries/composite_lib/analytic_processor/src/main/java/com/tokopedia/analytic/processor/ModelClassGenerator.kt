@@ -2,6 +2,7 @@ package com.tokopedia.analytic.processor
 
 import com.squareup.javapoet.*
 import com.tokopedia.analytic.annotation.CustomChecker
+import com.tokopedia.analytic.annotation.DefinedInCollections
 import javax.lang.model.element.Modifier
 
 // This class is used to generate the model bundler classes
@@ -27,12 +28,21 @@ class ModelClassGenerator(clazz: AnnotatedModelClass) : ClassGenerator(clazz) {
         val fieldTypeName = TypeName.get(field.element.asType()) // tipe
 
         //  double price = productListImpressionProduct.getPrice();
-        checkerStatement.addStatement(
-                "\$T \$L = \$N",
-                fieldTypeName,
-                field.key,
-                getValueStatement(field)
-        )
+        if (field.element.getAnnotation(DefinedInCollections::class.java) == null) {
+            checkerStatement.addStatement(
+                    "\$T \$L = \$N",
+                    fieldTypeName,
+                    field.key,
+                    getValueStatement(field)
+            )
+        } else {
+            checkerStatement.addStatement(
+                    "\$T \$L = \$N",
+                    fieldTypeName,
+                    field.element.simpleName,
+                    getValueStatement(field)
+            )
+        }
 
         if (field.element.getAnnotation(CustomChecker::class.java) != null) {
             createCustomCheckerCondition(field, checkerStatement, false)
@@ -43,7 +53,7 @@ class ModelClassGenerator(clazz: AnnotatedModelClass) : ClassGenerator(clazz) {
         } else {
             checkerStatement.add(putStatement)
         }
-        return checkerStatement;
+        return checkerStatement
     }
 
     override val getBundleFromMap: MethodSpec.Builder = MethodSpec
