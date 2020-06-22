@@ -6,5 +6,6 @@ package com.tokopedia.play.broadcaster.ui.model
 data class PlayMetricUiModel(
         val firstSentence: String,
         val secondSentence: String,
-        val fullSentence: String
+        val fullSentence: String,
+        val interval: Long
 )

@@ -5,9 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.data.model.Metrics
-import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
-import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
-import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -91,4 +89,33 @@ object PlayBroadcastUiMapper {
                 TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, metrics.paymentVerified),
                 TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop)
         )
+
+    fun mapTotalView(concurrentUser: ConcurrentUser): TotalViewUiModel = TotalViewUiModel(
+            concurrentUser.totalUsers.toString()
+    )
+
+    fun mapTotalLike(stat: LiveStats): TotalLikeUiModel = TotalLikeUiModel(stat.totalLikeFmt)
+
+    fun mapMetricList(metric: Metric): MutableList<PlayMetricUiModel> {
+        val metricList = mutableListOf<PlayMetricUiModel>()
+        if (metric.newParticipant.firstSentence.isNotEmpty())
+            metricList.add(mapMetric(metric.newParticipant))
+        if (metric.pdpVisitor.firstSentence.isNotEmpty())
+            metricList.add(mapMetric(metric.pdpVisitor))
+        if (metric.shopVisitor.firstSentence.isNotEmpty())
+            metricList.add(mapMetric(metric.shopVisitor))
+        return metricList
+    }
+
+    private fun mapMetric(data: Metric.MetricData): PlayMetricUiModel {
+        val firstSentence = data.firstSentence
+        val secondSentence = data.secondSentence
+        val fullSentence = "$firstSentence $secondSentence"
+        return PlayMetricUiModel(
+                firstSentence = firstSentence,
+                secondSentence = secondSentence,
+                fullSentence = fullSentence,
+                interval = data.interval
+        )
+    }
 }
