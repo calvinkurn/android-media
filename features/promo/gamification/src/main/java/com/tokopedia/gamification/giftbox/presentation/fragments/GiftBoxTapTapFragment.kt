@@ -53,7 +53,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.image.ImageUtils
 import javax.inject.Inject
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
@@ -61,10 +60,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var tvTimer: Typography
     lateinit var progressBarTimer: ProgressBar
     lateinit var tvProgressCount: Typography
-
-    //    lateinit var imageWaktu: AppCompatImageView
-//    lateinit var imageHabis: AppCompatImageView
-//    lateinit var fmWaktuHabis: FrameLayout
     lateinit var rewardSummary: RewardSummaryView
     lateinit var lottieTimeUp: LottieAnimationView
 
@@ -153,14 +148,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 animatorSet.start()
             }
             RewardContainer.RewardState.POINTS_ONLY -> {
-//
-//
-                //todo Rahul temp values
-//                rewardContainer.imageCircleReward.alpha = 1f
-//                rewardContainer.imageGlowCircleLarge.alpha = 1f
-//                rewardContainer.imageGlowCircleSmall.alpha = 1f
-//                rewardContainer.imageGreenGlow.alpha = 1f
-
 
                 val anim = rewardContainer.showSingleLargeRewardAnimationFadeOut(startDelay)
                 anim.addListener(onEnd = { afterRewardAnimationEnds() })
@@ -210,44 +197,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 startsAnimatorList.forEach {
                     it.start()
                 }
-            }
-        }
-
-        //todo Rahul need to delete this callback
-        (giftBoxDailyView as GiftBoxTapTapView).boxRewardCallback = object : GiftBoxDailyView.BoxRewardCallback {
-            override fun showPoints(): Animator {
-                val anim1 = rewardContainer.showSingleLargeRewardAnimationFadeOut()
-
-                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
-                ovoPointsTextAnim.startDelay = 100L
-
-                val animatorSet = AnimatorSet()
-                animatorSet.playTogether(anim1, ovoPointsTextAnim)
-                animatorSet.addListener(onEnd = { afterRewardAnimationEnds() })
-                animatorSet.start()
-                return animatorSet
-            }
-
-            override fun showPointsWithCoupons(): Animator {
-
-                val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut()
-
-                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
-                ovoPointsTextAnim.startDelay = 100L
-
-                val animatorSet = AnimatorSet()
-                animatorSet.playTogether(anim1, ovoPointsTextAnim)
-                animatorSet.addListener(onEnd = { afterRewardAnimationEnds() })
-                animatorSet.start()
-                return animatorSet
-            }
-
-            override fun showCoupons(): Animator {
-                val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut()
-
-                anim1.addListener(onEnd = { afterRewardAnimationEnds() })
-                anim1.start()
-                return anim1
             }
         }
 
@@ -386,7 +335,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             when (result.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (result.data?.couponMap != null) {
-//                        benefitItems.sortWith(compareBy { it.isBigPrize })
                         benefitItems.forEach {
                             if (it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty()) {
                                 val couponDetail = result.data.couponMap["id_${it.referenceID}"]
@@ -480,9 +428,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 imageFrontUrl = imageUrlList[0]
             }
 
-            val shouldGlow = (!glowImageUrl.isNullOrEmpty() && glowShadowImageUrl.isNullOrEmpty())
-            val tokenUserState = gamiTapEggHome.tokensUser?.state
-
             if (showTimer != null && showTimer && timeLeftHours != null && timeLeftSeconds != null) {
                 renderBottomHourTimer(timeLeftSeconds)
 
@@ -521,7 +466,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
 
         giftBoxDailyView.imageGiftBoxLid.doOnLayout { lid ->
-            //todo Rahul check later, it is replaced with getStatusBarHeight
             val top = lid.top + giftBoxDailyView.fmGiftBox.top
             rewardContainer.setFinalTranslationOfCirclesTap(top)
         }
@@ -530,9 +474,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             val imageFrontTop = imageBoxFront.top + giftBoxDailyView.fmGiftBox.top
             val translationY = imageFrontTop - imageBoxFront.dpToPx(40)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
-
-            //todo Rahul have to refacor this below code
-//            giftBoxDailyView.adjustGlowImagePosition()
 
         }
     }
@@ -572,8 +513,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         tvTimer.alpha = 0f
         progressBarTimer.alpha = 0f
         tvProgressCount.alpha = 0f
-//        imageHabis.alpha = 0f
-//        imageWaktu.alpha = 0f
         lottieTimeUp.gone()
 
     }
@@ -583,9 +522,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         progressBarTimer = v.findViewById(R.id.progress_bar_timer)
         tvProgressCount = v.findViewById(R.id.tv_progress_count)
         lottieTimeUp = v.findViewById(R.id.lottie_timeup)
-//        imageHabis = v.findViewById(R.id.image_habis)
-//        imageWaktu = v.findViewById(R.id.image_waktu)
-//        fmWaktuHabis = v.findViewById(R.id.fm_waktu_habis)
         rewardSummary = v.findViewById(R.id.rewardSummary)
         tvInactiveTitle = v.findViewById(R.id.tvInactiveTitle)
         tvInactiveMessage = v.findViewById(R.id.tvInactiveMessage)
@@ -651,7 +587,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     if (item != null) {
                         viewModel.getCouponDetails(benefitItems)
                     } else {
-                        rewardItems.addAll(benefitItems.map { RewardSummaryItem(null,it) })
+                        rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it) })
                         fadeOutWaktuHabisAndShowReward()
                     }
                 }, 3000L)
@@ -766,15 +702,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         rewardContainer.couponList.clear()
 
-//        if (!couponDetailMap.isNullOrEmpty()) {
-//            hasCoupons = true
-//            rewardContainer.couponList.clear()
-//            rewardContainer.couponList.addAll(couponDetailMap.values)
-//            rewardContainer.couponAdapter.notifyDataSetChanged()
-//        }
-
-
-        //set coins
         var iconUrl: String? = ""
         benefits?.let {
             it.forEach { benefit ->
@@ -792,14 +719,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     hasCoupons = true
                     benefit.referenceID?.let { refId ->
                         GtmEvents.viewRewards(refId, userSession?.userId)
-//                        if (!couponDetailMap.isNullOrEmpty()) {
-//                            val couponDetail = couponDetailMap["id_$refId"]
-//                            rewardItems.add(RewardSummaryItem(null, benefit))
-//                        }
                     }
                     rewardContainer.couponList.add(CouponTapTap(imageUrl))
                 }
-//                rewardItems.add(RewardSummaryItem(null, benefit))
                 benefitItems.add(benefit)
             }
         }
@@ -807,17 +729,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         if (hasPoints && hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_WITH_POINTS
-            if (!iconUrl.isNullOrEmpty()) {
-                ImageUtils.loadImage(rewardContainer.imageSmallReward, iconUrl!!)
-            }
+            rewardContainer.imageSmallReward.setImageResource(R.drawable.gami_ovo)
+
         } else if (hasPoints) {
             //only points
 
             rewardState = RewardContainer.RewardState.POINTS_ONLY
-            if (!iconUrl.isNullOrEmpty()) {
-                ImageUtils.loadImage(rewardContainer.imageSmallReward, iconUrl!!)
-                ImageUtils.loadImage(rewardContainer.imageCircleReward, iconUrl!!)
-            }
+            rewardContainer.imageSmallReward.setImageResource(R.drawable.gami_ovo)
+            rewardContainer.imageCircleReward.setImageResource(R.drawable.gami_ovo)
+
         } else if (hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_ONLY
         }
