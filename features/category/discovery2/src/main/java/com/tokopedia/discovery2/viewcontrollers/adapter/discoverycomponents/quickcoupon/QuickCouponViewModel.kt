@@ -74,6 +74,21 @@ class QuickCouponViewModel(val application: Application, private val components:
         userLoggedInLiveData.value = UserSession(application).isLoggedIn
     }
 
+    fun checkMobileVerificationStatus() {
+        launchCatchError(
+                block = {
+                    quickCouponUseCase.getMobileVerificationStatus().verificationStatus?.let {
+                        it.phoneVerified?.let { status ->
+                            phoneVerificationStatus.value = status
+                        }
+                    }
+                },
+                onError = {
+                    it.printStackTrace()
+                }
+        )
+    }
+
     override fun componentAction() {
         super.componentAction()
         applyQuickCoupon()
@@ -91,21 +106,6 @@ class QuickCouponViewModel(val application: Application, private val components:
                 it.printStackTrace()
             })
         }
-    }
-
-    fun checkMobileVerificationStatus() {
-        launchCatchError(
-                block = {
-                    quickCouponUseCase.getMobileVerificationStatus().verificationStatus?.let {
-                        it.phoneVerified?.let { status ->
-                            phoneVerificationStatus.value = status
-                        }
-                    }
-                },
-                onError = {
-                    it.printStackTrace()
-                }
-        )
     }
 
     fun getCouponApplink(): String {

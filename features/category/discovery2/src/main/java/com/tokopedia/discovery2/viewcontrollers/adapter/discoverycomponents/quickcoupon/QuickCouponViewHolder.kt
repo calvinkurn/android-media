@@ -42,11 +42,11 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             quickCouponViewModel.isUserLoggedIn().observe(viewLifecycleOwner, Observer {
                 userLoggedInStatus(it)
             })
-            quickCouponViewModel.getComponentPosition().observe(viewLifecycleOwner, Observer {
-                componentPosition = it
-            })
             quickCouponViewModel.getPhoneVerificationStatus().observe(viewLifecycleOwner, Observer {
                 handlePhoneVerification(it)
+            })
+            quickCouponViewModel.getComponentPosition().observe(viewLifecycleOwner, Observer {
+                componentPosition = it
             })
         }
     }
