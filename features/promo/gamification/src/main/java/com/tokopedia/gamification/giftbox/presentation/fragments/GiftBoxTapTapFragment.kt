@@ -1,6 +1,9 @@
 package com.tokopedia.gamification.giftbox.presentation.fragments
 
-import android.animation.*
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -8,7 +11,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
@@ -18,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
@@ -35,7 +38,6 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerStat
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.CRACK_UNLIMITED
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.LOBBY
-import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
@@ -47,10 +49,11 @@ import com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.fragment_gift_tap_tap.*
 import javax.inject.Inject
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
@@ -58,10 +61,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var tvTimer: Typography
     lateinit var progressBarTimer: ProgressBar
     lateinit var tvProgressCount: Typography
-    lateinit var imageWaktu: AppCompatImageView
-    lateinit var imageHabis: AppCompatImageView
-    lateinit var fmWaktuHabis: FrameLayout
+
+    //    lateinit var imageWaktu: AppCompatImageView
+//    lateinit var imageHabis: AppCompatImageView
+//    lateinit var fmWaktuHabis: FrameLayout
     lateinit var rewardSummary: RewardSummaryView
+    lateinit var lottieTimeUp: LottieAnimationView
 
     //Inactive views
     lateinit var tvInactiveTitle: Typography
@@ -567,8 +572,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         tvTimer.alpha = 0f
         progressBarTimer.alpha = 0f
         tvProgressCount.alpha = 0f
-        imageHabis.alpha = 0f
-        imageWaktu.alpha = 0f
+//        imageHabis.alpha = 0f
+//        imageWaktu.alpha = 0f
+        lottieTimeUp.gone()
 
     }
 
@@ -576,9 +582,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         tvTimer = v.findViewById(R.id.tv_timer)
         progressBarTimer = v.findViewById(R.id.progress_bar_timer)
         tvProgressCount = v.findViewById(R.id.tv_progress_count)
-        imageHabis = v.findViewById(R.id.image_habis)
-        imageWaktu = v.findViewById(R.id.image_waktu)
-        fmWaktuHabis = v.findViewById(R.id.fm_waktu_habis)
+        lottieTimeUp = v.findViewById(R.id.lottie_timeup)
+//        imageHabis = v.findViewById(R.id.image_habis)
+//        imageWaktu = v.findViewById(R.id.image_waktu)
+//        fmWaktuHabis = v.findViewById(R.id.fm_waktu_habis)
         rewardSummary = v.findViewById(R.id.rewardSummary)
         tvInactiveTitle = v.findViewById(R.id.tvInactiveTitle)
         tvInactiveMessage = v.findViewById(R.id.tvInactiveMessage)
@@ -626,13 +633,17 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     fun startOneMinuteCounter(totalSeconds: Long) {
-        val time = totalSeconds * 1000L
+        //todo Rahul uncomment this
+//        val time = totalSeconds * 1000L
+        val time = 60 * 1000L
         minuteCountDownTimer = object : CountDownTimer(time, 1000) {
             override fun onFinish() {
                 minuteTimerState = FINISHED
                 rewardSummary.visibility = View.VISIBLE
-                val timeUpAnimation = timeUpAnimation()
-                timeUpAnimation.start()
+                lottieTimeUp.visible()
+                lottieTimeUp.playAnimation()
+//                val timeUpAnimation = timeUpAnimation()
+//                timeUpAnimation.start()
                 (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
 
                 giftBoxDailyView.postDelayed({
@@ -640,6 +651,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     if (item != null) {
                         viewModel.getCouponDetails(benefitItems)
                     } else {
+                        rewardItems.addAll(benefitItems.map { RewardSummaryItem(null,it) })
                         fadeOutWaktuHabisAndShowReward()
                     }
                 }, 3000L)
@@ -717,111 +729,18 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    fun timeUpAnimation(): Animator {
-        val height = screenHeight
-        val width = screenWidth
-
-//        val translateAnimationDuration = 250L
-        val translateAnimationDuration = 850L
-
-        //waktu 30% from top and right
-        val waktuStartX = width.toFloat()
-        val waktuStartY = height * 0.3f
-
-        val waktuFinalX = width * 0.5f - image_waktu.width / 2f
-        val waktuFinalY = height * 0.4234375f
-
-
-        //habis 70% from top and left
-        val habisStartX = -imageHabis.width.toFloat()
-        val habisStartY = height * 0.7f
-
-        val habisFinalX = width * 0.5f - image_habis.width / 2f - imageWaktu.context.resources.getDimensionPixelSize(R.dimen.gami_waktu_habis_w_overlap)
-//        val habisFinalY = height * 0.4921875f
-        val habisFinalY = waktuFinalY + imageWaktu.height - imageWaktu.context.resources.getDimensionPixelSize(R.dimen.gami_waktu_habis_h_overlap)
-
-        val waktuPropX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, waktuStartX, waktuFinalX)
-        val waktuPropY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, waktuStartY, waktuFinalY)
-
-        val propAlpha = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
-
-        val translateWaktuAnim = ObjectAnimator.ofPropertyValuesHolder(imageWaktu, waktuPropX, waktuPropY, propAlpha)
-        translateWaktuAnim.duration = translateAnimationDuration
-
-        val habisPropX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, habisStartX, habisFinalX)
-        val habisPropY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, habisStartY, habisFinalY)
-
-        val translateHabisAnim = ObjectAnimator.ofPropertyValuesHolder(imageHabis, habisPropX, habisPropY, propAlpha)
-        translateHabisAnim.duration = translateAnimationDuration
-
-        //set background to dim
-
-        val colorAnimator = ObjectAnimator.ofObject(fmWaktuHabis, "backgroundColor", ArgbEvaluator(), Color.BLACK, colorDim)
-        colorAnimator.duration = 250L
-
-        //intial yellow to white
-        val waktuImageAnimation = ValueAnimator.ofInt(1)
-        waktuImageAnimation.addUpdateListener {
-            imageWaktu.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_waktu_white)
-        }
-        waktuImageAnimation.startDelay = translateAnimationDuration - 100L
-
-        val habisImageAnimation = ValueAnimator.ofInt(1)
-        habisImageAnimation.addUpdateListener {
-            imageHabis.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_habis_white)
-        }
-        habisImageAnimation.startDelay = translateAnimationDuration - 100L
-
-        //translation for 45 degree from cx and cy
-        val distance = imageWaktu.dpToPx(6)
-        val habisPropX45 = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, habisFinalX, habisFinalX - distance, habisFinalX)
-        val habisPropY45 = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, habisFinalY, habisFinalY + distance, habisFinalY)
-        val habisTranslateAt45 = ObjectAnimator.ofPropertyValuesHolder(imageHabis, habisPropX45, habisPropY45)
-        habisTranslateAt45.duration = 100L
-
-        val waktuPropX45 = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, waktuFinalX, waktuFinalX + distance, waktuFinalX)
-        val waktuPropY45 = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, waktuFinalY, waktuFinalY - distance, waktuFinalY)
-        val waktuTranslateAt45 = ObjectAnimator.ofPropertyValuesHolder(imageWaktu, waktuPropX45, waktuPropY45)
-        waktuImageAnimation.duration = 100L
-
-        val animatorSetAfterCollision = AnimatorSet()
-        animatorSetAfterCollision.playTogether(habisTranslateAt45, waktuTranslateAt45)
-
-        //last image animation
-        val waktuFinalImages = arrayOf(com.tokopedia.gamification.R.drawable.gf_ic_waktu, com.tokopedia.gamification.R.drawable.gf_ic_waktu_white, com.tokopedia.gamification.R.drawable.gf_ic_waktu)
-        val waktuFinalImageAnimation = ValueAnimator.ofInt(0, 1, 2)
-        waktuFinalImageAnimation.addUpdateListener {
-            val index = it.animatedValue as Int
-            imageWaktu.setImageResource(waktuFinalImages[index])
-        }
-
-        val habisFinalImages = arrayOf(com.tokopedia.gamification.R.drawable.gf_ic_habis, com.tokopedia.gamification.R.drawable.gf_ic_habis_white, com.tokopedia.gamification.R.drawable.gf_ic_habis)
-        val habisFinalImageAnimation = ValueAnimator.ofInt(0, 1, 2)
-        habisFinalImageAnimation.addUpdateListener {
-            val index = it.animatedValue as Int
-            imageHabis.setImageResource(habisFinalImages[index])
-        }
-
-        val finalImageAnimatorSet = AnimatorSet()
-        finalImageAnimatorSet.playTogether(waktuFinalImageAnimation, habisFinalImageAnimation)
-        finalImageAnimatorSet.duration = 100L
-
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(translateHabisAnim, translateWaktuAnim, colorAnimator, waktuImageAnimation, habisImageAnimation)
-        animatorSet.playSequentially(translateHabisAnim, animatorSetAfterCollision, finalImageAnimatorSet)
-        animatorSet.interpolator = CubicBezierInterpolator(0.22, 1.0, 0.36, 1.0)
-        return animatorSet
-    }
-
     fun fadeOutWaktuHabisAndShowReward() {
         val animatorSet = AnimatorSet()
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
-        val fadeOutAnim = ObjectAnimator.ofPropertyValuesHolder(fmWaktuHabis, alphaProp)
+        val fadeOutAnim = ObjectAnimator.ofPropertyValuesHolder(lottieTimeUp, alphaProp)
         fadeOutAnim.duration = 300L
         fadeOutAnim.startDelay = 300L
 
         animatorSet.playSequentially(fadeOutAnim, rewardSummaryAnimation())
+        fadeOutAnim.addListener(onEnd = {
+            lottieTimeUp.cancelAnimation()
+            lottieTimeUp.gone()
+        })
         animatorSet.start()
     }
 
@@ -873,13 +792,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     hasCoupons = true
                     benefit.referenceID?.let { refId ->
                         GtmEvents.viewRewards(refId, userSession?.userId)
-                        rewardContainer.couponList.add(CouponTapTap(imageUrl))
-
 //                        if (!couponDetailMap.isNullOrEmpty()) {
 //                            val couponDetail = couponDetailMap["id_$refId"]
 //                            rewardItems.add(RewardSummaryItem(null, benefit))
 //                        }
                     }
+                    rewardContainer.couponList.add(CouponTapTap(imageUrl))
                 }
 //                rewardItems.add(RewardSummaryItem(null, benefit))
                 benefitItems.add(benefit)

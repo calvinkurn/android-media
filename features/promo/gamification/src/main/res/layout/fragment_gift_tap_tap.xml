@@ -88,23 +88,12 @@
                 app:typographyWeight="bold"
                 tools:alpha="1" />
 
-            <FrameLayout
-                android:id="@+id/fm_waktu_habis"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_timeup"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/image_waktu"
-                    android:layout_width="209dp"
-                    android:layout_height="59dp"
-                    app:srcCompat="@drawable/gf_ic_waktu" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/image_habis"
-                    android:layout_width="211dp"
-                    android:layout_height="58dp"
-                    app:srcCompat="@drawable/gf_ic_habis" />
-            </FrameLayout>
+                android:layout_height="match_parent"
+                app:lottie_rawRes="@raw/gami_timeup"
+                 />
 
             <com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
                 android:id="@+id/rewardSummary"
