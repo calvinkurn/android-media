@@ -28,7 +28,7 @@ class UploadImageUseCase(
 ) {
 
     suspend fun uploadImage(requestParams: RequestParams): UploadImageModel {
-        val uploadUrl = "https://" + requestParams.getString(IMAGE_UPLOAD_URL, "") + "/upload/attachment"
+        val uploadUrl = "https://" + requestParams.getString(IMAGE_UPLOAD_URL, "") + "/kyc/upload"
         return uploadImageRepository.uploadImage(uploadUrl,
                 generateRequestBody(requestParams),
                 getUploadImageFile(requestParams)
