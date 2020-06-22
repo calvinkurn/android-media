@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -979,98 +980,96 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.run {
-            observe(mViewModel.voucherList) {
-                when (it) {
-                    is Success -> setOnSuccessGetVoucherList(it.data)
-                    is Fail -> setOnErrorGetVoucherList(it.throwable)
-                }
+        mViewModel.voucherList.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> setOnSuccessGetVoucherList(it.data)
+                is Fail -> setOnErrorGetVoucherList(it.throwable)
             }
-            observe(mViewModel.localVoucherListLiveData) { result ->
-                when(result) {
-                    is Success -> setOnSuccessGetVoucherList(result.data)
-                    is Fail -> setOnErrorGetVoucherList(result.throwable)
-                }
+        })
+        mViewModel.localVoucherListLiveData.observe(viewLifecycleOwner, Observer { result ->
+            when(result) {
+                is Success -> setOnSuccessGetVoucherList(result.data)
+                is Fail -> setOnErrorGetVoucherList(result.throwable)
             }
-            observe(mViewModel.cancelVoucherResponseLiveData) { result ->
-                when(result) {
-                    is Success -> {
-                        val voucherId = result.data
-                        loadData(1)
-                        showCancellationSuccessToaster(true, voucherId)
+        })
+        mViewModel.cancelVoucherResponseLiveData.observe(viewLifecycleOwner, Observer { result ->
+            when(result) {
+                is Success -> {
+                    val voucherId = result.data
+                    loadData(1)
+                    showCancellationSuccessToaster(true, voucherId)
+                }
+                is Fail -> {
+                    if (result.throwable is VoucherCancellationException) {
+                        showCancellationFailToaster(true, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
                     }
-                    is Fail -> {
-                        if (result.throwable is VoucherCancellationException) {
-                            showCancellationFailToaster(true, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
+                }
+            }
+        })
+        mViewModel.stopVoucherResponseLiveData.observe(viewLifecycleOwner, Observer {result ->
+            when(result) {
+                is Success -> {
+                    val voucherId = result.data
+                    loadData(1)
+                    showCancellationSuccessToaster(false, voucherId)
+                }
+                is Fail -> {
+                    if (result.throwable is VoucherCancellationException) {
+                        showCancellationFailToaster(false, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
+                    }
+                }
+            }
+        })
+        mViewModel.shopBasicLiveData.observe(viewLifecycleOwner, Observer { result ->
+            if (result is Success) {
+                shopBasicData = result.data
+            }
+        })
+        mViewModel.successVoucherLiveData.observe(viewLifecycleOwner, Observer { result ->
+            if (result is Success) {
+                result.data.let { uiModel ->
+                    if (uiModel.isPublic) {
+                        view?.run {
+                            Toaster.make(this,
+                                    context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
+                                    Toaster.LENGTH_LONG,
+                                    Toaster.TYPE_NORMAL,
+                                    context?.getString(R.string.mvc_oke).toBlankOrString(),
+                                    View.OnClickListener {})
                         }
-                    }
-                }
-            }
-            observe(mViewModel.stopVoucherResponseLiveData) { result ->
-                when(result) {
-                    is Success -> {
-                        val voucherId = result.data
-                        loadData(1)
-                        showCancellationSuccessToaster(false, voucherId)
-                    }
-                    is Fail -> {
-                        if (result.throwable is VoucherCancellationException) {
-                            showCancellationFailToaster(false, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
-                        }
-                    }
-                }
-            }
-            observe(mViewModel.shopBasicLiveData) { result ->
-                if (result is Success) {
-                    shopBasicData = result.data
-                }
-            }
-            observe(mViewModel.successVoucherLiveData) { result ->
-                if (result is Success) {
-                    result.data.let { uiModel ->
-                        if (uiModel.isPublic) {
-                            view?.run {
-                                Toaster.make(this,
-                                        context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
-                                        Toaster.LENGTH_LONG,
-                                        Toaster.TYPE_NORMAL,
-                                        context?.getString(R.string.mvc_oke).toBlankOrString(),
-                                        View.OnClickListener {})
-                            }
-                        } else {
-                            val parent = view as? ViewGroup ?: return@observe
-                            SuccessCreateBottomSheet.createInstance(parent, uiModel)
-                                    .setOnShareClickListener {
+                    } else {
+                        val parent = view as? ViewGroup ?: return@Observer
+                        SuccessCreateBottomSheet.createInstance(parent, uiModel)
+                                .setOnShareClickListener {
+                                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                            step = VoucherCreationStep.REVIEW,
+                                            action = Click.VOUCHER_SUCCESS_SHARE_NOW,
+                                            userId = userSession.userId
+                                    )
+                                    showShareBottomSheet(uiModel)
+                                }
+                                .setOnDownloadClickListener {
+                                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                            step = VoucherCreationStep.REVIEW,
+                                            action = Click.VOUCHER_SUCCESS_DOWNLOAD,
+                                            userId = userSession.userId
+                                    )
+                                    showDownloadBottomSheet(uiModel)
+                                }
+                                .apply {
+                                    setCloseClickListener {
                                         VoucherCreationTracking.sendCreateVoucherClickTracking(
                                                 step = VoucherCreationStep.REVIEW,
-                                                action = Click.VOUCHER_SUCCESS_SHARE_NOW,
+                                                action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
                                                 userId = userSession.userId
                                         )
-                                        showShareBottomSheet(uiModel)
                                     }
-                                    .setOnDownloadClickListener {
-                                        VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                                step = VoucherCreationStep.REVIEW,
-                                                action = Click.VOUCHER_SUCCESS_DOWNLOAD,
-                                                userId = userSession.userId
-                                        )
-                                        showDownloadBottomSheet(uiModel)
-                                    }
-                                    .apply {
-                                        setCloseClickListener {
-                                            VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                                    step = VoucherCreationStep.REVIEW,
-                                                    action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
-                                                    userId = userSession.userId
-                                            )
-                                        }
-                                    }
-                                    .show(childFragmentManager)
-                        }
+                                }
+                                .show(childFragmentManager)
                     }
                 }
             }
-        }
+        })
     }
 
     private fun onCreateVoucherClicked() {
