@@ -31,6 +31,24 @@ class ProductManageFilterTab(
 
     fun show(data: GetFilterTabResult) {
         val tabs = data.tabs
+        updateTabs(tabs)
+        setOnClickMoreFilter(tabs)
+    }
+
+    fun update(data: GetFilterTabResult) {
+        val tabs = data.tabs
+        updateTabs(tabs)
+        tabs.forEachIndexed { index, tab ->
+            sortFilterTab.chipItems.forEachIndexed { i, chip ->
+                val filter = sortFilterTab.chipItems.getOrNull(i)
+                if(chip.type == ChipsUnify.TYPE_SELECTED){
+                    setSelectedFilter(filter!!, tab)
+                }
+            }
+        }
+    }
+
+    private fun updateTabs(tabs: List<FilterTabViewModel>) {
         sortFilterTab.apply {
             val filterTabs = tabs.map { tab ->
                 val title = context.getString(tab.titleId, tab.count)
@@ -41,31 +59,6 @@ class ProductManageFilterTab(
                 filter
             }
             addItem(ArrayList(filterTabs))
-        }
-
-        setOnClickMoreFilter(tabs)
-    }
-
-    fun update(data: GetFilterTabResult) {
-        val tabs = data.tabs
-
-        tabs.forEachIndexed { index, tab ->
-            val filter = sortFilterTab.chipItems.getOrNull(index)
-            if(filter != null) {
-                val chipText = context.getString(tab.titleId, tab.count)
-                val chipType = filter.type
-                sortFilterTab.chipItems[index] = filter.apply {
-                    title = chipText
-                    listener = { toggleFilterTab(filter, tab) }
-                }
-                if(chipType == ChipsUnify.TYPE_SELECTED) {
-                    setSelectedFilter(filter, tab)
-                }
-            } else {
-                val title = context.getString(tab.titleId, tab.count)
-                val item = SortFilterItem(title)
-                sortFilterTab.chipItems.add(item)
-            }
         }
     }
 
