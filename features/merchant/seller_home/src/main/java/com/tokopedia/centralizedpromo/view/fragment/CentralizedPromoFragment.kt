@@ -52,8 +52,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
 
     private val adapterTypeFactory by lazy {
         CentralizedPromoAdapterTypeFactory(
-            { trackFreeShippingImpression() },
-            { trackFreeShippingClick() }
+                { trackFreeShippingImpression() },
+                { trackFreeShippingClick() }
         )
     }
 
