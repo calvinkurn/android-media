@@ -98,6 +98,9 @@ class CoverCropEditBottomSheet @Inject constructor(
                 dismiss()
             }
         })
+        fragmentInstance.arguments = Bundle().apply {
+            putBoolean(PlayCoverSetupFragment.EXTRA_TITLE_EDITABLE, false)
+        }
 
         childFragmentManager.beginTransaction()
                 .replace(flFragment.id, fragmentInstance)

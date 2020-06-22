@@ -69,6 +69,9 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private var mListener: Listener? = null
 
+    private val isTitleEditable: Boolean
+        get() = arguments?.getBoolean(EXTRA_TITLE_EDITABLE, true) ?: true
+
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
@@ -210,6 +213,7 @@ class PlayCoverSetupFragment @Inject constructor(
                         }
 
                         viewModel.setCroppedCover(croppedUri)
+                        if (!isTitleEditable) finishSetup()
                     }
                 } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
@@ -247,10 +251,12 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun showInitCoverLayout(coverImageUri: Uri?) {
-        coverSetupView.show()
-        coverCropView.hide()
+        if (isTitleEditable) {
+            coverSetupView.show()
+            coverCropView.hide()
 
-        coverSetupView.setImage(coverImageUri)
+            coverSetupView.setImage(coverImageUri)
+        }
     }
 
     private fun removeCover() {
@@ -402,6 +408,10 @@ class PlayCoverSetupFragment @Inject constructor(
         }
     }
 
+    private fun finishSetup() {
+        mListener?.onCoverSetupFinished(viewModel.getDataStore())
+    }
+
     //region observe
     /**
      * Observe
@@ -435,7 +445,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     val data = it.data.getContentIfNotHandled()
                     if (data != null) {
                         coverSetupView.setLoading(false)
-                        mListener?.onCoverSetupFinished(viewModel.getDataStore())
+                        finishSetup()
                     }
                 }
             }
@@ -477,6 +487,8 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     companion object {
+        const val EXTRA_TITLE_EDITABLE = "title_editable"
+
         private const val REQUEST_CODE_PERMISSION_COVER_CHOOSER = 9090
         private const val REQUEST_CODE_PERMISSION_CROP_COVER = 9191
         private const val REQUEST_CODE_PERMISSION_START_CROP_COVER = 9292
