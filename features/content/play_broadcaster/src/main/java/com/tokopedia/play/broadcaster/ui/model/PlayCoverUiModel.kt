@@ -1,14 +1,18 @@
 package com.tokopedia.play.broadcaster.ui.model
 
-import android.net.Uri
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 
 /**
  * @author by furqan on 12/06/2020
  */
 data class PlayCoverUiModel(
-        val coverImage: Uri?,
+        val croppedCover: CoverSetupState,
         val title: String,
-        val state: SetupDataState,
-        val source: CoverSourceEnum
-)
+        val state: SetupDataState
+) {
+
+    companion object {
+        fun empty() = PlayCoverUiModel(CoverSetupState.Blank, "", SetupDataState.Draft)
+    }
+}

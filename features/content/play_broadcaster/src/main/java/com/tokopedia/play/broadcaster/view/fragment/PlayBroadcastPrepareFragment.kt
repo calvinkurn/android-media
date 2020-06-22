@@ -15,8 +15,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
@@ -38,16 +39,13 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var tvTermsCondition: TextView
 
-    private val setupListener = object : PlayBroadcastSetupBottomSheet.Listener {
+    private val setupListener = object : SetupResultListener {
         override fun onSetupCanceled() {
 
         }
 
         override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
-            viewModel.saveCompleteChannel(
-                    productList = dataStore.getSelectedProducts(),
-                    cover = dataStore.getSelectedCover() ?: throw IllegalStateException("Cover must be set")
-            )
+            viewModel.setDataFromSetupDataStore(dataStore)
             openFinalPreparationPage()
         }
     }

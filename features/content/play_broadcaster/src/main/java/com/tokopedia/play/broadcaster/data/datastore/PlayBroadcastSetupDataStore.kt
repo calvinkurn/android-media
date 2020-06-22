@@ -1,11 +1,14 @@
-package com.tokopedia.play.broadcaster.data.repository
+package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 
 interface PlayBroadcastSetupDataStore {
+
+    fun overwrite(dataStore: PlayBroadcastSetupDataStore)
 
     /**
      * Product Setup
@@ -29,7 +32,11 @@ interface PlayBroadcastSetupDataStore {
 
     fun getSelectedCover(): PlayCoverUiModel?
 
-    fun setCover(cover: PlayCoverUiModel)
+    fun setFullCover(cover: PlayCoverUiModel)
+
+    fun updateCoverState(state: CoverSetupState)
+
+    fun updateCoverTitle(title: String)
 
     suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit>
 }

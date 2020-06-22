@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -14,14 +15,18 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastEditTitleBottomSheet
+import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -41,6 +46,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var btnStartLive: PlayStartStreamingButton
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var ivShareLink: ImageView
+    private lateinit var flEdit: FrameLayout
 
     private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -48,6 +54,15 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var editTitleBottomSheet: PlayBroadcastEditTitleBottomSheet
 
     private lateinit var exitDialog: DialogUnify
+
+    private val setupResultListener = object : SetupResultListener {
+        override fun onSetupCanceled() {
+        }
+
+        override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
+            prepareViewModel.setDataFromSetupDataStore(dataStore)
+        }
+    }
 
     override fun getScreenName(): String = "Play Before Live Page"
 
@@ -89,6 +104,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             btnStartLive = findViewById(R.id.btn_start_live)
             followerView = findViewById(R.id.follower_view)
             ivShareLink = findViewById(R.id.iv_share_link)
+            flEdit = findViewById(R.id.fl_edit)
         }
     }
 
@@ -96,11 +112,14 @@ class PlayBeforeLiveFragment @Inject constructor(
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnStartLive.setOnClickListener { startStreaming() }
         llSelectedProduct.setOnClickListener { openEditProductPage() }
-        tvCoverTitle.setOnClickListener { openEditCoverPage() }
+        tvCoverTitle.setOnClickListener { openEditCoverTitlePage() }
+        ivImagePreview.setOnClickListener { openEditCoverImagePage() }
 
         btnStartLive.setMaxStreamingDuration(30)
         ivShareLink.setOnClickListener { doCopyShareLink() }
     }
+
+
 
     //region observe
     /**
@@ -115,7 +134,12 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun observeSetupChannel() {
         prepareViewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
             tvSelectedProduct.text = getString(R.string.play_before_live_selected_product, it.selectedProductList.size)
-            ivImagePreview.loadImageRounded(it.cover.coverImage.toString())
+            when (val croppedCover = it.cover.croppedCover) {
+                is CoverSetupState.Cropped -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
+                is CoverSetupState.Cropping.Image -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
+                else -> throw IllegalStateException("Cover cannot be blank")
+            }
+
             tvCoverTitle.text = it.cover.title
         })
     }
@@ -144,11 +168,20 @@ class PlayBeforeLiveFragment @Inject constructor(
                 })
     }
 
+    private fun openEditCoverImagePage() {
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val editCoverFragment = fragmentFactory.instantiate(requireContext().classLoader, CoverEditFragment::class.java.name) as CoverEditFragment
+        editCoverFragment.setListener(setupResultListener)
+        childFragmentManager.beginTransaction()
+                .replace(flEdit.id, editCoverFragment)
+                .commit()
+    }
+
     private fun openEditProductPage() {
 
     }
 
-    private fun openEditCoverPage() {
+    private fun openEditCoverTitlePage() {
         getEditTitleBottomSheet().apply {
             setCoverTitle(prepareViewModel.title)
         }.show(childFragmentManager)

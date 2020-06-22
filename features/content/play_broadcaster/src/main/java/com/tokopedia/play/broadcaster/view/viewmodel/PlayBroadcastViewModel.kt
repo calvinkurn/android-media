@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
@@ -25,7 +27,8 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 24/05/20.
  */
-class PlayBroadcastViewModel  @Inject constructor(
+class PlayBroadcastViewModel @Inject constructor(
+        private val mDataStore: PlayBroadcastDataStore,
         private val playPusher: PlayPusher,
         private val permissionUtil: PlayPermissionUtil,
         private val getConfigurationUseCase: GetConfigurationUseCase,
@@ -114,6 +117,10 @@ class PlayBroadcastViewModel  @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         scope.cancel()
+    }
+
+    fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
+        return mDataStore.getSetupDataStore()
     }
 
     fun getConfiguration() {

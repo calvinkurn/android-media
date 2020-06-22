@@ -227,7 +227,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private fun showCoverTitlePage(nextBtnView: View) {
         bottomSheetCoordinator.navigateToFragment(
-                fragmentClass = PlayCoverTitleSetupFragment::class.java,
+                fragmentClass = PlayCoverSetupFragment::class.java,
                 sharedElements = listOf(nextBtnView)
         )
     }

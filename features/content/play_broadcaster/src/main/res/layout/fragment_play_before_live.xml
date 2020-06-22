@@ -18,6 +18,43 @@
         tools:background="@color/Neutral_N700_68"
         />
 
+    <LinearLayout
+        android:layout_width="@dimen/play_change_cover_before_live_width"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_play_choose_cover"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/play_dp_12"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_image_preview"
+        app:layout_constraintEnd_toEndOf="@+id/iv_image_preview"
+        app:layout_constraintStart_toStartOf="@+id/iv_image_preview"
+        app:layout_constraintTop_toTopOf="@+id/iv_image_preview"
+        >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/play_dp_20"
+            android:layout_height="@dimen/play_dp_18"
+            android:scaleType="fitXY"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:srcCompat="@drawable/ic_play_action_camera_white"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_change_cover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/play_prepare_cover_title_change_cover_label"
+            android:textColor="@color/play_white_96"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            />
+
+    </LinearLayout>
+
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
@@ -118,6 +155,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <FrameLayout
+        android:id="@+id/fl_edit"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

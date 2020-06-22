@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.AddMediaUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
@@ -21,6 +23,7 @@ import javax.inject.Inject
  * Created by jegul on 20/05/20
  */
 class PlayBroadcastPrepareViewModel @Inject constructor(
+        private val mDataStore: PlayBroadcastDataStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val addProductTagUseCase: AddProductTagUseCase,
         private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
@@ -62,19 +65,19 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         }
     }
 
-    fun saveCompleteChannel(productList: List<ProductContentUiModel>,
-                            cover: PlayCoverUiModel) {
-        scope.launch {
-            _observableSetupChannel.value = ChannelSetupUiModel(
-                    cover = PlayCoverUiModel(
-                            coverImage = cover.coverImage,
-                            title = cover.title,
-                            state = SetupDataState.Uploaded,
-                            source = CoverSourceEnum.NONE
-                    ),
-                    selectedProductList = productList
-            )
-        }
+    fun setDataFromSetupDataStore(setupDataStore: PlayBroadcastSetupDataStore) {
+        mDataStore.setFromSetupStore(setupDataStore)
+        val cover = setupDataStore.getSelectedCover()
+        val productList = setupDataStore.getSelectedProducts()
+        requireNotNull(cover)
+        _observableSetupChannel.value = ChannelSetupUiModel(
+                cover = PlayCoverUiModel(
+                        croppedCover = cover.croppedCover,
+                        title = cover.title,
+                        state = SetupDataState.Uploaded
+                ),
+                selectedProductList = productList
+        )
     }
 
     fun createLiveStream() {

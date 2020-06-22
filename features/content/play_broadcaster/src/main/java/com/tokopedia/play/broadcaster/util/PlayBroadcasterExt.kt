@@ -74,3 +74,6 @@ internal fun Context.getDialog(
     setCancelable(cancelable)
     setOverlayClose(overlayClose)
 }
+
+internal val <T> T.exhaustive: T
+    get() = this

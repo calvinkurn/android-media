@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import javax.inject.Inject
 
 /**
