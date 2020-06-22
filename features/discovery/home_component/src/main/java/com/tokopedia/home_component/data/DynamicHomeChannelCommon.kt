@@ -202,8 +202,10 @@ data class DynamicHomeChannelCommon(
             @Expose
             @SerializedName("has_buy_button")
             val hasBuyButton: Boolean = false,
+            @Expose
             @SerializedName("rating")
             var rating: Int = 0,
+            @Expose
             @SerializedName("count_review")
             val countReview: Int = 0
     )
