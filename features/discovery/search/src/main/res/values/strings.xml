@@ -86,6 +86,9 @@
     <string name="broad_match_title">Pot tanaman alumunium IKEA</string>
     <string name="broad_match_see_more">Lihat Semua</string>
 
+    <string name="search_product_filter_onboarding_title">Cari barang yang gimana?</string>
+    <string name="search_product_filter_onboarding_description">Yuk, temukan barang lebih cepat dengan mengurutkan dan memilih lokasi, harga, atau kategori lainnya disini.</string>
+
     <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
     <string name="search_inspiration_card_option">putih</string>
 </resources>

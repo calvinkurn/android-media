@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
@@ -870,5 +872,23 @@ public class SearchActivity extends BaseActivity
             return pageLoadTimePerformanceMonitoring.getPltPerformanceData();
         }
         return null;
+    }
+
+    @Override
+    public void animateTab(boolean isVisible) {
+        int targetHeight = isVisible ? getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40) : 0;
+
+        ValueAnimator anim = ValueAnimator.ofInt(tabLayout.getMeasuredHeight(), targetHeight);
+        anim.addUpdateListener(this::changeTabHeightByAnimator);
+        anim.setDuration(300);
+        anim.start();
+    }
+
+    private void changeTabHeightByAnimator(ValueAnimator valueAnimator) {
+        int height = (Integer) valueAnimator.getAnimatedValue();
+
+        ViewGroup.LayoutParams layoutParams = tabLayout.getLayoutParams();
+        layoutParams.height = height;
+        tabLayout.setLayoutParams(layoutParams);
     }
 }
