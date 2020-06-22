@@ -37,14 +37,19 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.TaskStackBuilder;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
@@ -77,6 +82,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
+    private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
+    private static final String KEY_CLEAR_CACHE = "android_webview_can_clear_cache";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -611,7 +618,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
         if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
-            startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+            boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
+            if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
+                TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+                taskStackBuilder.addNextIntent(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT));
+                taskStackBuilder.addNextIntent(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN));
+                taskStackBuilder.startActivities();
+            } else {
+                startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
+            }
             return true;
         }
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
