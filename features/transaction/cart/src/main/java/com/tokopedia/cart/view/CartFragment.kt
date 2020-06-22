@@ -193,7 +193,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     companion object {
 
-        private const val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false

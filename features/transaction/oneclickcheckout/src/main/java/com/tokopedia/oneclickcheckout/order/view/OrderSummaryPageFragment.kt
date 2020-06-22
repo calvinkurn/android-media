@@ -72,6 +72,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -319,7 +320,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 is OccGlobalEvent.Loading -> {
                     if (progressDialog == null) {
                         progressDialog = AlertDialog.Builder(context!!)
-                                .setView(R.layout.purchase_platform_progress_dialog_view)
+                                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
                                 .setCancelable(false)
                                 .create()
                     }
@@ -592,7 +593,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         val productId = viewModel.orderProduct.productId
         if (insuranceData != null) {
             if (insuranceData.insurancePrice > 0) {
-                tvInsurancePrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false)
+                tvInsurancePrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false).removeDecimalSuffix()
                 tvInsurancePrice?.visible()
             } else {
                 tvInsurancePrice?.gone()
@@ -600,9 +601,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             imgBtInsuranceInfo?.let { iv ->
                 iv.setOnClickListener {
                     showBottomSheet(iv.context,
-                            iv.context.getString(R.string.title_bottomsheet_insurance),
+                            iv.context.getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
                             insuranceData.insuranceUsedInfo,
-                            R.drawable.ic_pp_insurance)
+                            com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance)
                 }
             }
             cbInsurance?.setOnCheckedChangeListener { _, isChecked ->
@@ -614,7 +615,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 viewModel.setInsuranceCheck(isChecked)
             }
             if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
-                tvInsurance?.setText(R.string.label_must_insurance)
+                tvInsurance?.setText(com.tokopedia.purchase_platform.common.R.string.label_must_insurance)
                 cbInsurance?.isEnabled = false
                 forceSetChecked(cbInsurance, true)
                 viewModel.setInsuranceCheck(true)
@@ -623,7 +624,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 viewModel.setInsuranceCheck(false)
                 groupInsurance?.gone()
             } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
-                tvInsurance?.setText(R.string.label_shipment_insurance)
+                tvInsurance?.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance)
                 cbInsurance?.isEnabled = true
                 if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
                     forceSetChecked(cbInsurance, true)
@@ -654,7 +655,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         Tooltip(context).apply {
             setTitle(title)
             setDesc(message)
-            setTextButton(context.getString(R.string.label_button_bottomsheet_close))
+            setTextButton(context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
             setIcon(image)
             btnAction.setOnClickListener { this.dismiss() }
             show()
@@ -664,21 +665,21 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun setupButtonBayar(orderTotal: OrderTotal) {
         if (orderTotal.isButtonChoosePayment) {
             if (orderTotal.buttonState == ButtonBayarState.NORMAL) {
-                btnPay?.setText(R.string.label_choose_payment)
+                btnPay?.setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
                 btnPay?.layoutParams?.width = convertDpToPixel(160f, context!!)
                 btnPay?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 btnPay?.isLoading = false
                 btnPay?.isEnabled = true
                 btnPay?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                btnPay?.setText(R.string.label_choose_payment)
+                btnPay?.setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
             } else if (orderTotal.buttonState == ButtonBayarState.DISABLE) {
-                btnPay?.setText(R.string.label_choose_payment)
+                btnPay?.setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
                 btnPay?.layoutParams?.width = convertDpToPixel(160f, context!!)
                 btnPay?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 btnPay?.isLoading = false
                 btnPay?.isEnabled = false
                 btnPay?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                btnPay?.setText(R.string.label_choose_payment)
+                btnPay?.setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
             } else {
                 btnPay?.layoutParams?.width = convertDpToPixel(160f, context!!)
                 btnPay?.layoutParams?.height = convertDpToPixel(48f, context!!)
@@ -711,7 +712,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         if (orderTotal.orderCost.totalPrice > 0.0) {
-            tvTotalPaymentValue?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.orderCost.totalPrice, false)
+            tvTotalPaymentValue?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.orderCost.totalPrice, false).removeDecimalSuffix()
         } else {
             tvTotalPaymentValue?.text = "-"
         }
@@ -747,14 +748,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         } else if (orderPromo.state == ButtonBayarState.DISABLE) {
             //failed
             btnPromoCheckout?.state = ButtonPromoCheckoutView.State.INACTIVE
-            btnPromoCheckout?.title = getString(R.string.promo_checkout_inactive_label)
-            btnPromoCheckout?.desc = getString(R.string.promo_checkout_inactive_desc)
+            btnPromoCheckout?.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
+            btnPromoCheckout?.desc = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
             btnPromoCheckout?.setOnClickListener {
                 viewModel.validateUsePromo()
             }
         } else {
             val lastApply = orderPromo.lastApply
-            var title = getString(R.string.promo_funnel_label)
+            var title = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
                 title = lastApply.additionalInfo.messageInfo.message
             } else if (lastApply?.defaultEmptyPromoMessage?.isNotBlank() == true) {
