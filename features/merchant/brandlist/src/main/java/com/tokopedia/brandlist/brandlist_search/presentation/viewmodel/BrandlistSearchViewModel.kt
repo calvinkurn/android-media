@@ -109,6 +109,8 @@ class BrandlistSearchViewModel @Inject constructor(
         currentOffset += renderedBrands
     }
 
+    fun getFirstLetterChanged(): Boolean = firstLetterChanged
+
     fun resetParams() {
         firstLetterChanged = false
         totalBrandSize = 0

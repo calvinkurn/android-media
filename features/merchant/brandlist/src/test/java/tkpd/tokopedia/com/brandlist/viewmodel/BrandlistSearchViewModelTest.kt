@@ -12,7 +12,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
-//import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
@@ -31,10 +30,6 @@ class BrandlistSearchViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-
-//    private val dispatchers by lazy {
-//        Dispatchers.Unconfined
-//    }
 
     private val viewModel by lazy {
         BrandlistSearchViewModel(
@@ -63,7 +58,7 @@ class BrandlistSearchViewModelTest {
     }
 
     @Test
-    fun `load more brand should execute expected usecase`() {
+    fun `load more brand without first brand letter should execute expected usecase`() {
         mockkObject(getBrandlistAllBrandUseCase)
         coEvery {
             getBrandlistAllBrandUseCase.executeOnBackground()
@@ -76,15 +71,89 @@ class BrandlistSearchViewModelTest {
     }
 
     @Test
+    fun `load more brand with first brand letter should execute expected usecase`() {
+        mockkObject(getBrandlistAllBrandUseCase)
+        coEvery {
+            getBrandlistAllBrandUseCase.executeOnBackground()
+        } returns OfficialStoreAllBrands()
+        val brandFirstLetter = "A"
+        viewModel.loadMoreBrands(brandFirstLetter)
+        coVerify {
+            getBrandlistAllBrandUseCase.executeOnBackground()
+        }
+        Assert.assertTrue(viewModel.brandlistAllBrandsSearchResponse.value is Success)
+    }
+
+    @Test
+    fun `ask total brand size should return int total brand size`() {
+        viewModel.getTotalBrandSize()
+        Assert.assertTrue(viewModel.getTotalBrandSize() is Int)
+    }
+
+    @Test
+    fun `update total brand size when provided total brand size`() {
+        val totalBrandSize: Int = 12
+        viewModel.updateTotalBrandSize(totalBrandSize)
+        Assert.assertEquals(viewModel.getTotalBrandSize(), totalBrandSize)
+    }
+
+    @Test
+    fun `ask total brand size for chip header should return int total brand size on the chip header`() {
+        viewModel.getTotalBrandSizeForChipHeader()
+        Assert.assertTrue(viewModel.getTotalBrandSizeForChipHeader() is Int)
+    }
+
+    @Test
+    fun `update total brand size for chip header when provided total brand size`() {
+        val totalBrandSize: Int = 16
+        viewModel.updateTotalBrandSizeForChipHeader(totalBrandSize)
+        Assert.assertEquals(viewModel.getTotalBrandSizeForChipHeader(), totalBrandSize)
+    }
+
+    @Test
+    fun `update current offset when provided total rendered brands`() {
+        val renderedBrands: Int = 20
+        viewModel.updateCurrentOffset(renderedBrands)
+        Assert.assertEquals(viewModel.currentOffset, renderedBrands)
+    }
+
+    @Test
+    fun `update current letter when provided current letter`() {
+        val currentLetter: Char = 'a'
+        viewModel.currentLetter = currentLetter
+        Assert.assertEquals(viewModel.currentLetter, currentLetter)
+    }
+
+    @Test
+    fun `update current offset when provided current offset`() {
+        val currentOffset: Int = 0
+        viewModel.currentOffset = currentOffset
+        Assert.assertEquals(viewModel.currentOffset, currentOffset)
+    }
+
+    @Test
+    fun `ask total current offset should return int total current offset`() {
+        Assert.assertTrue(viewModel.currentOffset is Int)
+    }
+
+    @Test
+    fun `should reset all params`() {
+        val INITIAL_OFFSET: Int = 0
+        viewModel.resetParams()
+
+        Assert.assertEquals(viewModel.currentOffset, INITIAL_OFFSET)
+        Assert.assertTrue(viewModel.getTotalBrandSize() is Int)
+        Assert.assertTrue(viewModel.getFirstLetterChanged() is Boolean)
+    }
+
+    @Test
     fun `search brand should execute expected usecase`() {
         mockkObject(getBrandlistAllBrandUseCase)
         coEvery {
             getBrandlistAllBrandUseCase.executeOnBackground()
         } returns OfficialStoreAllBrands()
-//        val categoryId = 0
         val offset = 0
         val query = "Samsung"
-//        val sortType = 1
         val firstLetter = ""
         val brandSize = 10
 
@@ -117,7 +186,6 @@ class BrandlistSearchViewModelTest {
             getBrandlistAllBrandUseCase.executeOnBackground()
         } returns OfficialStoreAllBrands()
 
-//        val categoryId = 0
         val offset = 0
         val query = ""
         val sortType = 1

@@ -61,15 +61,17 @@ class BrandlistPageViewModel @Inject constructor(
         currentOffset += renderedBrands
     }
 
+    fun getTotalBrandSize(): Int = totalBrandSize
+    fun getFirstLetterChanged(): Boolean = firstLetterChanged
+    fun getCurrentOffset(): Int = currentOffset
+    fun setOffset() {
+        currentOffset = 100
+    }
+
     fun resetAllBrandRequestParameter() {
         firstLetterChanged = false
         totalBrandSize = 0
         currentOffset = INITIAL_OFFSET
-//        currentLetter = INITIAL_LETTER
-    }
-
-    fun setOffset() {
-        currentOffset = 100
     }
 
     fun loadInitialData(category: Category?, userId: String?) {
