@@ -123,11 +123,11 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
     }
 
     private fun setParamUploadBankBookImage(params: RequestParams) {
-        params.putString(UpdateInactivePhoneConstants.QueryConstants.SAVING_BOOK_IMAGE, accountImagePath)
+        params.putString(UpdateInactivePhoneConstants.Constants.PARAM_BANK_BOOK_IMAGE_PATH, accountImagePath)
     }
 
     private fun setParamUploadIdImage(params: RequestParams) {
-        params.putString(UpdateInactivePhoneConstants.QueryConstants.ID_CARD_IMAGE, photoIdImagePath)
+        params.putString(UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_PATH, photoIdImagePath)
     }
 
     private fun getUploadHostParam(): RequestParams {
