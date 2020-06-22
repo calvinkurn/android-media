@@ -257,7 +257,7 @@ class LottieBottomNavbar : LinearLayout {
 
         selectedItem?.let {
             iconList[it].setColorFilter(buttonColor, PorterDuff.Mode.SRC_ATOP)
-            iconList[it].speed = -5f
+            iconList[it].speed = -4f
             iconList[it].playAnimation()
 
             titleList[it].setTextColor(buttonColor)
@@ -267,13 +267,10 @@ class LottieBottomNavbar : LinearLayout {
 
         // change currently selected item color
         val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
-        menu[newPosition].animName?.let {
-            iconList[newPosition].setAnimation(it)
-        }
         iconList[newPosition].repeatCount = 0
         iconList[newPosition].setColorFilter(activeSelectedItemColor, PorterDuff.Mode.SRC_ATOP)
 
-        iconList[newPosition].speed = 3f
+        iconList[newPosition].speed = 2f
         iconList[newPosition].playAnimation()
 
         titleList[newPosition].setTextColor(activeSelectedItemColor)
