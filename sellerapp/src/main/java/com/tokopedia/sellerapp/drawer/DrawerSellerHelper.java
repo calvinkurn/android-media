@@ -389,13 +389,6 @@ public class DrawerSellerHelper extends DrawerHelper
                     eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
                     RouteManager.route(context, ApplinkConst.SELLER_INFO);
                     break;
-                case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                    if (context.getApplication() instanceof TkpdCoreRouter) {
-                        context.startActivity(((TkpdCoreRouter) context.getApplication())
-                                .getResolutionCenterIntentSeller(context));
-                        sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
-                    }
-                    break;
                 default:
                     super.onItemClicked(item);
             }

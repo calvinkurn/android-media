@@ -1,9 +1,0 @@
-{
-   chatBlastSellerMetadata{
-    shopId
-    quota
-    expireAt
-    status
-   }
-   status
- }
