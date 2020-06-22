@@ -240,4 +240,6 @@
 
     <string name="product_manage_close">>Tutup</string>
     <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="product_manage_more_menu">Lainnya</string>
+    <string name="product_manage_shop_showcase_more_menu_text">Etalase Toko</string>
 </resources>

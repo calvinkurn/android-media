@@ -8,8 +8,6 @@ include "features:common:qr_scanner"
 include "features:category:common_tradein"
 include "features:category:kategori"
 
-include "features:communication:broadcast_message_common"
-
 include "features:content:affiliate"
 include "features:content:affiliate_common"
 include "features:content:createpost"

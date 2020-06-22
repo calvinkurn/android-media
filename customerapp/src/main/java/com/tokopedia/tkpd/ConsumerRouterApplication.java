@@ -713,11 +713,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
-        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
-    }
-
-    @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
         return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
     }
@@ -1398,11 +1393,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getActivitySellingTransactionConfirmShipping(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getResolutionCenterIntentSeller(Context context) {
         return null;
     }
 

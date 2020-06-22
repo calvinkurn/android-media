@@ -34,11 +34,12 @@ class PowerMerchantItemViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     private fun showDescription(item: PowerMerchantItemView) {
         val description = context.getString(item.description)
         val clickableText = item.clickableText?.let { context.getString(it) }
+        val boldTextList = item.boldTextList?.map { context.getString(it) }
 
         textDescription.text = if (clickableText != null) {
             val clickableUrl = item.clickableUrl
             val clickableTextColor = ContextCompat.getColor(context, R.color.light_G500)
-            createSpannableString(description, clickableText, clickableTextColor) {
+            createSpannableString(description, clickableText, clickableTextColor, true, boldTextList) {
                 clickableUrl?.let { url -> goToWebViewPage(url) }
             }
         } else {

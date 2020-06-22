@@ -43,10 +43,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
-import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
@@ -57,8 +53,14 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
+import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
+import com.tokopedia.shop.product.di.module.ShopProductModule
+import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
+import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
@@ -67,12 +69,6 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductsEmptyViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
-import com.tokopedia.shop.product.di.module.ShopProductModule
-import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
-import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -103,6 +99,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
         private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
         private const val REQUEST_CODE_ADD_ETALASE = 288
+        private const val REQUEST_CODE_ADD_PRODUCT = 3697
         private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
@@ -525,6 +522,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             REQUEST_CODE_USER_LOGIN -> {
                 (parentFragment as? ShopPageFragment)?.refreshData()
             }
+            REQUEST_CODE_ADD_PRODUCT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val shopType = when {
+                        isOfficialStore -> TrackShopTypeDef.OFFICIAL_STORE
+                        isGoldMerchant -> TrackShopTypeDef.GOLD_MERCHANT
+                        else -> TrackShopTypeDef.REGULAR_MERCHANT
+                    }
+                    shopPageTracking?.sendScreenShopPage(shopId, shopType, SCREEN_ADD_PRODUCT)
+                }
+            }
             else -> {
             }
         }
@@ -790,7 +797,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onAddProductClicked() {
         context?.let {
             shopPageTracking?.clickAddProduct(customDimensionShopPage)
-            RouteManager.route(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+            startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
         }
     }
 
