@@ -80,6 +80,7 @@ object DynamicChannelComponentMapper {
                             isOutOfStock = it.isOutOfStock,
                             isFreeOngkirActive = it.freeOngkir.isActive,
                             shopId = it.shop.shopId,
+                            hasBuyButton = it.hasBuyButton,
                             labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
                                         title = label.title,

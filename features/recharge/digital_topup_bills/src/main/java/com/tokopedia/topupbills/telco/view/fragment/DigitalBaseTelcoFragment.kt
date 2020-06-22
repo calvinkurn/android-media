@@ -9,7 +9,6 @@ import android.provider.ContactsContract
 import android.text.TextUtils
 import android.view.View
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -56,7 +55,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected val listMenu = mutableListOf<TopupBillsTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
-    override var menuId = 0
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -200,7 +198,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     fun getPrefixOperatorData() {
         viewModel.getPrefixOperator(GraphqlHelper.loadRawString(resources,
-                R.raw.query_prefix_select_telco), menuId)
+                R.raw.query_prefix_select_telco), getTelcoMenuId())
         viewModel.catalogPrefixSelect.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessCustomData()
@@ -247,6 +245,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         super.processMenuDetail(data)
 
         renderTicker(data.tickers)
+        sendOpenScreenTracking()
         initiateMenuTelco(data.recommendations, data.promos)
     }
 
@@ -267,7 +266,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onMenuDetailError(error: Throwable) {
         super.onMenuDetailError(error)
         NetworkErrorHelper.showEmptyState(activity, pageContainer, ErrorHandler.getErrorMessage(context, error)) {
-            getMenuDetail(menuId)
+            getMenuDetail(getTelcoMenuId())
         }
     }
 
@@ -295,13 +294,21 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
 
+    private fun sendOpenScreenTracking() {
+        topupAnalytics.eventOpenScreen(userSession.userId, getTelcoCategoryId())
+    }
+
     protected fun setTrackingOnTabMenu(title: String) {
         var action = DigitalTopupEventTracking.Action.CLICK_TAB_PROMO
         if (title == TelcoComponentName.RECENTS) {
             action = DigitalTopupEventTracking.Action.CLICK_TAB_RECENT
         }
-        topupAnalytics.eventClickTabMenuTelco(categoryName, userSession.userId, action)
+        topupAnalytics.eventClickTabMenuTelco(categoryId, userSession.userId, action)
     }
+
+    protected abstract fun getTelcoMenuId(): Int
+
+    protected abstract fun getTelcoCategoryId(): Int
 
     protected abstract fun renderPromoAndRecommendation()
 

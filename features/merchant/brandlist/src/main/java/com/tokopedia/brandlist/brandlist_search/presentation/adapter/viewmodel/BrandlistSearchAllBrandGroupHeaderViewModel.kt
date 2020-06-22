@@ -9,6 +9,7 @@ class BrandlistSearchAllBrandGroupHeaderViewModel(
         val listener: BrandlistHeaderBrandInterface,
         val totalBrands: Int,
         val selectedChip: Int,
+        val lastTimeChipIsClicked: Long,
         val recyclerViewLastState: Parcelable?
 ) : Visitable<BrandlistSearchAdapterTypeFactory> {
 

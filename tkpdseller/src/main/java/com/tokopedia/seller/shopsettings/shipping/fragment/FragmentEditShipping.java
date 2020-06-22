@@ -549,7 +549,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     private void renderTickerChargeBo(){
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity().getApplicationContext());
-        if(remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, true)) {
+        if(remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, false)) {
             chargeBoTicker.setVisibility(View.VISIBLE);
             chargeBoTicker.setTickerTitle(getString(R.string.charge_bo_ticker_title));
             chargeBoTicker.setHtmlDescription(getString(R.string.charge_bo_ticker_content));

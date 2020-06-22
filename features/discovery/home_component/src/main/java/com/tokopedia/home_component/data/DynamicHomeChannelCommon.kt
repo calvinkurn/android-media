@@ -199,6 +199,9 @@ data class DynamicHomeChannelCommon(
             @Expose
             @SerializedName("labelGroup")
             val labelGroup: Array<LabelGroup> = arrayOf(),
+            @Expose
+            @SerializedName("has_buy_button")
+            val hasBuyButton: Boolean = false,
             @SerializedName("rating")
             var rating: Int = 0,
             @SerializedName("count_review")

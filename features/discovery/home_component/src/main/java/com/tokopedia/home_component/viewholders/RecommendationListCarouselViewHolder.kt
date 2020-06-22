@@ -216,7 +216,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 discountPercentage = recommendation.recommendationDiscountLabel,
                                 slashedPrice = recommendation.recommendationSlashedPrice,
                                 formattedPrice = recommendation.recommendationPrice,
-                                hasAddToCartButton = recommendation.channelModel.channelConfig.hasCloseButton,
+                                hasAddToCartButton = recommendation.grid.hasBuyButton,
                                 isTopAds = recommendation.isTopAds
                         )
                 )

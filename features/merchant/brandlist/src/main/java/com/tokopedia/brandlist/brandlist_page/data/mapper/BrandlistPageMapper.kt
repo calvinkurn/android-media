@@ -35,24 +35,36 @@ class BrandlistPageMapper {
             notifyElement(NEW_BRAND_POSITION, NewBrandViewModel(newBrand.shops, newBrand.header, listener), adapter)
         }
 
-        fun mappingAllBrandGroupHeader(adapter: BrandlistPageAdapter?, listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int, recyclerViewLastState: Parcelable?) {
+        fun mappingAllBrandGroupHeader(
+                adapter: BrandlistPageAdapter?,
+                listener: BrandlistHeaderBrandInterface,
+                totalBrands: Int,
+                selectedChip: Int,
+                lastTimeClicked: Long,
+                recyclerViewLastState: Parcelable?
+        ) {
             adapter?.let {
-                it.getVisitables().set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
+                it.getVisitables().set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(
+                        listener, totalBrands, selectedChip, lastTimeClicked, recyclerViewLastState))
                 it.notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
                 it.refreshSticky()
             }
         }
 
         fun mappingLoadingBrandRecomm(adapter: BrandlistPageAdapter?) {
-            adapter?.getVisitables()?.add(ALL_BRAND_POSITION, LoadingModel())
-            adapter?.notifyItemChanged(ALL_BRAND_POSITION, LoadingModel())
+            adapter?.let {
+                it.getVisitables().add(ALL_BRAND_POSITION, LoadingModel())
+                it.notifyItemChanged(ALL_BRAND_POSITION, LoadingModel())
+            }
+        }
 
+        fun mappingRemoveBrandRecom(adapter: BrandlistPageAdapter?) {
             val _totalAllBrandViewModel: Int = adapter?.getVisitables()?.filterIsInstance<AllBrandViewModel>()?.size ?: 0
             if (_totalAllBrandViewModel > 0) {
                 val _totalUnusedData: Int = adapter?.getVisitables()?.size ?: 0
                 adapter?.let {
-                    it.getVisitables().subList(ALL_BRAND_POSITION + 1, _totalUnusedData).clear()
-                    it.notifyItemRangeRemoved(ALL_BRAND_POSITION + 1, _totalAllBrandViewModel)
+                    it.getVisitables().subList(ALL_BRAND_POSITION, _totalUnusedData).clear()
+                    it.notifyItemRangeRemoved(ALL_BRAND_POSITION, _totalAllBrandViewModel)
                 }
             }
         }
@@ -67,25 +79,6 @@ class BrandlistPageMapper {
             if (!isLoadMore && totalBrands == 0) {
                 adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllbrandNotFoundViewModel())
                 adapter?.notifyItemChanged(ALL_BRAND_POSITION, AllbrandNotFoundViewModel())
-
-                adapter?.let {
-                    val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
-                    val _totalAllBrandViewModel: Int = it.getVisitables().filterIsInstance<AllBrandViewModel>().size ?: 0
-
-                    if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
-                        val _totalData: Int = it.getVisitables().size ?: 0
-                        val _totalUpdated = _totalData - (ALL_BRAND_POSITION + 1)
-                        it.getVisitables().subList(ALL_BRAND_POSITION + 1, _totalData).clear()
-                        it.notifyItemRangeRemoved(ALL_BRAND_POSITION + 1, _totalUpdated)
-                    }
-
-                    if (_totalAllBrandViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
-                        val _totalData: Int = it.getVisitables().size ?: 0
-                        val _totalUpdated = _totalData - (ALL_BRAND_POSITION + 1)
-                        it.getVisitables().subList(ALL_BRAND_POSITION + 1, _totalData).clear()
-                        it.notifyItemRangeRemoved(ALL_BRAND_POSITION + 1, _totalUpdated)
-                    }
-                }
             }
         }
 
@@ -99,18 +92,10 @@ class BrandlistPageMapper {
             if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) {
                 if (!isLoadMore) {
                     adapter?.let {
-                        it.getVisitables().subList(ALL_BRAND_POSITION, it.getVisitables().size).clear()
                         allBrand.brands.forEachIndexed { index, brand ->
                             it.getVisitables().add(ALL_BRAND_POSITION, AllBrandViewModel(index, brand, listener))
                         }
-                        it.notifyItemRangeRemoved(ALL_BRAND_POSITION, it.getVisitables().size)
                         it.notifyItemChanged(ALL_BRAND_POSITION)
-
-                        val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
-                        if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
-                            it.getVisitables().removeAt(adapter.lastIndex)
-                            it.notifyItemRemoved(adapter.lastIndex)
-                        }
                     }
                 } else {
                     adapter?.let {
@@ -124,19 +109,10 @@ class BrandlistPageMapper {
             } else if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND) {
                 if (!isLoadMore) {
                     adapter?.let {
-                        it.getVisitables().subList(ALL_BRAND_POSITION, it.getVisitables().size).clear()
                         allBrand.brands.forEachIndexed { index, brand ->
                             it.getVisitables().add(ALL_BRAND_POSITION, AllBrandViewModel(index, brand, listener))
                         }
-                        it.notifyItemRangeRemoved(ALL_BRAND_POSITION, it.getVisitables().size)
-                        it.notifyItemRangeInserted(ALL_BRAND_POSITION, allBrand.brands.size)
-
-                        val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
-                        if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
-                            val _position = it.getVisitables().indexOf(LoadingModel())
-                            it.getVisitables().remove(LoadingModel())
-                            it.notifyItemRangeRemoved(_position, _totalLoadingViewModel)
-                        }
+                        it.notifyItemChanged(ALL_BRAND_POSITION)
                     }
                 } else {
                     adapter?.let {
