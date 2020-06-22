@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.play.broadcaster.socket.PlaySocketType
+import com.tokopedia.play.broadcaster.socket.PlaySocketEnum
 
 
 /**
@@ -13,7 +15,9 @@ data class Metric(
         val pdpVisitor: MetricData,
         @SerializedName("shop_visitor")
         val shopVisitor: MetricData
-) {
+): PlaySocketType {
+
+    override val type: PlaySocketEnum get() = PlaySocketEnum.Metric
 
     data class MetricData(
             @SerializedName("interval")
@@ -23,6 +27,4 @@ data class Metric(
             @SerializedName("second_sentence")
             val secondSentence: String
     )
-
-    val socketType = "BULK_EVENT_NOTIF"
 }
