@@ -249,7 +249,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     override fun showTipsAndTrickBottomSheet() {
         VoucherCreationTracking.sendVoucherDetailClickTracking(
                 status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
-                action = Click.COPY_PROMO_CODE,
+                action = Click.TIPS_TRICKS,
                 userId = userSession.userId
         )
         if (!isAdded) return
@@ -444,7 +444,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
             VoucherCreationTracking.sendShareClickTracking(
                     socmedType = socmedType,
                     userId = userSession.userId,
-                    isDetail = false
+                    isDetail = true
             )
         }
     }

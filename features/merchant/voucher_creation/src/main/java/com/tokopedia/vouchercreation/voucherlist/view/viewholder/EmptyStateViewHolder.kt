@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.vouchercreation.R
@@ -14,7 +15,8 @@ import timber.log.Timber
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class EmptyStateViewHolder(itemView: View?) : AbstractViewHolder<EmptyStateUiModel>(itemView) {
+class EmptyStateViewHolder(itemView: View?,
+                           private val onImpressionListener: (dataKey: String) -> Unit) : AbstractViewHolder<EmptyStateUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -23,6 +25,9 @@ class EmptyStateViewHolder(itemView: View?) : AbstractViewHolder<EmptyStateUiMod
 
     override fun bind(element: EmptyStateUiModel) {
         with(itemView) {
+            addOnImpressionListener(element.impressHolder) {
+                onImpressionListener(EmptyStateUiModel.DATA_KEY)
+            }
             val title = if (element.isActiveVoucher) {
                 context.getString(R.string.mvc_no_active_voucher)
             } else {

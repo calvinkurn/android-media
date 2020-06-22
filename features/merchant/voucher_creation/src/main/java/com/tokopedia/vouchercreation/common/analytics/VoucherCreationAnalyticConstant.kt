@@ -37,10 +37,10 @@ object VoucherCreationAnalyticConstant {
         }
 
         object VoucherDetail {
-            const val UPCOMING = "/voucher detail page - mendatang"
-            const val ONGOING = "/voucher detail page - berlangsung"
-            const val ENDED = "/voucher detail page - berakhir"
-            const val CANCELLED = "/voucher detail page - dibatalkan"
+            const val UPCOMING = "/voucherdetailpage - mendatang"
+            const val ONGOING = "/voucherdetailpage - berlangsung"
+            const val ENDED = "/voucherdetailpage - berakhir"
+            const val CANCELLED = "/voucherdetailpage - dibatalkan"
         }
 
         const val VOUCHER_DUPLICATE_REVIEW = "/voucherduplicate - review"

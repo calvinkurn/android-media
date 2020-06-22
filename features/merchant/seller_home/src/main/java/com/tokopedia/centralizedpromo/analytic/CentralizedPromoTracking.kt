@@ -2,11 +2,11 @@ package com.tokopedia.centralizedpromo.analytic
 
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_IMPRESSION
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_CLICK
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_CLICK_CLOSE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_CLICK_CREATE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_IMPRESSION
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_CLICK
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_PROMO_CREATION_CLICK
@@ -133,7 +133,7 @@ object CentralizedPromoTracking {
         val data = mapOf(
                 EVENT to OPEN_SCREEN,
                 SCREEN_NAME to ADS_PROMOTION,
-                IS_LOGGED_IN_STATUS to isLoggedIn,
+                IS_LOGGED_IN_STATUS to isLoggedIn.toString(),
                 CURRENT_SITE to TOKOPEDIA_SELLER,
                 USER_ID to userId,
                 BUSINESS_UNIT to PHYSICAL_GOODS
