@@ -129,7 +129,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     activity?.finish()
                 }
                 is Fail -> {
-                    Timber.d("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId';stack_trace='${it.throwable.printStackTrace()}'")
+                    Timber.w("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId';stack_trace='${it.throwable.printStackTrace()}'")
                    val errorCode = LivenessErrorCodeUtil.getErrorCode(it.throwable)
                     when (it.throwable) {
                         is SocketTimeoutException -> {
