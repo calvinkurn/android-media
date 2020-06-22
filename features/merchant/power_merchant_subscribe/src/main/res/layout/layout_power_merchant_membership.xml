@@ -154,7 +154,7 @@
         android:id="@+id/btnPerformanceTips"
         android:text="@string/power_merchant_performance_tips"
         android:visibility="gone"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/power_merchant_tips_btn_size"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl6"
         app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
