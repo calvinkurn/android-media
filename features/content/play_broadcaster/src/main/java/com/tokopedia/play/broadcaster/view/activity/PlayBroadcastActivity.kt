@@ -17,7 +17,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
+import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
+import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
@@ -33,7 +35,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
+class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroadcastComponentProvider {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -46,6 +48,8 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     private lateinit var containerSetup: FrameLayout
     private lateinit var viewActionBar: ActionBarPartialView
     private lateinit var viewRequestPermission: PlayRequestPermissionView
+
+    private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -63,11 +67,12 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     }
 
     private fun inject() {
-        DaggerPlayBroadcastComponent.builder()
+        playBroadcastComponent = DaggerPlayBroadcastComponent.builder()
                 .playBroadcastModule(PlayBroadcastModule(this))
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
-                .inject(this)
+
+        playBroadcastComponent.inject(this)
     }
 
     private fun initViewModel() {
@@ -145,6 +150,10 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
 
     override fun showActionBar(shouldShow: Boolean) {
         if (shouldShow) viewActionBar.show() else viewActionBar.hide()
+    }
+
+    override fun getBroadcastComponent(): PlayBroadcastComponent {
+        return playBroadcastComponent
     }
 
     private fun getParentFragment() = getFragmentByClassName(PlayBroadcastFragment::class.java)

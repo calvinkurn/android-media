@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
 
     var mListener: Listener? = null
 
-    private lateinit var viewModel: PlayBroadcastCoverSetupViewModel
+    private lateinit var viewModel: PlayCoverSetupViewModel
 
     private lateinit var llOpenCamera: LinearLayout
     private lateinit var rvProductCover: RecyclerView
@@ -41,7 +41,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayBroadcastCoverSetupViewModel::class.java)
+        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayCoverSetupViewModel::class.java)
         initBottomSheet()
     }
 

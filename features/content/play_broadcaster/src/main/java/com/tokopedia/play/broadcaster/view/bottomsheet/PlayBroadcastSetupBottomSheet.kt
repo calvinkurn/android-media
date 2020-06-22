@@ -14,16 +14,17 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
-import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment
+import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
+import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
@@ -40,7 +41,7 @@ class PlayBroadcastSetupBottomSheet(
         PlayBottomSheetCoordinator,
         PlayEtalasePickerFragment.Listener,
         PlayEtalaseDetailFragment.Listener,
-        PlayCoverTitleSetupFragment.Listener {
+        PlayCoverSetupFragment.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -61,7 +62,7 @@ class PlayBroadcastSetupBottomSheet(
     override val channelId: String
         get() = broadcastViewModel.channelId
 
-    private var mListener: Listener? = null
+    private var mListener: SetupResultListener? = null
 
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
@@ -129,7 +130,7 @@ class PlayBroadcastSetupBottomSheet(
 
     override fun onProductSetupFinished(sharedElements: List<View>) {
         navigateToFragment(
-                fragmentClass = PlayCoverTitleSetupFragment::class.java,
+                fragmentClass = PlayCoverSetupFragment::class.java,
                 sharedElements = sharedElements,
                 onFragment = {
                     it.setListener(this)
@@ -137,21 +138,21 @@ class PlayBroadcastSetupBottomSheet(
         )
     }
 
-    override fun onCoverSetupFinished() {
-        complete()
+    override fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore) {
+        complete(dataStore)
     }
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
     }
 
-    fun setListener(listener: Listener) {
+    fun setListener(listener: SetupResultListener) {
         mListener = listener
     }
 
     private fun inject() {
         DaggerPlayBroadcastSetupComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .setBroadcastComponent((requireActivity() as PlayBroadcastComponentProvider).getBroadcastComponent())
                 .build()
                 .inject(this)
     }
@@ -226,20 +227,12 @@ class PlayBroadcastSetupBottomSheet(
         }
     }
 
-    private fun complete() {
-        mListener?.onSetupCompletedWithData(
-                viewModel.setupDataStore
-        )
+    private fun complete(dataStore: PlayBroadcastSetupDataStore) {
+        mListener?.onSetupCompletedWithData(dataStore)
         dismiss()
     }
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"
-    }
-
-    interface Listener {
-
-        fun onSetupCanceled()
-        fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore)
     }
 }

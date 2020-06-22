@@ -15,10 +15,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
@@ -40,13 +39,13 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var tvTermsCondition: TextView
 
-    private val setupListener = object : PlayBroadcastSetupBottomSheet.Listener {
+    private val setupListener = object : SetupResultListener {
         override fun onSetupCanceled() {
 
         }
 
         override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
-//            populateSetupData(selectedProducts, cover)
+            viewModel.setDataFromSetupDataStore(dataStore)
             openFinalPreparationPage()
         }
     }
@@ -126,13 +125,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         RouteManager.route(
                 context,
                 String.format(APPLINK_WEBVIEW_FORMAT, ApplinkConst.WEBVIEW, TERMS_CONDITION_URL)
-        )
-    }
-
-    private fun populateSetupData(selectedProducts: List<ProductContentUiModel>, cover: PlayCoverUiModel) {
-        viewModel.setupChannelWithData(
-                selectedProducts = selectedProducts,
-                cover = cover
         )
     }
 

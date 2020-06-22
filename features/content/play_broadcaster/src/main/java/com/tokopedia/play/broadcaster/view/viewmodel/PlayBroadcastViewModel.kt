@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.Manifest
 import androidx.lifecycle.*
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.Metric
@@ -27,7 +29,8 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 24/05/20.
  */
-class PlayBroadcastViewModel  @Inject constructor(
+class PlayBroadcastViewModel @Inject constructor(
+        private val mDataStore: PlayBroadcastDataStore,
         private val playPusher: PlayPusher,
         private val permissionUtil: PlayPermissionUtil,
         private val getConfigurationUseCase: GetConfigurationUseCase,
@@ -125,6 +128,10 @@ class PlayBroadcastViewModel  @Inject constructor(
         socketResponseHandler.removeObserver(socketResponseHandlerObserver)
         playSocket.destroy()
         scope.cancel()
+    }
+
+    fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
+        return mDataStore.getSetupDataStore()
     }
 
     fun getConfiguration() {
