@@ -23,6 +23,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
     private val phoneVerificationStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val couponVisibilityStatus: MutableLiveData<Boolean> = MutableLiveData()
+    private val couponAdded: MutableLiveData<Boolean> = MutableLiveData()
 
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
@@ -40,7 +41,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     fun getComponentPosition() = componentPosition
     fun getPhoneVerificationStatus() = phoneVerificationStatus
     fun getCouponVisibilityStatus() = couponVisibilityStatus
-    fun getQuickCouponData() = clickCouponLiveData
+    fun getCouponAddedStatus() = couponAdded
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -113,6 +114,7 @@ class QuickCouponViewModel(val application: Application, private val components:
                 quickCouponUseCase.applyQuickCoupon(promoCode).applyCouponData?.let { applyCouponData ->
                     applyCouponData.success?.let {
                         couponAppliedStatus.value = it
+                        couponAdded.value = it
                     }
                 }
             }, onError = {
@@ -123,6 +125,13 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     fun getCouponApplink(): String {
         clickCouponLiveData.value?.couponAppLink?.let {
+            return it
+        }
+        return ""
+    }
+
+    fun getCouponAddedFailMessage(): String {
+        clickCouponLiveData.value?.messageUsingFailed?.let {
             return it
         }
         return ""

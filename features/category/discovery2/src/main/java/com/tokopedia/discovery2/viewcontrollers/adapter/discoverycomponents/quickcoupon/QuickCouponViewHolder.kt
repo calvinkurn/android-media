@@ -14,12 +14,16 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 
 class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), View.OnClickListener {
     private var applyButton: Button = itemView.findViewById(R.id.apply_btn)
     private var titleTextView: TextView = itemView.findViewById(R.id.title_tv)
-    private var parentLayout: ConstraintLayout = itemView.findViewById(R.id.cardLayout)
+    private var cardLayout: ConstraintLayout = itemView.findViewById(R.id.cardLayout)
+    private var couponShimmerView: ImageUnify = itemView.findViewById(R.id.shimmer_view)
+    private var couponAddedImage: ImageUnify = itemView.findViewById(R.id.applied_img)
     private var componentPosition: Int? = null
 
     private lateinit var quickCouponViewModel: QuickCouponViewModel
@@ -31,7 +35,7 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
 
     private fun initView() {
         applyButton.setOnClickListener(this)
-        parentLayout.setOnClickListener(this)
+        cardLayout.setOnClickListener(this)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -46,21 +50,18 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             quickCouponViewModel.getPhoneVerificationStatus().observe(viewLifecycleOwner, Observer {
                 handlePhoneVerification(it)
             })
-
             quickCouponViewModel.getCouponVisibilityStatus().observe(viewLifecycleOwner, Observer {
                 if (it) {
                     (fragment as? DiscoveryFragment)?.reSync()
                 }
             })
+            quickCouponViewModel.getCouponAddedStatus().observe(viewLifecycleOwner, Observer {
+                handleCouponAdded(it)
+            })
             quickCouponViewModel.getComponentPosition().observe(viewLifecycleOwner, Observer {
                 componentPosition = it
             })
         }
-    }
-
-
-    private fun handleIsCouponApplicable(it: Boolean?) {
-
     }
 
     private fun userLoggedInStatus(it: Boolean?) {
@@ -72,9 +73,13 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
     }
 
     private fun updateCouponStatusUI(it: Boolean) {
+        couponShimmerView.hide()
+        cardLayout.visible()
         if (it) {
+            couponAddedImage.visible()
             applyButton.hide()
         } else {
+            couponAddedImage.hide()
             applyButton.show()
         }
         titleTextView.text = quickCouponViewModel.getCouponTitle()
@@ -83,13 +88,22 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
     override fun onClick(view: View?) {
         when (view) {
             applyButton -> quickCouponViewModel.onClaimCouponClick()
-            parentLayout -> RouteManager.route(itemView.context, quickCouponViewModel.getCouponApplink())
+            cardLayout -> RouteManager.route(itemView.context, quickCouponViewModel.getCouponApplink())
         }
     }
 
     private fun handlePhoneVerification(phoneStatus: Boolean?) {
         phoneStatus?.let {
             (fragment as DiscoveryFragment).phoneVerificationResponseCallBack(it)
+        }
+    }
+
+    private fun handleCouponAdded(it: Boolean) {
+        if (it) {
+            val message = quickCouponViewModel.getCouponAddedFailMessage()
+            if (message.isNotEmpty()) {
+                Toaster.make(itemView.rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            }
         }
     }
 }
