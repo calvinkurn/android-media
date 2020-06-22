@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandUiModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.PopularBrandAdapter
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.unifyprinciples.Typography
 
-class PopularBrandViewHolder(itemView: View?, listener: BrandlistPageTrackingListener) : AbstractViewHolder<PopularBrandViewModel>(itemView) {
+class PopularBrandViewHolder(itemView: View?, listener: BrandlistPageTrackingListener) : AbstractViewHolder<PopularBrandUiModel>(itemView) {
 
     private var context: Context? = null
     private var adapter: PopularBrandAdapter? = null
@@ -31,7 +31,7 @@ class PopularBrandViewHolder(itemView: View?, listener: BrandlistPageTrackingLis
         }
     }
 
-    override fun bind(element: PopularBrandViewModel?) {
+    override fun bind(element: PopularBrandUiModel?) {
         headerView?.text = element?.header?.title
         element?.popularBrands?.let {
             adapter?.setPopularBrands(it)

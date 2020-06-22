@@ -6,8 +6,8 @@ import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageTypeFactory
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 
-class FeaturedBrandViewModel(
-        val featuredBrands: List<Shop>,
+class NewBrandUiModel(
+        val newBrands: List<Shop>,
         val header: Header?,
         val listener: BrandlistPageTrackingListener) : Visitable<BrandlistPageTypeFactory> {
 
