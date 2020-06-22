@@ -37,6 +37,7 @@ query {
         glowShadowImgURL
         glowImgURL
         imageV2URLs
+        rewardImgURL
     }
     rewardButton {
         text
