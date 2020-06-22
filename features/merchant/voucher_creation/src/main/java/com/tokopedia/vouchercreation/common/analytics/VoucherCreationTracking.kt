@@ -5,6 +5,9 @@ import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
 
+/**
+ * docs: https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=1732582873
+ */
 object VoucherCreationTracking {
 
     fun sendOpenScreenTracking(screenName: String,
