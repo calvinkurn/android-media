@@ -350,7 +350,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             context?.run {
                                 val intent = VoucherListActivity.createInstance(this, true).apply {
                                     putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data)
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                 }
                                 startActivity(intent)
                                 sharedPref?.run {
@@ -382,11 +382,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             context?.run {
                                 val intent = VoucherListActivity.createInstance(this, true).apply {
                                     putExtra(VoucherListActivity.UPDATE_VOUCHER_KEY, true)
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                 }
                                 startActivity(intent)
                             }
-                            activity?.finish()
                         }
                         is Fail -> {
                             if (result.throwable.message == PROMO_CODE_ERROR_RESPONSE) {
