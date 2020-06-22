@@ -7,7 +7,9 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.PlayPusherBuilder
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUPCHAT_PREFERENCES
+import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
+import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
+import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
 import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
@@ -32,12 +34,17 @@ class PlayBroadcastModule(val mContext: Context) {
 
     @Provides
     fun provideLocalCacheHandler(): LocalCacheHandler {
-        return LocalCacheHandler(mContext, KEY_GROUPCHAT_PREFERENCES)
+        return LocalCacheHandler(mContext, KEY_GROUP_CHAT_PREFERENCES)
     }
 
     @Provides
     fun providePlayPusher(@ApplicationContext context: Context): PlayPusher {
         return PlayPusherBuilder(context).build()
+    }
+
+    @Provides
+    fun providePlaySocket(userSession: UserSessionInterface, cacheHandler: LocalCacheHandler): PlayBroadcastSocket {
+        return PlayBroadcastSocketImpl(userSession, cacheHandler)
     }
 
     @Provides

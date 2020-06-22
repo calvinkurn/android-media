@@ -141,7 +141,8 @@ object PlayBroadcastMocker {
         return PlayMetricUiModel(
                 firstSentence = firstSentence,
                 secondSentence = secondSentence,
-                fullSentence = fullSentence
+                fullSentence = fullSentence,
+                interval = 1000
         )
     }
 

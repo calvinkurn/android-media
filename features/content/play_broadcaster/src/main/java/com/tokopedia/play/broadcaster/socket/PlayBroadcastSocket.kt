@@ -1,34 +1,33 @@
 package com.tokopedia.play.broadcaster.socket
 
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.WebSocketResponse
-import javax.inject.Inject
+import androidx.lifecycle.LiveData
+import com.tokopedia.websocket.DEFAULT_DELAY
+import com.tokopedia.websocket.DEFAULT_MAX_RETRIES
+import com.tokopedia.websocket.DEFAULT_PING
 
 
 /**
  * Created by mzennis on 24/05/20.
  */
-class PlayBroadcastSocket @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val localCacheHandler: LocalCacheHandler
-) {
+interface PlayBroadcastSocket {
 
-    var channelId: String = ""
-    var gcToken: String = ""
+    fun configuration(): PlayBroadcastSocketImpl.SocketConfiguration = PlayBroadcastSocketImpl.SocketConfiguration(
+            minReconnectDelay = DEFAULT_DELAY,
+            maxRetries = DEFAULT_MAX_RETRIES,
+            pingInterval = DEFAULT_PING
+    )
 
-    fun connect(onMessageReceived: (WebSocketResponse)-> Unit, onReconnect: () -> Unit, onError: (error: Throwable) -> Unit) {
-    }
+    fun connect(channelId: String, groupChatToken: String = "")
 
-    fun send(message: String) {
+    fun destroy()
 
-    }
+    fun getObservablePlaySocketInfoState(): LiveData<PlaySocketInfoState>
 
-    fun destroy() {
-
-    }
+    fun getObservablePlaySocketMessage(): LiveData<out PlaySocketType>
 
     companion object {
-        const val KEY_GROUPCHAT_PREFERENCES = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter"
+        const val TAG = "PlayBroadcastSocket"
+        const val KEY_GROUP_CHAT_PREFERENCES = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter"
+        const val KEY_GROUP_CHAT_PATH = "/ws/groupchat?channel_id="
     }
 }
