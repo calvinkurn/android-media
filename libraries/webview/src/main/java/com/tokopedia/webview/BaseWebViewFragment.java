@@ -88,6 +88,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
+    private static final int REQUEST_CODE_LOGOUT = 1234;
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
@@ -326,6 +327,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } else {
                 webView.loadAuthUrl(historyUrl, userSession);
             }
+        }
+
+        if (requestCode == REQUEST_CODE_LOGOUT && resultCode == RESULT_OK) {
+            startActivity(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN));
         }
     }
 
@@ -622,10 +627,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
             boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
-                TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
-                taskStackBuilder.addNextIntent(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT));
-                taskStackBuilder.addNextIntent(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN));
-                taskStackBuilder.startActivities();
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
+                startActivityForResult(intent, REQUEST_CODE_LOGOUT);
             } else {
                 startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
             }
