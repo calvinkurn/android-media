@@ -33,6 +33,7 @@ import com.tokopedia.liveness.R
 import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
+import com.tokopedia.liveness.utils.LivenessErrorCodeUtil
 import com.tokopedia.liveness.view.BackgroundOverlay
 import com.tokopedia.liveness.view.OnBackListener
 import com.tokopedia.liveness.view.activity.LivenessActivity
@@ -128,12 +129,14 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     activity?.finish()
                 }
                 is Fail -> {
+                    Timber.w("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId';stack_trace='${it.throwable.printStackTrace()}'")
+                    val errorCode = LivenessErrorCodeUtil.getErrorCode(it.throwable)
                     when (it.throwable) {
                         is SocketTimeoutException -> {
-                            setFailedResultData(Detector.DetectionFailedType.BADNETWORK)
+                            setFailedResultData(Detector.DetectionFailedType.BADNETWORK, errorCode)
                         }
                         else -> {
-                            setFailedResultData(Detector.DetectionFailedType.GENERAL)
+                            setFailedResultData(Detector.DetectionFailedType.GENERAL, errorCode)
                         }
                     }
                 }
@@ -334,7 +337,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
 
             override fun onGetFaceDataFailed(entity: BaseResultEntity) {
                 if (!entity.success && LivenessView.NO_RESPONSE == entity.code) {
-                    setFailedResultData(Detector.DetectionFailedType.BADNETWORK)
+                    setFailedResultData(Detector.DetectionFailedType.BADNETWORK, null)
                 }
             }
         })
@@ -361,21 +364,24 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         }
     }
 
-    private fun setFailedResultData(failedType: Detector.DetectionFailedType) {
+    private fun setFailedResultData(failedType: Detector.DetectionFailedType, errorCode: Int?) {
         if (activity != null) {
             val intent = Intent(activity, LivenessFailedActivity::class.java)
             when (failedType) {
                 Detector.DetectionFailedType.GENERAL -> {
-                    intent.putExtra(ARG_FAILED_TYPE, LivenessConstants.FAILED_GENERAL)
+                    intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_GENERAL)
                 }
                 Detector.DetectionFailedType.BADNETWORK -> {
-                    intent.putExtra(ARG_FAILED_TYPE, LivenessConstants.FAILED_BADNETWORK)
+                    intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_BADNETWORK)
                 }
                 Detector.DetectionFailedType.TIMEOUT -> {
-                    intent.putExtra(ARG_FAILED_TYPE, LivenessConstants.FAILED_TIMEOUT)
+                    intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_TIMEOUT)
                 }
                 else -> {
                 }
+            }
+            errorCode?.let {
+                intent.putExtra(LivenessConstants.ARG_ERROR_CODE, errorCode)
             }
             activity?.startActivityForResult(intent, RESULT_CANCELED)
         }
@@ -388,13 +394,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 if (cameraResultFile.exists()) {
                     return cameraResultFile.absolutePath
                 } else {
-                    Timber.d("P2#LIVENESS_IMAGE_ERROR#'FailedImageFileNotFound';absolutePath='${cameraResultFile.absolutePath}'")
+                    Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageFileNotFound';absolutePath='${cameraResultFile.absolutePath}'")
                 }
             } else {
-                Timber.d("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
+                Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
             }
         } catch (error: Throwable) {
-            Timber.d("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='${error.printStackTrace()}'")
+            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='${error.printStackTrace()}'")
         }
         return ""
     }
@@ -418,7 +424,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             out.close()
         } catch (e: Throwable) {
             e.printStackTrace()
-            Timber.d("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='${e.printStackTrace()}'")
+            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='${e.printStackTrace()}'")
         }
         return file
     }
@@ -439,8 +445,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     override fun onDetectionFailed(failedType: Detector.DetectionFailedType, detectionType: Detector.DetectionType) {
         if (isAdded) {
             when (failedType) {
-                Detector.DetectionFailedType.TIMEOUT -> setFailedResultData(Detector.DetectionFailedType.TIMEOUT)
-                Detector.DetectionFailedType.MUCHMOTION -> setFailedResultData(Detector.DetectionFailedType.MUCHMOTION)
+                Detector.DetectionFailedType.TIMEOUT -> setFailedResultData(Detector.DetectionFailedType.TIMEOUT, null)
+                Detector.DetectionFailedType.MUCHMOTION -> setFailedResultData(Detector.DetectionFailedType.MUCHMOTION, null)
                 else -> {
                 }
             }
@@ -488,7 +494,6 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         }
 
         const val FACE_RETAKE = 2
-        const val ARG_FAILED_TYPE = "failed_type"
         const val DEFAULT_ID = "1"
     }
 
