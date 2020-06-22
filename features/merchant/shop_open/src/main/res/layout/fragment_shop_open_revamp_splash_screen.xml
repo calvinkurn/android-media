@@ -51,11 +51,11 @@
 
     <ImageView
         android:id="@+id/img_icon_open_shop_finish"
-        android:layout_marginTop="@dimen/dp_64"
-        android:src="@drawable/ic_icon_toped_announce_shop_open"
-        android:layout_gravity="center_horizontal"
-        android:scaleType="fitXY"
         android:layout_width="289dp"
-        android:layout_height="260dp" />
+        android:layout_height="260dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_64"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_icon_toped_announce_shop_open" />
 
 </LinearLayout>

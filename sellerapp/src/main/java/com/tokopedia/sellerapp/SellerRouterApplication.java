@@ -20,10 +20,8 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
-import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
-import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
-import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
@@ -47,8 +45,6 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.inbox.common.ResolutionRouter;
-import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
@@ -98,9 +94,8 @@ import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
-import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
-import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -108,8 +103,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -131,11 +124,9 @@ public abstract class SellerRouterApplication extends MainApplication
         NetworkRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
-        BroadcastMessageRouter,
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter,
         SellerHomeRouter,
         LoginRouter {
 
@@ -487,24 +478,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return FlashSaleInternalRouter.getFlashSaleDashboardActivity(context);
     }
 
-    @NonNull
-    @Override
-    public Intent getBroadcastMessageListIntent(@NonNull Context context) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_BM_CLICK, "");
-        return BroadcastMessageInternalRouter.INSTANCE.getBroadcastMessageListIntent(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getBroadcastMessageAttachProductIntent(@NonNull Context context, @NonNull String shopId,
-                                                         @NonNull String shopName, boolean isSeller,
-                                                         @NonNull List<Integer> selectedIds,
-                                                         @NonNull ArrayList<HashMap<String, String>> hashProducts) {
-        return BroadcastMessageAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
-    }
-
     @Override
     public Intent getInboxTalkCallingIntent(@NonNull Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
@@ -575,7 +548,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, orderId));
     }
 
     @Override

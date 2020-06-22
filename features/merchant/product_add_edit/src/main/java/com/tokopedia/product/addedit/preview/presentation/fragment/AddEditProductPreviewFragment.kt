@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -49,6 +50,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_SELECTION
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
@@ -223,7 +225,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         viewModel.productInputModel.value?.let {
             viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
         }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     fun isEditing(): Boolean {
@@ -365,12 +366,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
                             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, this)
                             AddEditProductEditService.startService(it, saveInstanceCacheManager.id ?: "")
+                            activity?.setResult(RESULT_OK)
                             activity?.finish()
                         }
                     }
                 } else {
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
+                        activity?.setResult(RESULT_OK)
                         activity?.finish()
                     }
                 }
@@ -445,6 +448,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeImageUrlOrPathList()
         observeVariantList()
         observeIsLoading()
+        observeSaveProductDraft()
     }
 
     override fun onDestroyView() {
@@ -511,6 +515,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                                 saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
                                 AddEditProductAddService.startService(this, saveInstanceCacheManager.id ?: "")
                             }
+                            activity?.setResult(RESULT_OK)
                             activity?.finish()
                         } else {
                             view?.let { view ->
@@ -781,6 +786,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 showLoading()
             } else {
                 hideLoading()
+            }
+        })
+    }
+
+    private fun observeSaveProductDraft() {
+        viewModel.saveProductDraftResultLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+                is Fail -> AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
             }
         })
     }

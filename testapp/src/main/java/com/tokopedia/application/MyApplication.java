@@ -348,6 +348,11 @@ public class MyApplication extends BaseMainApplication
 
     }
 
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
+        
+    }
+
     /**
      * use RouteManager.route(context,applink) directly instead
      */

@@ -11,8 +11,7 @@ include "features:category:common_tradein"
 
 include "features:home:navigation-common"
 
-include "features:communication:broadcast_message"
-include "features:communication:broadcast_message_common"
+//include "features:communication:broadcast_message_no_op"
 
 include "features:content:affiliate_common"
 include "features:content:feed_component"
