@@ -11,7 +11,6 @@ import com.tokopedia.filter.R
 import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
 import com.tokopedia.filter.common.helper.createFilterDividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.filter_category_detail_level_two_view_holder.view.*
 
 internal class FilterCategoryLevelTwoAdapter(
@@ -48,7 +47,7 @@ internal class FilterCategoryLevelTwoAdapter(
         fun bind(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
             itemView.filterCategoryDetailLevelTwoTitle?.text = filterCategoryLevelTwoViewModel.levelTwoCategory.name
             itemView.filterCategoryDetailLevelTwoFoldIcon?.showWithCondition(filterCategoryLevelTwoViewModel.isExpandable)
-            itemView.filterCategoryDetailLevelTwoCheckBox?.showWithCondition(!filterCategoryLevelTwoViewModel.isExpandable)
+            itemView.filterCategoryDetailLevelTwoRadioButton?.showWithCondition(!filterCategoryLevelTwoViewModel.isExpandable)
 
             val shouldShowLevelThreeCategory = filterCategoryLevelTwoViewModel.isExpandable && filterCategoryLevelTwoViewModel.isSelectedOrExpanded
             itemView.filterCategoryDetailLevelThreeRecyclerView?.showWithCondition(shouldShowLevelThreeCategory)
@@ -97,14 +96,14 @@ internal class FilterCategoryLevelTwoAdapter(
 
         private fun bindContainerCheckBox() {
             itemView.filterCategoryDetailLevelTwoContainer?.setOnClickListener {
-                itemView.filterCategoryDetailLevelTwoCheckBox?.isChecked = itemView.filterCategoryDetailLevelTwoCheckBox?.isChecked != true
+                itemView.filterCategoryDetailLevelTwoRadioButton?.isChecked = itemView.filterCategoryDetailLevelTwoRadioButton?.isChecked != true
             }
         }
 
         private fun bindCheckbox(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
-            itemView.filterCategoryDetailLevelTwoCheckBox?.setOnCheckedChangeListener(null)
-            itemView.filterCategoryDetailLevelTwoCheckBox?.isChecked = filterCategoryLevelTwoViewModel.isSelectedOrExpanded
-            itemView.filterCategoryDetailLevelTwoCheckBox?.setOnCheckedChangeListener { _, isChecked ->
+            itemView.filterCategoryDetailLevelTwoRadioButton?.setOnCheckedChangeListener(null)
+            itemView.filterCategoryDetailLevelTwoRadioButton?.isChecked = filterCategoryLevelTwoViewModel.isSelectedOrExpanded
+            itemView.filterCategoryDetailLevelTwoRadioButton?.setOnCheckedChangeListener { _, isChecked ->
                 callback.onLevelTwoCategoryClicked(filterCategoryLevelTwoViewModel, isChecked)
             }
         }

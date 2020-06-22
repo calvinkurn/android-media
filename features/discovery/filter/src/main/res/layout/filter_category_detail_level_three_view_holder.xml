@@ -20,12 +20,12 @@
         app:typographyType="heading_5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/filterCategoryDetailLevelThreeCheckBox"
+        app:layout_constraintEnd_toStartOf="@id/filterCategoryDetailLevelThreeRadioButton"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="DKI Jakarta"/>
 
-    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-        android:id="@+id/filterCategoryDetailLevelThreeCheckBox"
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/filterCategoryDetailLevelThreeRadioButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_18"

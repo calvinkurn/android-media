@@ -36,7 +36,7 @@ internal class FilterCategoryLevelThreeAdapter(
 
         private fun bindContainer() {
             itemView.filterCategoryDetailLevelThreeContainer?.setOnClickListener {
-                itemView.filterCategoryDetailLevelThreeCheckBox?.isChecked = itemView.filterCategoryDetailLevelThreeCheckBox?.isChecked != true
+                itemView.filterCategoryDetailLevelThreeRadioButton?.isChecked = itemView.filterCategoryDetailLevelThreeRadioButton?.isChecked != true
             }
         }
 
@@ -45,9 +45,9 @@ internal class FilterCategoryLevelThreeAdapter(
         }
 
         private fun bindCheckbox(filterCategoryLevelThreeViewModel: FilterCategoryLevelThreeViewModel) {
-            itemView.filterCategoryDetailLevelThreeCheckBox?.setOnCheckedChangeListener(null)
-            itemView.filterCategoryDetailLevelThreeCheckBox?.isChecked = filterCategoryLevelThreeViewModel.isSelected
-            itemView.filterCategoryDetailLevelThreeCheckBox?.setOnCheckedChangeListener { _, isChecked ->
+            itemView.filterCategoryDetailLevelThreeRadioButton?.setOnCheckedChangeListener(null)
+            itemView.filterCategoryDetailLevelThreeRadioButton?.isChecked = filterCategoryLevelThreeViewModel.isSelected
+            itemView.filterCategoryDetailLevelThreeRadioButton?.setOnCheckedChangeListener { _, isChecked ->
                 callback.onLevelThreeCategoryClicked(filterCategoryLevelThreeViewModel, isChecked)
             }
         }
