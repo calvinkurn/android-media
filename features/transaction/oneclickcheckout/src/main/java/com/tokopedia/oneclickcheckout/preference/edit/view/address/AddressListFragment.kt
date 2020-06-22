@@ -278,7 +278,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             performSearch("")
         }
         searchAddress.setListener(this)
-        searchAddress.setSearchHint(getString(R.string.label_hint_search_address))
+        searchAddress.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address))
     }
 
     override fun onSelect(addressId: String) {

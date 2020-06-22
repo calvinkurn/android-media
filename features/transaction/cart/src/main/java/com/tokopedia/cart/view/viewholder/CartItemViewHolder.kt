@@ -291,7 +291,7 @@ class CartItemViewHolder constructor(itemView: View,
             this.tvProductPrice.text = data.cartItemData?.originData?.wholesalePriceFormatted
         } else {
             this.tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    data.cartItemData?.originData?.pricePlan ?: 0.toDouble(), false)
+                    data.cartItemData?.originData?.pricePlan ?: 0.toDouble(), false).removeDecimalSuffix()
         }
 
         ImageHandler.loadImageRounded2(

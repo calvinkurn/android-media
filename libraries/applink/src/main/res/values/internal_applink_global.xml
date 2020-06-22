@@ -69,4 +69,6 @@
     <string name="path_manage_notification">/manage-notification</string>
 
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
+
+    <string name="path_screen_recorder">/screen-recorder</string>
 </resources>
