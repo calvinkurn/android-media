@@ -170,7 +170,7 @@ class SmartBillsAnalytics {
                 DataLayer.mapOf(
                         NAME, it.productName,
                         ID, it.productID,
-                        PRICE, it.amountText,
+                        PRICE, it.amount.toString(),
                         BRAND, NONE,
                         CATEGORY, it.categoryName,
                         VARIANT, NONE
