@@ -419,12 +419,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     public void onClickBanner(ProductItem productItem) {
-        String applink;
         if (!TextUtils.isEmpty(productItem.getSeoUrl())) {
-            if (productItem.getSeoUrl().contains("www.tokopedia.com")) {
-                applink = productItem.getSeoUrl().replace("https://www.tokopedia.com/", "tokopedia://");
-                RouteManager.route(getView().getActivity(), applink);
-            }
+            RouteManager.route(getView().getActivity(), productItem.getSeoUrl());
         }
     }
 
