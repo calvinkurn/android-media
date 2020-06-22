@@ -111,7 +111,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {
-        println(combination)
+        viewModel.updatePrimaryVariant(combination)
     }
 
     fun onBackPressed() {

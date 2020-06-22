@@ -12,7 +12,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputMo
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.viewholder.MultipleVariantEditSelectViewHolder
 
-class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariantEditSelectViewHolder>(),
+class MultipleVariantEditSelectAdapter: RecyclerView.Adapter<MultipleVariantEditSelectViewHolder>(),
         MultipleVariantEditSelectViewHolder.OnFieldClickListener {
 
     private var productVariants: List<ProductVariantInputModel> = listOf()

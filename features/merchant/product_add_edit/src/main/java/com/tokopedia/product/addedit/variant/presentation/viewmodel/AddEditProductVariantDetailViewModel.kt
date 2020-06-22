@@ -48,6 +48,13 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
+    fun updatePrimaryVariant(combination: List<Int>) {
+        val variantInputModel = productInputModel.value?.variantInputModel?.products
+        variantInputModel?.forEach {
+            it.isPrimary = it.combination == combination
+        }
+    }
+
     fun getVariantDetailFieldMap(): HashMap<Int, VariantDetailInputLayoutModel> {
         return this.variantDetailFieldMapLayout
     }
@@ -74,4 +81,5 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
 
     }
+
 }
