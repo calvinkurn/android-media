@@ -8,17 +8,19 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.PRODUCT_BANNER_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.PRODUCT_BANNER_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.layout_digital_home_category_item_submenu_frame.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_card_image.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_product_banner.view.*
+
+/**
+ * @author by resakemal on 15/06/20.
+ */
 
 class RechargeHomepageProductBannerViewHolder(
         val view: View,
@@ -41,13 +43,9 @@ class RechargeHomepageProductBannerViewHolder(
     }
 
     private fun setHeader(section: RechargeHomepageSections.Section) {
-        RechargeHomepageSectionMapper.mapSectionToChannel(section)?.let { channel ->
-            val listener = object : HeaderListener {
-                override fun onSeeAllClick(link: String) { /* do nothing */ }
-                override fun onChannelExpired(channelModel: ChannelModel) { /* do nothing */ }
-            }
-            itemView.view_recharge_home_product_banner_header.setChannel(channel, listener)
-        }
+        RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
+                itemView.view_recharge_home_product_banner_header, section
+        )
     }
 
     // TODO: Set static gradient background & remove temporary background color
@@ -56,9 +54,8 @@ class RechargeHomepageProductBannerViewHolder(
     }
 
     private fun setProduct(section: RechargeHomepageSections.Section) {
-        val grid = section.items.firstOrNull()
-        grid?.run {
-            setProductListener(this)
+        section.items.firstOrNull()?.run {
+            setProductListener(section, this)
             setProductName(title)
             setProductDescription(subtitle)
             setProductPrice(label1)
@@ -68,10 +65,13 @@ class RechargeHomepageProductBannerViewHolder(
         }
     }
 
-    private fun setProductListener(item: RechargeHomepageSections.Item) {
+    private fun setProductListener(section: RechargeHomepageSections.Section, item: RechargeHomepageSections.Item) {
         with (itemView) {
             btn_recharge_home_product_banner_buy.setOnClickListener {
                 listener.onRechargeSectionItemClicked(item, adapterPosition, PRODUCT_BANNER_CLICK)
+            }
+            addOnImpressionListener(section) {
+                listener.onRechargeSectionItemImpression(section.items, PRODUCT_BANNER_IMPRESSION)
             }
         }
     }

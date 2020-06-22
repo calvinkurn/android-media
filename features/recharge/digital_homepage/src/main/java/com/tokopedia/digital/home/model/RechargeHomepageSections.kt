@@ -124,6 +124,18 @@ class RechargeHomepageVideoHighlightModel(section: RechargeHomepageSections.Sect
         }
 }
 
+class RechargeHomepageSingleBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageDualBannersModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
 class RechargeHomepageProductBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)

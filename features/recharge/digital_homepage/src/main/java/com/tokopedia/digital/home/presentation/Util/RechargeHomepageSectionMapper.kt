@@ -3,6 +3,8 @@ package com.tokopedia.digital.home.presentation.Util
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.home_component.customview.DynamicChannelHeaderView
+import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
@@ -20,8 +22,12 @@ object RechargeHomepageSectionMapper {
                     SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
                     SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
+                    SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
+                    SECTION_COUNTDOWN_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
+                    SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
                     SECTION_LEGO_BANNERS -> getDynamicLegoBannerModel(it)
 //                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
+                    // TODO: Remove temporary data
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(RechargeHomepageSections.Section(
                             id = 1,
                             title = "Test",
@@ -50,7 +56,19 @@ object RechargeHomepageSectionMapper {
                 }))
     }
 
-    fun mapSectionToChannel(section: RechargeHomepageSections.Section): ChannelModel? {
+    fun setDynamicHeaderViewChannel(headerView: DynamicChannelHeaderView, section: RechargeHomepageSections.Section, listener: HeaderListener? = null) {
+        val headerListener = listener ?: object : HeaderListener {
+            override fun onSeeAllClick(link: String) { /* do nothing */ }
+
+            override fun onChannelExpired(channelModel: ChannelModel) { /* do nothing */ }
+        }
+
+        mapSectionToChannel(section)?.let { channel ->
+            headerView.setChannel(channel, headerListener)
+        }
+    }
+
+    private fun mapSectionToChannel(section: RechargeHomepageSections.Section): ChannelModel? {
         with (section) {
             return if (section.items.isNotEmpty()) {
                 val sectionId = id.toString()

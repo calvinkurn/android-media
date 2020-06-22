@@ -78,6 +78,14 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
         return RechargeHomepageVideoHighlightViewHolder.LAYOUT
     }
 
+    fun type(singleBannerModel: RechargeHomepageSingleBannerModel): Int {
+        return RechargeHomepageSingleBannerViewHolder.LAYOUT
+    }
+
+    fun type(dualBannersModel: RechargeHomepageDualBannersModel): Int {
+        return RechargeHomepageDualBannersViewHolder.LAYOUT
+    }
+
     fun type(productBannerModel: RechargeHomepageProductBannerModel): Int {
         return RechargeHomepageProductBannerViewHolder.LAYOUT
     }
@@ -107,6 +115,8 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
             RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
             RechargeHomepageBannerViewHolder.LAYOUT_EMPTY -> RechargeHomepageBannerViewHolder(parent, listener, true)
             RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
+            RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(parent, listener)
+            RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(parent, listener)
             DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, listener, listener)
             RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
