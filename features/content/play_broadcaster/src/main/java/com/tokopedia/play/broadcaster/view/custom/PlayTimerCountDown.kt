@@ -5,8 +5,8 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
@@ -34,9 +34,7 @@ class PlayTimerCountDown @JvmOverloads constructor(
     /**
      * Animation area
      */
-    private val rotateAnimation = RotateAnimation(
-            0f,
-            360f * count, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+    private var rotateAnimation: RotateAnimation
 
     private val textAnimatorIn: AnimatorSet
     private val textAnimatorOut: AnimatorSet
@@ -60,7 +58,12 @@ class PlayTimerCountDown @JvmOverloads constructor(
 
         countText.text = count.toString()
         countText.alpha = 0f
-        rotateAnimation.duration = (1700 * (count)).toLong()
+        val degree = 360f * (count * 2 / 3)
+        Log.d("TEST", "degree :${degree}")
+        rotateAnimation = RotateAnimation(
+                0f,
+                degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        rotateAnimation.duration = (1000 * (count * 2)).toLong()
         rotateAnimation.interpolator = LinearInterpolator()
 
         textAnimatorIn = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_scale_alpha) as AnimatorSet
@@ -86,6 +89,9 @@ class PlayTimerCountDown @JvmOverloads constructor(
                 initTicker()
             }
         })
+
+        progressCircular.playAnimation()
+        info.playAnimation()
     }
 
     private fun initTicker(){
@@ -96,7 +102,7 @@ class PlayTimerCountDown @JvmOverloads constructor(
                 if(count != 0) {
                     countText.text = count.toString()
                     textAnimatorIn.start()
-                    delay(1450)
+                    delay(1600)
                     textAnimatorOut.start()
                     if(count == 1){
                         animatorInfoOut.start()
@@ -111,15 +117,13 @@ class PlayTimerCountDown @JvmOverloads constructor(
 
     fun setCountDown(number: Int){
         count = number
+        rotateAnimation = RotateAnimation(0f, 360f * (count * 2 / 3), Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        rotateAnimation.duration = (1000 * (count * 2)).toLong()
+        rotateAnimation.interpolator = LinearInterpolator()
     }
 
     fun start(){
         progressCircular.playAnimation()
         info.playAnimation()
-    }
-
-    override fun detachViewFromParent(child: View?) {
-        mainJob.cancelChildren()
-        super.detachViewFromParent(child)
     }
 }
