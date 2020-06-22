@@ -325,9 +325,15 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             productDiscussionMostHelpfulMap?.run {
-                questions = it.discussionMostHelpful.questions
-                totalQuestion = it.discussionMostHelpful.totalQuestion
-                isShimmering = false
+                if(it.discussionMostHelpful == null) {
+                    isShimmering = true
+                } else {
+                    it.discussionMostHelpful?.let {
+                        questions = it.questions
+                        totalQuestion = it.totalQuestion
+                        isShimmering = false
+                    }
+                }
             }
 
             productMostHelpfulMap?.run {
