@@ -2182,11 +2182,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         updateActionButtonShadow()
         stickyLoginView.setOnClickListener {
             goToLogin()
-            stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.PDP)
+            } else {
+                stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
+            }
         }
         stickyLoginView.setOnDismissListener(View.OnClickListener {
             stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
-            stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            } else {
+                stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            }
             updateStickyState()
         })
 
@@ -2199,21 +2207,30 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             return
         }
 
-        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
-        if (!isCanShowing) {
-            stickyLoginView.visibility = View.GONE
-            return
-        }
-
         if (viewModel.isUserSessionActive) {
             stickyLoginView.visibility = View.GONE
             return
         }
 
-        this.tickerDetail?.let { stickyLoginView.setContent(it) }
-        stickyLoginView.show(StickyLoginConstant.Page.PDP)
-        if (shouldTrackStickyLogin || stickyLoginView.isShowing()) {
-            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+        if (shouldTrackStickyLogin) {
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.showLoginReminder(StickyLoginConstant.Page.PDP)
+                if (stickyLoginView.isShowing()) {
+                    stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.PDP)
+                }
+            } else {
+                val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
+                if (!isCanShowing) {
+                    stickyLoginView.visibility = View.GONE
+                    return
+                }
+
+                this.tickerDetail?.let { stickyLoginView.setContent(it) }
+                stickyLoginView.show(StickyLoginConstant.Page.PDP)
+                if (stickyLoginView.isShowing()) {
+                    stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+                }
+            }
             shouldTrackStickyLogin = false
         }
     }
