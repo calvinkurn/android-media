@@ -164,4 +164,8 @@ public interface UserSessionInterface {
 
     long getFcmTimestamp();
 
+    String getGTMLoginID();
+
+    String getAndroidId();
+
 }
