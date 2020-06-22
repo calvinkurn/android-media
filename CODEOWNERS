@@ -76,6 +76,7 @@
 /features/merchant/youtube_common/                      @tokopedia/minion-stuart
 /features/merchant/gallery/                             @tokopedia/minion-stuart
 /features/merchant/favorite/                            @tokopedia/minion-stuart
+/features/transaction/sellerorder/                      @tokopedia/minion-stuart
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/minion-skywalker
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
@@ -136,11 +137,11 @@
 /libraries/travel_calendar                              @tokopedia/minion-mark
 /features/recharge/recharge_slice                       @tokopedia/minion-mark
 
+/features/promo/promo_checkout/                 		@tokopedia/minion-mark
+/features/promo/promo_checkout_common/          		@tokopedia/minion-mark
+
 /features/payment/payment/                      		@tokopedia/minion-bob
-/features/payment/payment_setting/              		@tokopedia/minion-yoda
-/features/payment/pms/                          		@tokopedia/minion-bob
 /features/transaction/atc_common/               		@tokopedia/minion-bob
-/features/transaction/sellerorder/                      @tokopedia/minion-bob
 /features/transaction/buyerorder/                       @tokopedia/minion-bob
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/transaction/cart/        		                @tokopedia/minion-bob
@@ -151,8 +152,6 @@
 /features/logistic/logisticaddaddress/          		@tokopedia/minion-bob
 /features/logistic/logisticorder/                    	@tokopedia/minion-bob
 /features/logistic/dropoff/                    	        @tokopedia/minion-bob
-/features/promo/promo_checkout/                 		@tokopedia/minion-bob
-/features/promo/promo_checkout_common/          		@tokopedia/minion-bob
 /features/logistic/logisticcart/                		@tokopedia/minion-bob
 
 /features/user/chatbot/                         		@tokopedia/minion-darth
@@ -225,6 +224,8 @@
 /features/fintech/wallet                				@tokopedia/minion-yoda
 /features/payment/thankyou_native                		@tokopedia/minion-yoda
 
+/features/payment/payment_setting/              		@tokopedia/minion-yoda
+/features/payment/pms/                          		@tokopedia/minion-yoda
 
 /libraries/adapter_delegate/							@tokopedia/core-team
 /libraries/akamai_bot_lib/							    @tokopedia/core-team
