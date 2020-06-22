@@ -12,8 +12,7 @@ import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippi
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.ShowLoading
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantRemoteConfig
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -26,7 +25,7 @@ import javax.inject.Inject
 class PmSubscribeViewModel @Inject constructor(
     private val getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase,
     private val getShopFreeShippingStatusUseCase: GetShopFreeShippingStatusUseCase,
-    private val remoteConfig: RemoteConfig,
+    private val remoteConfig: PowerMerchantRemoteConfig,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -50,7 +49,7 @@ class PmSubscribeViewModel @Inject constructor(
 
         launchCatchError(block = {
             val shopId = userSession.shopId
-            val freeShippingEnabled = !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+            val freeShippingEnabled = remoteConfig.isFreeShippingEnabled()
 
             val response = withContext(dispatchers.io) {
                 val params = GetPowerMerchantStatusUseCase.createRequestParams(shopId)
@@ -68,7 +67,7 @@ class PmSubscribeViewModel @Inject constructor(
     }
 
     fun getFreeShippingStatus() {
-        val freeShippingEnabled = !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        val freeShippingEnabled = remoteConfig.isFreeShippingEnabled()
 
         if(freeShippingEnabled) {
             launchCatchError(block = {
@@ -110,7 +109,7 @@ class PmSubscribeViewModel @Inject constructor(
 
             val isActive = freeShipping.active
             val isEligible = freeShipping.isEligible()
-            val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+            val isTransitionPeriod = remoteConfig.isTransitionPeriodEnabled()
 
             PowerMerchantFreeShippingStatus(
                 isActive,
