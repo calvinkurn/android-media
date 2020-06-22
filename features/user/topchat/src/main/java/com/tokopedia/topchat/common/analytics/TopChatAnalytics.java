@@ -285,7 +285,8 @@ public class TopChatAnalytics {
                 product.getPriceInt(),
                 null,
                 "/chat",
-                PRODUCT_INDEX
+                PRODUCT_INDEX,
+                new HashMap<>()
         );
         products.add(topChatProduct);
 

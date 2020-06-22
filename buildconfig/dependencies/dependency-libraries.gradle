@@ -23,7 +23,7 @@ ext {
             analyticParam           : "com.tokopedia.analytic:param:0.0.2",
             analyticProcessor       : "com.tokopedia.analytic:processor:0.0.3",
             analyticFirebaseRules   : "com.tokopedia.analytic.rules:firebase:0.0.2",
-            analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2"
+            analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.3"
     ]
 
     // Sort and categorize alphabetically by folder name
