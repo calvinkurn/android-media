@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_COUNT
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
@@ -15,7 +17,7 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
 
     private var productVariants: List<ProductVariantInputModel> = listOf()
     private var selections: List<SelectionInputModel> = listOf()
-    private var selectedIndex: MutableList<MutableList<Boolean>> = mutableListOf()
+    private var selectionIndex: MutableList<MutableList<Boolean>> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultipleVariantEditSelectViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_multiple_variant_edit_select, parent, false)
@@ -23,31 +25,47 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
     }
 
     override fun getItemCount(): Int {
-        return selectedIndex.size
+        return selectionIndex.size
     }
 
     override fun onBindViewHolder(holder: MultipleVariantEditSelectViewHolder, position: Int) {
-        holder.bindData(selectedIndex[position], selections)
+        holder.bindData(selectionIndex[position], selections)
     }
 
     override fun onFieldClicked(selectionPosition: Int, optionPosition: Int, value: Boolean) {
-        selectedIndex[selectionPosition][optionPosition] = value
+        selectionIndex[selectionPosition][optionPosition] = value
     }
 
     fun setData(variantInputModel: VariantInputModel) {
         selections = variantInputModel.selections
         productVariants = variantInputModel.products
-        selectedIndex = initializeSelectedIndex(variantInputModel.products, false)
+        selectionIndex = initializeSelectedIndex(variantInputModel.products, false)
         notifyDataSetChanged()
     }
 
     fun setAllDataSelected(isSelected: Boolean) {
-        selectedIndex = initializeSelectedIndex(productVariants, isSelected)
+        selectionIndex = initializeSelectedIndex(productVariants, isSelected)
         notifyDataSetChanged()
     }
 
-    fun getSelectedData(): List<HashMap<Int, Boolean>> {
-        return emptyList()
+    fun getSelectedData(): MutableList<MutableList<Int>> {
+        val levelCount = selections.size
+        val selectedIndex = mutableListOf<MutableList<Int>>()
+        selectionIndex.forEachIndexed { level1Index, level2Indices ->
+            level2Indices.forEachIndexed { level2Index, isChecked ->
+                if (isChecked) {
+                    when (levelCount) {
+                        VARIANT_VALUE_LEVEL_ONE_COUNT -> {
+                            selectedIndex.add(mutableListOf(level1Index))
+                        }
+                        VARIANT_VALUE_LEVEL_TWO_COUNT -> {
+                            selectedIndex.add(mutableListOf(level1Index, level2Index))
+                        }
+                    }
+                }
+            }
+        }
+        return selectedIndex
     }
 
     private fun initializeSelectedIndex(

@@ -49,8 +49,10 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
-        multipleVariantEditInputModel.selection = selectAdapter?.getSelectedData().orEmpty()
-        multipleVariantEditListener.onMultipleEditFinished(multipleVariantEditInputModel)
+        selectAdapter?.getSelectedData()?.let {
+            multipleVariantEditInputModel.selection = it
+            multipleVariantEditListener.onMultipleEditFinished(multipleVariantEditInputModel)
+        }
     }
 
     fun setData(items: VariantInputModel?) {
