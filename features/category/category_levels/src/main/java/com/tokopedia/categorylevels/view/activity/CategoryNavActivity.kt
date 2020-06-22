@@ -103,16 +103,16 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         initializeSearchParameter(intent)
     }
 
-    override fun sendScreenAnalytics() {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, getDimensionMap())
+    private fun sendOpenScreenAnalytics(data: Data) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, getDimensionMap(data))
     }
 
     override fun getScreenName(): String {
         return SCREEN_NAME
     }
 
-    private fun getDimensionMap(): Map<String, String>? {
-        return catAnalyticsInstance.createOpenScreenEventMap(parentId, parentName, departmentId, departmentName)
+    private fun getDimensionMap(data: Data): Map<String, String>? {
+        return catAnalyticsInstance.createOpenScreenEventMap(rootId = data.rootId, parent = data.parent, id =  data.id.toString(), url = data.url)
     }
 
     private fun initializeSearchParameter(intent: Intent) {
@@ -233,6 +233,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 is Success -> {
                     updateToolBarHeading(it.data.name ?: "")
                     this.departmentId = it.data.id.toString()
+                    sendOpenScreenAnalytics(it.data)
                     handleCategoryDetailSuccess()
                 }
                 is Fail -> {
