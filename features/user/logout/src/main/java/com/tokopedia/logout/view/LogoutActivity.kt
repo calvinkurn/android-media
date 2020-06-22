@@ -1,5 +1,6 @@
 package com.tokopedia.logout.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -33,10 +34,13 @@ import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
 import com.tokopedia.logout.viewmodel.LogoutViewModel
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_logout.*
 import javax.inject.Inject
 
@@ -50,6 +54,8 @@ import javax.inject.Inject
  */
 
 class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
+
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -75,6 +81,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         setContentView(R.layout.activity_logout)
 
         component.inject(this)
+        userSession = UserSession(this)
 
         getParams()
 
@@ -83,6 +90,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         initGoogleClient()
 
         showLoading()
+        saveLoginReminderData()
         logoutViewModel.doLogout()
     }
 
@@ -143,6 +151,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
         NotificationModHandler.clearCacheAllNotification(applicationContext)
         CacheApiClearAllUseCase(applicationContext).executeSync()
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         val notify = NotificationModHandler(applicationContext)
         notify.dismissAllActivedNotifications()
@@ -177,8 +186,15 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearStickyLogin() {
-        val stickyPref = applicationContext.getSharedPreferences(STICKY_LOGIN_PREF, Context.MODE_PRIVATE)
+        val stickyPref =  applicationContext.getSharedPreferences(STICKY_LOGIN_PREF, Context.MODE_PRIVATE)
         stickyPref.edit().clear().apply()
+    }
+
+    private fun saveLoginReminderData() {
+        getSharedPreferences(STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)?.edit()?.apply {
+            putString(KEY_USER_NAME, userSession.name).apply()
+            putString(KEY_PROFILE_PICTURE, userSession.profilePicture).apply()
+        }
     }
 
     private fun showLoading() {
@@ -191,5 +207,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     companion object {
         private const val STICKY_LOGIN_PREF = "sticky_login_widget.pref"
+        private const val STICKY_LOGIN_REMINDER_PREF = "sticky_login_reminder.pref"
+        private const val KEY_USER_NAME = "user_name"
+        private const val KEY_PROFILE_PICTURE = "profile_picture"
     }
 }

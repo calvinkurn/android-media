@@ -335,10 +335,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
     private fun doLogout() {
         activity?.let {
-            FacebookSdk.sdkInitialize(it.applicationContext)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT)
+            startActivity(intent)
         }
-        showLoading(true)
-        presenter.doLogout()
     }
 
     private fun showLoading(isLoading: Boolean) {
