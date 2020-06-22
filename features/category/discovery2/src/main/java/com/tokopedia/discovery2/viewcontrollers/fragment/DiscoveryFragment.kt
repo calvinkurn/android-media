@@ -46,7 +46,7 @@ import javax.inject.Inject
 
 
 private const val LOGIN_REQUEST_CODE = 35769
-private const val MOBILE_VERIFICATION_REQUEST_CODE = 92683
+private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
 class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
