@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatsearch.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragment
+import com.tokopedia.topchat.chatsearch.view.fragment.ContactLoadMoreChatFragment
 import dagger.Component
 
 @ChatSearchScope
@@ -11,4 +12,5 @@ import dagger.Component
 )
 interface ChatSearchComponent {
     fun inject(chatSettingFragment: ChatSearchFragment)
+    fun inject(chatSearchContactDetailFragment: ContactLoadMoreChatFragment)
 }

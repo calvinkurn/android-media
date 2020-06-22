@@ -200,7 +200,10 @@ class ThankYouPageAnalytics @Inject constructor(
                 afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
                 afValue[AFInAppEventType.ORDER_ID] = orderIds
                 afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
-                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = ThankPageTypeMapper.getThankPageType(thanksPageData)
+                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when(ThankPageTypeMapper.getThankPageType(thanksPageData)){
+                    MarketPlaceThankPage -> MARKET_PLACE
+                    else -> DIGITAL
+                }
                 afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
                 afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
                 afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
@@ -232,8 +235,8 @@ class ThankYouPageAnalytics @Inject constructor(
                     val branchIOPayment: com.tokopedia.linker.model.PaymentData = com.tokopedia.linker.model.PaymentData()
                     branchIOPayment.setPaymentId(thanksPageData.paymentID.toString())
                     branchIOPayment.setOrderId(shopOrder.orderId)
-                    branchIOPayment.setShipping(shopOrder.shippingAmountStr)
-                    branchIOPayment.setRevenue(thanksPageData.amountStr)
+                    branchIOPayment.setShipping(shopOrder.shippingAmount.toString())
+                    branchIOPayment.setRevenue(thanksPageData.amount.toString())
                     branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE)
                     branchIOPayment.isNewBuyer = thanksPageData.isNewUser
                     branchIOPayment.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
@@ -243,8 +246,8 @@ class ThankYouPageAnalytics @Inject constructor(
                         product[LinkerConstants.ID] = productItem.productId
                         product[LinkerConstants.NAME] = productItem.productName
                         price += productItem.price
-                        product[LinkerConstants.PRICE] = productItem.priceStr
-                        product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.priceStr
+                        product[LinkerConstants.PRICE] = productItem.price.toString()
+                        product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.price.toString()
                         product[LinkerConstants.QTY] = productItem.quantity.toString()
                         product[LinkerConstants.CATEGORY] = getCategoryLevel1(productItem.category)
                         branchIOPayment.setProduct(product)

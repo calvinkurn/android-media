@@ -1,7 +1,9 @@
 package com.tokopedia.mediauploader.data
 
 import com.tokopedia.mediauploader.data.entity.MediaUploader
+import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor.Companion.HEADER_TIMEOUT
 import okhttp3.MultipartBody
+import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -21,7 +23,12 @@ interface UploaderServices {
             * file_upload:
             * media blob (a file) to upload
             * */
-            @Part fileUpload: MultipartBody.Part
+            @Part fileUpload: MultipartBody.Part,
+
+            /*
+            * change time out at runtime
+            * */
+            @Header(HEADER_TIMEOUT) timeOut: String
     ) : MediaUploader
 
 }

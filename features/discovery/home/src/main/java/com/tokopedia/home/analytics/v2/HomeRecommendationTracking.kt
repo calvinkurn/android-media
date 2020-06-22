@@ -147,7 +147,8 @@ object HomeRecommendationTracking : BaseTracking(){
             productPosition = homeRecommendationItemDataModel.position.toString(),
             isFreeOngkir = homeRecommendationItemDataModel.product.freeOngkirInformation.isActive,
             category = homeRecommendationItemDataModel.product.categoryBreadcrumbs,
-            brand = ""
+            brand = "",
+            clusterId = homeRecommendationItemDataModel.product.clusterId
     )
 
     private fun mapToPromoTracking(bannerRecommendationDataModel: BannerRecommendationDataModel) = Promotion(

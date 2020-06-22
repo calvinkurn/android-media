@@ -27,14 +27,17 @@ class BrandlistPageAdapter(
 
     private var recyclerView: RecyclerView? = null
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
-    private var isStickyChipsShowed = false
 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when (visitables[position].type(adapterTypeFactory)) {
-                    AllBrandViewHolder.LAYOUT -> ALL_BRAND_GRID_SPAN_COUNT
-                    else -> BRANDLIST_GRID_SPAN_COUNT
+                return try {
+                    return when (visitables[position].type(adapterTypeFactory)) {
+                        AllBrandViewHolder.LAYOUT -> ALL_BRAND_GRID_SPAN_COUNT
+                        else -> BRANDLIST_GRID_SPAN_COUNT
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                    BRANDLIST_GRID_SPAN_COUNT
                 }
             }
         }
@@ -44,15 +47,11 @@ class BrandlistPageAdapter(
         visitables.add(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(mutableListOf(), null, brandlistPageFragment))
         visitables.add(POPULAR_BRAND_POSITION, PopularBrandViewModel(mutableListOf(), null, brandlistPageFragment))
         visitables.add(NEW_BRAND_POSITION, NewBrandViewModel(mutableListOf(), null, brandlistPageFragment))
-        visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(brandlistPageFragment, 0, 1, recyclerViewLastState))
+        visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(brandlistPageFragment, 0, 1, 0, recyclerViewLastState))
     }
 
     fun getVisitables(): MutableList<Visitable<*>> {
         return visitables
-    }
-
-    fun getStickyChipsShowedStatus(): Boolean {
-        return isStickyChipsShowed
     }
 
     fun refreshSticky() {
@@ -112,9 +111,5 @@ class BrandlistPageAdapter(
         Handler().post {
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         }
-    }
-
-    override fun updateStickyStatus(isStickyShowed: Boolean) {
-        isStickyChipsShowed = isStickyShowed
     }
 }

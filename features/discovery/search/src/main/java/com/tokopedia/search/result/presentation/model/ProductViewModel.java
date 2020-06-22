@@ -31,6 +31,7 @@ public class ProductViewModel implements Parcelable {
     private CpmModel cpmModel;
     private GlobalNavViewModel globalNavViewModel;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel = new ArrayList<>();
+    private List<InspirationCardViewModel> inspirationCardViewModel = new ArrayList<>();
     private int defaultView;
     private RelatedViewModel relatedViewModel;
 
@@ -171,6 +172,14 @@ public class ProductViewModel implements Parcelable {
 
     public void setInspirationCarouselViewModel(List<InspirationCarouselViewModel> inspirationCarouselViewModel) {
         this.inspirationCarouselViewModel = inspirationCarouselViewModel;
+    }
+
+    public List<InspirationCardViewModel> getInspirationCardViewModel() {
+        return inspirationCardViewModel;
+    }
+
+    public void setInspirationCardViewModel(List<InspirationCardViewModel> inspirationCardViewModel) {
+        this.inspirationCardViewModel = inspirationCardViewModel;
     }
 
     public int getDefaultView() {
