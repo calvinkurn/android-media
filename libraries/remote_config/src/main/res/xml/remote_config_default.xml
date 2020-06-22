@@ -439,6 +439,26 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_async_cmpushnotif_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_iris_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_remoteconfig_mainapp_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_applink_delegate_creation</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_remoteresource_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
         <key>excluded_amp</key>
         <value>stories</value>
     </entry>
