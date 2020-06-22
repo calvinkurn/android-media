@@ -12,6 +12,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
@@ -20,11 +21,15 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
 abstract class SellerMigrationBottomSheet(private val titles: List<String> = emptyList(),
                                           private val contents: List<String> = emptyList(),
                                           private val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
+
+    abstract fun trackGoToSellerApp()
+    abstract fun trackGoToPlayStore()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -120,11 +125,14 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
                 if(intent != null) {
                     intent.putExtra(SELLER_MIGRATION_KEY_AUTO_LOGIN, true)
                     activity?.startActivity(intent)
+                    trackGoToSellerApp()
                 } else {
                     activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+                    trackGoToPlayStore()
                 }
             } catch (anfe: ActivityNotFoundException) {
                 activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
+                trackGoToPlayStore()
             }
         }
     }

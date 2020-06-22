@@ -67,6 +67,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopular
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickReload
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
+import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
@@ -177,6 +178,7 @@ open class HomeFragment : BaseDaggerFragment(),
         RechargeRecommendationListener {
 
     companion object {
+        private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
         private const val TOKOPOINTS_NOTIFICATION_TYPE = "drawer"
         private const val SCROLL_STATE_DRAG = 0
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
@@ -203,6 +205,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
+
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
             val fragment = HomeFragment()
@@ -712,6 +715,25 @@ open class HomeFragment : BaseDaggerFragment(),
                         (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        "0",
+                        viewModel.get().getUserId()
+                ) as HashMap<String, Any>)
+                RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        })
+
+        viewModel.get().oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
+            val data = event.peekContent()
+            if (data is Throwable) { // error
+                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+            } else {
+                val dataMap = data as Map<*, *>
+                sendEETracking(getAddToCartOnDynamicListCarouselHomeComponent(
+                        (dataMap[HomeViewModel.CHANNEL] as ChannelModel),
+                        (dataMap[HomeViewModel.GRID] as ChannelGrid),
+                        dataMap[HomeViewModel.POSITION] as Int,
+                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        "0",
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
@@ -1012,7 +1034,7 @@ open class HomeFragment : BaseDaggerFragment(),
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitClickUrl(getContext(), slidesModel.redirectUrl)
+            TopAdsUrlHitter(className).hitClickUrl(getContext(), slidesModel.redirectUrl)
         }
     }
 
@@ -1062,13 +1084,6 @@ open class HomeFragment : BaseDaggerFragment(),
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
                     getHomeViewModel().onRemoveSuggestedReview()
-                }
-            }
-            REQUEST_CODE_LOGIN_TOKOPOINTS -> {
-                activity?.let {
-                    if (resultCode == Activity.RESULT_OK) {
-                        RouteManager.route(activity, ApplinkConstInternalPromo.TOKOPOINTS_HOME)
-                    }
                 }
             }
             REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) getHomeViewModel().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
@@ -1448,7 +1463,7 @@ open class HomeFragment : BaseDaggerFragment(),
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else if (!bannerSlidesModel.isInvoke) {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
-                TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
+                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
             dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
@@ -1792,10 +1807,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onTokopointCheckNowClicked(applink: String) {
         activity?.let {
-            if (::userSession.isInitialized && !userSession.isLoggedIn) {
-                startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN_TOKOPOINTS)
-                return
-            }
             if (!TextUtils.isEmpty(applink)) {
                 RouteManager.route(activity, applink)
             }

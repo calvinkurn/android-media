@@ -24,4 +24,12 @@ class SellerMigrationPromoBottomSheet(
             }
         }
     }
+
+    override fun trackGoToSellerApp() {
+        // No op
+    }
+
+    override fun trackGoToPlayStore() {
+        // No op
+    }
 }

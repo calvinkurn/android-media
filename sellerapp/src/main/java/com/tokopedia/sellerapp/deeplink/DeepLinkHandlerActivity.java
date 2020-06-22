@@ -54,8 +54,6 @@ import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneAppli
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
@@ -78,7 +76,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        UserIdentificationApplinkModule.class,
         FlashsaleDeeplinkModule.class,
         CreatePostModule.class,
         RNDevOptionsApplinkModule.class,
@@ -108,7 +105,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
-                new UserIdentificationApplinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
                 new CreatePostModuleLoader(),
                 new RNDevOptionsApplinkModuleLoader(),

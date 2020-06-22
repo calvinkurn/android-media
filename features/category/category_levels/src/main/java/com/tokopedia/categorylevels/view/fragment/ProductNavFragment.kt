@@ -1,6 +1,7 @@
 package com.tokopedia.categorylevels.view.fragment
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -156,7 +157,8 @@ open class ProductNavFragment : BaseBannedProductFragment(),
         arguments?.let {
             if (it.containsKey(EXTRA_CATEGORY_URL)) {
                 categoryUrl = it.getString(EXTRA_CATEGORY_URL, "")
-                mSelectedFilter = URLParser(it.getString(EXTRA_CATEGORY_URL, "")).paramKeyValueMap
+                val uri = Uri.parse(categoryUrl)
+                mSelectedFilter = URLParser(uri.encodedQuery?:categoryUrl).paramKeyValueMap
             }
             mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
             mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")

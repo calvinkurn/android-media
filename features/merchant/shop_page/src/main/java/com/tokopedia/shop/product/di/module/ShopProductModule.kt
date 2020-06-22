@@ -20,6 +20,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST
 import com.tokopedia.shop.common.constant.ShopUrl
+import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
@@ -30,13 +31,15 @@ import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
 import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi
 import com.tokopedia.shop.product.data.source.cloud.interceptor.ShopOfficialStoreAuthInterceptor
-import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier
-import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
-import com.tokopedia.shop.product.di.ShopProductQualifier
-import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier
+import com.tokopedia.shop.product.di.*
 import com.tokopedia.shop.product.di.scope.ShopProductScope
 import com.tokopedia.shop.product.domain.interactor.*
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository
+import com.tokopedia.shop.sort.data.repository.ShopProductSortRepositoryImpl
+import com.tokopedia.shop.sort.data.source.cloud.ShopProductSortCloudDataSource
+import com.tokopedia.shop.sort.data.source.cloud.api.ShopAceApi
+import com.tokopedia.shop.sort.domain.repository.ShopProductSortRepository
+import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.constant.WishListCommonUrl
@@ -63,8 +66,8 @@ import javax.inject.Named
 class ShopProductModule {
     @ShopProductScope
     @Provides
-    fun getNetworkRouter(@ApplicationContext context: Context?): NetworkRouter? {
-        return context as NetworkRouter?
+    fun getNetworkRouter(@ApplicationContext context: Context?): NetworkRouter {
+        return context as NetworkRouter
     }
 
     @ShopProductScope
@@ -536,5 +539,46 @@ class ShopProductModule {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @ShopProductSortQualifier
+    @ShopProductScope
+    @Provides
+    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor?,
+                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
+                            errorResponseInterceptor: HeaderErrorResponseInterceptor?,
+                            cacheApiInterceptor: CacheApiInterceptor?): OkHttpClient? {
+        return Builder()
+                .addInterceptor(cacheApiInterceptor)
+                .addInterceptor(shopAuthInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
+    }
+
+    @ShopProductSortQualifier
+    @ShopProductScope
+    @Provides
+    fun provideShopAceRetrofit(@ShopProductSortQualifier okHttpClient: OkHttpClient?,
+                               retrofitBuilder: Retrofit.Builder): Retrofit {
+        return retrofitBuilder.baseUrl(ShopUrl.BASE_ACE_URL).client(okHttpClient).build()
+    }
+
+    @ShopProductScope
+    @Provides
+    fun provideShopAceApi(@ShopProductSortQualifier retrofit: Retrofit): ShopAceApi {
+        return retrofit.create(ShopAceApi::class.java)
+    }
+
+    @ShopProductScope
+    @Provides
+    fun provideShopProductSortRepository(shopProductDataSource: ShopProductSortCloudDataSource): ShopProductSortRepository {
+        return ShopProductSortRepositoryImpl(shopProductDataSource)
+    }
+
+    @ShopProductScope
+    @Provides
+    fun provideShopProductSortMapper(): ShopProductSortMapper {
+        return ShopProductSortMapper()
     }
 }

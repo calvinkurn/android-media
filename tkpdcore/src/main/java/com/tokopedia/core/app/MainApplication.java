@@ -47,6 +47,7 @@ public abstract class MainApplication extends MainRouterApplication{
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
+    private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
 
 
     public static MainApplication getInstance() {
@@ -61,7 +62,7 @@ public abstract class MainApplication extends MainRouterApplication{
                 return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
     }
 
     @Override
@@ -97,8 +98,6 @@ public abstract class MainApplication extends MainRouterApplication{
                 .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
 
-        locationUtils = new LocationUtils(this);
-        locationUtils.initLocationBackground();
         initBranch();
         NotificationUtils.setNotificationChannel(this);
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
@@ -121,6 +120,8 @@ public abstract class MainApplication extends MainRouterApplication{
 
     @NotNull
     private Boolean executeInBackground(){
+        locationUtils = new LocationUtils(MainApplication.this);
+        locationUtils.initLocationBackground();
         TooLargeTool.startLogging(MainApplication.this);
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
@@ -144,7 +145,9 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public void onTerminate() {
         super.onTerminate();
-        locationUtils.deInitLocationBackground();
+        if(locationUtils != null) {
+            locationUtils.deInitLocationBackground();
+        }
     }
 
     private void init() {
