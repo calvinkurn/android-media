@@ -425,6 +425,10 @@ public interface ApplinkConst {
         String PATH_ASK_BUYER = "askbuyer";
 
         String SOURCE_ASK_SELLER = "tx_ask_seller";
+        String SOURCE_PAGE = "source_page";
+
+        // chat source page
+        String SOURCE_CHAT_SEARCH = "chat_search";
     }
 
     interface AttachInvoice {

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
 import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
@@ -30,6 +31,8 @@ import javax.inject.Inject;
  */
 
 public class TopChatAnalytics {
+
+    private String pageSource = "";
 
     @Inject
     public TopChatAnalytics() {
@@ -126,6 +129,10 @@ public class TopChatAnalytics {
         public static final String FOLLOW_SHOP = "follow shop";
         public static final String UNFOLLOW_SHOP = "unfollow shop";
         String BUYER = "buyer";
+    }
+
+    public void setPageSource(String pageSource) {
+        this.pageSource = pageSource;
     }
 
     public void eventClickInboxChannel() {
@@ -348,8 +355,8 @@ public class TopChatAnalytics {
                 product.getPriceInt() + 0.0,
                 null,
                 PRODUCT_INDEX,
-                getField(String.valueOf(product.getBlastId())),
-                getField(String.valueOf(product.getBlastId()))
+                getItemList(product),
+                getItemDimension40(product)
         );
         products.add(product1);
 
@@ -393,6 +400,23 @@ public class TopChatAnalytics {
 //        );
     }
 
+    private String getItemList(ProductAttachmentViewModel product) {
+        String blastId = product.getStringBlastId();
+        if (!pageSource.isEmpty() && pageSource.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
+            return "chat - search chat";
+        } else {
+            return getField(blastId);
+        }
+    }
+
+    private String getItemDimension40(ProductAttachmentViewModel product) {
+        String blastId = product.getStringBlastId();
+        if (!pageSource.isEmpty() && pageSource.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
+            return "chat - search chat";
+        } else {
+            return getField(blastId);
+        }
+    }
 
     public void trackProductAttachmentClicked() {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
