@@ -51,13 +51,13 @@ class BrandlistSearchResultAdapter(
         notifyDataSetChanged()
     }
 
-    fun updateHeaderChipsBrandSearch(listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int, recyclerViewLastState: Parcelable?) {
+    fun updateHeaderChipsBrandSearch(listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int, lastTimeChipIsClicked: Long, recyclerViewLastState: Parcelable?) {
         val filteredList = getVisitables().filterIsInstance<BrandlistSearchResultViewModel>()
         if (filteredList.size == 0) {
-            visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
+            visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, lastTimeChipIsClicked, recyclerViewLastState))
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         } else if (filteredList.size > 0) {
-            visitables.set(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
+            visitables.set(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, lastTimeChipIsClicked, recyclerViewLastState))
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         }
     }

@@ -119,7 +119,7 @@ public class ContactUsActivity extends BaseSimpleActivity implements
                 getIntent().getExtras() != null
                         && getIntent().getExtras()
                         .getString(PARAM_URL, "").equals(""))) {
-            toolbar.setTitle(com.tokopedia.inbox.R.string.title_help);
+            toolbar.setTitle(R.string.title_help);
         } else {
             toolbar.setTitle(R.string.title_activity_contact_us);
         }

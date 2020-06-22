@@ -60,4 +60,5 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
         }
     }
 
+    override fun trackLearnMore() { /* noop */ }
 }

@@ -4,14 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/layout_lvl1"
+    android:layout_marginTop="@dimen/spacing_lvl2"
+    android:layout_marginLeft="@dimen/spacing_lvl3"
+    android:layout_marginRight="@dimen/spacing_lvl3"
+    android:layout_marginBottom="@dimen/spacing_lvl2"
     app:cardCornerRadius="@dimen/layout_lvl1"
-    app:cardElevation="@dimen/dp_2">
+    app:cardElevation="@dimen/telco_space_3">
 
     <RelativeLayout
         android:id="@+id/layout_product"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/label_product"
