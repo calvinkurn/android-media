@@ -1,7 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.ui
 
 import android.content.Context
-import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +41,6 @@ class PowerMerchantMembershipView: ConstraintLayout {
         showShopScoreDescription(shopScore)
         showPerformanceTipsBtn(shopScore)
         setUpgradeBtnListener(onClickUpgradeBtn)
-        showPremiumAccountView()
         showLayout()
     }
 
@@ -97,17 +95,6 @@ class PowerMerchantMembershipView: ConstraintLayout {
         btnPerformanceTips.showWithCondition(shouldShow)
         btnPerformanceTips.setOnClickListener {
             goToWebViewPage(PowerMerchantUrl.URL_SHOP_PERFORMANCE_TIPS)
-        }
-    }
-
-    private fun showPremiumAccountView() {
-        val description = context.getString(R.string.power_merchant_premium_account_description)
-        val clickableText = context.getString(R.string.power_merchant_premium_account_clickable_text)
-        val clickableTextColor = ContextCompat.getColor(context, R.color.light_G500)
-
-        textPremiumAccountDescription.movementMethod = LinkMovementMethod.getInstance()
-        textPremiumAccountDescription.text = createSpannableString(description, clickableText, clickableTextColor) {
-            goToWebViewPage(PowerMerchantUrl.URL_PREMIUM_ACCOUNT)
         }
     }
 

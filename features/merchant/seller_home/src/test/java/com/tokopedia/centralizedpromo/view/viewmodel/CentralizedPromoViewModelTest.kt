@@ -9,6 +9,8 @@ import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -42,6 +44,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase
+
+    @RelaxedMockK
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -82,7 +87,15 @@ class CentralizedPromoViewModelTest {
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     private val viewModel : CentralizedPromoViewModel by lazy {
-        CentralizedPromoViewModel(context, userSession, getOnGoingPromotionUseCase, getPostUseCase, getChatBlastSellerMetadataUseCase, testCoroutineDispatcher)
+        CentralizedPromoViewModel(
+            context,
+            userSession,
+            getOnGoingPromotionUseCase,
+            getPostUseCase,
+            getChatBlastSellerMetadataUseCase,
+            remoteConfig,
+            testCoroutineDispatcher
+        )
     }
 
     @Test
@@ -209,6 +222,10 @@ class CentralizedPromoViewModelTest {
         coEvery {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         } returns ChatBlastSellerMetadataUiModel(200, 2)
+
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        } returns true
 
         every {
             context.getString(R.string.centralized_promo_broadcast_chat_extra_free_quota, any<Integer>())
