@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
@@ -47,7 +47,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private val EMPTY_SEARCH_VIEW = true
     private val PRODUCTS_WITHOUT_GROUP = -2
     private var deleteCancel = false
-
+    private var SingleDelGroupId = ""
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -92,18 +92,17 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun singleItemDelete(pos: Int) {
-        topAdsDashboardPresenter.setProductAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_DELETE,
-                listOf((adapter.items[pos] as NonGroupItemsItemViewModel).data.adId.toString())
-                , resources, null)
+        SingleDelGroupId = (adapter.items[pos] as NonGroupItemsItemViewModel).data.adId.toString()
+        performAction(ACTION_DELETE, null)
     }
 
     private fun statusChange(pos: Int, status: Int) {
         if (status != 1) {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_ACTIVATE,
-                    listOf((adapter.items[pos] as NonGroupItemsItemViewModel).data.groupId.toString()), resources, null)
+                    listOf((adapter.items[pos] as NonGroupItemsItemViewModel).data.adId.toString()), resources, null)
         } else {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_DEACTIVATE,
-                    listOf((adapter.items[pos] as NonGroupItemsItemViewModel).data.groupId.toString()), resources, null)
+                    listOf((adapter.items[pos] as NonGroupItemsItemViewModel).data.adId.toString()), resources, null)
         }
     }
 
@@ -141,15 +140,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         delete.setOnClickListener {
             showConfirmationDialog(context!!)
         }
-        Utils.setSearchListener(view, ::onSuccessSearch, ::onSearchClear)
-    }
-
-    private fun onSuccessSearch(search: String) {
-        fetchData()
-    }
-
-    private fun onSearchClear() {
-        fetchData()
+        Utils.setSearchListener(view, ::fetchData)
     }
 
     fun fetchgroupList(search: String) {
@@ -179,13 +170,13 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         }
         dialog.setSecondaryCTAClickListener {
             dialog.dismiss()
-            performAction(TopAdsDashboardConstant.ACTION_DELETE, null)
+            performAction(ACTION_DELETE, null)
         }
         dialog.show()
     }
 
     private fun performAction(actionActivate: String, selectedFilter: String?) {
-        if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
+        if (actionActivate == ACTION_DELETE) {
             view.let {
                 view.let {
                     Toaster.make(it!!, getString(R.string.topads_without_product_del_toaster), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
@@ -198,22 +189,28 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
                 delay(TOASTER_DURATION)
                 if (!deleteCancel)
                     topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
-
+                SingleDelGroupId = ""
                 deleteCancel = false
                 setSelectMode(false)
             }
         } else {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+            SingleDelGroupId = ""
         }
 
     }
 
     private fun getAdIds(): MutableList<String> {
         val ads: MutableList<String> = mutableListOf()
-        adapter.getSelectedItems().forEach {
-            ads.add(it.data.adId.toString())
+        return if (SingleDelGroupId.isEmpty()) {
+            adapter.getSelectedItems().forEach {
+                ads.add(it.data.adId.toString())
+            }
+            ads
+        } else {
+            mutableListOf(SingleDelGroupId)
+
         }
-        return ads
     }
 
     private fun onSuccessAction(action: String) {
@@ -228,7 +225,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         else
             adapter.setEmptyView(EMPTY_SEARCH_VIEW)
         setFilterCount()
-        (parentFragment as TopAdsDashboardFragment).setNonGroupCount(0)
+        (parentFragment as TopAdsProductIklanFragment).setNonGroupCount(0)
     }
 
     private fun onSuccessResult(data: List<WithoutGroupDataItem>) {
@@ -237,7 +234,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
             adapter.items.add(NonGroupItemsItemViewModel(it))
         }
         adapter.notifyDataSetChanged()
-        (parentFragment as TopAdsDashboardFragment).setNonGroupCount(adapter.itemCount)
+        (parentFragment as TopAdsProductIklanFragment).setNonGroupCount(adapter.itemCount)
         setFilterCount()
     }
 

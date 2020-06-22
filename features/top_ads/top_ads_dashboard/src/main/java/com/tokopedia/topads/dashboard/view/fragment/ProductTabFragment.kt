@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -17,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_TOTAL
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_MOVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
@@ -35,10 +34,10 @@ import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
-import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_list.*
+import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
+import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -53,7 +52,7 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: ProductAdapter
 
-    private var totalProductCount = 0
+    private var totalProductCount = -1
 
     companion object {
 
@@ -126,11 +125,7 @@ class ProductTabFragment : BaseDaggerFragment() {
             fetchgroupList("")
             movetoGroupSheet.show()
             movetoGroupSheet.onItemClick = {
-                performAction(TopAdsDashboardConstant.ACTION_MOVE, movetoGroupSheet.getSelectedFilter())
-                if (getAdIds().count() == arguments?.getInt(GROUP_TOTAL) ?: totalProductCount) {
-                    viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()), resources)
-                    activity?.finish()
-                }
+                performAction(ACTION_MOVE, movetoGroupSheet.getSelectedFilter())
             }
             movetoGroupSheet.onItemSearch = {
                 fetchgroupList(it)
@@ -147,7 +142,7 @@ class ProductTabFragment : BaseDaggerFragment() {
             RouteManager.route(context, bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)
         }
         setSearchBar()
-        Utils.setSearchListener(view, ::onSearchSuccess, ::onSearchClear)
+        Utils.setSearchListener(view, ::fetchData)
         product_list.adapter = adapter
         product_list.layoutManager = LinearLayoutManager(context)
     }
@@ -229,10 +224,6 @@ class ProductTabFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onSearchSuccess(search: String) {
-        fetchData()
-    }
-
     private fun fetchData() {
         adapter.items.clear()
         adapter.notifyDataSetChanged()
@@ -242,12 +233,8 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     }
 
-    private fun onSearchClear() {
-        fetchData()
-    }
 
     private fun onProductFetch(data: List<WithoutGroupDataItem>) {
-
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()
                 && groupFilterSheet.getSelectedSortId() == ""
                 && groupFilterSheet.getSelectedStatusId() == null) {
@@ -277,27 +264,40 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun performAction(actionActivate: String, selectedFilter: String?) {
-        if (actionActivate == ACTION_DELETE) {
-            view.let {
-                Toaster.make(it!!, getString(R.string.topads_without_product_del_toaster), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
-                    deleteCancel = true
-                })
-            }
-            val coroutineScope = CoroutineScope(Dispatchers.Main)
-            coroutineScope.launch {
-                delay(TOASTER_DURATION)
-                if (!deleteCancel) {
-                    viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
-                    if (getAdIds().count() == arguments?.getInt(GROUP_TOTAL) ?: totalProductCount) {
-                        viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
-                                resources)
-                    }
+        when (actionActivate) {
+            ACTION_DELETE -> {
+                view.let {
+                    Toaster.make(it!!, getString(R.string.topads_without_product_del_toaster), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
+                        deleteCancel = true
+                    })
                 }
-                deleteCancel = false
-                setSelectMode(false)
+                val coroutineScope = CoroutineScope(Dispatchers.Main)
+                coroutineScope.launch {
+                    delay(TOASTER_DURATION)
+                    if (!deleteCancel) {
+                        totalProductCount -= getAdIds().size
+                        viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+                        if (totalProductCount==0) {
+                            viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
+                                    resources)
+                            activity?.finish()
+                        }
+                    }
+                    deleteCancel = false
+                    setSelectMode(false)
+                }
             }
-        } else {
-            viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+            ACTION_MOVE -> {
+                totalProductCount -= getAdIds().size
+                viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+                if (totalProductCount==0) {
+                    viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()), resources)
+                    activity?.finish()
+                }
+            }
+            else -> {
+                viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+            }
         }
     }
 

@@ -7,8 +7,8 @@ import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewholder.NegKeyw
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyViewModel
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
 
-class NegKeywordAdapterTypeFactoryImpl(var onSwitchAction: ((pos: Int, isChecked: Boolean) -> Unit),
-                                       var onSelectMode: ((select: Boolean) -> Unit)) : NegKeywordAdapterTypeFactory {
+class NegKeywordAdapterTypeFactoryImpl(
+        var onSelectMode: ((select: Boolean) -> Unit)) : NegKeywordAdapterTypeFactory {
 
     override fun type(model: NegKeywordItemViewModel) = NegKeywordItemViewHolder.LAYOUT
 
@@ -17,7 +17,7 @@ class NegKeywordAdapterTypeFactoryImpl(var onSwitchAction: ((pos: Int, isChecked
     override fun holder(type: Int, view: View): NegKeywordViewHolder<*> {
         return when (type) {
             NegKeywordEmptyViewHolder.LAYOUT -> NegKeywordEmptyViewHolder(view)
-            NegKeywordItemViewHolder.LAYOUT -> NegKeywordItemViewHolder(view, onSwitchAction, onSelectMode)
+            NegKeywordItemViewHolder.LAYOUT -> NegKeywordItemViewHolder(view, onSelectMode)
             else -> throw RuntimeException("Illegal view type")
         }
     }

@@ -56,8 +56,8 @@ data class DataItem(
 	val statTotalSold: String = "",
 
 	@field:SerializedName("stat_avg_click")
-	val statAvgClick: String = ""
+	val statAvgClick: String = "",
 
-
-
+	@field:SerializedName("group_type")
+	val groupType: String = ""
 )

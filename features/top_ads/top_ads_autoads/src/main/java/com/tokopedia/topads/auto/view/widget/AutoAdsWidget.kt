@@ -39,7 +39,7 @@ import javax.inject.Inject
 /**
  * Created by Pika on 16/5/20.
  */
-class AutoAdsWidget : CardUnify {
+class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, attrs) {
     private var baseLayout: ConstraintLayout? = null
 
     @Inject
@@ -62,7 +62,7 @@ class AutoAdsWidget : CardUnify {
         ViewModelProviders.of(context as BaseActivity, factory).get(AutoAdsWidgetViewModel::class.java)
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    init {
         initView(context)
         renderUI()
     }
@@ -165,7 +165,7 @@ class AutoAdsWidget : CardUnify {
             switch.setOnClickListener {
                 val manual = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
                 manual.show()
-                manual.dismissed = { switch.isChecked = !switch.isChecked }
+                manual.dismissed = { switch.isChecked = true }
             }
         } else {
             switch.visibility = View.INVISIBLE
@@ -208,6 +208,7 @@ class AutoAdsWidget : CardUnify {
                 this,
                 false
         )
+        baseLayout?.removeAllViews()
         baseLayout?.addView(view)
         view.let { it ->
             it.progress_status1.text = "Rp $dailyUsage"
@@ -224,10 +225,7 @@ class AutoAdsWidget : CardUnify {
                 it.btn_switch.setOnClickListener {
                     val man = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
                     man.show()
-                    man.dismissed = {
-                        man.dismissed = { it.btn_switch.isChecked = !it.btn_switch.isChecked }
-
-                    }
+                    man.dismissed = { it.btn_switch.isChecked = true}
                 }
             } else {
                 it.btn_switch.visibility = View.INVISIBLE

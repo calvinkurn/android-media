@@ -90,8 +90,6 @@ class NonGroupItemsItemViewHolder(val view: View,
                     view.card_view.setCardBackgroundColor(view.context.resources.getColor(R.color.topads_select_color))
                 else
                     view.card_view.setCardBackgroundColor(view.context.resources.getColor(R.color.white))
-
-
             }
         }
 

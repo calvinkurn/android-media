@@ -79,4 +79,5 @@ object TopAdsDashboardConstant {
     const val TANPA_GRUP = "Tanpa Grup"
     const val TOASTER_DURATION :Long = 2000
     const val EXPIRE = "expiryDate"
+    const val PRODUCT = "product"
 }

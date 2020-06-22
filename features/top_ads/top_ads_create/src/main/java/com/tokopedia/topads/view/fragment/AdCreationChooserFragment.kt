@@ -30,12 +30,24 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModel: AdChooserViewModel
     private var adStatus = 0
-    var dailyBudget = 0
-    var current_auto_ads_status = 0
-    val TOGGLE_OFF = "toggle_off"
-    val REQUEST_CODE = 0
+    private var dailyBudget = 0
+    private var current_auto_ads_status = 0
+
 
     companion object {
+
+        private const val TOGGLE_OFF = "toggle_off"
+        private const val REQUEST_CODE = 0
+        private const val ACTIVE = 500
+        private const val NON_ACTIVE = 600
+        private const val IN_PROGRESS_200 = 200
+        private const val IN_PROGRESS_300 = 300
+        private const val IN_PROGRESS_400 = 400
+        private const val MANAUAL = 3
+        private const val AUTO = 4
+        private const val NO_ADS = 2
+        private const val NO_PRODUCT = 1
+
         fun newInstance(): AdCreationChooserFragment {
             val args = Bundle()
             val fragment = AdCreationChooserFragment()
@@ -62,8 +74,8 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     private fun onSuccessAutoAds(data: AutoAdsResponse) {
         when (data.topAdsGetAutoAds.data.status) {
-            500 -> setActiveStatus(R.string.ads_active, R.drawable.active_status_green)
-            600 -> setActiveStatus(R.string.ads_not_delivered, R.drawable.active_status_orange)
+            ACTIVE -> setActiveStatus(R.string.ads_active, R.drawable.active_status_green)
+            NON_ACTIVE -> setActiveStatus(R.string.ads_not_delivered, R.drawable.active_status_orange)
             else -> {
                 tv_shop_status.text = ""
                 tv_shop_status.setBackgroundResource(0)
@@ -73,9 +85,9 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         dailyBudget = data.topAdsGetAutoAds.data.dailyBudget
         current_auto_ads_status = data.topAdsGetAutoAds.data.status
         when (data.topAdsGetAutoAds.data.status) {
-            400 -> inProgress()
-            300 -> inProgress()
-            200 -> inProgress()
+            IN_PROGRESS_200 -> inProgress()
+            IN_PROGRESS_300 -> inProgress()
+            IN_PROGRESS_400 -> inProgress()
             else -> autoAdsDisableConfirm()
         }
     }
@@ -91,22 +103,21 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
         })
         auto_ads.setOnClickListener {
-            if (adStatus == 4) {
+            if (adStatus == AUTO) {
                 val intent = Intent(context, EditBudgetAutoAdsActivity::class.java)
                 intent.putExtra(AutoAdsBaseBudgetFragment.KEY_DAILY_BUDGET, dailyBudget)
                 intent.putExtra(AutoAdsBaseBudgetFragment.KEY_AUTOADS_STATUS, current_auto_ads_status)
                 startActivityForResult(intent, REQUEST_CODE)
             }
-            if (adStatus == 3 || adStatus == 2)//manual ad user/ no ads case
-            {
+            if (adStatus == MANAUAL || adStatus == NO_ADS) {
                 RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
             }
         }
         manual_ads.setOnClickListener {
-            if (adStatus == 3 || adStatus == 2) {
+            if (adStatus == MANAUAL || adStatus == NO_ADS) {
                 startActivity(Intent(activity, StepperActivity::class.java))
             }
-            if (adStatus == 4) {
+            if (adStatus == AUTO) {
                 ManualAdsConfirmationSheet.newInstance(activity!!, this::manualAdsClick).show()
             }
         }
@@ -126,7 +137,6 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         manual_ads.isEnabled = false
         auto_ads.alpha = 0.5f
         manual_ads.alpha = 0.5f
-
     }
 
     override fun getScreenName(): String {
@@ -135,12 +145,10 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(CreateAdsComponent::class.java).inject(this)
-
     }
 
     fun manualAdsClick() {
-        viewModel.postAutoAds(TOGGLE_OFF, 100)
-
+        viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

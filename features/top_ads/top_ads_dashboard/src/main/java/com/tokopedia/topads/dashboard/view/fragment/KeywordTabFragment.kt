@@ -86,10 +86,8 @@ class KeywordTabFragment : BaseDaggerFragment() {
             TopAdsDashboardConstant.ACTION_ACTIVATE
         else
             TopAdsDashboardConstant.ACTION_DEACTIVATE
-
         viewModel.setKeywordAction(actionActivate,
                 listOf((adapter.items[pos] as KeywordItemViewModel).result.keywordId.toString()), resources, ::onSuccessAction)
-
     }
 
     private fun onSuccessAction() {
@@ -129,7 +127,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
         delete.setOnClickListener {
             showConfirmationDialog(context!!)
         }
-        Utils.setSearchListener(view, ::onSuccessSearch, ::onSearchClear)
+        Utils.setSearchListener(view, ::fetchData)
         btnAddItem.setOnClickListener {
             val bundle = Bundle()
             bundle.putString(TopAdsDashboardConstant.groupId, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
@@ -170,13 +168,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
                 ?: 0, searchBar.searchBarTextField.text.toString(), groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(), ::onSuccessKeyword, ::onEmpty)
     }
 
-    private fun onSuccessSearch(search: String) {
-        fetchData()
-    }
-
-    private fun onSearchClear() {
-        fetchData()
-    }
+    private fun onSuccessSearch(search: String) = fetchData()
 
     private fun getAdIds(): MutableList<String> {
         val ads: MutableList<String> = mutableListOf()

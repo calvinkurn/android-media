@@ -2,10 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.topads.dashboard.view.nestedscroll.NestedCoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -105,6 +104,6 @@
                 app:tabSelectedTextColor="@color/Green_G500"
                 app:tabTextColor="@color/font_black_disabled_38" />
         </com.google.android.material.appbar.AppBarLayout>
-    </com.tokopedia.topads.dashboard.view.nestedscroll.NestedCoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

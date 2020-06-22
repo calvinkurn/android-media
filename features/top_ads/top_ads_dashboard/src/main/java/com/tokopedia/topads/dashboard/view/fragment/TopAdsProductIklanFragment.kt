@@ -10,8 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -38,7 +38,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.AdStatusResponse
 import com.tokopedia.topads.dashboard.data.model.AutoAdsResponse
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.dashboard.data.model.TotalAd
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
@@ -56,21 +55,22 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
-import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_auto_ads_list.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_product_iklan_empty_view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * Created by hadi.putra on 23/04/18.
  */
 
-class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, CustomDatePicker.ActionListener {
+class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, CustomDatePicker.ActionListener {
     private var adStatus = 0
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
@@ -91,8 +91,13 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
                 TopAdsStatisticAvgFragment.createInstance(),
                 TopAdsStatisticSoldFragment.createInstance())
         context?.run { TopAdsStatisticPagerAdapter(this, childFragmentManager, fragmentList) }
-
     }
+
+    enum class State {
+        EXPANDED, COLLAPSED, IDLE
+    }
+
+    private var mCurrentState = State.IDLE
 
     private val topAdsTabAdapter: TopAdsTabAdapter? by lazy {
         context?.run { TopAdsTabAdapter(this) }
@@ -139,7 +144,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_top_ads_dashboard, container, false)
+        return inflater.inflate(R.layout.topads_dash_fragment_product_iklan, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -167,14 +172,30 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
         }
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.design.R.color.green_400))
-        auto_ads_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                swipe_refresh_layout.isEnabled = newState == RecyclerView.SCROLL_STATE_IDLE
+
+        app_bar_layout_2.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
+            when {
+                offset == 0 -> {
+                    if (mCurrentState != State.EXPANDED) {
+                        onStateChanged(app_bar_layout_2, State.EXPANDED);
+                    }
+                    mCurrentState = State.EXPANDED;
+                }
+                abs(offset) >= app_bar_layout_2.totalScrollRange -> {
+                    if (mCurrentState != State.COLLAPSED) {
+                        onStateChanged(app_bar_layout_2, State.COLLAPSED);
+                    }
+                    mCurrentState = State.COLLAPSED;
+                }
+                else -> {
+                    if (mCurrentState != State.IDLE) {
+                        onStateChanged(app_bar_layout_2, State.IDLE);
+                    }
+                    mCurrentState = State.IDLE;
+                }
             }
-
         })
-
+        Utils.setSearchListener(view,::fetchData)
     }
 
     private fun renderViewPager() {
@@ -196,9 +217,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
     private fun setAutoAdsAdapter() {
         auto_ads_list.adapter = autoAdsAdapter
         auto_ads_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        searchBar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val height = searchBar.measuredHeight
-        auto_ads_list.setPadding(0, 0, 0, height)
     }
 
     private fun showBottomSheet() {
@@ -213,7 +231,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
             context?.getString(R.string.topads_dash_custom_date_desc) ?: ""
         datePickerSheet = DatePickerSheet.newInstance(context!!, index ?: 2, dateRange)
         datePickerSheet?.show()
-
         datePickerSheet?.onItemClick = { date1, date2, position ->
             handleDate(date1, date2, position)
         }
@@ -247,18 +264,19 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
     private fun noAds() {
         /*ad switching in progress*/
         if (adCurrentState == 200 || adCurrentState == 300 || adCurrentState == 400) {
-
-
-        }
-        view_pager_frag.visibility = View.GONE
-        autoads_layout.visibility = View.GONE
-        app_bar_layout_2.visibility = View.GONE
-        empty_view.visibility = View.VISIBLE
-        mulai_beriklan.setOnClickListener {
-            if (GlobalConfig.isSellerApp())
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
-            else
-                openDashboard()
+            app_bar_layout_2.visibility = View.VISIBLE
+            autoads_layout.visibility = View.VISIBLE
+        } else {
+            view_pager_frag.visibility = View.GONE
+            autoads_layout.visibility = View.GONE
+            app_bar_layout_2.visibility = View.GONE
+            empty_view.visibility = View.VISIBLE
+            mulai_beriklan.setOnClickListener {
+                if (GlobalConfig.isSellerApp())
+                    RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+                else
+                    openDashboard()
+            }
         }
     }
 
@@ -286,8 +304,8 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
 
     private fun autoAds() {
         setAutoAdsAdapter()
-        autoAdsWidget?.visibility = View.VISIBLE
         autoAdsWidget?.loadData(0)
+        autoAdsWidget?.visibility = View.VISIBLE
         view_pager_frag.visibility = View.GONE
         autoads_layout.visibility = View.VISIBLE
         tab_layout.visibility = View.GONE
@@ -377,7 +395,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
 
     fun loadData() {
         topAdsDashboardPresenter.getAutoAdsStatus(resources)
-        topAdsDashboardPresenter.clearTotalAdCache()
         topAdsDashboardPresenter.getAdsStatus(GraphqlHelper.loadRawString(resources, R.raw.query_ads_create_ads_creation_shop_info))
         loadStatisticsData()
     }
@@ -388,7 +405,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
     }
 
     private fun handleDate(date1: Long, date2: Long, position: Int) {
-
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         with(sharedPref.edit()) {
             putInt(DATE_RANGE_PRODUK, position)
@@ -397,7 +413,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
         startDate = Date(date1)
         endDate = Date(date2)
         setDateRangeText(position)
-        topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
         loadStatisticsData()
     }
 
@@ -521,18 +536,14 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
 
     companion object {
         val MILLISECONDS_PER_INCH = 200f
-        val REQUEST_CODE_AD_STATUS = 2
 
-        fun createInstance(): TopAdsDashboardFragment {
-            return TopAdsDashboardFragment()
+        fun createInstance(): TopAdsProductIklanFragment {
+            return TopAdsProductIklanFragment()
         }
     }
 
     fun setGroupCount(size: Int) {
         groupPagerAdapter?.setTitleGroup(String.format(getString(R.string.topads_dash_group), size))
-    }
-    fun setScroll(scroll :Boolean) {
-        swipe_refresh_layout.isEnabled = scroll
     }
 
     fun setNonGroupCount(size: Int) {
@@ -541,23 +552,20 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
 
     override fun onCustomDateSelected(dateStart: Date, dateEnd: Date) {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-
         with(sharedPref.edit()) {
             putInt(DATE_RANGE_PRODUK, CUSTOM_DATE)
             commit()
         }
-
         startDate = dateStart
         with(sharedPref.edit()) {
-            putString(START_DATE_PRODUCT, Utils.outputFormat.format(startDate))
+            putString(START_DATE_PRODUCT, outputFormat.format(startDate))
             commit()
         }
         endDate = dateEnd
         with(sharedPref.edit()) {
-            putString(END_DATE_PRODUCT, Utils.outputFormat.format(startDate))
+            putString(END_DATE_PRODUCT, outputFormat.format(endDate))
             commit()
         }
-        topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
         setDateRangeText(CUSTOM_DATE)
         loadStatisticsData()
     }
@@ -574,4 +582,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Custo
         }
     }
 
+    private fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
+        swipe_refresh_layout.isEnabled = state == State.EXPANDED
+    }
 }

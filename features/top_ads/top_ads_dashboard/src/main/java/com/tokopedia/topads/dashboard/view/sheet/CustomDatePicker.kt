@@ -25,8 +25,8 @@ class CustomDatePicker : BottomSheetUnify() {
     lateinit var selectedDate: Date
     var dateFlag = 0
     private lateinit var minDateOriginal: Date
-    private lateinit var selectedDateStart: Date
-    private lateinit var selectedDateEnd: Date
+    private lateinit var selectedDateOriginal: Date
+    lateinit var selectedStartDate:Date
 
 
     private lateinit var listenerCalendar: ActionListener
@@ -52,6 +52,9 @@ class CustomDatePicker : BottomSheetUnify() {
 
             this.getString(SELECTED_DATE)?.let {
                 selectedDate = it.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+                selectedStartDate = selectedDate
+                selectedDateOriginal = selectedDate
+
             }
         }
     }
@@ -63,12 +66,14 @@ class CustomDatePicker : BottomSheetUnify() {
         dateStart.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 dateFlag = 0
+                selectedDate = selectedStartDate
                 minDate = minDateOriginal
                 renderSinglePickCalendar(arrayListOf())
             }
         }
         dateEnd.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
+                selectedDate = selectedDateOriginal
                 dateFlag = 1
                 renderSinglePickCalendar(arrayListOf())
             }
@@ -86,6 +91,7 @@ class CustomDatePicker : BottomSheetUnify() {
             override fun onDateSelected(date: Date) {
                 if (dateFlag == 0) {
                     dateStart.setText(outputFormat.format(date))
+                    selectedStartDate = date
                     minDate = date
                     dateEnd.requestFocus()
                 } else if (dateFlag == 1) {

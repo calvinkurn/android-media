@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder.NonGroupItemsViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsViewModel
@@ -33,6 +34,7 @@ class NonGroupItemsListAdapter(private val typeFactory: NonGroupItemsAdapterType
 
     fun setSelectMode(isSelect: Boolean) {
         selectedMode = isSelect
+        clearData(selectedMode)
         notifyDataSetChanged()
 
     }
@@ -52,6 +54,16 @@ class NonGroupItemsListAdapter(private val typeFactory: NonGroupItemsAdapterType
             }
         }
         return list
+    }
+
+    private fun clearData(selectedMode: Boolean) {
+        if (!selectedMode){
+            items.forEach {
+                if (it is NonGroupItemsItemViewModel) {
+                    it.isChecked = false
+                }
+            }
+        }
     }
 
     fun setEmptyView(fromSearch: Boolean) {

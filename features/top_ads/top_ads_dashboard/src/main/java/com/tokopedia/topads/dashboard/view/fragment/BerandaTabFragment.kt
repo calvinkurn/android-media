@@ -19,7 +19,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
@@ -124,13 +123,6 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
         }
-        createAd.setOnClickListener {
-            if (GlobalConfig.isSellerApp()) {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
-            } else {
-                openDashboard()
-            }
-        }
         startDate = topAdsDashboardPresenter.startDate
         endDate = topAdsDashboardPresenter.endDate
         loadData()
@@ -145,9 +137,8 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     private fun showBottomSheet() {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
         val index = sharedPref?.getInt(DATE_RANGE_BERANDA, 2)
-
-        val customStartDate = sharedPref?.getString(TopAdsDashboardConstant.START_DATE_BERANDA, "")
-        val customEndDate = sharedPref?.getString(TopAdsDashboardConstant.END_DATE_BERANDA, "")
+        val customStartDate = sharedPref?.getString(START_DATE_BERANDA, "")
+        val customEndDate = sharedPref?.getString(END_DATE_BERANDA, "")
         val dateRange: String
         dateRange = if (customStartDate?.isNotEmpty()!!) {
             "$customStartDate - $customEndDate"
@@ -158,13 +149,13 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         datePickerSheet?.onItemClick = { date1, date2, position ->
             handleDate(date1, date2, position)
         }
-
         datePickerSheet?.customDatepicker = {
             startCustomDatePicker()
         }
     }
 
     private fun loadData() {
+        swipe_refresh_layout.isEnabled = true
         loadStatisticsData()
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
@@ -179,7 +170,6 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         startDate = Date(date1)
         endDate = Date(date2)
         setDateRangeText(position)
-
         loadStatisticsData()
     }
 
@@ -243,11 +233,11 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         recyclerview_tabLayout.adapter = topAdsTabAdapter
         val smoothScroller = object : LinearSmoothScroller(activity!!) {
             override fun getHorizontalSnapPreference(): Int {
-                return LinearSmoothScroller.SNAP_TO_START
+                return SNAP_TO_START
             }
 
             override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                return TopAdsDashboardFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
+                return TopAdsProductIklanFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
             }
         }
 
@@ -306,7 +296,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         }
         endDate = dateEnd
         with(sharedPref.edit()) {
-            putString(END_DATE_BERANDA, Utils.outputFormat.format(startDate))
+            putString(END_DATE_BERANDA, Utils.outputFormat.format(endDate))
             commit()
         }
         setDateRangeText(CUSTOM_DATE)
@@ -318,11 +308,4 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo)
     }
 
-    private fun openDashboard() {
-        if (AppUtil.isSellerInstalled(context)) {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
-        } else {
-            RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
-        }
-    }
 }

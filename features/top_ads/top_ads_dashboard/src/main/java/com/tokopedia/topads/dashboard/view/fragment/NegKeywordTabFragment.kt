@@ -69,18 +69,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = NegKeywordAdapter(NegKeywordAdapterTypeFactoryImpl(::onCheckedChange, ::setSelectMode))
-
-    }
-
-    private fun onCheckedChange(pos: Int, isChecked: Boolean) {
-        val actionActivate: String = if (isChecked)
-            TopAdsDashboardConstant.ACTION_ACTIVATE
-        else
-            TopAdsDashboardConstant.ACTION_DEACTIVATE
-
-        viewModel.setKeywordAction(actionActivate,
-                listOf((adapter.items[pos] as NegKeywordItemViewModel).result.keywordId.toString()), resources, ::onSuccessAction)
+        adapter = NegKeywordAdapter(NegKeywordAdapterTypeFactoryImpl(::setSelectMode))
     }
 
     private fun onSuccessAction() {
@@ -109,8 +98,6 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         close_butt?.setOnClickListener { setSelectMode(false) }
-        activate.setOnClickListener { performAction(TopAdsDashboardConstant.ACTION_ACTIVATE) }
-        deactivate.setOnClickListener { performAction(TopAdsDashboardConstant.ACTION_DEACTIVATE) }
         setSearchBar()
         fetchData()
         delete.setOnClickListener {
@@ -123,17 +110,17 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
             bundle.putString(TopAdsDashboardConstant.groupStatus, arguments?.getString(TopAdsDashboardConstant.GROUP_STATUS))
             RouteManager.route(context, bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)
         }
-        Utils.setSearchListener(view, ::onSuccessSearch, ::onSearchClear)
+        Utils.setSearchListener(view, ::fetchData)
         neg_key_list?.adapter = adapter
         neg_key_list?.layoutManager = LinearLayoutManager(context)
-
     }
 
     private fun setSearchBar() {
         movetogroup.visibility = View.GONE
+        activate.visibility = View.GONE
+        deactivate.visibility = View.GONE
         btnFilter.visibility = View.GONE
         btnAddItem.visibility = View.VISIBLE
-
     }
 
     private fun performAction(actionActivate: String) {
@@ -164,14 +151,6 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 ?: 0, searchBar.searchBarTextField.text.toString(), null, null, ::onSuccessKeyword, ::onEmpty)
     }
 
-    private fun onSuccessSearch(search: String) {
-        fetchData()
-    }
-
-    private fun onSearchClear() {
-        fetchData()
-    }
-
     private fun showConfirmationDialog(context: Context) {
         val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setDescription(context.getString(R.string.topads_dash_confirm_delete_negkey_desc))
@@ -183,7 +162,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         }
         dialog.setSecondaryCTAClickListener {
             dialog.dismiss()
-            performAction(TopAdsDashboardConstant.ACTION_DELETE)
+            performAction(ACTION_DELETE)
         }
         dialog.show()
     }
@@ -204,7 +183,6 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
             adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
         }
         (activity as TopAdsGroupDetailViewActivity).setNegKeywordCount(0)
-
     }
 
     private fun onSuccessKeyword(data: List<KeywordsResponse.GetTopadsDashboardKeywords.DataItem>) {

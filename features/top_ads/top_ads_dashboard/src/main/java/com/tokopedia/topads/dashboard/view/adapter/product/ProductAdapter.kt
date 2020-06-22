@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.product
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapterTypeFactory
 import com.tokopedia.topads.dashboard.view.adapter.product.viewholder.ProductViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
@@ -33,6 +34,7 @@ class ProductAdapter(private val typeFactory: ProductAdapterTypeFactory): Recycl
 
     fun setSelectMode(isSelectMode:Boolean){
         this.isSelectMode = isSelectMode
+        clearData(isSelectMode)
         notifyDataSetChanged()
     }
 
@@ -48,4 +50,14 @@ class ProductAdapter(private val typeFactory: ProductAdapterTypeFactory): Recycl
         }
         return list
     }
+    private fun clearData(selectedMode: Boolean) {
+        if (!selectedMode){
+            items.forEach {
+                if (it is ProductItemViewModel) {
+                    it.isChecked = false
+                }
+            }
+        }
+    }
+
 }

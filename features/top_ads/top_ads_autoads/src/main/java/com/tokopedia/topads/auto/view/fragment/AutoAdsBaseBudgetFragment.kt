@@ -45,7 +45,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     lateinit var rangeStart: TextView
     lateinit var rangeEnd: TextView
     lateinit var btnSubmit: Button
-    lateinit var tipBtn:Button
+    lateinit var tipBtn: Button
     private var lowClickDivider = 1
     private var minDailyBudget = 1
     private var maxDailyBudget = 1
@@ -122,13 +122,12 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
                             btnSubmit.isEnabled = true
                         }
                         priceEditText.addTextChangedListener(this)
-
                     }
                 })
     }
 
 
-    fun onSuccessBudgetInfo(response: TopadsBidInfo.Response) {
+    private fun onSuccessBudgetInfo(response: TopadsBidInfo.Response) {
         val data = response.bidInfo.data[0]
         var budget = data.minDailyBudget
         val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
@@ -149,13 +148,9 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
                 estimateImpression(progress)
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
         hideLoading()
 
@@ -166,7 +161,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         priceRange.text = convertToCurrencyString(replace(getPotentialReach().toString()).toLong())
     }
 
-    fun getPotentialReach(): CharSequence? {
+    private fun getPotentialReach(): CharSequence? {
         return budgetViewModel.getPotentialImpressionGQL(replace(priceEditText.text.toString()).toInt()
                 , lowClickDivider)
     }
@@ -193,7 +188,6 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         return view
     }
 
-
     open fun setListener() {
         priceEditText.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (!hasFocus) {
@@ -214,35 +208,32 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
                 SOURCE
         )))
     }
-        private fun eligible() {
+
+    private fun eligible() {
         val intent = Intent(context, SuccessActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 
     private fun insufficientCredit() {
-
         val intent = Intent(context, NoCreditActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-
     }
 
 
     companion object {
         var locale = Locale("in", "ID")
-
         val KEY_DAILY_BUDGET = "BUDGET"
         val KEY_AUTOADS_STATUS = "AUTOADS_STATUS"
         val TOGGLE_ON = "toggle_on"
-        val TOGGLE_OFF = "toggle_off"
         val CHANNEL = "topchat"
         val SOURCE = "sellerapp_autoads_creation"
     }
 
     fun replace(text: String): String {
-        return text.replace(",", "").replace(".", "").replace("Rp", "").trim()
-
+        return text.replace(",", "").replace(".", "")
+                .replace("Rp", "").trim()
     }
 
 

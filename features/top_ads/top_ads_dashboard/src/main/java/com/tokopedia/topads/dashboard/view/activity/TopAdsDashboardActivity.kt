@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
@@ -23,7 +24,7 @@ import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import javax.inject.Inject
@@ -69,6 +70,35 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             startActivity(intent)
             finish()
         })
+        createAd.setOnClickListener {
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+            } else {
+                openDashboard()
+            }
+        }
+        createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val height = createAd?.measuredHeight
+        view_pager?.setPadding(0, 0, 0, height?:0)
+
+        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(p0: TabLayout.Tab?) {}
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {}
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                if (tab.position == 0) {
+                    bottom.visibility = View.VISIBLE
+                    createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    val height = createAd?.measuredHeight
+                    view_pager?.setPadding(0, 0, 0, height?:0)
+                } else {
+                    bottom.visibility = View.GONE
+                    view_pager?.setPadding(0, 0, 0, 0)
+
+                }
+            }
+        })
     }
 
     private fun renderTabAndViewPager() {
@@ -82,7 +112,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<FragmentTabItem> = mutableListOf()
         list.add(FragmentTabItem(resources.getString(R.string.beranda), BerandaTabFragment.createInstance()))
-        list.add(FragmentTabItem(resources.getString(R.string.iklan_produck), TopAdsDashboardFragment.createInstance()))
+        list.add(FragmentTabItem(resources.getString(R.string.iklan_produck), TopAdsProductIklanFragment.createInstance()))
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         pagerAdapter.setList(list)
         return pagerAdapter

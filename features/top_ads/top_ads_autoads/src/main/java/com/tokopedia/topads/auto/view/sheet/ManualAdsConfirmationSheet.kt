@@ -38,6 +38,9 @@ class ManualAdsConfirmationSheet {
         }
         closeButton?.setOnClickListener { dismissDialog() }
         cancel?.setOnClickListener { dismissDialog() }
+        dialog?.setOnDismissListener {
+            dismissDialog()
+        }
     }
 
     fun show() {

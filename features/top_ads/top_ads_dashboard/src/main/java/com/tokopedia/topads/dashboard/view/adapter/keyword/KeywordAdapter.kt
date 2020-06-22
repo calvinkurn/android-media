@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.keyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewholder.KeywordViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordViewModel
@@ -29,6 +30,7 @@ class KeywordAdapter(val typeFactory: KeywordAdapterTypeFactory): RecyclerView.A
 
     fun setSelectMode(isSelectMode:Boolean){
         this.isSelectMode = isSelectMode
+        clearData(isSelectMode)
         notifyDataSetChanged()
     }
 
@@ -47,6 +49,16 @@ class KeywordAdapter(val typeFactory: KeywordAdapterTypeFactory): RecyclerView.A
             }
         }
         return list
+    }
+
+    private fun clearData(selectedMode: Boolean) {
+        if (!selectedMode){
+            items.forEach {
+                if (it is KeywordItemViewModel) {
+                    it.isChecked = false
+                }
+            }
+        }
     }
 
     fun setEmptyView(fromSearch: Boolean) {

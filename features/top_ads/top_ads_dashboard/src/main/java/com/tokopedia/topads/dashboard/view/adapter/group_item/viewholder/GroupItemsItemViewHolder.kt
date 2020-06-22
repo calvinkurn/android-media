@@ -42,7 +42,10 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                 view.card_view.setCardBackgroundColor(view.context.resources.getColor(R.color.white))
                 view.img_menu.visibility = View.VISIBLE
                 view.check_box.visibility = View.GONE
+                view.check_box.isChecked = false
+                it.isChecked = false
             }
+            view.check_box.isChecked = it.isChecked
             when (it.data.groupStatusDesc) {
                 ACTIVE -> view.label.setLabelType(Label.GENERAL_DARK_GREEN)
                 TIDAK_AKTIF -> view.label.setLabelType(Label.GENERAL_LIGHT_ORANGE)
@@ -60,7 +63,6 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             view.key_count.text = it.data.totalKeyword.toString()
             setProgressBar(it.data)
 
-     //       view.check_box.isChecked = it.isChecked
 
             view.item_card?.setOnClickListener { _ ->
                 if (!selectedMode) {
@@ -86,7 +88,6 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             }
             view.item_card.setOnLongClickListener {
                 item.isChecked = true
-                view.check_box.setOnCheckedChangeListener(null)
                 view.check_box.isChecked = true
                 view.card_view.setCardBackgroundColor(view.context.resources.getColor(R.color.topads_select_color))
                 selectMode.invoke(true)

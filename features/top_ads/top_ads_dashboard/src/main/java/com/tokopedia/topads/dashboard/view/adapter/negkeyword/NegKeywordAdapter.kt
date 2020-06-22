@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.negkeyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewholder.NegKeywordViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordViewModel
@@ -28,6 +29,7 @@ class NegKeywordAdapter(val typeFactory: NegKeywordAdapterTypeFactory) : Recycle
 
     fun setSelectMode(isSelectMode: Boolean) {
         this.isSelectMode = isSelectMode
+        clearData(isSelectMode)
         notifyDataSetChanged()
     }
 
@@ -41,11 +43,20 @@ class NegKeywordAdapter(val typeFactory: NegKeywordAdapterTypeFactory) : Recycle
             if (it is NegKeywordItemViewModel) {
                 if (it.isChecked) {
                     list.add(it)
-
                 }
             }
         }
         return list
+    }
+
+    private fun clearData(selectedMode: Boolean) {
+        if (!selectedMode){
+            items.forEach {
+                if (it is NegKeywordItemViewModel) {
+                    it.isChecked = false
+                }
+            }
+        }
     }
 
     fun setEmptyView(fromSearch: Boolean) {

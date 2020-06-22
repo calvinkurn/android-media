@@ -21,9 +21,8 @@ class EditAutoAdsBudgetFragment : AutoAdsBaseBudgetFragment(), View.OnClickListe
 
     override fun setUpView(view: View) {
         autoAdsWidget = view.findViewById(R.id.autoads_edit_widget)
-        autoAdsWidget?.loadData(EDIT_AUTOADS)
-
     }
+
     override fun showLoading() {
         loading.visibility = View.VISIBLE
         btn_submit.isEnabled = false
@@ -42,7 +41,7 @@ class EditAutoAdsBudgetFragment : AutoAdsBaseBudgetFragment(), View.OnClickListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        autoAdsWidget?.loadData(EDIT_AUTOADS)
     }
 
     override fun initInjector() {

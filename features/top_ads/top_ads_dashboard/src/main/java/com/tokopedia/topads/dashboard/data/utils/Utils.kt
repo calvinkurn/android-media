@@ -25,7 +25,7 @@ object Utils {
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy")
     val format = SimpleDateFormat("yyyy-MM-dd")
 
-    fun setSearchListener(view: View, onSuccess:((Search:String)->Unit), onSearchClear:(()->Unit)) {
+    fun setSearchListener(view: View, onSuccess:(()->Unit)) {
         val searchbar = view.findViewById<SearchBarUnify>(R.id.searchBar)
         val searchTextField = searchbar?.searchBarTextField
         val searchClearButton = searchbar?.searchBarIcon
@@ -35,7 +35,7 @@ object Utils {
             override fun onEditorAction(textView: TextView?, actionId: Int, even: KeyEvent?): Boolean {
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    onSuccess.invoke(textView?.text.toString())
+                    onSuccess.invoke()
                     return true
                 }
                 return false
@@ -43,7 +43,7 @@ object Utils {
         })
         searchClearButton?.setOnClickListener {
             searchTextField?.text?.clear()
-            onSearchClear.invoke()
+            onSuccess.invoke()
         }
     }
 

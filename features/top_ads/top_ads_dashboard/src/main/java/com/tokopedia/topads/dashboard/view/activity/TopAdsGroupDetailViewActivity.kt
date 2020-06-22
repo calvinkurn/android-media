@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -13,10 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -36,7 +35,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NOT_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.data.utils.Utils.outputFormat
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
@@ -51,9 +49,15 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.app_bar_layout_2
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.hari_ini
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.swipe_refresh_layout
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.tab_layout
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.view_pager_frag
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * Created by Pika on 1/6/20.
@@ -75,6 +79,8 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     private val EDIT_GROUP_REUEST_CODE = 47
     private var priceDaily = 0
     private var groupTotal = 0
+
+    private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -168,6 +174,28 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
             }
             startActivityForResult(intent, EDIT_GROUP_REUEST_CODE)
         }
+        app_bar_layout_2.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, offset ->
+            when {
+                offset == 0 -> {
+                    if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
+                        onStateChanged(app_bar_layout_2, TopAdsProductIklanFragment.State.EXPANDED);
+                    }
+                    mCurrentState = TopAdsProductIklanFragment.State.EXPANDED;
+                }
+                abs(offset) >= app_bar_layout_2.totalScrollRange -> {
+                    if (mCurrentState != TopAdsProductIklanFragment.State.COLLAPSED) {
+                        onStateChanged(app_bar_layout_2, TopAdsProductIklanFragment.State.COLLAPSED);
+                    }
+                    mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED;
+                }
+                else -> {
+                    if (mCurrentState != TopAdsProductIklanFragment.State.IDLE) {
+                        onStateChanged(app_bar_layout_2, TopAdsProductIklanFragment.State.IDLE);
+                    }
+                    mCurrentState = TopAdsProductIklanFragment.State.IDLE;
+                }
+            }
+        })
     }
 
     private fun loadData() {
@@ -184,6 +212,10 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         group_name.text = groupName
         btn_switch.isChecked = data.status == "1"
         renderTabAndViewPager()
+    }
+    private fun onStateChanged(appBarLayout: AppBarLayout?, state: TopAdsProductIklanFragment.State?) {
+        swipe_refresh_layout.isEnabled = state == TopAdsProductIklanFragment.State.EXPANDED
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -212,7 +244,6 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         }
     }
 
-
     private fun initStatisticComponent() {
         val tabLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerview_tabLayout.layoutManager = tabLayoutManager
@@ -228,7 +259,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
             }
 
             override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                return TopAdsDashboardFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
+                return TopAdsProductIklanFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
             }
         }
 
@@ -248,7 +279,6 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
             override fun onPageScrollStateChanged(state: Int) {}
         })
     }
-
 
     private fun showBottomSheet() {
         val sharedPref = getPreferences(Context.MODE_PRIVATE)
@@ -348,7 +378,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         }
         endDate = dateEnd
         with(sharedPref.edit()) {
-            putString(END_DATE_DETAIL, outputFormat.format(startDate))
+            putString(END_DATE_DETAIL, outputFormat.format(endDate))
             commit()
         }
         setDateRangeText(CUSTOM_DATE)
@@ -371,8 +401,6 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     fun setNegKeywordCount(size: Int) {
         detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size))
     }
-
-
 }
 
 

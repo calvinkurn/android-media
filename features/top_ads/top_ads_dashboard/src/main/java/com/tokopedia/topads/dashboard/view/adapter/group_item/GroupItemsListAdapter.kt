@@ -33,7 +33,18 @@ class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactor
 
     fun setSelectMode(isSelect: Boolean) {
         selectedMode = isSelect
+        clearData(selectedMode)
         notifyDataSetChanged()
+    }
+
+    private fun clearData(selectedMode: Boolean) {
+        if (!selectedMode){
+            items.forEach {
+                if (it is GroupItemsItemViewModel) {
+                   it.isChecked = false
+                }
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: GroupItemsViewHolder<GroupItemsViewModel>, position: Int) {

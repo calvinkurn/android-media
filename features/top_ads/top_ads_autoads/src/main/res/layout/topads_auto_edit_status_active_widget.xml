@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:background="@drawable/topads_green_bg"
         android:padding="@dimen/dp_8"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/iklan_otomatis"
@@ -40,15 +41,17 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/daily_usage_status"
-        style="@style/TextView.Title.Bold"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
-        android:textSize="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/anggaran_harian"
+        android:textColor="@color/topads_light_shadow"
+        app:layout_constraintEnd_toStartOf="@id/btn_switch"
         app:layout_constraintStart_toEndOf="@id/auto_ad_status_image"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/anggaran_harian" />
+        app:typographyType="small" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -68,39 +71,43 @@
         android:id="@+id/progress_status1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:text="@string/topads_dash_group_item_progress_status"
-        android:includeFontPadding="false"
         android:layout_marginStart="@dimen/dp_12"
-        app:layout_constraintTop_toBottomOf="@id/progress_bar"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_2"
+        android:includeFontPadding="false"
+        android:text="@string/topads_dash_group_item_progress_status"
+        app:layout_constraintBottom_toBottomOf="@id/auto_ad_status_image"
         app:layout_constraintStart_toEndOf="@id/auto_ad_status_image"
+        app:layout_constraintTop_toBottomOf="@id/progress_bar"
         app:typographyType="heading_6"
-        tools:text="Rp 400"
-        android:layout_marginLeft="@dimen/dp_12" />
+        tools:text="Rp 400" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/progress_status2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_2"
         android:text="@string/topads_dash_group_item_progress_status"
         android:textColor="@color/topads_light_shadow"
+        app:layout_constraintBottom_toBottomOf="@id/auto_ad_status_image"
         app:layout_constraintStart_toEndOf="@id/progress_status1"
         app:layout_constraintTop_toBottomOf="@id/progress_bar"
         app:typographyType="small"
-        tools:text=" dari Rp 400.00"
-        android:layout_marginLeft="@dimen/dp_2" />
-
+        tools:text=" dari Rp 400.00" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/btn_switch"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/setting"

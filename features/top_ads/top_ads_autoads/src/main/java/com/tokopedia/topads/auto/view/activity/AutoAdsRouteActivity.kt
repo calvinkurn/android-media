@@ -68,20 +68,6 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == AutoAdsBaseBudgetFragment.REQUEST_CODE_AD_OPTION) {
-//            if (data != null) {
-//                when (data.getIntExtra(AutoAdsBaseBudgetFragment.SELECTED_OPTION, -1)) {
-//                    TopAdsAddingOption.GROUP_OPT -> onSummaryGroupClicked()
-//                    TopAdsAddingOption.PRODUCT_OPT -> gotoCreateProductAd()
-//                    TopAdsAddingOption.KEYWORDS_OPT -> gotoCreateKeyword()
-//                }
-//                finish()
-//            }
-//        }
-    }
-
     private fun autoAds() {
         openDashboard()
     }

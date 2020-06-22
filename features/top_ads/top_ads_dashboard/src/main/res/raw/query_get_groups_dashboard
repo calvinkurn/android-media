@@ -20,6 +20,7 @@ query GetTopadsDashboardGroups($queryInput: GetTopadsDashboardGroupsInputType!) 
       stat_total_ctr
       stat_total_conversion
       stat_total_sold
+      group_type
     }
   }
 }
