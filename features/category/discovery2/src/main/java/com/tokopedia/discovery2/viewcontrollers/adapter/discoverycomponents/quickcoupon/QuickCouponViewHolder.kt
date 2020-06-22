@@ -109,7 +109,7 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
 
     private fun handlePhoneVerification(phoneStatus: Boolean?) {
         phoneStatus?.let {
-            (fragment as DiscoveryFragment).phoneVerificationResponseCallBack(it)
+            componentPosition?.let { position -> (fragment as DiscoveryFragment).phoneVerificationResponseCallBack(it, position) }
         }
     }
 
