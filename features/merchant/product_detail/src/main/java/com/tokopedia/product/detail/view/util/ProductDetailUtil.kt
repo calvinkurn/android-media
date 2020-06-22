@@ -105,9 +105,9 @@ internal fun Int.getRelativeDateByHours(context: Context): String {
     val dayInHours = TimeUnit.DAYS.toHours(1)
 
     return if (hourInput / dayInHours > 0) {
-        context.getString(R.string.shop_chat_speed_in_days, hourInput / dayInHours)
+        context.getString(R.string.shop_chat_speed_in_days_with_icon, hourInput / dayInHours)
     } else {
-        context.getString(R.string.shop_chat_speed_in_hours, hourInput)
+        context.getString(R.string.shop_chat_speed_in_hours_with_icon, hourInput)
     }
 }
 

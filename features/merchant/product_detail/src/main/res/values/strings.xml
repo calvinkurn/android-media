@@ -293,7 +293,11 @@
     <string name="product_shop_start_sell">mulai jualan</string>
 
     <string name="shop_chat_speed_in_days">%1d hari</string>
-    <string name="shop_chat_speed_in_hours">± %1d jam</string>
+    <string name="shop_chat_speed_in_hours">%1d jam</string>
+
+    <string name="shop_chat_speed_in_days_with_icon">± %1d hari</string>
+    <string name="shop_chat_speed_in_hours_with_icon">± %1d jam</string>
+
     <string name="shop_chat_speed_in_minute">%1d menit</string>
     <string name="shop_chat_speed_in_one_two_days">1–2 hari</string>
 
