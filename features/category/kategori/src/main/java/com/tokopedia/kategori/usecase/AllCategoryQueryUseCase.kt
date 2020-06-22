@@ -30,16 +30,15 @@ class AllCategoryQueryUseCase @Inject constructor(private val context: Context,
         return requestParams
     }
 
-
     override fun createObservable(requestParams: RequestParams?): Observable<CategoryAllList> {
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
+        val graphQlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.categorylist), Data::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`() * 2).setSessionIncluded(true).build()
 
         graphqlUseCase.setCacheStrategy(cacheStrategy)
-        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.addRequest(graphQlRequest)
 
         return graphqlUseCase.createObservable(requestParams).map {
 
