@@ -34,7 +34,8 @@
                 android:id="@+id/freeShippingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl5"/>
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:visibility="gone"/>
 
             <com.tokopedia.unifycomponents.LocalLoad
                 android:id="@+id/freeShippingError"
