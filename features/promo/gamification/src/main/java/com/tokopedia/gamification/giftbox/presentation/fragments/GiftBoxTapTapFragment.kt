@@ -130,6 +130,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             greenGlowAnim.startDelay = startDelay
         }
 
+        var soundDelay = 700L
+        giftBoxDailyView.postDelayed({ playPrizeSound() }, soundDelay)
+
         when (rewardState) {
             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
 
@@ -197,6 +200,43 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 startsAnimatorList.forEach {
                     it.start()
                 }
+            }
+        }
+
+        (giftBoxDailyView as GiftBoxTapTapView).boxRewardCallback = object : GiftBoxDailyView.BoxRewardCallback {
+            override fun showPoints(): Animator {
+                val anim1 = rewardContainer.showSingleLargeRewardAnimationFadeOut()
+
+                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
+                ovoPointsTextAnim.startDelay = 100L
+
+                val animatorSet = AnimatorSet()
+                animatorSet.playTogether(anim1, ovoPointsTextAnim)
+                animatorSet.addListener(onEnd = { afterRewardAnimationEnds() })
+                animatorSet.start()
+                return animatorSet
+            }
+
+            override fun showPointsWithCoupons(): Animator {
+
+                val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut()
+
+                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
+                ovoPointsTextAnim.startDelay = 100L
+
+                val animatorSet = AnimatorSet()
+                animatorSet.playTogether(anim1, ovoPointsTextAnim)
+                animatorSet.addListener(onEnd = { afterRewardAnimationEnds() })
+                animatorSet.start()
+                return animatorSet
+            }
+
+            override fun showCoupons(): Animator {
+                val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut()
+
+                anim1.addListener(onEnd = { afterRewardAnimationEnds() })
+                anim1.start()
+                return anim1
             }
         }
 
@@ -315,6 +355,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                             }
 
                         } else {
+                            getTapTapView().isGiftTapAble = true
                             val status = responseCrackResultEntity?.crackResultEntity?.resultStatus
                             val messageList = status?.message
                             if (!messageList.isNullOrEmpty()) {
@@ -322,10 +363,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                             } else {
                                 renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
                             }
+
                         }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
+                    getTapTapView().isGiftTapAble = true
                     renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
                 }
             }
@@ -357,6 +400,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         if (isTimeOut) {
             //Do nothing
         } else if (getTapTapView().isGiftTapAble) {
+            playTapSound()
             getTapTapView().isGiftTapAble = false
             if (getTapTapView().tapCount == getTapTapView().targetTapCount) {
                 crackGiftBox()
