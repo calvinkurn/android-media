@@ -362,11 +362,19 @@ class ShopPageFragment :
             updateStickyState()
         }
         stickyLoginView.setOnClickListener {
-            stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.SHOP)
+            } else {
+                stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
+            }
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
         }
         stickyLoginView.setOnDismissListener(View.OnClickListener {
-            stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+            } else {
+                stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+            }
             stickyLoginView.dismiss(StickyLoginConstant.Page.SHOP)
             updateStickyContent()
         })
@@ -958,14 +966,6 @@ class ShopPageFragment :
             return
         }
 
-        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
-        if (!isCanShowing) {
-            stickyLoginView.hide()
-            updateViewPagerPadding()
-            updateFloatingChatButtonMargin()
-            return
-        }
-
         val userSession = UserSession(context)
         if (userSession.isLoggedIn) {
             stickyLoginView.hide()
@@ -974,9 +974,22 @@ class ShopPageFragment :
             return
         }
 
-        this.tickerDetail?.let { stickyLoginView.setContent(it) }
-        stickyLoginView.show(StickyLoginConstant.Page.SHOP)
-        stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+        if (stickyLoginView.isLoginReminder()) {
+            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.SHOP)
+            stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.SHOP)
+        } else {
+            val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
+            if (!isCanShowing) {
+                stickyLoginView.hide()
+                updateViewPagerPadding()
+                updateFloatingChatButtonMargin()
+                return
+            }
+
+            this.tickerDetail?.let { stickyLoginView.setContent(it) }
+            stickyLoginView.show(StickyLoginConstant.Page.SHOP)
+            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+        }
         updateViewPagerPadding()
         updateFloatingChatButtonMargin()
 
