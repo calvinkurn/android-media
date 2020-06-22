@@ -128,7 +128,6 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
         }
 
         if (cancellationSubmitModel.success) {
-            hotel_cancellation_confirmation_iv.setImageResource(R.drawable.ic_hotel_cancellation_success)
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_success))
         } else {
             if (isOrderNotFound) hotel_cancellation_confirmation_iv.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
