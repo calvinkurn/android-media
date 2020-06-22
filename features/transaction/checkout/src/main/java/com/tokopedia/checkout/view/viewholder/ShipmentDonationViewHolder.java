@@ -67,8 +67,8 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
         Tooltip tooltip = new Tooltip(imgDonationInfo.getContext());
         tooltip.setTitle(shipmentDonationModel.getDonation().getTitle());
         tooltip.setDesc(shipmentDonationModel.getDonation().getDescription());
-        tooltip.setTextButton(imgDonationInfo.getContext().getString(R.string.label_button_bottomsheet_close));
-        tooltip.setIcon(R.drawable.ic_donation);
+        tooltip.setTextButton(imgDonationInfo.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
+        tooltip.setIcon(R.drawable.checkout_module_ic_donation);
         tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

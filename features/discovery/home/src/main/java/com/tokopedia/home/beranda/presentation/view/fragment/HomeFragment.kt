@@ -56,7 +56,6 @@ import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.design.keyboard.KeyboardHelper.OnKeyboardVisibilityChangedListener
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
@@ -153,8 +152,6 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -197,6 +194,8 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val PERFORMANCE_PAGE_NAME_HOME = "home"
         private var lock = Object()
+        private const val ENABLE_ASYNC_HOME_DAGGER = "android_async_home_dagger"
+
         var HIDE_TICKER = false
         private var HIDE_GEO = false
         private const val SOURCE_ACCOUNT = "account"
@@ -280,10 +279,25 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        initHomePageFlows()
+        createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         requestStatusBarDark()
+    }
+
+    private fun createDaggerComponent(){
+        val enableAsyncDaggerCompInit = getRemoteConfig().getBoolean(ENABLE_ASYNC_HOME_DAGGER, false)
+        if(enableAsyncDaggerCompInit) {
+            var homeDaggerWeave = object : WeaveInterface {
+                override fun execute(): Any {
+                    return initHomePageFlows()
+                }
+            }
+            Weaver.executeWeaveCoRoutineNow(homeDaggerWeave)
+        }
+        else{
+            initHomePageFlows()
+        }
     }
 
     private fun requestStatusBarDark() {
@@ -887,7 +901,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 this,
                 HomeComponentCallback(getHomeViewModel()),
-                DynamicLegoBannerComponentCallback(context),
+                DynamicLegoBannerComponentCallback(context, this),
                 RecommendationListCarouselComponentCallback(getHomeViewModel(), this),
                 MixLeftComponentCallback(this),
                 MixTopComponentCallback(this))
@@ -1014,7 +1028,10 @@ open class HomeFragment : BaseDaggerFragment(),
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            TopAdsUrlHitter(className).hitClickUrl(getContext(), slidesModel.redirectUrl)
+            TopAdsUrlHitter(className).hitClickUrl(getContext(),
+                    slidesModel.redirectUrl, slidesModel.id.toString(),
+                    slidesModel.title + " : " + slidesModel.creativeName,
+                    slidesModel.imageUrl)
         }
     }
 
@@ -1450,7 +1467,10 @@ open class HomeFragment : BaseDaggerFragment(),
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else if (!bannerSlidesModel.isInvoke) {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
-                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
+                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl,
+                        bannerSlidesModel.id.toString(),
+                        bannerSlidesModel.title + " : " + bannerSlidesModel.creativeName,
+                        bannerSlidesModel.imageUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
             dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
@@ -1860,21 +1880,6 @@ open class HomeFragment : BaseDaggerFragment(),
             )
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                     getSprintSaleImpression(channel, true) as HashMap<String, Any>
-            )
-            DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO -> putEEToIris(
-                    HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
-                            channel.id, channel.grids, channel.header.name, position
-                    )
-            )
-            DynamicChannelViewHolder.TYPE_THREE_GRID_LEGO -> putEEToIris(
-                    HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
-                            channel.id, channel.grids, channel.header.name, position
-                    )
-            )
-            DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO -> putEEToIris(
-                    getLegoBannerFourImageImpression(
-                            channel, position, true
-                    ) as HashMap<String, Any>
             )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))

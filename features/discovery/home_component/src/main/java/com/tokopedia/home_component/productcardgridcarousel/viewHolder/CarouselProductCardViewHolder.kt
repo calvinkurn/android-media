@@ -30,13 +30,19 @@ class CarouselProductCardViewHolder (view: View,
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
                 if(element.grid.isTopads){
-                    TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression)
+                    TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression,
+                            element.grid.id,
+                            element.grid.name,
+                            element.grid.imageUrl)
                 }
                 element.listener.onProductCardImpressed(position = adapterPosition, channel = channels, channelGrid = element.grid)
             }
             setOnClickListener {
                 if(element.grid.isTopads){
-                    TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl)
+                    TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl,
+                            element.grid.id,
+                            element.grid.name,
+                            element.grid.imageUrl)
                 }
                 element.listener.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
             }
