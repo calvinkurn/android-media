@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -63,7 +62,6 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -80,7 +78,6 @@ import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.nps.helper.InAppReviewHelper;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -101,8 +98,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
-import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
@@ -120,7 +115,6 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
@@ -885,24 +879,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public boolean isAllowLogOnChuckInterceptorNotification() {
         LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
         return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(
-            FragmentManager manager,
-            Context context,
-            BottomSheets.BottomSheetDismissListener dismissListener
-    ) {
-        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-        rating.setDialogDismissListener(dismissListener);
-        rating.showDialog(manager, context);
-    }
-
-    @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-        if(!InAppReviewHelper.launchInAppReview(activity)) {
-            SimpleAppRatingDialog.show(activity);
-        }
     }
 
     private void initCMPushNotification() {
