@@ -1,7 +1,6 @@
 package com.tokopedia.notifcenter.domain
 
 import android.content.Context
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -33,8 +32,8 @@ class MarkAllReadNotificationUpdateUseCase @Inject constructor(
     }
 
     companion object {
-        private const val QUERY = "mutation markAllReadStatusNotificationUpdate(\$typeOfNotif: Int, \$typeId: Int){\n" +
-                "  notifcenter_markAllReadStatus(type_of_notif: \$typeOfNotif, type_id: \$typeId){\n" +
+        private const val QUERY = "mutation markAllReadStatusNotificationUpdate(\$typeOfNotif: Int){\n" +
+                "  notifcenter_markAllReadStatus(type_of_notif: \$typeOfNotif){\n" +
                 "    data {\n" +
                 "        is_success\n" +
                 "    }\n" +
@@ -43,15 +42,11 @@ class MarkAllReadNotificationUpdateUseCase @Inject constructor(
                 "}"
 
         private const val PARAM_NOTIF_TYPE = "typeOfNotif"
-        private const val PARAM_NOTIF_TYPE_ID = "typeId"
         private const val TYPE_NOTIF_UPDATE = 1 //update
-        private const val TYPE_NOTIF_ID_DEFAULT = 0 //default
-        private const val TYPE_NOTIF_ID_SELLER = 2 //seller
 
         fun params(typeOfNotif: Int = TYPE_NOTIF_UPDATE): HashMap<String, Any> {
             val params = hashMapOf<String, Any>()
             params[PARAM_NOTIF_TYPE] = typeOfNotif
-            params[PARAM_NOTIF_TYPE_ID] = if (GlobalConfig.isSellerApp()) TYPE_NOTIF_ID_SELLER else TYPE_NOTIF_ID_DEFAULT
             return params
         }
     }
