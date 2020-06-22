@@ -20,7 +20,7 @@ class RandomRewardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     fun bind(benfit: CrackBenefitEntity) {
         when (benfit.benefitType) {
             BenefitType.COUPON -> image.setImageResource(R.drawable.gami_coupon)
-            BenefitType.OVO -> image.setImageResource(R.drawable.gami_ovo)
+            BenefitType.OVO -> image.setImageResource(R.drawable.gami_ic_ovo)
         }
         tvTitle.text = benfit.text
     }

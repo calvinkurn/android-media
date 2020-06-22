@@ -32,6 +32,8 @@ import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.OVO
+import com.tokopedia.gamification.giftbox.presentation.fragments.BoxState.Companion.CLOSE
+import com.tokopedia.gamification.giftbox.presentation.fragments.BoxState.Companion.OPEN
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.FINISHED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.NOT_STARTED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.STARTED
@@ -81,6 +83,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     @RewardContainer.RewardState
     var rewardState: Int = RewardContainer.RewardState.COUPON_ONLY
+
+    @BoxState
+    var boxState: Int = CLOSE
 
     @MinuteTimerState
     var minuteTimerState: Int = NOT_STARTED
@@ -247,6 +252,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (it.data != null) {
+
                         backButton = it.data.gamiTapEggHome?.backButton
 
                         //toolbar
@@ -333,6 +339,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     if (it.data != null) {
                         val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
                         if (!resultCode.isNullOrEmpty() && resultCode == "200") {
+                            boxState = OPEN
 
                             getTapTapView().disableConfettiAnimation = true
                             getTapTapView().resetTapCount()
@@ -406,7 +413,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 crackGiftBox()
                 getTapTapView().targetTapCount = getTapTapView().getRandomNumber()
             } else {
-                getTapTapView().showConfettiAnimation()
+                if (boxState == OPEN)
+                    getTapTapView().showConfettiAnimation()
+                else
+                    getTapTapView().isGiftTapAble = true
             }
             getTapTapView().incrementTapCount()
         }
@@ -532,7 +542,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             if (!internetAvailable) {
                 showNoInterNetDialog(::handleGiftBoxTap, context!!)
             } else {
-                showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
+                showRedError(fmParent, message, actionText, ::handleGiftBoxTap)
             }
         }
     }
@@ -773,14 +783,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         if (hasPoints && hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_WITH_POINTS
-            rewardContainer.imageSmallReward.setImageResource(R.drawable.gami_ovo)
+            rewardContainer.imageSmallReward.setImageResource(R.drawable.gami_ic_ovo)
 
         } else if (hasPoints) {
             //only points
 
             rewardState = RewardContainer.RewardState.POINTS_ONLY
-            rewardContainer.imageSmallReward.setImageResource(R.drawable.gami_ovo)
-            rewardContainer.imageCircleReward.setImageResource(R.drawable.gami_ovo)
+            rewardContainer.imageSmallReward.setImageResource(R.drawable.gami_ic_ovo)
+            rewardContainer.imageCircleReward.setImageResource(R.drawable.gami_ic_ovo)
 
         } else if (hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_ONLY
@@ -839,5 +849,14 @@ annotation class TokenUserStateTapTap {
         const val EMPTY = "empty"
         const val CRACK_UNLIMITED = "crackunlimited"
         const val LOBBY = "lobby"
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(OPEN, CLOSE)
+annotation class BoxState {
+    companion object {
+        const val OPEN = 0
+        const val CLOSE = 1
     }
 }
