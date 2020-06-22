@@ -30,6 +30,7 @@ interface DynamicProductDetailListener {
     fun showAlertCampaignEnded()
     fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun onSwipePicture(swipeDirection: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
+    fun shouldShowWishlist(): Boolean
 
     /**
      * ProductInfoViewHolder
@@ -120,4 +121,20 @@ interface DynamicProductDetailListener {
      */
     fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel)
     fun showAlertUpcomingEnded()
+
+    /**
+     * ProductMiniShopInfoViewHolder
+     */
+    fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * ProductMediaViewHolder
+     */
+    fun onImageReviewMediaClicked(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * ProductTickerViewHolder
+     */
+    fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?)
 }

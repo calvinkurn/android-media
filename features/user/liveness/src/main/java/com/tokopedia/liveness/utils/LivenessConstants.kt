@@ -19,4 +19,20 @@ object LivenessConstants {
     const val KYC_FILE_NOT_FOUND = -7
     const val NOT_SUPPORT_LIVENESS = -9
     const val KYC_LIVENESS_FILE_NOT_FOUND = -11
+
+    const val ARG_FAILED_TYPE = "failed_type"
+    const val ARG_ERROR_CODE = "error_code"
+
+    const val LIVENESS_400 = -1
+    const val LIVENESS_401 = -2
+    const val LIVENESS_403 = -3
+    const val LIVENESS_408 = -4
+    const val LIVENESS_500 = -5
+    const val LIVENESS_502 = -6
+    const val LIVENESS_504 = -7
+    const val LIVENESS_UNKNOWNHOST = -8
+    const val LIVENESS_SOCKET_TIMEOUT = -9
+    const val LIVENESS_MESSAGE_ERROR = -10
+    const val LIVENESS_IO_EXCEPTION = -11
+    const val LIVENESS_ERROR_CODE_DEFAULT = -12
 }

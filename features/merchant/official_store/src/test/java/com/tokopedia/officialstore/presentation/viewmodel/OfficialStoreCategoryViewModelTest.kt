@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.officialstore.TestDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.domain.GetOfficialStoreCategoriesUseCase
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
@@ -27,7 +28,7 @@ class OfficialStoreCategoryViewModelTest {
     private val viewModelStore: OfficialStoreCategoryViewModel by lazy {
         OfficialStoreCategoryViewModel(
                 getOfficialStoreCategoriesUseCase,
-                Dispatchers.Unconfined
+                TestDispatcherProvider()
         )
     }
 
@@ -36,29 +37,29 @@ class OfficialStoreCategoryViewModelTest {
         MockKAnnotations.init(this)
     }
 
-//    @Test
-//    fun testGetOfficialStoreCategoriesSuccess() {
-//        coEvery {
-//            getOfficialStoreCategoriesUseCase.executeOnBackground()
-//        } returns OfficialStoreCategories()
-//        viewModelStore.getOfficialStoreCategories()
-//        coVerify {
-//            getOfficialStoreCategoriesUseCase.executeOnBackground()
-//        }
-//        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Success)
-//    }
+    @Test
+    fun testGetOfficialStoreCategoriesSuccess() {
+        coEvery {
+            getOfficialStoreCategoriesUseCase.executeOnBackground()
+        } returns OfficialStoreCategories()
+        viewModelStore.getOfficialStoreCategories()
+        coVerify {
+            getOfficialStoreCategoriesUseCase.executeOnBackground()
+        }
+        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Success)
+    }
 
-//    @Test
-//    fun testGetOfficialStoreCategoriesError() {
-//        coEvery {
-//            getOfficialStoreCategoriesUseCase.executeOnBackground()
-//        } throws Throwable()
-//        viewModelStore.getOfficialStoreCategories()
-//        coVerify {
-//            getOfficialStoreCategoriesUseCase.executeOnBackground()
-//        }
-//        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
-//    }
+    @Test
+    fun testGetOfficialStoreCategoriesError() {
+        coEvery {
+            getOfficialStoreCategoriesUseCase.executeOnBackground()
+        } throws Throwable()
+        viewModelStore.getOfficialStoreCategories()
+        coVerify {
+            getOfficialStoreCategoriesUseCase.executeOnBackground()
+        }
+        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
+    }
 
 }
 

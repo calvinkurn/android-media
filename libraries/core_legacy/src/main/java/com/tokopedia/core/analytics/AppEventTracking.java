@@ -697,7 +697,6 @@ public interface AppEventTracking {
         String TRUECALLER_ATTEMPT = "Truecaller - Attempt";
         String TRUECALLER_CONFIRM = "Truecaller - Confirm";
         String VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED = "View All - Official Store";
-        String OPPORTUNIT_LIST = "Peluang";
 
         String GOLD_MERCHANT_CURRENCY = "Gold Merchant - Currency";
         String GOLD_MERCHANT_VIDEO = "Gold Merchant - Video Produk";
@@ -839,7 +838,6 @@ public interface AppEventTracking {
         String DASHBOARD_ITEM_ORDER_BARU = "Order Baru";
         String DASHBOARD_ITEM_KONFIRMASI_PENGIRIMAN = "Konfirmasi Pengiriman";
         String DASHBOARD_ITEM_STATUS_PENGIRIMAN = "Transaksi Sukses";
-        String DASHBOARD_ITEM_PELUANG = "Peluang";
         String DASHBOARD_ITEM_PESAN = "Pesan";
         String DASHBOARD_ITEM_DISKUSI_PRODUK = "Diskusi Produk";
         String DASHBOARD_ITEM_ULASAN = "Ulasan";

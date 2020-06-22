@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.attachproduct.R;
@@ -153,7 +154,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     @Override
     public void goToAddProduct(String shopId) {
         if (isSeller) {
-            RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
+            RouteManager.route(this, ApplinkConst.PRODUCT_ADD);
         }
     }
 }

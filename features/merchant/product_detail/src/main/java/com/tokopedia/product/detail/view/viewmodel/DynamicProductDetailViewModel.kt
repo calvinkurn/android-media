@@ -39,9 +39,9 @@ import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProv
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.util.asThrowable
-import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
-import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
-import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -116,7 +116,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         get() = _productInfoP3RateEstimate
 
     private val _p3VariantResponse = MediatorLiveData<ProductInfoP3Variant>()
-    val p3VariantResponse : LiveData<ProductInfoP3Variant>
+    val p3VariantResponse: LiveData<ProductInfoP3Variant>
         get() = _p3VariantResponse
 
     private val _loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
@@ -193,7 +193,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var deviceId: String = userSessionInterface.deviceId
 
     init {
-        _p3VariantResponse.addSource(_p2General){ p2General ->
+        _p3VariantResponse.addSource(_p2General) { p2General ->
             launchCatchError(block = {
                 getDynamicProductInfoP1?.let { p1 ->
                     val isVariant = p1.data.variant.isVariant && p2General.variantResp != null
@@ -202,7 +202,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         _p3VariantResponse.postValue(it)
                     }
                 }
-            }){
+            }) {
                 Timber.d(it)
             }
         }
@@ -288,28 +288,30 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
-        stickyLoginUseCase.execute(
-                onSuccess = {
-                    if (it.response.tickers.isNotEmpty()) {
-                        for (tickerDetail in it.response.tickers) {
-                            if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
-                                onSuccess.invoke(tickerDetail)
-                                return@execute
+        if (!isUserSessionActive) {
+            stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+            stickyLoginUseCase.execute(
+                    onSuccess = {
+                        if (it.response.tickers.isNotEmpty()) {
+                            for (tickerDetail in it.response.tickers) {
+                                if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                                    onSuccess.invoke(tickerDetail)
+                                    return@execute
+                                }
                             }
+                            onError?.invoke(Throwable(""))
+                        } else {
+                            onError?.invoke(Throwable(""))
                         }
-                        onError?.invoke(Throwable(""))
-                    } else {
-                        onError?.invoke(Throwable(""))
+                    },
+                    onError = {
+                        onError?.invoke(it)
                     }
-                },
-                onError = {
-                    onError?.invoke(it)
-                }
-        )
+            )
+        }
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false) {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false) {
         launchCatchError(block = {
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
@@ -318,7 +320,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 addStaticComponent(it)
                 getDynamicProductInfoP1 = it.layoutData
                 //Remove any unused component based on P1 / PdpLayout
-                removeDynamicComponent(it.listOfLayout)
+                removeDynamicComponent(it.listOfLayout, isAffiliate)
                 //Render initial data first
                 _productLayout.value = it.listOfLayout.asSuccess()
             }
@@ -452,9 +454,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private suspend fun getProductInfoP3Variant(isVariant: Boolean): ProductInfoP3Variant {
-            getProductInfoP3VariantUseCase.requestParams = GetProductInfoP3VariantUseCase.createParams(isVariant, DynamicProductDetailMapper.generateCartTypeVariantParams(getDynamicProductInfoP1, variantData))
-            getProductInfoP3VariantUseCase.setRefresh(forceRefresh)
-            return getProductInfoP3VariantUseCase.executeOnBackground()
+        getProductInfoP3VariantUseCase.requestParams = GetProductInfoP3VariantUseCase.createParams(isVariant, DynamicProductDetailMapper.generateCartTypeVariantParams(getDynamicProductInfoP1, variantData))
+        getProductInfoP3VariantUseCase.setRefresh(forceRefresh)
+        return getProductInfoP3VariantUseCase.executeOnBackground()
     }
 
     private suspend fun getProductInfoP3RateEstimate(shopDomain: String?, productInfo: DynamicProductInfoP1): ProductInfoP3? {
@@ -471,12 +473,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 ?: 30000 else shippingPriceValue
     }
 
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>) {
+    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean) {
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
         val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
         val isTeaser = getDynamicProductInfoP1?.shouldShowNotifyMe() ?: false
+        val layoutName = getDynamicProductInfoP1?.layoutName ?: ""
+        val headNshoulderView = layoutName == ProductDetailConstant.LAYOUT_DEFAULT || layoutName == ProductDetailConstant.LAYOUT_HEAD_N_SHOULDERS
 
         val removedData = initialLayoutData.map {
             if ((!isTradein || isShopOwner()) && it.name() == ProductDetailConstant.TRADE_IN) {
@@ -494,6 +498,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser && !isVariant) {
                 it
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
+                it
+            } else if ((it.type() == ProductDetailConstant.SOCIAL_PROOF || it.type() == ProductDetailConstant.VALUE_PROP) && headNshoulderView) {
+                it
+            } else if(it.name() == ProductDetailConstant.BY_ME && isAffiliate && !GlobalConfig.isSellerApp()) {
                 it
             } else {
                 null
@@ -675,7 +683,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getDiscussionMostHelpful(productId: String, shopId: String) {
-        launchCatchError(block =  {
+        launchCatchError(block = {
             val response = withContext(dispatcher.io()) {
                 discussionMostHelpfulUseCase.createRequestParams(productId, shopId)
                 discussionMostHelpfulUseCase.executeOnBackground()
@@ -716,7 +724,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductInfoP3RateEstimate(weight: Float, shopDomain: String, origin: String?, needRequestCod:Boolean): ProductInfoP3 {
+    private suspend fun getProductInfoP3RateEstimate(weight: Float, shopDomain: String, origin: String?, needRequestCod: Boolean): ProductInfoP3 {
         getProductInfoP3RateEstimateUseCase.mapOfParam = GetProductInfoP3RateEstimateUseCase.createParams(weight, shopDomain, origin, needRequestCod)
         getProductInfoP3RateEstimateUseCase.setRefresh(forceRefresh)
         return getProductInfoP3RateEstimateUseCase.executeOnBackground()

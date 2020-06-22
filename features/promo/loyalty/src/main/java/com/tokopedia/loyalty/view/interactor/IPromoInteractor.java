@@ -7,6 +7,7 @@ import com.tokopedia.loyalty.view.data.PromoMenuData;
 
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -17,6 +18,6 @@ public interface IPromoInteractor {
 
     void getPromoMenuList(TKPDMapParam<String, String> param, Subscriber<List<PromoMenuData>> subscriber);
 
-    void getPromoList(TKPDMapParam<String, String> param, Subscriber<List<PromoData>> subscriber);
+    Observable<List<PromoData>> getPromoList(TKPDMapParam<String, String> param, Subscriber<List<PromoData>> subscriber);
 
 }

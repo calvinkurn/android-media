@@ -78,7 +78,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private lateinit var adapter: AccountAdapter
     private lateinit var toolbarShopCreation: Toolbar
 
-    lateinit var mIris: Iris
     lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
 
     private val viewModelProvider by lazy {
@@ -127,10 +126,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                     arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID, ""),
                     arguments?.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, ""))
             activity != null -> activity?.finish()
-        }
-
-        context?.run {
-            mIris = IrisAnalytics.getInstance(this)
         }
 
     }
@@ -287,10 +282,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 loginEventAppsFlyer(userSessionInterface.userId, userSessionInterface.email)
             }
 
-            if (::mIris.isInitialized) {
-                mIris.setUserId(userId)
-                mIris.setDeviceId(userSessionInterface.deviceId)
-            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

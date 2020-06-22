@@ -77,6 +77,7 @@ class TransactionOrderProgressLayout : LinearLayout {
         renderLayoutVisibility()
         renderHasBeenSeen()
         saveCurrentState()
+        analytics?.eventViewOrderProgress(chatOrder)
     }
 
     private fun assignFields(listener: Listener?, chatOrder: ChatOrderProgress) {

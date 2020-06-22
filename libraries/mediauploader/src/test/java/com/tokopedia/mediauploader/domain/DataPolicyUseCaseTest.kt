@@ -5,6 +5,7 @@ import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
 import com.tokopedia.mediauploader.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.data.entity.UploaderPolicy
 import com.tokopedia.mediauploader.stubDataPolicyRepository
+import com.tokopedia.usecase.RequestParams
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.spekframework.spek2.Spek
@@ -20,13 +21,13 @@ class DataPolicyUseCaseTest: Spek({
         val dataUploaderPolicy = DataUploaderPolicy()
 
         Scenario("create param with source id") {
-            var requestParams = mapOf<String, Any>()
+            var requestParams = RequestParams.create()
 
             When("create param") {
                 requestParams = DataPolicyUseCase.createParams(sourceId)
             }
             Then("it should return source id correctly") {
-                assert(requestParams["source"] == sourceId)
+                assert(requestParams.getString("source", "") == sourceId)
             }
         }
 
@@ -37,14 +38,14 @@ class DataPolicyUseCaseTest: Spek({
             Then("it should return exception of param not found") {
                 runBlocking {
                     assertFailsWith<Exception> {
-                        useCase(mapOf())
+                        useCase(RequestParams.EMPTY)
                     }
                 }
             }
         }
 
         Scenario("request data policy with source id") {
-            var requestParams = mapOf<String, Any>()
+            var requestParams = RequestParams.create()
 
             Given("request param") {
                 requestParams = DataPolicyUseCase.createParams(sourceId)
@@ -61,7 +62,8 @@ class DataPolicyUseCaseTest: Spek({
         }
 
         Scenario("request data policy with null error") {
-            var requestParams = mapOf<String, Any>()
+            var requestParams = RequestParams.create()
+
             Given("create param") {
                 requestParams = DataPolicyUseCase.createParams(sourceId)
             }

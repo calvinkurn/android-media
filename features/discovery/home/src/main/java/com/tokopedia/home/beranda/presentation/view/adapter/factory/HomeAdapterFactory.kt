@@ -26,6 +26,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.listener.*
+import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
+import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import java.util.*
 
 /**
@@ -38,7 +48,15 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val homeReviewListener: HomeReviewListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
                          private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
-                         private val rechargeRecommendationListener: RechargeRecommendationViewHolder.RechargeRecommendationListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
+                         private val rechargeRecommendationListener: RechargeRecommendationViewHolder.RechargeRecommendationListener,
+                         private val homeComponentListener: HomeComponentListener,
+                         private val legoListener: DynamicLegoBannerListener,
+                         private val recommendationListCarouselListener: RecommendationListCarouselListener,
+                         private val mixLeftComponentListener: MixLeftComponentListener,
+                         private val mixTopComponentListener: MixTopComponentListener
+) :
+        BaseAdapterTypeFactory(),
+        HomeTypeFactory, HomeComponentTypeFactory{
 
     private val productLayout = HashSet(
             listOf(
@@ -141,6 +159,24 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return RechargeRecommendationViewHolder.LAYOUT
     }
 
+    //Home-Component
+    override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
+        return DynamicLegoBannerViewHolder.LAYOUT
+    }
+
+    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
+        return RecommendationListCarouselViewHolder.LAYOUT
+    }
+
+    override fun type(mixLeftDataModel: MixLeftDataModel): Int {
+        return MixLeftComponentViewHolder.LAYOUT
+    }
+
+    override fun type(mixTopDataModel: MixTopDataModel): Int {
+        return MixTopComponentViewHolder.LAYOUT
+    }
+    //end of Home-Component section
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -155,22 +191,16 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
              * refer to dynamic channel sprint layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item
              */
             return DynamicChannelSprintViewHolder.LAYOUT
-        } else if (bannerLayout.contains(layout)) {
-            /**
-             * Layout registered as sprint sale viewholder
-             * refer to banner organic layout {@link com.tokopedia.home.R.layout#home_banner_item}
-             * refer to banner organic carousel layout {@link com.tokopedia.home.R.layout#home_banner_item_carousel}
-             */
-            return BannerOrganicViewHolder.LAYOUT
         }
 
         return when (layout) {
             /**
              * refer to 3 and 6 image item layout {@link com.tokopedia.home.R.layout#layout_lego_item}
+             * //deprecated - exist for remote config
              */
             DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
             DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
-            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> OldDynamicLegoBannerViewHolder.LAYOUT
 
             /**
              * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget}
@@ -214,7 +244,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             /**
              * refer to recommendation list carousel com.tokopedia.home.R.layout#home_dc_list_carousel
              */
-            DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> RecommendationListCarouselViewHolder.LAYOUT
+            DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> OldRecommendationListCarouselViewHolder.LAYOUT
             /**
              * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
              */
@@ -222,13 +252,18 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             else -> EmptyBlankViewHolder.LAYOUT
         }
     }
-
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
-            DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, parentRecycledViewPool)
+
+            //deprecated - exist for remote config
+            OldDynamicLegoBannerViewHolder.LAYOUT -> viewHolder = OldDynamicLegoBannerViewHolder(view, listener, parentRecycledViewPool)
+
+            //deprecated - exist for remote config
+            OldRecommendationListCarouselViewHolder.LAYOUT -> viewHolder = OldRecommendationListCarouselViewHolder(view, listener, parentRecycledViewPool)
+
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener)
@@ -246,7 +281,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
             HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener)
             GeolocationPromptViewHolder.LAYOUT -> viewHolder = GeolocationPromptViewHolder(view, listener)
-            BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, parentRecycledViewPool)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
@@ -254,11 +288,35 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, parentRecycledViewPool)
-            RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, parentRecycledViewPool)
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
             ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
             RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener, listener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
+            DynamicLegoBannerViewHolder.LAYOUT -> viewHolder =
+                    DynamicLegoBannerViewHolder(
+                            view,
+                            legoListener,
+                            homeComponentListener,
+                            parentRecycledViewPool)
+            RecommendationListCarouselViewHolder.LAYOUT -> viewHolder =
+                    RecommendationListCarouselViewHolder(
+                            view,
+                            recommendationListCarouselListener,
+                            parentRecycledViewPool
+                    )
+            MixLeftComponentViewHolder.LAYOUT -> viewHolder =
+                    MixLeftComponentViewHolder(
+                            view,
+                            mixLeftComponentListener,
+                            homeComponentListener,
+                            parentRecycledViewPool
+                    )
+            MixTopComponentViewHolder.LAYOUT -> viewHolder =
+                    MixTopComponentViewHolder(
+                            view,
+                            homeComponentListener,
+                            mixTopComponentListener
+                    )
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

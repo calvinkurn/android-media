@@ -400,7 +400,8 @@ class HomeRecommendationViewModelTest : Spek({
         Scenario("Get Success Data Home Recommendation Initial Page & Send Impression"){
             val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
             val item = HomeRecommendationItemDataModel(
-                    Product(id = "12", isWishlist = false, trackerImageUrl = "coba"),
+                    Product(id = "12", isWishlist = false, trackerImageUrl = "coba",
+                            name = "Nama Produk", imageUrl = "https://ecs.tokopedia.com/blablabla.png"),
                     1
             )
             val homeRecommendationDataModel = HomeRecommendationDataModel(
@@ -410,14 +411,25 @@ class HomeRecommendationViewModelTest : Spek({
                     isHasNextPage = false
             )
             var url = ""
+            var productId = ""
+            var productName = ""
+            var imageUrl = ""
             val slotUrl = slot<String>()
+            val slotProductId = slot<String>()
+            val slotProductName = slot<String>()
+            val slotImageUrl = slot<String>()
+
             Given("set return recommendations"){
                 getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
             }
 
             Given("set return impression"){
-                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl)) } answers {
+                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl), capture(slotProductId),
+                        capture(slotProductName), capture(slotImageUrl)) } answers {
                     url = slotUrl.captured
+                    productId = slotProductId.captured
+                    productName = slotProductName.captured
+                    imageUrl = slotImageUrl.captured
                 }
             }
 
@@ -448,11 +460,15 @@ class HomeRecommendationViewModelTest : Spek({
             }
 
             When("View rendered and impression triggered"){
-                topAdsUrlHitter.hitImpressionUrl(context, item.product.trackerImageUrl)
+                topAdsUrlHitter.hitImpressionUrl(context, item.product.trackerImageUrl,
+                        item.product.id, item.product.name, item.product.imageUrl)
             }
 
             Then("Verify impression"){
                 assert(url == item.product.trackerImageUrl)
+                assert(productId == item.product.id)
+                assert(productName == item.product.name)
+                assert(imageUrl == item.product.imageUrl)
             }
         }
 
@@ -470,14 +486,35 @@ class HomeRecommendationViewModelTest : Spek({
                     isHasNextPage = false
             )
             var url = ""
+            var productId = ""
+            var productName = ""
+            var imageUrl = ""
             val slotUrl = slot<String>()
+            val slotProductId = slot<String>()
+            val slotProductName = slot<String>()
+            val slotImageUrl = slot<String>()
+
             Given("set return recommendations"){
                 getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
             }
 
             Given("set return impression"){
-                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl)) } answers {
+                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl), capture(slotProductId),
+                        capture(slotProductName), capture(slotImageUrl)) } answers {
                     url = slotUrl.captured
+                    productId = slotProductId.captured
+                    productName = slotProductName.captured
+                    imageUrl = slotImageUrl.captured
+                }
+            }
+
+            Given("set return click"){
+                every { topAdsUrlHitter.hitClickUrl(any(), capture(slotUrl), capture(slotProductId),
+                        capture(slotProductName), capture(slotImageUrl)) } answers {
+                    url = slotUrl.captured
+                    productId = slotProductId.captured
+                    productName = slotProductName.captured
+                    imageUrl = slotImageUrl.captured
                 }
             }
 
@@ -508,20 +545,31 @@ class HomeRecommendationViewModelTest : Spek({
             }
 
             When("View rendered and impression triggered"){
-                topAdsUrlHitter.hitImpressionUrl(context, item.product.trackerImageUrl)
+                topAdsUrlHitter.hitImpressionUrl(context, item.product.trackerImageUrl,
+                        item.product.id, item.product.name, item.product.imageUrl)
             }
 
             Then("Verify impression"){
                 assert(url == item.product.trackerImageUrl)
+                assert(productId == item.product.id)
+                assert(productName == item.product.name)
+                assert(imageUrl == item.product.imageUrl)
             }
 
 
             When("View clicked"){
-                topAdsUrlHitter.hitClickUrl(context, item.product.clickUrl)
+                topAdsUrlHitter.hitClickUrl(context,
+                        item.product.clickUrl,
+                        item.product.id,
+                        item.product.name,
+                        item.product.imageUrl)
             }
 
             Then("Verify click"){
                 assert(url == item.product.clickUrl)
+                assert(productId == item.product.id)
+                assert(productName == item.product.name)
+                assert(imageUrl == item.product.imageUrl)
             }
         }
     }
