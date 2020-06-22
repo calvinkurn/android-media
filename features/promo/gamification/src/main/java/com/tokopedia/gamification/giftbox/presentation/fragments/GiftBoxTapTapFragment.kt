@@ -32,9 +32,9 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Com
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.FINISHED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.NOT_STARTED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.STARTED
-import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.LOBBY
-import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.CRACK_UNLIMITED
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.EMPTY
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.LOBBY
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
@@ -252,7 +252,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     showLoader()
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
-                    //todo add check for 200 all over api calls
                     if (it.data != null) {
                         backButton = it.data.gamiTapEggHome?.backButton
 
@@ -296,8 +295,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     }
 
 
-                                    it.data.gamiTapEggHome?.actionButton?.let {items->
-                                        if(!items.isNullOrEmpty())
+                                    it.data.gamiTapEggHome?.actionButton?.let { items ->
+                                        if (!items.isNullOrEmpty())
                                             btnInactiveFirst.text = items[0].text
                                     }
 
@@ -321,24 +320,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
 
                         getTapTapView().fmGiftBox.setOnClickListener {
-                            if (isTimeOut) {
-                                //Do nothing
-                            } else if (getTapTapView().isGiftTapAble) {
-                                getTapTapView().isGiftTapAble = false
-                                if (getTapTapView().tapCount == getTapTapView().targetTapCount) {
-                                    crackGiftBox()
-                                    getTapTapView().targetTapCount = getTapTapView().getRandomNumber()
-                                } else {
-                                    getTapTapView().showConfettiAnimation()
-                                }
-                                getTapTapView().incrementTapCount()
-                            }
+                            handleGiftBoxTap()
                         }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     hideLoader()
-                    renderGiftBoxError("Yaah, ada gangguan koneksi. Refresh lagi untuk buka hadiahmu.", "Oke")
+                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                 }
             }
         })
@@ -348,7 +336,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
                     val responseCrackResultEntity = it.data
-//                    val couponDetailEntity = it.data?.first
                     if (it.data != null) {
                         val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
                         if (!resultCode.isNullOrEmpty() && resultCode == "200") {
@@ -366,22 +353,26 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                         getTapTapView().firstTimeBoxOpenAnimation()
                                         getTapTapView().isBoxAlreadyOpened = true
                                     } else {
-
-//                                        getTapTapView().showRewardAnimation() //todo Rahul NEW -> old code
                                         getTapTapView().boxBounceAnimation().start()
                                         showRewardAnimation(rewardState, 0L, false)
-                                        //todo Rahul NEW - might need to handle - disableConfettiAnimation
                                     }
 
                                 }
                             }
 
                         } else {
-                            //todo Rahul show error
+                            val status = responseCrackResultEntity?.crackResultEntity?.resultStatus
+                            val messageList = status?.message
+                            if (!messageList.isNullOrEmpty()) {
+                                renderGiftBoxOpenError(messageList[0], getString(R.string.gami_oke))
+                            } else {
+                                renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                            }
                         }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
+                    renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
                 }
             }
         })
@@ -407,6 +398,21 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
             }
         })
+    }
+
+    private fun handleGiftBoxTap() {
+        if (isTimeOut) {
+            //Do nothing
+        } else if (getTapTapView().isGiftTapAble) {
+            getTapTapView().isGiftTapAble = false
+            if (getTapTapView().tapCount == getTapTapView().targetTapCount) {
+                crackGiftBox()
+                getTapTapView().targetTapCount = getTapTapView().getRandomNumber()
+            } else {
+                getTapTapView().showConfettiAnimation()
+            }
+            getTapTapView().incrementTapCount()
+        }
     }
 
     private fun setupCrackUnlimitedUi(gamiTapEggHome: GamiTapEggHome) {
@@ -526,12 +532,22 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun crackGiftBox() {
+    private fun crackGiftBox() {
         viewModel.crackGiftBox()
     }
 
+    private fun renderGiftBoxOpenError(message: String, actionText: String) {
+        if (context != null) {
+            val internetAvailable = isConnectedToInternet()
+            if (!internetAvailable) {
+                showNoInterNetDialog(::handleGiftBoxTap, context!!)
+            } else {
+                showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
+            }
+        }
+    }
 
-    fun renderGiftBoxError(message: String, actionText: String) {
+    private fun renderGiftBoxError(message: String, actionText: String) {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
@@ -618,9 +634,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val timeUpAnimation = timeUpAnimation()
                 timeUpAnimation.start()
                 (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
+
                 giftBoxDailyView.postDelayed({
-                    viewModel.getCouponDetails(benefitItems)
-                },3000L)
+                    val item = benefitItems.find { it.isBigPrize }
+                    if (item != null) {
+                        viewModel.getCouponDetails(benefitItems)
+                    } else {
+                        fadeOutWaktuHabisAndShowReward()
+                    }
+                }, 3000L)
             }
 
             override fun onTick(millisUntilFinished: Long) {
@@ -695,7 +717,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    fun timeUpAnimation():Animator {
+    fun timeUpAnimation(): Animator {
         val height = screenHeight
         val width = screenWidth
 
