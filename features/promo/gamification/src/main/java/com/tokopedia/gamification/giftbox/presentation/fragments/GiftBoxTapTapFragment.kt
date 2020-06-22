@@ -80,6 +80,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     val rewardItems = arrayListOf<RewardSummaryItem>()
     val benefitItems = arrayListOf<CrackBenefitEntity>()
     var backButton: BackButton? = null
+    var isUserAfterFirstTapInactive = false
 
     @RewardContainer.RewardState
     var rewardState: Int = RewardContainer.RewardState.COUPON_ONLY
@@ -340,6 +341,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
                         if (!resultCode.isNullOrEmpty() && resultCode == "200") {
                             boxState = OPEN
+                            if (benefitItems.isEmpty()) {
+                                isUserAfterFirstTapInactive = true
+                                getTapTapView().postDelayed({ checkInactivity() }, 4000L)
+                            }
 
                             getTapTapView().disableConfettiAnimation = true
                             getTapTapView().resetTapCount()
@@ -403,7 +408,22 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         })
     }
 
+    private fun checkInactivity() {
+        if (isUserAfterFirstTapInactive && benefitItems.size == 1) {
+            tvTapHint.text = getString(R.string.gami_ayo_tap)
+            tvTapHint.animate().alpha(1f).setDuration(300L).start()
+            isUserAfterFirstTapInactive = false
+        }
+    }
+
     private fun handleGiftBoxTap() {
+        if (benefitItems.isNotEmpty()) {
+            isUserAfterFirstTapInactive = false
+            if (tvTapHint.alpha > 0f) {
+                fadeOutViews()
+            }
+        }
+
         if (isTimeOut) {
             //Do nothing
         } else if (getTapTapView().isGiftTapAble) {
