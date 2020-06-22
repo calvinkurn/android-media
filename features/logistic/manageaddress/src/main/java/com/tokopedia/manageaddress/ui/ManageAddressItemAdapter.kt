@@ -19,6 +19,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
 
     interface ManageAddressItemAdapterListener {
         fun onManageAddressEditClicked(peopleAddress: AddressModel)
+        fun onManageAddressLainnyaClicked(peopleAddress: AddressModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
@@ -37,6 +38,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
         val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
         val editButton = itemView.findViewById<Typography>(R.id.action_edit)
+        val lainnyaButton = itemView.findViewById<ImageView>(R.id.label_lainnya)
 
         fun bindData(data: AddressModel) {
             with(itemView) {
@@ -74,6 +76,9 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         private fun setListener(peopleAddress: AddressModel) {
             editButton.setOnClickListener  {
                 listener.onManageAddressEditClicked(peopleAddress)
+            }
+            lainnyaButton.setOnClickListener {
+                listener.onManageAddressLainnyaClicked(peopleAddress)
             }
         }
     }

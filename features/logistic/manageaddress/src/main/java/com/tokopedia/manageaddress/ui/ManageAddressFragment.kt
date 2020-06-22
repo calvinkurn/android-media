@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -20,10 +21,13 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity
 import com.tokopedia.logisticdata.data.entity.address.AddressModel
-import com.tokopedia.manageaddress.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.util.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.manageaddress.util.LABEL_LAINNYA
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.bottomsheet_action_address.view.*
 import kotlinx.android.synthetic.main.fragment_manage_address.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -45,6 +49,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var addressList: RecyclerView? = null
     private var searchInputView: SearchInputView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var bottomSheetLainnya: BottomSheetUnify? = null
 
     override fun getScreenName(): String = ""
 
@@ -160,11 +165,42 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
        openFormAddressView(peopleAddress)
     }
 
-    private fun openFormAddressView(data: AddressModel){
+    override fun onManageAddressLainnyaClicked(peopleAddress: AddressModel) {
+        openBottomSheetView(peopleAddress)
+    }
+
+    private fun openFormAddressView(data: AddressModel) {
         val token = viewModel.getToken()
         startActivityForResult(activity?.let {
             AddAddressActivity.createInstanceEditAddress(it, data, token)
         }, 102)
+    }
+
+    private fun openBottomSheetView(data: AddressModel) {
+        bottomSheetLainnya = BottomSheetUnify()
+        val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
+            btn_alamat_utama.setOnClickListener {
+                //ToDo::
+                Toast.makeText(context, "UTAMAKAN", Toast.LENGTH_LONG).show()
+            }
+
+            btn_hapus_alamat.setOnClickListener {
+                //ToDo::
+                Toast.makeText(context, "HAPUS", Toast.LENGTH_LONG).show()
+            }
+
+        }
+
+        bottomSheetLainnya?.apply {
+            setTitle(LABEL_LAINNYA)
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetLainnya)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetLainnya?.show(it, "show")
+        }
     }
 
     private fun handleError(throwable: Throwable) {
