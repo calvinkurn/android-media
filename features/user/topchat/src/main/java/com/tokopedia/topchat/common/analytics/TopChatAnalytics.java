@@ -292,14 +292,14 @@ public class TopChatAnalytics {
                 null,
                 product.getPriceInt(),
                 null,
-                "/chat",
+                getItemDimension40(product),
                 PRODUCT_INDEX
         );
         products.add(topChatProduct);
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListClickBundler.KEY, ProductListClickBundler.getBundle(
-                        getField(String.valueOf(product.getBlastId())),
+                        getItemList(product),
                         products,
                         Category.CHAT_DETAIL,
                         Action.CLICK_PRODUCT_IMAGE,
