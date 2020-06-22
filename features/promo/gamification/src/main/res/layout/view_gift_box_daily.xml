@@ -40,7 +40,7 @@
                 android:id="@+id/image_gift_box_lid"
                 android:layout_width="250dp"
                 android:layout_height="100dp"
-                tools:srcCompat="@drawable/gf_ic_lid_frame_7" />
+                tools:srcCompat="@drawable/gf_ic_lid_7" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_box_front"
