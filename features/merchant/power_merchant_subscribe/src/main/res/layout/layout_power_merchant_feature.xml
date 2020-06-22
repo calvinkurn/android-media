@@ -9,16 +9,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:text="@string/power_merchant_exclusive_feature"
-        android:textColor="@android:color/white"
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_pm_feature_title"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
+        <ImageView
+            app:srcCompat="@drawable/bg_pm_feature_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="ContentDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:text="@string/power_merchant_exclusive_feature"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4" />
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listFeature"

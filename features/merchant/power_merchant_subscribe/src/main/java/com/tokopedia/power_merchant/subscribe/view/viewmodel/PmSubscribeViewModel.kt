@@ -38,7 +38,11 @@ class PmSubscribeViewModel @Inject constructor(
                 getPowerMerchantStatusUseCase.getData(params)
             }
 
-            _getPmStatusInfoResult.value = Success(powerMerchantStatus)
+            if(powerMerchantStatus.kycUserProjectInfoPojo.kycProjectInfo != null) {
+                _getPmStatusInfoResult.value = Success(powerMerchantStatus)
+            } else {
+                throw NullPointerException("kycProjectInfo must not be null")
+            }
             hideLoading()
         }) {
             _getPmStatusInfoResult.value = Fail(it)

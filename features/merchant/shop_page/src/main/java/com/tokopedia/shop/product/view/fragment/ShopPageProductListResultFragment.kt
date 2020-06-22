@@ -680,16 +680,20 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         } else {
             // id might come from deeplink
             if (!TextUtils.isEmpty(selectedEtalaseId)) {
-                for (etalaseModel in shopEtalaseViewModelList) {
-                    if (selectedEtalaseId.equals(etalaseModel.etalaseId, ignoreCase = true)) {
-                        selectedEtalaseName = etalaseModel.etalaseName
-                        etalaseBadge = etalaseModel.etalaseBadge
-                        updateHintRemoteConfig(selectedEtalaseName)
-                        break
-                    }
+                val selectedEtalaseChipItem = shopEtalaseViewModelList.firstOrNull {
+                    it.etalaseId == selectedEtalaseId
+                }
+                if (null != selectedEtalaseChipItem) {
+                    selectedEtalaseId = selectedEtalaseChipItem.etalaseId
+                    selectedEtalaseName = selectedEtalaseChipItem.etalaseName
+                    etalaseBadge = selectedEtalaseChipItem.etalaseBadge
+                    updateHintRemoteConfig(selectedEtalaseName)
+                } else {
+                    selectedEtalaseId = ""
+                    selectedEtalaseName = ""
                 }
                 // etalase name still empty, then we check the selectedEtalaseId with name.
-                if (TextUtils.isEmpty(selectedEtalaseName)) {
+                if (TextUtils.isEmpty(selectedEtalaseName) && selectedEtalaseId.isNotEmpty()) {
                     val cleanedSelectedEtalaseId = cleanString(selectedEtalaseId)
                     for (etalaseModel in shopEtalaseViewModelList) {
                         val cleanedEtalaseName = cleanString(etalaseModel.etalaseName)
