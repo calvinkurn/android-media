@@ -182,6 +182,7 @@ class PlayBroadcastViewModel  @Inject constructor(
     private fun startWebSocket() {
         // TODO("connect socket")
         // TODO("retrieve & update count down")
+
     }
 
     private suspend fun onRetrievedNewChat(newChat: PlayChatUiModel) = withContext(dispatcher.main) {
