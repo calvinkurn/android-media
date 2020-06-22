@@ -1,8 +1,0 @@
-mutation clearNotifCounter($typeId: Int){
-  notifcenter_clearNotifCounter(type_id: $typeId) {
-    data {
-      is_success
-    }
-    message_error
-  }
-}
