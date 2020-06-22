@@ -272,11 +272,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun observeFreeShippingStatus() {
         observe(otherMenuViewModel.isFreeShippingActive) { freeShippingActive ->
-            otherMenuViewHolder?.setupFreeShippingLayout(
-                fragmentManager,
-                freeShippingActive,
-                userSession
-            )
+            if(freeShippingActive) {
+                otherMenuViewHolder?.setupFreeShippingLayout(
+                    fragmentManager,
+                    userSession
+                )
+            } else {
+                otherMenuViewHolder?.hideFreeShippingLayout()
+            }
         }
     }
 
