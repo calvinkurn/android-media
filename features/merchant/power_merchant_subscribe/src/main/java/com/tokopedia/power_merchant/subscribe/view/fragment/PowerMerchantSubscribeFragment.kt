@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
@@ -49,9 +48,6 @@ import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmVi
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmSubscribeViewModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PM_F1_ENABLED
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -83,10 +79,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private var shopScore: Int = 0
     private var minScore: Int = 0
 
-    private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
-    }
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -104,7 +96,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         const val AUTOEXTEND_INTENT_CODE = 321
         const val TURN_OFF_AUTOEXTEND_INTENT_CODE = 322
         const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
-        const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
 
         private const val APPLINK_PARAMS_KYC = "${PARAM_PROJECT_ID}=${MERCHANT_KYC_PROJECT_ID}"
         const val APPLINK_POWER_MERCHANT_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC"
@@ -147,23 +138,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             }
         }
 
-        if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
-            observeActivatePowerMerchant()
-            observeGetFreeShippingDetail()
-            observeGetPmStatusInfo()
-            observeViewState()
+        observeActivatePowerMerchant()
+        observeGetFreeShippingDetail()
+        observeGetPmStatusInfo()
+        observeViewState()
 
-            viewModel.getPmStatusInfo()
-        } else {
-            activity?.let {
-                if (userSessionInterface.isGoldMerchant) {
-                    RouteManager.route(it, ApplinkConstInternalMarketplace.GOLD_MERCHANT_MEMBERSHIP)
-                } else {
-                    RouteManager.route(it, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
-                }
-                it.finish()
-            }
-        }
+        viewModel.getPmStatusInfo()
     }
 
     private fun renderInitialLayout() {
