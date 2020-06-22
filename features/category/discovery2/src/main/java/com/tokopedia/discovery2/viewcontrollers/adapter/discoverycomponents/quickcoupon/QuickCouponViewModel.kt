@@ -108,7 +108,7 @@ class QuickCouponViewModel(val application: Application, private val components:
         applyQuickCoupon()
     }
 
-    fun applyQuickCoupon() {
+    private fun applyQuickCoupon() {
         clickCouponLiveData.value?.realCode?.let { realCode ->
             launchCatchError(block = {
                 quickCouponUseCase.applyQuickCoupon(realCode).applyCouponData?.let { applyCouponData ->
