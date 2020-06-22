@@ -22,7 +22,7 @@ class GqlRepository(val dao: GqlDao) : BaseRepository {
         return dao.toggleGql(gqlRecord, enable)
     }
 
-    fun getGqlQueryResponse(gqlQuery: String, enable: Boolean): GqlRecord {
+    fun getGqlQueryResponse(gqlQuery: String, enable: Boolean): GqlRecord? {
         return dao.getRecordFromGqlQuery(gqlQuery, enable)
     }
 
