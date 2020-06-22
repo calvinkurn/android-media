@@ -38,12 +38,9 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     var title: String
         get() = observableSetupChannel.value?.cover?.title ?: throw IllegalStateException("Cover / Cover Title is null")
         set(value) {
-            val currentValue = _observableSetupChannel.value
-            _observableSetupChannel.value = currentValue?.copy(
-                    cover = currentValue.cover.copy(
-                            title = value
-                    )
-            )
+            val currentDataStore = mDataStore.getSetupDataStore()
+            currentDataStore.updateCoverTitle(value)
+            setDataFromSetupDataStore(currentDataStore)
         }
 
     val observableFollowers: LiveData<FollowerDataUiModel>
