@@ -26,7 +26,9 @@ class BottomActionPartialView(
 
     init {
         ivInventory.setOnClickListener { listener.onInventoryIconClicked() }
-        btnAction.setOnClickListener { listener.onNextButtonClicked(btnAction) }
+        btnAction.setOnClickListener {
+            if (!btnAction.isLoading) listener.onNextButtonClicked()
+        }
     }
 
     fun setupBottomActionWithProducts(productList: List<ProductContentUiModel>) {
@@ -53,6 +55,12 @@ class BottomActionPartialView(
         rootView.gone()
     }
 
+    fun setLoading(isLoading: Boolean) {
+        btnAction.isLoading = isLoading
+    }
+
+    fun getButtonView(): View = btnAction
+
     private fun onBottomActionTransition() {
         TransitionManager.beginDelayedTransition(
                 rootView as ViewGroup,
@@ -64,6 +72,6 @@ class BottomActionPartialView(
 
     interface Listener {
         fun onInventoryIconClicked()
-        fun onNextButtonClicked(nextBtnView: View)
+        fun onNextButtonClicked()
     }
 }

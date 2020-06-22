@@ -12,8 +12,6 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStoreImpl
 import com.tokopedia.play.broadcaster.util.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
@@ -27,10 +25,6 @@ import dagger.Provides
 
 @Module(includes = [ImageUploaderModule::class])
 class PlayBroadcastSetupModule {
-
-    @PlayBroadcastSetupScope
-    @Provides
-    fun provideSetupDataStore(): PlayBroadcastSetupDataStore = PlayBroadcastSetupDataStoreImpl()
 
     @PlayBroadcastSetupScope
     @Provides

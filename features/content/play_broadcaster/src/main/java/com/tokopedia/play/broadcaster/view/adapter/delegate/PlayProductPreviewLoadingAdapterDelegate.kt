@@ -6,22 +6,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.viewholder.ProductPreviewViewHolder
+import com.tokopedia.play.broadcaster.ui.viewholder.ProductPreviewLoadingViewHolder
 
 /**
- * Created by jegul on 26/05/20
+ * Created by jegul on 19/06/20
  */
-class PlayProductPreviewAdapterDelegate : TypedAdapterDelegate<ProductContentUiModel, ProductUiModel, ProductPreviewViewHolder>(ProductPreviewViewHolder.LAYOUT) {
+class PlayProductPreviewLoadingAdapterDelegate
+    : TypedAdapterDelegate<ProductLoadingUiModel, ProductUiModel, ProductPreviewLoadingViewHolder>(ProductPreviewLoadingViewHolder.LAYOUT) {
 
-    override fun onBindViewHolder(item: ProductContentUiModel, holder: ProductPreviewViewHolder) {
+    override fun onBindViewHolder(item: ProductLoadingUiModel, holder: ProductPreviewLoadingViewHolder) {
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductPreviewViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductPreviewLoadingViewHolder {
         val recyclerView = parent as RecyclerView
         val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager
-        return ProductPreviewViewHolder(basicView, gridLayoutManager)
+        return ProductPreviewLoadingViewHolder(basicView, gridLayoutManager)
     }
 
     override fun onBindViewHolder(itemList: List<ProductUiModel>, position: Int, holder: RecyclerView.ViewHolder) {
@@ -29,7 +30,7 @@ class PlayProductPreviewAdapterDelegate : TypedAdapterDelegate<ProductContentUiM
     }
 
     override fun onBindViewHolder(itemList: List<ProductUiModel>, position: Int, payloads: Bundle, holder: RecyclerView.ViewHolder) {
-        require(holder is ProductPreviewViewHolder)
-        holder.bind(itemList[position] as ProductContentUiModel, itemList.size)
+        require(holder is ProductPreviewLoadingViewHolder)
+        holder.bind(itemList[position] as ProductLoadingUiModel, itemList.size)
     }
 }

@@ -16,6 +16,7 @@ import androidx.transition.Slide
 import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayEtalaseSetupCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
@@ -25,6 +26,7 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -44,6 +46,8 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private lateinit var selectedProductPage: SelectedProductPagePartialView
     private lateinit var bottomActionView: BottomActionPartialView
+
+    private var mListener: Listener? = null
 
     private val fragmentFactory: FragmentFactory
         get() = childFragmentManager.fragmentFactory
@@ -76,6 +80,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeSelectedProducts()
+        observeUploadProduct()
     }
 
     override fun onInterceptBackPressed(): Boolean {
@@ -83,13 +88,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     override fun openEtalaseDetail(etalaseId: String, sharedElements: List<View>) {
-        bottomSheetCoordinator.navigateToFragment(
-                PlayEtalaseDetailFragment::class.java,
-                extras = Bundle().apply {
-                    putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
-                },
-                sharedElements = sharedElements
-        )
+        mListener?.onEtalaseClicked(etalaseId, sharedElements)
     }
 
     override fun openSearchPage(keyword: String) {
@@ -117,6 +116,10 @@ class PlayEtalasePickerFragment @Inject constructor(
         if (childFragmentManager.fragments.isNotEmpty()) childFragmentManager.popBackStack(clazz.name, 0)
     }
 
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
     private fun initView(view: View) {
         with(view) {
             container = this as ViewGroup
@@ -138,8 +141,8 @@ class PlayEtalasePickerFragment @Inject constructor(
                 showSelectedProductPage()
             }
 
-            override fun onNextButtonClicked(nextBtnView: View) {
-                showCoverTitlePage(nextBtnView)
+            override fun onNextButtonClicked() {
+                uploadProduct()
             }
         })
     }
@@ -229,6 +232,10 @@ class PlayEtalasePickerFragment @Inject constructor(
         )
     }
 
+    private fun uploadProduct() {
+        viewModel.uploadProduct(bottomSheetCoordinator.channelId)
+    }
+
     /**
      * Observe
      */
@@ -236,6 +243,25 @@ class PlayEtalasePickerFragment @Inject constructor(
         viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
             bottomActionView.setupBottomActionWithProducts(it)
             selectedProductPage.onSelectedProductsUpdated(it)
+        })
+    }
+
+    private fun observeUploadProduct() {
+        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                NetworkResult.Loading -> bottomActionView.setLoading(true)
+                is NetworkResult.Fail -> {
+                    bottomActionView.setLoading(false)
+                    Toaster.make(requireView(), it.error.localizedMessage)
+                }
+                is NetworkResult.Success -> {
+                    val data = it.data.getContentIfNotHandled()
+                    if (data != null) {
+                        bottomActionView.setLoading(false)
+                        showCoverTitlePage(bottomActionView.getButtonView())
+                    }
+                }
+            }
         })
     }
 
@@ -261,8 +287,8 @@ class PlayEtalasePickerFragment @Inject constructor(
                 .setDuration(300)
     }
 
-    companion object {
+    interface Listener {
 
-        private const val SPAN_COUNT = 2
+        fun onEtalaseClicked(id: String, sharedElements: List<View>)
     }
 }

@@ -7,6 +7,7 @@ import dagger.Component
 @Component(
         dependencies = [BaseAppComponent::class],
         modules = [PlayBroadcastSetupViewModelModule::class,
+            PlayBroadcastSetupBindModule::class,
             PlayBroadcastSetupModule::class,
             PlayBroadcastSetupFragmentModule::class]
 )
