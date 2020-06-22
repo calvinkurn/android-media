@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon
 
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -16,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 
 class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), View.OnClickListener {
-    private var applyButton: UnifyButton = itemView.findViewById(R.id.apply_btn)
+    private var applyButton: Button = itemView.findViewById(R.id.apply_btn)
     private var titleTextView: TextView = itemView.findViewById(R.id.title_tv)
     private var parentLayout: ConstraintLayout = itemView.findViewById(R.id.parent_layout)
     private var componentPosition: Int? = null
@@ -46,14 +47,17 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
                 handlePhoneVerification(it)
             })
 
-            quickCouponViewModel.getCouponApplicableStatus().observe(viewLifecycleOwner, Observer {
-                handleIsCouponApplicable(it)
+            quickCouponViewModel.getCouponVisibilityStatus().observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    (fragment as? DiscoveryFragment)?.reSync()
+                }
             })
             quickCouponViewModel.getComponentPosition().observe(viewLifecycleOwner, Observer {
                 componentPosition = it
             })
         }
     }
+
 
     private fun handleIsCouponApplicable(it: Boolean?) {
 

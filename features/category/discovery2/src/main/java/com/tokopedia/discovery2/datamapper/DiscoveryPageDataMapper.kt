@@ -28,9 +28,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         for ((position, component) in components.withIndex()) {
             listComponents.addAll(parseComponent(component, position))
-
         }
-
         return listComponents
     }
 
@@ -40,6 +38,11 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
+            ComponentNames.QuickCoupon.componentName -> {
+                if(component.isApplicable){
+                    listComponents.add(component)
+                }
+            }
             else -> listComponents.add(component)
         }
         return listComponents
