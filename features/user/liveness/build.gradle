@@ -86,6 +86,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.retrofitMock
     testImplementation rootProject.ext.testDependencies.retrofitMockWebser
     testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
 
