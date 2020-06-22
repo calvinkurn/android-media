@@ -19,7 +19,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), View.OnClickListener {
     private var applyButton: Button = itemView.findViewById(R.id.apply_btn)
     private var titleTextView: TextView = itemView.findViewById(R.id.title_tv)
-    private var parentLayout: ConstraintLayout = itemView.findViewById(R.id.parent_layout)
+    private var parentLayout: ConstraintLayout = itemView.findViewById(R.id.cardLayout)
     private var componentPosition: Int? = null
 
     private lateinit var quickCouponViewModel: QuickCouponViewModel
