@@ -427,4 +427,4 @@
 -keep class com.tokopedia.product.util.processor.** { *; }
 -dontwarn com.squareup.javapoet.**
 
--dontwarn com.tokopedia.empty_state.EmptyStateUnify.**
+-dontwarn com.tokopedia.empty_state.**
