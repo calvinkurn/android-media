@@ -34,4 +34,5 @@ object CentralizedPromoConstant {
 
     // KEY
     const val KEY_SHOP_TYPE = "shop_type"
+    const val KEY_USER_ID = "user_id"
 }
