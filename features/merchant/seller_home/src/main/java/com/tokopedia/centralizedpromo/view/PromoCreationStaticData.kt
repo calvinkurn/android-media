@@ -2,6 +2,7 @@ package com.tokopedia.centralizedpromo.view
 
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.centralizedpromo.constant.CentralizedPromoUrl
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
@@ -29,6 +30,13 @@ object PromoCreationStaticData {
                 getString(R.string.centralized_promo_promo_creation_broadcast_chat_description),
                 broadcastChatExtra,
                 String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
+            ),
+            PromoCreationUiModel(
+                    R.drawable.ic_voucher_cashback,
+                    getString(R.string.centralized_promo_promo_creation_merchant_voucher_cashback_title),
+                    getString(R.string.centralized_promo_promo_creation_merchant_voucher_description),
+                    "",
+                    ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
             )
         )
 

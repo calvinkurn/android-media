@@ -35,4 +35,9 @@ object CentralizedPromoConstant {
     // KEY
     const val KEY_SHOP_TYPE = "shop_type"
     const val KEY_USER_ID = "user_id"
+
+    // MVC
+    const val EVENT_ACTION_MVC_IMPRESSION = "impression detail submission mvc"
+    const val EVENT_ACTION_MVC_CLICK_CLOSE = "click detail submission mvc - close"
+    const val EVENT_ACTION_MVC_CLICK_CREATE = "click detail submission mvc - create"
 }

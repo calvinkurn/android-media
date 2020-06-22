@@ -28,6 +28,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNaviga
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
+import com.tokopedia.applink.merchantvoucher.AppLinkMapperMerchantVoucher
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
@@ -155,6 +156,7 @@ object DeeplinkMapper {
                     DeeplinkMapperMerchant.isShopPageNoteDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri)
                     DeeplinkMapperMerchant.isShopPageResultEtalaseDeepLink(uri) -> DeeplinkMapperMerchant.getShopPageResultEtalaseInternalAppLink(uri)
                     deeplink.startsWith(ApplinkConst.SELLER_INFO_DETAIL, true) -> DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri)
+                    deeplink.startsWith(ApplinkConst.MERCHANT_VOUCHER_LIST, true) -> AppLinkMapperMerchantVoucher.getInternalMvcListAppLink()
                     deeplink.startsWithPattern(ApplinkConst.ORDER_TRACKING) -> DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink)
                     deeplink.startsWith(ApplinkConst.ORDER_HISTORY, true) -> getRegisteredNavigationOrderHistory(uri)
                     deeplink.startsWith(ApplinkConst.RESET_PASSWORD, true) -> ApplinkConstInternalGlobal.FORGOT_PASSWORD
@@ -390,6 +392,11 @@ object DeeplinkMapper {
         return when (trimDeeplink) {
             ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+            ApplinkConst.SellerApp.CREATE_VOUCHER -> ApplinkConstInternalSellerapp.CREATE_VOUCHER
+            ApplinkConst.SellerApp.VOUCHER_LIST -> ApplinkConstInternalSellerapp.VOUCHER_LIST
+            ApplinkConst.SellerApp.VOUCHER_ACTIVE -> ApplinkConstInternalSellerapp.VOUCHER_ACTIVE
+            ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.VOUCHER_HISTORY
+            ApplinkConst.SellerApp.VOUCHER_DETAIL -> ApplinkConstInternalSellerapp.VOUCHER_DETAIL
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK

@@ -81,6 +81,7 @@ include "features:merchant:shop_etalase_picker"
 include "features:merchant:talk"
 include 'features:merchant:youtube_common'
 include "features:merchant:variant_common"
+include "features:merchant:voucher_creation"
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"

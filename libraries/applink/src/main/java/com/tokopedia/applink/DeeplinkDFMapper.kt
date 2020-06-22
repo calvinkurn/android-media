@@ -82,6 +82,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
@@ -292,6 +295,9 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_BASE, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE, R.string.merchant_seller))
+            add(DFP({ it.startsWith(CREATE_VOUCHER) ||
+                    it.startsWith(VOUCHER_LIST) ||
+                    it.startsWith(VOUCHER_DETAIL)}, DF_BASE, R.string.title_voucher_creation))
         }
     }
 

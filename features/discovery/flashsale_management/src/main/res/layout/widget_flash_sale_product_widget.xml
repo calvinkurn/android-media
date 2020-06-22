@@ -64,7 +64,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:scaleType="fitCenter"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@mipmap/ic_launcher_customerapp"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
