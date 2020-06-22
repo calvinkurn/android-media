@@ -119,6 +119,7 @@ object ProductDetailConstant {
     const val PRODUCT_LAST_SEEN = "product_last_seen"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
+    const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_INSTALLMENT_INFO = "installment"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
