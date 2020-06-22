@@ -8,14 +8,17 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -30,6 +33,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.SectionsPagerAdapter
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
+import com.tokopedia.unifycomponents.TabsUnify;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -39,7 +43,7 @@ import java.util.List;
  * @author by nisie on 8/10/17.
  */
 
-public class  InboxReputationActivity extends BaseTabActivity implements HasComponent {
+public class  InboxReputationActivity extends BaseActivity implements HasComponent {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
 
@@ -48,13 +52,17 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
     public static final int TAB_BUYER_REVIEW = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
+    private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
 
     private ViewPager viewPager;
-    private TabLayout indicator;
+    private TabsUnify indicator;
+    private PagerAdapter sectionAdapter;
+    private Toolbar toolbar;
+
     private UserSessionInterface userSession;
 
     private boolean goToReputationHistory;
@@ -70,33 +78,27 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_inbox_reputation);
+        setupStatusBar();
         clearCacheIfFromNotification();
-    }
-
-    @Override
-    protected void setupLayout(Bundle savedInstanceState) {
-        super.setupLayout(savedInstanceState);
         initView();
     }
 
-    @Override
-    protected void setupFragment(Bundle savedinstancestate) {
-        super.setupFragment(savedinstancestate);
-        viewPager.setAdapter(getViewPagerAdapter());
-    }
-
     private void initView() {
-        viewPager = findViewById(R.id.pager);
-        indicator = findViewById(R.id.indicator);
+        viewPager = findViewById(R.id.pager_reputation);
+        indicator = findViewById(R.id.indicator_unify);
+        toolbar = findViewById(R.id.toolbar);
+
+        setupToolbar();
 
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
+            sellerReputationFragment = applicationContext.getReputationHistoryFragment();
             reviewSellerFragment = applicationContext.getReviewSellerFragment();
         }
-        viewPager.setOffscreenPageLimit(getPageLimit());
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-        indicator.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
+        indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
@@ -105,24 +107,27 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
         });
 
         if (!GlobalConfig.isSellerApp()) {
-            indicator.addTab(indicator.newTab().setText(getString(R.string
-                    .title_tab_waiting_review)));
-            indicator.addTab(indicator.newTab().setText(getString(R.string
-                    .title_tab_my_review)));
+            indicator.addNewTab(getString(R.string
+                    .title_tab_waiting_review));
+            indicator.addNewTab(getString(R.string
+                    .title_tab_my_review));
         }
 
         if(GlobalConfig.isSellerApp()) {
             if(reviewSellerFragment != null) {
-                indicator.addTab(indicator.newTab().setText(getString(R.string.title_rating_product)));
+                indicator.addNewTab(getString(R.string.title_rating_product));
             }
         }
 
         if (userSession.hasShop()) {
-            indicator.addTab(indicator.newTab().setText(getString(R.string
-                    .title_tab_buyer_review)));
+            indicator.addNewTab(getString(R.string
+                    .title_tab_buyer_review));
         }
 
         if (GlobalConfig.isSellerApp()) {
+            if (sellerReputationFragment != null) {
+                indicator.addNewTab(getString(R.string.title_reputation_history));
+            }
             if (goToReputationHistory) {
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
@@ -132,7 +137,11 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
             viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
         }
 
-        wrapTabIndicatorToTitle(indicator, (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
+        sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
+        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
+        viewPager.setAdapter(sectionAdapter);
+
+        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
     }
 
     public void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {
@@ -171,21 +180,12 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
         }
     }
 
-    @Override
-    protected PagerAdapter getViewPagerAdapter() {
-        return new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator);
-    }
-
-    @Override
-    protected int getPageLimit() {
-        return OFFSCREEN_PAGE_LIMIT;
-    }
-
     protected List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(reviewSellerFragment);
             fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
+            fragmentList.add(sellerReputationFragment);
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
             fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
@@ -211,13 +211,34 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        reputationTracking.onBackPressedInboxReviewClickTracker(indicator.getSelectedTabPosition());
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        reputationTracking.onBackPressedInboxReviewClickTracker(indicator.getUnifyTabLayout().getSelectedTabPosition());
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public BaseAppComponent getComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle(this.getTitle());
+        }
+    }
+
+    private void setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.tkpdabstraction_green_600));
+        }
     }
 
     private void clearCacheIfFromNotification() {

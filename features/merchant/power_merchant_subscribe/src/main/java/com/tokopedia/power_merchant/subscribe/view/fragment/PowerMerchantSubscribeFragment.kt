@@ -238,7 +238,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
 
         bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(
-            shopStatusModel.isAutoExtend(),
             shopStatusModel.powerMerchant.expiredTime,
             powerMerchantStatus.freeShippingEnabled
         )

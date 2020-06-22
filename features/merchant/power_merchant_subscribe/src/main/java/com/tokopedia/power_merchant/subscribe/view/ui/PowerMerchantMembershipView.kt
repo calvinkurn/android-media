@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
@@ -16,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_IDLE
+import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantDateFormatter.formatCancellationDate
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantSpannableUtil.createSpannableString
 import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.*
 
@@ -48,14 +48,9 @@ class PowerMerchantMembershipView: ConstraintLayout {
         if(shopStatus.isAutoExtend()) {
             containerWarning.hide()
         } else {
+            val expiredDate = shopStatus.powerMerchant.expiredTime
+            textWarning.text = formatCancellationDate(context, expiredDate)
             containerWarning.show()
-
-            val cancellationDate = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,
-                DateFormatUtils.FORMAT_D_MMMM_YYYY, shopStatus.powerMerchant.expiredTime)
-            val warningText = context.getString(R.string.expired_label, cancellationDate)
-            val highlightTextColor = ContextCompat.getColor(context, R.color.light_N700)
-
-            textWarning.text = createSpannableString(warningText, cancellationDate, highlightTextColor, true)
         }
     }
 
