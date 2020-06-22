@@ -38,6 +38,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     fun isUserLoggedIn() = userLoggedInLiveData
     fun getComponentPosition() = componentPosition
     fun getPhoneVerificationStatus() = phoneVerificationStatus
+    fun getQuickCouponData() = clickCouponLiveData
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -75,7 +76,7 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     override fun componentAction() {
         super.componentAction()
-//        applyQuickCoupon()
+        applyQuickCoupon()
     }
 
     private fun applyQuickCoupon() {
@@ -85,7 +86,6 @@ class QuickCouponViewModel(val application: Application, private val components:
                     applyCouponData.success?.let {
                         couponAppliedStatus.value = it
                     }
-
                 }
             }, onError = {
                 it.printStackTrace()
@@ -106,5 +106,12 @@ class QuickCouponViewModel(val application: Application, private val components:
                     it.printStackTrace()
                 }
         )
+    }
+
+    fun getCouponApplink(): String {
+        clickCouponLiveData.value?.couponAppLink?.let {
+            return it
+        }
+        return ""
     }
 }
