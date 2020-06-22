@@ -89,6 +89,9 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                         action = VoucherCreationAnalyticConstant.EventAction.Click.CLOSE_PRIVATE,
                         userId = userSession.userId
                 )
+                dismiss()
+            }
+            setOnDismissListener {
                 onDismissBottomSheet(CreateVoucherBottomSheetType.CREATE_PROMO_CODE)
             }
         }
@@ -220,7 +223,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     private fun observeLiveData() {
         viewModel.run {
             voucherTargetListData.observe(viewLifecycleOwner, Observer { voucherTargetList ->
-                (childFragmentManager.findFragmentByTag(CreateVoucherBottomSheetType.CREATE_PROMO_CODE.tag) as? BottomSheetUnify)?.onDismissBottomSheet(CreateVoucherBottomSheetType.CREATE_PROMO_CODE)
+                (childFragmentManager.findFragmentByTag(CreateVoucherBottomSheetType.CREATE_PROMO_CODE.tag) as? BottomSheetUnify)?.dismiss()
                 voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, ::onSetActiveVoucherTargetType, voucherTargetList, ::onRadioButtonClicked, ::onChangePromoCodeButtonClicked)
                 refreshWidget()
             })
