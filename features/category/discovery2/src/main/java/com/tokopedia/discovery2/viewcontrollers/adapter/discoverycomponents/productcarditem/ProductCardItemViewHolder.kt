@@ -275,20 +275,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             textViewSlashedPrice.hide()
         }
     }
-
-//    private fun setRating(dataItem: DataItem) {
-//        val ratingCount = dataItem.rating.toDoubleOrZero()
-//        if (ratingCount > 0) {
-//            imageViewRating.show()
-//            textViewRatingCount.setTextAndCheckShow(ratingCount.toString())
-//            setTextViewReviewCount(dataItem.countReview.toIntOrZero())
-//        } else {
-//            imageViewRating.hide()
-//            textViewRatingCount.hide()
-//            textViewReviewCount.hide()
-//        }
-//    }
-
+    
     private fun setRating(dataItem: DataItem) {
         val rating = dataItem.rating.toIntOrZero()
         if (rating in 1..5) {
@@ -312,13 +299,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
 
     }
-
-//    private fun setTextViewReviewCount(reviewCount: Int) {
-//        if (reviewCount != 0) {
-//            textViewReviewCount.show()
-//            textViewReviewCount.text = String.format("%s", "($reviewCount)")
-//        }
-//    }
 
     private fun handleUIClick(view: View, adapterPosition: Int) {
         when (view) {
