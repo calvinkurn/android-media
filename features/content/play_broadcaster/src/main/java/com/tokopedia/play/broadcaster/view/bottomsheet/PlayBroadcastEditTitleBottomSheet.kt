@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
@@ -29,7 +30,7 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         initBottomSheet()
     }
 

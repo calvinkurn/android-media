@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -201,6 +202,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                     prepareViewModel.title = title
                 }
             })
+            editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         }
         return editTitleBottomSheet
     }
