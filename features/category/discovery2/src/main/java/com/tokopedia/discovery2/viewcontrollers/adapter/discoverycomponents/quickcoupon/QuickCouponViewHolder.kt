@@ -53,10 +53,11 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             })
             quickCouponViewModel.getCouponVisibilityStatus().observe(viewLifecycleOwner, Observer {
                 if (it) {
-                    (fragment as? DiscoveryFragment)?.reSync()
                     quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
                         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
                     }
+                } else {
+                    (fragment as? DiscoveryFragment)?.reSync()
                 }
             })
             quickCouponViewModel.getCouponAddedStatus().observe(viewLifecycleOwner, Observer {
@@ -113,7 +114,7 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
     }
 
     private fun handleCouponAdded(it: Boolean) {
-        if (it) {
+        if (!it) {
             val message = quickCouponViewModel.getCouponAddedFailMessage()
             if (message.isNotEmpty()) {
                 Toaster.make(itemView.rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)

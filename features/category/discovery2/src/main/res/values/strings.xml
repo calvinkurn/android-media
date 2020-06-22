@@ -30,5 +30,6 @@
     <string name="verify_text">Verifikasi Nomor HP</string>
     <string name="verify_title">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
     <string name="verify_header">Verifikasi Nomor HP</string>
+    <string name="quick_coupon_title">Kupon Cashback 80%</string>
 
 </resources>

@@ -65,6 +65,7 @@ class QuickCouponViewModel(val application: Application, private val components:
             if (it) {
                 updateCouponAppliedStatus()
             }
+            components.isApplicable = it
             couponVisibilityStatus.value = it
         }
     }
@@ -107,10 +108,10 @@ class QuickCouponViewModel(val application: Application, private val components:
         applyQuickCoupon()
     }
 
-    private fun applyQuickCoupon() {
-        clickCouponLiveData.value?.realCode?.let { promoCode ->
+    fun applyQuickCoupon() {
+        clickCouponLiveData.value?.realCode?.let { realCode ->
             launchCatchError(block = {
-                quickCouponUseCase.applyQuickCoupon(promoCode).applyCouponData?.let { applyCouponData ->
+                quickCouponUseCase.applyQuickCoupon(realCode).applyCouponData?.let { applyCouponData ->
                     applyCouponData.success?.let {
                         couponAppliedStatus.value = it
                         couponAdded.value = it
