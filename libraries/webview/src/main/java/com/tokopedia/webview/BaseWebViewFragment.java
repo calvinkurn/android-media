@@ -114,6 +114,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
+    private RemoteConfig remoteConfig;
 
     /**
      * return the url to load in the webview
@@ -153,6 +154,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         String host = Uri.parse(url).getHost();
         isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     private String getUrlFromArguments(Bundle args) {
@@ -618,7 +620,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
         if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
             boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
                 TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
