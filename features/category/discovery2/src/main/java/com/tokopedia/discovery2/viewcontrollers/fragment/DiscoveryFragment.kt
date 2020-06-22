@@ -318,10 +318,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
     }
 
-    fun phoneVerificationResponseCallBack(verificationStatus: Boolean) {
+    fun phoneVerificationResponseCallBack(verificationStatus: Boolean, componentPosition: Int = -1) {
         if (verificationStatus) {
-            componentPosition?.let {
-                discoveryAdapter.getViewModelAtPosition(it)?.componentAction()
+            componentPosition.let { position ->
+                if (position >= 0) discoveryAdapter.getViewModelAtPosition(position)?.componentAction()
             }
         } else {
             showVerificationBottomSheet()
