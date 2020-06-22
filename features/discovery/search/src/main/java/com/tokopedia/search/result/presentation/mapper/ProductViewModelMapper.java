@@ -36,7 +36,9 @@ public class ProductViewModelMapper {
             productViewModel.setGlobalNavViewModel(convertToViewModel(searchProductModel.getGlobalNavModel()));
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
-        productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProductData.getRelated()));
+        if (searchProductData.getRelated() != null) {
+            productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProductData.getRelated()));
+        }
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProductData.getProductList(), useRatingString));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setTickerModel(createTickerModel(searchProductData));
