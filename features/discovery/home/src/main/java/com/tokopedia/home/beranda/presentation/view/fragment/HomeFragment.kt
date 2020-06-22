@@ -55,6 +55,8 @@ import com.tokopedia.design.countdown.CountDownView.CountDownListener
 import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.design.keyboard.KeyboardHelper.OnKeyboardVisibilityChangedListener
 import com.tokopedia.home.R
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
