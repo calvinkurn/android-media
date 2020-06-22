@@ -540,12 +540,20 @@ open class HomeFragment : BaseDaggerFragment(),
         })
         stickyLoginView?.addOnLayoutChangeListener { v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int -> updateStickyState() }
         stickyLoginView?.setOnClickListener { v: View? ->
-            stickyLoginView?.tracker.clickOnLogin(StickyLoginConstant.Page.HOME)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView?.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.HOME)
+            } else {
+                stickyLoginView?.tracker.clickOnLogin(StickyLoginConstant.Page.HOME)
+            }
             onGoToLogin()
         }
         stickyLoginView?.setOnDismissListener(View.OnClickListener { v: View? ->
             stickyLoginView?.dismiss(StickyLoginConstant.Page.HOME)
-            stickyLoginView?.tracker.clickOnDismiss(StickyLoginConstant.Page.HOME)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView?.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.HOME)
+            } else {
+                stickyLoginView?.tracker.clickOnDismiss(StickyLoginConstant.Page.HOME)
+            }
             val floatingEggButtonFragment = floatingEggButtonFragment
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
@@ -1756,24 +1764,25 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun updateStickyState() {
-        if (tickerDetail == null) {
-            hideStickyLogin()
-            return
-        }
-        val isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
-        if (!isCanShowing) {
-            hideStickyLogin()
-            return
-        }
         if (isUserLoggedIn) {
             hideStickyLogin()
             return
         }
-        stickyLoginView?.setContent(tickerDetail!!)
-        stickyLoginView?.show(StickyLoginConstant.Page.HOME)
-        if (stickyLoginView?.isShowing()) {
-            positionSticky = stickyLoginView?.getLocation()
-            stickyLoginView?.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
+        if (stickyLoginView.isLoginReminder()) {
+            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.HOME)
+            stickyLoginView?.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.HOME)
+        } else {
+            val isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
+            if (!isCanShowing) {
+                hideStickyLogin()
+                return
+            }
+            stickyLoginView?.setContent(tickerDetail!!)
+            stickyLoginView?.show(StickyLoginConstant.Page.HOME)
+            if (stickyLoginView?.isShowing()) {
+                positionSticky = stickyLoginView?.getLocation()
+                stickyLoginView?.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
+            }
         }
         val floatingEggButtonFragment = floatingEggButtonFragment
         floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
