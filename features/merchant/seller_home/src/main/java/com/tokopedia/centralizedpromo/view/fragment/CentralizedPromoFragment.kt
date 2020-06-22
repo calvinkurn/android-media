@@ -55,7 +55,12 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val adapterTypeFactory by lazy { CentralizedPromoAdapterTypeFactory() }
+    private val adapterTypeFactory by lazy {
+        CentralizedPromoAdapterTypeFactory(
+            { trackFreeShippingImpression() },
+            { trackFreeShippingClick() }
+        )
+    }
 
     private val partialViews by lazy {
         return@lazy mapOf(
@@ -218,6 +223,14 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         Handler().postDelayed({
             isErrorToastShown = false
         }, TOAST_DURATION)
+    }
+
+    private fun trackFreeShippingImpression() {
+        centralizedPromoViewModel.trackFreeShippingImpression()
+    }
+
+    private fun trackFreeShippingClick() {
+        centralizedPromoViewModel.trackFreeShippingClick()
     }
 }
 
