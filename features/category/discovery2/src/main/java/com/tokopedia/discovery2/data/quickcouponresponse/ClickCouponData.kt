@@ -18,5 +18,10 @@ data class ClickCouponData(
         @SerializedName("message_using_success")
         val messageUsingSuccess: String? = "",
         @SerializedName("message_using_failed")
-        val messageUsingFailed: String? = ""
+        val messageUsingFailed: String? = "",
+
+        var componentID: String = "",
+        var componentPosition: Int = 0,
+        var componentName: String? = ""
+
 )

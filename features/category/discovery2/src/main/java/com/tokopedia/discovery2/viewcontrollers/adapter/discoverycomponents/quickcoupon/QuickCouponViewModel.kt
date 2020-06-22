@@ -61,7 +61,6 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     private fun checkComponentVisibility() {
         val couponApplicable = clickCouponLiveData.value?.isApplicable
-
         couponApplicable?.let {
             if (it) {
                 updateCouponAppliedStatus()
@@ -135,5 +134,12 @@ class QuickCouponViewModel(val application: Application, private val components:
             return it
         }
         return ""
+    }
+
+    fun getCouponDetail(): ClickCouponData? {
+        clickCouponLiveData.value?.componentPosition = position
+        clickCouponLiveData.value?.componentID = components.id
+        clickCouponLiveData.value?.componentName = components.name
+        return clickCouponLiveData.value
     }
 }

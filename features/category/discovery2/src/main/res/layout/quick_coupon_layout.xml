@@ -69,21 +69,22 @@
             android:paddingVertical="@dimen/dp_8"
             android:visibility="gone"
             android:ellipsize="end"
+            android:text="@string/pakai"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/title_tv"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/pakai"
-            tools:visibility="gone"
             app:layout_goneMarginEnd="@dimen/dp_4"
-            app:layout_goneMarginRight="@dimen/dp_4"/>
+            app:layout_goneMarginRight="@dimen/dp_4"
+            tools:text="@string/pakai"
+            tools:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shimmer_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
+        android:layout_height="@dimen/dp_80"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

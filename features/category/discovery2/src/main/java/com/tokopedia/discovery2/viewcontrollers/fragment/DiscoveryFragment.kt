@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
@@ -41,12 +42,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import javax.inject.Inject
 
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
+
 class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
@@ -303,6 +304,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             }
             MOBILE_VERIFICATION_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 phoneVerificationResponseCallBack(true)
+                getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
             }
         }
     }
@@ -339,6 +341,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         childView.findViewById<UnifyButton>(R.id.verify_btn).setOnClickListener {
             closeableBottomSheetDialog.dismiss()
             startActivityForResult(RouteManager.getIntent(activity, ADD_PHONE), MOBILE_VERIFICATION_REQUEST_CODE)
+        }
+        closeableBottomSheetDialog.setOnDismissListener {
+            getDiscoveryAnalytics().trackQuickCouponPhoneVerifyCancel()
         }
     }
 }

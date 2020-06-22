@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -23,7 +24,7 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
     private var titleTextView: TextView = itemView.findViewById(R.id.title_tv)
     private var cardLayout: ConstraintLayout = itemView.findViewById(R.id.cardLayout)
     private var couponShimmerView: ImageUnify = itemView.findViewById(R.id.shimmer_view)
-    private var couponAddedImage: ImageUnify = itemView.findViewById(R.id.applied_img)
+    private var couponAddedImage: ImageView = itemView.findViewById(R.id.applied_img)
     private var componentPosition: Int? = null
 
     private lateinit var quickCouponViewModel: QuickCouponViewModel
@@ -53,6 +54,9 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             quickCouponViewModel.getCouponVisibilityStatus().observe(viewLifecycleOwner, Observer {
                 if (it) {
                     (fragment as? DiscoveryFragment)?.reSync()
+                    quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
+                        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
+                    }
                 }
             })
             quickCouponViewModel.getCouponAddedStatus().observe(viewLifecycleOwner, Observer {
@@ -87,8 +91,18 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
 
     override fun onClick(view: View?) {
         when (view) {
-            applyButton -> quickCouponViewModel.onClaimCouponClick()
-            cardLayout -> RouteManager.route(itemView.context, quickCouponViewModel.getCouponApplink())
+            applyButton -> {
+                quickCouponViewModel.onClaimCouponClick()
+                quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
+                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponApply(clickCouponData)
+                }
+            }
+            cardLayout -> {
+                RouteManager.route(itemView.context, quickCouponViewModel.getCouponApplink())
+                quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
+                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponClick(clickCouponData)
+                }
+            }
         }
     }
 
