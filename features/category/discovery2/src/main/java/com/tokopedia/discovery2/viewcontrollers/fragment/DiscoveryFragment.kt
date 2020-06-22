@@ -41,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import javax.inject.Inject
 
 
@@ -337,7 +338,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
         childView.findViewById<UnifyButton>(R.id.verify_btn).setOnClickListener {
             closeableBottomSheetDialog.dismiss()
-            startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.ADD_PHONE), MOBILE_VERIFICATION_REQUEST_CODE)
+            startActivityForResult(RouteManager.getIntent(activity, ADD_PHONE), MOBILE_VERIFICATION_REQUEST_CODE)
         }
     }
 }
