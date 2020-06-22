@@ -55,6 +55,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_OFFICIAL_STORE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_POWER_MERCHANT
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -1465,11 +1466,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
         if (minimumAmount > subtotal) {
             orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                    paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}). Silahkan pilih pembayaran lain.",
+                    paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     isButtonChoosePayment = true, buttonState = currentState)
         } else if (maximumAmount > 0 && maximumAmount < subtotal) {
             orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                    paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}). Silahkan pilih pembayaran lain.",
+                    paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     isButtonChoosePayment = true, buttonState = currentState)
         } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains(OVO_GATEWAY_CODE) == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
             orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,

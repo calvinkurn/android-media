@@ -9,6 +9,7 @@ import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
+import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
 import javax.inject.Inject
 
 class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummaryPageComponent> {
@@ -29,6 +30,7 @@ class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummary
     override fun getComponent(): OrderSummaryPageComponent {
         return DaggerOrderSummaryPageComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .orderSummaryPageModule(OrderSummaryPageModule(this))
                 .build()
     }
 

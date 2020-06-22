@@ -117,6 +117,23 @@ object HomePageTrackingV2 : BaseTracking() {
                 },
                 channelId = channel.id
         )
+
+        fun getLegoBannerFourImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
+                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = Action.IMPRESSION.format(LEGO_BANNER_4_IMAGE_NAME),
+                eventLabel = Label.NONE,
+                promotions = channel.channelGrids.mapIndexed { index, grid ->
+                    Promotion(
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
+                            creative = grid.attribution,
+                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.channelHeader.name),
+                            position = (index + 1).toString()
+                    )
+                },
+                channelId = channel.id
+        )
+
         fun getLegoBannerFourImageClick(channel: ChannelModel, grid: ChannelGrid, position: Int) = getBasicPromotionChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
@@ -182,6 +199,34 @@ object HomePageTrackingV2 : BaseTracking() {
                 },
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                ),
+                channelId = channel.id
+        )
+
+        fun getRecommendationListImpression(channel: ChannelModel, isToIris: Boolean = false, userId: String) = getBasicProductChannelView(
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
+                eventLabel = Label.NONE,
+                userId = userId,
+                products = channel.channelGrids.mapIndexed { index, grid ->
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(grid.price).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.isFreeOngkirActive,
+                            persoType = channel.trackingAttributionModel.persoType,
+                            categoryId = channel.trackingAttributionModel.categoryId,
+                            isTopAds = grid.isTopads
+                    )
+                },
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.channelHeader.name
                 ),
                 channelId = channel.id
         )

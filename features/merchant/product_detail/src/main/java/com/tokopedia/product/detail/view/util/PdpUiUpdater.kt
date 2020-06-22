@@ -109,6 +109,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
+    val productByMeMap: ProductGeneralInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.KEY_BYME] as? ProductGeneralInfoDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?) {
         dataP1?.let {
             basicContentMap?.run {
@@ -257,6 +260,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
         productFullfilmentMap?.run {
             data.first().subtitle = fullFillmentText
+        }
+    }
+
+    fun updateByMeData(context: Context?) {
+        productByMeMap?.run {
+            data.firstOrNull()?.subtitle = context?.getString(R.string.product_detail_by_me_subtitle) ?: ""
         }
     }
 

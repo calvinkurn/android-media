@@ -56,7 +56,6 @@ import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.design.keyboard.KeyboardHelper.OnKeyboardVisibilityChangedListener
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
@@ -72,9 +71,11 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRec
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.analytics.v2.MixLeftComponentTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapHomeChannelToComponent
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -97,17 +98,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.RechargeRecommendationViewHolder.RechargeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
-import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -128,6 +125,7 @@ import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEgg
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -154,8 +152,6 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -198,6 +194,8 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val PERFORMANCE_PAGE_NAME_HOME = "home"
         private var lock = Object()
+        private const val ENABLE_ASYNC_HOME_DAGGER = "android_async_home_dagger"
+
         var HIDE_TICKER = false
         private var HIDE_GEO = false
         private const val SOURCE_ACCOUNT = "account"
@@ -281,10 +279,25 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        initHomePageFlows()
+        createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         requestStatusBarDark()
+    }
+
+    private fun createDaggerComponent(){
+        val enableAsyncDaggerCompInit = getRemoteConfig().getBoolean(ENABLE_ASYNC_HOME_DAGGER, false)
+        if(enableAsyncDaggerCompInit) {
+            var homeDaggerWeave = object : WeaveInterface {
+                override fun execute(): Any {
+                    return initHomePageFlows()
+                }
+            }
+            Weaver.executeWeaveCoRoutineNow(homeDaggerWeave)
+        }
+        else{
+            initHomePageFlows()
+        }
     }
 
     private fun requestStatusBarDark() {
@@ -888,8 +901,10 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 this,
                 HomeComponentCallback(getHomeViewModel()),
-                DynamicLegoBannerComponentCallback(context),
-                RecommendationListCarouselComponentCallback(getHomeViewModel(), this))
+                DynamicLegoBannerComponentCallback(context, this),
+                RecommendationListCarouselComponentCallback(getHomeViewModel(), this),
+                MixLeftComponentCallback(this),
+                MixTopComponentCallback(this))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1013,7 +1028,10 @@ open class HomeFragment : BaseDaggerFragment(),
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            TopAdsUrlHitter(className).hitClickUrl(getContext(), slidesModel.redirectUrl)
+            TopAdsUrlHitter(className).hitClickUrl(getContext(),
+                    slidesModel.redirectUrl, slidesModel.id.toString(),
+                    slidesModel.title + " : " + slidesModel.creativeName,
+                    slidesModel.imageUrl)
         }
     }
 
@@ -1449,7 +1467,10 @@ open class HomeFragment : BaseDaggerFragment(),
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else if (!bannerSlidesModel.isInvoke) {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
-                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
+                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl,
+                        bannerSlidesModel.id.toString(),
+                        bannerSlidesModel.title + " : " + bannerSlidesModel.creativeName,
+                        bannerSlidesModel.imageUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
             dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
@@ -1860,38 +1881,11 @@ open class HomeFragment : BaseDaggerFragment(),
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                     getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
-            DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO -> putEEToIris(
-                    HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
-                            channel.id, channel.grids, channel.header.name, position
-                    )
-            )
-            DynamicChannelViewHolder.TYPE_THREE_GRID_LEGO -> putEEToIris(
-                    HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
-                            channel.id, channel.grids, channel.header.name, position
-                    )
-            )
-            DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO -> putEEToIris(
-                    getLegoBannerFourImageImpression(
-                            channel, position, true
-                    ) as HashMap<String, Any>
-            )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
-            DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL, DynamicChannelViewHolder.TYPE_BANNER -> {
-                var bannerType = BannerOrganicViewHolder.TYPE_NON_CAROUSEL
-                if (layoutType == DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL) bannerType = BannerOrganicViewHolder.TYPE_CAROUSEL
-                putEEToIris(
-                        HomePageTracking.getEnhanceImpressionProductChannelMix(
-                                channel, bannerType
-                        )
-                )
-                putEEToIris(
-                        HomePageTracking.getIrisEnhanceImpressionBannerChannelMix(channel)
-                )
-            }
             DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, getHomeViewModel().getUserId()) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, true
             ) as HashMap<String, Any>)

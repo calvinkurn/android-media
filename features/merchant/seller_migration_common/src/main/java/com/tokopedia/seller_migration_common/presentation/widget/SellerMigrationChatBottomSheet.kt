@@ -43,4 +43,6 @@ class SellerMigrationChatBottomSheet(titles: List<String>,
     override fun trackGoToPlayStore() {
         SellerMigrationTracking.eventGoToPlayStore(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_CHAT)
     }
+
+    override fun trackLearnMore() { /* noop */ }
 }
