@@ -25,7 +25,7 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
         `When Load Data`()
 
         `Then verify use case request params START should be 0`()
-        `Then verify view interaction for redirection`(searchProductModel.aceSearchProduct.data.redirection.redirectApplink)
+        `Then verify view interaction for redirection`(searchProductModel.searchProduct.data.redirection.redirectApplink)
         `Then verify get dynamic filter use case is not executed`()
         `Then verify start from is incremented`()
     }

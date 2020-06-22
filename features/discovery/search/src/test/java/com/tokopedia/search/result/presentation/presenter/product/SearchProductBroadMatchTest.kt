@@ -3,8 +3,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
-import com.tokopedia.search.result.domain.model.OtherRelated
-import com.tokopedia.search.result.domain.model.OtherRelatedProduct
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
@@ -106,7 +104,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             visitableList: List<Visitable<*>>,
             searchProductModel: SearchProductModel
     ) {
-        val otherRelated = searchProductModel.aceSearchProduct.data.related.otherRelatedList
+        val otherRelated = searchProductModel.searchProduct.data.related.otherRelatedList
         visitableList.filterIsInstance<BroadMatchViewModel>().size shouldBe otherRelated.size
 
         var index = visitableList.indexOfFirst { it is BroadMatchViewModel }
@@ -123,7 +121,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         }
     }
 
-    private fun BroadMatchViewModel.assertBroadMatchViewModel(otherRelated: OtherRelated) {
+    private fun BroadMatchViewModel.assertBroadMatchViewModel(otherRelated: SearchProductModel.OtherRelated) {
         keyword shouldBe otherRelated.keyword
         applink shouldBe otherRelated.applink
         broadMatchItemViewModelList.size shouldBe otherRelated.productList.size
@@ -136,7 +134,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     private fun BroadMatchItemViewModel.assertBroadMatchItemViewModel(
-            otherRelatedProduct: OtherRelatedProduct,
+            otherRelatedProduct: SearchProductModel.OtherRelatedProduct,
             expectedPosition: Int,
             expectedAlternativeKeyword: String
     ) {

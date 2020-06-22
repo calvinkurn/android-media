@@ -28,7 +28,7 @@ internal class SearchProductHandleTickerTest: ProductListPresenterTestFixtures()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`(searchParameter)
-        `Then verify track event impression ticker is called`(searchProductModel.aceSearchProduct.data.ticker.typeId)
+        `Then verify track event impression ticker is called`(searchProductModel.searchProduct.data.ticker.typeId)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {

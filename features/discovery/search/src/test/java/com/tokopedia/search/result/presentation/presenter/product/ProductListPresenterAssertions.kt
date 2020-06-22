@@ -25,8 +25,8 @@ fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSect
     productListView.lastProductItemPositionFromCache
     productListView.saveLastProductItemPositionToCache(any())
 
-    productListView.setAutocompleteApplink(searchProductModel.aceSearchProduct.data.autocompleteApplink)
-    productListView.setDefaultLayoutType(searchProductModel.aceSearchProduct.header.defaultView)
+    productListView.setAutocompleteApplink(searchProductModel.searchProduct.data.autocompleteApplink)
+    productListView.setDefaultLayoutType(searchProductModel.searchProduct.header.defaultView)
     productListView.removeLoading()
     productListView.setProductList(any())
     productListView.showFreeOngkirShowCase(false)

@@ -99,8 +99,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = true,
                 categoryIdMapping = "65",
@@ -119,8 +119,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = true,
                 categoryIdMapping = "1759,1758,65",
@@ -139,8 +139,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = false,
                 categoryIdMapping = "",
@@ -159,8 +159,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = true,
                 categoryIdMapping = "65",
@@ -179,13 +179,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = true,
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$previousKeyword - ${searchProductModel.aceSearchProduct.data.related.relatedKeyword}"
+                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}"
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -199,15 +199,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = true,
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
-                        "${searchProductModel.aceSearchProduct.data.related.relatedKeyword}," +
-                        searchProductModel.aceSearchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
+                        "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
+                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -221,14 +221,14 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = true,
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
-                        searchProductModel.aceSearchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
+                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -242,15 +242,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = true,
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
-                        "${searchProductModel.aceSearchProduct.data.related.relatedKeyword}," +
-                        searchProductModel.aceSearchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
+                        "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
+                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -264,13 +264,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = true,
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$previousKeyword - ${searchProductModel.aceSearchProduct.data.related.relatedKeyword}"
+                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}"
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -284,13 +284,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
-                        searchProductModel.aceSearchProduct.header.keywordProcess,
-                        searchProductModel.aceSearchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
                 ),
                 isResultFound = true,
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$previousKeyword - ${searchProductModel.aceSearchProduct.data.suggestion.suggestion}"
+                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.suggestion.suggestion}"
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)

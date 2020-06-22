@@ -19,8 +19,6 @@ import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
-import com.tokopedia.search.result.domain.model.Redirection;
-import com.tokopedia.search.result.domain.model.SearchProduct;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
@@ -489,7 +487,7 @@ final class ProductListPresenter
         processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
 
-        boolean isLastPage = isLastPage(searchProductModel.getAceSearchProduct());
+        boolean isLastPage = isLastPage(searchProductModel.getSearchProduct());
         if (isLastPage && isShowBroadMatch()) {
             processSuggestionAndBroadMatch(list);
         }
@@ -683,14 +681,14 @@ final class ProductListPresenter
     }
 
     private boolean isSearchRedirected(SearchProductModel searchProductModel) {
-        Redirection redirection = searchProductModel.getAceSearchProduct().getData().getRedirection();
+        SearchProductModel.Redirection redirection = searchProductModel.getSearchProduct().getData().getRedirection();
 
         return redirection != null
                 && !textIsEmpty(redirection.getRedirectApplink());
     }
 
     private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
-        String applink = searchProductModel.getAceSearchProduct().getData().getRedirection().getRedirectApplink();
+        String applink = searchProductModel.getSearchProduct().getData().getRedirection().getRedirectApplink();
 
         getView().redirectSearchToAnotherPage(applink);
     }
@@ -710,7 +708,7 @@ final class ProductListPresenter
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
-            getViewToHandleEmptyProductList(searchProductModel.getAceSearchProduct(), productViewModel);
+            getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
             getView().hideBottomNavigation();
         } else {
             getViewToShowProductList(searchParameter, searchProductModel, productViewModel);
@@ -771,7 +769,7 @@ final class ProductListPresenter
         this.relatedViewModel = relatedViewModel;
     }
 
-    private void getViewToHandleEmptyProductList(SearchProduct searchProduct, ProductViewModel productViewModel) {
+    private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
         if (isShowBroadMatch()) {
             getViewToShowBroadMatchToReplaceEmptySearch();
         } else {
@@ -829,14 +827,14 @@ final class ProductListPresenter
         }
     }
 
-    private void getViewToHandleEmptySearchWithErrorMessage(SearchProduct searchProduct) {
+    private void getViewToHandleEmptySearchWithErrorMessage(SearchProductModel.SearchProduct searchProduct) {
         getView().removeLoading();
         getView().setBannedProductsErrorMessage(createBannedProductsErrorMessageAsList(searchProduct));
         getView().trackEventImpressionBannedProducts(true);
         getView().setTotalSearchResultCount("0");
     }
 
-    private List<Visitable> createBannedProductsErrorMessageAsList(SearchProduct searchProduct) {
+    private List<Visitable> createBannedProductsErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
         List<Visitable> bannedProductsErrorMessageAsList = new ArrayList<>();
         bannedProductsErrorMessageAsList.add(new BannedProductsEmptySearchViewModel(searchProduct.getHeader().getErrorMessage(), ""));
         return bannedProductsErrorMessageAsList;
@@ -881,7 +879,7 @@ final class ProductListPresenter
     }
 
     private void getViewToShowProductList(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductViewModel productViewModel) {
-        SearchProduct searchProduct = searchProductModel.getAceSearchProduct();
+        SearchProductModel.SearchProduct searchProduct = searchProductModel.getSearchProduct();
 
         List<Visitable> list = new ArrayList<>();
 
@@ -958,7 +956,7 @@ final class ProductListPresenter
         getView().stopTracePerformanceMonitoring();
     }
 
-    private boolean isLastPage(@NotNull SearchProduct searchProduct) {
+    private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
         boolean hasNextPage = startFrom < searchProduct.getHeader().getTotalData();
 
         return !hasNextPage;
