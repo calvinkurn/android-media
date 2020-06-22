@@ -6,10 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * @author by furqan on 25/10/18.
+ * @author by furqan on 15/06/2020
  */
-
-public class Reason {
+public class ReasonDeserializerModel {
     @SerializedName("id")
     @Expose
     private String id;
@@ -18,7 +17,7 @@ public class Reason {
     private String title;
     @SerializedName("required_docs")
     @Expose
-    private List<ReasonRequiredDocs> requiredDocs;
+    private List<String> requiredDocs;
 
     public String getId() {
         return id;
@@ -36,11 +35,11 @@ public class Reason {
         this.title = title;
     }
 
-    public List<ReasonRequiredDocs> getRequiredDocs() {
+    public List<String> getRequiredDocs() {
         return requiredDocs;
     }
 
-    public void setRequiredDocs(List<ReasonRequiredDocs> requiredDocs) {
+    public void setRequiredDocs(List<String> requiredDocs) {
         this.requiredDocs = requiredDocs;
     }
 }
