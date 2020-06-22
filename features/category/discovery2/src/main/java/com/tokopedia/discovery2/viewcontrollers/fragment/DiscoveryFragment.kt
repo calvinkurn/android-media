@@ -309,7 +309,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     fun quickCouponLoginScreen(componentPosition: Int) {
         this.componentPosition = componentPosition
-        activity?.startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), 1234)
+        startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), 1234)
     }
 
     fun phoneVerificationResponseCallBack(verificationStatus: Boolean) {
@@ -334,7 +334,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
         childView.findViewById<UnifyButton>(R.id.verify_btn).setOnClickListener {
             closeableBottomSheetDialog.dismiss()
-            activity?.startActivityForResult(RouteManager.getIntent(activity, "tokopedia-android-internal://global/add-phone"), 4321)
+            startActivityForResult(RouteManager.getIntent(activity, "tokopedia-android-internal://global/add-phone"), 4321)
         }
     }
 }

@@ -13,7 +13,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): Discov
     val discoveryPageData = DiscoveryPageData(discoveryResponse.pageInfo)
     val discoveryDataMapper = DiscoveryPageDataMapper(discoveryResponse.pageInfo)
 
-    discoveryPageData.components = discoveryDataMapper.getDiscvoeryComponentList(discoveryResponse.components.filter {
+    discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentList(discoveryResponse.components.filter {
         discoveryPageData.pageInfo.identifier?.let { identifier ->
             it.pageEndPoint = identifier
         }
@@ -23,8 +23,8 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): Discov
     return discoveryPageData
 }
 
-class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
-    fun getDiscvoeryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {
+class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
+    fun getDiscoveryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         for ((position, component) in components.withIndex()) {
             listComponents.addAll(parseComponent(component, position))
@@ -90,7 +90,7 @@ class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
         } else {
             listComponents.add(component)
             component.getComponentsItem()?.let {
-                listComponents.addAll(getDiscvoeryComponentList(it))
+                listComponents.addAll(getDiscoveryComponentList(it))
             }
             if (component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
                 listComponents.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
