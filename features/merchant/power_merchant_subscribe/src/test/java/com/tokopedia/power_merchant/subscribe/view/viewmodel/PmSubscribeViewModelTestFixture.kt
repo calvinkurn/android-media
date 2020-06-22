@@ -6,7 +6,7 @@ import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.power_merchant.subscribe.common.coroutine.TestCoroutineDispatchers
 import com.tokopedia.power_merchant.subscribe.verification.verifyValueEquals
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState
-import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantRemoteConfig
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -23,7 +23,7 @@ open class PmSubscribeViewModelTestFixture {
     private lateinit var getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase
     private lateinit var getShopFreeShippingStatusUseCase: GetShopFreeShippingStatusUseCase
     private lateinit var userSession: UserSessionInterface
-    private lateinit var remoteConfig: RemoteConfig
+    private lateinit var remoteConfig: PowerMerchantRemoteConfig
     protected lateinit var viewModel: PmSubscribeViewModel
 
     @Before
@@ -34,8 +34,8 @@ open class PmSubscribeViewModelTestFixture {
         remoteConfig = mockk(relaxed = true)
 
         coEvery {
-            remoteConfig.getBoolean(any())
-        } returns true
+            remoteConfig.isFreeShippingEnabled()
+        } returns false
 
         viewModel = PmSubscribeViewModel(
             getPowerMerchantStatusUseCase,
