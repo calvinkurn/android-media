@@ -1,5 +1,5 @@
-mutation clearNotifCounter{
-  notifcenter_clearNotifCounter {
+mutation clearNotifCounter($typeId: Int){
+  notifcenter_clearNotifCounter(type_id: $typeId) {
     data {
       is_success
     }

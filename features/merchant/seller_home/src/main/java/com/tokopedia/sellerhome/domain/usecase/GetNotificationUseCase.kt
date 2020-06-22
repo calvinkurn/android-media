@@ -35,7 +35,7 @@ class GetNotificationUseCase(
     }
 
     companion object {
-        private const val QUERY = "query getNotifications(\$type_id:Int!) {\n" +
+        private const val QUERY = "query getNotifications(\$typeId:Int!) {\n" +
                 "  notifications {\n" +
                 "    chat {\n" +
                 "      unreads\n" +
@@ -49,7 +49,7 @@ class GetNotificationUseCase(
                 "      arriveAtDestination\n" +
                 "    }\n" +
                 "  }\n" +
-                "  notifcenter_unread(type_id:\$type_id) {\n" +
+                "  notifcenter_unread(type_id:\$typeId) {\n" +
                 "    notif_unread\n" +
                 "    notif_unread_int\n" +
                 "  }\n" +

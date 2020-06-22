@@ -6,18 +6,18 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateFilterMapper
-import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateFilterMapper
+import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
+import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
 import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationTotalUnreadSubscriber
 import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationUpdateFilterSubscriber
 import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationUpdateSubscriber
 import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
-import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
-import com.tokopedia.notifcenter.data.model.NotificationViewData
-import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -59,6 +59,7 @@ class NotificationUpdatePresenter @Inject constructor(
     }
 
     override fun clearNotifCounter() {
+        clearCounterNotificationUpdateUseCase.params = ClearCounterNotificationUpdateUseCase.getRequestParams()
         clearCounterNotificationUpdateUseCase.execute(NotificationUpdateActionSubscriber())
     }
 
