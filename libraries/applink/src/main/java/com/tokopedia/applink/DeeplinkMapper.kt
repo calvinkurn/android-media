@@ -13,6 +13,7 @@ import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigati
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationPlay
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
+import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegisteredNavigationEvents
 import com.tokopedia.applink.feed.DeepLinkMapperFeed.getRegisteredFeed
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
@@ -25,17 +26,17 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNaviga
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
+import com.tokopedia.applink.merchantvoucher.AppLinkMapperMerchantVoucher
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
+import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
-import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegisteredNavigationEvents
-import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -137,6 +138,7 @@ object DeeplinkMapper {
                     DeeplinkMapperMerchant.isShopPageNoteDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri)
                     DeeplinkMapperMerchant.isShopPageResultEtalaseDeepLink(uri) -> DeeplinkMapperMerchant.getShopPageResultEtalaseInternalAppLink(uri)
                     deeplink.startsWith(ApplinkConst.SELLER_INFO_DETAIL, true) -> DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri)
+                    deeplink.startsWith(ApplinkConst.MERCHANT_VOUCHER_LIST, true) -> AppLinkMapperMerchantVoucher.getInternalMvcListAppLink()
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -354,6 +356,11 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+            ApplinkConst.SellerApp.CREATE_VOUCHER -> ApplinkConstInternalSellerapp.CREATE_VOUCHER
+            ApplinkConst.SellerApp.VOUCHER_LIST -> ApplinkConstInternalSellerapp.VOUCHER_LIST
+            ApplinkConst.SellerApp.VOUCHER_ACTIVE -> ApplinkConstInternalSellerapp.VOUCHER_ACTIVE
+            ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.VOUCHER_HISTORY
+            ApplinkConst.SellerApp.VOUCHER_DETAIL -> ApplinkConstInternalSellerapp.VOUCHER_DETAIL
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
