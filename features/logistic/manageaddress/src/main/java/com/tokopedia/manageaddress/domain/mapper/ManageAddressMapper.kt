@@ -31,8 +31,11 @@ class ManageAddressMapper @Inject constructor() {
             this.receiverPhone = it.phone
             this.addressStreet = it.address1
             this.cityName = it.cityName
+            this.cityId = it.city
+            this.districtId = it.district
             this.districtName = it.districtName
             this.postalCode = it.postalCode
+            this.provinceId = it.province
             this.provinceName = it.provinceName
             this.latitude = it.latitude
             this.longitude = it.longitude

@@ -1,6 +1,7 @@
 package com.tokopedia.manageaddress.ui
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +12,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.manageaddress.R
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity
 import com.tokopedia.logisticdata.data.entity.address.AddressModel
+import com.tokopedia.manageaddress.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_manage_address.*
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener{
@@ -35,6 +44,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private lateinit var searchAddress: SearchInputView
     private var addressList: RecyclerView? = null
     private var searchInputView: SearchInputView? = null
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     override fun getScreenName(): String = ""
 
@@ -50,9 +60,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initSearch()
         initView()
         initViewModel()
+        initSearch()
         address_list.adapter = adapter
         address_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initSearchView()
@@ -64,6 +74,12 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     override fun onSearchTextChanged(text: String?) {
         openSoftKeyboard()
+    }
+
+    /*flow from edit address*/
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        performSearch("")
     }
 
     private fun openSoftKeyboard() {
@@ -78,12 +94,27 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun initView() {
         addressList = view?.findViewById(R.id.address_list)
         searchInputView = view?.findViewById(R.id.search_input_view)
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
     }
 
     private fun initViewModel() {
         viewModel.addressList.observe(this, Observer {
             when (it) {
-                is Success -> renderData(it.data.listAddress)
+                is ManageAddressState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    renderData(it.data.listAddress)
+                }
+
+                is ManageAddressState.Fail -> {
+                    if(!it.isConsumed) {
+                        swipeRefreshLayout?.isRefreshing = false
+                        if(it.throwable != null) {
+                            handleError(it.throwable)
+                        }
+                    }
+                }
+
+                else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
     }
@@ -134,5 +165,41 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         startActivityForResult(activity?.let {
             AddAddressActivity.createInstanceEditAddress(it, data, token)
         }, 102)
+    }
+
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                view?.let {
+                    showGlobalError(GlobalError.NO_CONNECTION)
+                }
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            }
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                    Toaster.make(it, throwable.message
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                }
+            }
+        }
+        viewModel.consumeSearchAddressFail()
+    }
+
+    private fun showGlobalError(type: Int) {
+//        ToDo:
     }
 }

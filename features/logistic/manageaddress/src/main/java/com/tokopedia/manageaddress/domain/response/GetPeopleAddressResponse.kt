@@ -32,13 +32,13 @@ data class ManageAddressData(
         @SerializedName("address_2")
         var address2: String = "",
         @SerializedName("city")
-        var city: Int = 0,
+        var city: String = "",
         @SerializedName("city_name")
         var cityName: String = "",
         @SerializedName("country")
         var country: String = "",
         @SerializedName("district")
-        var district: Int = 0,
+        var district: String = "",
         @SerializedName("district_name")
         var districtName: String = "",
         @SerializedName("is_active")
@@ -62,7 +62,7 @@ data class ManageAddressData(
         @SerializedName("postal_code")
         var postalCode: String = "",
         @SerializedName("province")
-        var province: Int = 0,
+        var province: String = "",
         @SerializedName("province_name")
         var provinceName: String = "",
         @SerializedName("receiver_name")

@@ -7,10 +7,8 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.manageaddress.domain.GetPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.mapper.ManageAddressMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressModel
+import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.response.GetPeopleAddressResponse
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
@@ -19,8 +17,8 @@ class ManageAddressViewModel @Inject constructor(
         private val mapper: ManageAddressMapper) : ViewModel() {
 
     private val token: Token = Token()
-    private val _addressList = MutableLiveData<Result<ManageAddressModel>>()
-    val addressList: LiveData<Result<ManageAddressModel>>
+    private val _addressList = MutableLiveData<ManageAddressState<ManageAddressModel>>()
+    val addressList: LiveData<ManageAddressState<ManageAddressModel>>
         get() = _addressList
 
     private val compositeSubscription = CompositeSubscription()
@@ -28,10 +26,10 @@ class ManageAddressViewModel @Inject constructor(
     fun searchAddress(query: String) {
         getPeopleAddressUseCase.execute(query,
                 {
-                   _addressList.value = Success(mapToModel(it))
+                   _addressList.value = ManageAddressState.Success(mapToModel(it))
                 },
                 {
-                    _addressList.value = Fail(it)
+                    _addressList.value = ManageAddressState.Fail(false, it, "")
                 })
     }
 
@@ -41,5 +39,12 @@ class ManageAddressViewModel @Inject constructor(
 
     fun getToken(): Token {
         return token
+    }
+
+    fun consumeSearchAddressFail() {
+        val value = _addressList.value
+        if (value is ManageAddressState.Fail) {
+            _addressList.value = value.copy(isConsumed = true)
+        }
     }
 }
