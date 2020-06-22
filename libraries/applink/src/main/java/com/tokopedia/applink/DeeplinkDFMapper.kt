@@ -18,9 +18,9 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATALOG
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
@@ -66,6 +66,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
@@ -299,6 +300,8 @@ object DeeplinkDFMapper : CoroutineScope {
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.path_checkout))
             add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.path_checkout_address_selection))
+
+            add(DFP({ it.startsWith(MANAGE_ADDRESS) }, DF_BASE, R.string.path_manage_address))
         }
     }
 
