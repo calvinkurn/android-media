@@ -7,4 +7,5 @@ object PowerMerchantUrl {
     const val URL_LEARN_MORE_BENEFIT = "https://seller.tokopedia.com/edu/power-merchant/"
     const val URL_SHOP_PERFORMANCE_TIPS = "https://seller.tokopedia.com/edu/?s=tingkatkan+performa"
     const val URL_PREMIUM_ACCOUNT = "https://m.tokopedia.com/payment/rekening-premium"
+    const val URL_FREE_SHIPPING_INTERIM_PAGE = "https://m.tokopedia.com/bebas-ongkir"
 }
