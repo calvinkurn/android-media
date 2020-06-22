@@ -43,6 +43,9 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
+
+private const val LOGIN_REQUEST_CODE = 35769
+private const val MOBILE_VERIFICATION_REQUEST_CODE = 92683
 class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
@@ -294,10 +297,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            1234 -> if (resultCode == Activity.RESULT_OK) {
+            LOGIN_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 checkUserMobileVerification()
             }
-            4321 -> if (resultCode == Activity.RESULT_OK) {
+            MOBILE_VERIFICATION_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 phoneVerificationResponseCallBack(true)
             }
         }
@@ -309,7 +312,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     fun quickCouponLoginScreen(componentPosition: Int) {
         this.componentPosition = componentPosition
-        startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), 1234)
+        startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
     }
 
     fun phoneVerificationResponseCallBack(verificationStatus: Boolean) {
@@ -334,7 +337,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
         childView.findViewById<UnifyButton>(R.id.verify_btn).setOnClickListener {
             closeableBottomSheetDialog.dismiss()
-            startActivityForResult(RouteManager.getIntent(activity, "tokopedia-android-internal://global/add-phone"), 4321)
+            startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.ADD_PHONE), MOBILE_VERIFICATION_REQUEST_CODE)
         }
     }
 }

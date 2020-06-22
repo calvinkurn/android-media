@@ -45,10 +45,18 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             quickCouponViewModel.getPhoneVerificationStatus().observe(viewLifecycleOwner, Observer {
                 handlePhoneVerification(it)
             })
+
+            quickCouponViewModel.getCouponApplicableStatus().observe(viewLifecycleOwner, Observer {
+                handleIsCouponApplicable(it)
+            })
             quickCouponViewModel.getComponentPosition().observe(viewLifecycleOwner, Observer {
                 componentPosition = it
             })
         }
+    }
+
+    private fun handleIsCouponApplicable(it: Boolean?) {
+
     }
 
     private fun userLoggedInStatus(it: Boolean?) {

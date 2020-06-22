@@ -22,6 +22,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     private val userLoggedInLiveData: MutableLiveData<Boolean?> = MutableLiveData()
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
     private val phoneVerificationStatus: MutableLiveData<Boolean> = MutableLiveData()
+    private val couponApplicableStatus: MutableLiveData<Boolean> = MutableLiveData()
 
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
@@ -39,6 +40,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     fun getComponentPosition() = componentPosition
     fun getPhoneVerificationStatus() = phoneVerificationStatus
     fun getQuickCouponData() = clickCouponLiveData
+    fun getCouponApplicableStatus() = couponApplicableStatus
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -49,11 +51,23 @@ class QuickCouponViewModel(val application: Application, private val components:
         launchCatchError(block = {
             quickCouponUseCase.getCouponDetail(components.pageEndPoint).clickCouponData?.let {
                 clickCouponLiveData.value = it
-                updateCouponAppliedStatus()
+                checkComponentVisibility()
+
             }
         }, onError = {
             it.printStackTrace()
         })
+    }
+
+    private fun checkComponentVisibility() {
+        val couponApplicable = clickCouponLiveData.value?.isApplicable
+
+        couponApplicable?.let {
+            if(it){
+                updateCouponAppliedStatus()
+            }
+            couponApplicableStatus.value = it
+        }
     }
 
     private fun updateCouponAppliedStatus() {

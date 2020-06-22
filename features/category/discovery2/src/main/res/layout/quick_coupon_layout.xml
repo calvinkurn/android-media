@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/clr_4FD15A"
-    android:layout_marginVertical="@dimen/dp_8">
+    android:layout_marginVertical="@dimen/dp_8"
+    tools:visibility="visible">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/applied_img"
