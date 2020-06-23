@@ -28,6 +28,14 @@ object SellerMigrationTracking {
         trackSellerMigrationEvent(SellerMigrationTrackingMap(eventAction, SellerMigrationTrackingConstants.EVENT_LABEL_TO_APP_STORE, userId))
     }
 
+    fun eventOnClickVoucherMenu(userId: String) {
+        trackSellerMigrationEvent(SellerMigrationTrackingMap(SellerMigrationTrackingConstants.EVENT_CLICK_VOUCHER_BOTTOM_SHEET,"", userId))
+    }
+
+    fun eventLearnMoreVoucher(userId: String) {
+        trackSellerMigrationEvent(SellerMigrationTrackingMap(SellerMigrationTrackingConstants.EVENT_CLICK_LEARN_MORE_VOUCHER, "", userId))
+    }
+
     private fun trackSellerMigrationEvent(sellerMigrationTrackingMap: SellerMigrationTrackingMap) {
         TrackApp.getInstance().gtm.sendGeneralEvent(sellerMigrationTrackingMap.dataTracking)
     }

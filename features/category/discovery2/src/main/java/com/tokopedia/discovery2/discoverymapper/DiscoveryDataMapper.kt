@@ -59,6 +59,15 @@ class DiscoveryDataMapper {
             }
             return list
         }
+
+        fun mapBannerComponentData(bannerComponent: ComponentsItem): ComponentsItem {
+            return bannerComponent.apply {
+                this.data?.forEach {
+                    it.id = this.id
+                    it.name = this.name
+                }
+            }
+        }
     }
 
     fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,
@@ -128,7 +137,7 @@ class DiscoveryDataMapper {
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             val dataItem = mutableListOf<DataItem>()
-            it.typeProductCard = typeProductCard
+            it.typeProductCard = subComponentName
             dataItem.add(it)
             componentsItem.data = dataItem
             list.add(componentsItem)
@@ -159,7 +168,6 @@ class DiscoveryDataMapper {
         }
         return list
     }
-
 
     data class CpmTopAdsData(var promotedText: String = "",
                              var imageUrl: String = "",

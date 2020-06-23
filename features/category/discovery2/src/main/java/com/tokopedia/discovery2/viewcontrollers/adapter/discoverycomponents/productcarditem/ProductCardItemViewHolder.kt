@@ -56,6 +56,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
     private var context: Context? = fragment.activity
+    private var dataItem: DataItem? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         productCardItemViewModel = discoveryBaseViewModel as ProductCardItemViewModel
@@ -65,10 +66,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private fun initView() {
         productCardItemViewModel.setContext(productCardView.context)
         productCardView.setOnClickListener {
-            handleUIClick(it)
+            handleUIClick(it, adapterPosition)
         }
         notifyMeView.setOnClickListener {
-            handleUIClick(it)
+            handleUIClick(it, adapterPosition)
         }
     }
 
@@ -77,6 +78,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         productCardName = productCardItemViewModel.getComponentName()
         lifecycleOwner?.let {
             productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
+                dataItem = it
                 populateData(it)
             })
 
@@ -110,7 +112,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
 
 
     private fun populateData(dataItem: DataItem) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().addProductCardImpressions(dataItem, productCardItemViewModel.isUserLoggedIn(), adapterPosition)
         if (productCardName == ComponentNames.ProductCardRevampItem.componentName || productCardName == ComponentNames.ProductCardCarouselItem.componentName) {
             productName.setTextAndCheckShow(dataItem.name)
             setSlashedPrice(dataItem.discountedPrice)
@@ -295,11 +296,12 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun handleUIClick(view: View) {
+    private fun handleUIClick(view: View, adapterPosition: Int) {
         when (view) {
             productCardView -> {
                 productCardItemViewModel.sendTopAdsClick()
                 productCardItemViewModel.handleNavigation()
+                sendClickEvent(adapterPosition)
             }
             notifyMeView -> productCardItemViewModel.subscribeUser()
         }
@@ -311,6 +313,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         } else if (!toastData.second.isNullOrEmpty()) {
             Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
         }
+    }
+
+    private fun sendClickEvent(adapterPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackProductCardClick(dataItem, productCardItemViewModel.isUserLoggedIn(), adapterPosition)
     }
 
     override fun onViewAttachedToWindow() {

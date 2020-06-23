@@ -500,7 +500,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
         mSvAddressSearchBox.setListener(this);
         mSvAddressSearchBox.setResetListener(this);
-        mSvAddressSearchBox.setSearchHint(getString(R.string.label_hint_search_address));
+        mSvAddressSearchBox.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address));
     }
 
     private View.OnTouchListener onSearchViewTouchListener() {
