@@ -56,7 +56,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     }
 
     fun onTabClick(id: String, position: Int) {
-        linearLayoutManager.scrollToPositionWithOffset(position, 0)
+        linearLayoutManager.scrollToPositionWithOffset(position, 20)
         tabsViewModel.onTabClick(id)
     }
 }
