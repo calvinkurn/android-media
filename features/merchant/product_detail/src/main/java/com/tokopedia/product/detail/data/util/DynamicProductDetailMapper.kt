@@ -80,6 +80,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.TICKER_INFO -> {
                     listOfComponent.add(ProductTickerInfoDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY -> {
+                    listOfComponent.add(ProductShopCredibilityDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent

@@ -307,27 +307,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getPhoneVerificationActivationIntent(Context context) {
-        return PhoneVerificationActivationActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public Intent getLoginGoogleIntent(Context context) {
-        return LoginActivity.DeepLinkIntents.getAutoLoginGoogle(context);
-    }
-
-    @Override
-    public Intent getLoginFacebookIntent(Context context) {
-        return LoginActivity.DeepLinkIntents.getAutoLoginFacebook(context);
-
-    }
-
-    @Override
-    public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return LoginActivity.DeepLinkIntents.getAutoLoginWebview(context, name, url);
-    }
-
-    @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
     }
@@ -558,11 +537,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void refreshFCMTokenFromForegroundToCM() {
 
-    }
-
-    @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, orderId));
     }
 
     @Override
