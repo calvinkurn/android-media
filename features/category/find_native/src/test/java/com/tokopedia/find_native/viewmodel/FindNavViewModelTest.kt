@@ -32,20 +32,31 @@ class FindNavViewModelTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private val testDispatcher = TestCoroutineDispatcher()
+    private lateinit var testDispatcher: TestCoroutineDispatcher
 
-    private var findNavRepository: FindNavRepository = mockk(relaxed = true)
+    private lateinit var findNavRepository: FindNavRepository
 
-    private var findNavParamBuilder: FindNavParamBuilder = mockk(relaxed = true)
+    private lateinit var findNavParamBuilder: FindNavParamBuilder
 
-    private var findNavViewModel: FindNavViewModel = spyk(FindNavViewModel(findNavRepository, findNavParamBuilder))
+    private lateinit var findNavViewModel: FindNavViewModel
 
-    private var requestParams = mockk<RequestParams>(relaxed = true)
+    private lateinit var requestParams: RequestParams
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
+        testDispatcher = TestCoroutineDispatcher()
+
+        findNavRepository = mockk(relaxed = true)
+
+        findNavParamBuilder = mockk(relaxed = true)
+
+        findNavViewModel = spyk(FindNavViewModel(findNavRepository, findNavParamBuilder))
+
+        requestParams = mockk(relaxed = true)
+
         Dispatchers.setMain(testDispatcher)
+
         every { requestParams.paramsAllValueInString } returns HashMap()
     }
 
@@ -53,6 +64,7 @@ class FindNavViewModelTest {
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkAll()
     }
 
     @Test

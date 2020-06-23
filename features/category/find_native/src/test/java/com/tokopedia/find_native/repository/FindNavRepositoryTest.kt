@@ -6,9 +6,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.find_native.data.model.RelatedLinkResponse
 import com.tokopedia.find_native.data.repository.FindNavRepository
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -24,15 +22,19 @@ import org.junit.Test
 class FindNavRepositoryTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
-    private val testDispatcher = TestCoroutineDispatcher()
 
-    private var findNavRepo: FindNavRepository = mockk(relaxed = true)
+    private lateinit var testDispatcher: TestCoroutineDispatcher
 
-    private val reqParams: Map<String, String> = mockk()
+    private lateinit var findNavRepo: FindNavRepository
+
+    private lateinit var reqParams: Map<String, String>
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
+        testDispatcher = TestCoroutineDispatcher()
+        findNavRepo = spyk(FindNavRepository())
+        reqParams = mockk()
         Dispatchers.setMain(testDispatcher)
     }
 
@@ -40,12 +42,12 @@ class FindNavRepositoryTest {
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkAll()
     }
 
     @Test
     fun `check getProductList() invocation once`() {
         val productListResponse: ProductListResponse = mockk()
-
         testDispatcher.runBlockingTest {
             coEvery { findNavRepo.productListQuery } returns ""
             coEvery { findNavRepo.getProductList(reqParams) } returns productListResponse
