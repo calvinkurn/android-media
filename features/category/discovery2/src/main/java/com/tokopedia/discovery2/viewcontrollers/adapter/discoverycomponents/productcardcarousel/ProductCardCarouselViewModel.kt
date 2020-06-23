@@ -9,6 +9,7 @@ import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -61,5 +62,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         })
     }
 
+    fun isUserLoggedIn(): Boolean {
+        return UserSession(application).isLoggedIn
+    }
 
 }

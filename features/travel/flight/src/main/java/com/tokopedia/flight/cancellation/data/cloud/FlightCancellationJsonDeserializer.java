@@ -10,12 +10,15 @@ import com.google.gson.JsonParseException;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationIncluded;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
+import com.tokopedia.flight.cancellation.data.cloud.entity.ReasonDeserializerModel;
+import com.tokopedia.flight.cancellation.data.cloud.entity.ReasonRequiredDocs;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -51,22 +54,35 @@ public class FlightCancellationJsonDeserializer implements JsonDeserializer<Canc
             cancelPassengerEntity = FlightCancellationJsonDeserializer.this.gson.fromJson(
                     rootJsonObject.get(KEY_DATA).toString(), CancelPassengerEntity.class);
 
-            Map<String, String> docsMap = new HashMap<>();
+            Map<Integer, String> docsMap = new HashMap<>();
             List<Reason> reasonList = new ArrayList<>();
 
             if (rootJsonObject.has(KEY_INCLUDED)) {
                 JsonArray includes = rootJsonObject.getAsJsonArray(KEY_INCLUDED);
                 for (JsonElement include : includes) {
                     JsonObject jsonObject = include.getAsJsonObject();
-                    if (jsonObject.get(KEY_TYPE).getAsString().equalsIgnoreCase(KEY_REASON)) {
-                        Reason reason = FlightCancellationJsonDeserializer.this.gson.fromJson(
-                                jsonObject.get(KEY_ATTRIBUTES).toString(), Reason.class);
-                        reason.setId(jsonObject.get(KEY_ID).getAsString());
-                        reasonList.add(reason);
-                    } else if (jsonObject.get(KEY_TYPE).getAsString().equalsIgnoreCase(KEY_DOCS)) {
-                        CancellationIncluded docs = FlightCancellationJsonDeserializer.this.gson.fromJson(
-                                jsonObject.toString(), CancellationIncluded.class);
-                        docsMap.put(docs.getId(), docs.getAttributes().getTitle());
+                    try {
+                        if (jsonObject.get(KEY_TYPE).getAsString().equalsIgnoreCase(KEY_REASON)) {
+                            ReasonDeserializerModel reasonDeserializerModel = FlightCancellationJsonDeserializer.this.gson.fromJson(
+                                    jsonObject.get(KEY_ATTRIBUTES).toString(), ReasonDeserializerModel.class);
+
+                            List<ReasonRequiredDocs> reasonRequiredDocList = new ArrayList<>();
+                            for (String docId : reasonDeserializerModel.getRequiredDocs()) {
+                                reasonRequiredDocList.add(new ReasonRequiredDocs(Integer.parseInt(docId), ""));
+                            }
+
+                            Reason reason = new Reason();
+                            reason.setId(jsonObject.get(KEY_ID).getAsString());
+                            reason.setTitle(reasonDeserializerModel.getTitle());
+                            reason.setRequiredDocs(reasonRequiredDocList);
+                            reasonList.add(reason);
+                        } else if (jsonObject.get(KEY_TYPE).getAsString().equalsIgnoreCase(KEY_DOCS)) {
+                            CancellationIncluded docs = FlightCancellationJsonDeserializer.this.gson.fromJson(
+                                    jsonObject.toString(), CancellationIncluded.class);
+                            docsMap.put(Integer.parseInt(docs.getId()), docs.getAttributes().getTitle());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -81,11 +97,15 @@ public class FlightCancellationJsonDeserializer implements JsonDeserializer<Canc
         return cancelPassengerEntity;
     }
 
-    private List<String> transformDocs(Map<String, String> docsMap, List<String> oldDocs) {
-        List<String> newDocs = new ArrayList<>();
+    private List<ReasonRequiredDocs> transformDocs(Map<Integer, String> docsMap, List<ReasonRequiredDocs> oldDocs) {
+        List<ReasonRequiredDocs> newDocs = new ArrayList<>();
 
-        for (String oldItem : oldDocs) {
-            newDocs.add(docsMap.get(oldItem));
+        try {
+            for (ReasonRequiredDocs oldItem : oldDocs) {
+                newDocs.add(new ReasonRequiredDocs(oldItem.getDocId(), Objects.requireNonNull(docsMap.get(oldItem.getDocId()))));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return newDocs;

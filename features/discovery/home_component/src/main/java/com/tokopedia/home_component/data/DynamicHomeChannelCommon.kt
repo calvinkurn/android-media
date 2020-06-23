@@ -198,7 +198,10 @@ data class DynamicHomeChannelCommon(
             val isOutOfStock: Boolean = false,
             @Expose
             @SerializedName("labelGroup")
-            val labelGroup: Array<LabelGroup> = arrayOf()
+            val labelGroup: Array<LabelGroup> = arrayOf(),
+            @Expose
+            @SerializedName("has_buy_button")
+            val hasBuyButton: Boolean = false
     )
 
     data class Header(

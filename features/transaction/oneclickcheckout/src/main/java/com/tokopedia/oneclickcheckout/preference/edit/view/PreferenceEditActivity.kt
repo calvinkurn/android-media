@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.DaggerPreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
+import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditModule
 import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDurationFragment
@@ -40,6 +41,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .preferenceEditModule(PreferenceEditModule(this))
                 .build()
     }
 

@@ -1,8 +1,10 @@
 package com.tkpd.remoteresourcerequest.task
 
+import android.util.Log
 import com.tkpd.remoteresourcerequest.database.ResourceDB
 import com.tkpd.remoteresourcerequest.database.ResourceEntry
 import com.tkpd.remoteresourcerequest.database.ResourceEntryDao
+import com.tkpd.remoteresourcerequest.runnable.ResourceDownloadRunnable
 import io.mockk.*
 import okhttp3.OkHttpClient
 import org.junit.After
@@ -11,7 +13,6 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import java.io.File
-import java.io.FileNotFoundException
 
 class ResourceDownloadRunnableTest {
 
@@ -20,11 +21,18 @@ class ResourceDownloadRunnableTest {
     private var task = mockk<ResourceDownloadRunnable.TaskDownloadProperties>(relaxed = true)
     private lateinit var resourceDownloadRunnable: ResourceDownloadRunnable
     private lateinit var dao: ResourceEntryDao
+
     @Before
     fun setUp() {
         dao = mockk(relaxed = true)
         every { roomdb.resourceEntryDao } returns dao
-        resourceDownloadRunnable = spyk(ResourceDownloadRunnable(task, okHttpClient, roomdb))
+        resourceDownloadRunnable = spyk(
+                ResourceDownloadRunnable(
+                        task,
+                        okHttpClient,
+                        roomdb
+                )
+        )
     }
 
     @After
@@ -35,13 +43,11 @@ class ResourceDownloadRunnableTest {
     fun downloadFileSync() {
         every { task.getDownloadUrl() } returns "https://www.tokopedia.com"
         every { dao.getResourceEntry(any()) } returns null
-        resourceDownloadRunnable.downloadFileSync()
         verify { task.getDownloadUrl() }
-        verify { dao.getResourceEntry(any()) }
-        verify { task.handleDownloadState(ResourceDownloadRunnable.DOWNLOAD_STATE_STARTED) }
-
 
         val mockByte = byteArrayOf()
+        mockkStatic(Log::class)
+        every { Log.e(any(), any()) } returns 0
         val entry = mockk<ResourceEntry>(relaxed = true)
         every { resourceDownloadRunnable.fileFromAbsolutePath(any()) } returns mockByte
         every { dao.getResourceEntry(any()) } returns entry

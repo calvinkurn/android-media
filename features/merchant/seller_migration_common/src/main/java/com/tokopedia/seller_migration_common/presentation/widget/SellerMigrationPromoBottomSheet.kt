@@ -32,4 +32,6 @@ class SellerMigrationPromoBottomSheet(
     override fun trackGoToPlayStore() {
         // No op
     }
+
+    override fun trackLearnMore() { /* noop */ }
 }

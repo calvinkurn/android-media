@@ -69,7 +69,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/border_rectangle_yellow_checkout"
+        android:background="@drawable/checkout_module_border_rectangle_yellow_checkout"
         android:orientation="horizontal"
         tools:ignore="UselessParent"
         tools:visbility="visible">
@@ -248,7 +248,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/border_rectangle_yellow_checkout"
+        android:background="@drawable/checkout_module_border_rectangle_yellow_checkout"
         android:orientation="horizontal"
         tools:ignore="UselessParent"
         tools:visbility="visible">
