@@ -350,7 +350,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     fun setProductListDataModel(productList: List<ShopProductViewModel>) {
         visitables.addAll(productList)
         shopProductViewModelList.addAll(productList)
-        notifyInsertedItemRange(lastIndex,productList.size)
+        notifyInsertedItemRange(lastIndex, productList.size)
         mapDataModel()
     }
 
@@ -427,7 +427,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     private fun notifyChangedItem(position: Int) {
         recyclerView?.isComputingLayout?.let {
-            if (isAllowedNotify(it,position)) {
+            if (isAllowedNotify(it, position)) {
                 notifyItemChanged(position)
             }
         }
@@ -466,6 +466,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     private fun isAllowedNotify(isComputingLayout: Boolean, position: Int): Boolean {
-        return !isComputingLayout && ((position in 0 until itemCount) || itemCount == 0)
+        return !isComputingLayout && position >= 0
     }
 }

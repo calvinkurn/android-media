@@ -236,7 +236,7 @@ class ShopHomeAdapter(
     }
 
     private fun isAllowedNotify(isComputingLayout: Boolean, position: Int): Boolean {
-        return !isComputingLayout && ((position in 0 until itemCount) || itemCount == 0)
+        return !isComputingLayout && position >= 0
     }
 
 }
