@@ -37,14 +37,19 @@ class ProductManageFilterTab(
 
     fun update(data: GetFilterTabResult) {
         val tabs = data.tabs
-        sortFilterTab.sortFilterItems.removeAllViews()
+        var selectedTabIndex = -1
+        sortFilterTab.chipItems.forEachIndexed { i, chip ->
+            if (chip.type == ChipsUnify.TYPE_SELECTED) {
+                selectedTabIndex = i
+            }
+        }
+        sortFilterTab.chipItems.clear()
+        sortFilterTab.sortFilterItems.removeViews(0,  sortFilterTab.sortFilterItems.childCount)
         updateTabs(tabs)
-        tabs.forEachIndexed { index, tab ->
-            sortFilterTab.chipItems.forEachIndexed { i, chip ->
-                val filter = sortFilterTab.chipItems.getOrNull(i)
-                if(chip.type == ChipsUnify.TYPE_SELECTED){
-                    setSelectedFilter(filter!!, tab)
-                }
+        sortFilterTab.chipItems.forEachIndexed { i, chip ->
+            if(i == selectedTabIndex) {
+                chip.type = ChipsUnify.TYPE_SELECTED
+                selectedTab = SelectedTab(chip, sortFilterTab.chipItems.size)
             }
         }
     }
