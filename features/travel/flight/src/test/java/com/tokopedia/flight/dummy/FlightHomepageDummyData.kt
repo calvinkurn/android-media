@@ -2,6 +2,7 @@ package com.tokopedia.flight.dummy
 
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 
 /**
  * @author by furqan on 08/05/2020
@@ -46,3 +47,28 @@ val TICKER_DATA = TravelTickerModel(
         "Dummy Page",
         false
 )
+
+val HOLIDAY_EMPTY_DATA = TravelCalendarHoliday.HolidayData(arrayListOf())
+
+val HOLIDAY_WITH_DATA = TravelCalendarHoliday.HolidayData(arrayListOf(
+TravelCalendarHoliday("holiday1",
+        TravelCalendarHoliday.HolidayAttribute(
+                "2020-11-11",
+                "Libur 1"
+        )),
+        TravelCalendarHoliday("holiday2",
+        TravelCalendarHoliday.HolidayAttribute(
+                "2020-11-12",
+                "Libur 2"
+        )),
+        TravelCalendarHoliday("holiday3",
+        TravelCalendarHoliday.HolidayAttribute(
+                "2020-11-13",
+                "Libur 3"
+        )),
+        TravelCalendarHoliday("holiday4",
+        TravelCalendarHoliday.HolidayAttribute(
+                "2020-11-14",
+                "Libur 4"
+        ))
+))
