@@ -346,7 +346,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     fun getAtcDimension40(sourcePage: String): String {
         return when (sourcePage) {
             ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "/chat - search chat"
-            else -> ""
+            else -> "/chat - 0"
         }
     }
 
