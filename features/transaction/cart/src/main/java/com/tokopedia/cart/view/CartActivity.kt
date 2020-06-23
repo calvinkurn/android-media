@@ -13,6 +13,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 
 class CartActivity : BaseCheckoutActivity() {
 
+    lateinit var fragment: CartFragment
     private var cartId: String? = null
     private var productId: Long = 0L
 
@@ -42,12 +43,8 @@ class CartActivity : BaseCheckoutActivity() {
     }
 
     override fun onBackPressed() {
-        val currentFragment = currentFragment
-        if (currentFragment is ICartListAnalyticsListener) {
-            (currentFragment as ICartListAnalyticsListener).sendAnalyticsOnClickBackArrow()
-        }
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
+        if (::fragment.isInitialized) {
+            fragment.onBackPressed()
         } else {
             finish()
         }
@@ -57,7 +54,9 @@ class CartActivity : BaseCheckoutActivity() {
         val bundle = Bundle()
         bundle.putString(EXTRA_CART_ID, cartId)
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
-        return CartFragment.newInstance(bundle, "")
+        fragment = CartFragment.newInstance(bundle, "")
+
+        return fragment
     }
 
     companion object {

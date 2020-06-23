@@ -361,11 +361,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onStart() {
         super.onStart()
         // Check if currently not refreshing and not ATC external flow
-        if (refreshHandler?.isRefreshing == false && getAtcProductId() == 0L) {
+        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow()) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
         }
+    }
+
+    fun onBackPressed() {
+        sendAnalyticsOnClickBackArrow()
+        if (isAtcExternalFlow()) {
+            RouteManager.route(activity, ApplinkConst.HOME)
+        }
+        activity?.finish()
     }
 
     private fun updateCartAfterDetached() {
@@ -784,7 +792,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             it.title = it.getString(R.string.title_activity_cart)
 
             val productId = getAtcProductId()
-            if (productId != 0L) {
+            if (isAtcExternalFlow()) {
                 if (productId == INVALID_PRODUCT_ID) {
                     showToastMessageRed(AddToCartResponseErrorException(AtcConstant.ATC_ERROR_GLOBAL))
                     refreshCart()
@@ -2521,6 +2529,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun getAtcProductId(): Long {
         return arguments?.getLong(CartActivity.EXTRA_PRODUCT_ID) ?: 0L
+    }
+
+    private fun isAtcExternalFlow(): Boolean {
+        return getAtcProductId() != 0L || getAtcProductId() == INVALID_PRODUCT_ID
     }
 
     override fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops,
