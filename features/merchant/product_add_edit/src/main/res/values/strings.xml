@@ -118,7 +118,7 @@
     <string name="product_label_catalog">Katalog</string>
     <string name="primary">Utama</string>
 
-    <!--Description-->
+    <!--Descripton-->
     <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
     <string name="label_product_name">Nama produk</string>
     <string name="label_product_price">Harga</string>

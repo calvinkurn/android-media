@@ -106,6 +106,7 @@ class AddEditProductDescriptionFragment:
         const val MAX_DESCRIPTION_CHAR = 2000
         const val REQUEST_CODE_VARIANT = 0
         const val TYPE_IDR = 1
+        const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
         const val VIDEO_REQUEST_DELAY = 250L
     }
@@ -451,12 +452,13 @@ class AddEditProductDescriptionFragment:
                         activity?.finish()
                         return
                     }
-                    val shipmentInputModel = data.getParcelableExtra(EXTRA_SHIPMENT_INPUT) ?: ShipmentInputModel()
+                    val shipmentInputModel =
+                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     submitInput(shipmentInputModel)
                 }
                 REQUEST_CODE_VARIANT -> {
                     val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
-                    val cacheManager = SaveInstanceCacheManager(requireContext(), variantCacheId)
+                    val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
                     val productPictureViewModel = if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                         cacheManager.get(EXTRA_PRODUCT_SIZECHART,
                                 object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
@@ -543,15 +545,15 @@ class AddEditProductDescriptionFragment:
                 put(EXTRA_IS_OFFICIAL_STORE, false)
                 put(EXTRA_DEFAULT_SKU, "")
                 put(EXTRA_NEED_RETAIN_IMAGE, false)
-                put(EXTRA_HAS_WHOLESALE, descriptionViewModel.hasWholesale)
-                put(EXTRA_IS_ADD, descriptionViewModel.isAddMode)
+                put(EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
+                put(EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
+                put(EXTRA_HAS_WHOLESALE, false)
+                put(EXTRA_IS_ADD, IS_ADD)
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
             intent?.run {
                 putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
                 putExtra(EXTRA_IS_USING_CACHE_MANAGER, true)
-                putExtra(EXTRA_HAS_ORIGINAL_VARIANT_LV1, descriptionViewModel.checkOriginalVariantLevel())
-                putExtra(EXTRA_HAS_ORIGINAL_VARIANT_LV2, descriptionViewModel.checkOriginalVariantLevel())
                 startActivityForResult(this, REQUEST_CODE_VARIANT)
             }
         }

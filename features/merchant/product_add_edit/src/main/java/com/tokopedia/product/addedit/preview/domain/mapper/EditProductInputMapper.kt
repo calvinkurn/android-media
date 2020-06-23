@@ -82,7 +82,8 @@ class EditProductInputMapper @Inject constructor() {
                                 variantOptionUploadId: List<String>,
                                 sizeChartUploadId: String): Variant? {
         if (variantInputModel.productVariant.size == 0) {
-            return null
+            // if product variant size is decreased to empty then use empty Variant() object
+            return if (variantInputModel.isRemoveVariant) Variant() else null
         }
 
         return Variant(
@@ -142,9 +143,7 @@ class EditProductInputMapper @Inject constructor() {
             }
             variantOptionUploadId.getOrNull(this - 1)?.apply {
                 if (this.isNotEmpty()) {
-                    val picture = Picture(uploadId = this)
-                    picture.picID  = ""
-                    variantPictureList = listOf(picture)
+                    variantPictureList = listOf(Picture(uploadId = this))
                 }
             }
         }

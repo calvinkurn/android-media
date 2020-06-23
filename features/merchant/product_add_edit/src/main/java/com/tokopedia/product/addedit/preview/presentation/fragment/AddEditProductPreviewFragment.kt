@@ -338,9 +338,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
 
-                // increment wholesale min order by one because of > symbol
+                // recalculate wholesale min order because of > symbol
                 viewModel.productInputModel.value?.run {
-                    this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
+                    this.detailInputModel.wholesaleList = viewModel.recalculateWholeSaleMinOrder(this.detailInputModel.wholesaleList)
                 }
 
                 // when we perform add product, the productId will be 0
@@ -356,7 +356,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 } else {
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
-                        activity?.finish()
+                        moveToManageProduct()
                     }
                 }
             }
@@ -462,7 +462,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
                 REQUEST_CODE_DETAIL -> {
                     val dataBackPressed = data.getIntExtra(EXTRA_BACK_PRESSED, 0)
-                    val productInputModel = data.getParcelableExtra(EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
+                    val productInputModel = data.getParcelableExtra<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)
                     viewModel.productAddResult.value = productInputModel
                     when (dataBackPressed) {
                         1 -> {
@@ -484,10 +484,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             return
                         }
                     }
-                    val shipmentInputModel = data.getParcelableExtra(EXTRA_SHIPMENT_INPUT) ?: ShipmentInputModel()
-                    val descriptionInputModel = data.getParcelableExtra(EXTRA_DESCRIPTION_INPUT) ?: DescriptionInputModel()
-                    val detailInputModel = data.getParcelableExtra(EXTRA_DETAIL_INPUT) ?: DetailInputModel()
-                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
+
+                    val shipmentInputModel =
+                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                    val descriptionInputModel =
+                            data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
+                    val detailInputModel =
+                            data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
+                    val variantInputModel =
+                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     context?.let {
                         val validateMessage = viewModel.validateProductInput(detailInputModel)
                         if (validateMessage.isEmpty()) {
@@ -505,32 +510,39 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         }
                     }
                 }
+
                 REQUEST_CODE_DETAIL_EDIT -> {
-                    val detailInputModel = data.getParcelableExtra(EXTRA_DETAIL_INPUT) ?: DetailInputModel()
-                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
+                    val detailInputModel =
+                            data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
+                    val variantInputModel =
+                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     viewModel.updateDetailInputModel(detailInputModel)
                     viewModel.updateVariantInputModel(variantInputModel)
                 }
                 REQUEST_CODE_DESCRIPTION_EDIT -> {
-                    val descriptionInputModel = data.getParcelableExtra(EXTRA_DESCRIPTION_INPUT) ?: DescriptionInputModel()
-                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
+                    val descriptionInputModel =
+                            data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
+                    val variantInputModel =
+                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     viewModel.updateDescriptionInputModel(descriptionInputModel)
                     viewModel.updateVariantInputModel(variantInputModel)
                     enableDescriptionEdit()
                 }
                 REQUEST_CODE_SHIPMENT_EDIT -> {
-                    val shipmentInputModel = data.getParcelableExtra(EXTRA_SHIPMENT_INPUT) ?: ShipmentInputModel()
+                    val shipmentInputModel =
+                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     viewModel.updateShipmentInputModel(shipmentInputModel)
                     enableShipmentEdit()
                 }
                 REQUEST_CODE_VARIANT_EDIT -> {
-                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
+                    val variantInputModel =
+                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     viewModel.updateVariantInputModel(variantInputModel)
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     viewModel.productInputModel.value?.let { productInputModel ->
-                        val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID) ?: ""
-                        val cacheManager = SaveInstanceCacheManager(requireContext(), variantCacheId)
+                        val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
+                        val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
                         if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                             val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                     object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
@@ -546,7 +558,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
-                    val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
+                    val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
                     val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
                     if(setCashbackResult == null) {
@@ -978,17 +990,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     put(AddEditProductUploadConstant.EXTRA_IS_OFFICIAL_STORE, false)
                     put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")
                     put(AddEditProductUploadConstant.EXTRA_NEED_RETAIN_IMAGE, false)
-                    put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, viewModel.hasWholesale)
-                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, viewModel.isAdding)
+                    put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
+                    put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
+                    put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, false)
+                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, 1)
                 }
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
                 intent?.run {
                     putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
                     putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
-                    putExtra(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1,
-                            viewModel.hasOriginalVariantLevel)
-                    putExtra(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2,
-                            viewModel.hasOriginalVariantLevel)
                     startActivityForResult(this, REQUEST_CODE_VARIANT_DIALOG_EDIT)
                 }
             }
@@ -1009,6 +1019,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
         viewModel.productInputModel.value?.detailInputModel?.pictureList = newPictureList
         viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
+    }
+
+    private fun moveToManageProduct() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+        startActivity(intent)
     }
 
     private fun startProductAddService(productInputModel: ProductInputModel) {
