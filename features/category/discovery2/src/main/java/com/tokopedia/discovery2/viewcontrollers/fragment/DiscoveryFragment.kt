@@ -197,7 +197,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         })
 
         discoveryViewModel.phoneVerificationLiveStatus().observe(viewLifecycleOwner, Observer {
-            phoneVerificationResponseCallBack(it)
+            this.componentPosition?.let { position -> phoneVerificationResponseCallBack(it, position) }
         })
     }
 
@@ -303,7 +303,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 checkUserMobileVerification()
             }
             MOBILE_VERIFICATION_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                phoneVerificationResponseCallBack(true)
+                this.componentPosition?.let { position ->  phoneVerificationResponseCallBack(true, position) }
                 getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
             }
         }

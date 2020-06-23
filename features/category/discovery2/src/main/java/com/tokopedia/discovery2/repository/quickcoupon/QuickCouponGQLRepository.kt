@@ -21,7 +21,7 @@ open class QuickCouponGQLRepository @Inject constructor(val getGQLString: (Int) 
 
     override suspend fun applyUserQuickCoupon(promoCode: String): ApplyCouponResponse {
         return getGQLData(getGQLString(R.raw.apply_quick_coupon_gql),
-                ApplyCouponResponse::class.java, mapOf("discovery_page" to promoCode))
+                ApplyCouponResponse::class.java, mapOf("promoCode" to promoCode))
     }
 
 }
