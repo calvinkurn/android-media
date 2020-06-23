@@ -144,10 +144,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun resume() {
         try {
-            if (isPushing()) {
-                mAliVcLivePusher.resumeAsync()
-                mTimerDuration?.resume()
-            }
+            mAliVcLivePusher.resumeAsync()
+            mTimerDuration?.resume()
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -161,10 +159,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun pause() {
         try {
-            if (mAliVcLivePusher.currentStatus == AlivcLivePushStats.PUSHED) {
-                mAliVcLivePusher.pause()
-                mTimerDuration?.pause()
-            }
+            mAliVcLivePusher.pause()
+            mTimerDuration?.pause()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -321,7 +317,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
     }
 
-    private fun isPushing(): Boolean = mAliVcLivePusher.currentStatus == AlivcLivePushStats.PUSHED
+     override fun isPushing(): Boolean = mAliVcLivePusher.currentStatus == AlivcLivePushStats.PUSHED
 
     private fun showLog(message: String) {
         if (GlobalConfig.DEBUG) {

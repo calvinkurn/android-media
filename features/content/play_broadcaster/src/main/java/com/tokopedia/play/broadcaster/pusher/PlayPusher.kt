@@ -47,17 +47,17 @@ interface PlayPusher {
     fun switchCamera()
 
     /**
-     * Call this method on Activity / Fragment LifeCycle: onResume()
+     * Resume pusher
      */
     fun resume()
 
     /**
-     * Call this method on Activity / Fragment LifeCycle: onPause()
+     * Pause pusher
      */
     fun pause()
 
     /**
-     * Call this method on Activity / Fragment LifeCycle: onDestroy()
+     * Destroy pusher
      */
     fun destroy()
 
@@ -72,12 +72,14 @@ interface PlayPusher {
     fun addMaxPauseDuration(millis: Long)
 
     /**
-     * Get Active & Finish Live Streaming State
+     * Get Live Streaming State
      */
     fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState>
 
     /**
-     * Get Network State when Live Streaming
+     * Get Network State during Live Streaming
      */
     fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState>
+
+    fun isPushing(): Boolean
 }

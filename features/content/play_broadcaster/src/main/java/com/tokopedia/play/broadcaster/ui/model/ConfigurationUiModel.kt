@@ -7,8 +7,7 @@ package com.tokopedia.play.broadcaster.ui.model
 data class ConfigurationUiModel(
         val streamAllowed: Boolean,
         val haveOnGoingLive: Boolean,
-        val activeChannelId: Int,
-        val draftChannelId: Int,
+        val channelId: Int,
         val durationConfig: DurationConfigUiModel,
         val productTagConfig: ProductTagConfigUiModel
 )
