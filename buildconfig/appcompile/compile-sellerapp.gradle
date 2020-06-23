@@ -11,9 +11,7 @@ include "features:category:common_tradein"
 
 include "features:home:navigation-common"
 
-include "features:communication:broadcast_message"
 //include "features:communication:broadcast_message_no_op"
-include "features:communication:broadcast_message_common"
 
 include "features:content:affiliate_common"
 include "features:content:feed_component"
@@ -86,6 +84,7 @@ include "features:merchant:shop_etalase_picker"
 include ':features:merchant:youtube_common'
 //include "features:merchant:shop_etalase_picker_no_op"
 include "features:merchant:variant_common"
+include "features:merchant:voucher_creation"
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"

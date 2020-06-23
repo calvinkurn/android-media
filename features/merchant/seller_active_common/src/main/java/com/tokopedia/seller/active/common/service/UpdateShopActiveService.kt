@@ -6,9 +6,9 @@ import androidx.core.app.JobIntentService
 import com.tokopedia.seller.active.common.di.DaggerUpdateShopActiveComponent
 import com.tokopedia.seller.active.common.di.UpdateShopActiveModule
 import com.tokopedia.seller.active.common.domain.usecase.UpdateShopActiveUseCase
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -34,9 +34,11 @@ class UpdateShopActiveService: JobIntentService(), CoroutineScope  {
     }
 
     override fun onHandleWork(intent: Intent) {
-        launch {
+        launchCatchError(block = {
             updateShopActiveUseCase.setParam()
             updateShopActiveUseCase.executeOnBackground()
+        }) {
+            it.printStackTrace()
         }
     }
 

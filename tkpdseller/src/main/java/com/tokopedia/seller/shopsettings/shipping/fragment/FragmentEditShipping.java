@@ -24,21 +24,31 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shopsettings.shipping.analytics.EditShippingAnalytics;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingAddressLayout;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingInfoBottomSheet;
+import com.tokopedia.seller.shopsettings.shipping.data.EditShippingUrl;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.Courier;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
@@ -61,10 +71,13 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     LogisticRouter logisticRouter;
 
+    private Ticker chargeBoTicker;
+
     private EditShippingPresenter editShippingPresenter;
     private TkpdProgressDialog mainProgressDialog;
     private TkpdProgressDialog progressDialog;
     private InputMethodManager inputMethodManager;
+    private UserSessionInterface userSession;
     private int mapMode;
 
     public static FragmentEditShipping createInstance() {
@@ -137,6 +150,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     private void hideAllView() {
+        chargeBoTicker.setVisibility(View.GONE);
         fragmentShippingHeader.setVisibility(View.GONE);
         addressLayout.setVisibility(View.GONE);
         fragmentShipingMainLayout.setVisibility(View.GONE);
@@ -157,7 +171,9 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         editShippingPresenter = new EditShippingPresenterImpl(this);
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        userSession = new UserSession(getActivity());
 
+        chargeBoTicker = mainView.findViewById(R.id.ticker_charge_bo);
         fragmentShipingMainLayout = (LinearLayout) mainView.findViewById(R.id.fragment_shipping_main_layout);
         fragmentShippingHeader = (ShippingHeaderLayout) mainView.findViewById(R.id.fragment_shipping_header);
         addressLayout = (ShippingAddressLayout) mainView.findViewById(R.id.shipping_address_layout);
@@ -351,6 +367,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         else if (getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
             submitButtonCreateShop.setVisibility(View.VISIBLE);
         } else submitButtonCreateShop.setVisibility(View.GONE);
+        renderTickerChargeBo();
     }
 
     @Override
@@ -527,5 +544,34 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                     editShippingPresenter.getShopModel());
         }
     }
+
+    private void renderTickerChargeBo(){
+        if((logisticRouter.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, false))) {
+            chargeBoTicker.setVisibility(View.VISIBLE);
+            chargeBoTicker.setTickerTitle(getString(R.string.charge_bo_ticker_title));
+            chargeBoTicker.setHtmlDescription(getString(R.string.charge_bo_ticker_content));
+            chargeBoTicker.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    EditShippingAnalytics.eventClickonTickerShippingEditor(userSession.getUserId());
+                    goToChargeBoWebview();
+                }
+
+                @Override
+                public void onDismiss() {
+                    //no-op
+                }
+            });
+        }
+    }
+
+    private void goToChargeBoWebview() {
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(), EditShippingUrl.getAPPLINK_BEBAS_ONGKIR());
+            getActivity().startActivity(intent);
+        }
+    }
+
+
 
 }

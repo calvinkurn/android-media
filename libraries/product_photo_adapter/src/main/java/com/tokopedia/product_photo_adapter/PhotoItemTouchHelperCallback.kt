@@ -66,8 +66,8 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
     private fun showCloseButton(recyclerView: RecyclerView) {
         recyclerView.adapter?.let {
             for (i in 0 until it.itemCount) {
-                val childView = recyclerView.getChildAt(i)
-                val closeButton = childView.findViewById<AppCompatImageView>(R.id.iv_delete_button)
+                val childView: View? = recyclerView.getChildAt(i)
+                val closeButton: AppCompatImageView? = childView?.findViewById(R.id.iv_delete_button)
                 closeButton?.visibility = View.VISIBLE
             }
         }

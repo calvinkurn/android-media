@@ -66,9 +66,6 @@
             android:name="android.app.default_searchable"
             android:value=".BrowseCategory" />
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/GOOGLE_API_KEY" />
-        <meta-data
             android:name="HANSEL_APP_ID"
             android:value="JM8LWF8S5B951JQOAZAFRNX14"/>
         <meta-data
