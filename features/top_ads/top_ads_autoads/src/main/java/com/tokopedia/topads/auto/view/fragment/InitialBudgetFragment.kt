@@ -17,15 +17,10 @@ import com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
 import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet
-import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 
 /**
  * Author errysuprayogi on 14,May,2019
  */
-
-private const val CLICK_MULAI_IKLAN = "click-mulai iklan otomatis"
-private const val CLICK_BUAT_IKLAN_MANUAL = "click-buat iklan manual"
-
 class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, ManualAdsConfirmationSheet.ActionListener {
 
 
@@ -78,12 +73,10 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         } else {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
         }
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
     }
 
     override fun onAutoAdsClicked() {
         adsConfirmationSheet.dismissDialog()
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN_MANUAL, "")
     }
 
     override fun getLayoutId(): Int {
