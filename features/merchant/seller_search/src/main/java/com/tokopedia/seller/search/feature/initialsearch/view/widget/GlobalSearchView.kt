@@ -124,6 +124,7 @@ class GlobalSearchView : BaseCustomView {
     }
 
     private fun editTextViewRequestFocus() {
+        searchBarView.searchBarTextField.setText(searchKeyword)
         searchViewListener?.onQueryTextChangeListener(searchKeyword)
         searchBarView.searchBarTextField.postDelayed({
             showKeyboard(searchBarView.searchBarTextField)
