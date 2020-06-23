@@ -104,7 +104,8 @@ class PlayBroadcastSocketImpl constructor(
     }
 
     override fun destroy() {
-        compositeSubscription.clear()
+        if (::compositeSubscription.isInitialized)
+            compositeSubscription.clear()
     }
 
     override fun getObservablePlaySocketMessage(): LiveData<out PlaySocketType> = _observableResponseMessage
@@ -118,7 +119,6 @@ class PlayBroadcastSocketImpl constructor(
     /**
      * Mapping
      */
-
     private fun mapLiveDuration(response: WebSocketResponse): LiveDuration? {
         return convertToModel(response.jsonObject, LiveDuration::class.java)
     }
