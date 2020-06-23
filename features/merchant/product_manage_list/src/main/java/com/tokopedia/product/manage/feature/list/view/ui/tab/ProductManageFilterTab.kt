@@ -37,6 +37,7 @@ class ProductManageFilterTab(
 
     fun update(data: GetFilterTabResult) {
         val tabs = data.tabs
+        sortFilterTab.sortFilterItems.removeAllViews()
         updateTabs(tabs)
         tabs.forEachIndexed { index, tab ->
             sortFilterTab.chipItems.forEachIndexed { i, chip ->
