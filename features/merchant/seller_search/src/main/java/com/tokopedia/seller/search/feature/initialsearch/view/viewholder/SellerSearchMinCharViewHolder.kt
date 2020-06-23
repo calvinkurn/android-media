@@ -13,7 +13,5 @@ class SellerSearchMinCharViewHolder(view: View): AbstractViewHolder<SellerSearch
         val LAYOUT_RES = R.layout.initial_search_min_character_state
     }
 
-    override fun bind(element: SellerSearchMinCharUiModel) {
-
-    }
+    override fun bind(element: SellerSearchMinCharUiModel) {}
 }

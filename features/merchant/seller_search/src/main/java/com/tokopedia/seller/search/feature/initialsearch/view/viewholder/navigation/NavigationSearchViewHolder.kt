@@ -11,8 +11,8 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.NavigationSearchListener
 import kotlinx.android.synthetic.main.search_result_navigation.view.*
 
-class NavigationSearchViewHolder(view: View,
-                                 private val navigationSearchListener: NavigationSearchListener?): AbstractViewHolder<SellerSearchUiModel>(view) {
+class NavigationSearchViewHolder(private val view: View,
+                                 private val navigationSearchListener: NavigationSearchListener) : AbstractViewHolder<SellerSearchUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -22,20 +22,19 @@ class NavigationSearchViewHolder(view: View,
     private val adapterNavigation by lazy { ItemNavigationSearchAdapter(navigationSearchListener) }
 
     override fun bind(element: SellerSearchUiModel) {
-        with(itemView) {
-            tvTitleResultNavigation?.text = element.title
-            rvResultNavigation?.apply {
-                layoutManager = LinearLayoutManager(itemView.context)
-                adapter = adapterNavigation
-            }
-
-            if(adapterPosition == element.count.orZero() - 1) {
-                dividerNavigation?.hide()
-            }
+        view.tvTitleResultNavigation?.text = element.title
+        view.rvResultNavigation?.apply {
+            layoutManager = LinearLayoutManager(view.context)
+            adapter = adapterNavigation
         }
 
-        if(element.sellerSearchList.isNotEmpty()) {
-            adapterNavigation.submitList(element.sellerSearchList)
+        if (adapterPosition == element.count.orZero() - 1) {
+            view.dividerNavigation?.hide()
+        }
+
+        if (element.sellerSearchList.isNotEmpty()) {
+            adapterNavigation.clearAllData()
+            adapterNavigation.setItemNavigationList(element.sellerSearchList)
         }
     }
 }

@@ -1,10 +1,7 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.activity
 
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -25,6 +22,10 @@ import com.tokopedia.seller.search.feature.initialsearch.view.widget.GlobalSearc
 class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchComponent>,
         GlobalSearchView.GlobalSearchViewListener, HistoryViewUpdateListener, SuggestionViewUpdateListener {
 
+    companion object {
+        const val MIN_CHARACTER_SEARCH = 3
+    }
+
     private var searchBarView: GlobalSearchView? = null
 
     private var mSuggestionView: ConstraintLayout? = null
@@ -38,7 +39,6 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_initial_seller_search)
         window?.decorView?.setBackgroundColor(Color.WHITE)
-        setStatusBarColor()
         proceed()
     }
 
@@ -56,19 +56,8 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     }
 
     private fun initSearchBarView() {
-        searchBarView?.setSearchViewListener(this)
         searchBarView?.setActivity(this)
-        initialStateFragment?.setHistoryViewUpdateListener(this)
-        suggestionFragment?.setSuggestionViewUpdateListener(this)
-    }
-
-    private fun setStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val window = window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = resources.getColor(R.color.white, null)
-        }
+        searchBarView?.setSearchViewListener(this)
     }
 
     private fun initView() {
@@ -82,15 +71,16 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     override fun onQueryTextChangeListener(keyword: String) {
         if (keyword.isEmpty()) {
             initialStateFragment?.historySearch(keyword)
-            suggestionFragment?.setSearchKeyword(keyword)
+            initialStateFragment?.setHistoryViewUpdateListener(this)
         } else {
-            suggestionFragment?.suggestionSearch(keyword)
-            initialStateFragment?.setSearchKeyword(keyword)
+            if(keyword.length < MIN_CHARACTER_SEARCH) {
+                initialStateFragment?.onMinCharState()
+                initialStateFragment?.setHistoryViewUpdateListener(this)
+            } else {
+                suggestionFragment?.suggestionSearch(keyword)
+                suggestionFragment?.setSuggestionViewUpdateListener(this)
+            }
         }
-    }
-
-    override fun onMinCharState() {
-        initialStateFragment?.onMinCharState()
     }
 
     override fun showHistoryView() {
@@ -98,14 +88,14 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         mInitialStateView?.show()
     }
 
+    override fun showSuggestionView() {
+        mInitialStateView?.hide()
+        mSuggestionView?.show()
+    }
+
     override fun dropKeyboardHistory() {
         searchBarView?.clearFocus()
         KeyboardHandler.DropKeyboard(this, searchBarView)
-    }
-
-    override fun showSuggestionView() {
-        mSuggestionView?.show()
-        mInitialStateView?.hide()
     }
 
     override fun dropKeyboardSuggestion() {

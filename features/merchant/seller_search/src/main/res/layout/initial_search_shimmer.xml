@@ -53,4 +53,9 @@
         android:layout_height="wrap_content"
         layout="@layout/partial_initial_search_shimmer"/>
 
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/partial_initial_search_shimmer"/>
+
 </LinearLayout>

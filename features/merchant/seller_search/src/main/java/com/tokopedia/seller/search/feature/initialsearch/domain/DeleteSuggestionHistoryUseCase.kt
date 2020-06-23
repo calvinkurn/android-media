@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class DeleteSuggestionHistoryUseCase @Inject constructor(
         private val graphQlRepository: GraphqlRepository
-) : UseCase<DeleteHistoryResponse>() {
+) : UseCase<DeleteHistoryResponse.DeleteHistory>() {
 
     companion object {
         private const val KEYWORD = "keyword"
@@ -31,12 +31,12 @@ class DeleteSuggestionHistoryUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    override suspend fun executeOnBackground(): DeleteHistoryResponse {
+    override suspend fun executeOnBackground(): DeleteHistoryResponse.DeleteHistory {
         val gqlRequest = GraphqlRequest(gqlQuery, SellerSearchResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {
-            return gqlResponse.getData(DeleteHistoryResponse::class.java)
+            return gqlResponse.getData<DeleteHistoryResponse>(DeleteHistoryResponse::class.java).deleteHistory
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }

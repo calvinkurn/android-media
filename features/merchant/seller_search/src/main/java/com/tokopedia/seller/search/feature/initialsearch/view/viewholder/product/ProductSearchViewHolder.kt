@@ -11,8 +11,8 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.ProductSearchListener
 import kotlinx.android.synthetic.main.search_result_product.view.*
 
-class ProductSearchViewHolder(view: View,
-                              private val productSearchListener: ProductSearchListener?): AbstractViewHolder<SellerSearchUiModel>(view) {
+class ProductSearchViewHolder(private val view: View,
+                              private val productSearchListener: ProductSearchListener) : AbstractViewHolder<SellerSearchUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -22,20 +22,21 @@ class ProductSearchViewHolder(view: View,
     private val adapterProduct by lazy { ItemProductSearchAdapter(productSearchListener) }
 
     override fun bind(element: SellerSearchUiModel) {
-        with(itemView) {
+        view.apply {
             tvTitleResultProduct?.text = element.title
             rvResultProduct?.apply {
-                layoutManager = LinearLayoutManager(itemView.context)
+                layoutManager = LinearLayoutManager(view.context)
                 adapter = adapterProduct
-            }
-
-            if(adapterPosition == element.count.orZero() - 1) {
-                dividerProduct?.hide()
             }
         }
 
-        if(element.sellerSearchList.isNotEmpty()) {
-            adapterProduct.submitList(element.sellerSearchList)
+        if (adapterPosition == element.count.orZero() - 1) {
+            view.dividerProduct?.hide()
+        }
+
+        if (element.sellerSearchList.isNotEmpty()) {
+            adapterProduct.clearAllData()
+            adapterProduct.setItemProductList(element.sellerSearchList)
         }
     }
 }

@@ -7,26 +7,25 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
-import com.tokopedia.seller.search.feature.initialsearch.view.adapter.SearchSellerAdapter
+import com.tokopedia.seller.search.feature.initialsearch.view.adapter.InitialSearchAdapter
+import com.tokopedia.seller.search.feature.initialsearch.view.adapter.InitialSearchAdapterTypeFactory
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateListener
-import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.InitialSearchAdapterTypeFactory
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.initial_search_fragment.*
 import javax.inject.Inject
 
-class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapterTypeFactory>(), HistorySearchListener {
+class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -34,30 +33,28 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val searchSellerAdapterTypeFactory by lazy {
+    private val initialSearchAdapterTypeFactory by lazy {
         InitialSearchAdapterTypeFactory(this)
     }
 
-    private val searchSellerAdapter: SearchSellerAdapter
-        get() = adapter as SearchSellerAdapter
+    private val initialSearchAdapter by lazy { InitialSearchAdapter(initialSearchAdapterTypeFactory) }
 
-    private var viewModel: InitialSearchViewModel? = null
+    private val viewModel: InitialSearchViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(InitialSearchViewModel::class.java)
+    }
 
-    private var searchSeller: SellerSearchUiModel? = null
+    private val searchSeller: SellerSearchUiModel? = null
 
     private var searchKeyword = ""
     private var shopId = ""
+    private var positionHistory = 0
 
     private var historyViewUpdateListener: HistoryViewUpdateListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
         shopId = userSession.shopId.orEmpty()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(InitialSearchViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +64,7 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView(view)
+        initRecyclerView()
         observeLiveData()
     }
 
@@ -77,45 +74,27 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
         getComponent(InitialSearchComponent::class.java).inject(this)
     }
 
-    override fun loadInitialData() {
-        super.loadInitialData()
-        viewModel?.getSellerSearch(keyword = searchKeyword, shopId = shopId)
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, InitialSearchAdapterTypeFactory> {
-        return SearchSellerAdapter(searchSellerAdapterTypeFactory)
-    }
-
-    override fun getAdapterTypeFactory(): InitialSearchAdapterTypeFactory = searchSellerAdapterTypeFactory
-
-    override fun onItemClicked(t: Visitable<*>?) {}
-
-    override fun loadData(page: Int) {}
-
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById(R.id.rvSearchHistorySeller)
-    }
-
     override fun onDestroy() {
-        viewModel?.getSellerSearch?.removeObservers(this)
-        viewModel?.deleteHistorySearch?.removeObservers(this)
-        viewModel?.flush()
+        viewModel.getSellerSearch.removeObservers(this)
+        viewModel.deleteHistorySearch.removeObservers(this)
+        viewModel.flush()
         super.onDestroy()
     }
 
-    private fun initRecyclerView(view: View) {
-        getRecyclerView(view).run {
-            clearOnScrollListeners()
+    private fun initRecyclerView() {
+        rvSearchHistorySeller?.apply {
             layoutManager = LinearLayoutManager(context)
+            adapter = initialSearchAdapter
         }
     }
 
-    override fun onClearSearchItem(keyword: String) {
-        viewModel?.deleteSuggestionSearch(listOf(keyword))
+    override fun onClearSearchItem(keyword: String, adapterPosition: Int) {
+        positionHistory = adapterPosition
+        viewModel.deleteSuggestionSearch(listOf(keyword))
     }
 
     override fun onClearAllSearch() {
-        viewModel?.deleteSuggestionSearch(searchSeller?.titleList ?: listOf())
+        viewModel.deleteSuggestionSearch(searchSeller?.titleList ?: listOf())
     }
 
     override fun onHistoryItemClicked(appUrl: String) {
@@ -124,34 +103,38 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
     }
 
     private fun observeLiveData() {
-       viewModel?.getSellerSearch?.observe(this, Observer {
-           hideLoading()
-           when(it) {
-               is Success -> {
-                   setHistorySearch(it.data)
-               }
-               is Fail -> { }
-           }
-       })
-
-        viewModel?.deleteHistorySearch?.observe(this, Observer {
-            when(it) {
+        viewModel.getSellerSearch.observe(this, Observer {
+            when (it) {
                 is Success -> {
-                    viewModel?.getSellerSearch(keyword = searchKeyword, shopId = shopId)
+                    setHistorySearch(it.data)
                 }
-                is Fail -> { }
+                is Fail -> {
+
+                }
+            }
+        })
+
+        viewModel.deleteHistorySearch.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    removePositionHistory()
+                }
+                is Fail -> {
+                }
             }
         })
     }
 
-    private fun setHistorySearch(data: List<SellerSearchUiModel>) {
-        hideLoading()
-        if(data.isEmpty()) {
-            searchSellerAdapter.removeEmptyOrErrorState()
-            searchSellerAdapter.addSellerSearchNoHistory()
+    private fun removePositionHistory() {
+        initialSearchAdapter.removeHistory(positionHistory)
+    }
+
+    private fun setHistorySearch(data: List<InitialSearchUiModel>) {
+        initialSearchAdapter.clearAllElements()
+        if (data.isEmpty()) {
+            initialSearchAdapter.addNoHistoryState()
         } else {
-            searchSellerAdapter.removeEmptyOrErrorState()
-            searchSellerAdapter.setSellerSearchListData(data)
+            initialSearchAdapter.addAll(data)
         }
         historyViewUpdateListener?.showHistoryView()
     }
@@ -162,16 +145,15 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
 
     fun historySearch(keyword: String) {
         this.searchKeyword = keyword
-        loadInitialData()
+        viewModel.getSellerSearch(keyword = searchKeyword, shopId = shopId)
     }
 
-    fun setSearchKeyword(keyword: String) {
-        this.searchKeyword = keyword
-    }
-
-     fun onMinCharState() {
-        searchSellerAdapter.removeEmptyOrErrorState()
-        searchSellerAdapter.addSellerSearchMinChar()
+    fun onMinCharState() {
+        initialSearchAdapter.apply {
+            clearAllElements()
+            addMinCharState()
+        }
+        historyViewUpdateListener?.showHistoryView()
     }
 
     private fun dropKeyBoard() {

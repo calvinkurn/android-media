@@ -1,7 +1,7 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch
 
-import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseGlobalSearchSeller
-import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.InitialSearchAdapterTypeFactory
+import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseSuggestionSearchSeller
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactorySuggestionSearchAdapter
 
 data class SellerSearchUiModel(
         var id: String? = "",
@@ -10,8 +10,8 @@ data class SellerSearchUiModel(
         var count: Int? = 0,
         var titleList: List<String> = listOf(),
         var sellerSearchList: List<ItemSellerSearchUiModel> = listOf()
-): BaseGlobalSearchSeller {
-    override fun type(typeFactory: InitialSearchAdapterTypeFactory): Int {
+): BaseSuggestionSearchSeller {
+    override fun type(typeFactory: TypeFactorySuggestionSearchAdapter): Int {
         return typeFactory.type(this)
     }
 }

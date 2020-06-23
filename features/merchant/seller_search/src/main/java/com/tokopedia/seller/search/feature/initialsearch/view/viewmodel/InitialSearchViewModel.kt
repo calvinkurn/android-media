@@ -9,7 +9,7 @@ import com.tokopedia.seller.search.common.util.CoroutineDispatcherProvider
 import com.tokopedia.seller.search.common.util.mapper.GlobalSearchSellerMapper
 import com.tokopedia.seller.search.feature.initialsearch.domain.DeleteSuggestionHistoryUseCase
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,8 +26,8 @@ class InitialSearchViewModel @Inject constructor(
     val deleteHistorySearch: LiveData<Result<DeleteHistorySearchUiModel>>
         get() = _deleteHistorySearch
 
-    private val _getSearchSeller = MutableLiveData<Result<List<SellerSearchUiModel>>>()
-    val getSellerSearch: LiveData<Result<List<SellerSearchUiModel>>>
+    private val _getSearchSeller = MutableLiveData<Result<List<InitialSearchUiModel>>>()
+    val getSellerSearch: LiveData<Result<List<InitialSearchUiModel>>>
         get() = _getSearchSeller
 
     fun getSellerSearch(keyword: String, section: String = "", shopId: String) {
@@ -35,7 +35,7 @@ class InitialSearchViewModel @Inject constructor(
             val responseGetSellerSearch = withContext(dispatcherProvider.io()) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(
                         keyword, shopId, section)
-                GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground())
+                GlobalSearchSellerMapper.mapToInitialSearchUiModel(getSellerSearchUseCase.executeOnBackground())
             }
             _getSearchSeller.postValue(Success(responseGetSellerSearch))
         }, onError = {

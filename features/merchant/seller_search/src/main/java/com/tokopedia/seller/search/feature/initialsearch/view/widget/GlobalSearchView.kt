@@ -2,6 +2,7 @@ package com.tokopedia.seller.search.feature.initialsearch.view.widget
 
 import android.content.Context
 import android.graphics.Rect
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
@@ -14,22 +15,26 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.seller.search.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_global_search_view.view.*
-import java.util.*
+import rx.Observable
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
+import java.util.concurrent.TimeUnit
 
 class GlobalSearchView : BaseCustomView {
 
     companion object {
-        const val DEBOUNCE_DELAY_MILLIS = 1000L
-        const val MIN_CHARACTER_SEARCH = 3
+        const val DEBOUNCE_DELAY_MILLIS = 500L
     }
-
-    private var timer = Timer()
 
     private var mClearingFocus: Boolean = false
     private var searchKeyword = ""
     private var hint: String? = ""
 
     private var activity: AppCompatActivity? = null
+
+    private var compositeSubscription: CompositeSubscription? = null
 
     private var searchViewListener: GlobalSearchViewListener? = null
 
@@ -48,11 +53,9 @@ class GlobalSearchView : BaseCustomView {
     private fun init() {
         View.inflate(context, R.layout.widget_global_search_view, this)
         initSearchBarView()
+        editTextViewRequestFocus()
         btnBackHome()
-        searchBarView.searchBarTextField.postDelayed({
-            showKeyboard(searchBarView.searchBarTextField)
-            searchBarView?.searchBarTextField?.text?.length?.let { searchBarView.searchBarTextField.setSelection(it) }
-        }, 200)
+        initCompositeSubscriber()
     }
 
     override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
@@ -64,6 +67,38 @@ class GlobalSearchView : BaseCustomView {
         this.searchViewListener = searchViewListener
     }
 
+    private fun initCompositeSubscriber() {
+        compositeSubscription = getNewCompositeSubIfUnsubscribed(compositeSubscription)
+        compositeSubscription?.add(Observable.unsafeCreate(Observable.OnSubscribe<String> { subscriber ->
+            searchViewListener = object : GlobalSearchViewListener {
+                override fun onQueryTextChangeListener(keyword: String) {
+                    subscriber.onNext(keyword)
+                }
+            }
+        })
+                .debounce(DEBOUNCE_DELAY_MILLIS, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<String>() {
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable) {}
+
+                    override fun onNext(s: String?) {
+                        if (s != null) {
+                            searchKeyword = s.trim()
+                            searchViewListener?.onQueryTextChangeListener(searchKeyword)
+                        }
+                    }
+                }))
+    }
+
+    private fun getNewCompositeSubIfUnsubscribed(subscription: CompositeSubscription?): CompositeSubscription {
+        return if (subscription == null || subscription.isUnsubscribed) {
+            CompositeSubscription()
+        } else subscription
+    }
 
     fun setActivity(activity: AppCompatActivity) {
         this.activity = activity
@@ -80,16 +115,20 @@ class GlobalSearchView : BaseCustomView {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun setTextViewHint(hint: CharSequence?) {
-        searchBarView?.searchBarTextField?.hint = hint
-    }
-
     override fun clearFocus() {
         mClearingFocus = true
         hideKeyboard(this)
         super.clearFocus()
         searchBarView?.searchBarTextField?.clearFocus()
         mClearingFocus = false
+    }
+
+    private fun editTextViewRequestFocus() {
+        searchViewListener?.onQueryTextChangeListener(searchKeyword)
+        searchBarView.searchBarTextField.postDelayed({
+            showKeyboard(searchBarView.searchBarTextField)
+            searchBarView.searchBarTextField.text?.length?.let { searchBarView.searchBarTextField.setSelection(it) }
+        }, 200)
     }
 
     private fun initSearchBarView() {
@@ -99,10 +138,7 @@ class GlobalSearchView : BaseCustomView {
                 if (searchBarPlaceholder.isNotEmpty()) {
                     searchBarTextField.text.clear()
                     searchKeyword = searchBarTextField.text.trim().toString()
-
-                    onEditTextChangeListener {
-                        searchViewListener?.onQueryTextChangeListener(searchKeyword)
-                    }
+                    searchViewListener?.onQueryTextChangeListener(searchKeyword)
                 }
             }
 
@@ -115,24 +151,11 @@ class GlobalSearchView : BaseCustomView {
             searchBarTextField.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
                     val keyword = s.trim().toString()
-                    when {
-                        keyword.isEmpty() -> {
-                            searchKeyword = keyword
-                            onEditTextChangeListener {
-                                searchViewListener?.onQueryTextChangeListener(searchKeyword)
-                            }
-                        }
-                        keyword.length < MIN_CHARACTER_SEARCH -> {
-                            onEditTextChangeListener {
-                                searchViewListener?.onMinCharState()
-                            }
-                        }
-                        else -> {
-                            searchKeyword = keyword
-                            onEditTextChangeListener {
-                                searchViewListener?.onQueryTextChangeListener(searchKeyword)
-                            }
-                        }
+
+                    searchKeyword = keyword
+
+                    onEditTextChangeListener {
+                        searchViewListener?.onQueryTextChangeListener(searchKeyword)
                     }
 
                     for (span in s.getSpans(0, s.length, UnderlineSpan::class.java)) {
@@ -142,7 +165,8 @@ class GlobalSearchView : BaseCustomView {
 
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                }
             })
 
             searchBarTextField.setOnEditorActionListener { _, actionId, event ->
@@ -156,14 +180,8 @@ class GlobalSearchView : BaseCustomView {
         }
     }
 
-    private fun onEditTextChangeListener(editTextListener: () -> Unit) {
-        timer.cancel()
-        timer = Timer()
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                editTextListener.invoke()
-            }
-        }, DEBOUNCE_DELAY_MILLIS)
+    private fun onEditTextChangeListener(listener: () -> Unit) {
+        Handler().postDelayed({ listener() }, DEBOUNCE_DELAY_MILLIS)
     }
 
     private fun btnBackHome() {
@@ -175,6 +193,5 @@ class GlobalSearchView : BaseCustomView {
 
     interface GlobalSearchViewListener {
         fun onQueryTextChangeListener(keyword: String)
-        fun onMinCharState()
     }
 }

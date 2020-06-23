@@ -15,3 +15,16 @@ class PaddingItemDecorationSearchSeller : RecyclerView.ItemDecoration() {
         }
     }
 }
+
+class FilterItemDecoration : RecyclerView.ItemDecoration() {
+
+    companion object {
+        const val PADDING_ITEM = 8
+    }
+
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        outRect.left = PADDING_ITEM.toPx()
+        outRect.top = PADDING_ITEM.toPx() / 2
+        outRect.bottom = PADDING_ITEM.toPx() / 2
+    }
+}

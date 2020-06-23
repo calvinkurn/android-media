@@ -12,10 +12,11 @@ import kotlinx.android.synthetic.main.item_chips_filter.view.*
 
 class FilterSearchAdapter(private val filterSearchListener: FilterSearchListener): RecyclerView.Adapter<FilterSearchAdapter.FilterSearchViewHolder>() {
 
-    var filterSearchList: List<FilterSearchUiModel>? = null
+    private var filterSearchList: List<FilterSearchUiModel>? = null
 
     fun setFilterSearch(filterSearchList: List<FilterSearchUiModel>) {
         this.filterSearchList = filterSearchList
+        notifyDataSetChanged()
     }
 
     fun updatedSortFilter(position: Int) {
@@ -49,9 +50,9 @@ class FilterSearchAdapter(private val filterSearchListener: FilterSearchListener
         filterSearchList?.get(position)?.let { holder.bind(it) }
     }
 
-    class FilterSearchViewHolder(itemView: View, private val filterSearchListener: FilterSearchListener): RecyclerView.ViewHolder(itemView) {
+    class FilterSearchViewHolder(private val itemViewFilter: View, private val filterSearchListener: FilterSearchListener): RecyclerView.ViewHolder(itemViewFilter) {
         fun bind(data: FilterSearchUiModel) {
-            with(itemView) {
+            with(itemViewFilter) {
                 chipsItem.apply {
                     centerText = true
                     chipText = data.title
@@ -62,7 +63,7 @@ class FilterSearchAdapter(private val filterSearchListener: FilterSearchListener
                         ChipsUnify.TYPE_NORMAL
                     }
                     setOnClickListener {
-                        filterSearchListener.onFilterItemClicked(data.keyword.orEmpty(), chipType.orEmpty(), adapterPosition)
+                        filterSearchListener.onFilterItemClicked(data.title.orEmpty(), chipType.orEmpty(), adapterPosition)
                     }
                 }
             }

@@ -5,5 +5,6 @@ data class ItemSellerSearchUiModel(
         var title: String? = "",
         var desc: String? = "",
         var imageUrl: String? = "",
-        var appUrl: String? = ""
+        var appUrl: String? = "",
+        var keyword: String? = ""
 )

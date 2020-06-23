@@ -36,7 +36,7 @@ class SuggestionSearchViewModel @Inject constructor(
             val responseGetSellerSearch: Pair<List<SellerSearchUiModel>, List<FilterSearchUiModel>> = withContext(dispatcherProvider.io()) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(
                         keyword, shopId, section)
-                Pair(GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground()),
+                Pair(GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground(), keyword),
                         GlobalSearchSellerMapper.mapTopItemFilterSearch(getSellerSearchUseCase.executeOnBackground()))
             }
             _getSearchSeller.postValue(Success(Pair(responseGetSellerSearch.first, responseGetSellerSearch.second)))

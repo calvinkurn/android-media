@@ -2,13 +2,25 @@ package com.tokopedia.seller.search.feature.initialsearch.view.viewholder.order
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller.search.R
-import com.tokopedia.seller.search.common.util.SellerSearchAdapterDiffCallback
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.ItemSellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
 
-class ItemOrderSearchAdapter(private val orderSearchListener: OrderSearchListener?): ListAdapter<ItemSellerSearchUiModel, ItemOrderSearchViewHolder>(SellerSearchAdapterDiffCallback.ItemSearchDiffCallback) {
+class ItemOrderSearchAdapter(private val orderSearchListener: OrderSearchListener)
+    : RecyclerView.Adapter<ItemOrderSearchViewHolder>() {
+
+    private var itemOrderList: MutableList<ItemSellerSearchUiModel> = mutableListOf()
+
+    fun setItemOrderList(list: List<ItemSellerSearchUiModel>) {
+        this.itemOrderList = list.toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun clearAllData() {
+        this.itemOrderList.clear()
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemOrderSearchViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -17,8 +29,10 @@ class ItemOrderSearchAdapter(private val orderSearchListener: OrderSearchListene
     }
 
     override fun onBindViewHolder(holderSearch: ItemOrderSearchViewHolder, position: Int) {
-        getItem(position)?.let {
-            holderSearch.bind(it)
-        }
+        holderSearch.bind(itemOrderList[position])
+    }
+
+    override fun getItemCount(): Int {
+        return itemOrderList.size
     }
 }

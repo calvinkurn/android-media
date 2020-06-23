@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class InsertSuccessSearchUseCase @Inject constructor(
         private val graphQlRepository: GraphqlRepository
-): UseCase<SuccessSearchResponse>() {
+): UseCase<SuccessSearchResponse.SuccessSearch>() {
 
     companion object {
         private const val KEYWORD = "keyword"
@@ -34,12 +34,12 @@ class InsertSuccessSearchUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    override suspend fun executeOnBackground(): SuccessSearchResponse {
+    override suspend fun executeOnBackground(): SuccessSearchResponse.SuccessSearch {
         val gqlRequest = GraphqlRequest(gqlQuery, SuccessSearchResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {
-            return gqlResponse.getData(SuccessSearchResponse::class.java)
+            return gqlResponse.getData<SuccessSearchResponse>(SuccessSearchResponse::class.java).successSearch
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }

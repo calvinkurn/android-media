@@ -2,25 +2,23 @@ package com.tokopedia.seller.search.feature.initialsearch.view.viewholder.histor
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.ItemSellerSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
 import kotlinx.android.synthetic.main.item_initial_search_with_history.view.*
 
 class ItemHistorySearchViewHolder(
-        itemView: View,
-        private val historySearchListener: HistorySearchListener?
-): RecyclerView.ViewHolder(itemView) {
+        private val itemViewHistory: View,
+        private val historySearchListener: HistorySearchListener
+) : RecyclerView.ViewHolder(itemViewHistory) {
 
-    fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
-        with(itemView) {
-            tvTitleHistory?.text = itemSellerSearchUiModel.title.orEmpty()
-            ivCloseHistory?.setOnClickListener {
-                historySearchListener?.onClearSearchItem(itemSellerSearchUiModel.title.orEmpty())
-            }
-            setOnClickListener {
-                historySearchListener?.onHistoryItemClicked(itemSellerSearchUiModel.appUrl.orEmpty())
-            }
+    fun bind(itemSellerSearchUiModel: ItemInitialSearchUiModel) {
+        itemViewHistory.tvTitleHistory?.text = itemSellerSearchUiModel.title
+
+        itemViewHistory.ivCloseHistory?.setOnClickListener {
+            historySearchListener.onClearSearchItem(itemSellerSearchUiModel.title.orEmpty(), adapterPosition)
         }
-
+        itemViewHistory.setOnClickListener {
+            historySearchListener.onHistoryItemClicked(itemSellerSearchUiModel.appUrl.orEmpty())
+        }
     }
 }

@@ -11,8 +11,8 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
 import kotlinx.android.synthetic.main.search_result_order.view.*
 
-class OrderSearchViewHolder(view: View,
-                            private val orderSearchListener: OrderSearchListener?): AbstractViewHolder<SellerSearchUiModel>(view) {
+class OrderSearchViewHolder(private val view: View,
+                            private val orderSearchListener: OrderSearchListener) : AbstractViewHolder<SellerSearchUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -22,20 +22,19 @@ class OrderSearchViewHolder(view: View,
     private val adapterOrder by lazy { ItemOrderSearchAdapter(orderSearchListener) }
 
     override fun bind(element: SellerSearchUiModel) {
-        with(itemView) {
-            tvTitleResultOrder?.text = element.title
-            rvResultOrder?.apply {
-                layoutManager = LinearLayoutManager(itemView.context)
-                adapter = adapterOrder
-            }
-
-            if(adapterPosition == element.count.orZero() - 1) {
-                dividerOrder?.hide()
-            }
+        view.tvTitleResultOrder?.text = element.title
+        view.rvResultOrder?.apply {
+            layoutManager = LinearLayoutManager(view.context)
+            adapter = adapterOrder
         }
 
-        if(element.sellerSearchList.isNotEmpty()) {
-            adapterOrder.submitList(element.sellerSearchList)
+        if (adapterPosition == element.count.orZero() - 1) {
+            view.dividerOrder?.hide()
+        }
+
+        if (element.sellerSearchList.isNotEmpty()) {
+            adapterOrder.clearAllData()
+            adapterOrder.setItemOrderList(element.sellerSearchList)
         }
     }
 }

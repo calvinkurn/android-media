@@ -28,6 +28,7 @@
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivHistoryTime"
+        app:layout_constraintEnd_toStartOf="@id/ivCloseHistory"
         tools:text="Sop jamur"/>
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -36,11 +37,14 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
+        android:background="?selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingLeft="@dimen/spacing_lvl2"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl3"
+        android:paddingRight="@dimen/spacing_lvl3"
         app:srcCompat="@drawable/ic_close_history" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
