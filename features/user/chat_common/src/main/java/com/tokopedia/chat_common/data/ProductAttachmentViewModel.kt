@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
@@ -340,6 +341,13 @@ open class ProductAttachmentViewModel : SendableViewModel,
     override fun finishLoading() {
         this.isLoading = false
         this.isError = false
+    }
+
+    fun getAtcDimension40(sourcePage: String): String {
+        return when (sourcePage) {
+            ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "/chat - search chat"
+            else -> ""
+        }
     }
 
     companion object {
