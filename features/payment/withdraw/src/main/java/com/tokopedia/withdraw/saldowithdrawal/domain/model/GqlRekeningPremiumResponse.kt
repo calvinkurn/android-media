@@ -1,5 +1,7 @@
 package com.tokopedia.withdraw.saldowithdrawal.domain.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -22,7 +24,33 @@ data class CheckEligible(
         @SerializedName("data")
         @Expose
         var data: RekeningData
-)
+) : Parcelable {
+        constructor(parcel: Parcel) : this(
+                parcel.readLong(),
+                parcel.readString(),
+                parcel.readParcelable(RekeningData::class.java.classLoader)) {
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+                parcel.writeLong(status)
+                parcel.writeString(message)
+                parcel.writeParcelable(data, flags)
+        }
+
+        override fun describeContents(): Int {
+                return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<CheckEligible> {
+                override fun createFromParcel(parcel: Parcel): CheckEligible {
+                        return CheckEligible(parcel)
+                }
+
+                override fun newArray(size: Int): Array<CheckEligible?> {
+                        return arrayOfNulls(size)
+                }
+        }
+}
 
 
 data class RekeningData(
@@ -64,29 +92,46 @@ data class RekeningData(
 
         @SerializedName("statusInt")
         @Expose
-        var statusInt: Int = 0,
-
-        @SerializedName("copywriting")
-        @Expose
-        var copyWriting: CopyWriting
-
-)
+        var statusInt: Int = 0
 
 
-data class CopyWriting(
-        @SerializedName("title")
-        @Expose
-        var title: String? = null,
+) : Parcelable {
+        constructor(parcel: Parcel) : this(
+                parcel.readByte() != 0.toByte(),
+                parcel.readByte() != 0.toByte(),
+                parcel.readLong(),
+                parcel.readString(),
+                parcel.readLong(),
+                parcel.readLong(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readLong(),
+                parcel.readInt())
 
-        @SerializedName("subtitle")
-        @Expose
-        var subtitle: String? = null,
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+                parcel.writeByte(if (isIsPowerWD) 1 else 0)
+                parcel.writeByte(if (isPowerMerchant) 1 else 0)
+                parcel.writeLong(shopID)
+                parcel.writeString(accNum)
+                parcel.writeLong(bankID)
+                parcel.writeLong(userID)
+                parcel.writeString(status)
+                parcel.writeString(program)
+                parcel.writeLong(wdPoints)
+                parcel.writeInt(statusInt)
+        }
 
-        @SerializedName("cta")
-        @Expose
-        var cta: String? = null,
+        override fun describeContents(): Int {
+                return 0
+        }
 
-        @SerializedName("url")
-        @Expose
-        var url: String? = null
-)
+        companion object CREATOR : Parcelable.Creator<RekeningData> {
+                override fun createFromParcel(parcel: Parcel): RekeningData {
+                        return RekeningData(parcel)
+                }
+
+                override fun newArray(size: Int): Array<RekeningData?> {
+                        return arrayOfNulls(size)
+                }
+        }
+}

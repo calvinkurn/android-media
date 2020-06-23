@@ -10,7 +10,7 @@
                 android:height="@dimen/swd_radio_button" />
 
             <stroke
-                android:width="2dp"
+                android:width="@dimen/spacing_lvl1"
                 android:color="@color/light_N200" />
         </shape>
     </item>

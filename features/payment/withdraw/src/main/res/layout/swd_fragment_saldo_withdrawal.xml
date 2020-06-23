@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/saldoLockTicker"
         android:layout_width="match_parent"
@@ -20,8 +19,6 @@
         tools:visibility="visible"
         app:tickerType="warning"
         app:titleText="title" />
-
-
 
     <com.tokopedia.carousel.CarouselUnify
         android:id="@+id/withdrawalRekeningCarouselView"
@@ -89,15 +86,3 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!--
-        <include
-            android:id="@+id/withdrawalRekeningCarouselView"
-            layout="@layout/swd_layout_premium_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/saldoLockTicker" />-->

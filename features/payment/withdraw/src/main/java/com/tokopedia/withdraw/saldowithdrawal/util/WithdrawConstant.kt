@@ -8,6 +8,7 @@ import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.webview.KEY_NEED_LOGIN
 
 object WithdrawConstant {
     private val WEB_DOMAIN_URL = TokopediaUrl.getInstance().WEB
@@ -17,29 +18,27 @@ object WithdrawConstant {
 
     const val MAX_WITHDRAWAL_INPUT_LENGTH = 14
 
-    const val APP_LINK_URL_FORMAT = "%s?url=%s"
+    private const val APP_LINK_URL_FORMAT = "%s?url=%s"
 
 
-    val rekeningPageURL = when (TokopediaUrl.getInstance().TYPE) {
+    private val rekeningPageURL = when (TokopediaUrl.getInstance().TYPE) {
         Env.STAGING -> "https://staging.tokopedia.com/payment/rekening-premium"
         else -> "https://tokopedia.com/payment/rekening-premium"
     }
 
-    fun openRekeningAccountInfoPage(context: Context?, userSession: UserSession) {
+    fun openRekeningAccountInfoPage(context: Context?) {
         context?.let {
-            val resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                    Uri.encode(rekeningPageURL), userSession.deviceId, userSession.userId)
-            RouteManager.route(context, String.format(APP_LINK_URL_FORMAT,
-                    ApplinkConst.WEBVIEW, resultGenerateUrl))
+            openSessionBaseURL(context, rekeningPageURL)
         }
     }
 
-    fun openSessionBaseURL(context: Context?, userSession: UserSession, url: String) {
+    fun openSessionBaseURL(context: Context?, url: String) {
         context?.let {
-            val resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                    Uri.encode(url), userSession.deviceId, userSession.userId)
-            RouteManager.route(context, String.format(APP_LINK_URL_FORMAT,
-                    ApplinkConst.WEBVIEW, resultGenerateUrl))
+            val intent = RouteManager.getIntent(context, String.format(APP_LINK_URL_FORMAT,
+                    ApplinkConst.WEBVIEW, url)).apply {
+                putExtra(KEY_NEED_LOGIN, true)
+            }
+            context.startActivity(intent)
         }
     }
 

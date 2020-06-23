@@ -36,11 +36,9 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
     private val childLayoutRes = R.layout.swd_dialog_join_rp_on_withdrawal
 
     var callback: WithdrawalJoinRPCallback? = null
-    lateinit var tncTemplateStr: String
+    private lateinit var tncTemplateStr: String
 
-    private val childView: View by lazy(LazyThreadSafetyMode.NONE) {
-        LayoutInflater.from(context).inflate(childLayoutRes, null, false)
-    }
+    private lateinit var childView: View
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -58,6 +56,8 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_JOIN_REKENING_PREMIUM)) {
+                childView = LayoutInflater.from(context).inflate(childLayoutRes,
+                        null, false)
                 setChild(childView)
                 joinRekeningPremium = it.getParcelable(ARG_JOIN_REKENING_PREMIUM)
             } else
@@ -137,7 +137,7 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
     }
 
     private fun observeViewModel() {
-        joinRekeningTermsConditionViewModel.tncResponseMutableData.observe(this, Observer {
+        joinRekeningTermsConditionViewModel.tncResponseMutableData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     this.tncTemplateStr = it.data

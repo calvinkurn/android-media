@@ -32,7 +32,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
-import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.exception.SubmitWithdrawalException
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.*
@@ -44,6 +43,7 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPre
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SubmitWithdrawalViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.ValidatePopUpViewModel
+import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_fragment_saldo_withdrawal.*
 import javax.inject.Inject
 
@@ -126,7 +126,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     }
 
     private fun observeViewModel() {
-        rekeningPremiumViewModel.rekeningPremiumMutableData.observe(this, Observer {
+        rekeningPremiumViewModel.rekeningPremiumMutableData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     checkEligible = it.data
@@ -138,7 +138,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             }
         })
 
-        saldoWithdrawalViewModel.bannerListLiveData.observe(this, Observer {
+        saldoWithdrawalViewModel.bannerListLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     bannerList = it.data
@@ -152,7 +152,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             }
         })
 
-        saldoWithdrawalViewModel.bankListResponseMutableData.observe(this, Observer {
+        saldoWithdrawalViewModel.bankListResponseMutableData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (!userSession.isMsisdnVerified) {
@@ -165,7 +165,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             }
         })
 
-        validatePopUpViewModel.validatePopUpWithdrawalMutableData.observe(this, Observer {
+        validatePopUpViewModel.validatePopUpWithdrawalMutableData.observe(viewLifecycleOwner, Observer {
             loadingLayout.hide()
             when (it) {
                 is Success -> {
@@ -177,7 +177,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             }
         })
 
-        submitWithdrawalViewModel.submitWithdrawalResponseLiveData.observe(this, Observer {
+        submitWithdrawalViewModel.submitWithdrawalResponseLiveData.observe(viewLifecycleOwner, Observer {
             loadingLayout.hide()
             when (it) {
                 is Success -> {
@@ -207,7 +207,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     }
 
     private fun onCarouselItemClick(bannerData: BannerData) {
-        WithdrawConstant.openSessionBaseURL(context, userSession, bannerData.cta)
+        WithdrawConstant.openSessionBaseURL(context, bannerData.cta)
     }
 
     private fun carouselItemListener(view: View, data: Any) {
@@ -217,7 +217,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         val tvBannerDescriptionTwo: TextView = view.findViewById(R.id.tvBannerDescriptionTwo)
         val bannerTextGroup: Group = view.findViewById(R.id.bannerTextGroup)
         val bannerData = data as BannerData
-        if (bannerData.status == 2) {
+        if (bannerData.status == BANNER_WITH_CONTENT) {
             bannerTextGroup.visible()
             tvBannerTitle.text = bannerData.title
             tvBannerDescriptionOne.text = bannerData.text1
@@ -239,7 +239,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             is SubmitWithdrawalException -> throwable.errorMessage
             else -> ErrorHandler.getErrorMessage(context, throwable)
         }
-        showErrorToaster(errorMessage)
+        showToaster(errorMessage, toasterType = Toaster.TYPE_ERROR)
     }
 
     private fun redirectToSuccessFragment(submitWithdrawalResponse: SubmitWithdrawalResponse) {
@@ -254,11 +254,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         initializeViewPager()
     }
 
-    private fun showErrorToaster(message: String) {
-        view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-        }
-    }
 
     private fun handleGlobalError(throwable: Throwable, retry: () -> Unit) {
         loadingLayout.gone()
@@ -324,7 +319,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             saldoLockTicker.setHtmlDescription(combinedHtmlDescription)
             saldoLockTicker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    WithdrawConstant.openSessionBaseURL(context, userSession,
+                    WithdrawConstant.openSessionBaseURL(context,
                             WithdrawConstant.SALDO_LOCK_PAY_NOW_URL)
                 }
 
@@ -353,7 +348,8 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             BANK_SETTING_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     saldoWithdrawalViewModel.getBankList()
-                    showToaster(getString(R.string.swd_bank_added_success))
+                    showToaster(getString(R.string.swd_bank_added_success),
+                            toasterType = Toaster.TYPE_NORMAL)
                 }
             }
             VERIFICATION_REQUEST_CODE -> {
@@ -366,9 +362,9 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         }
     }
 
-    private fun showToaster(message: String) {
+    private fun showToaster(message: String, toasterType: Int) {
         view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_SHORT)
+            Toaster.make(it, message, Toaster.LENGTH_SHORT, toasterType)
         }
     }
 
@@ -487,6 +483,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     }
 
     companion object {
+        const val BANNER_WITH_CONTENT = 2
         const val WITHDRAWAL_REQUEST_DATA = "withdrawal_request_data"
         const val BANK_SETTING_REQUEST_CODE = 3001
         const val VERIFICATION_REQUEST_CODE = 3002

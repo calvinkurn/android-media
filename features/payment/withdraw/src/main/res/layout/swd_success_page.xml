@@ -95,10 +95,10 @@
             android:layout_width="@dimen/swd_success_image_size"
             android:layout_height="@dimen/swd_success_image_size"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            app:srcCompat="@drawable/swd_img_sucs_page"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barrier" />
+            app:layout_constraintTop_toBottomOf="@+id/barrier"
+            app:srcCompat="@drawable/swd_img_sucs_page" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvWithdrawalNote"
@@ -126,13 +126,13 @@
             android:background="@drawable/swd_rr_grey"
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
-            android:text="@string/swd_withdrawal_process_time"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvWithdrawalNote"
             app:typographyType="body_2"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="@string/swd_withdrawal_process_time" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider1"
@@ -257,11 +257,11 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl6"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="@dimen/spacing_lvl5"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="@string/swd_back_to_saldo_detail"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvAdminFees"

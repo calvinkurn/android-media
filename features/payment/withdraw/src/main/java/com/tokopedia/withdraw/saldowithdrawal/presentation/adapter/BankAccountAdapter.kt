@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder.BankAccountViewHolder
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder.BankSettingButtonViewHolder
 
@@ -15,7 +16,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val bankAccountList: ArrayList<BankAccount> = arrayListOf()
-
+    private var checkEligible: CheckEligible? = null
 
     /**
      * it is used to put extra item in List for setting
@@ -57,15 +58,16 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val bankAccount = bankAccountList[position]
         if (holder is BankAccountViewHolder)
-            holder.bindData(bankAccount, ::onBankAccountSelected, listener)
+            holder.bindData(bankAccount, ::onBankAccountSelected ,listener)
         else
             (holder as BankSettingButtonViewHolder).bindData(
                     bankAccountList.size - 1,
-                    openAddBankAccount = ::openAddBankAccount,
+                    checkEligible, openAddBankAccount = ::openAddBankAccount,
                     openBankAccountSetting = ::openBankAccountSetting)
     }
 
-    fun updateBankList(newBankList: ArrayList<BankAccount>) {
+    fun updateBankList(newBankList: ArrayList<BankAccount>, checkEligible: CheckEligible) {
+        this.checkEligible = checkEligible
         bankAccountList.clear()
         bankAccountList.addAll(updateDefaultBankList(newBankList))
         bankAccountList.add(bankSetting)

@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
 import kotlinx.android.synthetic.main.swd_item_bank_account.view.*
 
@@ -57,15 +58,15 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
         ivButtonRadio.setImageDrawable(drawable)
 
-        if(bankAccount.haveRPProgram){
+        if (bankAccount.haveRPProgram) {
             ivPremiumAccount.visible()
-        }else{
+        } else {
             ivPremiumAccount.gone()
         }
 
-        if(bankAccount.haveSpecialOffer){
+        if (bankAccount.haveSpecialOffer) {
             tvSpecialOffer.visible()
-        }else{
+        } else {
             tvSpecialOffer.gone()
         }
 

@@ -19,16 +19,15 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
-import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.JoinPromptMessageResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.SubmitWithdrawalResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.WithdrawalRequest
+import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_success_page.*
 import javax.inject.Inject
 
@@ -36,9 +35,6 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
 
     @Inject
     lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
-
-    @Inject
-    lateinit var userSession: dagger.Lazy<UserSession>
 
     private lateinit var withdrawalRequest: WithdrawalRequest
     private lateinit var withdrawalResponse: SubmitWithdrawalResponse
@@ -82,7 +78,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     private fun inflateUi() {
         activity?.let { activity ->
             val bankAccount: BankAccount = withdrawalRequest.bankAccount
-            tvWithdrawalNote.text = withdrawalResponse.withdrawalNote
+            tvWithdrawalTimeNote.text = withdrawalResponse.withdrawalNote
             tvBankName.text = bankAccount.bankName
             if (bankAccount.adminFee > 0) {
                 tvAdminFees.text = String.format(activity.resources.getString(R.string.swd_admin_fee_msg)
@@ -140,7 +136,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                WithdrawConstant.openRekeningAccountInfoPage(context, userSession.get())
+                WithdrawConstant.openRekeningAccountInfoPage(context)
 
             }
 
@@ -163,15 +159,6 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         }
     }
 
-    private fun onGoToHome() {
-        activity?.let { activity ->
-            RouteManager.route(context, ApplinkConst.HOME, "")
-            analytics.get().eventClicGoToHomePage()
-            activity.finish()
-        }
-
-    }
-
     companion object {
         private const val ARG_WITHDRAWAL_REQUEST = "arg_withdrawal_request"
         private const val ARG_SUBMIT_WITHDRAWAL_RESPONSE = "arg_submit_withdrawal_response"
@@ -188,7 +175,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-        WithdrawConstant.openSessionBaseURL(context, userSession.get(),
+        WithdrawConstant.openSessionBaseURL(context,
                 withdrawalResponse.joinPromptMessageResponse.actionLink)
     }
 

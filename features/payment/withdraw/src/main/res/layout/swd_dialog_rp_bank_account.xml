@@ -27,7 +27,7 @@
         android:layout_width="@dimen/swd_rp_icon_width"
         android:layout_height="@dimen/swd_rp_icon_width"
         android:background="@drawable/swd_ic_rp_bg"
-        android:padding="12dp"
+        android:padding="@dimen/swp_dp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/swd_ic_power_merchant" />

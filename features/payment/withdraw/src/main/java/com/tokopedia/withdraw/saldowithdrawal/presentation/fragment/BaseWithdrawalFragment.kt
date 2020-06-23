@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -29,18 +30,21 @@ import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
-import com.tokopedia.withdraw.saldowithdrawal.util.*
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
-import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.layoutmanager.NonScrollableLinerLayoutManager
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.DisabledAccountBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.RekPremBankAccountInfoBottomSheet
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
+import com.tokopedia.withdraw.saldowithdrawal.util.*
 import kotlinx.android.synthetic.main.swd_fragment_base_withdrawal.*
 import javax.inject.Inject
 
 abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter.BankAdapterListener {
+
+    private lateinit var checkEligible: CheckEligible
 
     @Inject
     lateinit var userSession: UserSession
@@ -58,6 +62,14 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         parentFragment?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory.get())
             viewModelProvider.get(SaldoWithdrawalViewModel::class.java)
+        } ?: run {
+            null
+        }
+    }
+    private val rekeningPremiumViewModel: RekeningPremiumViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        parentFragment?.let {
+            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory.get())
+            viewModelProvider.get(RekeningPremiumViewModel::class.java)
         } ?: run {
             null
         }
@@ -93,7 +105,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                 tvTermsAndCondition.text = createTermsAndConditionSpannable(it)
             }
             tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
-            saldoWithdrawalViewModel?.let { observeBaseViewModel() }
+            rekeningPremiumViewModel?.let { observeCheckRPEligibility() }
         }
     }
 
@@ -105,8 +117,19 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     abstract fun updateWithdrawalButtonState(bankAccount: BankAccount?,
                                              withdrawalAmount: Long)
 
-    private fun observeBaseViewModel() {
-        saldoWithdrawalViewModel?.bankListResponseMutableData?.observe(this, Observer {
+    private fun observeCheckRPEligibility(){
+        rekeningPremiumViewModel?.rekeningPremiumMutableData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    checkEligible = it.data
+                    saldoWithdrawalViewModel?.let { observeBankListResponse() }
+                }
+            }
+        })
+    }
+
+    private fun observeBankListResponse() {
+        saldoWithdrawalViewModel?.bankListResponseMutableData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     updateBankAccountAdapter(it.data)
@@ -162,7 +185,11 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     private fun initBankAccountRecycler() {
         context?.let {
-            recyclerBankList.layoutManager = NonScrollableLinerLayoutManager(context!!)
+            recyclerBankList.layoutManager = object : LinearLayoutManager(it) {
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }
             bankAccountAdapter = BankAccountAdapter(analytics, this, canShowRekeningPremiumCoachMark())
             recyclerBankList.adapter = bankAccountAdapter
         }
@@ -170,7 +197,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     private fun updateBankAccountAdapter(data: ArrayList<BankAccount>) {
         recyclerBankList.post {
-            bankAccountAdapter.updateBankList(data)
+            bankAccountAdapter.updateBankList(data, checkEligible)
             bankAccountAdapter.notifyDataSetChanged()
             onBankAccountChanged()
         }
@@ -227,6 +254,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     private fun openTermsAndConditionBottomSheet() {
         activity?.let {
             val bottomSheetUnify = BottomSheetUnify()
+            bottomSheetUnify.setTitle(getString(R.string.swd_tnc_title))
             val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc,
                     null, true)
             val webView: TkpdWebView = view.findViewById(R.id.swd_tnc_webview)
@@ -234,7 +262,6 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             bottomSheetUnify.setChild(view)
             bottomSheetUnify.show(it.supportFragmentManager, "")
         }
-
     }
 
     fun lockWithdrawal(isLocked: Boolean) {
@@ -303,7 +330,8 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     override fun showPremiumAccountDialog() {
         activity?.let {
-            val premiumAccountBottomSheet = RekPremBankAccountInfoBottomSheet()
+            val premiumAccountBottomSheet
+                    = RekPremBankAccountInfoBottomSheet.getInstance(checkEligible)
             premiumAccountBottomSheet.isFullpage = false
             premiumAccountBottomSheet.show(it.supportFragmentManager, "")
         }
