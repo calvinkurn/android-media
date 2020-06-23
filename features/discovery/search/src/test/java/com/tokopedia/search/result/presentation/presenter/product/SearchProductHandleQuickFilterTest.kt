@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey
+import com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_NEW_FILTER
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -48,8 +49,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Given isBottomSheetFilterRevampABTestEnabled return true`() {
         every {
-            productListView.abTestRemoteConfig.getString(ABTestRemoteConfigKey.AB_TEST_OLD_FILER_VS_NEW_FILTER)
-        } answers { ABTestRemoteConfigKey.AB_TEST_VARIANT_NEW_FILTER }
+            productListView.abTestRemoteConfig.getString(ABTestRemoteConfigKey.AB_TEST_OLD_FILER_VS_NEW_FILTER, AB_TEST_VARIANT_NEW_FILTER)
+        } answers { AB_TEST_VARIANT_NEW_FILTER }
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {

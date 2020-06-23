@@ -28,7 +28,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
 
     private fun `Given AB Test Remote Config returns new filter variant`() {
         every {
-            productListView.abTestRemoteConfig.getString(AB_TEST_OLD_FILER_VS_NEW_FILTER)
+            productListView.abTestRemoteConfig.getString(AB_TEST_OLD_FILER_VS_NEW_FILTER, AB_TEST_VARIANT_NEW_FILTER)
         } answers { AB_TEST_VARIANT_NEW_FILTER }
     }
 
