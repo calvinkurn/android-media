@@ -1,140 +1,97 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.tokopedia.play.broadcaster.domain.usecase.AddMediaUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
+import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.SetupDataState
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(
-        private val dispatcher: CoroutineDispatcherProvider,
-        private val addProductTagUseCase: AddProductTagUseCase,
-        private val addMediaUseCase: AddMediaUseCase
+        private val productDataStore: ProductDataStore,
+        private val coverDataStore: CoverDataStore
 ) : PlayBroadcastSetupDataStore {
 
-    private val mSelectedProductMap = mutableMapOf<Long, ProductContentUiModel>()
+    override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
+        if (!modeExclusion.contains(OverwriteMode.Product))
+            overwriteProductDataStore(dataStore)
 
-    private val _selectedProductsLiveData = MutableLiveData<List<ProductContentUiModel>>().apply {
-        value = emptyList()
+        if (!modeExclusion.contains(OverwriteMode.Cover))
+            overwriteCoverDataStore(dataStore)
     }
 
-    private val _selectedCoverLiveData = MutableLiveData<PlayCoverUiModel>()
+    override fun getProductDataStore(): ProductDataStore {
+        return productDataStore
+    }
 
-    override fun overwrite(dataStore: PlayBroadcastSetupDataStore) {
-        dataStore.getSelectedCover()?.let(::setFullCover)
+    override fun getCoverDataStore(): CoverDataStore {
+        return coverDataStore
+    }
+
+    private fun overwriteProductDataStore(dataStore: ProductDataStore) {
         setSelectedProducts(dataStore.getSelectedProducts())
+    }
+
+    private fun overwriteCoverDataStore(dataStore: CoverDataStore) {
+        dataStore.getSelectedCover()?.let(::setFullCover)
     }
 
     /**
      * Product
      */
     override fun getObservableSelectedProducts(): LiveData<List<ProductContentUiModel>> {
-        return _selectedProductsLiveData
+        return productDataStore.getObservableSelectedProducts()
     }
 
     override fun getSelectedProducts(): List<ProductContentUiModel> {
-        return _selectedProductsLiveData.value.orEmpty()
+        return productDataStore.getSelectedProducts()
     }
 
     override fun selectProduct(product: ProductContentUiModel, isSelected: Boolean) {
-        if (isSelected) mSelectedProductMap[product.id] = product
-        else mSelectedProductMap.remove(product.id)
-
-        updateSelectedProducts()
+        productDataStore.selectProduct(product, isSelected)
     }
 
     override fun isProductSelected(productId: Long): Boolean {
-        return mSelectedProductMap.contains(productId)
+        return productDataStore.isProductSelected(productId)
     }
 
     override fun getTotalSelectedProduct(): Int {
-        return mSelectedProductMap.size
+        return productDataStore.getTotalSelectedProduct()
     }
 
     override suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit> {
-        return try {
-            addProductTag(channelId)
-            NetworkResult.Success(Unit)
-        } catch (e: Throwable) {
-            NetworkResult.Fail(e)
-        }
+        return productDataStore.uploadSelectedProducts(channelId)
     }
 
-    private suspend fun addProductTag(channelId: String) = withContext(dispatcher.io) {
-        return@withContext addProductTagUseCase.apply {
-            params = AddProductTagUseCase.createParams(
-                    channelId = channelId,
-                    productIds = mSelectedProductMap.keys.map { it.toString() }
-            )
-        }.executeOnBackground()
-    }
-
-    private fun updateSelectedProducts() {
-        _selectedProductsLiveData.value = mSelectedProductMap.values.toList()
-    }
-
-    private fun setSelectedProducts(selectedProducts: List<ProductContentUiModel>) {
-        mSelectedProductMap.clear()
-        selectedProducts.associateByTo(mSelectedProductMap) { it.id }
-
-        updateSelectedProducts()
+    override fun setSelectedProducts(selectedProducts: List<ProductContentUiModel>) {
+        productDataStore.setSelectedProducts(selectedProducts)
     }
 
     /**
      * Cover
      */
     override fun getObservableSelectedCover(): LiveData<PlayCoverUiModel> {
-        return _selectedCoverLiveData
+        return coverDataStore.getObservableSelectedCover()
     }
 
     override fun getSelectedCover(): PlayCoverUiModel? {
-        return _selectedCoverLiveData.value
+        return coverDataStore.getSelectedCover()
     }
 
     override fun setFullCover(cover: PlayCoverUiModel) {
-        _selectedCoverLiveData.value = cover
+        coverDataStore.setFullCover(cover)
     }
 
     override fun updateCoverState(state: CoverSetupState) {
-        val currentCover = getSelectedCover() ?: PlayCoverUiModel.empty()
-        _selectedCoverLiveData.value = currentCover.copy(
-                croppedCover = state,
-                state = SetupDataState.Draft
-        )
+        coverDataStore.updateCoverState(state)
     }
 
     override fun updateCoverTitle(title: String) {
-        val currentCover = getSelectedCover() ?: PlayCoverUiModel.empty()
-        _selectedCoverLiveData.value = currentCover.copy(
-                title = title,
-                state = SetupDataState.Draft
-        )
+        coverDataStore.updateCoverTitle(title)
     }
 
     override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
-        return try {
-            updateCover(channelId)
-            NetworkResult.Success(Unit)
-        } catch (e: Throwable) {
-            NetworkResult.Fail(e)
-        }
-    }
-
-    private suspend fun updateCover(channelId: String) = withContext(dispatcher.io) {
-        return@withContext addMediaUseCase.apply {
-            params = AddMediaUseCase.createParams(
-                    channelId = channelId,
-                    coverUrl = when (val croppedCover = getSelectedCover()?.croppedCover) {
-                        is CoverSetupState.Cropped -> croppedCover.coverImage.path
-                        else -> throw IllegalStateException("Cover url must not be null")
-                    })
-        }.executeOnBackground()
+        return coverDataStore.uploadSelectedCover(channelId)
     }
 }

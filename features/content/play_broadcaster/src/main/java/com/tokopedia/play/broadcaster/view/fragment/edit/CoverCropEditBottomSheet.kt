@@ -39,6 +39,9 @@ class CoverCropEditBottomSheet @Inject constructor(
 
     private var mListener: SetupResultListener? = null
 
+    override val channelId: String
+        get() = parentViewModel.channelId
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
@@ -56,9 +59,6 @@ class CoverCropEditBottomSheet @Inject constructor(
         setupView(view)
     }
 
-    override val channelId: String
-        get() = parentViewModel.channelId
-
     override fun goBack() {
         mListener?.onSetupCanceled()
         dismiss()
@@ -72,6 +72,10 @@ class CoverCropEditBottomSheet @Inject constructor(
         mListener = listener
     }
 
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, TAG)
+    }
+
     private fun initView(view: View) {
         with(view) {
             flFragment = findViewById(R.id.fl_fragment)
@@ -83,10 +87,6 @@ class CoverCropEditBottomSheet @Inject constructor(
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
 
         openCropFragment()
-    }
-
-    fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, TAG)
     }
 
     private fun openCropFragment() {

@@ -40,4 +40,14 @@ abstract class PlayBroadcastSetupViewModelModule {
     @ViewModelKey(PlaySearchSuggestionsViewModel::class)
     abstract fun getPlaySearchSuggestionsViewModel(viewModel: PlaySearchSuggestionsViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayEditProductViewModel::class)
+    abstract fun getPlayEditProductViewModel(viewModel: PlayEditProductViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DataStoreViewModel::class)
+    abstract fun getDataStoreViewModel(viewModel: DataStoreViewModel): ViewModel
+
 }

@@ -5,7 +5,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,7 +19,6 @@ import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import javax.inject.Inject
@@ -50,7 +48,7 @@ class PlayEtalaseListFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(getParentFragmentByClass(PlayBroadcastSetupBottomSheet::class.java), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        viewModel = ViewModelProviders.of(etalaseSetupCoordinator.getParent(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -140,17 +138,6 @@ class PlayEtalaseListFragment @Inject constructor(
         requireView().doOnPreDraw {
             etalaseSetupCoordinator.startPostponedEnterTransition()
         }
-    }
-
-    /**
-     * Helper
-     */
-    private fun getParentFragmentByClass(clazz: Class<out Fragment>): Fragment {
-        var parent = parentFragment
-        while (parent != null && clazz != parent::class.java) {
-            parent = parent.parentFragment
-        }
-        return parent ?: throw IllegalArgumentException("No parent found with class : $clazz")
     }
 
     companion object {

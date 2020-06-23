@@ -48,6 +48,7 @@ class PlayBroadcastSetupModule {
     }
 
     @Provides
+    @PlayBroadcastSetupScope
     fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = CommonCoroutineDispatcherProvider()
 
     @Provides

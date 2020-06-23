@@ -10,6 +10,8 @@ interface PlayEtalaseSetupCoordinator {
             sharedElements: List<View>
     )
 
+    fun getParent(): Fragment
+
     fun openSearchPage(keyword: String)
 
     fun openProductSearchPage(keyword: String)

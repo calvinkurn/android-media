@@ -38,6 +38,7 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
 import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.yalantis.ucrop.model.ExifInfo
@@ -56,6 +57,7 @@ class PlayCoverSetupFragment @Inject constructor(
     private val scope = CoroutineScope(dispatcher.main + job)
 
     private lateinit var viewModel: PlayCoverSetupViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
 
     private lateinit var yalantisImageCropper: YalantisImageCropper
 
@@ -87,6 +89,8 @@ class PlayCoverSetupFragment @Inject constructor(
         setupTransition()
         viewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(PlayCoverSetupViewModel::class.java)
+        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory)
+                .get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -409,7 +413,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun finishSetup() {
-        mListener?.onCoverSetupFinished(viewModel.getDataStore())
+        mListener?.onCoverSetupFinished(dataStoreViewModel.getDataStore())
     }
 
     //region observe

@@ -6,10 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
@@ -17,6 +16,7 @@ import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import javax.inject.Inject
@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 22/06/20
  */
-class CoverEditFragment : BottomSheetDialogFragment() {
+class CoverEditFragment : TkpdBaseV4Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -32,14 +32,15 @@ class CoverEditFragment : BottomSheetDialogFragment() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private lateinit var flFragment: FrameLayout
-
     private lateinit var imagePickerHelper: CoverImagePickerHelper
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
     private lateinit var viewModel: PlayCoverSetupViewModel
 
     private var mListener: SetupResultListener? = null
+
+    override fun getScreenName(): String = "Cover Edit Fragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -47,10 +48,11 @@ class CoverEditFragment : BottomSheetDialogFragment() {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayCoverSetupViewModel::class.java)
+        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_empty_setup, container, false)
+        return inflater.inflate(R.layout.fragment_empty_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,13 +78,10 @@ class CoverEditFragment : BottomSheetDialogFragment() {
     }
 
     private fun initView(view: View) {
-        with (view) {
-            flFragment = findViewById(R.id.fl_fragment)
-        }
     }
 
     private fun setupView(view: View) {
-        viewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
+        dataStoreViewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
 
         getImagePickerHelper().show()
     }

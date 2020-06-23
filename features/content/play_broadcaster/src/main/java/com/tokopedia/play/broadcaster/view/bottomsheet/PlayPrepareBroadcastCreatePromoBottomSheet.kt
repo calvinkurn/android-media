@@ -129,7 +129,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             }
             btnPlayPrepareBroadcastNext.text = getString(R.string.play_next)
         } else {
-            btnPlayPrepareBroadcastNext.text = getString(R.string.play_prepare_broadcast_label_save)
+            btnPlayPrepareBroadcastNext.text = getString(R.string.play_label_save)
         }
 
         svPlayPrepareBroadcastPromo.layoutParams.height = screenHeight - containerPlayPrepareBroadcastBottom.height

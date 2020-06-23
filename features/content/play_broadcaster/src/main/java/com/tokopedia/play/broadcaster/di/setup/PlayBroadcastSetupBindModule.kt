@@ -1,9 +1,6 @@
 package com.tokopedia.play.broadcaster.di.setup
 
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStoreImpl
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.*
 import dagger.Binds
 import dagger.Module
 
@@ -20,4 +17,12 @@ abstract class PlayBroadcastSetupBindModule {
     @Binds
     @PlayBroadcastSetupScope
     abstract fun bindDataStore(dataStore: PlayBroadcastDataStoreImpl): PlayBroadcastDataStore
+
+    @Binds
+    @PlayBroadcastSetupScope
+    abstract fun bindProductDataStore(dataStore: ProductDataStoreImpl): ProductDataStore
+
+    @Binds
+    @PlayBroadcastSetupScope
+    abstract fun bindCoverDataSource(dataStore: CoverDataStoreImpl): CoverDataStore
 }

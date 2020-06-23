@@ -19,12 +19,14 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayEtalaseSetupCoordinator
+import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -37,6 +39,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 ) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
 
     private lateinit var container: ViewGroup
     private lateinit var tvInfo: TextView
@@ -61,6 +64,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         setupTransition()
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -114,6 +118,10 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     override fun goBack(clazz: Class<out Fragment>) {
         if (childFragmentManager.fragments.isNotEmpty()) childFragmentManager.popBackStack(clazz.name, 0)
+    }
+
+    override fun getParent(): Fragment {
+        return requireParentFragment()
     }
 
     fun setListener(listener: Listener) {
@@ -225,11 +233,8 @@ class PlayEtalasePickerFragment @Inject constructor(
         (currentFragment as? PlayBaseEtalaseSetupFragment)?.refresh()
     }
 
-    private fun showCoverTitlePage(nextBtnView: View) {
-        bottomSheetCoordinator.navigateToFragment(
-                fragmentClass = PlayCoverSetupFragment::class.java,
-                sharedElements = listOf(nextBtnView)
-        )
+    private fun finishSetupProduct(nextBtnView: View) {
+        mListener?.onProductSetupFinished(listOf(nextBtnView), dataStoreViewModel.getDataStore())
     }
 
     private fun uploadProduct() {
@@ -258,7 +263,7 @@ class PlayEtalasePickerFragment @Inject constructor(
                     val data = it.data.getContentIfNotHandled()
                     if (data != null) {
                         bottomActionView.setLoading(false)
-                        showCoverTitlePage(bottomActionView.getButtonView())
+                        finishSetupProduct(bottomActionView.getButtonView())
                     }
                 }
             }
@@ -287,7 +292,7 @@ class PlayEtalasePickerFragment @Inject constructor(
                 .setDuration(300)
     }
 
-    interface Listener {
+    interface Listener : ProductSetupListener {
 
         fun onEtalaseClicked(id: String, sharedElements: List<View>)
     }
