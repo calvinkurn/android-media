@@ -223,7 +223,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             if (!shopHomeAdapter.isLoading) {
                 sortId = it.first
                 sortName = it.second
-                shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                 shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
                 shopHomeAdapter.refreshSticky()
                 refreshProductList()
@@ -493,9 +492,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     if (shopHomeAdapter.isLoading) {
                         return
                     }
-                    shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                    shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                     shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
                     shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
                     shopHomeAdapter.refreshSticky()

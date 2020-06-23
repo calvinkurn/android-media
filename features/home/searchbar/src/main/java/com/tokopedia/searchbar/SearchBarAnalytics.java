@@ -16,6 +16,8 @@ public class SearchBarAnalytics {
 
     private final IrisSession irisSession;
 
+    private String SEARCH_BAR_EVENT_CATEGORY_FORMAT = "%s - %s";
+
     SearchBarAnalytics(Context context) {
         irisSession = new IrisSession(context);
     }
@@ -24,7 +26,7 @@ public class SearchBarAnalytics {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getDataEvent(screenName,
                         SearchBarConstant.CLICK_TOP_NAV,
-                        SearchBarConstant.TOP_NAV,
+                        String.format(SEARCH_BAR_EVENT_CATEGORY_FORMAT, SearchBarConstant.TOP_NAV, screenName),
                         String.format("%s %s", SearchBarConstant.CLICK, item)));
     }
 
@@ -32,7 +34,7 @@ public class SearchBarAnalytics {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getDataEvent(screenName,
                         SearchBarConstant.CLICK_TOP_NAV,
-                        SearchBarConstant.TOP_NAV,
+                        String.format(SEARCH_BAR_EVENT_CATEGORY_FORMAT, SearchBarConstant.TOP_NAV, screenName),
                         String.format("%s %s", SearchBarConstant.CLICK,
                                 SearchBarConstant.NOTIFICATION)));
     }
@@ -64,7 +66,7 @@ public class SearchBarAnalytics {
     public void eventTrackingSearchBar(String screenName) {
         Map<String, Object> stringObjectMap = TrackAppUtils.gtmData(
                 SearchBarConstant.CLICK_TOP_NAV,
-                SearchBarConstant.TOP_NAV + " - " + screenName,
+                String.format(SEARCH_BAR_EVENT_CATEGORY_FORMAT, SearchBarConstant.TOP_NAV, screenName),
                 SearchBarConstant.CLICK_SEARCH_BOX,
                 ""
         );

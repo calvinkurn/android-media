@@ -62,10 +62,11 @@
 
     <ImageView
         android:layout_width="@dimen/dp_90"
-        android:layout_height="@dimen/dp_76"
+        android:layout_height="@dimen/dp_0"
         app:layout_constraintBottom_toTopOf="@id/bottom_separator_desc"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_separator_notifyme"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/bg_notify_me" />
 
     <com.tokopedia.unifycomponents.UnifyButton
