@@ -1,27 +1,36 @@
 package com.tokopedia.abstraction.processor
 
 
+import com.tokopedia.analytic.annotation.*
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analytic_constant.Param
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.BundleThis
-import com.tokopedia.annotation.Key
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
+import com.tokopedia.checkers.ProductListClickChecker
+import com.tokopedia.checkers.ProductListImpressionProductChecker
 import com.tokopedia.firebase.analytic.rules.ProductClicksRules
+import com.tokopedia.util.GTMErrorHandlerImpl
+import com.tokopedia.util.logger.GTMLoggerImpl
 
 /**
  * Product List Click
  */
+@ErrorHandler(GTMErrorHandlerImpl::class)
+@Logger(GTMLoggerImpl::class)
 @AnalyticEvent(true, Event.SELECT_CONTENT, ProductClicksRules::class)
 data class ProductListClick(
         @DefaultValueString("Search Results")
         val item_list: String,
+        @CustomChecker(ProductListClickChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct"])
         val items: ArrayList<ProductListClickProduct>,
         @DefaultValueString("")
         val eventCategory: String?,
+        @CustomChecker(ProductListClickChecker::class, Level.ERROR, functionName = ["notContainWords"])
         @DefaultValueString("")
         val eventAction: String?,
+        @CustomChecker(ProductListClickChecker::class, Level.ERROR, functionName = ["onlySelectContent"])
         @DefaultValueString("")
         val event: String?,
         @DefaultValueString("")
@@ -35,6 +44,8 @@ data class ProductListClick(
 
 private const val KEY_DIMENSION_40 = "dimension40"
 
+@ErrorHandler(GTMErrorHandlerImpl::class)
+@Logger(GTMLoggerImpl::class)
 @BundleThis(false, true)
 data class ProductListClickProduct(
         @Key(Param.ITEM_ID)
@@ -48,6 +59,7 @@ data class ProductListClickProduct(
         @DefaultValueString("none")
         @Key(Param.ITEM_BRAND)
         val brand: String?,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero", "isPriceNotZero", "isPriceNotZero", "isPriceNotZero"])
         @Key(Param.PRICE)
         val price: Double,
         @DefaultValueString("IDR")
@@ -55,7 +67,11 @@ data class ProductListClickProduct(
         val currency: String?,
         @Key(KEY_DIMENSION_40)
         val keyDimension40: String,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(0)
         @Key(Param.INDEX)
-        val index: Long
+        val index: Long,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["checkMap"])
+        @DefinedInCollections
+        val stringCollection: HashMap<String, String>
 )
