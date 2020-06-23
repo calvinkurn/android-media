@@ -1164,8 +1164,14 @@ object DynamicProductDetailTracking {
                                           multiOrigin: Boolean, deeplinkUrl: String
                                           ,isStockAvailable: String ->
 
-            val subCategoryId = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
-            val subCategoryName = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
+            val subCategoryIdLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.id ?: ""
+            val subCategoryNameLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.name ?: ""
+
+            val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
+            val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
+
+            val categoryIdLevel3 = productInfo?.basic?.category?.detail?.getOrNull(2)?.id ?: ""
+            val categoryNameLevel3 = productInfo?.basic?.category?.detail?.getOrNull(2)?.name ?: ""
 
             val productImageUrl = productInfo?.data?.media?.filter {
                 it.type == "image"
@@ -1188,19 +1194,24 @@ object DynamicProductDetailTracking {
                             shopInfo?.shopCore?.domain,
                             shopInfo?.location,
                             shopInfo?.goldOS?.isGoldBadge.toString(),
-                            productInfo?.basic?.category?.id,
+                            categoryIdLevel1,
                             TrackingUtil.getEnhanceShopType(shopInfo?.goldOS),
                             "/productpage",
-                            subCategoryName,
-                            subCategoryId,
+                            subCategoryNameLevel2,
+                            subCategoryIdLevel2,
                             productInfo?.basic?.url,
                             deeplinkUrl,
                             productImageUrl,
-                            shopInfo?.goldOS?.isOfficial ?: 0,
+                            (shopInfo?.goldOS?.isOfficial == 1).toString(),
                             TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value ?: 0),
                             productInfo?.basic?.productID ?: "",
                             "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}",
                             "",
+                            (productInfo?.finalPrice.orZero().toString()),
+                            productInfo?.getProductName,
+                            categoryNameLevel3,
+                            categoryIdLevel3,
+                            categoryNameLevel1,
                             irisSessionId,
                             null,
                             ProductDetailViewsBundler.KEY,
