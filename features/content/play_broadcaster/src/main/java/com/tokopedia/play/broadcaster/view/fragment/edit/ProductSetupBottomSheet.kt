@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
+import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
@@ -39,7 +40,7 @@ import javax.inject.Inject
 class ProductSetupBottomSheet : BottomSheetDialogFragment(),
         PlayBottomSheetCoordinator,
         PlayEtalasePickerFragment.Listener,
-        PlayEtalaseDetailFragment.Listener {
+        ProductSetupListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -23,6 +22,7 @@ import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
+import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
@@ -54,7 +54,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private var shouldLoadFirst = true
 
-    private var mListener: Listener? = null
+    private var mListener: ProductSetupListener? = null
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
@@ -106,7 +106,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         return false
     }
 
-    fun setListener(listener: Listener) {
+    fun setListener(listener: ProductSetupListener) {
         mListener = listener
     }
 
@@ -183,7 +183,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         selectedProductPage.show()
     }
 
-    private fun showCoverTitlePage(nextBtnView: View) {
+    private fun finishSetupProduct(nextBtnView: View) {
         mListener?.onProductSetupFinished(listOf(nextBtnView), dataStoreViewModel.getDataStore())
     }
 
@@ -237,7 +237,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
                     val data = it.data.getContentIfNotHandled()
                     if (data != null) {
                         bottomActionView.setLoading(false)
-                        showCoverTitlePage(bottomActionView.getButtonView())
+                        finishSetupProduct(bottomActionView.getButtonView())
                     }
                 }
             }
@@ -303,10 +303,5 @@ class PlayEtalaseDetailFragment @Inject constructor(
         const val EXTRA_ETALASE_ID = "etalase_id"
 
         private const val SPAN_COUNT = 2
-    }
-
-    interface Listener {
-
-        fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore)
     }
 }

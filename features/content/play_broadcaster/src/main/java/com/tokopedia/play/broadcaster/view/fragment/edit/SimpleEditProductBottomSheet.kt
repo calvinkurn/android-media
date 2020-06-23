@@ -152,7 +152,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
     }
 
     companion object {
-        private const val MAX_HEIGHT_MULTIPLIER = 0.6
+        private const val MAX_HEIGHT_MULTIPLIER = 0.95
 
         private const val TAG = "Simple Edit Product BottomSheet"
     }
