@@ -9,11 +9,11 @@ import javax.inject.Inject
 class ProductrevWaitForFeedbackSeenUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<ProductrevWaitForFeedbackSeenResponse>(graphqlRepository) {
 
     companion object {
-        const val PARAM_INBOX_REVIEW_ID = "inbox_review_id"
+        const val PARAM_PRODUCT_INBOX_ID = "productInboxID"
         private val query by lazy {
             """
-                query productrevWaitForFeedbackSeen(${'$'}inbox_review_id: Int) {
-                  productrevWaitForFeedbackSeen(inbox_review_id: ${'$'}inbox_review_id)
+                query productrevWaitForFeedbackSeen(${'$'}productInboxID: Int) {
+                  productrevWaitForFeedbackSeen(inbox_review_id: ${'$'}productInboxID)
                 }
             """.trimIndent()
         }
@@ -27,7 +27,7 @@ class ProductrevWaitForFeedbackSeenUseCase @Inject constructor(graphqlRepository
     fun setParams(inboxReviewId: Int) {
         setRequestParams(
                 RequestParams.create().apply {
-                    putInt(PARAM_INBOX_REVIEW_ID, inboxReviewId)
+                    putInt(PARAM_PRODUCT_INBOX_ID, inboxReviewId)
                 }.parameters
         )
     }

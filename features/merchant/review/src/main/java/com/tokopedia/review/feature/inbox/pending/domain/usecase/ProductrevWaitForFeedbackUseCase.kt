@@ -10,16 +10,15 @@ import javax.inject.Inject
 class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<ProductrevWaitForFeedbackResponseWrapper>(graphqlRepository) {
 
     companion object {
-        const val PARAM_FILTER = "filterBy"
-        const val PARAM_SORT = "sortBy"
         const val PARAM_LIMIT = "limit"
         const val PARAM_PAGE = "page"
         private val query by lazy {
             """
-                query productrevWaitForFeedback(${'$'}filterBy: String, ${'$'}sortBy: String, ${'$'}limit: Int!, ${'$'}page: Int!) {
-                    productrevWaitForFeedback(filterBy: ${'$'}filterBy, sortBy: ${'$'}sortBy, limit: ${'$'}limit, page: ${'$'}page) {
+                query productrevWaitForFeedback(${'$'}limit: Int!, ${'$'}page: Int!) {
+                    productrevWaitForFeedback(limit: ${'$'}limit, page: ${'$'}page) {
                       list {
                         reputationID
+                        productInboxID
                         product {
                           productID
                           productName
@@ -34,8 +33,7 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
                           seen
                         }
                       }
-                      filterBy
-                      sortBy
+                      searchQuery
                       page
                       limit
                       hasNext
@@ -50,15 +48,9 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
         setTypeClass(ProductrevWaitForFeedbackResponseWrapper::class.java)
     }
 
-    fun setParams(filter: String = "", sort: String = "", limit: Int = ReviewInboxConstants.REVIEW_INBOX_DATA_PER_PAGE, page: Int){
+    fun setParams(limit: Int = ReviewInboxConstants.REVIEW_INBOX_DATA_PER_PAGE, page: Int){
         setRequestParams(
                 RequestParams.create().apply {
-                    if(filter.isNotBlank()) {
-                        putString(PARAM_FILTER, filter)
-                    }
-                    if(sort.isNotBlank()) {
-                        putString(PARAM_SORT, sort)
-                    }
                     putInt(PARAM_LIMIT, limit)
                     putInt(PARAM_PAGE, page)
                 }.parameters
