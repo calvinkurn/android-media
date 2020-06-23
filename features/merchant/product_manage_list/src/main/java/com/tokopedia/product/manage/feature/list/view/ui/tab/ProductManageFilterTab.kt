@@ -49,7 +49,7 @@ class ProductManageFilterTab(
         sortFilterTab.chipItems.forEachIndexed { i, chip ->
             if(i == selectedTabIndex) {
                 chip.type = ChipsUnify.TYPE_SELECTED
-                selectedTab = SelectedTab(chip, sortFilterTab.chipItems.size)
+                selectedTab = SelectedTab(chip, data.tabs[selectedTabIndex].count)
             }
         }
     }
