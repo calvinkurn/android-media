@@ -73,6 +73,10 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
     				videoURLIOS
     				isAutoplay
     			}
+    			videos{
+                    url
+                    source
+                }
     		}
     		... on pdpDataProductContent {
     			name
