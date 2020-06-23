@@ -187,6 +187,58 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
+    fun `given success response when validate shop name is called`() {
+        mockkObject(ShopOpenRevampValidateDomainShopNameUseCase)
+        val shopName: String = "tokohape"
+        viewModel.checkShopName(shopName)
+
+        coEvery {
+            validateDomainShopNameUseCase.executeOnBackground()
+        } returns ValidateShopDomainNameResult()
+        Thread.sleep(1000)
+
+        verify {
+            ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
+        }
+
+        Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
+        coVerify {
+            validateDomainShopNameUseCase.executeOnBackground()
+        }
+        Assert.assertTrue(viewModel.checkShopNameResponse.value is Success)
+    }
+
+    @Test
+    fun `given success response when validate domain name is called`() {
+        mockkObject(ShopOpenRevampValidateDomainShopNameUseCase)
+        coEvery {
+            validateDomainShopNameUseCase.executeOnBackground()
+        } returns ValidateShopDomainNameResult()
+
+        val domainName: String = "tokohapee"
+        viewModel.checkDomainName(domainName)
+        Thread.sleep(1000)
+
+        verify {
+            ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domainName)
+        }
+
+        Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
+        coVerify {
+            validateDomainShopNameUseCase.executeOnBackground()
+        }
+        Assert.assertTrue(viewModel.checkDomainNameResponse.value is Success)
+    }
+
+    @Test
+    fun `given survey payload when data survey is provided`() {
+        val dataSurvey: MutableMap<Int, MutableList<Int>> = anyMap()
+        viewModel.getDataSurveyInput(dataSurvey)
+
+        Assert.assertTrue(viewModel.getDataSurveyInput(dataSurvey) is MutableMap<String, Any>)
+    }
+
+    @Test
     fun `given quisionaire data when request is executed`() {
         mockkObject(ShopOpenRevampGetSurveyUseCase)
         coEvery {

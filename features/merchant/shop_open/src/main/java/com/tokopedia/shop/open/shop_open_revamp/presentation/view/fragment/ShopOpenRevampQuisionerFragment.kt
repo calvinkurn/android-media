@@ -132,7 +132,8 @@ class ShopOpenRevampQuisionerFragment :
 
         btnNext.setOnClickListener {
             shopOpenRevampTracking?.clickButtonNextFromSurveyPage()
-            viewModel.sendInputSurveyData(questionsAndAnswersId)
+            val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
+            viewModel.sendSurveyData(dataSurveyInput)
         }
     }
 
@@ -225,7 +226,8 @@ class ShopOpenRevampQuisionerFragment :
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable) {
-                        viewModel.sendInputSurveyData(questionsAndAnswersId)
+                        val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
+                        viewModel.sendSurveyData(dataSurveyInput)
                     }
                 }
             }

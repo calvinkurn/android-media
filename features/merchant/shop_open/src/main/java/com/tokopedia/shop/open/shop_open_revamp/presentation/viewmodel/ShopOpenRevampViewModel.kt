@@ -176,11 +176,6 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
     }
 
-    fun sendInputSurveyData(dataSurvey: MutableMap<Int, MutableList<Int>>) {
-        val dataSurveyInput = getDataSurveyInput(dataSurvey)
-        sendSurveyData(dataSurveyInput)
-    }
-
     fun sendSurveyData(dataSurveyInput: Map<String, Any>) {
         launchCatchError(block = {
             withContext(dispatchers.io()) {
@@ -195,7 +190,7 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
     }
 
-    private fun getDataSurveyInput(
+    fun getDataSurveyInput(
             dataSurveys: MutableMap<Int, MutableList<Int>>
     ): MutableMap<String, Any> {
         val surveyPayload = mutableMapOf<String, Any>()
