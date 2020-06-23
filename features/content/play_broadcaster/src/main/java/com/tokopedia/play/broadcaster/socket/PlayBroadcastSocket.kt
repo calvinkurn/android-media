@@ -17,11 +17,11 @@ interface PlayBroadcastSocket {
             pingInterval = DEFAULT_PING
     )
 
+    fun socketInfoListener(listener: PlaySocketInfoListener)
+
     fun connect(channelId: String, groupChatToken: String = "")
 
     fun destroy()
-
-    fun getObservablePlaySocketInfoState(): LiveData<PlaySocketInfoState>
 
     fun getObservablePlaySocketMessage(): LiveData<out PlaySocketType>
 

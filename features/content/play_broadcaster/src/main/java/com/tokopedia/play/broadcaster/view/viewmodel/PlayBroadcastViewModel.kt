@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
+import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
@@ -174,6 +175,9 @@ class PlayBroadcastViewModel @Inject constructor(
         // TODO("update channel status, still waiting for the API to finish")
     }
 
+    /**
+     * Apsara integration
+     */
     fun startPushBroadcast(ingestUrl: String) {
         scope.launch {
             if (ingestUrl.isNotEmpty()) {
@@ -184,18 +188,45 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    fun resumePushStream() {
+        scope.launch {
+            if (!playPusher.isPushing()) {
+                updateChannelStatus(PlayChannelStatus.Active)
+                playPusher.resume()
+            }
+        }
+    }
+
+    fun pausePushStream() {
+        scope.launch {
+            if (playPusher.isPushing()) {
+                updateChannelStatus(PlayChannelStatus.Pause)
+                playPusher.pause()
+            }
+        }
+    }
+
     fun stopPushBroadcast() {
         scope.launch {
             updateChannelStatus(PlayChannelStatus.Finish)
             playPusher.stopPush()
             playPusher.stopPreview()
+            playSocket.destroy()
         }
     }
 
     private fun startWebSocket() {
         playSocket.connect(channelId = "", groupChatToken = "")
+        playSocket.socketInfoListener(object : PlaySocketInfoListener{
+            override fun onError(throwable: Throwable) {
+                // TODO("reconnect socket")
+            }
+        })
     }
 
+    /**
+     * UI
+     */
     private suspend fun onRetrievedNewChat(newChat: PlayChatUiModel) = withContext(dispatcher.main) {
         val currentChatList = _observableChatList.value ?: mutableListOf()
         currentChatList.add(newChat)

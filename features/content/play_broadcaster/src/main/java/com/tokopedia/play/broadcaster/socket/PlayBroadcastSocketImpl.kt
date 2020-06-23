@@ -29,15 +29,20 @@ class PlayBroadcastSocketImpl constructor(
         private val cacheHandler: LocalCacheHandler
 ): PlayBroadcastSocket {
 
+    var socketInfoListener: PlaySocketInfoListener? = null
+
     private lateinit var compositeSubscription: CompositeSubscription
     private val gson = Gson()
 
-    private val _observableInfoState = MutableLiveData<PlaySocketInfoState>()
     private val _observableResponseMessage = MutableLiveData<PlaySocketType>()
+
+    override fun socketInfoListener(listener: PlaySocketInfoListener) {
+        this.socketInfoListener = listener
+    }
 
     override fun connect(channelId: String, groupChatToken: String) {
         if (channelId.isEmpty()) {
-            _observableInfoState.postValue(PlaySocketInfoState.Error(Throwable("channelId must not be empty")))
+            socketInfoListener?.onError(Throwable("channelId must not be empty"))
             return
         }
 
@@ -49,11 +54,11 @@ class PlayBroadcastSocketImpl constructor(
         val subscriber = object : WebSocketSubscriber() {
 
             override fun onOpen(webSocket: WebSocket) {
-                _observableInfoState.postValue(PlaySocketInfoState.Active)
+                socketInfoListener?.onActive()
             }
 
             override fun onClose() {
-                _observableInfoState.postValue(PlaySocketInfoState.Close)
+                socketInfoListener?.onClose()
             }
 
             override fun onMessage(webSocketResponse: WebSocketResponse) {
@@ -82,11 +87,11 @@ class PlayBroadcastSocketImpl constructor(
             }
 
             override fun onError(e: Throwable) {
-                _observableInfoState.postValue(PlaySocketInfoState.Error(e))
+                socketInfoListener?.onError(e)
             }
 
             override fun onReconnect() {
-                _observableInfoState.postValue(PlaySocketInfoState.ReConnect)
+                socketInfoListener?.onReconnect()
             }
         }
 
@@ -101,8 +106,6 @@ class PlayBroadcastSocketImpl constructor(
     override fun destroy() {
         compositeSubscription.clear()
     }
-
-    override fun getObservablePlaySocketInfoState(): LiveData<PlaySocketInfoState> = _observableInfoState
 
     override fun getObservablePlaySocketMessage(): LiveData<out PlaySocketType> = _observableResponseMessage
 
