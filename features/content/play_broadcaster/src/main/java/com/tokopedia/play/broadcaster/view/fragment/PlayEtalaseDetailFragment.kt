@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -39,6 +40,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 ) : PlayBaseSetupFragment() {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
 
     private val etalaseId: String
         get() = arguments?.getString(EXTRA_ETALASE_ID) ?: throw IllegalStateException("etalaseId must be set")
@@ -78,6 +80,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         setupTransition()
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -181,7 +184,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun showCoverTitlePage(nextBtnView: View) {
-        mListener?.onProductSetupFinished(listOf(nextBtnView), viewModel.getDataStore())
+        mListener?.onProductSetupFinished(listOf(nextBtnView), dataStoreViewModel.getDataStore())
     }
 
     /**

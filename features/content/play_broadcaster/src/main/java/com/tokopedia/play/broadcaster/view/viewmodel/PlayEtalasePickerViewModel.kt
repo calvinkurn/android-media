@@ -74,14 +74,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
         job.cancelChildren()
     }
 
-    fun setDataStore(dataStore: PlayBroadcastSetupDataStore) {
-        setupDataStore.overwrite(dataStore)
-    }
-
-    fun getDataStore(): PlayBroadcastSetupDataStore {
-        return setupDataStore
-    }
-
     fun loadEtalaseProducts(etalaseId: String, page: Int) {
         val currentValue = _observableSelectedEtalase.value?.currentValue
         val etalase = etalaseMap[etalaseId]

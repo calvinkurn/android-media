@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import javax.inject.Inject
@@ -34,6 +35,7 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
     private lateinit var imagePickerHelper: CoverImagePickerHelper
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
     private lateinit var viewModel: PlayCoverSetupViewModel
 
     private var mListener: SetupResultListener? = null
@@ -46,6 +48,7 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayCoverSetupViewModel::class.java)
+        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -78,7 +81,7 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
     }
 
     private fun setupView(view: View) {
-        viewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
+        dataStoreViewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
 
         getImagePickerHelper().show()
     }

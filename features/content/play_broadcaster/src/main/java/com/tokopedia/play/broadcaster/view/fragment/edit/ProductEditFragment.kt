@@ -14,8 +14,8 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import javax.inject.Inject
 
 /**
@@ -33,7 +33,7 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
     private lateinit var productSetupBottomSheet: ProductSetupBottomSheet
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
-    private lateinit var viewModel: PlayEtalasePickerViewModel
+    private lateinit var viewModel: DataStoreViewModel
 
     private var mListener: SetupResultListener? = null
 
@@ -44,7 +44,7 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
         childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -26,8 +26,4 @@ class PlayEditProductViewModel @Inject constructor(
                 isSelected
         )
     }
-
-    fun getDataStore(): PlayBroadcastSetupDataStore {
-        return setupDataStore
-    }
 }

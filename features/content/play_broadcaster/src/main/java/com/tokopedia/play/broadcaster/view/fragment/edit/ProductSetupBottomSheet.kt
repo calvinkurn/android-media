@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
@@ -27,6 +28,7 @@ import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import java.util.*
 import javax.inject.Inject
@@ -51,6 +53,7 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
     private lateinit var flOverlay: FrameLayout
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
 
     override val channelId: String
         get() = parentViewModel.channelId
@@ -84,6 +87,7 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
         childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -147,6 +151,8 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
     }
 
     private fun setupView(view: View) {
+        dataStoreViewModel.setDataStore(parentViewModel.getCurrentSetupDataStore(), modeExclusion = listOf(OverwriteMode.Product))
+
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
 
         openEtalasePickerFragment()
@@ -163,8 +169,7 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
 
     private fun finishSetup(dataStore: PlayBroadcastSetupDataStore) {
         mListener?.onSetupCompletedWithData(dataStore)
-        val currentFragment = childFragmentManager.findFragmentById(flFragment.id)
-        if (currentFragment is BottomSheetDialogFragment) currentFragment.dismiss()
+        dismiss()
     }
 
     private fun<T: Fragment> openFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit): Fragment {

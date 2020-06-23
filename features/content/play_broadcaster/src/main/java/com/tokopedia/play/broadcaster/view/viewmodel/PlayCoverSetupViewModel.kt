@@ -90,10 +90,6 @@ class PlayCoverSetupViewModel @Inject constructor(
         return coverTitle.isNotEmpty() && coverTitle.length <= MAX_CHARS
     }
 
-    fun getDataStore(): PlayBroadcastSetupDataStore {
-        return setupDataStore
-    }
-
     suspend fun getOriginalImageUrl(productId: Long, resizedImageUrl: String): String? = suspendCancellableCoroutine {
         launchCatchError(dispatcher.io, block = {
             val originalImageUrlList = getOriginalProductImageUseCase.apply {
@@ -110,10 +106,6 @@ class PlayCoverSetupViewModel @Inject constructor(
             err.printStackTrace()
             it.resumeWithException(err)
         }
-    }
-
-    fun setDataStore(dataStore: PlayBroadcastSetupDataStore) {
-        setupDataStore.overwrite(dataStore)
     }
 
     fun uploadCover(channelId: String, coverTitle: String) {

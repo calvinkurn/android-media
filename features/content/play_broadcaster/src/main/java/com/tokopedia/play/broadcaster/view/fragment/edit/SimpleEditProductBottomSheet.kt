@@ -23,6 +23,7 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoratio
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
@@ -43,6 +44,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     private lateinit var viewModel: PlayEditProductViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
 
     private var mListener: Listener? = null
 
@@ -59,6 +61,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEditProductViewModel::class.java)
+        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -102,7 +105,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
         rvSelectedProduct.adapter = selectableProductAdapter
         rvSelectedProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
 
-        btnAction.setOnClickListener { mListener?.onSaveEditedProductList(viewModel.getDataStore()) }
+        btnAction.setOnClickListener { mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore()) }
         tvChooseOver.setOnClickListener { mListener?.onChooseOver() }
 
         setSelectedProductList(viewModel.selectedProducts)
