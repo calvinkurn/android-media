@@ -53,18 +53,6 @@ public class TokenModel implements Parcelable {
         return tokenType;
     }
 
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
-    }
-
-    public int getExpires_in() {
-        return expiresIn;
-    }
-
-    public void setExpiresIn(int expiresIn) {
-        this.expiresIn = expiresIn;
-    }
-
     public String getRefreshToken() {
         return refreshToken;
     }
