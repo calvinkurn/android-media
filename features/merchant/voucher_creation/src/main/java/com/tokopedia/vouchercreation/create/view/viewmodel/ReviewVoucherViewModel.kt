@@ -93,7 +93,7 @@ class ReviewVoucherViewModel @Inject constructor(
                     override fun onNext(t: MutableList<String?>?) {
                         createVoucherParam.run {
                             image = t?.get(0).toBlankOrString()
-                            image_square = t?.get(1).toBlankOrString()
+                            imageSquare = t?.get(1).toBlankOrString()
                         }
                         createVoucher(createVoucherParam)
                     }
