@@ -1619,13 +1619,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun hidePageLoading() {
         mainContainer.show()
         pageLoading.hide()
+        tabSortFilter.post { tabSortFilter.textView.text = getString(R.string.product_manage_filter) }
     }
 
     private fun initHeaderView(productList: List<ProductViewModel>) {
         if(isLoadingInitialData && showProductEmptyState()) {
             searchBar.showWithCondition(productList.isNotEmpty())
             tabSortFilter.showWithCondition(productList.isNotEmpty())
-            tabSortFilter.post { tabSortFilter.textView.text = getString(R.string.product_manage_filter) }
         }
     }
 
