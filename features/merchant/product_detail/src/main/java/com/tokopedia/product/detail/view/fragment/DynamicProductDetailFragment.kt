@@ -2213,13 +2213,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         if (shouldTrackStickyLogin) {
-            if (stickyLoginView.isLoginReminder()) {
+            var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true)
+            if (stickyLoginView.isLoginReminder() && isCanShowing) {
                 stickyLoginView.showLoginReminder(StickyLoginConstant.Page.PDP)
                 if (stickyLoginView.isShowing()) {
                     stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.PDP)
                 }
             } else {
-                val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
+                isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true)
                 if (!isCanShowing) {
                     stickyLoginView.visibility = View.GONE
                     return

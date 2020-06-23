@@ -55,7 +55,6 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
@@ -974,11 +973,12 @@ class ShopPageFragment :
             return
         }
 
-        if (stickyLoginView.isLoginReminder()) {
+        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_SHOP, true)
+        if (stickyLoginView.isLoginReminder() && isCanShowing) {
             stickyLoginView.showLoginReminder(StickyLoginConstant.Page.SHOP)
             stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.SHOP)
         } else {
-            val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
+            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP, true)
             if (!isCanShowing) {
                 stickyLoginView.hide()
                 updateViewPagerPadding()
