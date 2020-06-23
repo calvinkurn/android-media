@@ -181,11 +181,14 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
             btn_alamat_utama.setOnClickListener {
                 //ToDo::
+
                 Toast.makeText(context, "UTAMAKAN", Toast.LENGTH_LONG).show()
             }
 
             btn_hapus_alamat.setOnClickListener {
-                //ToDo::
+                viewModel.deletePeopleAddress(data.addressId)
+                bottomSheetLainnya?.dismiss()
+                performSearch("")
                 Toast.makeText(context, "HAPUS", Toast.LENGTH_LONG).show()
             }
 

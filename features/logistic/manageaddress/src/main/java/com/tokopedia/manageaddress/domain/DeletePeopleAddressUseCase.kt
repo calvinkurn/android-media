@@ -1,17 +1,22 @@
 package com.tokopedia.manageaddress.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressResponse
+import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressGqlResponse
+import com.tokopedia.manageaddress.util.STATUS_OK
 import javax.inject.Inject
 
-class DeletePeopleAddressUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<DeletePeopleAddressResponse>) {
+class DeletePeopleAddressUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<DeletePeopleAddressGqlResponse>) {
 
-    fun execute(addressId: Int, onSuccess: (DeletePeopleAddressResponse) -> Unit, onError: (Throwable) -> Unit) {
+    fun execute(addressId: String, onSuccess: (DeletePeopleAddressGqlResponse) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to addressId))
-        graphqlUseCase.setTypeClass(DeletePeopleAddressResponse::class.java)
-        graphqlUseCase.execute({ response: DeletePeopleAddressResponse ->
-            onSuccess(response)
+        graphqlUseCase.setTypeClass(DeletePeopleAddressGqlResponse::class.java)
+        graphqlUseCase.execute({ response: DeletePeopleAddressGqlResponse ->
+            if(response.response.status.equals(STATUS_OK, true) && response.response.data.success == 1) {
+                onSuccess(response)
+            }
+
+            //ToDo:: else kalo salah
         }, {
             throwable: Throwable -> onError(throwable)
         })
