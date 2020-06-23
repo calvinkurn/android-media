@@ -14,6 +14,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -58,13 +59,12 @@ class StatisticViewModel @Inject constructor(
     private val _postListWidgetData = MutableLiveData<Result<List<PostListDataUiModel>>>()
     private val _carouselWidgetData = MutableLiveData<Result<List<CarouselDataUiModel>>>()
 
-    private val startDate: String by lazy {
-        val timeInMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7)
-        return@lazy DateTimeUtil.format(timeInMillis, DATE_FORMAT)
-    }
-    private val endDate: String by lazy {
-        val timeInMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 1)
-        return@lazy DateTimeUtil.format(timeInMillis, DATE_FORMAT)
+    private var startDate: String = ""
+    private var endDate: String = ""
+
+    fun setDateRange(startDate: Date, endDate: Date) {
+        this.startDate = DateTimeUtil.format(startDate.time, DATE_FORMAT)
+        this.endDate = DateTimeUtil.format(endDate.time, DATE_FORMAT)
     }
 
     fun getWidgetLayout() {

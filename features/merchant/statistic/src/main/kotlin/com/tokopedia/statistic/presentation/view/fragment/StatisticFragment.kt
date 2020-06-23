@@ -25,6 +25,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.di.DaggerStatisticComponent
+import com.tokopedia.statistic.presentation.model.DateRangeItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.SelectDateRageBottomSheet
 import com.tokopedia.statistic.presentation.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.presentation.view.viewhelper.setOnTabSelectedListener
@@ -82,6 +83,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         hideTooltipIfExist()
         setupView()
+
+        mViewModel.setDateRange(defaultStartDate, defaultEndDate)
 
         observeWidgetLayoutLiveData()
         observeWidgetData(mViewModel.cardWidgetData, WidgetType.CARD)
@@ -168,7 +171,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setDefaultRange() = view?.run {
-        val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, DEFAULT_START_DAYS)
+        val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, DEFAULT_START_DAYS.plus(1))
         val startDateStr: String = DateTimeUtil.format(defaultStartDate.time, "dd")
         val endDateStr: String = DateTimeUtil.format(defaultEndDate.time, "dd MMM yyyy")
         val subTitle = "$headerSubTitle ($startDateStr - $endDateStr)"
@@ -250,9 +253,21 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (!isAdded) return
         dateRangeBottomSheet
                 .setOnApplyChanges {
-
+                    applyDateRange(it)
                 }
                 .show()
+    }
+
+    private fun applyDateRange(range: DateRangeItem) {
+        val startDate = range.startDate ?: return
+        val endDate = range.endDate ?: return
+        mViewModel.setDateRange(startDate, endDate)
+        adapter.data.forEach {
+            it.isLoaded = false
+            it.data = null
+        }
+        adapter.notifyDataSetChanged()
+        requestVisibleWidgetsData()
     }
 
     private fun requestVisibleWidgetsData() {

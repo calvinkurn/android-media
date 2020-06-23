@@ -25,8 +25,8 @@ class SelectDateRageBottomSheet(
 ) : BottomSheetUnify(), DateRangeAdapterFactoryImpl.Listener {
 
     companion object {
-        private const val DAYS_6 = 6
-        private const val DAYS_29 = 29
+        private const val DAYS_7 = 7
+        private const val DAYS_30 = 30
     }
 
     private var applyChangesCallback: (DateRangeItem) -> Unit = {}
@@ -35,8 +35,8 @@ class SelectDateRageBottomSheet(
     private val items: MutableList<DateRangeItem> by lazy {
         mutableListOf(
                 getToday(),
-                getDateRangeItem(DAYS_6, true),
-                getDateRangeItem(DAYS_29),
+                getDateRangeItem(DAYS_7, true),
+                getDateRangeItem(DAYS_30),
                 getSingleItem(DateRangeItem.Single.TYPE_PER_DAY, true),
                 getSingleItem(DateRangeItem.Single.TYPE_PER_WEEK),
                 getSingleItem(DateRangeItem.Single.TYPE_PER_MONTH)
@@ -120,7 +120,7 @@ class SelectDateRageBottomSheet(
 
     private fun getDateRangeItem(nPastDays: Int, isSelected: Boolean = false): DateRangeItem.Default {
         val label: String = mContext.getString(R.string.stc_last_n_days, nPastDays)
-        val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(nPastDays.toLong()))
+        val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(nPastDays.minus(1).toLong()))
         val endDate = Date()
         return DateRangeItem.Default(label, startDate, endDate, isSelected)
     }
