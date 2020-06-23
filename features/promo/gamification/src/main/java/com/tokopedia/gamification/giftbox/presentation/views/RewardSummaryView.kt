@@ -50,7 +50,7 @@ class RewardSummaryView : FrameLayout {
     }
 
     fun init(attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(R.layout.view_reward_summary, this, true)
+        LayoutInflater.from(context).inflate(com.tokopedia.gamification.R.layout.view_reward_summary, this, true)
         tvSummary = findViewById(R.id.tvSummary)
         viewFlipper = findViewById(R.id.viewFlipper)
         rvRewards = findViewById(R.id.rvRewards)
@@ -68,7 +68,7 @@ class RewardSummaryView : FrameLayout {
     }
 
     fun playRewardItemAnimation() {
-        val rewardItemAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.gf_box_rewards_list_item_anim)
+        val rewardItemAnimation = AnimationUtils.loadLayoutAnimation(context, com.tokopedia.gamification.R.anim.gf_box_rewards_list_item_anim)
         rvRewards.layoutAnimation = rewardItemAnimation
         rvRewards.scheduleLayoutAnimation()
         rvRewards.adapter = rvAdapter

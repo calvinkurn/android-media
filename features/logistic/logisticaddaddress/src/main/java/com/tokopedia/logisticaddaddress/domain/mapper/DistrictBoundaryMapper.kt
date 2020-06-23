@@ -7,7 +7,7 @@ import com.tokopedia.logisticaddaddress.domain.model.district_boundary.Geometry
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
-import com.tokopedia.logisticaddaddress.utils.getLatLng
+import com.tokopedia.logisticdata.util.getLatLng
 import javax.inject.Inject
 
 /**

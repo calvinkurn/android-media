@@ -14,9 +14,8 @@ import android.widget.Button;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.travel.widget.SelectPassengerView;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightSelectPassengerPresenterImpl;
 import com.tokopedia.flight.dashboard.view.presenter.FlightSelectPassengerView;
 
@@ -34,14 +33,14 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
     private SelectPassengerView childrenPassengerView;
     private SelectPassengerView infantPassengerView;
     private Button saveButton;
-    private FlightPassengerViewModel passData;
+    private FlightPassengerModel passData;
     private OnFragmentInteractionListener interactionListener;
 
     public FlightSelectPassengerFragment() {
         // Required empty public constructor
     }
 
-    public static FlightSelectPassengerFragment newInstance(FlightPassengerViewModel passData) {
+    public static FlightSelectPassengerFragment newInstance(FlightPassengerModel passData) {
         FlightSelectPassengerFragment fragment = new FlightSelectPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_PASS_DATA, passData);
@@ -120,7 +119,7 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public FlightPassengerViewModel getCurrentPassengerViewModel() {
+    public FlightPassengerModel getCurrentPassengerViewModel() {
         return passData;
     }
 
@@ -145,7 +144,7 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void renderPassengerView(FlightPassengerViewModel passengerPassData) {
+    public void renderPassengerView(FlightPassengerModel passengerPassData) {
         this.passData = passengerPassData;
         adultPassengerView.setValue(passengerPassData.getAdult());
         childrenPassengerView.setValue(passengerPassData.getChildren());
@@ -153,13 +152,13 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void actionNavigateBack(FlightPassengerViewModel currentPassengerPassData) {
+    public void actionNavigateBack(FlightPassengerModel currentPassengerPassData) {
         if (interactionListener != null) {
             interactionListener.actionSavePassenger(passData);
         }
     }
 
     public interface OnFragmentInteractionListener {
-        void actionSavePassenger(FlightPassengerViewModel passData);
+        void actionSavePassenger(FlightPassengerModel passData);
     }
 }

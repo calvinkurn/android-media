@@ -98,10 +98,6 @@ public class RequestParams {
         return parameters.get(key);
     }
 
-    public void clearValue(String key) {
-        parameters.remove(key);
-    }
-
     public TKPDMapParam<String, Object> getParameters() {
         return parameters;
     }

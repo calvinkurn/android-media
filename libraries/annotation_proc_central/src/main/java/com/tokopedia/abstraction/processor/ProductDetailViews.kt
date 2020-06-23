@@ -1,25 +1,32 @@
 package com.tokopedia.abstraction.processor
 
 
+import com.tokopedia.analytic.annotation.*
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analytic_constant.Param
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.BundleThis
-import com.tokopedia.annotation.Key
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
+import com.tokopedia.checkers.ProductDetailViewsChecker
+import com.tokopedia.checkers.ProductListImpressionProductChecker
 import com.tokopedia.firebase.analytic.rules.ProductDetailViewsRules
 import com.tokopedia.product.util.processor.KEY_SESSION_IRIS
+import com.tokopedia.util.GTMErrorHandlerImpl
+import com.tokopedia.util.logger.GTMLoggerImpl
 
 /**
  * Product Detail
  */
+@ErrorHandler(GTMErrorHandlerImpl::class)
+@Logger(GTMLoggerImpl::class)
 @AnalyticEvent(false, Event.VIEW_ITEM, ProductDetailViewsRules::class)
 data class ProductDetailViews(
         @Key("shopName")
         val shopName: String,
         @Key("shopId")
         val shopId: String,
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct"])
         @Key("items")
         val items: List<ProductDetailProduct>,
 
@@ -30,6 +37,7 @@ data class ProductDetailViews(
         @DefaultValueString("")
         @Key("currentSite")
         val currentSite: String?,
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["onlyViewItem"])
         @DefaultValueString("")
         @Key("event")
         val event: String?,
@@ -56,6 +64,8 @@ private const val KEY_DIMENSION_37 = "dimension37"
 private const val KEY_DIMENSION_98 = "dimension98"
 
 
+@ErrorHandler(GTMErrorHandlerImpl::class)
+@Logger(GTMLoggerImpl::class)
 @BundleThis(false, true)
 data class ProductDetailProduct(
         @Key(Param.ITEM_ID)
@@ -69,11 +79,13 @@ data class ProductDetailProduct(
         @DefaultValueString("none")
         @Key(Param.ITEM_BRAND)
         val brand: String?,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero"])
         @Key(Param.PRICE)
         val price: Double,
         @DefaultValueString("IDR")
         @Key(Param.CURRENCY)
         val currency: String?,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(1)
         @Key(Param.INDEX)
         val index: Long,
@@ -87,5 +99,7 @@ data class ProductDetailProduct(
         @Key(KEY_DIMENSION_37)
         val dimension37: String,
         @Key(KEY_DIMENSION_98)
-        val dimension98: String
+        val dimension98: String,
+
+        val map: HashMap<String, String>
 )

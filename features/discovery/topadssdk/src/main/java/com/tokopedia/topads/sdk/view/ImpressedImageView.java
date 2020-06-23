@@ -35,6 +35,7 @@ public class ImpressedImageView extends AppCompatImageView {
     private ViewHintListener hintListener;
     private int offset;
     private ViewTreeObserver.OnScrollChangedListener scrollChangedListener;
+    private String className = "com.tokopedia.topads.sdk.view.ImpressedImageView";
 
     public ImpressedImageView(Context context) {
         super(context);
@@ -88,9 +89,9 @@ public class ImpressedImageView extends AppCompatImageView {
                             hintListener.onViewHint();
                         }
                         if(holder instanceof ProductImage){
-                            new ImpresionTask().execute(((ProductImage) holder).getM_url());
+                            new ImpresionTask(className).execute(((ProductImage) holder).getM_url());
                         } else if(holder instanceof CpmImage){
-                            new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
+                            new ImpresionTask(className).execute(((CpmImage) holder).getFullUrl());
                         }
                         holder.invoke();
                     }

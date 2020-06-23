@@ -97,7 +97,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                     getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL),
                     getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION),
                     tradeInParams,
-                    getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME)
+                    getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME),
+                    getString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE)
             )
             return normalCheckoutFragment!!
         }

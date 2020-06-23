@@ -18,8 +18,5 @@ import rx.Observable;
 public interface NotificationApi {
 
     @GET(TkpdBaseURL.User.PATH_GET_NOTIFICATION)
-    Observable<Response<TkpdResponse>> getNotification(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.User.PATH_GET_NOTIFICATION)
     Observable<Response<TkpdResponse>> getNotification2(@QueryMap Map<String, Object> params);
 }

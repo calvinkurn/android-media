@@ -31,6 +31,7 @@
         <activity
             android:name=".SplashScreenActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.Launcher">
             <intent-filter>
@@ -102,6 +103,9 @@
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
             android:value="50d42520ce58b3168a5a721995812a72"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/GOOGLE_API_KEY_SA" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -241,10 +245,6 @@
                 <data android:scheme="sellerapp" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.sellerapp.shopstatisticdetail.ShopStatisticDetail"
-            android:label="@string/title_activity_shop_statistic_detail"
-            android:screenOrientation="portrait" />
         <service android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>

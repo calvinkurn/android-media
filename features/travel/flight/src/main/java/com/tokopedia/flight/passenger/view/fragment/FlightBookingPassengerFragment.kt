@@ -22,16 +22,13 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.flight.R
-import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
-import com.tokopedia.flight.bookingV2.presentation.adapter.FlightSimpleAdapter
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator
 import com.tokopedia.flight.common.util.FlightPassengerTitle
 import com.tokopedia.flight.common.util.FlightPassengerTitleType
+import com.tokopedia.flight.detail.view.adapter.FlightSimpleAdapter
+import com.tokopedia.flight.detail.view.model.SimpleModel
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
 import com.tokopedia.flight.passenger.view.activity.FlightBookingAmenityActivity
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
@@ -45,6 +42,9 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_PASSENGER
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_REQUEST_ID
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_RETURN
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import com.tokopedia.flight.passenger.view.viewmodel.FlightPassengerViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -67,9 +67,9 @@ import kotlin.collections.ArrayList
 
 class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
-    lateinit var passengerModel: FlightBookingPassengerViewModel
-    lateinit var luggageModels: List<FlightBookingAmenityMetaViewModel>
-    lateinit var mealModels: List<FlightBookingAmenityMetaViewModel>
+    lateinit var passengerModel: FlightBookingPassengerModel
+    lateinit var luggageModels: List<FlightBookingAmenityMetaModel>
+    lateinit var mealModels: List<FlightBookingAmenityMetaModel>
     var isAirAsiaAirlines: Boolean = false
     lateinit var depatureDate: String
     lateinit var requestId: String
@@ -333,14 +333,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
-    fun renderPassengerMeals(flightBookingMealRouteModels: List<FlightBookingAmenityMetaViewModel>,
-                             selecteds: List<FlightBookingAmenityMetaViewModel>) {
+    fun renderPassengerMeals(flightBookingMealRouteModels: List<FlightBookingAmenityMetaModel>,
+                             selecteds: List<FlightBookingAmenityMetaModel>) {
         meals_container.visibility = View.VISIBLE
 
-        var models = arrayListOf<SimpleViewModel>()
+        var models = arrayListOf<SimpleModel>()
         if (flightBookingMealRouteModels != null) {
             for (meal in flightBookingMealRouteModels) {
-                val simpleModel = SimpleViewModel(meal.description, getString(com.tokopedia.flight.R.string.flight_booking_passenger_choose_label))
+                val simpleModel = SimpleModel(meal.description, getString(R.string.flight_booking_passenger_choose_label))
                 for (selected in selecteds) {
                     if (selected.key.equals(meal.key, true)) {
                         val selectedMeals = arrayListOf<String>()
@@ -362,7 +362,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         mealAdapter.setFontSize(resources.getDimension(com.tokopedia.design.R.dimen.sp_12))
         mealAdapter.setInteractionListener { adapterPosition, viewModel ->
             val meal = flightBookingMealRouteModels.get(adapterPosition)
-            var existingSelected: FlightBookingAmenityMetaViewModel? = null
+            var existingSelected: FlightBookingAmenityMetaModel? = null
 
             for (passengerMeal in passengerModel.flightBookingMealMetaViewModels) {
                 if (passengerMeal.key.equals(meal.key, true)) {
@@ -372,7 +372,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
 
             if (existingSelected == null) {
-                existingSelected = FlightBookingAmenityMetaViewModel()
+                existingSelected = FlightBookingAmenityMetaModel()
                 existingSelected.key = meal.key
                 existingSelected.journeyId = meal.journeyId
                 existingSelected.arrivalId = meal.arrivalId
@@ -393,26 +393,26 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         mealAdapter.notifyDataSetChanged()
     }
 
-    fun navigateToMealPicker(meals: MutableList<FlightBookingAmenityViewModel>, selected: FlightBookingAmenityMetaViewModel) {
+    fun navigateToMealPicker(meals: MutableList<FlightBookingAmenityModel>, selected: FlightBookingAmenityMetaModel) {
         val title = String.format("%s %s", getString(com.tokopedia.flight.R.string.flight_booking_meal_toolbar_title), selected.description)
         val intent = FlightBookingAmenityActivity.createIntent(activity, title, meals, selected)
         startActivityForResult(intent, REQUEST_CODE_PICK_MEAL)
     }
 
-    fun navigateToLuggagePicker(luggages: MutableList<FlightBookingAmenityViewModel>, selected: FlightBookingAmenityMetaViewModel) {
+    fun navigateToLuggagePicker(luggages: MutableList<FlightBookingAmenityModel>, selected: FlightBookingAmenityMetaModel) {
         val title = String.format("%s %s", getString(com.tokopedia.flight.R.string.flight_booking_luggage_toolbar_title), selected.description)
         val intent = FlightBookingAmenityActivity.createIntent(activity, title, luggages, selected)
         startActivityForResult(intent, REQUEST_CODE_PICK_LUGGAGE)
     }
 
-    fun renderPassengerLuggages(flightBookingLuggageRouteViewModels: List<FlightBookingAmenityMetaViewModel>,
-                                selecteds: List<FlightBookingAmenityMetaViewModel>) {
+    fun renderPassengerLuggages(flightBookingLuggageRouteModels: List<FlightBookingAmenityMetaModel>,
+                                selecteds: List<FlightBookingAmenityMetaModel>) {
         luggage_container.visibility = View.VISIBLE
 
-        val models = arrayListOf<SimpleViewModel>()
-        if (flightBookingLuggageRouteViewModels != null) {
-            for (luggage in flightBookingLuggageRouteViewModels) {
-                val model = SimpleViewModel(luggage.description, getString(com.tokopedia.flight.R.string.flight_booking_passenger_choose_label))
+        val models = arrayListOf<SimpleModel>()
+        if (flightBookingLuggageRouteModels != null) {
+            for (luggage in flightBookingLuggageRouteModels) {
+                val model = SimpleModel(luggage.description, getString(R.string.flight_booking_passenger_choose_label))
                 for (selected in selecteds) {
                     if (selected.key.equals(luggage.key, true)) {
                         val selectedLuggages = arrayListOf<String>()
@@ -433,14 +433,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         luggageAdapter.setArrowVisible(true)
         luggageAdapter.setFontSize(resources.getDimension(com.tokopedia.design.R.dimen.sp_12))
         luggageAdapter.setInteractionListener { adapterPosition, viewModel ->
-            val luggage = flightBookingLuggageRouteViewModels.get(adapterPosition)
+            val luggage = flightBookingLuggageRouteModels.get(adapterPosition)
 
-            var existingSelected: FlightBookingAmenityMetaViewModel? = null
+            var existingSelected: FlightBookingAmenityMetaModel? = null
             for (selected in passengerModel.flightBookingLuggageMetaViewModels) {
                 if (selected.key.equals(luggage.key, true)) existingSelected = selected
             }
             if (existingSelected == null) {
-                existingSelected = FlightBookingAmenityMetaViewModel()
+                existingSelected = FlightBookingAmenityMetaModel()
                 existingSelected.key = luggage.key
                 existingSelected.journeyId = luggage.journeyId
                 existingSelected.arrivalId = luggage.arrivalId
@@ -638,14 +638,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun isPassportId(id: TravelContactIdCard): Boolean = id.type.equals("passport", true)
 
-    private fun onAmenitiesDataChange(flightBookingLuggageMetaViewModel: FlightBookingAmenityMetaViewModel, passengerModelAmenities: MutableList<FlightBookingAmenityMetaViewModel>): List<FlightBookingAmenityMetaViewModel> {
-        val index = passengerModelAmenities.indexOf(flightBookingLuggageMetaViewModel)
+    private fun onAmenitiesDataChange(flightBookingLuggageMetaModel: FlightBookingAmenityMetaModel, passengerModelAmenities: MutableList<FlightBookingAmenityMetaModel>): List<FlightBookingAmenityMetaModel> {
+        val index = passengerModelAmenities.indexOf(flightBookingLuggageMetaModel)
 
-        if (flightBookingLuggageMetaViewModel.amenities.size != 0) {
+        if (flightBookingLuggageMetaModel.amenities.size != 0) {
             if (index != -1) {
-                passengerModelAmenities.set(index, flightBookingLuggageMetaViewModel)
+                passengerModelAmenities.set(index, flightBookingLuggageMetaModel)
             } else {
-                passengerModelAmenities.add(flightBookingLuggageMetaViewModel)
+                passengerModelAmenities.add(flightBookingLuggageMetaModel)
             }
         } else {
             if (index != -1) {
@@ -809,14 +809,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             when (requestCode) {
                 REQUEST_CODE_PICK_LUGGAGE -> {
                     if (data != null) {
-                        val flightBookingLuggageMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaViewModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
+                        val flightBookingLuggageMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
                         renderPassengerLuggages(luggageModels, onAmenitiesDataChange(flightBookingLuggageMetaViewModel, passengerModel.flightBookingLuggageMetaViewModels))
                     }
                 }
 
                 REQUEST_CODE_PICK_MEAL -> {
                     if (data != null) {
-                        val flightBookingMealMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaViewModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
+                        val flightBookingMealMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
                         renderPassengerMeals(mealModels, onAmenitiesDataChange(flightBookingMealMetaViewModel, passengerModel.flightBookingMealMetaViewModels))
                     }
                 }
@@ -856,9 +856,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         private val DEFAULT_LAST_SEC_IN_DAY = 59
 
         fun newInstance(depatureId: String,
-                        passengerModel: FlightBookingPassengerViewModel,
-                        luggageModels: List<FlightBookingAmenityMetaViewModel>,
-                        mealModels: List<FlightBookingAmenityMetaViewModel>,
+                        passengerModel: FlightBookingPassengerModel,
+                        luggageModels: List<FlightBookingAmenityMetaModel>,
+                        mealModels: List<FlightBookingAmenityMetaModel>,
                         isAirAsiaAirlines: Boolean,
                         depatureDate: String,
                         requestId: String,

@@ -22,14 +22,12 @@ import rx.Observable;
 public class ReputationReviewRepositoryImpl implements ReputationReviewRepository {
     private CloudReputationReviewDataSource cloudReputationReviewDataSource;
     private ShopInfoRepository shopInfoRepository;
-    private ShopNetworkController shopNetworkController;
 
     @Deprecated
     public ReputationReviewRepositoryImpl(
             CloudReputationReviewDataSource cloudReputationReviewDataSource,
             ShopNetworkController shopNetworkController) {
         this.cloudReputationReviewDataSource = cloudReputationReviewDataSource;
-        this.shopNetworkController = shopNetworkController;
     }
 
     @Inject

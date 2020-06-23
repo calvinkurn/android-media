@@ -81,8 +81,8 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         val priceBidGroup = dataGroup[Constants.PRICE_BID] as? Int
         val dailyBudgetGroup = dataGroup[Constants.DAILY_BUDGET] as? Int
         val groupId = dataGroup[Constants.GROUP_ID] as? Int
-        val isNameEdited = dataGroup[NAME_EDIT] as Boolean
-        val isBudgetLimited = dataGroup[Constants.BUDGET_LIMITED] as Boolean
+        val isNameEdited = dataGroup[NAME_EDIT] as? Boolean
+        val isBudgetLimited = dataGroup[Constants.BUDGET_LIMITED] as? Boolean
         val dataAddProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>("addedProducts")
         val dataDeleteProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>("deletedProducts")
 
@@ -102,7 +102,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         input.source = EDIT_SOURCE
         groupInput.action = ACTION_EDIT
         // if only group name is edited
-        if (isNameEdited) {
+        if (isNameEdited == true) {
             group?.type = PRODUCT_ID
             group?.name = groupName
         } else {
@@ -112,7 +112,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         group?.status = PUBLISHED
         group?.scheduleStart = ""
         group?.scheduleEnd = ""
-        if (isBudgetLimited) {
+        if (isBudgetLimited == true) {
             group?.dailyBudget = 0
         } else
             group?.dailyBudget = dailyBudgetGroup

@@ -175,9 +175,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         } else {
             productManageFilterViewModel.updateSelect(element, title)
             if(title == ETALASE_HEADER) {
-                if(element.name == getString(R.string.product_manage_filter_product_sold)) {
-                    ProductManageTracking.eventEtalaseFilter(element.name)
-                }
+                ProductManageTracking.eventEtalaseFilter(element.name)
             } else {
                 ProductManageTracking.eventSortingFilterName(element.name)
             }

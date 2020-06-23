@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="searchbar_autocomplete_hint">Masukkan kata kunci lokasi</string>
+    <string name="searchbar_dropoff_hint">Cari Tempat Titik Ambil…</string>
+    <string name="point_center">Point Center</string>
+
+    <string name="title_dropoff_picker">Pilih Lokasi Titik Ambil</string>
+    <string name="title_autocomplete_page">Cari Lokasi</string>
+
+    <string name="button_choose">Pilih</string>
+    <string name="store_logo">Logo Tempat Ambil</string>
+    <string name="title_bottom_sheet_autocomplete">Lihat titik ambil terdekat</string>
+
+    <string name="tv_noresult_title">Lokasi tidak ketemu</string>
+    <string name="tv_noresult_desc">Cek kata pencarian kamu atau cari lewat peta</string>
+    <string name="button_title_change_keyword">Ubah Kata Kunci</string>
+    <string name="no_dropoff_found_desc">Tidak ada titik ambil dalam radius</string>
+    <string name="no_dropoff_found_title">Tidak menemukan titik ambil terdekat</string>
+    <string name="title_bottom_sheet_dropoff">Titik Ambil Terdekat</string>
+    <string name="gps_empty_title">GPS tidak terdeteksi!</string>
+    <string name="gps_empty_desc">Cari otomatis dengan aktifkan GPS atau masukkan kata kunci lokasi</string>
+    <string name="gps_empty_action">Aktifkan GPS</string>
+    <string name="no_permission_title">Lokasi tidak diizinkan</string>
+    <string name="no_permission_desc">Cari otomatis dengan izinkan lokasi atau masukkan kata kunci lokasi</string>
+    <string name="no_permission_action">Izinkan Lokasi</string>
+</resources>

@@ -10,8 +10,8 @@ import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.*
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.NotificationFilterViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.PurchaseViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.SaleViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.TransactionBuyerViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.TransactionSellerViewHolder
 import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationTransactionFactoryImpl(
@@ -21,9 +21,13 @@ class NotificationTransactionFactoryImpl(
         private val userSession: UserSessionInterface
 ): BaseAdapterTypeFactory(), NotificationTransactionFactory {
 
-    override fun type(purchaseNotification: PurchaseNotificationViewBean): Int = PurchaseViewHolder.LAYOUT
+    override fun type(buyerNotification: BuyerNotificationViewBean): Int {
+        return TransactionBuyerViewHolder.LAYOUT
+    }
 
-    override fun type(saleNotification: SaleNotificationViewBean): Int = SaleViewHolder.LAYOUT
+    override fun type(sellerNotification: SellerNotificationViewBean): Int {
+        return TransactionSellerViewHolder.LAYOUT
+    }
 
     override fun type(viewItem: NotificationItemViewBean): Int {
         return when (viewItem.typeLink) {
@@ -53,8 +57,8 @@ class NotificationTransactionFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            PurchaseViewHolder.LAYOUT -> PurchaseViewHolder(view, transactionMenuListener)
-            SaleViewHolder.LAYOUT -> SaleViewHolder(view, transactionMenuListener)
+            TransactionBuyerViewHolder.LAYOUT -> TransactionBuyerViewHolder(view, transactionMenuListener)
+            TransactionSellerViewHolder.LAYOUT -> TransactionSellerViewHolder(view, transactionMenuListener)
             TextNotificationViewHolder.LAYOUT -> TextNotificationViewHolder(view, notificationUpdateListener)
             SmallBannerNotificationViewHolder.LAYOUT -> SmallBannerNotificationViewHolder(view, notificationUpdateListener)
             BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(view, notificationUpdateListener)

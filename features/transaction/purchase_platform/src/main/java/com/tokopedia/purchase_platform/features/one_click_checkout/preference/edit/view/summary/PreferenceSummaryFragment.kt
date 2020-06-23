@@ -125,8 +125,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     buttonSavePreference?.isEnabled = true
                     globalError?.gone()
                     mainContent?.visible()
-                    setupViews(it.data)
                     setDataToParent(it.data)
+                    setupViews(it.data)
                 }
                 is OccState.Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -192,6 +192,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             }
         } else {
             tvPreferenceName?.gone()
+
+            buttonSavePreference?.isEnabled = viewModel.isDataChanged()
         }
 
         val addressModel = data.addressModel
@@ -214,8 +216,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         tvAddressDetail?.text = addressModel?.fullAddress ?: ""
 
         val shipmentModel = data.shipmentModel
-        tvShippingName?.text = shipmentModel?.serviceName ?: ""
-        tvShippingDuration?.text = shipmentModel?.serviceDuration ?: ""
+        tvShippingName?.text = "Pengiriman ${shipmentModel?.serviceName?.capitalize() ?: ""}"
+        tvShippingDuration?.text = "Durasi ${shipmentModel?.serviceDuration ?: ""}"
 
         val paymentModel = data.paymentModel
         ImageHandler.loadImageFitCenter(context, ivPayment, paymentModel?.image)
@@ -385,24 +387,28 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 val addressId = data.addressModel?.addressId
                 if (addressId != null) {
                     parent.setAddressId(addressId)
+                    viewModel.profileAddressId = addressId
                 }
             }
             if (parent.getShippingId() == 0) {
                 val serviceId = data.shipmentModel?.serviceId
                 if (serviceId != null) {
                     parent.setShippingId(serviceId)
+                    viewModel.profileServiceId = serviceId
                 }
             }
             if (parent.getGatewayCode().isEmpty()) {
                 val gatewayCode = data.paymentModel?.gatewayCode
                 if (gatewayCode != null) {
                     parent.setGatewayCode(gatewayCode)
+                    viewModel.profileGatewayCode = gatewayCode
                 }
             }
             if (parent.getPaymentQuery().isEmpty()) {
                 val metadata = data.paymentModel?.metadata
                 if (metadata != null) {
                     parent.setPaymentQuery(metadata)
+                    viewModel.profilePaymentMetadata = metadata
                 }
             }
         }

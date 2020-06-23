@@ -52,6 +52,7 @@ class GetNotificationUseCase(
                 "      notif_unread_int\n" +
                 "    }\n" +
                 "  }\n" +
+                "  status\n" +
                 "}"
     }
 }

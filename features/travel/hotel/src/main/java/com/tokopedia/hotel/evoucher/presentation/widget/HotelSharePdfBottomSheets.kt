@@ -1,46 +1,62 @@
 package com.tokopedia.hotel.evoucher.presentation.widget
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.component.EditTextCompat
-import com.tokopedia.design.component.TextViewCompat
-import com.tokopedia.design.utils.StringUtils
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.HotelStringUtils
 import com.tokopedia.hotel.evoucher.presentation.adapter.HotelShareAsPdfAdapter
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.bottom_sheets_share_as_pdf.view.*
 
 /**
  * @author by furqan on 16/05/19
  */
-class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAsPdfListener {
+class HotelSharePdfBottomSheets : BottomSheetUnify(), HotelShareAsPdfAdapter.ShareAsPdfListener {
 
-    val emailList = mutableListOf<String>()
+    private val emailList = mutableListOf<String>()
     lateinit var adapter: HotelShareAsPdfAdapter
     lateinit var listener: SharePdfBottomSheetsListener
 
     lateinit var recyclerView: RecyclerView
     lateinit var divider: View
-    lateinit var evEmail: EditTextCompat
-    lateinit var btnSend: ButtonCompat
-    lateinit var evError: TextViewCompat
+    lateinit var evEmail: AppCompatEditText
+    lateinit var btnSend: UnifyButton
+    lateinit var evError: Typography
     lateinit var containerEmail: View
 
-    override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_share_as_pdf
+    init {
+        isFullpage = false
+        isDragable = false
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initChildLayout() {
+        val view = View.inflate(context, R.layout.bottom_sheets_share_as_pdf, null)
+        setChild(view)
+        initView(view)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
-    override fun initView(view: View) {
+    fun initView(view: View) {
         adapter = HotelShareAsPdfAdapter(emailList, this)
 
         with(view) {
@@ -51,7 +67,7 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
             evError = ev_error_email
             containerEmail = container_add_email
 
-            evError.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.red_500))
+            evError.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Red_R500))
 
             val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.layoutManager = layoutManager
@@ -82,14 +98,14 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
                     configDivider()
                     configRecyclerView()
                     configSendButton()
-                    updateHeight()
 
                     adapter.notifyDataSetChanged()
                 }
             }
 
             btnSend.setOnClickListener {
-                if ((evEmail.text ?: "").isNotEmpty() && validateEmail(evEmail.text.toString().trim())) {
+                if ((evEmail.text
+                                ?: "").isNotEmpty() && validateEmail(evEmail.text.toString().trim())) {
                     emailList.add(evEmail.text.toString().trim())
                     evError.visibility = View.GONE
                 }
@@ -101,12 +117,9 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
 
             configDivider()
             configRecyclerView()
+            setTitle(getString(R.string.hotel_share_as_pdf))
         }
     }
-
-    override fun title(): String = getString(R.string.hotel_share_as_pdf)
-
-    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
 
     override fun onDelete(email: String) {
         emailList.remove(email)
@@ -114,7 +127,6 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
         configDivider()
         configRecyclerView()
         configSendButton()
-        updateHeight()
     }
 
     private fun validateEmail(email: String): Boolean {
@@ -125,7 +137,7 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
                 evError.text = getString(R.string.hotel_share_empty_email_error)
                 evError.visibility = View.VISIBLE
             }
-            !StringUtils.isValidEmail(email) || !isEmailWithoutProhibitSymbol(email) -> {
+            !HotelStringUtils.isValidEmail(email) || !isEmailWithoutProhibitSymbol(email) -> {
                 valid = false
                 evError.text = getString(R.string.hotel_share_format_email_error)
                 evError.visibility = View.VISIBLE

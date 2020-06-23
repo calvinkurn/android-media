@@ -18,6 +18,8 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 
@@ -62,18 +64,19 @@ public class FingerprintInterceptor implements Interceptor {
     }
 
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
+        UserSessionInterface userSession = new UserSession(context);
         String json = getFingerPrintJson();
 
         SessionHandler session = RouterUtils.getRouterFromContext(context).legacySessionHandler();
         newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(context));
-        if (session.isV4Login()) {
+        if (userSession.isLoggedIn()) {
             newRequest.addHeader(KEY_USER_ID, session.getLoginID());
             newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + session.getLoginID()));
         } else {
             newRequest.addHeader(KEY_USER_ID, "0");
             newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + "0"));
         }
-        newRequest.addHeader(KEY_ACC_AUTH, BEARER + session.getAccessToken());
+        newRequest.addHeader(KEY_ACC_AUTH, BEARER + userSession.getAccessToken());
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_ADSID, getGoogleAdId(context));
 

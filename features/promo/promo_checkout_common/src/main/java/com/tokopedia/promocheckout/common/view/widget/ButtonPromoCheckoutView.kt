@@ -56,7 +56,6 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
     }
 
     private fun initView() {
-        cl_promo_checkout?.background = ViewUtils.generateBackgroundWithoutShadow(cl_promo_checkout)
         when (state) {
             State.LOADING -> setViewLoading()
             State.ACTIVE -> setViewActive()
@@ -77,7 +76,8 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
         tv_promo_checkout_desc?.visibility = View.GONE
         promo_checkout_loading_state?.visibility = View.VISIBLE
         iv_promo_checkout_left?.setImageResource(R.drawable.ic_promo_checkout_percentage)
-        iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_chevron_right)
+        iv_promo_checkout_right?.setImageResource(R.drawable.unify_chips_ic_chevron_normal)
+        iv_promo_checkout_right?.rotation = 270f
     }
 
     private fun setViewActive() {
@@ -93,7 +93,8 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
         }
 
         iv_promo_checkout_left?.setImageResource(R.drawable.ic_promo_checkout_percentage)
-        iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_chevron_right)
+        iv_promo_checkout_right?.setImageResource(R.drawable.unify_chips_ic_chevron_normal)
+        iv_promo_checkout_right?.rotation = 270f
     }
 
     private fun setViewInactive() {
@@ -104,6 +105,7 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
         tv_promo_checkout_desc?.text = context.getString(R.string.promo_checkout_failed_info)
         iv_promo_checkout_left?.setImageResource(R.drawable.ic_promo_checkout_percentage_inactive)
         iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_refresh)
+        iv_promo_checkout_right?.rotation = 0f
     }
 
     private fun setViewWithMarginBottom() {

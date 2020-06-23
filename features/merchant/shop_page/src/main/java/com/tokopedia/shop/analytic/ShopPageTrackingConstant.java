@@ -149,7 +149,8 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_ID = "shopId";
     public static final String SHOP_NAME = "shop_name";
     public static final String PAGE_TYPE = "pageType";
-    public static final String PRODUCT_ID = "product_id";
+    public static final String PRODUCT_ID = "productId";
+    public static final String PAGE_SOURCE = "pageSource";
     public static final String ECOMMERCE = "ecommerce";
     public static final String ACTION_FIELD = "actionField";
     public static final String SHOPPAGE = "/shoppage";
@@ -201,6 +202,7 @@ public class ShopPageTrackingConstant {
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";
     public static final String SCREEN_SEARCH_BAR = "Search Bar";
+    public static final String SCREEN_ADD_PRODUCT = "/add-product";
 
     //value
     public static final String VALUE_PRODUCT = "Product";

@@ -6,10 +6,7 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.booking.data.model.CartDataParam
-import com.tokopedia.hotel.booking.data.model.HotelCart
-import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
-import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
+import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
@@ -37,6 +34,8 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
     val hotelCartResult = MutableLiveData<Result<HotelCart.Response>>()
     val hotelCheckoutResult = MutableLiveData<Result<HotelCheckoutResponse>>()
+
+    val tokopointSumCouponResult = MutableLiveData<String>()
 
     fun getContactList(query: String) {
         launch {
@@ -87,6 +86,18 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
             hotelCheckoutResult.postValue(Success(data.response))
         }) {
             hotelCheckoutResult.postValue(Fail(it))
+        }
+    }
+
+    fun getTokopointsSumCoupon(rawQuery: String) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TokopointsSumCoupon.Response::class.java)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TokopointsSumCoupon.Response>()
+            tokopointSumCouponResult.postValue(data.response.sumCouponUnitOpt)
+        }) {
+            tokopointSumCouponResult.postValue("")
         }
     }
 

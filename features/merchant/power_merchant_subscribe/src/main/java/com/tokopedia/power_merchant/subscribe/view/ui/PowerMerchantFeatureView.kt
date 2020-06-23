@@ -6,11 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.PowerMerchantViewAdapter
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
@@ -32,26 +28,58 @@ class PowerMerchantFeatureView: LinearLayout {
     }
 
     fun show(powerMerchantStatus: PowerMerchantStatus) {
-        setupFeatureList()
-        setupLearnMoreBtn(powerMerchantStatus)
+        val data = powerMerchantStatus.goldGetPmOsStatus.result.data
+        val powerMerchantInactive = data.isPowerMerchantInactive()
+
+        setupTitle(powerMerchantInactive)
+        setupFeatureList(powerMerchantInactive)
         showLayout()
     }
 
-    private fun setupFeatureList() {
-        val features = listOf(
-            PowerMerchantFeature(
+    private fun setupTitle(powerMerchantInactive: Boolean) {
+        textTitle.text = if(powerMerchantInactive) {
+            context.getString(R.string.power_merchant_exclusive_feature)
+        } else {
+            context.getString(R.string.power_merchant_benefit_feature)
+        }
+    }
+
+    private fun setupFeatureList(powerMerchantInactive: Boolean) {
+        val features = mutableListOf<PowerMerchantFeature>()
+
+        if(powerMerchantInactive) {
+            val freeShipping = PowerMerchantFeature(
                 R.string.power_merchant_bebas_ongkir,
                 R.string.power_merchant_bebas_ongkir_description,
-                R.drawable.ic_free_shipping,
+                R.drawable.ic_pm_free_shipping,
                 R.string.power_merchant_free_shipping_clickable_text,
                 PowerMerchantUrl.URL_FREE_SHIPPING_TERMS_AND_CONDITION
-            ),
+            )
+            features.add(freeShipping)
+        }
+
+        val featuredFeatureBoldText = listOf(
+            R.string.power_merchant_featured_feature_description_bold_1,
+            R.string.power_merchant_featured_feature_description_bold_2
+        )
+
+        features.addAll(listOf(
             PowerMerchantFeature(
                 R.string.power_merchant_featured_feature,
                 R.string.power_merchant_featured_feature_description,
-                R.drawable.ic_pm_featured_badge
+                R.drawable.ic_pm_featured_badge,
+                R.string.power_merchant_featured_feature_clickable_text,
+                PowerMerchantUrl.URL_LEARN_MORE_BENEFIT,
+                featuredFeatureBoldText
+            ),
+            PowerMerchantFeature(
+                R.string.power_merchant_premium_account,
+                R.string.power_merchant_premium_account_description,
+                R.drawable.ic_pm_premium_account,
+                R.string.power_merchant_premium_account_clickable_text,
+                PowerMerchantUrl.URL_PREMIUM_ACCOUNT
             )
-        )
+        ))
 
         with(listFeature) {
             isNestedScrollingEnabled = false
@@ -61,25 +89,6 @@ class PowerMerchantFeatureView: LinearLayout {
         }
 
         adapter.items = features
-    }
-
-    private fun setupLearnMoreBtn(powerMerchantStatus: PowerMerchantStatus) {
-        val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
-        val shouldShow = shopStatus.isPowerMerchantActive() || shopStatus.isPowerMerchantIdle()
-
-        if(shouldShow) {
-            btnLearnMore.show()
-            btnLearnMore.setOnClickListener {
-                goToLearnMorePage()
-            }
-        } else {
-            btnLearnMore.hide()
-        }
-    }
-
-    private fun goToLearnMorePage() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-            PowerMerchantUrl.URL_LEARN_MORE_BENEFIT)
     }
 
     private fun showLayout() {

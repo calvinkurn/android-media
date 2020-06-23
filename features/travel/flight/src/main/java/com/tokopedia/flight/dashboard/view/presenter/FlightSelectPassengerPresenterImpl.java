@@ -2,7 +2,7 @@ package com.tokopedia.flight.dashboard.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
 
 import javax.inject.Inject;
@@ -21,7 +21,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
 
     @Override
     public void onAdultPassengerCountChange(int number) {
-        FlightPassengerViewModel passengerViewModel = clonePassData(getView().getCurrentPassengerViewModel());
+        FlightPassengerModel passengerViewModel = clonePassData(getView().getCurrentPassengerViewModel());
         passengerViewModel.setAdult(number);
         if (validatePassenger(passengerViewModel)) {
             getView().renderPassengerView(passengerViewModel);
@@ -29,10 +29,10 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
             getView().renderPassengerView(getView().getCurrentPassengerViewModel());
     }
 
-    private FlightPassengerViewModel clonePassData(FlightPassengerViewModel passengerViewModel) {
-        FlightPassengerViewModel flightPassengerViewModel = null;
+    private FlightPassengerModel clonePassData(FlightPassengerModel passengerViewModel) {
+        FlightPassengerModel flightPassengerViewModel = null;
         try {
-            flightPassengerViewModel = (FlightPassengerViewModel) passengerViewModel.clone();
+            flightPassengerViewModel = (FlightPassengerModel) passengerViewModel.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
             throw new RuntimeException("CloneNotSupportedException FlightPassengerViewModel");
@@ -40,7 +40,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
         return flightPassengerViewModel;
     }
 
-    private boolean validatePassenger(FlightPassengerViewModel passengerPassData) {
+    private boolean validatePassenger(FlightPassengerModel passengerPassData) {
         boolean isValid = true;
         if (!validator.validateTotalPassenger(passengerPassData)) {
             isValid = false;
@@ -60,7 +60,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
 
     @Override
     public void onChildrenPassengerCountChange(int number) {
-        FlightPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
+        FlightPassengerModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
         passengerPassData.setChildren(number);
         if (validatePassenger(passengerPassData))
             getView().renderPassengerView(passengerPassData);
@@ -70,7 +70,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
 
     @Override
     public void onInfantPassengerCountChange(int number) {
-        FlightPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
+        FlightPassengerModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
         passengerPassData.setInfant(number);
         if (validatePassenger(passengerPassData))
             getView().renderPassengerView(passengerPassData);
@@ -85,7 +85,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
 
     @Override
     public void onSaveButtonClicked() {
-        FlightPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
+        FlightPassengerModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
         if (validatePassenger(passengerPassData)) {
             getView().actionNavigateBack(passengerPassData);
         }

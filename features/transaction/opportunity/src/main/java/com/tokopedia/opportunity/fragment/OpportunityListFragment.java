@@ -4,15 +4,17 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -22,7 +24,6 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.activity.OpportunityDetailActivity;
@@ -32,6 +33,7 @@ import com.tokopedia.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.opportunity.common.showcase.ShowCaseDialogFactory;
 import com.tokopedia.opportunity.common.util.RefreshHandler;
+import com.tokopedia.opportunity.di.component.DaggerOpportunityComponent;
 import com.tokopedia.opportunity.di.component.OpportunityComponent;
 import com.tokopedia.opportunity.di.module.OpportunityModule;
 import com.tokopedia.opportunity.domain.param.GetOpportunityListParam;
@@ -47,7 +49,8 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
-import com.tokopedia.opportunity.di.component.DaggerOpportunityComponent;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -99,6 +102,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private OpportunityComponent opportunityComponent;
 
     private ShowCaseDialog showCaseDialog;
+    private UserSessionInterface userSession;
 
     @Inject
     OpportunityListPresenter presenter;
@@ -166,7 +170,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        userSession = new UserSession(getActivity());
         if (savedInstanceState != null
                 && savedInstanceState.getString(ARGS_SAVE_INSTANCE_ID) != null) {
             String id = savedInstanceState.getString(ARGS_SAVE_INSTANCE_ID);
@@ -195,7 +199,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         searchView.setQuery(opportunityParam.getQuery(),false);
         presenter.initOpportunityForFirstTime(
                 opportunityParam.getQuery(),
-                opportunityParam.getListFilter()
+                opportunityParam.getListFilter(),
+                userSession.getShopId()
         );
     }
 
@@ -280,7 +285,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         pagingHandler.resetPage();
         presenter.initOpportunityForFirstTime(
                 opportunityParam.getQuery(),
-                opportunityParam.getListFilter()
+                opportunityParam.getListFilter(),
+                userSession.getShopId()
         );
     }
 
@@ -491,7 +497,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             public void onRetryClicked() {
                 presenter.initOpportunityForFirstTime(
                         opportunityParam.getQuery(),
-                        opportunityParam.getListFilter()
+                        opportunityParam.getListFilter(),
+                        userSession.getShopId()
                 );
             }
         };

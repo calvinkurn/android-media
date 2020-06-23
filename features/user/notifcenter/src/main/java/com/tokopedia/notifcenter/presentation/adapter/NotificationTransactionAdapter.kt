@@ -4,12 +4,20 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.navigation_common.model.NotificationsModel
-import com.tokopedia.notifcenter.GlobalNavConstant.*
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.MENUNGGU_KONFIRMASI
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.MENUNGGU_PEMBAYARAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PEMBELIAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PENJUALAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PESANAN_BARU
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PESANAN_DIPROSES
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SAMPAI_TUJUAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SEDANG_DIKIRIM
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SIAP_DIKIRIM
 import com.tokopedia.notifcenter.data.model.DrawerNotification
 import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
-import com.tokopedia.notifcenter.data.viewbean.PurchaseNotificationViewBean
-import com.tokopedia.notifcenter.data.viewbean.SaleNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.BuyerNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.SellerNotificationViewBean
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
 
 class NotificationTransactionAdapter(
@@ -19,14 +27,14 @@ class NotificationTransactionAdapter(
     fun updateValue(notificationData: NotificationsModel) {
         data.forEach {
             when (it) {
-                is PurchaseNotificationViewBean -> {
+                is BuyerNotificationViewBean -> {
                     it.childs.forEach { child ->
                         if (it.id == PEMBELIAN) {
                             purchaseCounterBadge(notificationData, child)
                         }
                     }
                 }
-                is SaleNotificationViewBean -> {
+                is SellerNotificationViewBean -> {
                     it.childs.forEach { child ->
                         if (it.id == PENJUALAN) {
                             saleCounterBadge(notificationData, child)

@@ -250,10 +250,11 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
 
     private void editGroup(List<String> ids) {
         Bundle bundle = new Bundle();
-        if (!ids.isEmpty())
+        if (!ids.isEmpty() && ad != null) {
             bundle.putString(groupId, ids.get(0));
-        bundle.putString(groupName, ad.getName());
-        bundle.putString(groupStatus, ad.getStatusDesc());
-        RouteManager.route(getContext(), bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
+            bundle.putString(groupName, ad.getName());
+            bundle.putString(groupStatus, ad.getStatusDesc());
+            RouteManager.route(getContext(), bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
+        }
     }
 }
