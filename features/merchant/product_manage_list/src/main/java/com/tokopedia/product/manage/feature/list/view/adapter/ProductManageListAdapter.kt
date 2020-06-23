@@ -1,12 +1,15 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.list.extension.findIndex
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
+import com.tokopedia.product.manage.feature.list.extension.findIndex
 import com.tokopedia.product.manage.feature.list.view.adapter.differ.ProductListDiffer
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
+import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class ProductManageListAdapter(
@@ -16,7 +19,19 @@ class ProductManageListAdapter(
     fun updatePrice(productId: String, price: String) {
         submitList(productId) {
             val formattedPrice = price.toIntOrZero().getCurrencyFormatted()
-            it.copy(price = price, priceFormatted = formattedPrice)
+            val editedPrice = PriceUiModel(price, formattedPrice)
+            it.copy(minPrice = editedPrice, maxPrice = editedPrice)
+        }
+    }
+
+    fun updatePrice(editResult: EditVariantResult) {
+        submitList(editResult.productId) {
+            val editedMinPrice = editResult.variants.minBy { it.price }?.price.orZero()
+            val editedMaxPrice = editResult.variants.maxBy { it.price }?.price.orZero()
+
+            val minPrice = PriceUiModel(editedMinPrice.toString(), editedMinPrice.getCurrencyFormatted())
+            val maxPrice = PriceUiModel(editedMaxPrice.toString(), editedMaxPrice.getCurrencyFormatted())
+            it.copy(minPrice = minPrice, maxPrice = maxPrice)
         }
     }
 
