@@ -211,7 +211,9 @@ public class FlightAnalytics {
         mapModel.put("destination", (passDataViewModel.getArrivalAirport().getAirportCode() == null || passDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
                 passDataViewModel.getArrivalAirport().getCityCode() : passDataViewModel.getArrivalAirport().getAirportCode());
         mapModel.put("departureDate", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getDepartureDate()));
-        mapModel.put("returnDateFormatted", passDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getReturnDate())));
+        mapModel.put("departureDateFormatted", passDataViewModel.getDepartureDate());
+        mapModel.put("returnDate", passDataViewModel.isOneWay() ? "" : FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getReturnDate()));
+        mapModel.put("returnDateFormatted", passDataViewModel.isOneWay() ? "" : passDataViewModel.getReturnDate());
         mapModel.put("returnTicket", passDataViewModel.isOneWay() ? "false" : "true");
         mapModel.put("passenger", passDataViewModel.getFlightPassengerViewModel().getAdult() + passDataViewModel.getFlightPassengerViewModel().getChildren() +
                 passDataViewModel.getFlightPassengerViewModel().getInfant());
