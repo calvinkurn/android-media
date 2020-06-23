@@ -78,7 +78,6 @@
     <string name="error_zero_wholesale_price">Harga grosir tidak boleh 0</string>
     <string name="error_wholesale_price_must_cheaper_than_previous_input">Harga harus lebih murah dari harga sebelumnya</string>
     <string name="error_wholesale_price_too_expensive">Harga grosir harus lebih murah dari harga satuan</string>
-    <string name="message_variant_price_wholesale">Semua harga varian otomatis mengikuti harga utama jika produk memiliki harga grosir</string>
 
     <!-- add edit product stock -->
     <string name="add_product_stock_header">Stok</string>
