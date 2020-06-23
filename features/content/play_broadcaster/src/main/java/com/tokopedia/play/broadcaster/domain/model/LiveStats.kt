@@ -10,39 +10,39 @@ import com.tokopedia.play.broadcaster.socket.PlaySocketType
  */
 data class LiveStats(
         @SerializedName("channel_id")
-        val channelId: Int,
+        val channelId: String = "",
         @SerializedName("add_to_cart")
-        val addToCart: Int,
+        val addToCart: String = "",
         @SerializedName("remove_from_cart")
-        val removeFromCart: Int,
+        val removeFromCart: String = "",
         @SerializedName("wish_list")
-        val wishList: Int,
+        val wishList: String = "",
         @SerializedName("remove_wish_list")
-        val removeWishList: Int,
+        val removeWishList: String = "",
         @SerializedName("payment_verified")
-        val paymentVerified: Int,
+        val paymentVerified: String = "",
         @SerializedName("follow_shop")
-        val followShop: Int,
+        val followShop: String = "",
         @SerializedName("unfollow_shop")
-        val unFollowShop: Int,
+        val unFollowShop: String = "",
         @SerializedName("like_channel")
-        val likeChannel: Int,
+        val likeChannel: String = "",
         @SerializedName("like_channel_fmt")
-        val likeChannelFmt: String,
+        val likeChannelFmt: String = "",
         @SerializedName("unlike_channel")
-        val unlikeChannel: Int,
+        val unlikeChannel: String = "",
         @SerializedName("unlike_channel_fmt")
-        val unlikeChannelFmt: String,
+        val unlikeChannelFmt: String = "",
         @SerializedName("total_like")
-        val totalLike: Int,
+        val totalLike: String = "",
         @SerializedName("total_like_fmt")
-        val totalLikeFmt: String,
+        val totalLikeFmt: String = "",
         @SerializedName("visit_shop")
-        val visitShop: Int,
+        val visitShop: String = "",
         @SerializedName("visit_pdp")
-        val visitPdp: Int,
+        val visitPdp: String = "",
         @SerializedName("visit_channel")
-        val visitChannel: Int
+        val visitChannel: String = ""
 ): PlaySocketType {
         override val type: PlaySocketEnum get() = PlaySocketEnum.LiveStats
 }

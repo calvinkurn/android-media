@@ -44,7 +44,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val scope = CoroutineScope(job + dispatcher.main)
 
     val channelId: String
-        get() = observableConfigInfo.value?.draftChannelId?.toString() ?: throw IllegalStateException("Channel ID has not been retrieved")
+        get() = observableConfigInfo.value?.channelId?.toString() ?: throw IllegalStateException("Channel ID has not been retrieved")
 
     val observableConfigInfo: LiveData<ConfigurationUiModel>
         get() = _observableConfigInfo
@@ -141,23 +141,15 @@ class PlayBroadcastViewModel @Inject constructor(
 
             // TODO("tidying later, still waiting for the API to finish")
             if (configurationUiModel.haveOnGoingLive) {
-                getChannel(configurationUiModel.activeChannelId)
+                getChannel(configurationUiModel.channelId)
+            } else {
+                if (configurationUiModel.channelId == 0)
+                    createChannel()
             }
 
             // TODO("match local countdown timer with socket")
             playPusher.addMaxStreamDuration(configurationUiModel.durationConfig.duration)
             playPusher.addMaxPauseDuration(configurationUiModel.durationConfig.pauseDuration)
-        }
-    }
-
-    // TODO("tidying later, still waiting for the API to finish")
-    fun startPrepareChannel() {
-        scope.launch {
-            if (configuration?.streamAllowed == true
-                    && configuration?.haveOnGoingLive == false
-                    && configuration?.draftChannelId == 0) {
-                createChannel()
-            }
         }
     }
 

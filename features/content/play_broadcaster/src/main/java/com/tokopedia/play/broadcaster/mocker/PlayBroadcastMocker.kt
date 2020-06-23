@@ -82,8 +82,7 @@ object PlayBroadcastMocker {
     fun getMockConfiguration() = ConfigurationUiModel(
             streamAllowed = true,
             haveOnGoingLive = false, // activeChannelId != 0
-            activeChannelId = 0,
-            draftChannelId = 12,
+            channelId = 1234, // if (haveOnGoingLive) activeChannelId else draftChannelId
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
                     pauseDuration = (1 * 60 * 1000),

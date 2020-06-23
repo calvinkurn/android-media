@@ -4,7 +4,7 @@ import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.tokopedia.play.broadcaster.data.model.Metrics
+import com.tokopedia.play.broadcaster.domain.model.Metrics
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
