@@ -112,6 +112,7 @@ public class SearchActivity extends BaseActivity
     private ImageView buttonChangeGrid;
     private ImageView buttonCart;
     private ImageView buttonHome;
+    private View topBarShadow;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -219,6 +220,7 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
+        topBarShadow = findViewById(R.id.search_top_bar_shadow);
     }
 
     protected void prepareView() {
@@ -882,6 +884,8 @@ public class SearchActivity extends BaseActivity
         anim.addUpdateListener(this::changeTabHeightByAnimator);
         anim.setDuration(300);
         anim.start();
+        if (isVisible) topBarShadow.setVisibility(View.VISIBLE);
+        else topBarShadow.setVisibility(View.GONE);
     }
 
     private void changeTabHeightByAnimator(ValueAnimator valueAnimator) {

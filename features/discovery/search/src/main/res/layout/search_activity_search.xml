@@ -168,6 +168,7 @@
                 android:theme="@style/ThemeOverlay.AppCompat.Light"/>
 
             <View
+                android:id="@+id/search_top_bar_shadow"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:background="@drawable/top_bar_shadow" />
