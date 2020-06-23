@@ -58,7 +58,7 @@ class ManageAddressViewModel @Inject constructor(
         val value = _addressList.value
         if (value is ManageAddressState.Success) {
             _result.value = ManageAddressState.Loading
-            deletePeopleAddressUseCase.execute(id, {
+            deletePeopleAddressUseCase.execute(id.toInt(), {
                 _result.value = ManageAddressState.Success("Success")
             },  {
                 _addressList.value  = ManageAddressState.Fail(false, it, "")

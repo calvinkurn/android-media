@@ -187,8 +187,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
             btn_hapus_alamat.setOnClickListener {
                 viewModel.deletePeopleAddress(data.addressId)
-                bottomSheetLainnya?.dismiss()
                 performSearch("")
+                bottomSheetLainnya?.dismiss()
                 Toast.makeText(context, "HAPUS", Toast.LENGTH_LONG).show()
             }
 
