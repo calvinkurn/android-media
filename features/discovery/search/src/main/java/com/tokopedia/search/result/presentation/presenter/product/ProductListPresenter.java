@@ -197,7 +197,7 @@ final class ProductListPresenter
     private boolean isBottomSheetFilterRevampABTestEnabled() {
         try {
             return getView().getABTestRemoteConfig()
-                    .getString(AB_TEST_OLD_FILER_VS_NEW_FILTER)
+                    .getString(AB_TEST_OLD_FILER_VS_NEW_FILTER, AB_TEST_VARIANT_NEW_FILTER)
                     .equals(AB_TEST_VARIANT_NEW_FILTER);
         }
         catch (Exception e) {

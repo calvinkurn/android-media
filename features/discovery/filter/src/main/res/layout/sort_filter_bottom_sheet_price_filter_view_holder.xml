@@ -25,7 +25,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/priceFilterTitle"
         app:text_field_input_type="number"
-        app:text_field_label_static="true" />
+        app:text_field_label_static="false"
+        app:text_field_label="Harga Maksimum"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/priceFilterMaxValue"
@@ -35,7 +36,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/priceFilterTitle"
         app:text_field_input_type="number"
-        app:text_field_label_static="true" />
+        app:text_field_label_static="false"
+        app:text_field_label="Harga Minimum" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/priceRangeFilterRecyclerView"
