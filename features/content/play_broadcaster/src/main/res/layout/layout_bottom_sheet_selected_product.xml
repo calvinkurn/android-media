@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:paddingStart="@dimen/spacing_lvl4"
         android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/play_bottom_action_view_height"
         android:background="@drawable/bottomsheet_background"
         android:focusable="true"
         android:clickable="true"

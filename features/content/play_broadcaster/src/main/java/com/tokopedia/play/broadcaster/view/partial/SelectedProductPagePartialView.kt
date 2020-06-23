@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
+import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 
 /**
@@ -50,7 +51,7 @@ class SelectedProductPagePartialView(
     init {
         rvSelectedProduct.adapter = selectableProductAdapter
         rvSelectedProduct.addItemDecoration(PlayGridTwoItemDecoration(context))
-
+        rvSelectedProduct.addOnScrollListener(StopFlingScrollListener())
 
         vDragArea.setOnTouchListener { _, event ->
             when (event.action) {

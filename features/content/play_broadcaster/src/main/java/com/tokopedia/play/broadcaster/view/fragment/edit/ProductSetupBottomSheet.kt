@@ -104,7 +104,7 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
     }
 
     override fun goBack() {
-        mListener?.onSetupCanceled()
+        dialog?.onBackPressed()
     }
 
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {

@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
+import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
@@ -104,6 +105,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private fun setupView(view: View) {
         rvSelectedProduct.adapter = selectableProductAdapter
         rvSelectedProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+        rvSelectedProduct.addOnScrollListener(StopFlingScrollListener())
 
         btnAction.setOnClickListener { mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore()) }
         tvChooseOver.setOnClickListener { mListener?.onChooseOver() }
@@ -135,7 +137,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
             bottomSheetBehavior.peekHeight = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-            isCancelable = false
+            isCancelable = true
         }
     }
 
