@@ -27,8 +27,8 @@
     <string name="sort_filter_new_notification">BARU</string>
 
     <string name="price_filter_title">Harga</string>
-    <string name="price_filter_pmin_label">Harga Minimum</string>
-    <string name="price_filter_pmax_label">Harga Maksimum</string>
+    <string name="price_filter_pmin_label">Terendah</string>
+    <string name="price_filter_pmax_label">Tertinggi</string>
     <string name="price_filter_min_value">1.000</string>
     <string name="price_filter_max_value">100.000.000</string>
     <string name="price_filter_chips_item">Rp350 rb - Rp750 rb</string>
