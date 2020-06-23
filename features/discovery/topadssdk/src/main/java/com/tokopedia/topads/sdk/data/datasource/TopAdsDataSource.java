@@ -22,10 +22,6 @@ public interface TopAdsDataSource {
 
     CpmModel getTopAdsBanner(TKPDMapParam<String, String> param);
 
-    PreferedCategory getPreferenceCategory();
-
-    MerlinRecomendation getMerlinRecomendation(String query);
-
     String clickTopAdsUrl(String url);
 
     TopAdsModel checkWishlist(TopAdsModel model);

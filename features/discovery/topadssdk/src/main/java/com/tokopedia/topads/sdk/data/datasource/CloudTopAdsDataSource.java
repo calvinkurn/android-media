@@ -7,15 +7,11 @@ import android.text.TextUtils;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.TKPDMapParam;
-import com.tokopedia.topads.sdk.domain.mapper.MerlinCategoryMapper;
-import com.tokopedia.topads.sdk.domain.mapper.PreferedCategoryMapper;
 import com.tokopedia.topads.sdk.domain.mapper.TopAdsBannerMapper;
 import com.tokopedia.topads.sdk.domain.mapper.TopAdsMapper;
 import com.tokopedia.topads.sdk.domain.mapper.WishListCheckMapper;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.MerlinRecomendation;
-import com.tokopedia.topads.sdk.domain.model.PreferedCategory;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
@@ -80,34 +76,6 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
                 .build();
         RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
         return new TopAdsMapper(context, executor, position).getModel();
-    }
-
-    @Override
-    public PreferedCategory getPreferenceCategory() {
-        HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
-                .setBaseUrl(config.getBaseUrl() + URL_INFO_USER)
-                .setMethod(HttpMethod.GET)
-                .addHeader(TKPD_SESSION_ID, config.getSessionId())
-                .addHeader(TKPD_USER_ID, config.getUserId())
-                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
-                .addParameter("pub_id", "14")
-                .build();
-        RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
-        return new PreferedCategoryMapper(context, executor).getModel();
-    }
-
-    @Override
-    public MerlinRecomendation getMerlinRecomendation(String query) {
-        HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
-                .setBaseUrl(URL_MERLIN)
-                .setMethod(HttpMethod.POST_RAW)
-                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .addJsonBodyParameter(String.format("{\"parcel\":[{\"data\":{\"product_title\":\"%s\"}}],\"size\":1,\"expect\":1}", query))
-                .build();
-        RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
-        return new MerlinCategoryMapper(context, executor).getModel();
     }
 
     @Override
