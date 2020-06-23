@@ -1625,7 +1625,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         if(isLoadingInitialData && showProductEmptyState()) {
             searchBar.showWithCondition(productList.isNotEmpty())
             tabSortFilter.showWithCondition(productList.isNotEmpty())
-            tabSortFilter.textView.text = getString(R.string.product_manage_filter)
+            tabSortFilter.post { tabSortFilter.textView.text = getString(R.string.product_manage_filter) }
         }
     }
 
