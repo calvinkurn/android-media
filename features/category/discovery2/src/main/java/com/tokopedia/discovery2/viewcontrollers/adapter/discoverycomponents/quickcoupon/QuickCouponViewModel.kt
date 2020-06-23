@@ -74,7 +74,6 @@ class QuickCouponViewModel(val application: Application, private val components:
         couponAppliedStatus.value = clickCouponLiveData.value?.couponApplied == true
     }
 
-
     fun getCouponTitle(): String? = if (couponAppliedStatus.value == true) clickCouponLiveData.value?.messageUsingSuccess else clickCouponLiveData.value?.catalogTitle
 
     override fun initDaggerInject() {
