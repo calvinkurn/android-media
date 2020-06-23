@@ -20,14 +20,16 @@ open class BaseChatViewModel
  *
  * @see AttachmentType for attachment types.
  */
-(val messageId: String,
- var fromUid: String?,
- val from: String,
- var fromRole: String,
- val attachmentId: String,
- val attachmentType: String,
- var replyTime: String?,
- var message: String) {
+(
+        val messageId: String,
+        var fromUid: String?,
+        val from: String,
+        var fromRole: String,
+        val attachmentId: String,
+        val attachmentType: String,
+        var replyTime: String?,
+        var message: String
+) {
 
     companion object {
         const val SENDING_TEXT = "Sedang mengirim ..."
