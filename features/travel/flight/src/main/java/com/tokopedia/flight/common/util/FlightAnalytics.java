@@ -221,14 +221,15 @@ public class FlightAnalytics {
                 passDataViewModel.getFlightPassengerViewModel().getInfant() > 0 ? "true" : "false");
         mapModel.put("class", passDataViewModel.getFlightClass().getTitle());
 
-        if (passDataViewModel.getLinkUrl().contains("tokopedia://pesawat")) {
+        if (passDataViewModel.getLinkUrl().contains("tokopedia://pesawat") ||
+                passDataViewModel.getLinkUrl().contains("tokopedia-android-internal://pesawat")) {
             mapModel.put("deeplinkUrl", passDataViewModel.getLinkUrl());
             mapModel.put("url", "");
         } else {
             mapModel.put("deeplinkUrl", "");
             mapModel.put("url", passDataViewModel.getLinkUrl());
         }
-        mapModel.put("searchFound", searchFound);
+        mapModel.put("searchFound", searchFound ? "true" : "false");
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
     }
 

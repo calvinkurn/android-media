@@ -80,6 +80,8 @@
     <string name="title_digital_topup"><![CDATA[Top-up & Tagihan]]></string>
     <string name="digital_cart_toolbar_title">Checkout</string>
     <string name="digital_title_fav_number">Nomor Favorit</string>
+    <string name="digital_title_prepaid_page">Prabayar</string>
+    <string name="digital_title_postpaid_page">Pascabayar</string>
     <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
 
@@ -126,10 +128,14 @@
     <string name="product_report">Laporkan Produk</string>
     <string name="detail_report">Detail Laporan</string>
 
-    <!--Age Restriction-->
+    <!--Category-->
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="title_trade_in">Tukar Tambah</string>
+    <string name="label_category_explore">Jelajah Tokopedia</string>
     <string name="label_dob">Tanggal Lahir</string>
+    <string name="title_activity_catalog">Katalog</string>
+    <string name="catalog_host">catalog</string>
+    <string name="label_kategori">Belanja di Tokopedia</string>
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
@@ -257,5 +263,16 @@
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
     <string name="title_tokopoints_df">Tokopoints</string>
+
+
+    <string name="title_favorite_page">Favorit</string>
+
+    <!--Transaction-->
+    <string name="checkout_module_title_activity_checkout">Pengiriman</string>
+    <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
+    <string name="checkout_module_title_activity_multiple_address">Kirim ke Banyak Alamat</string>
+    <string name="title_one_click_checkout">Beli Langsung</string>
+    <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
+    <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
 </resources>

@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
 @RechargeGeneralScope
 abstract class RechargeGeneralViewModelModule {
 
-
     @RechargeGeneralScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

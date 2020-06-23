@@ -1,0 +1,71 @@
+mutation checkout($carts: CheckoutParams) {
+  checkout(carts: $carts) {
+    header {
+      process_time
+      messages
+      reason
+      error_code
+    }
+    status
+    data {
+      success
+      error
+      message
+      data {
+        product_list {
+          id
+          price
+          quantity
+          name
+        }
+        redirect_url
+        callback_url
+        parameter {
+          merchant_code
+          profile_code
+          customer_id
+          customer_name
+          customer_email
+          transaction_id
+          transaction_date
+          gateway_code
+          pid
+          nid
+          user_defined_value
+          amount
+          currency
+          language
+          signature
+          device_info {
+            device_name
+            device_version
+          }
+          payment_metadata
+        }
+        query_string
+        price_validation {
+          is_updated
+          message {
+            title
+            desc
+            action
+          }
+          tracker_data {
+            product_changes_type
+            campaign_type
+            product_ids
+          }
+        }
+      }
+    }
+    error_reporter {
+      eligible
+      texts {
+        submit_title
+        submit_description
+        submit_button
+        cancel_button
+      }
+    }
+  }
+}

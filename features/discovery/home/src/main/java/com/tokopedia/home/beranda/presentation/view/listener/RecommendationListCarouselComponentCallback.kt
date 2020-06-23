@@ -9,6 +9,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.TrackApp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.util.HashMap
 
 @ExperimentalCoroutinesApi
 class RecommendationListCarouselComponentCallback(val homeViewModel: HomeViewModel,
@@ -20,6 +21,7 @@ class RecommendationListCarouselComponentCallback(val homeViewModel: HomeViewMod
 
     override fun onRecommendationSeeMoreClick(channelModel: ChannelModel, applink: String) {
         HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(channelModel.id, channelModel.channelHeader.name, homeViewModel.getUserId())
+        homeCategoryListener.onDynamicChannelClicked(applink)
     }
 
     override fun onRecommendationProductClick(channelModel: ChannelModel,
@@ -35,7 +37,7 @@ class RecommendationListCarouselComponentCallback(val homeViewModel: HomeViewMod
     }
 
     override fun onRecommendationCarouselChannelImpression(channelModel: ChannelModel, parentPosition: Int) {
-
+        homeCategoryListener.putEEToIris(HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channelModel, true, homeCategoryListener.userId) as HashMap<String, Any>)
     }
 
     override fun onRecommendationCarouselGridImpression(channelModel: ChannelModel, channelGrid: ChannelGrid?, gridPosition: Int, parentPosition: Int, isSeeMoreView: Boolean) {

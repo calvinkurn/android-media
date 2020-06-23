@@ -8,11 +8,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.checkout.subfeature.multiple_address.domain.model.cartlist.CartItemData;
@@ -35,7 +35,7 @@ import rx.Subscriber;
 
 public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
-    private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
+    private final ChangeShippingAddressGqlUseCase changeShippingAddressGqlUseCase;
     private final GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase;
     private final UserSessionInterface userSessionInterface;
 
@@ -44,9 +44,9 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     private IMultipleAddressView view;
 
     public MultipleAddressPresenter(GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase,
-                                    ChangeShippingAddressUseCase changeShippingAddressUseCase,
+                                    ChangeShippingAddressGqlUseCase changeShippingAddressGqlUseCase,
                                     UserSessionInterface userSessionInterface) {
-        this.changeShippingAddressUseCase = changeShippingAddressUseCase;
+        this.changeShippingAddressGqlUseCase = changeShippingAddressGqlUseCase;
         this.getCartMultipleAddressListUseCase = getCartMultipleAddressListUseCase;
         this.userSessionInterface = userSessionInterface;
     }
@@ -58,7 +58,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     @Override
     public void detachView() {
-        changeShippingAddressUseCase.unsubscribe();
+        changeShippingAddressGqlUseCase.unsubscribe();
         getCartMultipleAddressListUseCase.unsubscribe();
         view = null;
     }
@@ -124,7 +124,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
                 DataChangeAddressRequest request = new DataChangeAddressRequest();
                 MultipleAddressItemData itemData = dataList.get(i).getItemListData().get(j);
-                request.setCartId(Integer.parseInt(itemData.getCartId()));
+                request.setCartIdStr(itemData.getCartId());
                 request.setProductId(Integer.parseInt(itemData.getProductId()));
                 request.setAddressId(Integer.parseInt(itemData.getRecipientAddressModel().getId()));
                 request.setNotes(itemData.getProductNotes());
@@ -143,7 +143,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
         requestParam.putAllString(authParam);
 
-        changeShippingAddressUseCase.execute(
+        changeShippingAddressGqlUseCase.execute(
                 requestParam,
                 addMultipleAddressSubscriber());
     }

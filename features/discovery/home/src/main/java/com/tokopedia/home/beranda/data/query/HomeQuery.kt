@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.query
 
 object HomeQuery{
     fun getQuery() = """
+        query homeData
         {
         status
           ticker {

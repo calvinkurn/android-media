@@ -156,10 +156,10 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                         onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
                                 data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
                     }
-                    data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID) -> {
+                    data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) -> {
                         onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
-                                destinationId = data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0L),
-                                type = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "")
+                                searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "",
+                                searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE) ?: "")
                     }
                 }
             }

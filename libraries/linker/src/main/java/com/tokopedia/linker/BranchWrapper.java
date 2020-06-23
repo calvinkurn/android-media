@@ -384,9 +384,11 @@ public class BranchWrapper implements WrapperInterface {
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT) &&
                 !(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
+            param.put(LinkerConstants.SCREEN_NAME, "Deeplink Page");
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
             param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
             param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
+
             TrackApp.getInstance().getGTM().sendCampaign(param);
         }
     }

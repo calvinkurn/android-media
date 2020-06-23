@@ -45,12 +45,8 @@ import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
-import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModule;
-import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
@@ -91,8 +87,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -113,7 +107,6 @@ import timber.log.Timber;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
-        InboxDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
@@ -136,23 +129,22 @@ import timber.log.Timber;
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
         RNDevOptionsApplinkModule.class,
-        UserIdentificationApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
         WebViewApplinkModule.class,
-        RecommendationDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static ApplinkDelegate applinkDelegate;
     private Subscription clearNotifUseCase;
+    private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
+
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
                     new ConsumerDeeplinkModuleLoader(),
-                    new InboxDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
@@ -175,11 +167,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
                     new RNDevOptionsApplinkModuleLoader(),
-                    new UserIdentificationApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
-                    new WebViewApplinkModuleLoader(),
-                    new RecommendationDeeplinkModuleLoader()
+                    new WebViewApplinkModuleLoader()
             );
         }
 
@@ -231,7 +221,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         finish();
     }
 
-    public static void createApplinkDelegateInBackground(){
+    public static void createApplinkDelegateInBackground(Context context){
         WeaveInterface appLinkDelegateWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -239,7 +229,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 return getAppLinkDelegate();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(appLinkDelegateWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appLinkDelegateWeave, ENABLE_ASYNC_APPLINK_DELEGATE_CREATION, context.getApplicationContext());
     }
 
     private static boolean getAppLinkDelegate(){

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -15,11 +14,6 @@ import androidx.fragment.app.FragmentManager;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.android.play.core.inappreview.InAppReviewInfo;
-import com.google.android.play.core.inappreview.InAppReviewManager;
-import com.google.android.play.core.inappreview.InAppReviewManagerFactory;
-import com.google.android.play.core.tasks.OnCompleteListener;
-import com.google.android.play.core.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -44,6 +38,7 @@ import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
@@ -85,8 +80,7 @@ import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.inbox.common.ResolutionRouter;
-import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
+import com.tokopedia.nps.helper.InAppReviewHelper;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -118,7 +112,6 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
-import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -126,12 +119,12 @@ import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
-import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -179,8 +172,6 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
-import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE;
-import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.CACHE_THANK_YOU_PAGE;
 
 
 /**
@@ -209,7 +200,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LinkerRouter,
         DigitalRouter,
         CMRouter,
-        ResolutionRouter,
         KYCRouter {
 
     @Inject
@@ -229,6 +219,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private TetraDebugger tetraDebugger;
     private Iris mIris;
+    private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
+    private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
+
 
     @Override
     public void onCreate() {
@@ -237,8 +230,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initFirebase();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
+        initIris();
         performLibraryInitialisation();
-        DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
     }
 
@@ -250,12 +244,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(initWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
     }
 
     private boolean initLibraries(){
         initCMPushNotification();
-        initIris();
         initTetraDebugger();
         return true;
     }
@@ -285,7 +278,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initIris() {
-        mIris = IrisAnalytics.Companion.getInstance(this);
+        mIris = IrisAnalytics.Companion.getInstance(ConsumerRouterApplication.this);
         WeaveInterface irisInitializeWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -293,7 +286,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeIrisInitialize();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(irisInitializeWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
     }
 
     private boolean executeIrisInitialize(){
@@ -528,7 +521,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, orderId));
     }
 
     @Override
@@ -915,47 +908,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
-        //this code needs to be improved in the future
-        try {
-            boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
-            boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
-
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && enableInAppReview && !hasShownInAppReviewBefore) {
-                launchInAppReview(activity);
-            } else {
-                SimpleAppRatingDialog.show(activity);
-            }
-        } catch (Exception e) {
-
+        if(!InAppReviewHelper.launchInAppReview(activity)) {
+            SimpleAppRatingDialog.show(activity);
         }
-    }
-
-    private boolean getInAppReviewHasShownBefore() {
-        LocalCacheHandler cacheHandler = new LocalCacheHandler(this, CACHE_THANK_YOU_PAGE);
-        return cacheHandler.getBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE);
-    }
-
-    private void setInAppReviewHasShownBefore() {
-        LocalCacheHandler cacheHandler = new LocalCacheHandler(this, CACHE_THANK_YOU_PAGE);
-        cacheHandler.putBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE, true);
-        cacheHandler.applyEditor();
-    }
-
-    private void launchInAppReview(Activity activity) {
-        InAppReviewManager inAppReviewManager = InAppReviewManagerFactory.create(activity);
-        inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
-            @Override
-            public void onComplete(Task<InAppReviewInfo> request) {
-                if (request.isSuccessful()) {
-                    inAppReviewManager.launchInAppReviewFlow(activity, request.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
-                        @Override
-                        public void onComplete(Task<Integer> task) {
-                            setInAppReviewHasShownBefore();
-                        }
-                    });
-                }
-            }
-        });
     }
 
     private void initCMPushNotification() {
