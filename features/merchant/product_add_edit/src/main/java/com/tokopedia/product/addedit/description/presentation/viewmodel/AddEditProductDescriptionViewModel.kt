@@ -9,9 +9,8 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
-import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -43,6 +42,12 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
     val variantInputModel: VariantInputModel get() {
         return productInputModel.value?.variantInputModel ?: VariantInputModel()
+    }
+    val hasVariant: Boolean get() {
+        productInputModel.value?.apply {
+            return variantInputModel.products.isNotEmpty()
+        }
+        return false
     }
     val hasWholesale: Boolean get() {
         productInputModel.value?.apply {
@@ -123,22 +128,26 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     fun getVariantSelectedMessage(): String {
-        var level1Message = ""
-        var level2Message = ""
-
-        return if (level1Message.isNotEmpty()) {
-            resource.getVariantAddedMessage() + level1Message + level2Message
+        return if (hasVariant) {
+            resource.getVariantAddedMessage().orEmpty()
         } else {
-            resource.getVariantEmptyMessage() ?: ""
+            resource.getVariantEmptyMessage().orEmpty()
         }
     }
 
-    fun getVariantButtonMessage(): String {
-        return if (true) {
-            resource.getVariantButtonAddedMessage()
-        } else {
-            resource.getVariantButtonEmptyMessage()
-        } ?: ""
+    fun getVariantTypeMessage(position: Int): String {
+        variantInputModel.selections.getOrNull(position)?.let {
+            return it.variantName
+        }
+        return ""
+    }
+
+    fun getVariantCountMessage(position: Int): String {
+        variantInputModel.selections.getOrNull(position)?.let {
+            // generate count of variant eg. 4 Varian
+            return "${it.options.size} ${resource.getVariantCountSuffix().orEmpty()}"
+        }
+        return ""
     }
 
     companion object {

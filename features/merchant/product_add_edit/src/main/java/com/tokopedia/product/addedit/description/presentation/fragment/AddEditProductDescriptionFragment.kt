@@ -16,11 +16,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.setText
+import com.tokopedia.product.addedit.common.util.setTextOrGone
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
@@ -39,6 +42,8 @@ import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -71,6 +76,7 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
+    private var isFirstLoaded = true
 
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
@@ -226,6 +232,10 @@ class AddEditProductDescriptionFragment:
             showVariantDialog()
         }
 
+        tvEditVariant.setOnClickListener {
+            showVariantDialog()
+        }
+
         btnNext.setOnClickListener {
             btnNext.isLoading = true
             moveToShipmentActivity()
@@ -303,8 +313,33 @@ class AddEditProductDescriptionFragment:
 
     private fun observeProductInputModel() {
         descriptionViewModel.productInputModel.observe(this, Observer {
-            applyEditMode()
+            if (isFirstLoaded) {
+                applyEditMode()
+                isFirstLoaded = false
+            }
+            updateVariantLayout()
         })
+    }
+
+    private fun updateVariantLayout() {
+        if (descriptionViewModel.hasVariant) {
+            tvEditVariant.visible()
+            tvAddVariant.gone()
+            layoutVariantTips.gone()
+        } else {
+            tvEditVariant.gone()
+            tvAddVariant.visible()
+            layoutVariantTips.visible()
+        }
+        tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
+        tvVariantLevel1Type.setTextOrGone(descriptionViewModel
+                .getVariantTypeMessage(VARIANT_VALUE_LEVEL_ONE_POSITION))
+        tvVariantLevel2Type.setTextOrGone(descriptionViewModel
+                .getVariantTypeMessage(VARIANT_VALUE_LEVEL_TWO_POSITION))
+        tvVariantLevel1Count.setTextOrGone(descriptionViewModel
+                .getVariantCountMessage(VARIANT_VALUE_LEVEL_ONE_POSITION))
+        tvVariantLevel2Count.setTextOrGone(descriptionViewModel
+                .getVariantCountMessage(VARIANT_VALUE_LEVEL_TWO_POSITION))
     }
 
     private fun observeProductVideo() {
@@ -383,8 +418,6 @@ class AddEditProductDescriptionFragment:
             super.renderList(videoLinks)
         }
 
-        tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
-        tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
         btnNext.visibility = View.GONE
         btnSave.visibility = View.VISIBLE
     }
@@ -408,9 +441,6 @@ class AddEditProductDescriptionFragment:
                                         ?: ProductInputModel()
                         descriptionViewModel.updateProductInputModel(productInputModel)
                     }
-
-                    // tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
-                    // tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
                 }
             }
         }
