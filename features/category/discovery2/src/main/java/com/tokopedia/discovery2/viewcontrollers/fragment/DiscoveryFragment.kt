@@ -343,6 +343,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             startActivityForResult(RouteManager.getIntent(activity, ADD_PHONE), MOBILE_VERIFICATION_REQUEST_CODE)
         }
         closeableBottomSheetDialog.setCloseClickListener {
+            closeableBottomSheetDialog.dismiss()
             getDiscoveryAnalytics().trackQuickCouponPhoneVerifyCancel()
         }
     }
