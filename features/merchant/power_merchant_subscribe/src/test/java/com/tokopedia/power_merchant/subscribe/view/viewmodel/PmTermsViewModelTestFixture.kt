@@ -3,6 +3,9 @@ package com.tokopedia.power_merchant.subscribe.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.domain.interactor.ActivatePowerMerchantUseCase
 import com.tokopedia.power_merchant.subscribe.common.coroutine.TestCoroutineDispatchers
+import com.tokopedia.power_merchant.subscribe.domain.interactor.ValidatePowerMerchantUseCase
+import com.tokopedia.power_merchant.subscribe.domain.model.GoldValidateShopBeforePMResponse
+import com.tokopedia.power_merchant.subscribe.domain.model.ValidatePowerMerchantResponse
 import com.tokopedia.power_merchant.subscribe.verification.verifyValueEquals
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
 import com.tokopedia.usecase.RequestParams
@@ -18,12 +21,22 @@ open class PmTermsViewModelTestFixture {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var activatePmUseCase: ActivatePowerMerchantUseCase
+    private lateinit var validatePmUseCase: ValidatePowerMerchantUseCase
     protected lateinit var viewModel: PmTermsViewModel
 
     @Before
     fun setUp() {
         activatePmUseCase = mockk(relaxed = true)
-        viewModel = PmTermsViewModel(activatePmUseCase, TestCoroutineDispatchers)
+        validatePmUseCase = mockk(relaxed = true)
+
+        val validationResponse = ValidatePowerMerchantResponse(data = "valid")
+        onValidatePm_thenReturn(validationResponse)
+
+        viewModel = PmTermsViewModel(activatePmUseCase, validatePmUseCase, TestCoroutineDispatchers)
+    }
+
+    protected fun onValidatePm_thenReturn(response: ValidatePowerMerchantResponse) {
+        coEvery { validatePmUseCase.execute() } returns GoldValidateShopBeforePMResponse(response)
     }
 
     protected fun onActivatePm_thenReturn(isSuccess: Boolean) {
