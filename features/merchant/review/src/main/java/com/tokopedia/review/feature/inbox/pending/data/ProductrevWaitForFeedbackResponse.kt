@@ -7,12 +7,9 @@ data class ProductrevWaitForFeedbackResponse (
         @SerializedName("list")
         @Expose
         val list: List<ProductrevWaitForFeedback> = listOf(),
-        @SerializedName("filterBy")
+        @SerializedName("searchQuery")
         @Expose
-        val filterBy: String = "",
-        @SerializedName("sortBy")
-        @Expose
-        val sortBy: String = "",
+        val searchQuery: String = "",
         @SerializedName("page")
         @Expose
         val page: Int = 0,

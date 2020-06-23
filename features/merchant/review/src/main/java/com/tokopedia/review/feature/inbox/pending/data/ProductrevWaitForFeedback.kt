@@ -9,6 +9,9 @@ data class ProductrevWaitForFeedback(
         @SerializedName("reputationID")
         @Expose
         val reputationId: Int = 0,
+        @SerializedName("productInboxID")
+        @Expose
+        val productInboxId: Int = 0,
         @SerializedName("product")
         @Expose
         val product: ProductrevProduct = ProductrevProduct(),
