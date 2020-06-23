@@ -28,11 +28,12 @@ class ShopHomeAdapter(
         private val shopHomeAdapterTypeFactory: ShopHomeAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory),
         DataEndlessScrollListener.OnDataEndlessScrollListener,
-        StickySingleHeaderView.OnStickySingleHeaderAdapter{
+        StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     companion object {
         private const val ALL_PRODUCT_STRING = "Semua Produk"
     }
+
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     var isOwner: Boolean = false
     private var recyclerView: RecyclerView? = null
@@ -58,34 +59,34 @@ class ShopHomeAdapter(
         val lastIndex = visitables.size
         productListViewModel.addAll(productList)
         visitables.addAll(productList)
-        notifyItemRangeInserted(lastIndex, productList.size)
+        notifyInsertedItemRange(lastIndex, productList.size)
     }
 
     fun setEtalaseTitleData() {
         visitables.add(ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, ""))
-        notifyItemInserted(visitables.size)
+        notifyInsertedItem(visitables.size)
     }
 
     fun setSortFilterData(shopProductSortFilterUiModel: ShopProductSortFilterUiModel) {
         visitables.add(shopProductSortFilterUiModel)
-        notifyItemInserted(visitables.size)
+        notifyInsertedItem(visitables.size)
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
         val lastIndex = visitables.size
         visitables.addAll(data)
-        notifyItemRangeInserted(lastIndex, data.size)
+        notifyInsertedItemRange(lastIndex, data.size)
     }
 
     override fun hideLoading() {
         if (visitables.contains(loadingModel)) {
             val itemPosition = visitables.indexOf(loadingModel)
             visitables.remove(loadingModel)
-            notifyItemRemoved(itemPosition)
+            notifyRemovedItem(itemPosition)
         } else if (visitables.contains(loadingMoreModel)) {
             val itemPosition = visitables.indexOf(loadingMoreModel)
             visitables.remove(loadingMoreModel)
-            notifyItemRemoved(itemPosition)
+            notifyRemovedItem(itemPosition)
         }
     }
 
@@ -101,14 +102,14 @@ class ShopHomeAdapter(
 
     fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
         val position = visitables.indexOf(shopHomeCarousellProductUiModel)
-        notifyItemChanged(position)
+        notifyChangedItem(position)
     }
 
     fun updateWishlistProduct(productId: String, isWishlist: Boolean) {
         visitables.filterIsInstance<ShopHomeProductViewModel>().onEach {
-            if(it.id == productId){
+            if (it.id == productId) {
                 it.isWishList = isWishlist
-                notifyItemChanged(visitables.indexOf(it))
+                notifyChangedItem(visitables.indexOf(it))
             }
         }
         visitables.filterIsInstance<ShopHomeCarousellProductUiModel>().onEach { shopHomeCarousellProductUiModel ->
@@ -117,14 +118,14 @@ class ShopHomeAdapter(
             }.onEach {
                 it.isWishList = isWishlist
             }.size
-            if(totalFoundProductId != 0)
-                notifyItemChanged(visitables.indexOf(shopHomeCarousellProductUiModel))
+            if (totalFoundProductId != 0)
+                notifyChangedItem(visitables.indexOf(shopHomeCarousellProductUiModel))
         }
     }
 
     override fun onStickyHide() {
         Handler().post {
-            notifyItemChanged(shopProductEtalaseListPosition)
+            notifyChangedItem(shopProductEtalaseListPosition)
         }
     }
 
@@ -139,7 +140,7 @@ class ShopHomeAdapter(
     }
 
     override fun getStickyHeaderPosition(): Int {
-        return visitables.indexOfFirst{
+        return visitables.indexOfFirst {
             it::class.java == ShopProductSortFilterUiModel::class.java
         }
     }
@@ -179,7 +180,7 @@ class ShopHomeAdapter(
             selectedSortId = sortId
             selectedSortName = sortName
         }
-        notifyItemChanged(visitables.indexOf(shopProductSortFilterUiViewModel))
+        notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
     }
 
     fun removeProductList() {
@@ -190,8 +191,52 @@ class ShopHomeAdapter(
         if (firstProductViewModelIndex >= 0 && totalProductViewModelData <= visitables.size && firstProductViewModelIndex < totalProductViewModelData) {
             visitables.removeAll(visitables.filterIsInstance<ShopHomeProductViewModel>())
             productListViewModel.clear()
-            notifyItemRangeRemoved(firstProductViewModelIndex, totalProductViewModelData)
+            notifyRemovedItemRange(firstProductViewModelIndex, totalProductViewModelData)
         }
+    }
+
+    private fun notifyChangedItem(position: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it, position)) {
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+    private fun notifyRemovedItem(position: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it, position)) {
+                notifyItemRemoved(position)
+            }
+        }
+    }
+
+    private fun notifyRemovedItemRange(startPosition: Int, totalItem: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it, startPosition)) {
+                notifyItemRangeRemoved(startPosition, totalItem)
+            }
+        }
+    }
+
+    private fun notifyInsertedItemRange(startPosition: Int, totalItem: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it, startPosition)) {
+                notifyItemRangeInserted(startPosition, totalItem)
+            }
+        }
+    }
+
+    private fun notifyInsertedItem(position: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it, position)) {
+                notifyItemInserted(position)
+            }
+        }
+    }
+
+    private fun isAllowedNotify(isComputingLayout: Boolean, position: Int): Boolean {
+        return !isComputingLayout && ((position in 0 until itemCount) || itemCount == 0)
     }
 
 }

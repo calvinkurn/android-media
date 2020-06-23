@@ -117,7 +117,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     override fun onStickyHide() {
         Handler().post {
-            notifyItemChanged(shopProductSortFilterPosition)
+            notifyChangedItem(shopProductSortFilterPosition)
         }
     }
 
@@ -145,11 +145,11 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         if (visitables.contains(loadingModel)) {
             val itemPosition = visitables.indexOf(loadingModel)
             visitables.remove(loadingModel)
-            notifyItemRemoved(itemPosition)
+            notifyRemovedItem(itemPosition)
         } else if (visitables.contains(loadingMoreModel)) {
             val itemPosition = visitables.indexOf(loadingMoreModel)
             visitables.remove(loadingMoreModel)
-            notifyItemRemoved(itemPosition)
+            notifyRemovedItem(itemPosition)
         }
     }
 
@@ -162,17 +162,17 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         sellerEmptyProductAllEtalaseDataModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
-            notifyItemRemoved(position)
+            notifyRemovedItem(position)
         }
         shopEmptyProductViewModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
-            notifyItemRemoved(position)
+            notifyRemovedItem(position)
         }
         shopProductAddViewModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
-            notifyItemRemoved(position)
+            notifyRemovedItem(position)
         }
         mapDataModel()
     }
@@ -204,7 +204,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             selectedSortId = sortId
             selectedSortName = sortName
         }
-        notifyItemChanged(visitables.indexOf(shopProductSortFilterUiViewModel))
+        notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
     }
 
     fun changeSelectedEtalaseFilter(etalaseId: String, etalaseName: String) {
@@ -212,7 +212,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             selectedEtalaseId = etalaseId
             selectedEtalaseName = etalaseName
         }
-        notifyItemChanged(visitables.indexOf(shopProductSortFilterUiViewModel))
+        notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
     }
 
     fun clearProductList() {
@@ -228,7 +228,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             }
             if (indexStart >= 0 && totalData <= visitables.size && indexStart < totalData) {
                 visitables.subList(indexStart, totalData).clear()
-                notifyItemRangeRemoved(indexStart, totalData)
+                notifyRemovedItemRange(indexStart, totalData)
                 shopProductViewModelList.clear()
                 mapDataModel()
             }
@@ -239,7 +239,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         shopMerchantVoucherViewModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
-            notifyItemRemoved(position)
+            notifyRemovedItem(position)
             mapDataModel()
         }
     }
@@ -248,7 +248,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         membershipStampViewModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
-            notifyItemRemoved(position)
+            notifyRemovedItem(position)
             mapDataModel()
         }
     }
@@ -260,7 +260,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             val shopProductViewModel = shopProductViewModelList[i]
             if (shopProductViewModel.id.equals(productId, ignoreCase = true)) {
                 shopProductViewModel.isWishList = wishList
-                notifyItemChanged(visitables.indexOf(shopProductViewModel), wishList)
+                notifyChangedItem(visitables.indexOf(shopProductViewModel))
                 break
             }
             i++
@@ -268,14 +268,14 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         shopProductFeaturedViewModel?.let {
             val isFeaturedChanged = it.updateWishListStatus(productId, wishList)
             if (isFeaturedChanged) {
-                notifyItemChanged(visitables.indexOf(it), wishList)
+                notifyChangedItem(visitables.indexOf(it))
             }
         }
 
         shopProductEtalaseHighlightViewModel?.let {
             val isEtalaseChanged = it.updateWishListStatus(productId, wishList)
             if (isEtalaseChanged) {
-                notifyItemChanged(visitables.indexOf(it), wishList)
+                notifyChangedItem(visitables.indexOf(it))
             }
         }
     }
@@ -292,7 +292,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         } else {
             val indexObject = visitables.indexOf(mapOfDataModel[KEY_SORT_FILTER_DATA_MODEL])
             visitables[indexObject] = data
-            notifyItemChanged(indexObject)
+            notifyChangedItem(indexObject)
         }
         mapDataModel()
     }
@@ -350,32 +350,32 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     fun setProductListDataModel(productList: List<ShopProductViewModel>) {
         visitables.addAll(productList)
         shopProductViewModelList.addAll(productList)
-        notifyItemRangeInserted(lastIndex,productList.size)
+        notifyInsertedItemRange(lastIndex,productList.size)
         mapDataModel()
     }
 
     fun addSellerAddProductDataModel() {
         val shopProductAddViewModel = ShopProductAddViewModel()
         visitables.add(shopProductAddViewModel)
-        notifyItemInserted(visitables.size - 1)
+        notifyInsertedItem(visitables.size - 1)
         mapDataModel()
     }
 
     fun refreshMembershipData() {
         membershipStampViewModel?.let {
-            notifyItemChanged(visitables.indexOf(it))
+            notifyChangedItem(visitables.indexOf(it))
         }
     }
 
     fun refreshMerchantVoucherData() {
         shopMerchantVoucherViewModel?.let {
-            notifyItemChanged(visitables.indexOf(it))
+            notifyChangedItem(visitables.indexOf(it))
         }
     }
 
     fun addEmptyDataModel(emptyDataViewModel: Visitable<*>) {
         visitables.add(emptyDataViewModel)
-        notifyItemInserted(visitables.indexOf(emptyDataViewModel))
+        notifyInsertedItem(visitables.indexOf(emptyDataViewModel))
         mapDataModel()
     }
 
@@ -424,4 +424,48 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         this.mapOfDataModel = mutableMapDataModelPosition
     }
 
+
+    private fun notifyChangedItem(position: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it,position)) {
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+    private fun notifyRemovedItem(position: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it, position)) {
+                notifyItemRemoved(position)
+            }
+        }
+    }
+
+    private fun notifyRemovedItemRange(startPosition: Int, totalItem: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it, startPosition)) {
+                notifyItemRangeRemoved(startPosition, totalItem)
+            }
+        }
+    }
+
+    private fun notifyInsertedItemRange(startPosition: Int, totalItem: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it, startPosition)) {
+                notifyItemRangeInserted(startPosition, totalItem)
+            }
+        }
+    }
+
+    private fun notifyInsertedItem(position: Int) {
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it, position)) {
+                notifyItemInserted(position)
+            }
+        }
+    }
+
+    private fun isAllowedNotify(isComputingLayout: Boolean, position: Int): Boolean {
+        return !isComputingLayout && ((position in 0 until itemCount) || itemCount == 0)
+    }
 }
