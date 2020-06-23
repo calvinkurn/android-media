@@ -64,6 +64,7 @@ class CartActivity : BaseCheckoutActivity() {
         const val EXTRA_PRODUCT_ID = "product_id"
 
         const val INVALID_PRODUCT_ID = -1L
+        const val APPLINK_PARAM_PRODUCT_ID = "product_id"
     }
 
 }
