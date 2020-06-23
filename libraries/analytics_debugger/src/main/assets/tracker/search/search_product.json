@@ -1,0 +1,117 @@
+{
+  "query" : [
+    {
+      "event": "clickSearch",
+      "eventCategory": "top nav",
+      "eventAction": "general search",
+      "eventLabel": "{{keyword: .* - treatment: .* - response: \\d*}}",
+      "isResultFound": "{{.*}}",
+      "categoryIdMapping": "{{.*}}",
+      "categoryNameMapping": "{{.*}}",
+      "relatedKeyword": "{{.* - .*}}"
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "search result",
+      "eventAction": "impression - product - topads",
+      "eventLabel": "{{.*}}",
+      "item_list": "/searchproduct - topads productlist",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d*.\\d*}}",
+          "dimension40": "/searchproduct - topads productlist",
+          "dimension83": "{{bebas ongkir|none / other}}"
+        }
+      ]
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "search result",
+      "eventAction": "impression - product",
+      "eventLabel": "{{.*}}",
+      "item_list": "{{/searchproduct - .* - product}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "userId": "{{.*}}",
+          "price": "{{\\d*.\\d*}}",
+          "shopId": "{{.*}}",
+          "dimension40": "{{/searchproduct - .* - product}}",
+          "dimension61": "{{.*}}",
+          "dimension83": "{{bebas ongkir|none / other}}",
+          "dimension87": "search result",
+          "dimension88": "search - product",
+          "dimension90": "{{.*}}",
+          "dimension96": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "search result",
+      "eventAction": "click - product - topads",
+      "eventLabel": "{{.*}}",
+      "item_list": "/searchproduct - topads productlist",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d*.\\d*}}",
+          "dimension40": "{{.*}}",
+          "dimension83": "{{bebas ongkir|none / other}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "search result",
+      "eventAction": "click - product",
+      "eventLabel": "{{.*}}",
+      "searchFilter": "{{.*}}",
+      "item_list": "{{/searchproduct - .* - product}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "userId": "{{.*}}",
+          "price": "{{\\d*.\\d*}}",
+          "shopId": "{{.*}}",
+          "dimension40": "{{/searchproduct - .* - product}}",
+          "dimension61": "{{.*}}",
+          "dimension83": "{{bebas ongkir|none / other}}",
+          "dimension87": "search result",
+          "dimension88": "search - product",
+          "dimension90": "{{.*}}",
+          "dimension96": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "viewSearchResultIris",
+      "eventCategory": "search result",
+      "eventAction": "impression - ticker",
+      "eventLabel": "{{.* - .*}}"
+    },
+    {
+      "event": "clickSearchResult",
+      "eventCategory": "search result",
+      "eventAction": "click - ticker",
+      "eventLabel": "{{.* - .*}}"
+    }
+  ]
+}

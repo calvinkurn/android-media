@@ -29,10 +29,10 @@ public class ProductViewModel implements Parcelable {
     private QuickFilterViewModel quickFilterModel;
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
-    private RelatedSearchViewModel relatedSearchModel;
     private GlobalNavViewModel globalNavViewModel;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel = new ArrayList<>();
     private int defaultView;
+    private RelatedViewModel relatedViewModel;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -48,14 +48,6 @@ public class ProductViewModel implements Parcelable {
 
     public void setCpmModel(CpmModel cpmModel) {
         this.cpmModel = cpmModel;
-    }
-
-    public boolean isImageSearch() {
-        return imageSearch;
-    }
-
-    public void setImageSearch(boolean imageSearch) {
-        this.imageSearch = imageSearch;
     }
 
     public boolean isQuerySafe() {
@@ -165,14 +157,6 @@ public class ProductViewModel implements Parcelable {
         this.suggestionModel = suggestionModel;
     }
 
-    public RelatedSearchViewModel getRelatedSearchModel() {
-        return relatedSearchModel;
-    }
-
-    public void setRelatedSearchModel(RelatedSearchViewModel relatedSearchModel) {
-        this.relatedSearchModel = relatedSearchModel;
-    }
-
     public GlobalNavViewModel getGlobalNavViewModel() {
         return globalNavViewModel;
     }
@@ -201,6 +185,14 @@ public class ProductViewModel implements Parcelable {
         return getProductList().size() + getAdsModel().getData().size();
     }
 
+    public void setRelatedViewModel(RelatedViewModel relatedViewModel) {
+        this.relatedViewModel = relatedViewModel;
+    }
+
+    public RelatedViewModel getRelatedViewModel() {
+        return this.relatedViewModel;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -223,7 +215,6 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.dynamicFilterModel, flags);
         dest.writeParcelable(this.adsModel, flags);
         dest.writeParcelable(this.cpmModel, flags);
-        dest.writeParcelable(this.relatedSearchModel, flags);
         dest.writeParcelable(this.globalNavViewModel, flags);
         dest.writeInt(this.defaultView);
     }
@@ -244,7 +235,6 @@ public class ProductViewModel implements Parcelable {
         this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
-        this.relatedSearchModel = in.readParcelable(RelatedSearchViewModel.class.getClassLoader());
         this.globalNavViewModel = in.readParcelable(GlobalNavViewModel.class.getClassLoader());
         this.defaultView = in.readInt();
     }

@@ -32,6 +32,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.DISCUSSION -> {
                     listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.DISCUSSION_FAQ -> {
+                    listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.PRODUCT_INFO -> {
                     listOfComponent.add(ProductInfoDataModel(mapToProductInfoContent(component.componentData), type = component.type, name = component.componentName))
                 }
@@ -168,5 +171,15 @@ object DynamicProductDetailMapper {
                 ProductInfoContent(it.row, it.content)
             }
         }
+    }
+
+    fun generateProductReportFallback(productUrl: String): String {
+        var fallbackUrl = productUrl
+        if (!fallbackUrl.endsWith("/")) {
+            fallbackUrl += "/"
+        }
+        fallbackUrl = fallbackUrl.replace("www.", "m.")
+        fallbackUrl += "report/"
+        return fallbackUrl
     }
 }

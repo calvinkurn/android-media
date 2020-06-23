@@ -2,11 +2,11 @@ package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.emoney.data.AttributesEmoneyInquiry
-import com.tokopedia.emoney.data.EmoneyInquiry
-import com.tokopedia.emoney.data.EmoneyInquiryResponse
-import com.tokopedia.emoney.data.NfcCardErrorTypeDef
-import com.tokopedia.emoney.util.NFCUtils
+import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
+import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.data.EmoneyInquiryResponse
+import com.tokopedia.common_electronic_money.util.NFCUtils
+import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -19,6 +19,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
+import java.lang.reflect.Type
 
 class EmoneyBalanceViewModelTest {
 
@@ -62,14 +63,15 @@ class EmoneyBalanceViewModelTest {
         initSuccessData()
         val emoneyInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 1000, status = 1))
 
-        val gqlResponseGetInquirySuccess = GraphqlResponse(
-                mapOf(EmoneyInquiryResponse::class.java to EmoneyInquiryResponse(
-                        EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
+                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
+        val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        val gqlResponseWriteBalanceSuccess = GraphqlResponse(
-                mapOf(EmoneyInquiryResponse::class.java to EmoneyInquiryResponse(emoneyInquiry)),
-                mapOf(), false)
+        val result1 = HashMap<Type, Any>()
+        result1[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
+        val gqlResponseWriteBalanceSuccess = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
 
         //when
@@ -89,15 +91,17 @@ class EmoneyBalanceViewModelTest {
         initSuccessData()
         val emoneyInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 1000, status = 1))
 
-        val gqlResponseGetInquirySuccess = GraphqlResponse(
-                mapOf(EmoneyInquiryResponse::class.java to EmoneyInquiryResponse(
-                        EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
+                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
+        val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         val errorGql = GraphqlError()
         errorGql.message = "Error get balance"
-        val gqlResponseError = GraphqlResponse(
-                mapOf(), mapOf(EmoneyInquiryResponse::class.java to listOf(errorGql)), false)
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[EmoneyInquiryResponse::class.java] = listOf(errorGql)
+        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseError)
 
         //when
@@ -118,9 +122,10 @@ class EmoneyBalanceViewModelTest {
 
         val emoneyInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 1000, status = 1))
 
-        val gqlResponseWriteBalanceSuccess = GraphqlResponse(
-                mapOf(EmoneyInquiryResponse::class.java to EmoneyInquiryResponse(emoneyInquiry)),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
+        val gqlResponseWriteBalanceSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
 
         //when
@@ -141,8 +146,11 @@ class EmoneyBalanceViewModelTest {
 
         val errorGql = GraphqlError()
         errorGql.message = "Error get balance"
-        val gqlResponseError = GraphqlResponse(
-                mapOf(), mapOf(EmoneyInquiryResponse::class.java to listOf(errorGql)), false)
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[EmoneyInquiryResponse::class.java] = listOf(errorGql)
+        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
 
         //when
@@ -162,10 +170,11 @@ class EmoneyBalanceViewModelTest {
         initSuccessData()
         every { isoDep.isConnected } returns false
 
-        val gqlResponseGetInquirySuccess = GraphqlResponse(
-                mapOf(EmoneyInquiryResponse::class.java to EmoneyInquiryResponse(
-                        EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
+                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
+        val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseGetInquirySuccess
 
         //when
@@ -177,20 +186,6 @@ class EmoneyBalanceViewModelTest {
 
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
         assertEquals(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE, emoneyBalanceViewModel.errorCardMessage.value)
-    }
-
-    @Test
-    fun processTagIntent_CardIsNotEmoney_ContinueProcessTagOnBrizzi() {
-        //given
-        initSuccessData()
-        every { NFCUtils.toHex(byteNfc) } returns "2000"
-
-        //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
-
-        //then
-        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
     }
 
     @Test

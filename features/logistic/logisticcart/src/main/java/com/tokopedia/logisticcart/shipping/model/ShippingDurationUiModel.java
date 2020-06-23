@@ -20,6 +20,7 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
     private String errorMessage;
     private boolean isCodAvailable;
     private String codText;
+    private boolean showShippingInformation;
 
     public ShippingDurationUiModel() {
     }
@@ -30,6 +31,7 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
         selected = in.readByte() != 0;
         showShowCase = in.readByte() != 0;
         errorMessage = in.readString();
+        showShippingInformation = in.readByte() != 0;
     }
 
     @Override
@@ -39,6 +41,7 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
         dest.writeByte((byte) (selected ? 1 : 0));
         dest.writeByte((byte) (showShowCase ? 1 : 0));
         dest.writeString(errorMessage);
+        dest.writeByte((byte) (showShippingInformation ? 1 : 0));
     }
 
     @Override
@@ -112,5 +115,13 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
 
     public void setCodText(String codText) {
         this.codText = codText;
+    }
+
+    public boolean isShowShippingInformation() {
+        return showShippingInformation;
+    }
+
+    public void setShowShippingInformation(boolean showShippingInformation) {
+        this.showShippingInformation = showShippingInformation;
     }
 }

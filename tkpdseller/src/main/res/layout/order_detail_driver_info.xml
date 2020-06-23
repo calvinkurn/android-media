@@ -35,7 +35,7 @@
             android:layout_marginTop="-8dp"
             android:layout_marginRight="-8dp"
             android:layout_marginBottom="-8dp"
-            tools:src="@drawable/facebook_square_blue" />
+            tools:src="@drawable/ic_action_add" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -4,20 +4,35 @@ import android.app.job.JobParameters
 import android.app.job.JobService
 import android.os.Build
 import androidx.annotation.RequiresApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-class DFDownloadJobService : JobService() {
+class DFDownloadJobService : JobService(), CoroutineScope {
     override fun onStopJob(params: JobParameters?): Boolean {
         return true
     }
 
-    override fun onStartJob(params: JobParameters?): Boolean {
-        GlobalScope.launch {
-            DFDownloader.startJob(applicationContext)
-            jobFinished(params, false)
+    val handler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler { _, ex ->
+            DFDownloader.isServiceRunning = false
         }
+    }
+
+    override val coroutineContext: CoroutineContext by lazy {
+        Dispatchers.IO + handler
+    }
+
+    override fun onStartJob(params: JobParameters?): Boolean {
+        launch {
+            DFDownloader.startJob(applicationContext)
+            try {
+                jobFinished(params, false)
+            } catch (e:Exception) {
+                DFDownloader.isServiceRunning = false
+            }
+        }
+        // this is to make sure the service is not finished, until call jobFinished
         return true
     }
 }

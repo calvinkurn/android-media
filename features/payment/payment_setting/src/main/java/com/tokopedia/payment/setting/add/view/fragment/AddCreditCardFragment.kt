@@ -87,6 +87,9 @@ class AddCreditCardFragment : BaseWebViewFragment(), AddCreditCardContract.View 
     }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
+        if(callbackUrl==""){
+            return false
+        }
         if (url.equals(callbackUrl)) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()

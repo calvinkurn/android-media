@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
@@ -16,7 +17,7 @@ class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummary
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
     override fun getNewFragment(): Fragment? {
-        return OrderSummaryPageFragment()
+        return OrderSummaryPageFragment.newInstance(intent.getBooleanExtra(Constant.EXTRA_OCC_SOURCE_PDP, false))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

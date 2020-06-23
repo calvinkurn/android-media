@@ -44,6 +44,7 @@
         android:layout_height="@dimen/dp_14"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/shopName"
         app:layout_constraintStart_toEndOf="@+id/shopAvatar"
         app:layout_constraintTop_toTopOf="@+id/shopName"

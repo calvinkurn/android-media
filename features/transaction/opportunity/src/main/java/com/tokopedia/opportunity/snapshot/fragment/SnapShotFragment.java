@@ -8,10 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.PreviewProductImage;
@@ -251,7 +252,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     public void showToastMessage(String message) {
-        CommonUtils.UniversalToast(getActivity(), message);
+        Toast.makeText(getActivity(), MethodChecker.fromHtml(message), Toast.LENGTH_LONG).show();
     }
 
     @Override

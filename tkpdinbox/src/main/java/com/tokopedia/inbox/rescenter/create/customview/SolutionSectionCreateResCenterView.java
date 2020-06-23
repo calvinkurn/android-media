@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.tokopedia.core2.R;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customadapter.SolutionSpinnerAdapter;
 import com.tokopedia.inbox.rescenter.create.listener.ChooseSolutionListener;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;

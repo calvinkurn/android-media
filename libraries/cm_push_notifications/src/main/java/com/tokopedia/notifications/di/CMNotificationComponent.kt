@@ -8,8 +8,8 @@ import dagger.Component
 
 @CMNotificationScope
 @Component(modules = [
-    NotificationModule::class,
-    GraphQueryModule::class
+    GraphQueryModule::class,
+    NotificationModule::class
 ])
 interface CMNotificationComponent {
     fun inject(broadcast: CMBroadcastReceiver)

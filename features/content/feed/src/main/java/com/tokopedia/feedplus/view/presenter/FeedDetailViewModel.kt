@@ -49,6 +49,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         }, onError =
         {
             it.printStackTrace()
+            feedDetailLiveData.value = FeedDetailViewState.Error(it)
         })
     }
 

@@ -1666,4 +1666,5 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         private const val MAX_FEATURED_PRODUCT = 5
 
     }
+
 }

@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
@@ -21,6 +22,8 @@ import com.tokopedia.flight.search.data.db.FlightComboDao;
 import com.tokopedia.flight.search.data.db.FlightJourneyDao;
 import com.tokopedia.flight.search.data.db.FlightRouteDao;
 import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
@@ -56,9 +59,21 @@ public interface FlightComponent {
 
     FlightRouteDao flightRouteDao();
 
+    com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao flightJourneyNewDao();
+
+    com.tokopedia.flight.searchV4.data.FlightRouteDao flightRouteNewDao();
+
+    com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao flightComboNewDao();
+
     Resources resources();
 
     FlightGetOrderUseCase flightGetOrderUseCase();
+
+    GraphqlRepository graphqlRepository();
+
+    MultiRequestGraphqlUseCase multiRequestGraphqlUseCase();
+
+    TravelDispatcherProvider dispatcherProvider();
 
     void inject(BaseFlightActivity baseFlightActivity);
 

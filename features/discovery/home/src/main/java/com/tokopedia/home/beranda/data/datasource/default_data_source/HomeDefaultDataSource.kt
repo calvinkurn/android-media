@@ -37,7 +37,7 @@ class HomeDefaultDataSource {
     }
 
     private fun createDefaultHomeDynamicIcon(): DynamicHomeIcon {
-        val dynamicHomeIcon = DynamicHomeIcon(
+        return DynamicHomeIcon(
                 dynamicIcon = listOf(
                         DynamicHomeIcon.DynamicIcon(
                                 imageUrl = DEFAULT_DYNAMIC_ICON_IMAGE_URL_1,
@@ -61,7 +61,6 @@ class HomeDefaultDataSource {
                                 name = DEFAULT_DYNAMIC_ICON_NAME_5)
                 )
         )
-        return dynamicHomeIcon
     }
 
     private fun createDefaultHomeDynamicChannel(): DynamicHomeChannel {

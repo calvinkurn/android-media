@@ -4,6 +4,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancelled
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerFinished
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerInShipping
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerNewOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerReadyToShip
 import com.tokopedia.config.GlobalConfig
 
 /**
@@ -16,7 +21,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp()) {
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER
         } else {
-            ApplinkConstInternalOrder.NEW_ORDER
+            getRegisteredNavigationMainAppSellerNewOrder()
         }
     }
 
@@ -24,7 +29,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp()) {
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP
         } else {
-            ApplinkConstInternalOrder.READY_TO_SHIP
+            getRegisteredNavigationMainAppSellerReadyToShip()
         }
     }
 
@@ -32,7 +37,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp()) {
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_SHIPPED
         } else {
-            ApplinkConstInternalOrder.SHIPPED
+            getRegisteredNavigationMainAppSellerInShipping()
         }
     }
 
@@ -40,7 +45,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp()) {
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_DONE
         } else {
-            ApplinkConstInternalOrder.FINISHED
+            getRegisteredNavigationMainAppSellerFinished()
         }
     }
 
@@ -48,7 +53,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp()) {
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED
         } else {
-            ApplinkConstInternalOrder.CANCELLED
+            getRegisteredNavigationMainAppSellerCancelled()
         }
     }
 

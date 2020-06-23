@@ -3,7 +3,6 @@ package com.tokopedia.opportunity.snapshot.customview;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ClickableSpan;
@@ -15,15 +14,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ReturnInfo;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.opportunity.utils.SelectableSpannedMovementMethod;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotFragmentView;
+import com.tokopedia.opportunity.utils.SelectableSpannedMovementMethod;
+import com.tokopedia.webview.BaseSimpleWebViewActivity;
 
 /**
  * Created by hangnadi on 3/2/17.
@@ -91,10 +92,7 @@ public class FreeReturnView extends BaseView<ProductDetailData, SnapShotFragment
                 style.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
-                        Intent intent = HomeRouter.getBannerWebviewActivity(
-                                getContext(), url.getURL()
-                        );
-
+                        Intent intent = BaseSimpleWebViewActivity.Companion.getStartIntent(getContext(), url.getURL(), true, true, true, "");
                         getContext().startActivity(intent);
                     }
                 }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

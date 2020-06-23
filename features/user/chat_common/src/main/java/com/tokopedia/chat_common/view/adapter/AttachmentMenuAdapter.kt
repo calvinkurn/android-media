@@ -6,8 +6,9 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 
-class AttachmentMenuAdapter(private val viewHolderListener: AttachmentItemViewHolder.AttachmentViewHolderListener)
-    : RecyclerView.Adapter<AttachmentItemViewHolder>() {
+class AttachmentMenuAdapter(
+        var viewHolderListener: AttachmentItemViewHolder.AttachmentViewHolderListener? = null
+) : RecyclerView.Adapter<AttachmentItemViewHolder>() {
 
     private val menus = arrayListOf<AttachmentMenu>()
     var attachmentMenuListener: AttachmentMenu.AttachmentMenuListener? = null
