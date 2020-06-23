@@ -878,6 +878,9 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void configureTabLayout(boolean isVisible) {
+        Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
+        if (!(fragmentItem instanceof ProductListFragment)) return;
+
         animateTab(isVisible);
 
         if (isVisible) topBarShadow.setVisibility(View.VISIBLE);
