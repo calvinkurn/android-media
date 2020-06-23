@@ -43,7 +43,7 @@ class DateTextFieldView(
         set(value) {
             field = value
             tvStcDateText.text = value
-            tvStcDateText.setTextColor(context.getResColor(R.color.color_stc_grey_ae31353b))
+            tvStcDateText.setTextColor(context.getResColor(R.color.Neutral_N700_32))
         }
 
     var valueStr: String = ""
@@ -58,12 +58,4 @@ class DateTextFieldView(
             field = value
             tvStcDateLabel.gravity = value
         }
-
-    fun reset() {
-        println("X -> label : $label")
-        println("X -> hint : $hint")
-        label = label
-        valueStr = ""
-        hint = hint
-    }
 }

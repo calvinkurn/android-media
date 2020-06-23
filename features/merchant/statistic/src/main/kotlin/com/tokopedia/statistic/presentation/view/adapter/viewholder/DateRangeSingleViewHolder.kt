@@ -5,11 +5,15 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.calendar.CalendarPickerView
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.presentation.model.DateRangeItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.CalendarPicker
+import com.tokopedia.statistic.utils.DateRangeFormatUtil
 import kotlinx.android.synthetic.main.item_stc_date_range_single.view.*
 import java.util.*
 
@@ -20,7 +24,7 @@ import java.util.*
 class DateRangeSingleViewHolder(
         itemView: View?,
         private val fm: FragmentManager,
-        private val onApply: (DateRangeItem) -> Unit,
+        private val showApplyButton: (Boolean) -> Unit,
         private val onClick: (DateRangeItem) -> Unit
 ) : AbstractViewHolder<DateRangeItem.Single>(itemView) {
 
@@ -56,45 +60,48 @@ class DateRangeSingleViewHolder(
                 element.isSelected = true
                 showCustomForm(true)
                 onClick(element)
+                showApplyButton(element)
             }
 
-
-            setupDatePicker()
+            if (element.type == DateRangeItem.Single.TYPE_PER_MONTH) {
+                setupMontPicker()
+            } else {
+                setupDatePicker()
+            }
         }
+    }
+
+    private fun setupMontPicker() {
+        //should implement month picker here, but the component not ready yet from unify
     }
 
     private fun setupDatePicker() = with(itemView) {
-        edtStcSingle.label = context.getString(R.string.stc_start_from)
+        edtStcSingle.label = context.getString(R.string.stc_date)
         edtStcSingle.setOnClickListener {
-            showDatePicker()
+            datePicker.showDatePicker(fm)
         }
 
         datePicker.setOnDismissListener {
-            showSelectedDate(datePicker.selectedDates.firstOrNull(), datePicker.selectedDates.lastOrNull())
+            setSelectedDate(datePicker.selectedDates.firstOrNull(), datePicker.selectedDates.lastOrNull())
         }
     }
 
-    private fun showDatePicker() {
-        element?.let {
-            when (it.type) {
-                DateRangeItem.Single.TYPE_PER_DAY, DateRangeItem.Single.TYPE_PER_WEEK -> {
-                    datePicker.showDatePicker(fm)
-                }
-                DateRangeItem.Single.TYPE_PER_MONTH -> {
-                    //show month picker
-                }
-            }
-        }
-    }
-
-    private fun showSelectedDate(start: Date?, end: Date?) {
-        itemView.edtStcSingle.run {
-            if (null != start) {
-                //valueStr = DateTimeUtil.format(date.time, "dd MMM yyyy")
+    private fun setSelectedDate(startDate: Date?, endDate: Date?) {
+        if (startDate != null && endDate != null) {
+            element?.startDate = startDate
+            element?.endDate = endDate
+            itemView.edtStcSingle.valueStr = if (element?.type == DateRangeItem.Single.TYPE_PER_DAY) {
+                DateTimeUtil.format(startDate.time, "dd MMM yyyy")
             } else {
-                reset()
+                DateRangeFormatUtil.getDateRangeStr(startDate, endDate)
             }
+            showApplyButton(true)
         }
+    }
+
+    private fun showApplyButton(element: DateRangeItem.Single) {
+        val shouldShowButton = element.startDate != null && element.endDate != null
+        showApplyButton(shouldShowButton)
     }
 
     private fun showCustomForm(isShown: Boolean) = with(itemView) {
@@ -103,5 +110,12 @@ class DateRangeSingleViewHolder(
         } else {
             edtStcSingle.gone()
         }
+
+        val lineMarginTop = if (isShown) {
+            context.dpToPx(24)
+        } else {
+            context.dpToPx(16)
+        }
+        verLineStcCustom.setMargin(0, lineMarginTop.toInt(), 0, 0)
     }
 }

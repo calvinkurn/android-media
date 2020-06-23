@@ -10,7 +10,7 @@
         android:id="@+id/tvStcDateLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/color_stc_grey_ae31353b"
+        android:textColor="@color/light_N700_44"
         android:textSize="@dimen/fontSize_lvl2"
         app:typographyType="body_3"
         tools:text="Mulai dari" />
@@ -20,8 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        android:text="@string/stc_select_date_"
-        android:textColor="@color/color_stc_grey_ae31353b"
+        android:text="@string/stc_select_date"
+        android:textColor="@color/light_N700_44"
         app:typographyType="body_1" />
 
     <View

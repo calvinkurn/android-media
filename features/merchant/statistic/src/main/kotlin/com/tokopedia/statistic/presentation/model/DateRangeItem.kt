@@ -9,7 +9,7 @@ import java.util.*
  */
 
 sealed class DateRangeItem(
-        open val label: String,
+        open val label: String = "",
         open val startDate: Date? = null,
         open val endDate: Date? = null,
         open var isSelected: Boolean = false
@@ -29,8 +29,8 @@ sealed class DateRangeItem(
 
     data class Single(
             override val label: String,
-            override val startDate: Date? = null,
-            override val endDate: Date? = null,
+            override var startDate: Date? = null,
+            override var endDate: Date? = null,
             override var isSelected: Boolean = false,
             val isSingleDateMode: Boolean = false,
             val type: Int
@@ -41,6 +41,13 @@ sealed class DateRangeItem(
             const val TYPE_PER_WEEK = 1
             const val TYPE_PER_MONTH = 2
         }
+
+        override fun type(typeFactory: DateRangeAdapterFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+
+    object ApplyButton : DateRangeItem() {
 
         override fun type(typeFactory: DateRangeAdapterFactory): Int {
             return typeFactory.type(this)

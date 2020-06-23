@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.presentation.model.DateRangeItem
+import com.tokopedia.statistic.utils.DateRangeFormatUtil
 import kotlinx.android.synthetic.main.item_stc_date_range_default.view.*
 import java.util.*
 
@@ -22,12 +23,6 @@ class DateRangeDefaultViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.item_stc_date_range_default
-
-        private const val PATTERN_DAY = "dd"
-        private const val PATTERN_MONTH_MM = "MM"
-        private const val PATTERN_MONTH_MMM = "MMM"
-        private const val PATTERN_MONTH_MMMM = "MMMM"
-        private const val PATTERN_YEAR = "yyyy"
     }
 
     override fun bind(element: DateRangeItem.Default) {
@@ -35,7 +30,7 @@ class DateRangeDefaultViewHolder(
             setBackgroundColor(context.getResColor(R.color.Neutral_N0))
 
             tvStcDateRangeLabel.text = element.label
-            tvStcDefaultDateRange.text = getDateRangeStr(element)
+            tvStcDefaultDateRange.text = DateRangeFormatUtil.getDateRangeStr(element.startDate, element.endDate)
             radStcDefaultDateRange.isChecked = element.isSelected
             radStcDefaultDateRange.setOnClickListener {
                 setOnSelected(element)
@@ -48,51 +43,7 @@ class DateRangeDefaultViewHolder(
     }
 
     private fun setOnSelected(element: DateRangeItem.Default) {
-        onClick(element)
         element.isSelected = true
-    }
-
-    private fun getDateRangeStr(element: DateRangeItem.Default): String {
-        val startMonth = DateTimeUtil.format(element.startDate.time, PATTERN_MONTH_MM)
-        val endMonth = DateTimeUtil.format(element.endDate.time, PATTERN_MONTH_MM)
-        val startYear = DateTimeUtil.format(element.startDate.time, PATTERN_YEAR)
-        val endYear = DateTimeUtil.format(element.endDate.time, PATTERN_YEAR)
-
-        if (areStartAndEndDateSame(element.startDate, element.endDate)) {
-            val singleDayPattern = "$PATTERN_DAY $PATTERN_MONTH_MMMM (00:00 - 12:00)"
-            return DateTimeUtil.format(element.startDate.time, pattern = singleDayPattern)
-        }
-
-        val startDatePattern: String
-        val endDatePattern: String
-        when {
-            startMonth == endMonth && startYear == endYear -> {
-                //ex : 12 - 15 Apr 2020
-                startDatePattern = PATTERN_DAY
-                endDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM $PATTERN_YEAR"
-            }
-            startMonth != endMonth && startYear == endYear -> {
-                //ex : 12 Jan - 15 Apr 2020
-                startDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM"
-                endDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM $PATTERN_YEAR"
-            }
-            else -> {
-                //ex : 12 Jan 2020 - 15 Apr 2020
-                startDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM $PATTERN_YEAR"
-                endDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM $PATTERN_YEAR"
-            }
-        }
-
-        val startDateStr = DateTimeUtil.format(element.startDate.time, pattern = startDatePattern)
-        val endDateStr = DateTimeUtil.format(element.endDate.time, pattern = endDatePattern)
-
-        return "$startDateStr - $endDateStr"
-    }
-
-    private fun areStartAndEndDateSame(startDate: Date, endDate: Date): Boolean {
-        val pattern = "$PATTERN_DAY $PATTERN_MONTH_MM $PATTERN_YEAR"
-        val startDateStr = DateTimeUtil.format(startDate.time, pattern = pattern)
-        val endDateStr = DateTimeUtil.format(endDate.time, pattern = pattern)
-        return startDateStr == endDateStr
+        onClick(element)
     }
 }

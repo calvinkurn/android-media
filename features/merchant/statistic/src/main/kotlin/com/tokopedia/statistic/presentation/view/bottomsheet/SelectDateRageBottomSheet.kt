@@ -25,18 +25,18 @@ class SelectDateRageBottomSheet(
 ) : BottomSheetUnify(), DateRangeAdapterFactoryImpl.Listener {
 
     companion object {
-        private const val DAY_1 = 1
-        private const val DAYS_7 = 7
-        private const val DAYS_30 = 30
+        private const val DAYS_6 = 6
+        private const val DAYS_29 = 29
     }
 
     private var applyChangesCallback: (DateRangeItem) -> Unit = {}
     private val mAdapter by lazy { DateRangeAdapter(this, fm) }
-    private val items: List<DateRangeItem> by lazy {
-        listOf(
+    private val itemApplyButton = DateRangeItem.ApplyButton
+    private val items: MutableList<DateRangeItem> by lazy {
+        mutableListOf(
                 getToday(),
-                getDateRangeItem(DAYS_7, true),
-                getDateRangeItem(DAYS_30),
+                getDateRangeItem(DAYS_6, true),
+                getDateRangeItem(DAYS_29),
                 getSingleItem(DateRangeItem.Single.TYPE_PER_DAY, true),
                 getSingleItem(DateRangeItem.Single.TYPE_PER_WEEK),
                 getSingleItem(DateRangeItem.Single.TYPE_PER_MONTH)
@@ -52,18 +52,35 @@ class SelectDateRageBottomSheet(
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
-    override fun onApplyDateFilter(model: DateRangeItem) {
-        applyChangesCallback(model)
-        dismissAllowingStateLoss()
-    }
-
     override fun onItemDateRangeClick(model: DateRangeItem) {
         items.forEach {
             if (it != model) {
                 it.isSelected = false
             }
         }
+        if (model is DateRangeItem.Default && items.contains(itemApplyButton)) {
+            items.remove(itemApplyButton)
+            mAdapter.removeElement(itemApplyButton)
+        }
         mAdapter.notifyDataSetChanged()
+    }
+
+    override fun showApplyButton(isShown: Boolean) {
+        if (isShown) {
+            if (!items.contains(itemApplyButton)) {
+                items.add(itemApplyButton)
+                mAdapter.addElement(itemApplyButton)
+            }
+        } else {
+            items.remove(itemApplyButton)
+            mAdapter.removeElement(itemApplyButton)
+        }
+    }
+
+    override fun onApplyDateFilter() {
+        val selectedItem = items.firstOrNull { it.isSelected } ?: return
+        applyChangesCallback(selectedItem)
+        dismissAllowingStateLoss()
     }
 
     fun setOnApplyChanges(callback: (DateRangeItem) -> Unit): SelectDateRageBottomSheet {
@@ -92,7 +109,7 @@ class SelectDateRageBottomSheet(
             else -> R.string.stc_per_month
         }
         val label = mContext.getString(labelId)
-        return DateRangeItem.Single(label, null, null, false, isSingleDateModel, type)
+        return DateRangeItem.Single(label = label, type = type)
     }
 
     private fun getToday(): DateRangeItem {
@@ -104,7 +121,7 @@ class SelectDateRageBottomSheet(
     private fun getDateRangeItem(nPastDays: Int, isSelected: Boolean = false): DateRangeItem.Default {
         val label: String = mContext.getString(R.string.stc_last_n_days, nPastDays)
         val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(nPastDays.toLong()))
-        val endDate = Date(DateTimeUtil.getNPastDaysTimestamp(DAY_1.toLong()))
+        val endDate = Date()
         return DateRangeItem.Default(label, startDate, endDate, isSelected)
     }
 }

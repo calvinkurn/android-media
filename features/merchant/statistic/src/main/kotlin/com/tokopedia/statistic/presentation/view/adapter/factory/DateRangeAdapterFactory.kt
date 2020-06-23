@@ -11,4 +11,6 @@ interface DateRangeAdapterFactory {
     fun type(item: DateRangeItem.Default): Int
 
     fun type(item: DateRangeItem.Single): Int
+
+    fun type(item: DateRangeItem.ApplyButton): Int
 }

@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
-import com.tokopedia.statistic.presentation.view.customview.DateTextFieldView
+import com.tokopedia.statistic.utils.DateRangeFormatUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_calendar_picker.view.*
 import java.util.*
@@ -50,12 +50,14 @@ class CalendarPicker(
             cpv.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
 
                 override fun onDateSelected(date: Date) {
-                    this@CalendarPicker.selectedDates = cpv.selectedDates
-                    showSelectedDate(view?.edtStcDate, cpv.selectedDates.firstOrNull())
                     when (mode) {
-                        CalendarPickerView.SelectionMode.SINGLE -> dismiss()
+                        CalendarPickerView.SelectionMode.SINGLE -> {
+                            this@CalendarPicker.selectedDates = cpv.selectedDates
+                            dismiss()
+                        }
                         else -> selectDateRange(cpv)
                     }
+                    showSelectedDate(cpv.selectedDates, mode)
                 }
 
                 override fun onDateUnselected(date: Date) {
@@ -69,28 +71,33 @@ class CalendarPicker(
     private fun selectDateRange(cpv: CalendarPickerView) {
         if (cpv.selectedDates.isNotEmpty()) {
             val selected: Date = cpv.selectedDates.first()
-            val next7Days = Date(selected.time.plus(TimeUnit.DAYS.toMillis(6)))
+            val nextSixDays = Date(selected.time.plus(TimeUnit.DAYS.toMillis(6)))
 
             try {
-                cpv.selectDate(next7Days)
+                cpv.selectDate(nextSixDays)
             } catch (e: IllegalArgumentException) {
                 val today = Date()
-                val sevenDaysBefore = Date(today.time.minus(TimeUnit.DAYS.toMillis(6)))
-                cpv.selectDate(sevenDaysBefore)
+                val sixDaysBefore = Date(today.time.minus(TimeUnit.DAYS.toMillis(6)))
+                cpv.selectDate(sixDaysBefore)
                 cpv.selectDate(today, true)
             }
         }
+        this.selectedDates = cpv.selectedDates
         Handler().postDelayed({
             dismiss()
         }, 500)
     }
 
-    private fun showSelectedDate(edt: DateTextFieldView?, date: Date?) {
-        edt?.run {
-            if (null != date) {
-                valueStr = DateTimeUtil.format(date.time, "dd MMM yyyy")
-            } else {
-                reset()
+    private fun showSelectedDate(dates: List<Date>, mode: CalendarPickerView.SelectionMode) {
+        view?.edtStcDate?.run {
+            val startDate = dates.firstOrNull()
+            val endDate = dates.lastOrNull()
+            if (startDate != null && endDate != null) {
+                valueStr = if (mode == CalendarPickerView.SelectionMode.SINGLE) {
+                    DateTimeUtil.format(startDate.time, "dd MMM yyyy")
+                } else {
+                    DateRangeFormatUtil.getDateRangeStr(startDate, endDate)
+                }
             }
         }
     }
