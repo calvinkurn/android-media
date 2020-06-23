@@ -58,6 +58,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.kotlin.extensions.view.IntExtKt;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -368,65 +369,69 @@ public class ProductListFragment
         recyclerView.addItemDecoration(createProductItemDecoration());
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
         recyclerView.addOnScrollListener(createHideTabOnScrollListener());
-        recyclerView.addOnScrollListener(createFilterShadowOnScrollListener());
     }
 
     private RecyclerView.OnScrollListener createHideTabOnScrollListener() {
         return new RecyclerView.OnScrollListener() {
-            int lastVerticalScrollOffset = 0;
+            boolean willAnimateTab = false;
+            boolean willShow = false;
 
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (searchNavigationListener == null) return;
 
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int currentVerticalScrollOffset = recyclerView.computeVerticalScrollOffset();
-                    int distance = currentVerticalScrollOffset - lastVerticalScrollOffset;
-                    lastVerticalScrollOffset = currentVerticalScrollOffset;
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && willAnimateTab)
+                    searchNavigationListener.configureTabLayout(willShow);
 
-                    if (distance > SCROLL_THRESHOLD_TO_ANIMATE_TAB) {
-                        searchNavigationListener.animateTab(false);
-                    }
-                    else if (distance < -SCROLL_THRESHOLD_TO_ANIMATE_TAB) {
-                        searchNavigationListener.animateTab(true);
-                    }
+                if (recyclerView.canScrollVertically(-1)) applyQuickFilterLayoutOnTop();
+                else applyQuickFilterLayoutOnScroll();
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > SCROLL_THRESHOLD_TO_ANIMATE_TAB || dy < -SCROLL_THRESHOLD_TO_ANIMATE_TAB) {
+                    willAnimateTab = true;
+                    willShow = dy <= 0;
                 }
             }
         };
     }
 
-    private RecyclerView.OnScrollListener createFilterShadowOnScrollListener() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (searchNavigationListener == null) return;
-
-                if (recyclerView.canScrollVertically(-1)) applyFilterElevation();
-                else removeFilterElevation();
-            }
-        };
-    }
-
-    private void applyFilterElevation() {
+    private void applyQuickFilterLayoutOnTop() {
         if(getContext() == null) return;
 
+        applyQuickFilterElevation(getContext());
+
+        int paddingTop = IntExtKt.dpToPx(8, getContext().getResources().getDisplayMetrics());
+        setQuickFilterPaddingTop(paddingTop);
+    }
+
+    private void applyQuickFilterElevation(@NonNull Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (searchSortFilter.getElevation() == 0f) {
-                searchSortFilter.setElevation(convertDpToPx(getContext(), 5f));
+                int elevation = IntExtKt.dpToPx(5, context.getResources().getDisplayMetrics());
+                searchSortFilter.setElevation(elevation);
             }
         }
     }
 
-    public int convertDpToPx(Context context, float dp) {
-        return (int) (dp * context.getResources().getDisplayMetrics().density);
+    private void setQuickFilterPaddingTop(int paddingTop) {
+        searchSortFilter.setPadding(searchSortFilter.getPaddingLeft(), paddingTop, searchSortFilter.getPaddingRight(), searchSortFilter.getPaddingBottom());
     }
 
-    private void removeFilterElevation() {
+    private void applyQuickFilterLayoutOnScroll() {
         if(getContext() == null) return;
 
+        removeQuickFilterElevation();
+
+        int paddingTop = IntExtKt.dpToPx(16, getContext().getResources().getDisplayMetrics());
+        setQuickFilterPaddingTop(paddingTop);
+    }
+
+    private void removeQuickFilterElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (searchSortFilter.getElevation() > 0f) {
-                searchSortFilter.setElevation(convertDpToPx(getContext(), 0f));
+                searchSortFilter.setElevation(0);
             }
         }
     }
@@ -1480,7 +1485,7 @@ public class ProductListFragment
 
     private void showTabInFull() {
         if (searchNavigationListener != null) {
-            searchNavigationListener.animateTab(true);
+            searchNavigationListener.configureTabLayout(true);
         }
     }
 

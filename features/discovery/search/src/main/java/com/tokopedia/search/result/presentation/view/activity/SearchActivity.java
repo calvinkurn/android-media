@@ -877,20 +877,29 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void animateTab(boolean isVisible) {
+    public void configureTabLayout(boolean isVisible) {
+        animateTab(isVisible);
+
+        if (isVisible) topBarShadow.setVisibility(View.VISIBLE);
+        else topBarShadow.setVisibility(View.GONE);
+    }
+
+    private void animateTab(boolean isVisible) {
         int targetHeight = isVisible ? getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40) : 0;
 
         ValueAnimator anim = ValueAnimator.ofInt(tabLayout.getMeasuredHeight(), targetHeight);
         anim.addUpdateListener(this::changeTabHeightByAnimator);
         anim.setDuration(300);
         anim.start();
-        if (isVisible) topBarShadow.setVisibility(View.VISIBLE);
-        else topBarShadow.setVisibility(View.GONE);
     }
 
     private void changeTabHeightByAnimator(ValueAnimator valueAnimator) {
         int height = (Integer) valueAnimator.getAnimatedValue();
 
+        changeTabHeight(height);
+    }
+
+    private void changeTabHeight(int height) {
         ViewGroup.LayoutParams layoutParams = tabLayout.getLayoutParams();
         layoutParams.height = height;
         tabLayout.setLayoutParams(layoutParams);

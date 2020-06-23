@@ -18,5 +18,5 @@ public interface SearchNavigationListener {
         void onChangeGridClick();
     }
 
-    void animateTab(boolean isVisible);
+    void configureTabLayout(boolean isVisible);
 }
