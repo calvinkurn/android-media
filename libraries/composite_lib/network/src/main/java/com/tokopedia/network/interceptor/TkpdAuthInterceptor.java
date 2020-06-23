@@ -116,7 +116,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             throwChainProcessCauseHttpError(response);
         }
 
-        checkForceLogout(chain, response, finalRequest);
+        response = checkForceLogout(chain, response, finalRequest);
         checkResponse(response);
 
         return response;
@@ -416,7 +416,13 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
         String freshAccessToken = userSession.getAccessToken();
-        return chain.request().newBuilder()
+        Request.Builder newRequest = chain.request().newBuilder();
+        try {
+            generateHmacAuthRequest(chain.request(), newRequest);
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+        return newRequest
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();
     }
