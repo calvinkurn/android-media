@@ -88,6 +88,7 @@ public abstract class RoomDB extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RoomDB.class, "inapp_database")
+                            .fallbackToDestructiveMigration()
                             .addMigrations(MIGRATION_9_10)
                             .build();
                 }
