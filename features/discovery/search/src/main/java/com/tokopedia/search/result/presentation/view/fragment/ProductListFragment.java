@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -367,6 +368,7 @@ public class ProductListFragment
         recyclerView.addItemDecoration(createProductItemDecoration());
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
         recyclerView.addOnScrollListener(createHideTabOnScrollListener());
+        recyclerView.addOnScrollListener(createFilterShadowOnScrollListener());
     }
 
     private RecyclerView.OnScrollListener createHideTabOnScrollListener() {
@@ -391,6 +393,42 @@ public class ProductListFragment
                 }
             }
         };
+    }
+
+    private RecyclerView.OnScrollListener createFilterShadowOnScrollListener() {
+        return new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (searchNavigationListener == null) return;
+
+                if (recyclerView.canScrollVertically(-1)) applyFilterElevation();
+                else removeFilterElevation();
+            }
+        };
+    }
+
+    private void applyFilterElevation() {
+        if(getContext() == null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (searchSortFilter.getElevation() == 0f) {
+                searchSortFilter.setElevation(convertDpToPx(getContext(), 5f));
+            }
+        }
+    }
+
+    public int convertDpToPx(Context context, float dp) {
+        return (int) (dp * context.getResources().getDisplayMetrics().density);
+    }
+
+    private void removeFilterElevation() {
+        if(getContext() == null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (searchSortFilter.getElevation() > 0f) {
+                searchSortFilter.setElevation(convertDpToPx(getContext(), 0f));
+            }
+        }
     }
 
     @NonNull
