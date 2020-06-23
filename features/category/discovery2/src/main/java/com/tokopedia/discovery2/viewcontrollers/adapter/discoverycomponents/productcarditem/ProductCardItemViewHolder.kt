@@ -123,7 +123,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             setStockProgress(dataItem)
         }
         setLabelDiscount(dataItem.discountPercentage.toString())
-        setRating(dataItem)
+        dataItem.rating?.let { setRating(it, dataItem.countReview) }
 //        setCashbackLabel(dataItem.cashback)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
@@ -276,27 +276,30 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
     
-    private fun setRating(dataItem: DataItem) {
-        val rating = dataItem.rating.toIntOrZero()
+    private fun setRating(rating : String, countReview : String?) {
+        val rating = rating.toIntOrZero()
         if (rating in 1..5) {
             for (r in 0 until rating) {
                 linearLayoutImageRating.show()
                 (linearLayoutImageRating.getChildAt(r) as ImageView).setImageResource(R.drawable.product_card_ic_rating_active)
             }
-            setTextViewReviewCount(dataItem.countReview.toIntOrZero())
+            setTextViewReviewCount(countReview)
 
         } else {
             linearLayoutImageRating.hide()
         }
     }
 
-    private fun setTextViewReviewCount(reviewCount: Int?) {
-        if (reviewCount != 0) {
-            textViewReviewCount.show()
-            textViewReviewCount.text = String.format("%s", "($reviewCount)")
-        } else {
-            textViewReviewCount.hide()
+    private fun setTextViewReviewCount(reviewCount: String?) {
+        reviewCount?.let {
+            if (it.toIntOrZero() > 0) {
+                textViewReviewCount.show()
+                textViewReviewCount.text = String.format("%s", "($it)")
+            } else {
+                textViewReviewCount.hide()
+            }
         }
+
 
     }
 
