@@ -250,7 +250,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
             }
             val success = activity?.bindService(i, serviceConnection, Context.BIND_AUTO_CREATE)
             if(success == false)  {
-                Timber.w("Success: $success, ServiceConnection: $serviceConnection")
+                Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Connect Service Failed';detail='Bind Service: $success'")
                 moveToNormalLogin()
             }
         }
@@ -295,7 +295,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
-            Timber.w("Service Disconnected $name")
+            Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Service Disconnected';detail='$name'")
             service = null
             activity?.finish()
         }
