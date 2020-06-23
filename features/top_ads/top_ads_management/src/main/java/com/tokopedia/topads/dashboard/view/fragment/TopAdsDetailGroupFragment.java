@@ -116,10 +116,12 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
         /*To start the flow of top ads edit*/
         Bundle bundle = new Bundle();
-        bundle.putString(groupId, ad.getId());
-        bundle.putString(groupName, ad.getName());
-        bundle.putString(groupStatus, ad.getStatusDesc());
-        RouteManager.route(getContext(), bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
+        if (ad != null) {
+            bundle.putString(groupId, ad.getId());
+            bundle.putString(groupName, ad.getName());
+            bundle.putString(groupStatus, ad.getStatusDesc());
+            RouteManager.route(getContext(), bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
+        }
     }
 
     @Override
