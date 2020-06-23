@@ -48,6 +48,7 @@ class ProductManageFilterTab(
         updateTabs(tabs)
         sortFilterTab.chipItems.forEachIndexed { i, chip ->
             if(i == selectedTabIndex) {
+                sortFilterTab.indicatorCounter = activeFilterCount
                 chip.type = ChipsUnify.TYPE_SELECTED
                 selectedTab = SelectedTab(chip, data.tabs[selectedTabIndex].count)
             }
