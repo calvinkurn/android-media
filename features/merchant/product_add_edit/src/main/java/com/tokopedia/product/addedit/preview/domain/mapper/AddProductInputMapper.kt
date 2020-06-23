@@ -10,7 +10,8 @@ import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputMode
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import javax.inject.Inject
 
 /**
@@ -70,95 +71,52 @@ class AddProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                null
-
+                mapVariantParam(variantInputModel)
         )
     }
 
-    private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
-                                sizeChartUploadId: String,
-                                variantOptionUploadId: List<String>): Variant? {
-        if (variantInputModel.productVariant.size == 0) {
-            return null
+    private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
+        return if (variantInputModel.selections.isEmpty()) {
+            // if there is no variant input then return null
+            null
+        } else {
+            Variant(
+                    mapVariantSelections(variantInputModel.selections),
+                    mapVariantProducts(variantInputModel.products),
+                    mapSizeChart(variantInputModel.sizecharts)
+            )
         }
+    }
 
-        return Variant(
-                mapVariantSelectionParam(variantInputModel.variantOptionParent),
-                mapVariantProducts(variantInputModel.productVariant, variantOptionUploadId),
-                mapVariantSizeChart(variantInputModel.productSizeChart, sizeChartUploadId)
+    private fun mapVariantSelections(selections: List<SelectionInputModel>) = selections.map {
+        Selection(
+                it.variantId,
+                it.unitID,
+                mapVariantOptions(it.options)
         )
     }
 
-    private fun mapVariantSizeChart(productSizeChart: PictureViewModel?,
-                                    sizeChartUploadId: String): List<Picture> {
-        val sizeCharts: ArrayList<Picture> = ArrayList()
-        productSizeChart?.let {
-            if (productSizeChart.filePath.isNotEmpty()) {
-                val sizeChart = Picture(uploadId = sizeChartUploadId)
-                sizeCharts.add(sizeChart)
-            }
-        }
-        return sizeCharts
+    private fun mapVariantOptions(options: List<OptionInputModel>) = options.map {
+        Option(
+                it.value,
+                it.unitValueID,
+                it.hexCode
+        )
     }
 
-    private fun mapVariantProducts(
-            productVariant: ArrayList<ProductVariantCombinationViewModel>,
-            variantOptionUploadId: List<String>): List<Product> {
-        val products: ArrayList<Product> = ArrayList()
-        productVariant.forEach {
-            val levelIndex = it.opt.firstOrNull()
-            val product = Product(
-                    mapProductCombination(it.opt),
-                    it.priceVar.toBigDecimal().toBigInteger(),
-                    it.sku,
-                    getActiveStatus(it.st),
-                    it.stock,
-                    getVariantImage(variantOptionUploadId, levelIndex)
-            )
-            products.add(product)
-        }
-        return products
+    private fun mapVariantProducts(products: List<ProductVariantInputModel>) = products.map {
+        Product(
+                it.combination,
+                it.price,
+                it.sku,
+                it.status,
+                it.stock,
+                emptyList()
+        )
     }
 
-    private fun getVariantImage(variantOptionUploadId: List<String>, index: Int?): List<Picture> {
-        var variantPictureList = listOf<Picture>()
-        index?.apply {
-            variantOptionUploadId.getOrNull(this - 1)?.apply {
-                variantPictureList = listOf(Picture(uploadId = this))
-            }
-        }
-        return variantPictureList
-    }
-
-    private fun mapProductCombination(opt: List<Int>): List<Int> = opt.map { it - 1 }
-
-    private fun mapVariantSelectionParam(
-            variantOptionParent: List<ProductVariantOptionParent>): List<Selection> {
-        val selections: ArrayList<Selection> = ArrayList()
-        variantOptionParent.forEach {
-            val selection = Selection(
-                    it.v.toString(),
-                    it.vu.toString(),
-                    mapVariantOptionParam(it.productVariantOptionChild ?: emptyList())
-            )
-            selections.add(selection)
-        }
-        return selections
-    }
-
-    private fun mapVariantOptionParam(
-            productVariantOptionChild: List<ProductVariantOptionChild>): List<Option> {
-        val options: ArrayList<Option> = ArrayList()
-        productVariantOptionChild.forEach {
-            val option = Option(
-                    it.value,
-                    it.vuv.toString(),
-                    it.hex
-
-            )
-            options.add(option)
-        }
-        return options
+    private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture>? {
+        return emptyList()
     }
 
     private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {

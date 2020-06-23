@@ -76,7 +76,6 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
-    private var isFirstLoaded = true
 
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
@@ -110,6 +109,7 @@ class AddEditProductDescriptionFragment:
         }
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        refreshSubmitButton()
     }
 
     override fun onTextChanged(url: String, position: Int) {
@@ -252,6 +252,8 @@ class AddEditProductDescriptionFragment:
             }
         }
 
+        if (descriptionViewModel.isEditMode) applyEditMode()
+
         observeProductInputModel()
         observeProductVideo()
     }
@@ -283,7 +285,7 @@ class AddEditProductDescriptionFragment:
         if(!descriptionViewModel.isEditMode) {
             inputAllDataInInputDraftModel()
             val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
-            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel)
+            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel.value)
 
             val intent = Intent()
             intent.putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
@@ -313,10 +315,6 @@ class AddEditProductDescriptionFragment:
 
     private fun observeProductInputModel() {
         descriptionViewModel.productInputModel.observe(this, Observer {
-            if (isFirstLoaded) {
-                applyEditMode()
-                isFirstLoaded = false
-            }
             updateVariantLayout()
         })
     }
@@ -365,6 +363,7 @@ class AddEditProductDescriptionFragment:
                 getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
             }
             refreshDuplicateVideo(position)
+            refreshSubmitButton()
         })
     }
 
@@ -408,6 +407,16 @@ class AddEditProductDescriptionFragment:
         }
     }
 
+    // button will disabled if there is an video link error
+    private fun refreshSubmitButton() {
+        val enabled = adapter.data.all { video ->
+            video.errorMessage.isEmpty()
+        }
+
+        btnSave.isEnabled = enabled
+        btnNext.isEnabled = enabled
+    }
+
     private fun applyEditMode() {
         val description = descriptionViewModel.descriptionInputModel.productDescription
         val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
@@ -418,6 +427,7 @@ class AddEditProductDescriptionFragment:
             super.renderList(videoLinks)
         }
 
+        updateVariantLayout()
         btnNext.visibility = View.GONE
         btnSave.visibility = View.VISIBLE
     }
@@ -525,7 +535,7 @@ class AddEditProductDescriptionFragment:
         inputAllDataInInputDraftModel()
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
             val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
-            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel)
+            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel.value)
             val intent = Intent(context, AddEditProductShipmentActivity::class.java).apply { putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId) }
             startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
         }

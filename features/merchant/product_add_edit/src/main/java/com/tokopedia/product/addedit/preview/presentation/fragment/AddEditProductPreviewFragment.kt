@@ -940,7 +940,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
             AddEditProductAddService.startService(
                     context = it,
-                    cacheId = saveInstanceCacheManager.id ?: ""
+                    cacheId = saveInstanceCacheManager.id.orEmpty()
             )
         }
     }
@@ -951,7 +951,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
             AddEditProductEditService.startService(
                     context = it,
-                    cacheManagerId = saveInstanceCacheManager.id ?: "")
+                    cacheManagerId = saveInstanceCacheManager.id.orEmpty()
+            )
         }
     }
 

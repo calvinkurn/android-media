@@ -116,7 +116,7 @@ class EditProductInputMapper @Inject constructor() {
                     it.priceVar.toBigDecimal().toBigInteger(),
                     it.sku,
                     getActiveStatus(it.st),
-                    it.stock,
+                    it.stock.toInt(),
                     getVariantImage(variantOption, variantOptionUploadId, levelIndex)
             )
             products.add(product)
