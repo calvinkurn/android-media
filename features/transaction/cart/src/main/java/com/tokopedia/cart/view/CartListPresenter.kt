@@ -3,6 +3,7 @@ package com.tokopedia.cart.view
 import android.os.Build
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -63,6 +64,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val getWishlistUseCase: GetWishlistUseCase?,
                                             private val getRecommendationUseCase: GetRecommendationUseCase?,
                                             private val addToCartUseCase: AddToCartUseCase?,
+                                            private val addToCartExternalUseCase: AddToCartExternalUseCase?,
                                             private val getInsuranceCartUseCase: GetInsuranceCartUseCase?,
                                             private val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase?,
                                             private val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase?,
@@ -729,7 +731,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
             setActionField(enhancedECommerceActionField.actionFieldMap)
-                addProduct(enhancedECommerceProductCartMapData.getProduct())
+            addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
         stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
@@ -1069,7 +1071,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             clickUrl = recommendationItem.clickUrl
         }
 
-        if(!clickUrl.isEmpty())
+        if (!clickUrl.isEmpty())
             view?.sendATCTrackingURL(clickUrl)
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
@@ -1092,6 +1094,19 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         ?.unsubscribeOn(schedulers.io)
                         ?.observeOn(schedulers.main)
                         ?.subscribe(AddToCartSubscriber(view, this, productModel))
+        )
+    }
+
+    override fun processAddToCartExternal(productId: Long) {
+        view?.showProgressLoading()
+        val requestParams = RequestParams.create()
+        requestParams.putLong(AddToCartExternalUseCase.PARAM_PRODUCT_ID, productId)
+        compositeSubscription.add(
+                addToCartExternalUseCase?.createObservable(requestParams)
+                        ?.subscribeOn(schedulers.io)
+                        ?.unsubscribeOn(schedulers.io)
+                        ?.observeOn(schedulers.main)
+                        ?.subscribe(AddToCartExternalSubscriber(view))
         )
     }
 

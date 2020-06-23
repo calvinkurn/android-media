@@ -1,11 +1,11 @@
 package com.tokopedia.cart.view
 
 import android.os.Bundle
-
 import androidx.fragment.app.Fragment
+import com.tokopedia.atc_common.AtcConstant.APPLINK_PARAM_PRODUCT_ID
 import com.tokopedia.cart.R
-
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -14,6 +14,7 @@ import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 class CartActivity : BaseCheckoutActivity() {
 
     private var cartId: String? = null
+    private var productId: Long = 0L
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_cart
@@ -22,6 +23,14 @@ class CartActivity : BaseCheckoutActivity() {
     override fun initInjector() {}
 
     override fun setupBundlePass(extras: Bundle?) {
+        val productIdStr = intent?.data?.getQueryParameter(APPLINK_PARAM_PRODUCT_ID) ?: ""
+        if (productIdStr.isNotBlank()) {
+            try {
+                productId = productIdStr.toLong()
+            } catch (exception: NumberFormatException) {
+                productId = INVALID_PRODUCT_ID
+            }
+        }
         cartId = extras?.getString(EXTRA_CART_ID)
     }
 
@@ -47,11 +56,15 @@ class CartActivity : BaseCheckoutActivity() {
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         bundle.putString(EXTRA_CART_ID, cartId)
+        bundle.putLong(EXTRA_PRODUCT_ID, productId)
         return CartFragment.newInstance(bundle, "")
     }
 
     companion object {
-        val EXTRA_CART_ID = "cart_id"
+        const val EXTRA_CART_ID = "cart_id"
+        const val EXTRA_PRODUCT_ID = "product_id"
+
+        const val INVALID_PRODUCT_ID = -1L
     }
 
 }

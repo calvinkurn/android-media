@@ -21,6 +21,8 @@ import java.util.*
 
 interface ICartListView : CustomerView {
 
+    fun refreshCart()
+
     fun getAllShopDataList(): List<CartShopHolderData>
 
     fun getAllCartDataList(): List<CartItemData>

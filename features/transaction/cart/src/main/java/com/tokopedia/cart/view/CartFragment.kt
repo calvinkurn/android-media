@@ -13,10 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -40,6 +37,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.atc_common.AtcConstant
+import com.tokopedia.atc_common.domain.AddToCartResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
@@ -47,6 +46,7 @@ import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
+import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.compoundview.ToolbarRemoveView
@@ -360,7 +360,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onStart() {
         super.onStart()
-        if (refreshHandler?.isRefreshing == false) {
+        // Check if currently not refreshing and not ATC external flow
+        if (refreshHandler?.isRefreshing == false && getAtcProductId() == 0L) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
@@ -781,19 +782,42 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             setHasOptionsMenu(true)
             it.title = it.getString(R.string.title_activity_cart)
-            if (savedInstanceState == null) {
-                refreshHandler?.startRefresh()
-            } else {
-                if (cartListData != null) {
-                    dPresenter.setCartListData(cartListData!!)
-                    renderLoadGetCartDataFinish()
-                    renderInitialGetCartListDataSuccess(cartListData)
-                    stopCartPerformanceTrace()
+
+            val productId = getAtcProductId()
+            if (productId != 0L) {
+                if (productId == INVALID_PRODUCT_ID) {
+                    showToastMessageRed(AddToCartResponseErrorException(AtcConstant.ATC_ERROR_GLOBAL))
+                    refreshCart()
                 } else {
-                    refreshHandler?.startRefresh()
+                    addToCartExternal(productId)
                 }
+            } else {
+                loadCartData(savedInstanceState)
             }
         }
+    }
+
+    private fun addToCartExternal(productId: Long) {
+        dPresenter.processAddToCartExternal(productId)
+    }
+
+    private fun loadCartData(savedInstanceState: Bundle?): Unit? {
+        return if (savedInstanceState == null) {
+            refreshCart()
+        } else {
+            if (cartListData != null) {
+                dPresenter.setCartListData(cartListData!!)
+                renderLoadGetCartDataFinish()
+                renderInitialGetCartListDataSuccess(cartListData)
+                stopCartPerformanceTrace()
+            } else {
+                refreshCart()
+            }
+        }
+    }
+
+    override fun refreshCart() {
+        refreshHandler?.startRefresh()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -2083,7 +2107,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnGoToShipmentFailed(message)
         showToastMessageRed(message)
 
-        refreshHandler?.startRefresh()
+        refreshCart()
     }
 
     override fun renderErrorToShipmentForm(throwable: Throwable) {
@@ -2177,7 +2201,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
-        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
+        if (!(throwable is CartResponseErrorException ||
+                        throwable is AddToCartResponseErrorException ||
+                        throwable is AkamaiErrorException)) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
 
@@ -2491,6 +2517,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return if (!TextUtils.isEmpty(arguments?.getString(CartActivity.EXTRA_CART_ID))) {
             arguments?.getString(CartActivity.EXTRA_CART_ID) ?: "0"
         } else "0"
+    }
+
+    private fun getAtcProductId(): Long {
+        return arguments?.getLong(CartActivity.EXTRA_PRODUCT_ID) ?: 0L
     }
 
     override fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops,
