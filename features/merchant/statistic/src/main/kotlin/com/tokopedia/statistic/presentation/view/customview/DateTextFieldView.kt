@@ -22,6 +22,17 @@ class DateTextFieldView(
         View.inflate(context, R.layout.view_stc_date_text_field, this)
     }
 
+    var isActive: Boolean = false
+        set(value) {
+            field = value
+            val color = if (value) {
+                context.getResColor(R.color.light_G400)
+            } else {
+                context.getResColor(R.color.Neutral_N150)
+            }
+            horLineDtf.setBackgroundColor(color)
+        }
+
     var label: String = ""
         set(value) {
             field = value
@@ -49,8 +60,10 @@ class DateTextFieldView(
         }
 
     fun reset() {
+        println("X -> label : $label")
+        println("X -> hint : $hint")
         label = label
-        hint = hint
         valueStr = ""
+        hint = hint
     }
 }

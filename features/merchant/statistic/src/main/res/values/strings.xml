@@ -10,7 +10,12 @@
     <string name="stc_last_n_days">%1$d hari terakhir</string>
     <string name="stc_last_n_days_cc">%1$d Hari Terakhir</string>
     <string name="stc_start_from">Mulai dari</string>
+    <string name="stc_date">Tanggal</string>
     <string name="stc_until">Sampai dengan</string>
     <string name="stc_show">Tampilkan</string>
     <string name="stc_custom">Custom</string>
+    <string name="stc_today_real_time">Hari ini (real time)</string>
+    <string name="stc_per_day">Per Hari</string>
+    <string name="stc_per_week">Per Minggu</string>
+    <string name="stc_per_month">Per Bulan</string>
 </resources>

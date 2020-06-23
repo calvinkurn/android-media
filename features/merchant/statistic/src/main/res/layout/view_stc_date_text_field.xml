@@ -25,6 +25,7 @@
         app:typographyType="body_1" />
 
     <View
+        android:id="@+id/horLineDtf"
         android:layout_width="match_parent"
         android:layout_height="@dimen/shc_dimen_1dp"
         android:layout_marginTop="@dimen/spacing_lvl2"

@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.presentation.model.DateRangeItem
 import kotlinx.android.synthetic.main.item_stc_date_range_default.view.*
+import java.util.*
 
 /**
  * Created By @ilhamsuaib on 15/06/20
@@ -25,6 +26,7 @@ class DateRangeDefaultViewHolder(
         private const val PATTERN_DAY = "dd"
         private const val PATTERN_MONTH_MM = "MM"
         private const val PATTERN_MONTH_MMM = "MMM"
+        private const val PATTERN_MONTH_MMMM = "MMMM"
         private const val PATTERN_YEAR = "yyyy"
     }
 
@@ -56,6 +58,10 @@ class DateRangeDefaultViewHolder(
         val startYear = DateTimeUtil.format(element.startDate.time, PATTERN_YEAR)
         val endYear = DateTimeUtil.format(element.endDate.time, PATTERN_YEAR)
 
+        if (areStartAndEndDateSame(element.startDate, element.endDate)) {
+            val singleDayPattern = "$PATTERN_DAY $PATTERN_MONTH_MMMM (00:00 - 12:00)"
+            return DateTimeUtil.format(element.startDate.time, pattern = singleDayPattern)
+        }
 
         val startDatePattern: String
         val endDatePattern: String
@@ -81,5 +87,12 @@ class DateRangeDefaultViewHolder(
         val endDateStr = DateTimeUtil.format(element.endDate.time, pattern = endDatePattern)
 
         return "$startDateStr - $endDateStr"
+    }
+
+    private fun areStartAndEndDateSame(startDate: Date, endDate: Date): Boolean {
+        val pattern = "$PATTERN_DAY $PATTERN_MONTH_MM $PATTERN_YEAR"
+        val startDateStr = DateTimeUtil.format(startDate.time, pattern = pattern)
+        val endDateStr = DateTimeUtil.format(endDate.time, pattern = pattern)
+        return startDateStr == endDateStr
     }
 }

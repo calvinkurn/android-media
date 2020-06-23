@@ -5,10 +5,10 @@ import com.tokopedia.statistic.presentation.model.DateRangeItem
 /**
  * Created By @ilhamsuaib on 15/06/20
  */
- 
+
 interface DateRangeAdapterFactory {
 
     fun type(item: DateRangeItem.Default): Int
 
-    fun type(item: DateRangeItem.Custom): Int
+    fun type(item: DateRangeItem.Single): Int
 }

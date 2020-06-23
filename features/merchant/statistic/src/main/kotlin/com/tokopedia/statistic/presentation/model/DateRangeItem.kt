@@ -27,12 +27,20 @@ sealed class DateRangeItem(
         }
     }
 
-    data class Custom(
+    data class Single(
             override val label: String,
             override val startDate: Date? = null,
             override val endDate: Date? = null,
-            override var isSelected: Boolean = false
+            override var isSelected: Boolean = false,
+            val isSingleDateMode: Boolean = false,
+            val type: Int
     ) : DateRangeItem(label, startDate, endDate, isSelected) {
+
+        companion object {
+            const val TYPE_PER_DAY = 0
+            const val TYPE_PER_WEEK = 1
+            const val TYPE_PER_MONTH = 2
+        }
 
         override fun type(typeFactory: DateRangeAdapterFactory): Int {
             return typeFactory.type(this)
