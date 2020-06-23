@@ -226,7 +226,7 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.reviewSeller)
+    implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)

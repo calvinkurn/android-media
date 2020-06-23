@@ -451,11 +451,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getReviewSellerFragment() {
-        return null;
-    }
-
-    @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
         return OrderHistoryActivity.createInstance(context, orderId, 1);
     }
