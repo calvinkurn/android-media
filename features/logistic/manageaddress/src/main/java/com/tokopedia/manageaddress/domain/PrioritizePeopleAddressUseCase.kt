@@ -1,3 +1,0 @@
-package com.tokopedia.manageaddress.domain
-
-class PrioritizePeopleAddressUseCase

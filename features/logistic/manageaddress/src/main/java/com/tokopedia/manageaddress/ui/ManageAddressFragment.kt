@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -180,18 +179,13 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         bottomSheetLainnya = BottomSheetUnify()
         val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
             btn_alamat_utama.setOnClickListener {
-                //ToDo::
-
-                Toast.makeText(context, "UTAMAKAN", Toast.LENGTH_LONG).show()
+                viewModel.setDefaultPeopleAddress(data.addressId)
+                bottomSheetLainnya?.dismiss()
             }
-
             btn_hapus_alamat.setOnClickListener {
                 viewModel.deletePeopleAddress(data.addressId)
-                performSearch("")
                 bottomSheetLainnya?.dismiss()
-                Toast.makeText(context, "HAPUS", Toast.LENGTH_LONG).show()
             }
-
         }
 
         bottomSheetLainnya?.apply {
