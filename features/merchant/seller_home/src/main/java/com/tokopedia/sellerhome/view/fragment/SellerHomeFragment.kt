@@ -155,7 +155,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         super.setUserVisibleHint(isVisibleToUser)
         if (userVisibleHint) {
             SellerHomeTracking.sendScreen(screenName)
-            requestVisibleWidgetsData()
+            view?.post {
+                requestVisibleWidgetsData()
+            }
         }
     }
 
