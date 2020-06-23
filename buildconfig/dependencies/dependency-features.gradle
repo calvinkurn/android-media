@@ -138,6 +138,7 @@ ext {
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
+            reviewSeller                    : ":features:merchant:review_seller",
             sellerHome                      : ":features:merchant:seller_home",
             sellerOnboarding                : ":features:merchant:seller_onboarding",
             sellerMigrationCommon           : ":features:merchant:seller_migration_common",

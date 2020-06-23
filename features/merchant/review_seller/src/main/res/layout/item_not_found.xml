@@ -1,0 +1,39 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/noReviewFoundView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="visible"
+    android:paddingTop="@dimen/dp_20"
+    android:paddingBottom="@dimen/spacing_lvl5"
+    app:layout_constraintTop_toBottomOf="@+id/rvRatingDetail">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/noReviewsYetDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/clr_f531353b"
+        android:text="@string/no_reviews_yet"
+        android:visibility="visible"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/noReviewsYetContentDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        android:gravity="center"
+        android:maxLines="2"
+        android:minLines="2"
+        android:layout_marginRight="@dimen/dp_35"
+        android:layout_marginLeft="@dimen/dp_35"
+        android:text="@string/no_reviews_yet_content_detail"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+</LinearLayout>
