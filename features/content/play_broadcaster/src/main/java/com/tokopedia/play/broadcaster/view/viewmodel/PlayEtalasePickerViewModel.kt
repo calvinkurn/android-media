@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -63,10 +62,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
     val selectedProductList: List<ProductContentUiModel>
         get() = setupDataStore.getSelectedProducts()
 
-    var coverImageUri: Uri? = null
-    var coverImageUrl: String = ""
-    var liveTitle: String = ""
-
     private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
 
@@ -77,6 +72,14 @@ class PlayEtalasePickerViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         job.cancelChildren()
+    }
+
+    fun setDataStore(dataStore: PlayBroadcastSetupDataStore) {
+        setupDataStore.overwrite(dataStore)
+    }
+
+    fun getDataStore(): PlayBroadcastSetupDataStore {
+        return setupDataStore
     }
 
     fun loadEtalaseProducts(etalaseId: String, page: Int) {
@@ -114,7 +117,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 //        }
         //TODO("Remove Mock Behavior")
         scope.launch {
-            delay(3500)
+            delay(1500)
             _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
         }
     }

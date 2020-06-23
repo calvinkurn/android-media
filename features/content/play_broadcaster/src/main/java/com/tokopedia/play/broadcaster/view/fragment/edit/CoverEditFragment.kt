@@ -6,10 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
@@ -24,7 +23,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 22/06/20
  */
-class CoverEditFragment : BottomSheetDialogFragment() {
+class CoverEditFragment : TkpdBaseV4Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -32,14 +31,14 @@ class CoverEditFragment : BottomSheetDialogFragment() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private lateinit var flFragment: FrameLayout
-
     private lateinit var imagePickerHelper: CoverImagePickerHelper
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
     private lateinit var viewModel: PlayCoverSetupViewModel
 
     private var mListener: SetupResultListener? = null
+
+    override fun getScreenName(): String = "Cover Edit Fragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -50,7 +49,7 @@ class CoverEditFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_empty_setup, container, false)
+        return inflater.inflate(R.layout.fragment_empty_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,9 +75,6 @@ class CoverEditFragment : BottomSheetDialogFragment() {
     }
 
     private fun initView(view: View) {
-        with (view) {
-            flFragment = findViewById(R.id.fl_fragment)
-        }
     }
 
     private fun setupView(view: View) {

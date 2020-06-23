@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -180,8 +181,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun showCoverTitlePage(nextBtnView: View) {
-        mListener?.onProductSetupFinished(listOf(nextBtnView))
-
+        mListener?.onProductSetupFinished(listOf(nextBtnView), viewModel.getDataStore())
     }
 
     /**
@@ -304,6 +304,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     interface Listener {
 
-        fun onProductSetupFinished(sharedElements: List<View>)
+        fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore)
     }
 }

@@ -65,7 +65,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_weight="1"
-            android:text="@string/play_prepare_broadcast_label_save" />
+            android:text="@string/play_label_save" />
 
     </LinearLayout>
 

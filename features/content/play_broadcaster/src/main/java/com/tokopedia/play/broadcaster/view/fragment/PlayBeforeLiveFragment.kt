@@ -26,6 +26,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
+import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -178,7 +179,12 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun openEditProductPage() {
-
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val editProductFragment = fragmentFactory.instantiate(requireContext().classLoader, ProductEditFragment::class.java.name) as ProductEditFragment
+        editProductFragment.setListener(setupResultListener)
+        childFragmentManager.beginTransaction()
+                .replace(flEdit.id, editProductFragment)
+                .commit()
     }
 
     private fun openEditCoverTitlePage() {

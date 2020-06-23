@@ -65,7 +65,7 @@ object PlayBroadcastMocker {
         )
     }
 
-    fun getMaxSelectedProduct() = 2
+    fun getMaxSelectedProduct() = 20
 
     fun getMockSearchSuggestions(keyword: String) = List(keyword.length) {
         val suggestionText = " ${keyword.substring(0, it + 1)}"

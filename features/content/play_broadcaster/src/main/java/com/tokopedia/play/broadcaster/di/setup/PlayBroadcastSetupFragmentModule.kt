@@ -6,6 +6,8 @@ import com.tokopedia.play.broadcaster.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverCropEditBottomSheet
+import com.tokopedia.play.broadcaster.view.fragment.edit.ProductSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.fragment.edit.SimpleEditProductBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import dagger.Binds
 import dagger.Module
@@ -58,8 +60,21 @@ abstract class PlayBroadcastSetupFragmentModule {
     @FragmentKey(PlayCoverImageChooserBottomSheet::class)
     abstract fun getPlayBroadcastChooseCoverBottomSheet(fragment: PlayCoverImageChooserBottomSheet): Fragment
 
+    /**
+     * Edit Container
+     */
     @Binds
     @IntoMap
     @FragmentKey(CoverCropEditBottomSheet::class)
     abstract fun getCoverCropEditBottomSheet(fragment: CoverCropEditBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(SimpleEditProductBottomSheet::class)
+    abstract fun getSimpleEditProductBottomSheet(fragment: SimpleEditProductBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ProductSetupBottomSheet::class)
+    abstract fun getProductSetupBottomSheet(fragment: ProductSetupBottomSheet): Fragment
 }

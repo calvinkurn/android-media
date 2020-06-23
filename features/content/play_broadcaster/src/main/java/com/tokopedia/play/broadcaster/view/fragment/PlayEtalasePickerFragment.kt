@@ -116,6 +116,10 @@ class PlayEtalasePickerFragment @Inject constructor(
         if (childFragmentManager.fragments.isNotEmpty()) childFragmentManager.popBackStack(clazz.name, 0)
     }
 
+    override fun getParent(): Fragment {
+        return requireParentFragment()
+    }
+
     fun setListener(listener: Listener) {
         mListener = listener
     }
