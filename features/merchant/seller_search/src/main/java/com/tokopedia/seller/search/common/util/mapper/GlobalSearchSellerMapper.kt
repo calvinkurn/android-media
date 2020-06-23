@@ -20,7 +20,9 @@ object GlobalSearchSellerMapper {
     private fun mapToTitleListSearch(searchSeller: SellerSearchResponse.SellerSearch): List<String> {
         return mutableListOf<String>().apply {
             searchSeller.data.sections.map {
-                add(it.title.orEmpty())
+                it.items.map { item ->
+                    add(item.title.orEmpty())
+                }
             }
         }
     }

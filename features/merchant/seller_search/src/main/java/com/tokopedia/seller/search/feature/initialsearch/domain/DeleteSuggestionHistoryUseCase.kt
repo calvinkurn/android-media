@@ -4,7 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.seller.search.common.data.SellerSearchResponse
 import com.tokopedia.seller.search.feature.initialsearch.data.DeleteHistoryResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -26,13 +25,13 @@ class DeleteSuggestionHistoryUseCase @Inject constructor(
         """.trimIndent()
 
         @JvmStatic
-        fun createParams(keyword: List<String>): Map<String, Any> = mapOf(KEYWORD to keyword)
+        fun createParams(keyword: List<String>): Map<String, List<String>> = mapOf(KEYWORD to keyword)
     }
 
-    var params = mapOf<String, Any>()
+    var params = mapOf<String, List<String>>()
 
     override suspend fun executeOnBackground(): DeleteHistoryResponse.DeleteHistory {
-        val gqlRequest = GraphqlRequest(gqlQuery, SellerSearchResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(gqlQuery, DeleteHistoryResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {

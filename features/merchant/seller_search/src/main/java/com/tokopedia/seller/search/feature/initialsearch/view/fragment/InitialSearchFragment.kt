@@ -15,7 +15,6 @@ import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSe
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.InitialSearchAdapter
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.InitialSearchAdapterTypeFactory
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
@@ -43,13 +42,14 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         ViewModelProvider(this, viewModelFactory).get(InitialSearchViewModel::class.java)
     }
 
-    private val searchSeller: SellerSearchUiModel? = null
+    private var titleList: List<String>? = null
 
     private var searchKeyword = ""
     private var shopId = ""
     private var positionHistory = 0
 
     private var historyViewUpdateListener: HistoryViewUpdateListener? = null
+    private var isDeleteAll = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,10 +91,12 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     override fun onClearSearchItem(keyword: String, adapterPosition: Int) {
         positionHistory = adapterPosition
         viewModel.deleteSuggestionSearch(listOf(keyword))
+        isDeleteAll = false
     }
 
     override fun onClearAllSearch() {
-        viewModel.deleteSuggestionSearch(searchSeller?.titleList ?: listOf())
+        viewModel.deleteSuggestionSearch(titleList ?: listOf())
+        isDeleteAll = true
     }
 
     override fun onHistoryItemClicked(appUrl: String) {
@@ -126,7 +128,15 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     }
 
     private fun removePositionHistory() {
-        initialSearchAdapter.removeHistory(positionHistory)
+        if(isDeleteAll) {
+            onMinCharState()
+        } else {
+            if(initialSearchAdapter.itemCount == 1) {
+                onMinCharState()
+            } else {
+                initialSearchAdapter.removeHistory(positionHistory)
+            }
+        }
     }
 
     private fun setHistorySearch(data: List<InitialSearchUiModel>) {
@@ -134,6 +144,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         if (data.isEmpty()) {
             initialSearchAdapter.addNoHistoryState()
         } else {
+            titleList = data[0].titleList
             initialSearchAdapter.addAll(data)
         }
         historyViewUpdateListener?.showHistoryView()

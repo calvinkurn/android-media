@@ -33,7 +33,7 @@ class SuggestionSearchViewModel @Inject constructor(
 
     fun getSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
-            val responseGetSellerSearch: Pair<List<SellerSearchUiModel>, List<FilterSearchUiModel>> = withContext(dispatcherProvider.io()) {
+            val responseGetSellerSearch  = withContext(dispatcherProvider.io()) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(
                         keyword, shopId, section)
                 Pair(GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground(), keyword),

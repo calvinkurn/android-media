@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
 class GlobalSearchView : BaseCustomView {
 
     companion object {
-        const val DEBOUNCE_DELAY_MILLIS = 500L
+        const val DEBOUNCE_DELAY_MILLIS = 300L
     }
 
     private var mClearingFocus: Boolean = false

@@ -50,11 +50,11 @@ class GetSellerSearchUseCase @Inject constructor(
         """.trimIndent()
 
         @JvmStatic
-        fun createParams(keyword: String, shopId: String, section: String): Map<String, Any> =
+        fun createParams(keyword: String, shopId: String, section: String): Map<String, String> =
                 mapOf(KEYWORD to keyword, LANG to LANG_ID, SHOP_ID to shopId, SHOP_ID to shopId, SECTION to section)
     }
 
-    var params = mapOf<String, Any>()
+    var params = mapOf<String, String>()
 
     override suspend fun executeOnBackground(): SellerSearchResponse.SellerSearch {
         val gqlRequest = GraphqlRequest(gqlQuery, SellerSearchResponse::class.java, params)
