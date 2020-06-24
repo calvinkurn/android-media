@@ -30,6 +30,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
+import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.dialog_score_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_terms.*
 import javax.inject.Inject
@@ -147,7 +148,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
             ACTION_ACTIVATE,
             ACTION_AUTO_EXTEND -> presenter.activatePowerMerchant()
             ACTION_SHOP_SCORE -> setupDialogScore()?.show()
-            ACTION_KYC -> openKycPage()
+            ACTION_KYC -> setupDialogKyc()?.show()
         }
     }
 
@@ -187,6 +188,26 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
             dialog.btn_close_score.setOnClickListener {
                 dialog.hide()
             }
+            return dialog
+        }
+        return null
+    }
+
+    private fun setupDialogKyc(): Dialog? {
+        context?.let {
+            val dialog = Dialog(it)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(true)
+            dialog.setContentView(R.layout.dialog_kyc_verification)
+            dialog.btn_submit_kyc.setOnClickListener {
+                openKycPage()
+                dialog.hide()
+            }
+            dialog.btn_close_kyc.setOnClickListener {
+                dialog.hide()
+            }
+
             return dialog
         }
         return null
