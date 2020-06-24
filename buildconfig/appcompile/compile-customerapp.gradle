@@ -112,6 +112,7 @@ include "features:logistic:logisticaddaddress"
 include "features:logistic:dropoff"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
+include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
