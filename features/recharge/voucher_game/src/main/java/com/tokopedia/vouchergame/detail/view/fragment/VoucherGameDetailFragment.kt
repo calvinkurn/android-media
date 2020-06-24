@@ -43,7 +43,6 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARA
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.UnifyThemeHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -111,8 +110,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            UnifyThemeHelper.setTheme(it)
-
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameDetailViewModel::class.java)
 
@@ -237,7 +234,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.processMenuDetail(data)
         if (data.catalog.label.isNotEmpty()) {
             voucherGameAnalytics.categoryName = data.catalog.label
-            (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+            (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
     }
 
@@ -526,7 +523,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                    com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                    R.raw.query_voucher_game_products),
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }

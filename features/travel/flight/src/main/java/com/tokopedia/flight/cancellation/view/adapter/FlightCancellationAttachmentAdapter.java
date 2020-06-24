@@ -2,8 +2,8 @@ package com.tokopedia.flight.cancellation.view.adapter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentButtonViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentButtonModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,18 +23,18 @@ public class FlightCancellationAttachmentAdapter extends BaseAdapter<FlightCance
     }
 
     public void hideAttachmentButton() {
-        if (visitables.size() > 0 && visitables.get(visitables.size() - 1) instanceof FlightCancellationAttachmentButtonViewModel) {
+        if (visitables.size() > 0 && visitables.get(visitables.size() - 1) instanceof FlightCancellationAttachmentButtonModel) {
             visitables.remove(visitables.size() - 1);
             notifyDataSetChanged();
         }
     }
 
 
-    public List<FlightCancellationAttachmentViewModel> getData() {
-        List<FlightCancellationAttachmentViewModel> list = new ArrayList<>();
+    public List<FlightCancellationAttachmentModel> getData() {
+        List<FlightCancellationAttachmentModel> list = new ArrayList<>();
         for (Visitable visitable : this.visitables) {
             try {
-                FlightCancellationAttachmentViewModel item = (FlightCancellationAttachmentViewModel) visitable;
+                FlightCancellationAttachmentModel item = (FlightCancellationAttachmentModel) visitable;
                 list.add(item);
             } catch (ClassCastException exception) {
                 exception.printStackTrace();
@@ -43,8 +43,8 @@ public class FlightCancellationAttachmentAdapter extends BaseAdapter<FlightCance
         return list;
     }
 
-    public void removeAttachment(FlightCancellationAttachmentViewModel element) {
-        List<FlightCancellationAttachmentViewModel> viewModels = getData();
+    public void removeAttachment(FlightCancellationAttachmentModel element) {
+        List<FlightCancellationAttachmentModel> viewModels = getData();
         int index = viewModels.indexOf(element);
         if (index != -1) {
             viewModels.remove(index);
@@ -55,7 +55,7 @@ public class FlightCancellationAttachmentAdapter extends BaseAdapter<FlightCance
     }
 
     public void showAttachmentButton() {
-        visitables.add(new FlightCancellationAttachmentButtonViewModel());
+        visitables.add(new FlightCancellationAttachmentButtonModel());
         notifyDataSetChanged();
     }
 }

@@ -10,21 +10,18 @@ data class RechargeGeneralProductData(
 
         @SerializedName("needEnquiry")
         @Expose
-        val needEnquiry: Boolean = true,
+        var needEnquiry: Boolean = true,
         @SerializedName("isShowingProduct")
         @Expose
-        val isShowingProduct: Boolean = true,
+        var isShowingProduct: Boolean = true,
         @SerializedName("enquiryFields")
         @Expose
-        val enquiryFields: List<RechargeGeneralProductInput> = listOf(),
-        @SerializedName("product")
-        @Expose
-        val product: RechargeGeneralProductItemData? = RechargeGeneralProductItemData()
+        var enquiryFields: List<RechargeGeneralProductInput> = listOf()
 
 ) {
         class Response(
                 @SerializedName("rechargeCatalogProductInput")
                 @Expose
-                val response: RechargeGeneralProductData = RechargeGeneralProductData()
+                var response: RechargeGeneralProductData = RechargeGeneralProductData()
         )
 }

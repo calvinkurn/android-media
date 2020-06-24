@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
@@ -15,6 +16,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.AssertableSubscriber
+import java.lang.reflect.Type
 
 object UpdateCartUseCaseTest : Spek({
 
@@ -33,9 +35,12 @@ object UpdateCartUseCaseTest : Spek({
 
             val response = UpdateCartDataResponse(data = Data(status = true), status = "OK")
 
+            val result = HashMap<Type, Any>()
+            result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(response)
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("mock response") {
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(UpdateCartGqlResponse::class.java to UpdateCartGqlResponse(
-                        response)), null, false))
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
             }
 
             When("create observable") {
@@ -52,9 +57,13 @@ object UpdateCartUseCaseTest : Spek({
             val errorMessage = "Something went wrong"
             val errorMessage2 = "Something went wrong2"
 
+            val result = HashMap<Type, Any>()
+            result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(
+                    UpdateCartDataResponse(data = Data(status = false), error = arrayListOf(errorMessage, errorMessage2), status = "ERROR"))
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("mock response") {
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(UpdateCartGqlResponse::class.java to UpdateCartGqlResponse(
-                        UpdateCartDataResponse(data = Data(status = false), error = arrayListOf(errorMessage, errorMessage2), status = "ERROR"))), null, false))
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
             }
 
             When("create observable") {
@@ -68,9 +77,13 @@ object UpdateCartUseCaseTest : Spek({
 
         Scenario("failure with no error message") {
 
+            val result = HashMap<Type, Any>()
+            result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(
+                    UpdateCartDataResponse(data = Data(status = false), status = "ERROR"))
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("mock response") {
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(UpdateCartGqlResponse::class.java to UpdateCartGqlResponse(
-                        UpdateCartDataResponse(data = Data(status = false), status = "ERROR"))), null, false))
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
             }
 
             When("create observable") {

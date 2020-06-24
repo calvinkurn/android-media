@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.RechargeRecommendationTracking
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase.Companion.PARAM_CONTENT_ID
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase.Companion.PARAM_UUID
@@ -51,18 +50,28 @@ class RechargeRecommendationViewHolder(
                     btn_recharge_recommendation.text = recommendation.buttonText
                 }
                 btn_recharge_recommendation.setOnClickListener {
-                    RechargeRecommendationTracking.homeRechargeRecommendationOnClickTracker(
-                            categoryListener.trackingQueue, recommendation
-                    )
+                    categoryListener.getTrackingQueueObj()?.let {
+                        RechargeRecommendationTracking.homeRechargeRecommendationOnClickTracker(
+                                it, recommendation
+                        )
+                    }
 
                     listener.onContentClickListener(recommendation.applink)
+
+                    // Trigger decline listener to remove widget from homepage
+                    val requestParams = mapOf(
+                            PARAM_UUID to element.rechargeRecommendation.UUID,
+                            PARAM_CONTENT_ID to recommendation.contentID)
+                    listener.onDeclineClickListener(requestParams)
                 }
 
                 addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
-                        RechargeRecommendationTracking.homeRechargeRecommendationImpressionTracker(
-                                categoryListener.trackingQueue, recommendation
-                        )
+                        categoryListener.getTrackingQueueObj()?.let {
+                            RechargeRecommendationTracking.homeRechargeRecommendationImpressionTracker(
+                                    it, recommendation
+                            )
+                        }
                     }
                 })
 

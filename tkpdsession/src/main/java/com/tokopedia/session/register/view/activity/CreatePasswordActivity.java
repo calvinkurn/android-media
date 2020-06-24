@@ -70,14 +70,6 @@ public class CreatePasswordActivity extends TActivity implements HasComponent {
         return RegisterAnalytics.Screen.SCREEN_CREATE_PASSWORD;
     }
 
-    public static Intent getCallingIntent(Context context, CreatePasswordViewModel createPasswordViewModel) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARGS_FORM_DATA, createPasswordViewModel);
-        Intent intent = new Intent(context, CreatePasswordActivity.class);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
     private static Intent getCallingIntentForApplink(Context context, String name, String userId) {
         Bundle bundle = new Bundle();
         CreatePasswordViewModel createPasswordViewModel = new CreatePasswordViewModel(

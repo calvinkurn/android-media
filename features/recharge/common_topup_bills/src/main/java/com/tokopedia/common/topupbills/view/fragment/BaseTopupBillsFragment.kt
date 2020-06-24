@@ -67,6 +67,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     open var categoryId: Int = 0
     var productId: Int = 0
     var price: Int = 0
+    var pendingPromoNavigation: String = ""
 
     // Express Checkout
     var isExpressCheckout = false
@@ -201,7 +202,12 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_LOGIN -> {
-                    processTransaction()
+                    when (pendingPromoNavigation) {
+                        NAVIGATION_PROMO_LIST -> navigateToPromoList()
+                        NAVIGATION_PROMO_DETAIL -> navigateToPromoDetail()
+                        else -> processTransaction()
+                    }
+                    pendingPromoNavigation = ""
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
                     data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let {
@@ -230,9 +236,12 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             override fun onClickUsePromo() {
                 commonTopupBillsAnalytics.eventClickUsePromo()
 
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
-                intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
-                startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
+                if (userSession.isLoggedIn) {
+                    navigateToPromoList()
+                } else {
+                    pendingPromoNavigation = NAVIGATION_PROMO_LIST
+                    navigateToLoginPage()
+                }
             }
 
             override fun onResetPromoDiscount() {
@@ -247,30 +256,47 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
 
             override fun onClickDetailPromo() {
-                val intent: Intent
-                if (promoCode.isNotEmpty()) {
-                    val requestCode: Int
-                    if (isCoupon) {
-                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
-                        intent.putExtra(EXTRA_IS_USE, true)
-                        intent.putExtra(EXTRA_COUPON_CODE, promoCode)
-                        intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
-                        requestCode = REQUEST_CODE_PROMO_DETAIL
-                    } else {
-                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
-                        intent.putExtra(EXTRA_PROMO_CODE, promoCode)
-                        intent.putExtra(EXTRA_COUPON_ACTIVE, true)
-                        intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
-                        requestCode = REQUEST_CODE_PROMO_LIST
-                    }
-                    startActivityForResult(intent, requestCode)
+                if (userSession.isLoggedIn) {
+                    navigateToPromoDetail()
+                } else {
+                    pendingPromoNavigation = NAVIGATION_PROMO_DETAIL
+                    navigateToLoginPage()
                 }
             }
         }
     }
 
+    private fun navigateToPromoList() {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
+        intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
+        startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
+    }
+
+    private fun navigateToPromoDetail() {
+        val intent: Intent
+        if (promoCode.isNotEmpty()) {
+            val requestCode: Int
+            if (isCoupon) {
+                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
+                intent.putExtra(EXTRA_IS_USE, true)
+                intent.putExtra(EXTRA_COUPON_CODE, promoCode)
+                intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
+                requestCode = REQUEST_CODE_PROMO_DETAIL
+            } else {
+                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                intent.putExtra(EXTRA_PROMO_CODE, promoCode)
+                intent.putExtra(EXTRA_COUPON_ACTIVE, true)
+                intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
+                requestCode = REQUEST_CODE_PROMO_LIST
+            }
+            startActivityForResult(intent, requestCode)
+        }
+    }
+
     private fun getPromoDigitalModel(): PromoDigitalModel {
         val promoModel = PromoDigitalModel()
+        promoModel.categoryName = categoryName
+        promoModel.operatorName = operatorName
         promoModel.categoryId = if (categoryId > 0) categoryId else 0
         promoModel.productId = if (productId > 0) productId else 0
         promoModel.price = price.toLong()
@@ -337,7 +363,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     fun checkVoucher() {
         promoTicker?.toggleLoading(true)
         topupBillsViewModel.checkVoucher(promoCode,
-                PromoDigitalModel(categoryId, productId, price = price.toLong())
+                PromoDigitalModel(categoryId, categoryName, operatorName, productId, price = price.toLong())
         )
     }
 
@@ -439,6 +465,9 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_OTP = 1001
 
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
+
+        const val NAVIGATION_PROMO_LIST = "NAVIGATION_PROMO_LIST"
+        const val NAVIGATION_PROMO_DETAIL = "NAVIGATION_PROMO_DETAIL"
 
         const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
         const val EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID"

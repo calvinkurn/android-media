@@ -1,10 +1,11 @@
 package com.tokopedia.gm.featured.domain.mapper;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.gm.featured.data.model.GMFeaturedProductDataModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,7 +53,7 @@ public class GMFeaturedProductMapper implements Func1<GMFeaturedProductDataModel
     private static List<GMFeaturedProductDomainModel.WholesaleDetail> convert3(List<GMFeaturedProductDataModel.WholesaleDetail> wholesaleDetail) {
         List<GMFeaturedProductDomainModel.WholesaleDetail> details = new ArrayList<>();
 
-        if (!CommonUtils.checkCollectionNotNull(details))
+        if (!checkCollectionNotNull(details))
             return details;
 
         for (int i = 0; i < wholesaleDetail.size(); i++) {
@@ -72,7 +73,7 @@ public class GMFeaturedProductMapper implements Func1<GMFeaturedProductDataModel
     private static List<GMFeaturedProductDomainModel.Label> convert2(List<GMFeaturedProductDataModel.Label> labels) {
         List<GMFeaturedProductDomainModel.Label> details = new ArrayList<>();
 
-        if (!CommonUtils.checkCollectionNotNull(labels))
+        if (!checkCollectionNotNull(labels))
             return details;
 
         for (int i = 0; i < labels.size(); i++) {
@@ -101,7 +102,7 @@ public class GMFeaturedProductMapper implements Func1<GMFeaturedProductDataModel
     public static List<GMFeaturedProductDomainModel.Badge> convert(List<GMFeaturedProductDataModel.Badge> data) {
         List<GMFeaturedProductDomainModel.Badge> badges = new ArrayList<>();
 
-        if (!CommonUtils.checkCollectionNotNull(data))
+        if (!checkCollectionNotNull(data))
             return badges;
 
         for (int i = 0; i < data.size(); i++) {
@@ -118,5 +119,17 @@ public class GMFeaturedProductMapper implements Func1<GMFeaturedProductDataModel
     @Override
     public GMFeaturedProductDomainModel call(GMFeaturedProductDataModel GMFeaturedProductDataModel) {
         return convert(GMFeaturedProductDataModel);
+    }
+
+    /**
+     * @param reference
+     * @param <T>
+     * @return false if empty otherwise true if not empty
+     */
+    private  static <T extends Collection> boolean checkCollectionNotNull(T reference) {
+        if (!CommonUtils.checkNotNull(reference) || reference.isEmpty())
+            return false;
+
+        return true;
     }
 }

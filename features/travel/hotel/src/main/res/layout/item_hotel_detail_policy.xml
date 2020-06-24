@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Neutral_N0"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_16">
+    android:paddingTop="@dimen/layout_lvl2">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,35 +15,35 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_policy_icon"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
             android:layout_gravity="center"
             app:srcCompat="@drawable/ic_hotel_location" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_policy_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginStart= "@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart= "@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
             android:layout_weight="1"
-            android:lineSpacingExtra="@dimen/dp_2"
-            app:fontSize="title"
-            app:textViewTheme="lightPrimary"
-            app:weight="medium"
+            android:lineSpacingExtra="@dimen/spacing_lvl1"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_4"
             tools:text="Fasilitas Umum" />
 
     </LinearLayout>
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_policy_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_24"
-        android:layout_marginLeft="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_4"
-        android:lineSpacingExtra="@dimen/dp_4"
-        app:fontSize="small"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginLeft="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:lineSpacingExtra="@dimen/spacing_lvl2"
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_68"
         tools:text="Fasilitas Umum" />
 
 </LinearLayout>

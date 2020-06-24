@@ -65,4 +65,10 @@ import javax.inject.Named
     fun provideSingleNotificationUpdate(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center_single)
 
+    @Provides
+    @NotificationScope
+    @Named(NotificationQueriesConstant.PRODUCT_HIGHLIGHT)
+    fun provideProductHighlight(@NotificationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_ace_search_product)
+
 }

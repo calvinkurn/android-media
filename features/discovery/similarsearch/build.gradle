@@ -3,6 +3,23 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "de.mannodermaus.android-junit5"
+
+
+android {
+    testOptions {
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
+    }
+}
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -17,13 +34,13 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
 // For instrumentation test
 android {
     defaultConfig {
-        multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
     }
 }
@@ -47,7 +64,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -76,7 +93,7 @@ dependencies {
 //    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
 //    androidTestImplementation 'junit:junit:4.12'
 //    androidTestImplementation project(rootProject.ext.libraries.commonNetwork)
-//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+//    androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)
 //    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
 //    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
 //    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)

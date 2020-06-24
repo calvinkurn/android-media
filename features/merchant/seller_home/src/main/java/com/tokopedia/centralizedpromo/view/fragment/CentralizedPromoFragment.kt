@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralizedpromo.view.fragment.partialview.BasePartialView
@@ -27,6 +28,7 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.centralized_promo_partial_post.*
 import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.*
 import kotlinx.android.synthetic.main.fragment_centralized_promo.*
@@ -48,9 +50,17 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     }
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val adapterTypeFactory by lazy { CentralizedPromoAdapterTypeFactory() }
+    private val adapterTypeFactory by lazy {
+        CentralizedPromoAdapterTypeFactory(
+                { trackFreeShippingImpression() },
+                { trackFreeShippingClick() }
+        )
+    }
 
     private val partialViews by lazy {
         return@lazy mapOf(
@@ -90,6 +100,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         setupView()
         observeGetLayoutDataResult()
         refreshLayout()
+        CentralizedPromoTracking.sendOpenScreenEvent(userSession.isLoggedIn, userSession.userId)
     }
 
     override fun onRefreshButtonClicked() {
@@ -212,6 +223,14 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         Handler().postDelayed({
             isErrorToastShown = false
         }, TOAST_DURATION)
+    }
+
+    private fun trackFreeShippingImpression() {
+        centralizedPromoViewModel.trackFreeShippingImpression()
+    }
+
+    private fun trackFreeShippingClick() {
+        centralizedPromoViewModel.trackFreeShippingClick()
     }
 }
 

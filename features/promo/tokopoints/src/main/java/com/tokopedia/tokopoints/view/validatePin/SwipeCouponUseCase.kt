@@ -4,14 +4,11 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdateOuter
-import com.tokopedia.tokopoints.view.model.addpointsection.RewardPointResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_SWIPE_COUPON
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.HashMap
 import javax.inject.Inject
-import javax.inject.Named
 
 class SwipeCouponUseCase @Inject constructor(private val map : Map<String, String>, private val useCase: MultiRequestGraphqlUseCase) {
     suspend fun execute(code: String, pin: String) = withContext(Dispatchers.IO){

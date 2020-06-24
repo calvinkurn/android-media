@@ -1,0 +1,26 @@
+query GetPopGratification($campaignSlug:String!, $page:String!){
+  popGratification(PopGratificationInput :{CampaignSlug: $campaignSlug, Page: $page}) {
+    resultStatus {
+      code
+      message
+      reason
+    }
+    isShow
+    isAutoClaim
+    popGratificationBenefits {
+      benefitType
+      referenceID
+      qty
+    }
+    imageUrl
+    imageUrlMobile
+    title
+    text
+    popGratificationActionButton {
+      type
+      text
+      appLink
+      url
+    }
+  }
+}

@@ -41,7 +41,7 @@ open class NumberTextWatcher : AfterTextWatcher {
         onNumberChanged(value)
     }
 
-    fun onNumberChanged(number: Double) {
+    open fun onNumberChanged(number: Double) {
 
     }
 

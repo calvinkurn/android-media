@@ -1,0 +1,9 @@
+<resources>
+    <string name="error_filter_data_not_ready">Data Filter belum tersedia</string>
+    <string name="error_sort_data_not_ready">Data Sort belum tersedia</string>
+    <string name="category_server_error_header">There is some error on server</string>
+    <string name="category_try_again">try again</string>
+    <string name="banned_fragment_buka_browser">Buka Browser</string>
+    <string name="category_nav_product_no_data_title">Oops, Produk Nggak Ditemukan</string>
+    <string name="category_nav_product_no_data_description">Coba kurangi salah satu filter yang kamu gunakan :</string>
+</resources>
