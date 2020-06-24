@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -882,16 +883,16 @@ public class SearchActivity extends BaseActivity
         if (!(fragmentItem instanceof ProductListFragment)) return;
 
         animateTab(isVisible);
-
-        if (isVisible) topBarShadow.setVisibility(View.VISIBLE);
-        else topBarShadow.setVisibility(View.GONE);
     }
 
     private void animateTab(boolean isVisible) {
         int targetHeight = isVisible ? getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40) : 0;
 
+        if (tabLayout == null || tabLayout.getLayoutParams().height == targetHeight) return;
+
         ValueAnimator anim = ValueAnimator.ofInt(tabLayout.getMeasuredHeight(), targetHeight);
         anim.addUpdateListener(this::changeTabHeightByAnimator);
+        anim.addListener(createTabAnimatorListener(isVisible));
         anim.setDuration(300);
         anim.start();
     }
@@ -906,5 +907,36 @@ public class SearchActivity extends BaseActivity
         ViewGroup.LayoutParams layoutParams = tabLayout.getLayoutParams();
         layoutParams.height = height;
         tabLayout.setLayoutParams(layoutParams);
+    }
+
+    private Animator.AnimatorListener createTabAnimatorListener(boolean isVisible) {
+        return new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                onTabAnimationEnd(isVisible);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        };
+    }
+
+    private void onTabAnimationEnd(boolean isVisible) {
+        if (topBarShadow == null) return;
+
+        if (isVisible) topBarShadow.setVisibility(View.VISIBLE);
+        else topBarShadow.setVisibility(View.GONE);
     }
 }
