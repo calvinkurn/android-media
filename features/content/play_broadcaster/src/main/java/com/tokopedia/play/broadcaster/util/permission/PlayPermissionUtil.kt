@@ -56,22 +56,24 @@ class PlayPermissionUtil(private val mContext: Context) {
         }
     }
 
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == PLAY_REQUEST_PERMISSION_CODE) {
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray): Boolean {
+        return if (requestCode == PLAY_REQUEST_PERMISSION_CODE) {
             permissions.forEachIndexed { index, name ->
                 mPermission.find { name == it.name }?.isGranted = grantResults[index] == PackageManager.PERMISSION_GRANTED
             }
 
             if (isAllPermissionGranted()) {
                 _observablePermissionState.value = PlayPermissionState.Granted
-                return
+                return true
             }
 
             if (isAnyPermissionDenied()) {
                 val permissionsGranted = listPermissionsGranted()
                 _observablePermissionState.value = PlayPermissionState.Denied(permissionsGranted)
             }
-        }
+
+            true
+        } else false
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

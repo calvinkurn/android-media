@@ -6,9 +6,7 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 enum class PlayChannelStatus(val value: String) {
     Active("active"),
+    UnStarted("unstarted"),
     Pause("pause"),
     Finish("finish");
-
-    val isActive: Boolean
-        get() = this == Active
 }

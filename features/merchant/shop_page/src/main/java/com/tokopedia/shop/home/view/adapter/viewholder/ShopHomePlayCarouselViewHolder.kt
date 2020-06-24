@@ -3,7 +3,6 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
@@ -22,6 +21,8 @@ class ShopHomePlayCarouselViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_play_carousel
+        private const val IS_AUTO_PLAY_SUCCESS = "success"
+        private const val IS_AUTO_PLAY_FAILED = "failed"
     }
 
     private var playCarouselCardDataModel: ShopHomePlayCarouselUiModel? = null
@@ -43,11 +44,21 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        RouteManager.route(itemView.context, dataModel.applink)
+        listener.onPlayBannerClicked(
+                dataModel,
+                if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
+                playCarouselCardDataModel?.widgetId ?: "",
+                position
+        )
     }
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        // tracker impression
+        listener.onPlayBannerImpressed(
+                dataModel,
+                if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
+                playCarouselCardDataModel?.widgetId ?: "",
+                position
+        )
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
@@ -55,15 +66,15 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
-        RouteManager.route(itemView.context, dataModel.applink)
+        listener.onPlayBannerSeeMoreClick(dataModel.applink)
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-
+        listener.onPlayLeftBannerClicked(dataModel, playCarouselCardDataModel?.widgetId ?: "")
     }
 
     override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-
+        listener.onPlayLeftBannerImpressed(dataModel, playCarouselCardDataModel?.widgetId ?: "")
     }
 
     override fun onRefreshView(dataModel: PlayBannerCarouselDataModel) {

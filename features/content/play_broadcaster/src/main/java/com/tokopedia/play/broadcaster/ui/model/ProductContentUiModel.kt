@@ -14,7 +14,7 @@ data class ProductContentUiModel(
         val originalImageUrl: String,
         val stock: Int,
         val isSelectedHandler: (Long) -> Boolean,
-        val isSelectable: () -> SelectableState,
+        val isSelectable: (Boolean) -> SelectableState,
         val transitionName: String? = null
 ) : ProductUiModel() {
 

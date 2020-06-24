@@ -3,9 +3,11 @@ package com.tokopedia.play.broadcaster.di.setup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
+import com.tokopedia.play.broadcaster.view.fragment.edit.CoverCropEditBottomSheet
+import com.tokopedia.play.broadcaster.view.fragment.edit.ProductSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.fragment.edit.SimpleEditProductBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import dagger.Binds
 import dagger.Module
@@ -17,10 +19,6 @@ abstract class PlayBroadcastSetupFragmentModule {
     @Binds
     abstract fun bindFragmentFactory(fragmentFactory: PlayBroadcastFragmentFactory): FragmentFactory
 
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayBroadcastSetupBottomSheet::class)
-    abstract fun getBroadcastSetupBottomSheet(fragment: PlayBroadcastSetupBottomSheet): Fragment
     /**
      * Etalase Setup
      */
@@ -54,11 +52,29 @@ abstract class PlayBroadcastSetupFragmentModule {
      */
     @Binds
     @IntoMap
-    @FragmentKey(PlayCoverTitleSetupFragment::class)
-    abstract fun getPlayCoverTitleSetupFragment(fragment: PlayCoverTitleSetupFragment): Fragment
+    @FragmentKey(PlayCoverSetupFragment::class)
+    abstract fun getPlayCoverTitleSetupFragment(fragment: PlayCoverSetupFragment): Fragment
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayBroadcastChooseCoverBottomSheet::class)
-    abstract fun getPlayBroadcastChooseCoverBottomSheet(fragment: PlayBroadcastChooseCoverBottomSheet): Fragment
+    @FragmentKey(PlayCoverImageChooserBottomSheet::class)
+    abstract fun getPlayBroadcastChooseCoverBottomSheet(fragment: PlayCoverImageChooserBottomSheet): Fragment
+
+    /**
+     * Edit Container
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(CoverCropEditBottomSheet::class)
+    abstract fun getCoverCropEditBottomSheet(fragment: CoverCropEditBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(SimpleEditProductBottomSheet::class)
+    abstract fun getSimpleEditProductBottomSheet(fragment: SimpleEditProductBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ProductSetupBottomSheet::class)
+    abstract fun getProductSetupBottomSheet(fragment: ProductSetupBottomSheet): Fragment
 }

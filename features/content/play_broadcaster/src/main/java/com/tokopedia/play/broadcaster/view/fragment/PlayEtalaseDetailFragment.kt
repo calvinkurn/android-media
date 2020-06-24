@@ -15,16 +15,19 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
+import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -37,6 +40,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 ) : PlayBaseSetupFragment() {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
 
     private val etalaseId: String
         get() = arguments?.getString(EXTRA_ETALASE_ID) ?: throw IllegalStateException("etalaseId must be set")
@@ -49,6 +53,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private lateinit var bottomActionView: BottomActionPartialView
 
     private var shouldLoadFirst = true
+
+    private var mListener: ProductSetupListener? = null
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
@@ -74,6 +80,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         setupTransition()
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -92,10 +99,15 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
         observeProductsInSelectedEtalase()
         observeSelectedProducts()
+        observeUploadProduct()
     }
 
     override fun onInterceptBackPressed(): Boolean {
         return false
+    }
+
+    fun setListener(listener: ProductSetupListener) {
+        mListener = listener
     }
 
     private fun initView(view: View) {
@@ -117,8 +129,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 showSelectedProductPage()
             }
 
-            override fun onNextButtonClicked(nextBtnView: View) {
-                showCoverTitlePage(nextBtnView)
+            override fun onNextButtonClicked() {
+                uploadProduct()
             }
         })
     }
@@ -154,6 +166,25 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 bottomSheetCoordinator.goBack()
             }
         })
+    }
+
+    private fun uploadProduct() {
+        viewModel.uploadProduct(bottomSheetCoordinator.channelId)
+    }
+
+    private fun onSelectedProductChanged() {
+        selectableProductAdapter.notifyDataSetChanged()
+    }
+
+    private fun showSelectedProductPage() {
+        if (selectedProductPage.isShown) return
+
+        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
+        selectedProductPage.show()
+    }
+
+    private fun finishSetupProduct(nextBtnView: View) {
+        mListener?.onProductSetupFinished(listOf(nextBtnView), dataStoreViewModel.getDataStore())
     }
 
     /**
@@ -194,22 +225,23 @@ class PlayEtalaseDetailFragment @Inject constructor(
         })
     }
 
-    private fun onSelectedProductChanged() {
-        selectableProductAdapter.notifyDataSetChanged()
-    }
-
-    private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) return
-
-        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
-        selectedProductPage.show()
-    }
-
-    private fun showCoverTitlePage(nextBtnView: View) {
-        bottomSheetCoordinator.navigateToFragment(
-                fragmentClass = PlayCoverTitleSetupFragment::class.java,
-                sharedElements = listOf(nextBtnView)
-        )
+    private fun observeUploadProduct() {
+        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                NetworkResult.Loading -> bottomActionView.setLoading(true)
+                is NetworkResult.Fail -> {
+                    bottomActionView.setLoading(false)
+                    Toaster.make(requireView(), it.error.localizedMessage)
+                }
+                is NetworkResult.Success -> {
+                    val data = it.data.getContentIfNotHandled()
+                    if (data != null) {
+                        bottomActionView.setLoading(false)
+                        finishSetupProduct(bottomActionView.getButtonView())
+                    }
+                }
+            }
+        })
     }
 
     /**

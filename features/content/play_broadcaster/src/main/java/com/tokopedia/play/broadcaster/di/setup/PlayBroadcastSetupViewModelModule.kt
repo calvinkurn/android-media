@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,17 +17,37 @@ abstract class PlayBroadcastSetupViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(PlayBroadcastSetupViewModel::class)
+    abstract fun getPlayBroadcastSetupViewModel(viewModel: PlayBroadcastSetupViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayBroadcastPrepareViewModel::class)
+    abstract fun getPlayPrepareViewModel(viewModel: PlayBroadcastPrepareViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(PlayEtalasePickerViewModel::class)
     abstract fun getPlayEtalasePickerViewModel(viewModel: PlayEtalasePickerViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(PlayBroadcastCoverSetupViewModel::class)
-    abstract fun getPlayBroadcastCoverTitleViewModel(viewModel: PlayBroadcastCoverSetupViewModel): ViewModel
+    @ViewModelKey(PlayCoverSetupViewModel::class)
+    abstract fun getPlayBroadcastCoverTitleViewModel(viewModel: PlayCoverSetupViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(PlaySearchSuggestionsViewModel::class)
     abstract fun getPlaySearchSuggestionsViewModel(viewModel: PlaySearchSuggestionsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayEditProductViewModel::class)
+    abstract fun getPlayEditProductViewModel(viewModel: PlayEditProductViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DataStoreViewModel::class)
+    abstract fun getDataStoreViewModel(viewModel: DataStoreViewModel): ViewModel
 
 }

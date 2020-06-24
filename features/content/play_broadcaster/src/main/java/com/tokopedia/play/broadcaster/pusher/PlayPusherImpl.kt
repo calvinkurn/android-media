@@ -104,6 +104,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mAliVcLivePusher.startPushAysnc(this.mIngestUrl)
             mTimerDuration?.start()
         } catch (e: Exception) {
+            // TODO("handle start push async error")
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -143,10 +144,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun resume() {
         try {
-            if (mAliVcLivePusher.isPushing) {
-                mAliVcLivePusher.resumeAsync()
-                mTimerDuration?.resume()
-            }
+            mAliVcLivePusher.resumeAsync()
+            mTimerDuration?.resume()
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -160,11 +159,9 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun pause() {
         try {
-            if (mAliVcLivePusher.isPushing) {
-                mAliVcLivePusher.pause()
-                mTimerDuration?.pause()
-            }
-        } catch (e: java.lang.IllegalStateException) {
+            mAliVcLivePusher.pause()
+            mTimerDuration?.pause()
+        } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -174,7 +171,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun destroy() {
         try {
             mAliVcLivePusher.destroy()
-        } catch (e: java.lang.IllegalStateException) {
+        } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -311,15 +308,16 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             _observableInfoState.postValue(PlayPusherInfoState.AlmostFinish(minutesUntilFinished))
         }
 
-        override fun onCountDownFinish() {
-            stopPush()
-            _observableInfoState.postValue(PlayPusherInfoState.Finish)
+        override fun onCountDownFinish(timeElapsed: String) {
+            _observableInfoState.postValue(PlayPusherInfoState.Finish(timeElapsed))
         }
 
         override fun onReachMaximumPauseDuration() {
             _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.ReachMaximumDuration))
         }
     }
+
+     override fun isPushing(): Boolean = mAliVcLivePusher.currentStatus == AlivcLivePushStats.PUSHED
 
     private fun showLog(message: String) {
         if (GlobalConfig.DEBUG) {

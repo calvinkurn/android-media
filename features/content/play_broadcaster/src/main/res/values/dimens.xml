@@ -63,4 +63,9 @@
     <dimen name="play_cover_bottom_detail">120dp</dimen>
 
     <dimen name="play_bottom_sheet_top_radius">10dp</dimen>
+
+    <dimen name="play_change_cover_before_live_height">72dp</dimen>
+    <dimen name="play_change_cover_before_live_width">64dp</dimen>
+
+    <dimen name="play_bottom_action_view_height">56dp</dimen>
 </resources>

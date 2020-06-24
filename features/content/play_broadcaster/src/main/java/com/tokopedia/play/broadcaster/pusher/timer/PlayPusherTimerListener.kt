@@ -19,7 +19,7 @@ interface PlayPusherTimerListener {
      */
     fun onCountDownAlmostFinish(minutesUntilFinished: Long)
 
-    fun onCountDownFinish()
+    fun onCountDownFinish(timeElapsed: String)
 
     /**
      * when reach maximum pause duration

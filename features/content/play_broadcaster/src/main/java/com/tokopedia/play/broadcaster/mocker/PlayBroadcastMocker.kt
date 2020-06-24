@@ -65,7 +65,7 @@ object PlayBroadcastMocker {
         )
     }
 
-    fun getMaxSelectedProduct() = 2
+    fun getMaxSelectedProduct() = 20
 
     fun getMockSearchSuggestions(keyword: String) = List(keyword.length) {
         val suggestionText = " ${keyword.substring(0, it + 1)}"
@@ -81,10 +81,8 @@ object PlayBroadcastMocker {
 
     fun getMockConfiguration() = ConfigurationUiModel(
             streamAllowed = true,
-            activeOnOtherDevices = false, // IsLiveActive
-            haveOnGoingLive = false, // activeChannelId != 0
-            activeChannelId = 0,
-            draftChannelId = 12,
+            haveOnGoingLive = true, // activeChannelId != 0
+            channelId = 1234, // if (haveOnGoingLive) activeChannelId else draftChannelId
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
                     pauseDuration = (1 * 60 * 1000),
@@ -97,7 +95,7 @@ object PlayBroadcastMocker {
             )
     )
 
-    fun getMockActiveChannel() = getMockChannel(PlayChannelStatus.Active)
+    fun getMockUnStartedChannel() = getMockChannel(PlayChannelStatus.UnStarted)
 
     fun getMockPausedChannel() = getMockChannel(PlayChannelStatus.Pause)
 
@@ -142,7 +140,8 @@ object PlayBroadcastMocker {
         return PlayMetricUiModel(
                 firstSentence = firstSentence,
                 secondSentence = secondSentence,
-                fullSentence = fullSentence
+                fullSentence = fullSentence,
+                interval = 1000
         )
     }
 
@@ -152,5 +151,15 @@ object PlayBroadcastMocker {
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
             imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
             redirectUrl = "https://www.tokopedia.com/play/channels/1234"
+    )
+
+    fun getMetricSummary(): List<TrafficMetricUiModel> = listOf(
+            TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, "2328"),
+            TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, "1800"),
+            TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, "1200"),
+            TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, "1042"),
+            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, "320"),
+            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, "200"),
+            TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, "50")
     )
 }

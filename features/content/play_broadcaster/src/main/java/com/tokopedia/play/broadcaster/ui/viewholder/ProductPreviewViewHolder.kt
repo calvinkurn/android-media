@@ -17,11 +17,11 @@ import com.tokopedia.play.broadcaster.util.doOnPreDraw
 class ProductPreviewViewHolder(
         itemView: View,
         gridLayoutManager: GridLayoutManager
-) : BaseViewHolder(itemView) {
+) : BaseViewHolder(itemView), SpacingProvider {
 
     val ivImage: ImageView = itemView.findViewById(R.id.iv_image)
 
-    val spacing = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+    override val spacing = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
 
     private val spanSizeLookup = gridLayoutManager.spanSizeLookup
     private val spanCount = gridLayoutManager.spanCount

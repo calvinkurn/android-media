@@ -4,9 +4,7 @@ import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
-import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
-import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -31,7 +29,7 @@ object PlayBroadcastUiMapper {
     fun mapProductList(
             productsResponse: GetProductsByEtalaseResponse.GetShopProductData,
             isSelectedHandler: (Long) -> Boolean,
-            isSelectableHandler: () -> SelectableState
+            isSelectableHandler: (Boolean) -> SelectableState
     ) = productsResponse.data.map {
         ProductContentUiModel(
                 id = it.productId.toLong(),
@@ -80,4 +78,43 @@ object PlayBroadcastUiMapper {
                     channelId = channelId,
                     ingestUrl = media.ingestUrl,
                     streamUrl = media.streamUrl)
+
+    fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> = mutableListOf(
+                TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, metrics.visitChannel),
+                TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, metrics.likeChannel),
+                TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, metrics.visitShop),
+                TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, metrics.visitPdp),
+                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, metrics.addToCart),
+                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, metrics.paymentVerified),
+                TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop)
+        )
+
+    fun mapTotalView(concurrentUser: ConcurrentUser): TotalViewUiModel = TotalViewUiModel(
+            concurrentUser.totalUsers.toString()
+    )
+
+    fun mapTotalLike(stat: LiveStats): TotalLikeUiModel = TotalLikeUiModel(stat.totalLikeFmt)
+
+    fun mapMetricList(metric: Metric): MutableList<PlayMetricUiModel> {
+        val metricList = mutableListOf<PlayMetricUiModel>()
+        if (metric.newParticipant.firstSentence.isNotEmpty())
+            metricList.add(mapMetric(metric.newParticipant))
+        if (metric.pdpVisitor.firstSentence.isNotEmpty())
+            metricList.add(mapMetric(metric.pdpVisitor))
+        if (metric.shopVisitor.firstSentence.isNotEmpty())
+            metricList.add(mapMetric(metric.shopVisitor))
+        return metricList
+    }
+
+    private fun mapMetric(data: Metric.MetricData): PlayMetricUiModel {
+        val firstSentence = data.firstSentence
+        val secondSentence = data.secondSentence
+        val fullSentence = "$firstSentence $secondSentence"
+        return PlayMetricUiModel(
+                firstSentence = firstSentence,
+                secondSentence = secondSentence,
+                fullSentence = fullSentence,
+                interval = data.interval
+        )
+    }
 }

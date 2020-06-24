@@ -26,11 +26,9 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
         _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.UnSupportedDevice))
     }
 
-    override fun startPreview(surfaceView: SurfaceView) {
-    }
+    override fun startPreview(surfaceView: SurfaceView) {}
 
-    override fun stopPreview() {
-    }
+    override fun stopPreview() {}
 
     //TODO("for testing only")
     override fun startPush(ingestUrl: String) {
@@ -40,8 +38,7 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
         }
     }
 
-    override fun restartPush() {
-    }
+    override fun restartPush() {}
 
     //TODO("for testing only")
     override fun stopPush() {
@@ -51,12 +48,11 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
         }
     }
 
-    override fun switchCamera() {
-    }
+    override fun switchCamera() {}
 
     //TODO("for testing only")
     override fun resume() {
-        if (isPushing) {
+        if (!isPushing) {
             mTimer?.resume()
         }
     }
@@ -65,11 +61,11 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun pause() {
         if (isPushing) {
             mTimer?.pause()
+            this.isPushing = false
         }
     }
 
-    override fun destroy() {
-    }
+    override fun destroy() {}
 
     //TODO("for testing only")
     override fun addMaxStreamDuration(millis: Long) {
@@ -82,9 +78,9 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
                 _observableInfoState.postValue(PlayPusherInfoState.AlmostFinish(minutesUntilFinished))
             }
 
-            override fun onCountDownFinish() {
+            override fun onCountDownFinish(timeElapsed: String) {
                 stopPush()
-                _observableInfoState.postValue(PlayPusherInfoState.Finish)
+                _observableInfoState.postValue(PlayPusherInfoState.Finish(timeElapsed))
             }
 
             override fun onReachMaximumPauseDuration() {
@@ -104,5 +100,9 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState> {
         return _observableNetworkState
+    }
+
+    override fun isPushing(): Boolean {
+        return isPushing
     }
 }

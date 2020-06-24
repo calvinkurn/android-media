@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
-import com.tokopedia.play.broadcaster.ui.mapper.PlaySummaryUiMapper
+import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineScope
@@ -26,20 +27,21 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private val scope = CoroutineScope(job + dispatcher.main)
 
     private val _observableTrafficMetrics = MutableLiveData<List<TrafficMetricUiModel>>()
-    val observableTrafficMetricsUiModel: LiveData<List<TrafficMetricUiModel>>
+    val observableTrafficMetrics: LiveData<List<TrafficMetricUiModel>>
         get() = _observableTrafficMetrics
 
     init {
-        _observableTrafficMetrics.value = listOf()
+        _observableTrafficMetrics.value = PlayBroadcastMocker.getMetricSummary()
     }
 
+    // TODO("handle initial, loading & error state")
     fun getLiveTrafficMetrics(channelId: String) {
         scope.launch {
             try {
                 val response = getLiveStatisticsUseCase.apply {
                     params = GetLiveStatisticsUseCase.createParams(channelId)
                 }.executeOnBackground()
-                _observableTrafficMetrics.postValue(PlaySummaryUiMapper.mapToLiveTrafficUiMetrics(response.response.channel.metrics))
+                _observableTrafficMetrics.postValue(PlayBroadcastUiMapper.mapToLiveTrafficUiMetrics(response.response.channel.metrics))
             } catch (t: Throwable) { }
         }
     }

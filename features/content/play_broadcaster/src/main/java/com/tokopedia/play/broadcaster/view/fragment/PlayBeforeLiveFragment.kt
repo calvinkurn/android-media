@@ -4,23 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastEditTitleBottomSheet
+import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
+import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
+import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -39,17 +47,29 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var btnStartLive: PlayStartStreamingButton
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var ivShareLink: ImageView
+    private lateinit var flEdit: FrameLayout
 
-    private lateinit var setupViewModel: PlayBroadcastSetupViewModel
+    private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
+    private lateinit var editTitleBottomSheet: PlayBroadcastEditTitleBottomSheet
+
     private lateinit var exitDialog: DialogUnify
+
+    private val setupResultListener = object : SetupResultListener {
+        override fun onSetupCanceled() {
+        }
+
+        override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
+            prepareViewModel.setDataFromSetupDataStore(dataStore)
+        }
+    }
 
     override fun getScreenName(): String = "Play Before Live Page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
+        prepareViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
@@ -85,6 +105,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             btnStartLive = findViewById(R.id.btn_start_live)
             followerView = findViewById(R.id.follower_view)
             ivShareLink = findViewById(R.id.iv_share_link)
+            flEdit = findViewById(R.id.fl_edit)
         }
     }
 
@@ -92,32 +113,40 @@ class PlayBeforeLiveFragment @Inject constructor(
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnStartLive.setOnClickListener { startStreaming() }
         llSelectedProduct.setOnClickListener { openEditProductPage() }
-        tvCoverTitle.setOnClickListener { openEditCoverPage() }
+        tvCoverTitle.setOnClickListener { openEditCoverTitlePage() }
+        ivImagePreview.setOnClickListener { openEditCoverImagePage() }
 
         btnStartLive.setMaxStreamingDuration(30)
         ivShareLink.setOnClickListener { doCopyShareLink() }
     }
+
+
 
     //region observe
     /**
      * Observe
      */
     private fun observeFollowers() {
-        setupViewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
+        prepareViewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
             followerView.setFollowersModel(it)
         })
     }
 
     private fun observeSetupChannel() {
-        setupViewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
+        prepareViewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
             tvSelectedProduct.text = getString(R.string.play_before_live_selected_product, it.selectedProductList.size)
-            ivImagePreview.loadImageRounded(it.cover.coverImageUrl)
-            tvCoverTitle.text = it.cover.liveTitle
+            when (val croppedCover = it.cover.croppedCover) {
+                is CoverSetupState.Cropped -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
+                is CoverSetupState.Cropping.Image -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
+                else -> throw IllegalStateException("Cover cannot be blank")
+            }
+
+            tvCoverTitle.text = it.cover.title
         })
     }
 
     private fun observeCreateChannel() {
-        setupViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
+        prepareViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
             when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> {
@@ -140,12 +169,28 @@ class PlayBeforeLiveFragment @Inject constructor(
                 })
     }
 
-    private fun openEditProductPage() {
-
+    private fun openEditCoverImagePage() {
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val editCoverFragment = fragmentFactory.instantiate(requireContext().classLoader, CoverEditFragment::class.java.name) as CoverEditFragment
+        editCoverFragment.setListener(setupResultListener)
+        childFragmentManager.beginTransaction()
+                .replace(flEdit.id, editCoverFragment)
+                .commit()
     }
 
-    private fun openEditCoverPage() {
+    private fun openEditProductPage() {
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val editProductFragment = fragmentFactory.instantiate(requireContext().classLoader, ProductEditFragment::class.java.name) as ProductEditFragment
+        editProductFragment.setListener(setupResultListener)
+        childFragmentManager.beginTransaction()
+                .replace(flEdit.id, editProductFragment)
+                .commit()
+    }
 
+    private fun openEditCoverTitlePage() {
+        getEditTitleBottomSheet().apply {
+            setCoverTitle(prepareViewModel.title)
+        }.show(childFragmentManager)
     }
 
     private fun doCopyShareLink() {
@@ -166,7 +211,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun startStreaming() {
-        setupViewModel.createLiveStream()
+        prepareViewModel.createLiveStream()
     }
 
     private fun getExitDialog(): DialogUnify {
@@ -186,5 +231,18 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun showDialogWhenActionClose() {
         getExitDialog().show()
+    }
+
+    private fun getEditTitleBottomSheet(): PlayBroadcastEditTitleBottomSheet {
+        if (!::editTitleBottomSheet.isInitialized) {
+            editTitleBottomSheet = PlayBroadcastEditTitleBottomSheet()
+            editTitleBottomSheet.setListener(object : PlayBroadcastEditTitleBottomSheet.Listener {
+                override fun onSaveEditedTitle(title: String) {
+                    prepareViewModel.title = title
+                }
+            })
+            editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        }
+        return editTitleBottomSheet
     }
 }
