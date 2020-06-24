@@ -175,9 +175,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     var position = -1
                     if (selectedProductId > 0) {
                         for (i in dataCollections.indices) {
-                            if (dataCollections[i].id == selectedProductId.toString()) {
+                            if (dataCollections[i].id.toInt() == selectedProductId) {
                                 dataCollections[i].attributes.selected = true
                                 position = i
+                                break
                             }
                         }
                     }
