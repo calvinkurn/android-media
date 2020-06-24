@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.presentation.model.DateRangeItem
 import com.tokopedia.statistic.utils.DateRangeFormatUtil
-import kotlinx.android.synthetic.main.item_stc_date_range_default.view.*
+import kotlinx.android.synthetic.main.item_stc_date_range_click.view.*
 
 /**
  * Created By @ilhamsuaib on 15/06/20
@@ -20,7 +20,7 @@ class DateRangeClickViewHolder(
 
     companion object {
         @LayoutRes
-        val RES_LAYOUT = R.layout.item_stc_date_range_default
+        val RES_LAYOUT = R.layout.item_stc_date_range_click
     }
 
     override fun bind(element: DateRangeItem.Click) {
