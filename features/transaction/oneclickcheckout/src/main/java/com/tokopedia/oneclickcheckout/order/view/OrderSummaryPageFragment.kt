@@ -134,6 +134,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private lateinit var orderPreferenceCard: OrderPreferenceCard
 
     private var progressDialog: AlertDialog? = null
+    private var coachMark: CoachMark? = null
 
     private var shouldUpdateCart: Boolean = true
     private var shouldDismissProgressDialog: Boolean = false
@@ -508,27 +509,31 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = Color.WHITE))
             }
-            val coachMark = CoachMarkBuilder().build()
-            coachMark.enableSkip = true
-            // temporary removed due to coachmark crash (downgraded)
-            //if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
-            //    coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
-            //}
-            coachMark.overlayOnClickListener = ({
-                //do nothing
-            })
-            coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
-                override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
-                    if (nextStep == 0) {
-                        scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
-                    } else if (nextStep == 3) {
-                        scrollview.scrollTo(0, layoutPayment.bottom)
-                    }
-                    return false
+            coachMark = CoachMarkBuilder().build()
+            coachMark?.let { coachMark ->
+                coachMark.enableSkip = true
+                if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
+                    coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
                 }
-            })
-            coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
-            orderSummaryAnalytics.eventViewOnboardingTicker()
+                coachMark.overlayOnClickListener = ({
+                    //do nothing
+                })
+                coachMark.onFinishListener = ({
+                    this.coachMark = null
+                })
+                coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
+                    override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
+                        if (nextStep == 0) {
+                            scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
+                        } else if (nextStep == 3) {
+                            scrollview.scrollTo(0, layoutPayment.bottom)
+                        }
+                        return false
+                    }
+                })
+                coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
+                orderSummaryAnalytics.eventViewOnboardingTicker()
+            }
         }
     }
 
@@ -982,6 +987,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onStop() {
         super.onStop()
+        coachMark?.close()
         if (swipeRefreshLayout?.isRefreshing == false && shouldUpdateCart) {
             viewModel.updateCart()
         }
