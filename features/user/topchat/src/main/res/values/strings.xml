@@ -162,4 +162,5 @@ yang ditemukan</string>
     <string name="desc_empty_chat_search_result">Coba cari ulang pakai kata kunci lain.</string>
     <string name="title_cta_change_chat_search_keywoard">Ganti Kata Kunci</string>
     <string name="tittle_load_more">Lihat Lebih</string>
+    <string name="tittle_header_auto_reply">Dibalas oleh Smart Reply</string>
 </resources>

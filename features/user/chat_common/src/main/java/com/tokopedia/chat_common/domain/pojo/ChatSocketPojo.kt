@@ -48,7 +48,7 @@ data class ChatSocketPojo(
         @SerializedName("blast_id")
         @Expose
         var blastId: Int = 0,
-        @SerializedName("blast_id")
+        @SerializedName("source")
         @Expose
         var source: String = ""
 )
