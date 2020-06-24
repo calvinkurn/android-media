@@ -1,5 +1,6 @@
 package com.tokopedia.common_digital.cart.view.model
 
+import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -43,6 +44,11 @@ class DigitalCheckoutPassData() : Parcelable {
         idemPotencyKey = parcel.readString()
         voucherCodeCopied = parcel.readString()
         source = parcel.readInt()
+        val bundle = parcel.readBundle(javaClass.classLoader)
+        bundle?.run {
+            val fieldsParam = this.getSerializable(PARAM_FIELDS)
+            fieldsParam?.run { fields = this as? HashMap<String, String> }
+        }
         needGetCart = parcel.readByte() != 0.toByte()
     }
 
@@ -224,6 +230,9 @@ class DigitalCheckoutPassData() : Parcelable {
         parcel.writeString(idemPotencyKey)
         parcel.writeString(voucherCodeCopied)
         parcel.writeInt(source)
+        val bundle = Bundle()
+        bundle.putSerializable(PARAM_FIELDS, fields)
+        parcel.writeBundle(bundle)
         parcel.writeByte(if (needGetCart) 1 else 0)
     }
 

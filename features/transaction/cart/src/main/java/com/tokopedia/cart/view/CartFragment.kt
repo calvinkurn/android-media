@@ -193,7 +193,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     companion object {
 
-        private const val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
@@ -1226,13 +1225,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartShopNameClicked(cartShopHolderData: CartShopHolderData) {
-        sendAnalyticsOnClickShopCartItem(cartShopHolderData.shopGroupAvailableData.shopId
-                ?: "", cartShopHolderData.shopGroupAvailableData.shopName ?: "")
+    override fun onCartShopNameClicked(shopId: String?, shopName: String?) {
+        if (shopId != null && shopName != null) {
+            sendAnalyticsOnClickShopCartItem(shopId, shopName)
 
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, cartShopHolderData.shopGroupAvailableData.shopId)
-            it.startActivity(intent)
+            activity?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, shopId)
+                it.startActivity(intent)
+            }
         }
     }
 

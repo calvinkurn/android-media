@@ -60,6 +60,7 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
         adapter?.let {
             it.headerList = headerList
             it.selectedPosition = element.selectedChip
+            it.lastTimeChipsClicked = element.lastTimeChipsClicked
             it.notifyDataSetChanged()
         }
         recyclerViewBrandHeader.adapter = adapter

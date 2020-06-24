@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.preference.edit.di
 
+import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
@@ -7,6 +8,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.common.domain.GetShippingDurationUseCase
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCase
@@ -16,6 +19,8 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.model.Delete
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.model.GetPreferenceByIdGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
+import com.tokopedia.purchase_platform.common.feature.addresslist.AddressCornerMapper
+import com.tokopedia.purchase_platform.common.feature.addresslist.GetAddressCornerUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -25,7 +30,11 @@ import kotlinx.coroutines.Dispatchers
 
 @PreferenceEditScope
 @Module
-class PreferenceEditModule {
+class PreferenceEditModule(private val activity: Activity) {
+
+    @PreferenceEditScope
+    @Provides
+    fun provideContext(): Context = activity
 
     @PreferenceEditScope
     @Provides
@@ -107,5 +116,18 @@ class PreferenceEditModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetRatesUseCase(context: Context, converter: ShippingDurationConverter,
+                               graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, schedulerProvider: SchedulerProvider): GetRatesUseCase {
+        return GetRatesUseCase(context, converter, graphqlUseCase, schedulerProvider)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetAddressCornerUseCase(context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, mapper: AddressCornerMapper): GetAddressCornerUseCase {
+        return GetAddressCornerUseCase(context, graphqlUseCase, mapper)
     }
 }

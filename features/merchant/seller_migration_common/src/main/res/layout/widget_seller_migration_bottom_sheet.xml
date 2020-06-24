@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/layout_lvl2"
                 android:paddingEnd="@dimen/layout_lvl2"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 android:visibility="gone"/>
         </RelativeLayout>
 
