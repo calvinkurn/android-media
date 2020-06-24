@@ -56,7 +56,7 @@ class TestBottomNav {
     }
 
     @Test
-    fun testWhenItemClicked_bottomNavItem_shouldFinishAnyAnimationAfter1sec() {
+    fun testWhenItemClicked_bottomNavItem_shouldFinishAnyAnimationAfter2sec() {
         onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_HOME))))).perform(click())
         onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_FEED))))).perform(click())
         onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_OS))))).perform(click())
@@ -80,7 +80,6 @@ class TestBottomNav {
         val lottieAnimation4 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_CART))
         assertThat(lottieAnimation4.progress, Matchers.greaterThan(0.9f))
 
-
         val lottieAnimation5 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_ACCOUNT))
         assertThat(lottieAnimation5.progress, Matchers.greaterThan(0.9f))
     }
@@ -90,14 +89,14 @@ class TestBottomNav {
         onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_OS))))).perform(click())
         onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_CART))))).perform(click())
 
-        Thread.sleep(2000)
+        Thread.sleep(3000)
 
         val lottieBottomNavbar: LottieBottomNavbar =
                 activityRule.activity.findViewById(R.id.bottom_navbar)
 
         val linearLayout = lottieBottomNavbar.getChildAt(0)
         val lottieAnimation3 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_OS))
-        assertThat(lottieAnimation3.speed, Matchers.lessThan(0f))
+        assertThat(lottieAnimation3.speed, Matchers.greaterThan(0f))
 
         val lottieAnimation4 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_CART))
         assertThat(lottieAnimation4.speed, Matchers.greaterThan(0f))
