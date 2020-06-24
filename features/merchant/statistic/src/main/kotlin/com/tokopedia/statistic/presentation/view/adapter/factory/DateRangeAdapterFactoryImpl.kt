@@ -6,8 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.statistic.presentation.model.DateRangeItem
-import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeCustomViewHolder
-import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeDefaultViewHolder
+import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeApplyViewHolder
+import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeClickViewHolder
+import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangePickViewHolder
 
 /**
  * Created By @ilhamsuaib on 15/06/20
@@ -18,18 +19,23 @@ class DateRangeAdapterFactoryImpl(
         private val fm: FragmentManager
 ) : BaseAdapterTypeFactory(), DateRangeAdapterFactory {
 
-    override fun type(item: DateRangeItem.Default): Int = DateRangeDefaultViewHolder.RES_LAYOUT
+    override fun type(item: DateRangeItem.Click): Int = DateRangeClickViewHolder.RES_LAYOUT
 
-    override fun type(item: DateRangeItem.Custom): Int = DateRangeCustomViewHolder.RES_LAYOUT
+    override fun type(item: DateRangeItem.Pick): Int = DateRangePickViewHolder.RES_LAYOUT
+
+    override fun type(item: DateRangeItem.ApplyButton): Int = DateRangeApplyViewHolder.RES_LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            DateRangeDefaultViewHolder.RES_LAYOUT -> DateRangeDefaultViewHolder(parent) {
-                listener.onApplyDateFilter(it)
+            DateRangeClickViewHolder.RES_LAYOUT -> DateRangeClickViewHolder(parent) {
+                listener.onItemDateRangeClick(it)
+                listener.onApplyDateFilter()
+            }
+            DateRangePickViewHolder.RES_LAYOUT -> DateRangePickViewHolder(parent, fm, listener::showApplyButton) {
                 listener.onItemDateRangeClick(it)
             }
-            DateRangeCustomViewHolder.RES_LAYOUT -> DateRangeCustomViewHolder(parent, fm, listener::onApplyDateFilter) {
-                listener.onItemDateRangeClick(it)
+            DateRangeApplyViewHolder.RES_LAYOUT -> DateRangeApplyViewHolder(parent) {
+                listener.onApplyDateFilter()
             }
             else -> super.createViewHolder(parent, type)
         }
@@ -39,6 +45,8 @@ class DateRangeAdapterFactoryImpl(
 
         fun onItemDateRangeClick(model: DateRangeItem)
 
-        fun onApplyDateFilter(model: DateRangeItem)
+        fun showApplyButton(isShown: Boolean)
+
+        fun onApplyDateFilter()
     }
 }

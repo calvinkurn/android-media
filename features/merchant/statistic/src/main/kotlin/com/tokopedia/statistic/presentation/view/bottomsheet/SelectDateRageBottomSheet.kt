@@ -2,6 +2,7 @@ package com.tokopedia.statistic.presentation.view.bottomsheet
 
 import android.content.Context
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,18 +25,21 @@ class SelectDateRageBottomSheet(
 ) : BottomSheetUnify(), DateRangeAdapterFactoryImpl.Listener {
 
     companion object {
-        private const val DAY_1 = 1
         private const val DAYS_7 = 7
         private const val DAYS_30 = 30
-        private const val DAYS_90 = 90
     }
 
     private var applyChangesCallback: (DateRangeItem) -> Unit = {}
     private val mAdapter by lazy { DateRangeAdapter(this, fm) }
-    private val items: List<DateRangeItem> by lazy {
-        listOf(getDateRangeItem(DAYS_7, true),
-                getDateRangeItem(DAYS_30), getDateRangeItem(DAYS_90),
-                DateRangeItem.Custom(mContext.getString(R.string.stc_custom))
+    private val itemApplyButton = DateRangeItem.ApplyButton
+    private val items: MutableList<DateRangeItem> by lazy {
+        mutableListOf(
+                getDateRangeItemToday(),
+                getDateRangeItemClick(DAYS_7, DateRangeItem.TYPE_LAST_7_DAYS, true),
+                getDateRangeItemClick(DAYS_30, DateRangeItem.TYPE_LAST_30_DAYS),
+                getDateRangeItemPick(DateRangeItem.TYPE_PER_DAY),
+                getDateRangeItemPick(DateRangeItem.TYPE_PER_WEEK),
+                getDateRangeItemPick(DateRangeItem.TYPE_PER_MONTH)
         )
     }
 
@@ -48,18 +52,35 @@ class SelectDateRageBottomSheet(
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
-    override fun onApplyDateFilter(model: DateRangeItem) {
-        applyChangesCallback(model)
-        dismissAllowingStateLoss()
-    }
-
     override fun onItemDateRangeClick(model: DateRangeItem) {
         items.forEach {
             if (it != model) {
                 it.isSelected = false
             }
         }
+        if (model is DateRangeItem.Click && items.contains(itemApplyButton)) {
+            items.remove(itemApplyButton)
+            mAdapter.removeElement(itemApplyButton)
+        }
         mAdapter.notifyDataSetChanged()
+    }
+
+    override fun showApplyButton(isShown: Boolean) {
+        if (isShown) {
+            if (!items.contains(itemApplyButton)) {
+                items.add(itemApplyButton)
+                mAdapter.addElement(itemApplyButton)
+            }
+        } else {
+            items.remove(itemApplyButton)
+            mAdapter.removeElement(itemApplyButton)
+        }
+    }
+
+    override fun onApplyDateFilter() {
+        val selectedItem = items.firstOrNull { it.isSelected } ?: return
+        applyChangesCallback(selectedItem)
+        dismissAllowingStateLoss()
     }
 
     fun setOnApplyChanges(callback: (DateRangeItem) -> Unit): SelectDateRageBottomSheet {
@@ -81,10 +102,26 @@ class SelectDateRageBottomSheet(
         mAdapter.addElement(items)
     }
 
-    private fun getDateRangeItem(nPastDays: Int, isSelected: Boolean = false): DateRangeItem.Default {
+    private fun getDateRangeItemPick(type: Int): DateRangeItem.Pick {
+        @StringRes val labelId = when (type) {
+            DateRangeItem.TYPE_PER_DAY -> R.string.stc_per_day
+            DateRangeItem.TYPE_PER_WEEK -> R.string.stc_per_week
+            else -> R.string.stc_per_month
+        }
+        val label = mContext.getString(labelId)
+        return DateRangeItem.Pick(label = label, type = type)
+    }
+
+    private fun getDateRangeItemClick(nPastDays: Int, type: Int, isSelected: Boolean = false): DateRangeItem.Click {
         val label: String = mContext.getString(R.string.stc_last_n_days, nPastDays)
-        val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(nPastDays.toLong()))
-        val endDate = Date(DateTimeUtil.getNPastDaysTimestamp(DAY_1.toLong()))
-        return DateRangeItem.Default(label, startDate, endDate, isSelected)
+        val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(nPastDays.minus(1).toLong()))
+        val endDate = Date()
+        return DateRangeItem.Click(label, startDate, endDate, isSelected, type)
+    }
+
+    private fun getDateRangeItemToday(): DateRangeItem {
+        val label = mContext.getString(R.string.stc_today_real_time)
+        val today = Date()
+        return DateRangeItem.Click(label, today, today, false, DateRangeItem.TYPE_TODAY)
     }
 }
