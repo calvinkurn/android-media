@@ -43,10 +43,6 @@ Step to submit edit product:
 class AddEditProductEditService : AddEditProductBaseService() {
     private var productDraftId = 0L
     private var productInputModel: ProductInputModel = ProductInputModel()
-    private var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
-    private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
-    private var detailInputModel: DetailInputModel = DetailInputModel()
-    private var variantInputModel: VariantInputModel = VariantInputModel()
 
     companion object {
         fun startService(context: Context, cacheManagerId: String?) {
@@ -62,12 +58,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
         SaveInstanceCacheManager(this, cacheManagerId).run {
             productInputModel =  get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
         }
-        productInputModel.let {
-            shipmentInputModel = it.shipmentInputModel
-            descriptionInputModel = it.descriptionInputModel
-            detailInputModel = it.detailInputModel
-            variantInputModel = it.variantInputModel
-        }
+
         // (1)
         saveProductToDraft()
     }
@@ -82,9 +73,9 @@ class AddEditProductEditService : AddEditProductBaseService() {
             }
             // (2)
             uploadProductImages(
-                    filterPathOnly(detailInputModel.imageUrlOrPathList),
-                    getVariantFilePath(variantInputModel.selections),
-                    variantInputModel.sizecharts.filePath)
+                    filterPathOnly(productInputModel.detailInputModel.imageUrlOrPathList),
+                    getVariantFilePath(productInputModel.variantInputModel.selections),
+                    "")
         }
     }
 
@@ -137,10 +128,10 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 uploadIdList,
                 variantOptionUploadId,
                 sizeChartId,
-                detailInputModel,
-                descriptionInputModel,
-                shipmentInputModel,
-                variantInputModel)
+                productInputModel.detailInputModel,
+                productInputModel.descriptionInputModel,
+                productInputModel.shipmentInputModel,
+                productInputModel.variantInputModel)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
