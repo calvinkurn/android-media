@@ -164,8 +164,8 @@ class HomeUseCaseModule {
             "    help_applink\n" +
             "    tnc_applink\n" +
             "    show_announcement\n" +
-            "    isShowTopup\n" +
-            "    topup_url\n" +
+            "    is_show_topup\n" +
+            "    topup_applink\n" +
             "  }\n" +
             "}"
 

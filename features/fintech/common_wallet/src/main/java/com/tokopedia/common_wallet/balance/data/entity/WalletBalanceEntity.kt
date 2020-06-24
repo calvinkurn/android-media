@@ -68,9 +68,9 @@ class WalletBalanceEntity(
         @SerializedName("show_announcement")
         @Expose
         val isShowAnnouncement: Boolean = false,
-        @SerializedName("isShowTopup")
+        @SerializedName("is_show_topup")
         @Expose
         val isShowTopup: Boolean = false,
-        @SerializedName("topup_url")
+        @SerializedName("topup_applink")
         @Expose
         val topupUrl: String = "")
