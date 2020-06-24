@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.calendar.CalendarPickerView
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
@@ -112,9 +111,9 @@ class DateRangePickViewHolder(
         }
 
         val lineMarginTop = if (isShown) {
-            context.dpToPx(24)
+            context.resources.getDimension(R.dimen.layout_lvl3)
         } else {
-            context.dpToPx(16)
+            context.resources.getDimension(R.dimen.layout_lvl2)
         }
         verLineStcCustom.setMargin(0, lineMarginTop.toInt(), 0, 0)
     }
