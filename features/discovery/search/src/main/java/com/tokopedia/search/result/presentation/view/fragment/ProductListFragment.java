@@ -372,26 +372,17 @@ public class ProductListFragment
 
     private RecyclerView.OnScrollListener createHideTabOnScrollListener() {
         return new RecyclerView.OnScrollListener() {
-            boolean willAnimateTab = false;
-            boolean willShow = false;
-
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (searchNavigationListener == null) return;
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && willAnimateTab)
-                    searchNavigationListener.configureTabLayout(willShow);
-
-                if (recyclerView.canScrollVertically(-1)) applyQuickFilterLayoutOnTop();
-                else applyQuickFilterLayoutOnScroll();
-            }
-
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > SCROLL_THRESHOLD_TO_ANIMATE_TAB || dy < -SCROLL_THRESHOLD_TO_ANIMATE_TAB) {
-                    willAnimateTab = true;
-                    willShow = dy <= 0;
+                if (searchNavigationListener == null) return;
+
+                if (dy > SCROLL_THRESHOLD_TO_ANIMATE_TAB || dy < -SCROLL_THRESHOLD_TO_ANIMATE_TAB || recyclerView.computeVerticalScrollOffset() == 0) {
+                    boolean isVisible = dy <= 0;
+                    searchNavigationListener.configureTabLayout(isVisible);
                 }
+
+                if (recyclerView.computeVerticalScrollOffset() > 0) applyQuickFilterLayoutOnTop();
+                else applyQuickFilterLayoutOnScroll();
             }
         };
     }
@@ -406,7 +397,7 @@ public class ProductListFragment
     }
 
     private void applyQuickFilterElevation(@NonNull Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && searchSortFilter != null) {
             if (searchSortFilter.getElevation() == 0f) {
                 int elevation = IntExtKt.dpToPx(5, context.getResources().getDisplayMetrics());
                 searchSortFilter.setElevation(elevation);
@@ -415,6 +406,8 @@ public class ProductListFragment
     }
 
     private void setQuickFilterPaddingTop(int paddingTop) {
+        if (searchSortFilter == null || searchSortFilter.getPaddingTop() == paddingTop) return;
+
         searchSortFilter.setPadding(searchSortFilter.getPaddingLeft(), paddingTop, searchSortFilter.getPaddingRight(), searchSortFilter.getPaddingBottom());
     }
 
@@ -428,7 +421,7 @@ public class ProductListFragment
     }
 
     private void removeQuickFilterElevation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && searchSortFilter != null) {
             if (searchSortFilter.getElevation() > 0f) {
                 searchSortFilter.setElevation(0);
             }
