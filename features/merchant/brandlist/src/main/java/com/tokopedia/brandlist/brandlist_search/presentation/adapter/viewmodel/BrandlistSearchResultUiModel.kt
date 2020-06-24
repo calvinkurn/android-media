@@ -4,18 +4,18 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 
-class BrandlistSearchRecommendationViewModel(
+class BrandlistSearchResultUiModel(
         val name: String,
+        val defaultUrl: String,
         val logoUrl: String,
-        val exclusiveLogoUrl: String,
+        val searchQuery: String,
+        val appsUrl: String,
         val id: Int,
-        val url: String,
-        val listener: BrandlistSearchTrackingListener,
-        val position: String
+        val listener: BrandlistSearchTrackingListener
 ) : Visitable<BrandlistSearchAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: BrandlistSearchAdapterTypeFactory): Int {
-       return adapterTypeFactory.type(this)
+        return adapterTypeFactory.type(this)
     }
 
 }
