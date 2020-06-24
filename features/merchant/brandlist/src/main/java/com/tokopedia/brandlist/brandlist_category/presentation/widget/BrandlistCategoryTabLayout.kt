@@ -115,7 +115,7 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
     }
 
     private fun setTabIcon(iconView: ImageView, iconUrl: String) {
-        ImageHandler.loadImage(context, iconView, iconUrl, R.drawable.ic_loading_image)
+        ImageHandler.loadImage(context, iconView, iconUrl, com.tokopedia.design.R.drawable.ic_loading_image)
     }
 
     private fun setActiveText(categoryView: Typography) {
