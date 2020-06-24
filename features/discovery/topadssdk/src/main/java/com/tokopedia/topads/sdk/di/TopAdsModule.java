@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
@@ -46,12 +45,6 @@ public class TopAdsModule {
     @Provides
     CacheHandler provideCacheHandler(@ApplicationContext Context context){
         return new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
-    }
-
-    @TopAdsScope
-    @Provides
-    OpenTopAdsUseCase provideOpenTopAdsUseCase(@ApplicationContext Context context){
-        return new OpenTopAdsUseCase(context);
     }
 
     @TopAdsScope

@@ -28,18 +28,9 @@ import java.util.List;
 
 public class CloudTopAdsDataSource implements TopAdsDataSource {
 
-    public static final String SCHEME = "https";
-    public static final String MOJITO_URL = "mojito.tokopedia.com";
-    public static final String V1_USERS = "v1/users";
-    public static final String WISHLIST_CHECK = "wishlist/check";
-    private static final String URL_DISPLAY_ADS = "promo/v1.1/display/ads";
     private static final String URL_DISPLAY_ADS_V1_3 = "promo/v1.3/display/ads";
-    private static final String URL_INFO_USER = "promo/v1/info/user";
-    private static final String URL_MERLIN = "https://merlin.tokopedia.com/v4/product/category/recommendation";
     private static final String TKPD_SESSION_ID = "Tkpd-SessionId";
-    private static final String TKPD_USER_ID = "Tkpd-UserId";
     private static final String X_DEVICE = "X-Device";
-    private static final String DEFAULT_X_DEVICE = "android";
     private Context context;
     private Config config;
 
@@ -65,59 +56,4 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
         return new TopAdsBannerMapper(executor).getModel();
     }
 
-    @Override
-    public TopAdsModel getTopAds(TKPDMapParam<String, String> params, int position) {
-        HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
-                .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS)
-                .addHeader(TKPD_SESSION_ID, config.getSessionId())
-                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
-                .setMethod(HttpMethod.GET)
-                .addParameters(params)
-                .build();
-        RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
-        return new TopAdsMapper(context, executor, position).getModel();
-    }
-
-    @Override
-    public String clickTopAdsUrl(String url) {
-        HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
-                .setBaseUrl(url)
-                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
-                .setMethod(HttpMethod.GET)
-                .build();
-        RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
-        try {
-            return executor.executeAsGetRequest();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ""; //just return empty string.
-    }
-
-    @Override
-    public TopAdsModel checkWishlist(TopAdsModel model) {
-        List<String> ids = new ArrayList<>();
-        for (Data data : model.getData()) {
-            if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
-                ids.add(data.getProduct().getId());
-            }
-        }
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme(SCHEME)
-                .authority(MOJITO_URL)
-                .appendEncodedPath(V1_USERS)
-                .appendPath(config.getUserId())
-                .appendEncodedPath(WISHLIST_CHECK)
-                .appendEncodedPath(TextUtils.join(",", ids));
-        HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
-                .setBaseUrl(builder.build().toString())
-                .setMethod(HttpMethod.GET)
-                .addHeader(TKPD_SESSION_ID, config.getSessionId())
-                .addHeader(TKPD_USER_ID, config.getUserId())
-                .addHeader(X_DEVICE, DEFAULT_X_DEVICE)
-                .build();
-
-        RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
-        return new WishListCheckMapper(executor, model).getModel();
-    }
 }
