@@ -235,6 +235,10 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         // TODO: Set banner see all redirect
     }
 
+    override fun onRechargeProductBannerClose(element: RechargeHomepageSections.Item) {
+        // TODO: Trigger close product banner query
+    }
+
     override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
         // TODO: Click tracking
         RouteManager.route(context, element.applink)

@@ -11,10 +11,7 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActio
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.PRODUCT_BANNER_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
-import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
-import kotlinx.android.synthetic.main.layout_digital_home_category_item_submenu_frame.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_card_image.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_product_banner.view.*
 
@@ -38,7 +35,7 @@ class RechargeHomepageProductBannerViewHolder(
             setHeader(section)
             setProduct(section)
         } else {
-            itemView.content_container.hide()
+            itemView.view_recharge_home_product_banner_container.hide()
         }
     }
 
@@ -72,6 +69,10 @@ class RechargeHomepageProductBannerViewHolder(
             }
             addOnImpressionListener(section) {
                 listener.onRechargeSectionItemImpression(section.items, PRODUCT_BANNER_IMPRESSION)
+            }
+            iv_recharge_home_product_banner_close_button.setOnClickListener {
+                view_recharge_home_product_banner_container.hide()
+                listener.onRechargeProductBannerClose(item)
             }
         }
     }
