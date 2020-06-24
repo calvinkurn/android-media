@@ -475,6 +475,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }, {
             onClickFilterTab(it)
         })
+        tabSortFilter.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            tabSortFilter.post { tabSortFilter.textView.text = getString(R.string.product_manage_filter) }
+        }
     }
 
     private val addProductReceiver = object : BroadcastReceiver() {
@@ -1619,7 +1622,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun hidePageLoading() {
         mainContainer.show()
         pageLoading.hide()
-        tabSortFilter.post { tabSortFilter.textView.text = getString(R.string.product_manage_filter) }
     }
 
     private fun initHeaderView(productList: List<ProductViewModel>) {
