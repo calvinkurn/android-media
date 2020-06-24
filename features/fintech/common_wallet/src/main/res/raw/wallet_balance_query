@@ -29,5 +29,6 @@
     show_announcement
     topup_applink
     is_show_topup
+    topup_limit
   }
 }

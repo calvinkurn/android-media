@@ -135,8 +135,8 @@ class HomeUseCaseModule {
             "    }\n" +
             "}"
 
-    val walletBalanceQuery : String = "query(\$isGetTopup:Boolean){\n" +
-            "  wallet {\n" +
+    val walletBalanceQuery : String = "query(\$isGetTopup:Boolean!){\n" +
+            "  wallet(isGetTopup: \$isGetTopup) {\n" +
             "    linked\n" +
             "    balance\n" +
             "    rawBalance\n" +
@@ -166,6 +166,7 @@ class HomeUseCaseModule {
             "    show_announcement\n" +
             "    is_show_topup\n" +
             "    topup_applink\n" +
+            "    topup_limit\n" +
             "  }\n" +
             "}"
 

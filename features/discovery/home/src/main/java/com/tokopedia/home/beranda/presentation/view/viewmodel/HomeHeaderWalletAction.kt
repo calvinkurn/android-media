@@ -20,7 +20,8 @@ data class HomeHeaderWalletAction(
         val walletType: String = "",
         val isShowAnnouncement: Boolean = false,
         val isShowTopup: Boolean = false,
-        val topupUrl: String = ""
+        val topupUrl: String = "",
+        val topupLimit: Long = 0
 ){
 
     override fun equals(other: Any?): Boolean {
@@ -45,6 +46,7 @@ data class HomeHeaderWalletAction(
         if (isShowAnnouncement != other.isShowAnnouncement) return false
         if (isShowTopup != other.isShowTopup) return false
         if (topupUrl != other.topupUrl) return false
+        if (topupLimit != other.topupLimit) return false
 
         return true
     }
@@ -68,6 +70,7 @@ data class HomeHeaderWalletAction(
         result = HASH_CODE * result + isShowAnnouncement.hashCode()
         result = HASH_CODE * result + isShowTopup.hashCode()
         result = HASH_CODE * result + topupUrl.hashCode()
+        result = HASH_CODE * result + topupLimit.hashCode()
         return result
     }
 

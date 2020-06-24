@@ -73,4 +73,7 @@ class WalletBalanceEntity(
         val isShowTopup: Boolean = false,
         @SerializedName("topup_applink")
         @Expose
-        val topupUrl: String = "")
+        val topupUrl: String = "",
+        @SerializedName("topup_limit")
+        @Expose
+        val topupLimit: Long = 0)
