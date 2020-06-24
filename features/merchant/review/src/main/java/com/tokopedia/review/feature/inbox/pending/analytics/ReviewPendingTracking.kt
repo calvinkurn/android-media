@@ -2,11 +2,11 @@ package com.tokopedia.review.feature.inbox.pending.analytics
 
 object ReviewPendingTracking {
 
-    fun eventClickCard() {
+    fun eventClickCard(reputationId: Int) {
 
     }
 
-    fun eventClickRatingStar() {
+    fun eventClickRatingStar(reputationId: Int) {
 
     }
 }
