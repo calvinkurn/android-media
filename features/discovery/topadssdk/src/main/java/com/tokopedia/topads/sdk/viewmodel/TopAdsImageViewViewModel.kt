@@ -17,19 +17,18 @@ class TopAdsImageViewViewModel @Inject constructor(private val topAdsImageViewUs
 
     private val response: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> = MutableLiveData()
 
-    fun getImageData(query: String, queryParams: Map<String, Any>) {
-        //will use to fetch data from usecase
+    fun getImageData(queryParams: MutableMap<String, Any>) {
         launchCatchError(
                 block = {
-                    response.value = Success(topAdsImageViewUseCase.getImageData("", queryParams))
+                    response.value = Success(topAdsImageViewUseCase.getImageData(queryParams))
                 },
                 onError = {
                     response.postValue(Fail(it))
                 })
     }
 
-    fun getQueryParams(source: String, pageToken: String, adsCount: Int, dimens: String, depId: String): Map<String, Any> {
-        return topAdsImageViewUseCase.getQueryMap(source, pageToken, adsCount, dimens,depId)
+    fun getQueryParams(query: String,source: String, pageToken: String, adsCount: String, dimenId: Int, depId: String): MutableMap<String, Any> {
+        return topAdsImageViewUseCase.getQueryMap(query,source, pageToken, adsCount, dimenId,depId)
     }
 
 

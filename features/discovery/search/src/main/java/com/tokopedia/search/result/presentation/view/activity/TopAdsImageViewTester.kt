@@ -22,14 +22,13 @@ class TopAdsImageViewTester : AppCompatActivity() {
         adsBannerView = findViewById(R.id.ads_banner)
         adsBannerView2 = findViewById(R.id.ads_banner2)
 
-        adsBannerView.getImageData("query","search","pageToken",2,"dimens")
+        adsBannerView.getImageData("iphone","2","1",1)
 
 
         adsBannerView.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
 
             override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
                 adsBannerView.loadImage(imageDataList[0])
-                adsBannerView2.loadImage(imageDataList[1])
             }
 
             override fun onError(t: Throwable) {

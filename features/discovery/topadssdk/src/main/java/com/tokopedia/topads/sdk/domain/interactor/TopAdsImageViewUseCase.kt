@@ -1,51 +1,29 @@
 package com.tokopedia.topads.sdk.domain.interactor
 
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewResponse
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import kotlin.collections.set
 
 private const val ADS_TYPE = "ep"
 private const val DEVICE_TYPE = "device"
-private const val SOURCE = "src"
+private const val SOURCE = "inventory_id"
 private const val PAGE_TOKEN = "page_token"
 private const val ADS_COUNT = "item"
-private const val DIMEN_ID = "dimen_id"
+const val DIMEN_ID = "dimen_id"
 private const val USER_ID = "user_id"
 private const val DEP_ID = "dep_id"
+private const val QUERY = "q"
 
-class TopAdsImageViewUseCase @Inject constructor(private val userSession: UserSessionInterface) {
+class TopAdsImageViewUseCase @Inject constructor(private val userSession: UserSessionInterface,
+                                                 private val repository: TopAdsRepository) {
 
-    suspend fun getImageData(query: String, queryParmas: Map<String, Any>): ArrayList<TopAdsImageViewModel> {
-        //will use to fetch data using BaseRepository
-        val response = TopAdsImageViewResponse()
-        val images = ArrayList<TopAdsImageViewResponse.Data.Banner.Image>()
-        images.add(TopAdsImageViewResponse.Data.Banner.Image("https://ecs7.tokopedia.net/img/cache/480/attachment/2020/6/8/27760349/27760349_3916d53a-3472-40b0-b0cc-2662421aee84.jpg"))
-        images.add(TopAdsImageViewResponse.Data.Banner.Image("https://ecs7.tokopedia.net/img/cache/480/attachment/2020/6/8/27760349/27760349_3916d53a-3472-40b0-b0cc-2662421aee84.jpg"))
-        response.data?.get(0)?.banner?.images = images
-        response.data = arrayListOf<TopAdsImageViewResponse.Data>(TopAdsImageViewResponse.Data(banner = TopAdsImageViewResponse.Data.Banner(images = images)),TopAdsImageViewResponse.Data(banner = TopAdsImageViewResponse.Data.Banner(images = images)))
-
-
-        val response1 = ArrayList<TopAdsImageViewModel>()
-        response.data?.forEachIndexed { index, data ->
-            val model = TopAdsImageViewModel()
-            with(model) {
-                adClickUrl = data?.adClickUrl ?: "adsclick"
-                adViewUrl = data?.adViewUrl ?: "asview"
-                applink = data?.applinks ?: "applink"
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/480/attachment/2019/12/3/77499286/77499286_34951b52-5125-4b86-82ce-c834c9d0fbea.jpg"
-                imageWidth = 480
-                imageHeight = 372
-            }
-            response1.add(model)
-        }
-
-
-        return response1
+    suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
+        return repository.getImageData(queryParams)
     }
 
-    fun  getQueryMap(source: String, pageToken: String, adsCount: Int, dimens: String, depId: String): MutableMap<String, Any> {
+    fun getQueryMap(query: String, source: String, pageToken: String, adsCount: String, dimenId: Int, depId: String): MutableMap<String, Any> {
         val queryMap = HashMap<String, Any>()
         queryMap[USER_ID] = userSession.userId
         queryMap[ADS_TYPE] = "banner"
@@ -53,7 +31,8 @@ class TopAdsImageViewUseCase @Inject constructor(private val userSession: UserSe
         queryMap[SOURCE] = source
         queryMap[PAGE_TOKEN] = pageToken
         queryMap[ADS_COUNT] = adsCount
-        queryMap[DIMEN_ID] = dimens
+        queryMap[DIMEN_ID] = dimenId
+        queryMap[QUERY] = query
         if (depId.isNotEmpty()) queryMap[DEP_ID] = depId
 
         return queryMap

@@ -32,7 +32,7 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
     private lateinit var topAdsImageViewViewModel: TopAdsImageViewViewModel
 
     private var topAdsImageViewClickListener: TopAdsImageViewClickListener? = null
-    private var topadsImageViewImpressionListener: TopAdsImageViewImpressionListener? = null
+    private var topAdsImageViewImpressionListener: TopAdsImageViewImpressionListener? = null
     private var topAdsImageVieWApiResponseListener: TopAdsImageVieWApiResponseListener? = null
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsImageView"
 
@@ -75,7 +75,7 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
      * @param listener pass implementation of listener
      * */
     fun setTopAdsImageViewImpression(listener: TopAdsImageViewImpressionListener) {
-        topadsImageViewImpressionListener = listener
+        topAdsImageViewImpressionListener = listener
     }
 
 
@@ -84,12 +84,12 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
      * @param source Page source that do the request. Example: search, fav_product
      * @param pageToken Use in pagination, pass empty in case of first page
      * @param adsCount Use this parameter, To tell number of ads on page required
-     * @param dimens Use this parameter to provide dimen id
+     * @param dimenId Use this parameter to provide dimen id
      * @param depId Required in case of category and intermediate page else optional
      * */
-    fun getImageData(query: String, source: String, pageToken: String, adsCount: Int, dimens: String, depId: String = "") {
-        val queryParams = topAdsImageViewViewModel.getQueryParams(source, pageToken, adsCount, dimens, depId)
-        topAdsImageViewViewModel.getImageData(query, queryParams)
+    fun getImageData(query: String, source: String, adsCount: String, dimenId: Int, depId: String = "", pageToken: String = "") {
+        val queryParams = topAdsImageViewViewModel.getQueryParams(query,source, pageToken, adsCount, dimenId, depId)
+        topAdsImageViewViewModel.getImageData(queryParams)
 
         topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
             when (it) {
@@ -131,7 +131,7 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
                     context.resources.displayMetrics.widthPixels,
                     getHeight(imageData.imageWidth, imageData.imageHeight)
             )
-            topadsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
+            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
                     ?: "")
             this.setOnClickListener {
                 topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
