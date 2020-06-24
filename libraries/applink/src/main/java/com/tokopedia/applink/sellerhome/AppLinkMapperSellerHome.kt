@@ -23,8 +23,12 @@ object AppLinkMapperSellerHome {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp()) {
-            val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-            UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, param)
+            if(searchKeyword.isNotBlank()) {
+                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
+                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, param)
+            } else {
+                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER
+            }
         } else {
             getRegisteredNavigationMainAppSellerNewOrder()
         }
@@ -34,8 +38,12 @@ object AppLinkMapperSellerHome {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp()) {
-            val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-            UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, param)
+            if (searchKeyword.isNotBlank()) {
+                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
+                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, param)
+            } else {
+                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP
+            }
         } else {
             getRegisteredNavigationMainAppSellerReadyToShip()
         }
@@ -45,8 +53,12 @@ object AppLinkMapperSellerHome {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp()) {
-            val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-            UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_SHIPPED, param)
+            if(searchKeyword.isNotBlank()) {
+                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
+                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_SHIPPED, param)
+            } else {
+                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_SHIPPED
+            }
         } else {
             getRegisteredNavigationMainAppSellerInShipping()
         }
@@ -56,8 +68,12 @@ object AppLinkMapperSellerHome {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp()) {
-            val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-            UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_DONE, param)
+            if(searchKeyword.isNotBlank()) {
+                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
+                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_DONE, param)
+            } else {
+                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_DONE
+            }
         } else {
             getRegisteredNavigationMainAppSellerFinished()
         }
@@ -67,8 +83,12 @@ object AppLinkMapperSellerHome {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp()) {
-            val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-            UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED, param)
+            if(searchKeyword.isNotBlank()) {
+                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
+                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED, param)
+            } else {
+                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED
+            }
         } else {
             getRegisteredNavigationMainAppSellerCancelled()
         }
