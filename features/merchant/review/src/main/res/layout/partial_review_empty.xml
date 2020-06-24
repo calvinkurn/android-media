@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <ImageView
-        android:id="@+id/reviewPendingEmptyImage"
+        android:id="@+id/reviewEmptyImage"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"
@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/reviewPendingEmptyTitle"
+        android:id="@+id/reviewEmptyTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
@@ -25,12 +25,12 @@
         android:layout_marginEnd="@dimen/layout_lvl6"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
-        app:layout_constraintTop_toBottomOf="@id/reviewPendingEmptyImage"
+        app:layout_constraintTop_toBottomOf="@id/reviewEmptyImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/reviewPendingEmptySubtitle"
+        android:id="@+id/reviewEmptySubtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
@@ -40,6 +40,6 @@
         android:textColor="@color/Neutral_N700_68"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        app:layout_constraintTop_toBottomOf="@id/reviewPendingEmptyTitle"/>
+        app:layout_constraintTop_toBottomOf="@id/reviewEmptyTitle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

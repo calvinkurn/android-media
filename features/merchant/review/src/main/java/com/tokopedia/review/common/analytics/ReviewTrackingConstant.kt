@@ -15,4 +15,7 @@ object ReviewTrackingConstant {
     const val EVENT_CATEGORY = "eventCategory"
     const val EVENT_ACTION = "eventAction"
     const val EVENT_LABEL = "eventLabel"
+    const val KEY_SCREEN_NAME = "screenName"
+    const val KEY_USER_ID = "userId"
+    const val ACTION_CLICK = "click"
 }

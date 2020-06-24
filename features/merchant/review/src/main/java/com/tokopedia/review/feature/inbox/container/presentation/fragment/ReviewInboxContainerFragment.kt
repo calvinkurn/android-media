@@ -26,6 +26,9 @@ import javax.inject.Inject
 class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent> {
 
     companion object {
+        const val PENDING_TAB_INDEX = 0
+        const val HISTORY_TAB_INDEX = 1
+
         fun createNewInstance() : ReviewInboxContainerFragment{
             return ReviewInboxContainerFragment()
         }
@@ -92,20 +95,18 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-                tab.text?.let {
-                    when {
-                        it.contains(getString(R.string.review_pending_tab_title_no_count)) -> {
-                            ReviewInboxContainerTracking.eventOnClickReviewPendingTab()
-                        }
-                        it.contains(getString(R.string.review_history_tab_title)) -> {
-                            ReviewInboxContainerTracking.eventOnClickReviewHistoryTab()
-                        }
-                        else -> {
-                            ReviewInboxContainerTracking.eventOnClickReviewSellerTab()
-                        }
+                reviewInboxViewPager.setCurrentItem(tab.position, true)
+                when(tab.position) {
+                    PENDING_TAB_INDEX -> {
+                        ReviewInboxContainerTracking.eventOnClickReviewPendingTab(viewModel.userId)
+                    }
+                    HISTORY_TAB_INDEX -> {
+                        ReviewInboxContainerTracking.eventOnClickReviewHistoryTab(viewModel.userId)
+                    }
+                    else -> {
+                        ReviewInboxContainerTracking.eventOnClickReviewSellerTab(viewModel.userId)
                     }
                 }
-                reviewInboxViewPager.setCurrentItem(tab.position, true)
             }
         })
     }

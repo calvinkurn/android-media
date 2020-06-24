@@ -4,10 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductrevFeedbackHistoryStatus(
-        @SerializedName("seen")
+        @SerializedName("hasResponse")
         @Expose
-        val seen: Boolean = false,
-        @SerializedName("editable")
-        @Expose
-        val editable: Boolean = false
+        val hasResponse: Boolean = false
 )

@@ -34,8 +34,8 @@ import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendin
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_review_pending.*
-import kotlinx.android.synthetic.main.partial_review_pending_connection_error.*
-import kotlinx.android.synthetic.main.partial_review_pending_empty.*
+import kotlinx.android.synthetic.main.partial_review_connection_error.*
+import kotlinx.android.synthetic.main.partial_review_empty.*
 import javax.inject.Inject
 
 class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(),
@@ -122,18 +122,18 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun setupErrorPage() {
-        reviewPendingConnectionErrorRetryButton.setOnClickListener {
+        reviewConnectionErrorRetryButton.setOnClickListener {
             getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE)
         }
-        reviewPendingConnectionErrorGoToSettingsButton.setOnClickListener {
+        reviewConnectionErrorGoToSettingsButton.setOnClickListener {
             goToSettings()
         }
     }
 
     private fun setupEmptyState() {
-        reviewPendingEmptyImage.loadImage(REVIEW_PENDING_NO_PRODUCTS_BOUGHT_IMAGE)
-        reviewPendingEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
-        reviewPendingEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
+        reviewEmptyImage.loadImage(REVIEW_PENDING_NO_PRODUCTS_BOUGHT_IMAGE)
+        reviewEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
+        reviewEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
     }
 
     private fun showError() {

@@ -22,6 +22,8 @@ class ReviewInboxContainerViewModel @Inject constructor(
         private val productrevReviewTabCounterUseCase: ProductrevReviewTabCounterUseCase
 ) : BaseViewModel(dispatchers.io()){
 
+    val userId = userSessionInterface.userId ?: ""
+
     private val _reviewTabs = MutableLiveData<Result<ProductrevReviewTabCount>>()
     val reviewTabs: LiveData<List<ReviewInboxTabs>> = Transformations.map(_reviewTabs) {
         updateCounters(it)

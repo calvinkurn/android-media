@@ -6,11 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class ProductrevFeedbackHistoryResponse(
         @SerializedName("list")
         @Expose
-        val list: ProductrevFeedbackHistoryList = ProductrevFeedbackHistoryList(),
-        @SerializedName("filterBy")
-        @Expose
-        val filterBy: String = "",
-        @SerializedName("sortBy")
+        val list: List<ProductrevFeedbackHistory> = emptyList(),
+        @SerializedName("searchQuery")
         @Expose
         val sortBy: String = "",
         @SerializedName("page")
@@ -21,5 +18,5 @@ data class ProductrevFeedbackHistoryResponse(
         val limit: Int = 0,
         @SerializedName("hasNext")
         @Expose
-        val hasNext: Int = 0
+        val hasNext: Boolean = false
 )
