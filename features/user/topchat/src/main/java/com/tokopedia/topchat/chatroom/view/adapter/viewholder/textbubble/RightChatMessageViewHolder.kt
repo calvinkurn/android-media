@@ -9,8 +9,7 @@ import com.tokopedia.topchat.R
 class RightChatMessageViewHolder(itemView: View?, private val listener: ChatLinkHandlerListener)
     : ChatMessageViewHolder(itemView, listener) {
 
-    override fun bind(viewModel: MessageViewModel?) {
-        if (viewModel == null) return
+    override fun bind(viewModel: MessageViewModel) {
         super.bind(viewModel)
         bindChatReadStatus(viewModel)
     }

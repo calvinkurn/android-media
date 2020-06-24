@@ -16,8 +16,7 @@ abstract class ChatMessageViewHolder(itemView: View?, private val listener: Chat
 
     open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
 
-    override fun bind(viewModel: MessageViewModel?) {
-        if (viewModel == null) return
+    override fun bind(viewModel: MessageViewModel) {
         verifyReplyTime(viewModel)
         bindChatMessage(viewModel)
         bindHour(viewModel)

@@ -20,7 +20,7 @@ open class BaseChatViewModel
  *
  * @see AttachmentType for attachment types.
  */
-(
+constructor(
         val messageId: String,
         var fromUid: String?,
         val from: String,
@@ -28,7 +28,8 @@ open class BaseChatViewModel
         val attachmentId: String,
         val attachmentType: String,
         var replyTime: String?,
-        var message: String
+        var message: String,
+        var source: String
 ) {
 
     companion object {

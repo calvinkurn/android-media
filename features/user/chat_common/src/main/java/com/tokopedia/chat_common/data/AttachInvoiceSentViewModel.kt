@@ -46,11 +46,12 @@ class AttachInvoiceSentViewModel : SendableViewModel,
             attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
             message: String, description: String, imageUrl: String, totalAmount: String,
             isSender: Boolean, statusId: Int, status: String, invoiceId: String,
-            invoiceUrl: String, createTime: String
+            invoiceUrl: String, createTime: String, source: String
     ) : super(
             msgId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, startTime,
-            false, false, isSender, message
+            false, false, isSender, message,
+            source
     ) {
         this.description = description
         this.imageUrl = imageUrl
@@ -84,11 +85,11 @@ class AttachInvoiceSentViewModel : SendableViewModel,
             attachmentId: String, attachmentType: String, replyTime: String, message: String,
             description: String, imageUrl: String, totalAmount: String, isSender: Boolean,
             isRead: Boolean, statusId: Int, status: String, invoiceId: String,
-            invoiceUrl: String, createTime: String
+            invoiceUrl: String, createTime: String, source: String
     ) : super(
             msgId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, "",
-            isRead, false, isSender, message
+            isRead, false, isSender, message, source
     ) {
         this.description = description
         this.imageUrl = imageUrl
@@ -118,7 +119,8 @@ class AttachInvoiceSentViewModel : SendableViewModel,
     ) : super(
             "", fromUid, from, "",
             "", AttachmentType.Companion.TYPE_INVOICE_SEND, SendableViewModel.SENDING_TEXT, startTime,
-            false, true, true, message
+            false, true, true, message,
+            ""
     ) {
         this.description = description
         this.imageUrl = imageUrl
