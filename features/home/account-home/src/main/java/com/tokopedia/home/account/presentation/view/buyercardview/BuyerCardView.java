@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
@@ -46,6 +47,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private View tokomemberHolder;
     private View dividerOne;
     private View dividerTwo;
+    private AppCompatImageView ivMemberBadge;
     private BuyerCardPresenter buyerCardPresenter;
 
     public BuyerCardView(@NonNull Context context) {
@@ -86,6 +88,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         ivTokomember = view.findViewById(R.id.image_tokomember);
         dividerOne = view.findViewById(R.id.divider1);
         dividerTwo = view.findViewById(R.id.divider2);
+        ivMemberBadge = view.findViewById(R.id.ivMemberBadge);
         buyerCardPresenter = new BuyerCardPresenter();
         buyerCardPresenter.attachView(this);
     }
@@ -246,13 +249,16 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         dividerTwo.setVisibility(visibility);
     }
 
+    @Override
+    public void setMemberStatus(String status) {
+        textProfileCompletion.setText(status);
+    }
 
     @Override
     public void setEggImage(String eggImageUrl) {
-      /*  Glide.with(getContext())
-                .asBitmap()
-                .load(eggImageUrl)
-                .dontAnimate()
-                .into(eggImage);*/
+        if (eggImageUrl!=null && eggImageUrl.length() != 0) {
+            ivMemberBadge.setVisibility(VISIBLE);
+            ImageHandler.loadImageCircle2(getContext(), ivMemberBadge, eggImageUrl, R.drawable.placeholder_grey);
+        }
     }
 }

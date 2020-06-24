@@ -9,23 +9,25 @@
 
     <ImageView
         android:id="@+id/iv_dynamic"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
+        android:scaleType="centerInside"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_4" />
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/notif_dynamic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="14dp"
         android:layout_alignTop="@id/iv_dynamic"
         android:layout_alignEnd="@id/iv_dynamic"
         android:layout_alignRight="@id/iv_dynamic"
         android:gravity="center"
+        android:textSize="12sp"
         android:paddingLeft="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
         android:visibility="gone"
         app:notificationColor="color_primary"
         app:notificationTitle="3"
-        app:notificationType="text_type" />
+        app:notificationType="counter_type" />
 </RelativeLayout>

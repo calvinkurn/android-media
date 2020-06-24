@@ -22,11 +22,11 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
             if (buyerCard.getProgress() < 100) {
                 view.showProfileProgress(buyerCard.getProgress());
                 view.showIncompleteAvatar(buyerCard.getAvatar());
-                view.setProfileStatusIncomplete(buyerCard.getProgress());
+                //view.setProfileStatusIncomplete(buyerCard.getProgress());
             } else {
                 view.hideProfileProgress();
                 view.showCompletedAvatar(buyerCard.getAvatar());
-                view.setProfileStatusCompleted();
+                //view.setProfileStatusCompleted();
             }
             view.setAvatarImageUrl(buyerCard.getProgress(), buyerCard.getAvatar());
             view.setName(buyerCard.getUsername());
@@ -40,6 +40,7 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
             view.setTokoMemberAmount(buyerCard.getTokoMemberAmount());
             view.setTokomemberImageUrl(buyerCard.getTokomemberImageUrl());
             view.setEggImage(buyerCard.getEggImageUrl());
+            view.setMemberStatus(buyerCard.getMemberStatus());
 
             if (buyerCard.getTokopointSize() == 0) {
                 view.setCardVisibility(0);

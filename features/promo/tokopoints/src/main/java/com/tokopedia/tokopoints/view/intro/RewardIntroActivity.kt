@@ -11,7 +11,7 @@ class RewardIntroActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTitle("Reward")
+        updateTitle("Rewards")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = resources.getDimension(com.tokopedia.design.R.dimen.dp_0)

@@ -28,6 +28,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
     private int tokopointSize;
     private int tokomemberSize;
     private int couponSize;
+    private String memberStatus;
     private int progress;
     private boolean isAffiliate;
 
@@ -207,6 +208,14 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.tokomember = tokomember;
     }
 
+    public String getMemberStatus() {
+        return memberStatus;
+    }
+
+    public void setMemberStatus(String memberStatus) {
+        this.memberStatus = memberStatus;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -233,6 +242,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         dest.writeInt(this.tokopointSize);
         dest.writeInt(this.tokomemberSize);
         dest.writeInt(this.couponSize);
+        dest.writeString(this.memberStatus);
         dest.writeInt(this.progress);
         dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
     }
@@ -257,6 +267,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.tokopointSize = in.readInt();
         this.tokomemberSize = in.readInt();
         this.couponSize = in.readInt();
+        this.memberStatus = in.readString();
         this.progress = in.readInt();
         this.isAffiliate = in.readByte() != 0;
     }

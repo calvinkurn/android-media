@@ -40,6 +40,8 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         var timeValue: TextView
         var disabledError: TextView
         var btnContinue: TextView
+        var labelPoint: TextView
+        var textDiscount: TextView
         var imgBanner: ImageView
         var imgTime: ImageView
         var pbQuota: ProgressBar
@@ -58,6 +60,8 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
             btnContinue = view.findViewById(R.id.button_continue)
             imgBanner = view.findViewById(R.id.img_banner)
             imgTime = view.findViewById(R.id.img_time)
+            labelPoint = view.findViewById(R.id.text_point_label)
+            textDiscount = view.findViewById(R.id.text_point_discount)
             pbQuota = view.findViewById(R.id.progress_timer_quota)
         }
     }
@@ -68,8 +72,13 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         holder.description.text = item.title
         holder.btnContinue.setText(R.string.tp_label_exchange) //TODO asked for server driven value
         ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner, item.thumbnailUrlMobile)
-        holder.pointValue.visibility = View.VISIBLE
-        holder.pointValue.text = "Gratis"
+        //setting points info if exist in response
+        if (item.pointsStr == null || item.pointsStr.isEmpty()) {
+            holder.pointValue.visibility = View.GONE
+        } else {
+            holder.pointValue.visibility = View.VISIBLE
+            holder.pointValue.text = item.pointsStr
+        }
         //setting expiry time info if exist in response
         if (item.expiredLabel == null || item.expiredLabel.isEmpty()) {
             holder.timeLabel.visibility = View.GONE
@@ -118,12 +127,31 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
             holder.disabledError.text = item.disableErrorMessage
         }
         //disabling the coupons if not eligible for current membership
-        ImageUtil.dimImage(holder.imgBanner)
-        holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.black_54))
+        if (item.isDisabled) {
+            ImageUtil.dimImage(holder.imgBanner)
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.black_54))
+        } else {
+            ImageUtil.unDimImage(holder.imgBanner)
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.black_54))
+        }
         if (item.isDisabledButton) {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
         } else {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.design.R.color.white))
+        }
+
+        if (item.pointsSlash <= 0) {
+            holder.labelPoint.visibility = View.GONE
+        } else {
+            holder.labelPoint.visibility = View.VISIBLE
+            holder.labelPoint.text = item.pointsSlashStr
+            holder.labelPoint.paintFlags = holder.labelPoint.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+        if (item.discountPercentage <= 0) {
+            holder.textDiscount.visibility = View.GONE
+        } else {
+            holder.textDiscount.visibility = View.VISIBLE
+            holder.textDiscount.text = item.discountPercentageStr
         }
 
         holder.btnContinue.setOnClickListener { v: View? ->

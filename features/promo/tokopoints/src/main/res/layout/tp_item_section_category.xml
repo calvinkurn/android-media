@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/iv_bg"
-        android:layout_width="@dimen/dep_64"
-        android:layout_height="@dimen/dp_64"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@drawable/ic_squircle"
         android:padding="@dimen/dp_10"
         app:layout_constraintLeft_toLeftOf="parent"

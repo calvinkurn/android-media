@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -37,15 +38,17 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_PREPARE_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_RENDER_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
-import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
+import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
+import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
+import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -174,7 +177,12 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             is Loading -> showLoader()
             is ErrorMessage -> {
                 hideLoader()
-                showError(NetworkDetector.isConnectedToInternet(context))
+                val internetStatus = NetworkDetector.isConnectedToInternet(context)
+                if (!internetStatus) {
+                    showError(internetStatus)
+                } else {
+                    showCouponError()
+                }
             }
             is Success -> {
                 stopNetworkRequestPerformanceMonitoring()
@@ -217,6 +225,20 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     override fun showError(hasInternet: Boolean) {
         mContainerMain!!.displayedChild = CONTAINER_ERROR
         serverErrorView!!.showErrorUi(hasInternet)
+    }
+
+    private fun showCouponError() {
+        container?.displayedChild = CONTAINER_COUPON_ERROR
+        btnError.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
+        invalidateOptionsMenu(activity)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val registrar = menu.findItem(R.id.action_menu_share)
+        registrar.isVisible = false
+        return
     }
 
     override fun hideLoader() {
@@ -391,6 +413,10 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null) {
             return
         }
+        if (data.id == 0) {
+            showCouponError()
+            return
+        }
         mCouponName = data.title
         val quota: Typography = view!!.findViewById(R.id.text_quota_count)
         val description: Typography = view!!.findViewById(R.id.text_description)
@@ -448,7 +474,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
         } else {
             ImageUtil.unDimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.orange_red))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
         }
         if (data.isDisabledButton) {
             giftSectionMainLayout.visibility = View.GONE
@@ -571,6 +597,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
         private const val REQUEST_CODE_LOGIN = 1
+        private const val CONTAINER_COUPON_ERROR = 3
 
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = CouponCatalogFragment()

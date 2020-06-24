@@ -26,6 +26,7 @@ public class BuyerCard implements Parcelable {
     private int tokopointSize;
     private int tokomemberSize;
     private int couponSize;
+    private String memberStatus;
     private boolean isAffiliate;
 
     public BuyerCard() {
@@ -51,6 +52,7 @@ public class BuyerCard implements Parcelable {
               int tokopointSize,
               int tokomemberSize,
               int couponSize,
+              String memberStatus,
               String eggImageUrl) {
         this.avatar = avatar;
         this.progress = progress;
@@ -71,6 +73,7 @@ public class BuyerCard implements Parcelable {
         this.tokopointSize = tokopointSize;
         this.tokomemberSize = tokomemberSize;
         this.couponSize = couponSize;
+        this.memberStatus = memberStatus;
         this.eggImageUrl = eggImageUrl;
     }
 
@@ -226,6 +229,14 @@ public class BuyerCard implements Parcelable {
         this.couponSize = couponSize;
     }
 
+    public String getMemberStatus() {
+        return memberStatus;
+    }
+
+    public void setMemberStatus(String memberStatus) {
+        this.memberStatus = memberStatus;
+    }
+
     public static class Builder {
         private String avatar;
         private String username;
@@ -246,6 +257,7 @@ public class BuyerCard implements Parcelable {
         private int tokopointSize;
         private int tokomemberSize;
         private int couponSize;
+        private String memberStatus;
         private boolean isAffiliate;
 
         public Builder avatar(String avatar) {
@@ -348,11 +360,16 @@ public class BuyerCard implements Parcelable {
             return this;
         }
 
+        public Builder memberStatus(String memberStatus) {
+            this.memberStatus = memberStatus;
+            return this;
+        }
+
         public BuyerCard build() {
             return new BuyerCard(avatar, username, progress, tokopointTitle, tokopointAmount, tokopointImageUrl,
                     tokopointAppplink, couponTitle, couponAmount, couponImageUrl, couponApplink, isAffiliate,
                     tokomemberTitle, tokoMemberAmount, tokomemberImageUrl, tokomemberApplink,
-                    tokopointSize, tokomemberSize, couponSize,eggImageUrl);
+                    tokopointSize, tokomemberSize, couponSize, memberStatus,eggImageUrl);
         }
     }
 
@@ -382,6 +399,7 @@ public class BuyerCard implements Parcelable {
         dest.writeInt(this.tokopointSize);
         dest.writeInt(this.tokomemberSize);
         dest.writeInt(this.couponSize);
+        dest.writeString(this.memberStatus);
         dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
     }
 
@@ -405,6 +423,7 @@ public class BuyerCard implements Parcelable {
         this.tokopointSize = in.readInt();
         this.tokomemberSize = in.readInt();
         this.couponSize = in.readInt();
+        this.memberStatus = in.readString();
         this.isAffiliate = in.readByte() != 0;
     }
 

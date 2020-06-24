@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_dynamic_links"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="visible"
     android:animateLayoutChanges="true"
+    android:visibility="visible"
     app:layout_constraintTop_toBottomOf="@+id/card_point"
     app:layout_scrollFlags="scroll">
 
@@ -13,34 +14,39 @@
         android:id="@+id/tv_sectionTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:text="Browse coupon"
-        android:textColor="#f531353b"
+        android:textColor="#F531353B"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3" />
+        app:typographyType="heading_3"
+        tools:text="Browse coupon" />
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_ovopointValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
+        android:textColor="#B9BABC"
         android:visibility="gone"
-        android:drawableLeft="@drawable/ic_action_delete"
-        android:text="Rp12.560"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_sectionTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tv_sectionTitle"
+        app:typographyType="body_3"
+        tools:text="Rp12.560" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:text="See All"
+        android:visibility="gone"
         android:textColor="#03AC0E"
-        android:layout_marginTop="@dimen/dp_4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_sectionTitle"
         app:typographyType="heading_5"

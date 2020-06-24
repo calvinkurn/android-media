@@ -176,7 +176,10 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             when (it) {
                 is Loading -> showLoader()
                 is ErrorMessage -> {
-                    showError(NetworkDetector.isConnectedToInternet(context))
+                    val internetStatus = NetworkDetector.isConnectedToInternet(context)
+                    if (!internetStatus) {
+                        showError(internetStatus)
+                    }
                 }
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
@@ -218,6 +221,10 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     override fun showError(networkError: Boolean) {
         container?.displayedChild = CONTAINER_ERROR
         server_error_view?.showErrorUi(networkError)
+    }
+
+    private fun showCouponError() {
+        container?.displayedChild = CONTAINER_COUPON_ERROR
     }
 
     override fun hideLoader() {
@@ -749,6 +756,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         private val CONTAINER_DATA = 1
         private val CONTAINER_ERROR = 2
         private val CONTAINER_SWIPE = 1
+        private val CONTAINER_COUPON_ERROR = 3
 
 
         fun newInstance(extras: Bundle): Fragment {

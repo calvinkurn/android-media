@@ -39,15 +39,12 @@ import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import kotlinx.android.synthetic.main.tp_toolbar.view.*
 
-class TokoPointToolbar : Toolbar, View.OnClickListener {
+class TokoPointToolbar : Toolbar {
     private var currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT
     var tvToolbarTitle: TextView? = null
     var mContext: Context? = null
     var backArrowWhite: Drawable? = null
-    var couponWhiteDrawable: Drawable? = null
-    var couponGreyDrawable: Drawable? = null
     var view: View? = null
-    private var couponCrossfader: TransitionDrawable? = null
     private var clickListener: OnTokoPointToolbarClickListener? = null
 
     constructor(context: Context) : super(context) {
@@ -88,13 +85,7 @@ class TokoPointToolbar : Toolbar, View.OnClickListener {
 
     private fun initDrawableResources() {
         backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_new_action_back_tokopoints)
-        /*   couponWhiteDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_my_coupon_white)
-           couponGreyDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_my_coupon_grey)
-           couponCrossfader = TransitionDrawable(arrayOf(couponWhiteDrawable, couponGreyDrawable))*/
         navigationIcon = backArrowWhite
-        //   ivMyCoupon!!.setImageDrawable(couponCrossfader)
-        /*ivMyCoupon2.setImageDrawable(couponCrossfader);*/
-        /*ivMyCoupon3.setImageDrawable(couponCrossfader);*/
     }
 
     override fun setTitle(title: CharSequence) {
@@ -103,22 +94,6 @@ class TokoPointToolbar : Toolbar, View.OnClickListener {
         tvToolbarTitle?.text = "Rewards"
     }
 
-    override fun onClick(v: View) {
-        if (null == clickListener) return
-        val viewId = v.id
-        /*     if (viewId == R.id.iv_tpToolbar_coupon) {
-                 clickListener!!.onToolbarMyCouponClick()
-             }*/
-    }
-
-    fun setCouponCount(couponCount: Int, countStr: String?) {
-        /*     if (couponCount == 0) {
-            tvCouponCount.setVisibility(INVISIBLE);
-        } else {
-            tvCouponCount.setVisibility(VISIBLE);
-            tvCouponCount.setText(countStr);
-        }*/
-    }
 
     fun switchToDarkMode() {
         if (currentToolbarState == ToolbarState.TOOLBAR_DARK) return
@@ -203,7 +178,7 @@ class TokoPointToolbar : Toolbar, View.OnClickListener {
             if (dynamicActionList != null) {
                 for (item in dynamicActionList) {
                     val viewCntainer = View.inflate(context, R.layout.tp_item_dynamic_action, null)
-                    val param = LinearLayout.LayoutParams(resources.getDimension(R.dimen.tp_toolbar_icon_wh).toInt(), resources.getDimension(R.dimen.tp_toolbar_icon_wh).toInt(), 1F)
+                    val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
                     param.rightMargin = 18
                     ImageUtil.loadImage(viewCntainer.iv_dynamic, item?.iconImageURLScrolled)
                     if (item?.counter?.isShowCounter != null && item.counter.counterStr != null && item.counter.counterStr.isNotEmpty()) {
@@ -218,10 +193,6 @@ class TokoPointToolbar : Toolbar, View.OnClickListener {
                 }
             }
         }
-    }
-
-    fun dpToPx(dp: Int): Int {
-        return dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
     }
 
     internal enum class ToolbarState {

@@ -120,6 +120,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 buyerCardViewModel.setTokomemberImageUrl(shortcutListItems.get(2).getIconImageURL());
             }
         }
+        buyerCardViewModel.setMemberStatus(accountModel.getTokopoints().getStatus().getTier().getNameDesc());
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());
         items.add(buyerCardViewModel);

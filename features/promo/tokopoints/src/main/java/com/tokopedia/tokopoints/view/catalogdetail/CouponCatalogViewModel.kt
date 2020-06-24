@@ -25,7 +25,7 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
             val data = response.getData<CatalogDetailOuter>(CatalogDetailOuter::class.java)
             data?.let { catalogDetailLiveData.value = Success(data.detail!!) }
         }) {
-            catalogDetailLiveData.value = ErrorMessage(it.toString())
+            catalogDetailLiveData.value = ErrorMessage(it.localizedMessage)
         }
     }
 

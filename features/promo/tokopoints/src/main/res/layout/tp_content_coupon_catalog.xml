@@ -305,7 +305,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:text=";lkdf;lkjsdnm"
-            android:textColor="@color/Yellow_Y500"
+            android:textColor="@color/black"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
