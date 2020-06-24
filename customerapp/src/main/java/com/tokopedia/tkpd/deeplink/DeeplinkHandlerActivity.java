@@ -47,8 +47,6 @@ import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
@@ -109,7 +107,6 @@ import timber.log.Timber;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
-        InboxDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
@@ -141,12 +138,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private static ApplinkDelegate applinkDelegate;
     private Subscription clearNotifUseCase;
+    private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
+
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
                     new ConsumerDeeplinkModuleLoader(),
-                    new InboxDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
@@ -223,7 +221,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         finish();
     }
 
-    public static void createApplinkDelegateInBackground(){
+    public static void createApplinkDelegateInBackground(Context context){
         WeaveInterface appLinkDelegateWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -231,7 +229,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 return getAppLinkDelegate();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(appLinkDelegateWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appLinkDelegateWeave, ENABLE_ASYNC_APPLINK_DELEGATE_CREATION, context.getApplicationContext());
     }
 
     private static boolean getAppLinkDelegate(){

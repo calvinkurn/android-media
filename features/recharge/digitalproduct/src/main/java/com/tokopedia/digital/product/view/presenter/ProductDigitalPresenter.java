@@ -223,7 +223,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                         categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
                 );
                 getView().sendOpenScreenEventTracking(productDigitalData.getCategoryData());
-                digitalAnalytics.sendCategoryScreen(getView().getActivity(), productDigitalData.getCategoryData().getName());
             }
         };
     }

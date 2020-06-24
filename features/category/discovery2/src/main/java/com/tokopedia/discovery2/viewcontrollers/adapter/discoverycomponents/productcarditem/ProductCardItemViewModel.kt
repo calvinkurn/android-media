@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
+import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -44,6 +45,9 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
+
+    @Inject
+    lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
 
 
     init {
@@ -208,6 +212,25 @@ class ProductCardItemViewModel(val application: Application, private val compone
             }
         } else {
             showLoginLiveData.value = true
+        }
+    }
+
+    fun sendTopAdsClick() {
+        productData?.let {
+            val topAdsClickUrl = it.topadsClickUrl
+            if (it.isTopads == true && topAdsClickUrl != null) {
+                discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, topAdsClickUrl)
+            }
+        }
+    }
+
+    fun sendTopAdsView() {
+        productData?.let {
+            val topAdsViewUrl = it.topadsViewUrl
+            if (it.isTopads == true && topAdsViewUrl != null && !components.topAdsTrackingStatus) {
+                discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, topAdsViewUrl)
+                components.topAdsTrackingStatus = true
+            }
         }
     }
 
