@@ -35,12 +35,22 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     companion object {
         private const val FILTER_OPTIONS = "filter_options"
+        private const val SEARCH_KEYWORD = "search_keyword"
 
         @JvmStatic
         fun newInstance(filterOptions: ArrayList<String>): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
+                }
+            }
+        }
+
+        @JvmStatic
+        fun newInstance(searchKeyword: String): ProductManageSellerFragment {
+            return ProductManageSellerFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SEARCH_KEYWORD, searchKeyword)
                 }
             }
         }
@@ -68,6 +78,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
         super.onViewCreated(view, savedInstanceState)
         tvDraftProduct.visibility = View.GONE
         getDefaultFilterOptionsFromArguments()
+        getDefaultKeywordOptionFromArguments()
         observeGetAllDraftCount()
     }
 
@@ -152,6 +163,11 @@ class ProductManageSellerFragment : ProductManageFragment() {
         // delete all draft when error loading draft
         productDraftListCountViewModel.clearAllDraft()
         tvDraftProduct.visibility = View.GONE
+    }
+
+    private fun getDefaultKeywordOptionFromArguments() {
+        val searchKeyword = arguments?.getString(SEARCH_KEYWORD).orEmpty()
+        super.setSearchKeywordOptions(searchKeyword)
     }
 
     private fun getDefaultFilterOptionsFromArguments() {

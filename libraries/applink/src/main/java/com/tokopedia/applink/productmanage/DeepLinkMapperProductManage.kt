@@ -14,6 +14,7 @@ import com.tokopedia.config.GlobalConfig
 object DeepLinkMapperProductManage {
 
     const val QUERY_PARAM_FILTER = "filter"
+    const val QUERY_PARAM_SEARCH = "search"
     private const val PATH_SEGMENT_EDIT = "edit"
 
     /**
@@ -45,12 +46,20 @@ object DeepLinkMapperProductManage {
     fun getProductListInternalAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         val filterId = uri.getQueryParameter(QUERY_PARAM_FILTER).orEmpty()
+        val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp()) {
-            if (filterId.isNotBlank()) {
-                val param = mapOf(QUERY_PARAM_FILTER to filterId)
-                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST, param)
-            } else {
-                ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST
+            when {
+                filterId.isNotBlank() -> {
+                    val param = mapOf(QUERY_PARAM_FILTER to filterId)
+                    UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST, param)
+                }
+                searchKeyword.isNotBlank() -> {
+                    val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
+                    UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST, param)
+                }
+                else -> {
+                    ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST
+                }
             }
         } else {
             if (filterId.isNotBlank()) {
