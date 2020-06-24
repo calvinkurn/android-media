@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="info_shipping_unavailable">Pengiriman Tidak Tersedia</string>
+    <string name="choose_this_location">Pilih lokasi ini</string>
+    <string name="error_field_required">Harus diisi</string>
+    <string name="hint_choose_city">Pilih kota/kecamatan</string>
+
+    <!--Charge BO-->
+    <string name="charge_bo_ticker_title">Bebas Ongkir untuk PM akan dikenai biaya</string>
+    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan siCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
+
+</resources>
