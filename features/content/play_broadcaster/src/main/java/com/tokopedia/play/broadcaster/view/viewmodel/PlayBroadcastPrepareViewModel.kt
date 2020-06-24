@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -81,7 +82,9 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         _observableCreateLiveStream.value = NetworkResult.Loading
         scope.launch {
             delay(3000)
-            _observableCreateLiveStream.value = NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
+            _observableCreateLiveStream.value =
+                    if (isDataAlreadyValid()) NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
+                    else NetworkResult.Fail(IllegalStateException("Oops tambah cover dulu sebelum mulai"))
         }
     }
 
@@ -120,6 +123,16 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         } catch (e: Throwable) {
             FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)
         }
+    }
+
+    private fun isDataAlreadyValid(): Boolean {
+        val currentProduct = mDataStore.getSetupDataStore().getTotalSelectedProduct()
+        val currentCover = mDataStore.getSetupDataStore().getSelectedCover()
+
+        val isProductValid = currentProduct > 0
+        val isCoverValid = currentCover?.croppedCover is CoverSetupState.Cropped
+
+        return isProductValid && isCoverValid
     }
 
     companion object {

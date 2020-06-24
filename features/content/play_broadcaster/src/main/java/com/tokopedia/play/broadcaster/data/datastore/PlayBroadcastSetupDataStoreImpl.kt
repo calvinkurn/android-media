@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(
@@ -64,6 +65,7 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     override suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit> {
 //        val uploadResult = productDataStore.uploadSelectedProducts(channelId)
         //TODO("Remove Mock Code")
+        delay(1000)
         val uploadResult = NetworkResult.Success(Unit)
         if (uploadResult is NetworkResult.Success) validateCover()
         return uploadResult

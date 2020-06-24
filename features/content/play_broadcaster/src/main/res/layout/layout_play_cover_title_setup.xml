@@ -40,9 +40,9 @@
         android:background="@drawable/bg_play_choose_cover"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/spacing_lvl5"
+        android:paddingStart="@dimen/spacing_lvl6"
         android:paddingTop="@dimen/dp_12"
-        android:paddingRight="@dimen/spacing_lvl5"
+        android:paddingEnd="@dimen/spacing_lvl6"
         android:paddingBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toTopOf="@+id/ll_cover_title"
         app:layout_constraintStart_toStartOf="@+id/iv_cover_image"
@@ -64,7 +64,9 @@
             android:text="@string/play_prepare_cover_title_add_cover_label"
             android:textColor="@color/play_white_96"
             app:typographyType="body_1"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="Ganti Cover"
+            />
 
     </LinearLayout>
 

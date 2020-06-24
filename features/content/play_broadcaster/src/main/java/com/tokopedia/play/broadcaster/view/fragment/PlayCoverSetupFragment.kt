@@ -90,7 +90,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_play_cover_title_setup, container, false)
+        return inflater.inflate(R.layout.fragment_play_cover_setup, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
