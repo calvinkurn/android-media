@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
@@ -43,9 +44,19 @@ class CoverImagePickerHelper(
         imageUri?.let(listener::onGetFromGallery)
     }
 
-    fun show() {
-        getPlayCoverImageChooserBottomSheet()
-                .show(fragmentManager)
+    fun show(source: CoverSourceEnum = CoverSourceEnum.NONE) {
+        when (source) {
+            CoverSourceEnum.NONE, CoverSourceEnum.PRODUCT -> {
+                getPlayCoverImageChooserBottomSheet()
+                        .show(fragmentManager)
+            }
+            CoverSourceEnum.GALLERY -> {
+                onChooseFromGalleryClicked(coverImageChooserBottomSheet)
+            }
+            CoverSourceEnum.CAMERA -> {
+                onGetFromCamera(coverImageChooserBottomSheet)
+            }
+        }
     }
 
     fun dismiss() {
