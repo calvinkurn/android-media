@@ -201,7 +201,7 @@ class RewardContainer : FrameLayout {
         return animatorSet
     }
 
-    fun showSingleLargeRewardAnimationFadeOut(startDelay: Long): Animator {
+    fun showSingleLargeRewardAnimationFadeOut(startDelay: Long): Pair<Animator, Long> {
 
         val anim2 = largeImageRewardAnimation(imageCircleReward, FADE_IN_REWARD_DURATION_TAP_TAP)
         anim2.startDelay = startDelay
@@ -212,7 +212,7 @@ class RewardContainer : FrameLayout {
 
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(anim2, alphaAnim)
-        return animatorSet
+        return Pair(animatorSet, FADE_OUT_REWARD_DURATION_TAP_TAP + FADE_IN_REWARD_DURATION_TAP_TAP)
     }
 
     fun showCouponAndRewardAnimation(giftBoxTop: Int): Animator {
@@ -225,7 +225,7 @@ class RewardContainer : FrameLayout {
         return animatorSet
     }
 
-    fun showCouponAndRewardAnimationFadeOut(startDelay: Long): Animator {
+    fun showCouponAndRewardAnimationFadeOut(startDelay: Long): Pair<Animator, Long> {
 
         val anim2 = rvCouponsAnimations() //500
         anim2.startDelay = if (startDelay > 0)
@@ -239,7 +239,7 @@ class RewardContainer : FrameLayout {
 
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(anim2, alphaAnim)
-        return animatorSet
+        return Pair(animatorSet, FADE_IN_REWARD_DURATION_TAP_TAP + FADE_OUT_REWARD_DURATION_TAP_TAP)
     }
 
     fun showCouponAndRewardAnimationFadeOut(): Animator {
@@ -304,7 +304,7 @@ class RewardContainer : FrameLayout {
     }
 
     private fun rvCouponsAnimations(): Animator {
-        return scaleAndAlphaAnimation(rvCoupons, 500L)
+        return scaleAndAlphaAnimation(rvCoupons, FADE_IN_REWARD_DURATION_TAP_TAP)
     }
 
     private fun concentricCircleAnimation(smallImage: View, largeImage: View, giftboxTop: Int, isInfinite: Boolean): Animator {

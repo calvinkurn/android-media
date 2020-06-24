@@ -138,6 +138,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             stageLightAnim = giftBoxDailyView.stageGlowAnimation()
             stageLightAnim.startDelay = startDelay
         }
+        val NEGATIVE_DURATION = -250L
 
         var soundDelay = 700L
         giftBoxDailyView.postDelayed({ playPrizeSound() }, soundDelay)
@@ -145,30 +146,30 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         when (rewardState) {
             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
 
-                val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay)
+                val pairAnim1 = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay) // 1 second
 
                 val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
                 ovoPointsTextAnim.startDelay = startDelay + 100L
 
                 val animatorSet = AnimatorSet()
                 if (stageLightAnim != null) {
-                    animatorSet.playTogether(stageLightAnim, anim1, ovoPointsTextAnim)
+                    animatorSet.playTogether(stageLightAnim, pairAnim1.first, ovoPointsTextAnim)
                 } else {
-                    animatorSet.playTogether(anim1, ovoPointsTextAnim)
+                    animatorSet.playTogether(pairAnim1.first, ovoPointsTextAnim)
                 }
                 ovoPointsTextAnim.addListener(onEnd = { afterRewardAnimationEnds() })
                 animatorSet.start()
+                getTapTapView().postDelayed({ afterRewardAnimationEnds() }, startDelay + pairAnim1.second + NEGATIVE_DURATION)
             }
             RewardContainer.RewardState.POINTS_ONLY -> {
 
-                val anim = rewardContainer.showSingleLargeRewardAnimationFadeOut(startDelay)
-                anim.addListener(onEnd = { afterRewardAnimationEnds() })
+                val pairAnim = rewardContainer.showSingleLargeRewardAnimationFadeOut(startDelay) // 1second
 
                 val animatorSet = AnimatorSet()
                 if (stageLightAnim != null) {
-                    animatorSet.playTogether(stageLightAnim, anim)
+                    animatorSet.playTogether(stageLightAnim, pairAnim.first)
                 } else {
-                    animatorSet.playTogether(anim)
+                    animatorSet.play(pairAnim.first)
                 }
 
                 animatorSet.start()
@@ -176,19 +177,20 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
                 ovoPointsTextAnim.startDelay = startDelay + 100L
                 ovoPointsTextAnim.start()
+                getTapTapView().postDelayed({ afterRewardAnimationEnds() }, startDelay + pairAnim.second + NEGATIVE_DURATION)
             }
             RewardContainer.RewardState.COUPON_ONLY -> {
-                val rewardAnim = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay) // 1100 second
+                val pairAnim = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay) // 1 second
 
                 val animatorSet = AnimatorSet()
                 if (stageLightAnim != null) {
-                    animatorSet.playTogether(rewardAnim, stageLightAnim)
+                    animatorSet.playTogether(pairAnim.first, stageLightAnim)
                 } else {
-                    animatorSet.playTogether(rewardAnim)
+                    animatorSet.play(pairAnim.first)
                 }
-                rewardAnim.addListener(onEnd = { afterRewardAnimationEnds() })
                 animatorSet.startDelay = startDelay
                 animatorSet.start()
+                getTapTapView().postDelayed({ afterRewardAnimationEnds() }, startDelay + pairAnim.second + NEGATIVE_DURATION)
             }
         }
     }
