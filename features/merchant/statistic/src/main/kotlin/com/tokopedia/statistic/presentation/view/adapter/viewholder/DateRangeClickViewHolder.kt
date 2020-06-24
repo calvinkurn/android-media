@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_stc_date_range_default.view.*
  * Created By @ilhamsuaib on 15/06/20
  */
 
-class DateRangeDefaultViewHolder(
+class DateRangeClickViewHolder(
         itemView: View?,
         private val onClick: (DateRangeItem) -> Unit
 ) : AbstractViewHolder<DateRangeItem.Click>(itemView) {

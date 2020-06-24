@@ -21,7 +21,7 @@ import java.util.*
  * Created By @ilhamsuaib on 15/06/20
  */
 
-class DateRangeSingleViewHolder(
+class DateRangePickViewHolder(
         itemView: View?,
         private val fm: FragmentManager,
         private val showApplyButton: (Boolean) -> Unit,

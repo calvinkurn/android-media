@@ -22,7 +22,8 @@ object DateRangeFormatUtil {
         val endYear = DateTimeUtil.format(endDate.time, PATTERN_YEAR)
 
         if (areStartAndEndDateSame(startDate, endDate)) {
-            val singleDayPattern = "$PATTERN_DAY $PATTERN_MONTH_MMMM (00:00 - 12:00)"
+            val hourStr = DateTimeUtil.format(System.currentTimeMillis(), "hh:mm")
+            val singleDayPattern = "$PATTERN_DAY $PATTERN_MONTH_MMMM (00:00 - $hourStr)"
             return DateTimeUtil.format(startDate.time, pattern = singleDayPattern)
         }
 

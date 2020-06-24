@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.statistic.presentation.model.DateRangeItem
 import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeApplyViewHolder
-import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeDefaultViewHolder
-import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeSingleViewHolder
+import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeClickViewHolder
+import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangePickViewHolder
 
 /**
  * Created By @ilhamsuaib on 15/06/20
@@ -19,19 +19,19 @@ class DateRangeAdapterFactoryImpl(
         private val fm: FragmentManager
 ) : BaseAdapterTypeFactory(), DateRangeAdapterFactory {
 
-    override fun type(item: DateRangeItem.Click): Int = DateRangeDefaultViewHolder.RES_LAYOUT
+    override fun type(item: DateRangeItem.Click): Int = DateRangeClickViewHolder.RES_LAYOUT
 
-    override fun type(item: DateRangeItem.Pick): Int = DateRangeSingleViewHolder.RES_LAYOUT
+    override fun type(item: DateRangeItem.Pick): Int = DateRangePickViewHolder.RES_LAYOUT
 
     override fun type(item: DateRangeItem.ApplyButton): Int = DateRangeApplyViewHolder.RES_LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            DateRangeDefaultViewHolder.RES_LAYOUT -> DateRangeDefaultViewHolder(parent) {
+            DateRangeClickViewHolder.RES_LAYOUT -> DateRangeClickViewHolder(parent) {
                 listener.onItemDateRangeClick(it)
                 listener.onApplyDateFilter()
             }
-            DateRangeSingleViewHolder.RES_LAYOUT -> DateRangeSingleViewHolder(parent, fm, listener::showApplyButton) {
+            DateRangePickViewHolder.RES_LAYOUT -> DateRangePickViewHolder(parent, fm, listener::showApplyButton) {
                 listener.onItemDateRangeClick(it)
             }
             DateRangeApplyViewHolder.RES_LAYOUT -> DateRangeApplyViewHolder(parent) {

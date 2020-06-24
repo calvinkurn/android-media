@@ -253,14 +253,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (!isAdded) return
         dateRangeBottomSheet
                 .setOnApplyChanges {
+                    setHeaderSubTitle(it.getHeaderSubTitle())
                     applyDateRange(it)
                 }
                 .show()
     }
 
-    private fun applyDateRange(range: DateRangeItem) {
-        val startDate = range.startDate ?: return
-        val endDate = range.endDate ?: return
+    private fun applyDateRange(item: DateRangeItem) {
+        val startDate = item.startDate ?: return
+        val endDate = item.endDate ?: return
         mViewModel.setDateRange(startDate, endDate)
         adapter.data.forEach {
             it.isLoaded = false
