@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -26,6 +27,7 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
     private var couponShimmerView: ImageUnify = itemView.findViewById(R.id.shimmer_view)
     private var couponAddedImage: ImageView = itemView.findViewById(R.id.applied_img)
     private var componentPosition: Int? = null
+    private lateinit var componentData: ComponentsItem
 
     private lateinit var quickCouponViewModel: QuickCouponViewModel
 
@@ -45,35 +47,74 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             quickCouponViewModel.getCouponStatus().observe(viewLifecycleOwner, Observer {
                 updateCouponStatusUI(it)
             })
-            quickCouponViewModel.isUserLoggedIn().observe(viewLifecycleOwner, Observer {
-                userLoggedInStatus(it)
-            })
-            quickCouponViewModel.getPhoneVerificationStatus().observe(viewLifecycleOwner, Observer {
-                handlePhoneVerification(it)
+            quickCouponViewModel.getLoggedInStatusLiveData().observe(viewLifecycleOwner, Observer {
+                handleLoggedInStatus(it)
             })
             quickCouponViewModel.getCouponVisibilityStatus().observe(viewLifecycleOwner, Observer {
-                if (it) {
-                    quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
-                        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
-                    }
-                } else {
-                    (fragment as? DiscoveryFragment)?.reSync()
-                }
+                handleCouponVisibility(it)
             })
-            quickCouponViewModel.getCouponAddedStatus().observe(viewLifecycleOwner, Observer {
-                handleCouponAdded(it)
+
+            quickCouponViewModel.getPhoneVerificationStatus().observe(viewLifecycleOwner, Observer {
+                handlePhoneVerification(it)
             })
             quickCouponViewModel.getComponentPosition().observe(viewLifecycleOwner, Observer {
                 componentPosition = it
             })
+            quickCouponViewModel.getCouponAddedStatus().observe(viewLifecycleOwner, Observer {
+                handleCouponAdded(it)
+            })
+        }
+        componentData = quickCouponViewModel.getComponentData()
+    }
+
+    private fun handleCouponVisibility(couponVisibleStatus: Boolean) {
+        if (couponVisibleStatus) {
+            quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
+                if (!componentData.couponViewImpression) {
+                    componentData.couponViewImpression = true
+                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
+                }
+            }
+        } else {
+            if (componentData.couponDetailClicked || componentData.couponAppliedClicked) {
+                componentData.couponAppliedClicked = false
+                componentData.couponDetailClicked = false
+                handleCouponAdded()
+            }
+            (fragment as? DiscoveryFragment)?.reSync()
         }
     }
 
-    private fun userLoggedInStatus(it: Boolean?) {
-        if (it == true) {
-            quickCouponViewModel.checkMobileVerificationStatus()
+    private fun handleLoggedInStatus(isLoggedIn: Boolean) {
+        if (isLoggedIn) {
+            quickCouponViewModel.fetchCouponDetailData()
+            if (componentData.couponAppliedClicked) {
+                componentData.couponAppliedClicked = false
+                if (quickCouponViewModel.getCouponAppliedStatus() == false) {
+                    quickCouponViewModel.checkMobileVerificationStatus()
+                }
+            }
         } else {
-            componentPosition?.let { position -> (fragment as DiscoveryFragment).quickCouponLoginScreen(position) }
+            if (componentData.couponDetailClicked || componentData.couponAppliedClicked) {
+                componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
+            }
+        }
+    }
+
+    private fun handlePhoneVerification(phoneStatus: Boolean) {
+        if (phoneStatus) {
+            quickCouponViewModel.applyQuickCoupon()
+        } else {
+            componentPosition?.let { position -> (fragment as DiscoveryFragment).openMobileVerificationWithBottomSheet(position) }
+        }
+    }
+
+    private fun handleCouponAdded(it: Boolean = false) {
+        if (!it) {
+            val message = quickCouponViewModel.getCouponAddedFailMessage()
+            if (message.isNotEmpty()) {
+                Toaster.make(itemView.rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            }
         }
     }
 
@@ -88,36 +129,31 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             applyButton.show()
         }
         titleTextView.text = quickCouponViewModel.getCouponTitle()
+
+        if (componentData.couponDetailClicked) {
+            componentData.couponDetailClicked = false
+            RouteManager.route(itemView.context, quickCouponViewModel.getCouponApplink())
+        }
     }
 
     override fun onClick(view: View?) {
         when (view) {
             applyButton -> {
-                quickCouponViewModel.onClaimCouponClick()
+                componentData.couponAppliedClicked = true
+                componentData.couponDetailClicked = false
+                quickCouponViewModel.loggedInStatus()
                 quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
                     (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponApply(clickCouponData)
                 }
             }
+
             cardLayout -> {
-                RouteManager.route(itemView.context, quickCouponViewModel.getCouponApplink())
+                componentData.couponDetailClicked = true
+                componentData.couponAppliedClicked = false
+                quickCouponViewModel.loggedInStatus()
                 quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
                     (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponClick(clickCouponData)
                 }
-            }
-        }
-    }
-
-    private fun handlePhoneVerification(phoneStatus: Boolean?) {
-        phoneStatus?.let {
-            componentPosition?.let { position -> (fragment as DiscoveryFragment).phoneVerificationResponseCallBack(it, position) }
-        }
-    }
-
-    private fun handleCouponAdded(it: Boolean) {
-        if (!it) {
-            val message = quickCouponViewModel.getCouponAddedFailMessage()
-            if (message.isNotEmpty()) {
-                Toaster.make(itemView.rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
             }
         }
     }

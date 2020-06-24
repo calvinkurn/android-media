@@ -24,6 +24,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     private val phoneVerificationStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val couponVisibilityStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val couponAdded: MutableLiveData<Boolean> = MutableLiveData()
+    private val loggedInStatusLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
@@ -33,7 +34,13 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     init {
         initDaggerInject()
-        componentPosition.value = position
+    }
+
+    override fun initDaggerInject() {
+        DaggerDiscoveryComponent.builder()
+                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     fun getCouponStatus() = couponAppliedStatus
@@ -43,12 +50,21 @@ class QuickCouponViewModel(val application: Application, private val components:
     fun getCouponVisibilityStatus() = couponVisibilityStatus
     fun getCouponAddedStatus() = couponAdded
 
+
+    fun getComponentData() = components
+    fun getLoggedInStatusLiveData() = loggedInStatusLiveData
+
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        componentPosition.value = position
         fetchCouponDetailData()
     }
 
-    private fun fetchCouponDetailData() {
+    fun loggedInStatus() {
+        loggedInStatusLiveData.value = UserSession(application).isLoggedIn
+    }
+
+    fun fetchCouponDetailData() {
         launchCatchError(block = {
             quickCouponUseCase.getCouponDetail(components.pageEndPoint).clickCouponData?.let {
                 clickCouponLiveData.value = it
@@ -60,8 +76,7 @@ class QuickCouponViewModel(val application: Application, private val components:
     }
 
     private fun checkComponentVisibility() {
-        val couponApplicable = clickCouponLiveData.value?.isApplicable
-        couponApplicable?.let {
+        clickCouponLiveData.value?.isApplicable?.let {
             if (it) {
                 updateCouponAppliedStatus()
             }
@@ -74,18 +89,16 @@ class QuickCouponViewModel(val application: Application, private val components:
         couponAppliedStatus.value = clickCouponLiveData.value?.couponApplied == true
     }
 
+    override fun loggedInCallback() {
+        val isLoggedIn = UserSession(application).isLoggedIn
+        if(!isLoggedIn){
+         components.couponDetailClicked = false
+         components.couponAppliedClicked = false
+        }
+        loggedInStatusLiveData.value = isLoggedIn
+    }
+
     fun getCouponTitle(): String? = if (couponAppliedStatus.value == true) clickCouponLiveData.value?.messageUsingSuccess else clickCouponLiveData.value?.catalogTitle
-
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
-
-    fun onClaimCouponClick() {
-        userLoggedInLiveData.value = UserSession(application).isLoggedIn
-    }
 
     fun checkMobileVerificationStatus() {
         launchCatchError(
@@ -102,12 +115,14 @@ class QuickCouponViewModel(val application: Application, private val components:
         )
     }
 
-    override fun componentAction() {
-        super.componentAction()
-        applyQuickCoupon()
+    override fun isPhoneVerificationSuccess(phoneVerifyStatus: Boolean) {
+        if(phoneVerifyStatus){
+            applyQuickCoupon()
+        }
     }
 
-    private fun applyQuickCoupon() {
+
+    fun applyQuickCoupon() {
         clickCouponLiveData.value?.realCode?.let { realCode ->
             launchCatchError(block = {
                 quickCouponUseCase.applyQuickCoupon(realCode).applyCouponData?.let { applyCouponData ->
@@ -141,5 +156,9 @@ class QuickCouponViewModel(val application: Application, private val components:
         clickCouponLiveData.value?.componentID = components.id
         clickCouponLiveData.value?.componentName = components.name
         return clickCouponLiveData.value
+    }
+
+    fun getCouponAppliedStatus(): Boolean? {
+        return clickCouponLiveData.value?.couponApplied
     }
 }

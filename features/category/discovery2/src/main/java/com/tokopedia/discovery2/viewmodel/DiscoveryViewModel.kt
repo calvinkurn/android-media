@@ -153,21 +153,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    fun phoneVerificationLiveStatus() = phoneVerificationLiveData
-
-    fun checkMobileVerificationStatus(){
-        launchCatchError(
-                block = {
-                    quickCouponUseCase.getMobileVerificationStatus().verificationStatus?.let {
-                        phoneVerificationLiveData.value = it.phoneVerified
-                    }
-                },
-                onError = {
-                    it.printStackTrace()
-                }
-        )
-    }
-
     override fun doOnPause() {
         super.doOnPause()
         trackingQueue.sendAll()

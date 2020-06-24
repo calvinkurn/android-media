@@ -26,6 +26,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -195,10 +196,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         })
-
-        discoveryViewModel.phoneVerificationLiveStatus().observe(viewLifecycleOwner, Observer {
-            this.componentPosition?.let { position -> phoneVerificationResponseCallBack(it, position) }
-        })
     }
 
 
@@ -222,7 +219,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         } else {
             ivShare.hide()
         }
-
     }
 
     private fun setAnimationOnScroll() {
@@ -279,7 +275,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
     }
 
-
     fun getDiscoveryAnalytics(): DiscoveryAnalytics {
         return analytics
     }
@@ -296,35 +291,36 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.getDiscoveryData()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            LOGIN_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                checkUserMobileVerification()
-            }
-            MOBILE_VERIFICATION_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                this.componentPosition?.let { position ->  phoneVerificationResponseCallBack(true, position) }
-                getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
-            }
-        }
-    }
-
-    private fun checkUserMobileVerification() {
-        discoveryViewModel.checkMobileVerificationStatus()
-    }
-
-    fun quickCouponLoginScreen(componentPosition: Int) {
+    fun openLoginScreen(componentPosition: Int = -1) {
         this.componentPosition = componentPosition
         startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
     }
 
-    fun phoneVerificationResponseCallBack(verificationStatus: Boolean, componentPosition: Int = -1) {
-        if (verificationStatus) {
-            componentPosition.let { position ->
-                if (position >= 0) discoveryAdapter.getViewModelAtPosition(position)?.componentAction()
+    fun openMobileVerificationWithBottomSheet(componentPosition: Int = -1) {
+        this.componentPosition = componentPosition
+        showVerificationBottomSheet()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
+        this.componentPosition?.let { position ->
+            if (position >= 0) {
+                discoveryBaseViewModel = discoveryAdapter.getViewModelAtPosition(position)
             }
-        } else {
-            showVerificationBottomSheet()
+        }
+        when (requestCode) {
+            LOGIN_REQUEST_CODE -> {
+                discoveryBaseViewModel?.loggedInCallback()
+            }
+            MOBILE_VERIFICATION_REQUEST_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    discoveryBaseViewModel?.isPhoneVerificationSuccess(true)
+                    getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
+                } else {
+                    discoveryBaseViewModel?.isPhoneVerificationSuccess(false)
+                }
+            }
         }
     }
 

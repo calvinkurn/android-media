@@ -30,7 +30,11 @@ abstract class DiscoveryBaseViewModel() {
 
     }
 
-    open fun componentAction() {
+    open fun loggedInCallback() {
+
+    }
+
+    open fun isPhoneVerificationSuccess(phoneVerifyStatus: Boolean) {
 
     }
 }
