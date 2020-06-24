@@ -31,7 +31,7 @@ class CategoryLevelOneViewModel @Inject constructor() : ViewModel() {
         performanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
         viewModelScope.launchCatchError(
                 block = {
-                    val response = kategoriRepository.getCategoryListItems(createRequestParams(categoryDepth, true).paramsAllValueInString)
+                    val response = kategoriRepository.getCategoryListItems(createRequestParams(categoryDepth, true).parameters)
                     response?.let {
                         performanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
                         performanceMonitoringListener?.startRenderPerformanceMonitoring()

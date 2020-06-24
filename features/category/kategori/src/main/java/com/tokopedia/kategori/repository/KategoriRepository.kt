@@ -15,7 +15,7 @@ class KategoriRepository @Inject constructor() : BaseRepository() {
     @field:[Inject Named(Constants.GQL_CATEGORY_LIST)]
     lateinit var categoryListQuery: String
 
-    suspend fun getCategoryListItems(reqParams: Map<String, String>): CategoryAllList? {
+    suspend fun getCategoryListItems(reqParams: Map<String, Any>): CategoryAllList? {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`() * 2).setSessionIncluded(true).build()
 

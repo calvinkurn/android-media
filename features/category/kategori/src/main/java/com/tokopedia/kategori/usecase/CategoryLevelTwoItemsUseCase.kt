@@ -28,10 +28,10 @@ class CategoryLevelTwoItemsUseCase @Inject constructor() {
 
     suspend fun getCategoryListItems(reqParams: RequestParams): List<CategoryChildItem>? {
         val id = reqParams.getString("id", "")
-        val categoryParam = RequestParams.create()
-        categoryParam.putInt(KEY_DEPTH, reqParams.getInt(KEY_DEPTH, 2))
-        categoryParam.putBoolean(KEY_IS_TRENDING, reqParams.getBoolean(KEY_IS_TRENDING, true))
-        return createChildList(kategoriRepository.getCategoryListItems(categoryParam.paramsAllValueInString), id
+        val categoryRequestParams = RequestParams.create()
+        categoryRequestParams.putInt(KEY_DEPTH, reqParams.getInt(KEY_DEPTH, 2))
+        categoryRequestParams.putBoolean(KEY_IS_TRENDING, reqParams.getBoolean(KEY_IS_TRENDING, true))
+        return createChildList(kategoriRepository.getCategoryListItems(categoryRequestParams.parameters), id
                 ?: "0")
     }
 
