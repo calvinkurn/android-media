@@ -44,15 +44,12 @@ class QuickCouponViewModel(val application: Application, private val components:
     }
 
     fun getCouponStatus() = couponAppliedStatus
-    fun isUserLoggedIn() = userLoggedInLiveData
     fun getComponentPosition() = componentPosition
     fun getPhoneVerificationStatus() = phoneVerificationStatus
     fun getCouponVisibilityStatus() = couponVisibilityStatus
     fun getCouponAddedStatus() = couponAdded
-
-
-    fun getComponentData() = components
     fun getLoggedInStatusLiveData() = loggedInStatusLiveData
+    fun getComponentData() = components
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -64,11 +61,12 @@ class QuickCouponViewModel(val application: Application, private val components:
         loggedInStatusLiveData.value = UserSession(application).isLoggedIn
     }
 
-    fun fetchCouponDetailData() {
+    private fun fetchCouponDetailData() {
         launchCatchError(block = {
             quickCouponUseCase.getCouponDetail(components.pageEndPoint).clickCouponData?.let {
                 clickCouponLiveData.value = it
                 checkComponentVisibility()
+                loggedInStatus()
             }
         }, onError = {
             it.printStackTrace()
@@ -91,11 +89,12 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     override fun loggedInCallback() {
         val isLoggedIn = UserSession(application).isLoggedIn
-        if(!isLoggedIn){
-         components.couponDetailClicked = false
-         components.couponAppliedClicked = false
+        components.couponDetailClicked = false
+        if(isLoggedIn){
+            fetchCouponDetailData()
+        }else{
+            components.couponAppliedClicked = false
         }
-        loggedInStatusLiveData.value = isLoggedIn
     }
 
     fun getCouponTitle(): String? = if (couponAppliedStatus.value == true) clickCouponLiveData.value?.messageUsingSuccess else clickCouponLiveData.value?.catalogTitle
@@ -160,5 +159,9 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     fun getCouponAppliedStatus(): Boolean? {
         return clickCouponLiveData.value?.couponApplied
+    }
+
+    fun getCouponApplicableStatus(): Boolean? {
+        return clickCouponLiveData.value?.isApplicable
     }
 }

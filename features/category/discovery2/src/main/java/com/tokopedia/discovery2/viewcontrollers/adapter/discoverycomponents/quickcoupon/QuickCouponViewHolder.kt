@@ -87,10 +87,9 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
 
     private fun handleLoggedInStatus(isLoggedIn: Boolean) {
         if (isLoggedIn) {
-            quickCouponViewModel.fetchCouponDetailData()
             if (componentData.couponAppliedClicked) {
                 componentData.couponAppliedClicked = false
-                if (quickCouponViewModel.getCouponAppliedStatus() == false) {
+                if (quickCouponViewModel.getCouponAppliedStatus() == false && quickCouponViewModel.getCouponApplicableStatus() == true) {
                     quickCouponViewModel.checkMobileVerificationStatus()
                 }
             }
