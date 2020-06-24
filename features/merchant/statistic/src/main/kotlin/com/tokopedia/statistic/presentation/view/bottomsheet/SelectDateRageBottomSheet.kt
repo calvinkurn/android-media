@@ -38,8 +38,7 @@ class SelectDateRageBottomSheet(
                 getDateRangeItemClick(DAYS_7, DateRangeItem.TYPE_LAST_7_DAYS, true),
                 getDateRangeItemClick(DAYS_30, DateRangeItem.TYPE_LAST_30_DAYS),
                 getDateRangeItemPick(DateRangeItem.TYPE_PER_DAY),
-                getDateRangeItemPick(DateRangeItem.TYPE_PER_WEEK),
-                getDateRangeItemPick(DateRangeItem.TYPE_PER_MONTH)
+                getDateRangeItemPick(DateRangeItem.TYPE_PER_WEEK)
         )
     }
 
