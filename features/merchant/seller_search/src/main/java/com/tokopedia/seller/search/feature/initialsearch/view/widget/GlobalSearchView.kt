@@ -67,6 +67,12 @@ class GlobalSearchView : BaseCustomView {
         this.searchViewListener = searchViewListener
     }
 
+    fun setKeywordSearchBar(keyword: String) {
+        searchKeyword = keyword
+        searchBarView.searchBarTextField.setText(searchKeyword)
+        searchViewListener?.onQueryTextChangeListener(searchKeyword)
+    }
+
     private fun initCompositeSubscriber() {
         compositeSubscription = getNewCompositeSubIfUnsubscribed(compositeSubscription)
         compositeSubscription?.add(Observable.unsafeCreate(Observable.OnSubscribe<String> { subscriber ->

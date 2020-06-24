@@ -23,7 +23,7 @@ class HistorySearchViewHolder(private val view: View,
                 historySearchListener.onClearSearchItem(element.title.orEmpty(), adapterPosition)
             }
             setOnClickListener {
-                historySearchListener.onHistoryItemClicked(element.appUrl.orEmpty())
+                historySearchListener.onHistoryItemClicked(element.title.orEmpty())
             }
         }
     }

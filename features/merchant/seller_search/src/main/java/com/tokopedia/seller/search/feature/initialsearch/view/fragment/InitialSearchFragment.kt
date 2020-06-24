@@ -8,13 +8,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
-import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.InitialSearchAdapter
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.InitialSearchAdapterTypeFactory
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
@@ -106,9 +104,8 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         isDeleteAll = true
     }
 
-    override fun onHistoryItemClicked(appUrl: String) {
-        startActivityFromAutoComplete(appUrl)
-        dropKeyBoard()
+    override fun onHistoryItemClicked(keyword: String) {
+        historyViewUpdateListener?.setKeywordSearchBarView(keyword)
     }
 
     private fun observeLiveData() {
@@ -175,18 +172,5 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
             addMinCharState()
         }
         historyViewUpdateListener?.showHistoryView()
-    }
-
-    private fun dropKeyBoard() {
-        if (activity != null && activity is InitialSellerSearchActivity) {
-            (activity as InitialSellerSearchActivity).dropKeyboardHistory()
-        }
-    }
-
-    private fun startActivityFromAutoComplete(appLink: String) {
-        if (activity == null) return
-
-        RouteManager.route(activity, appLink)
-        activity?.finish()
     }
 }

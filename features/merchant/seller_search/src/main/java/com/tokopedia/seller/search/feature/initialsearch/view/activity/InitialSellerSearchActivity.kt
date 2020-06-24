@@ -98,6 +98,10 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         KeyboardHandler.DropKeyboard(this, searchBarView)
     }
 
+    override fun setKeywordSearchBarView(keyword: String) {
+        searchBarView?.setKeywordSearchBar(keyword)
+    }
+
     override fun dropKeyboardSuggestion() {
         searchBarView?.clearFocus()
         KeyboardHandler.DropKeyboard(this, searchBarView)

@@ -5,7 +5,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch
 interface HistorySearchListener {
     fun onClearSearchItem(keyword: String, adapterPosition: Int)
     fun onClearAllSearch()
-    fun onHistoryItemClicked(appUrl: String)
+    fun onHistoryItemClicked(keyword: String)
 }
 
 interface NavigationSearchListener {
@@ -27,6 +27,7 @@ interface FilterSearchListener {
 interface HistoryViewUpdateListener {
     fun showHistoryView()
     fun dropKeyboardHistory()
+    fun setKeywordSearchBarView(keyword: String)
 }
 
 interface SuggestionViewUpdateListener {
