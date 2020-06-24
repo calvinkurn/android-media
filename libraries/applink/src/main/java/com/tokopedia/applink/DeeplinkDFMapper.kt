@@ -224,6 +224,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller))
             add(DFP({ it.startsWith(BRANDLIST)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRANDLIST_SEARCH)}, DF_BASE, R.string.title_brandlist))
+            add(DFP({ it.startsWith(BRAND_LIST)}, DF_BASE, R.string.title_brandlist))
+            add(DFP({ it.startsWith(BRAND_LIST_WITH_SLASH)}, DF_BASE, R.string.title_brandlist))
 
             // Operational
             add(DFP({
