@@ -143,7 +143,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
                         if (homeHeaderWalletAction.isShowTopup) {
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
-                            tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.appLinkBalance) }
+                            tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
                         } else {
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
                         }
@@ -349,10 +349,9 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             context.startActivity(intentBalanceWallet)
         }
     }
-    private fun gotToTopupOvo( applinkString: String) {
+    private fun gotToTopupOvo(applinkString: String) {
         if (RouteManager.isSupportApplink(context, applinkString)) {
-            //add tracker topup
-//            HomePageTracking.eventOvo(itemView.context)
+            HomePageTracking.eventTopupOvo(listener.userId)
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
         }

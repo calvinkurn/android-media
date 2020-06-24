@@ -52,22 +52,22 @@ abstract class BaseTracking {
         const val FORMAT_2_ITEMS = "%s - %s"
     }
 
-    protected object Screen{
+    object Screen{
         const val KEY = "screenName"
         const val DEFAULT = "/"
     }
 
-    protected object UserId{
+    object UserId{
         const val KEY = "userId"
         const val DEFAULT = ""
     }
 
-    protected object CurrentSite{
+    object CurrentSite{
         const val KEY = "currentSite"
         const val DEFAULT = "tokopediamarketplace"
     }
 
-    protected object BusinessUnit{
+    object BusinessUnit{
         const val KEY = "businessUnit"
         const val DEFAULT = "home & browse"
     }

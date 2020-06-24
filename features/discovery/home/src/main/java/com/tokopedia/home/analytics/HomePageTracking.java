@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.home.analytics.v2.BaseTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -138,6 +139,7 @@ public class HomePageTracking {
     public static final String NON_LOGIN = "non login";
     public static final String QR_CODE = "qr code";
     public static final String OVO = "ovo";
+    public static final String OVO_TOPUP = "top up ovo";
     public static final String EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION = "click on allow geolocation";
     public static final String EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION = "click on not allow geolocation";
     public static final String EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT = "click on geolocation component";
@@ -744,6 +746,23 @@ public class HomePageTracking {
                     String.format("%s %s %s", CLICK, ON, OVO),
                     ""
             );
+        }
+    }
+
+    public static void eventTopupOvo(String userId) {
+        ContextAnalytics tracker = getTracker();
+        if (tracker != null) {
+            Map<String, Object> data = DataLayer.mapOf(
+                    EVENT, EVENT_CLICK_HOME_PAGE,
+                    EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                    EVENT_ACTION, String.format("%s %s %s", CLICK, ON, OVO_TOPUP),
+                    EVENT_LABEL, "",
+                    BaseTracking.Screen.KEY, BaseTracking.Screen.DEFAULT,
+                    BaseTracking.CurrentSite.KEY, BaseTracking.CurrentSite.DEFAULT,
+                    BaseTracking.BusinessUnit.KEY, BaseTracking.BusinessUnit.DEFAULT,
+                    BaseTracking.UserId.KEY, userId
+            );
+            tracker.sendGeneralEvent(data);
         }
     }
 
