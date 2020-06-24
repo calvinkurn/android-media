@@ -178,7 +178,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 ovoPointsTextAnim.start()
             }
             RewardContainer.RewardState.COUPON_ONLY -> {
-                val rewardAnim = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay)
+                val rewardAnim = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay) // 1100 second
 
                 val animatorSet = AnimatorSet()
                 if (stageLightAnim != null) {

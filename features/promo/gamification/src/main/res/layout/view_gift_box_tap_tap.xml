@@ -16,7 +16,7 @@
     <FrameLayout
         android:id="@+id/fm_gift_box"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="174dp"
         android:layout_gravity="center">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -24,14 +24,15 @@
             android:id="@+id/imageShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="130dp"
-            android:src="@drawable/gf_ic_box_shadow" />
+            android:translationY="130dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/gf_ic_box_shadow" />
 
         <RelativeLayout
             android:layout_gravity="center_horizontal"
             android:id="@+id/ll_gift_box"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="174dp"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -68,7 +69,7 @@
             android:layout_marginRight="@dimen/dp_7"
             android:alpha="0"
             tools:alpha="0.3"
-            android:translationY="-92dp"
+            android:translationY="-75dp"
             tools:background="@color/red_30"
             app:srcCompat="@drawable/gf_ic_box_stage_glow" />
 

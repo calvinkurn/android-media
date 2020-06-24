@@ -227,8 +227,11 @@ class RewardContainer : FrameLayout {
 
     fun showCouponAndRewardAnimationFadeOut(startDelay: Long): Animator {
 
-        val anim2 = rvCouponsAnimations()
-        anim2.startDelay = startDelay
+        val anim2 = rvCouponsAnimations() //500
+        anim2.startDelay = if (startDelay > 0)
+            startDelay + GiftBoxTapTapView.REWARD_START_DELAY
+        else
+            0
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(rvCoupons, alphaProp)
@@ -338,7 +341,7 @@ class RewardContainer : FrameLayout {
         return alphaAnim
     }
 
-    private fun scaleAndAlphaAnimation(view: View, duration:Long = 800L): Animator {
+    private fun scaleAndAlphaAnimation(view: View, duration: Long = 800L): Animator {
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(view, alphaProp)

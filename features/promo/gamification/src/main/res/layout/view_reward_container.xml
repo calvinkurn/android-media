@@ -73,7 +73,6 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:background="@color/red_30"
         android:id="@+id/rv_coupons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

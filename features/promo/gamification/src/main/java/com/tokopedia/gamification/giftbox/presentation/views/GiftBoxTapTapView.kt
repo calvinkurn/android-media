@@ -33,6 +33,11 @@ class GiftBoxTapTapView : GiftBoxDailyView {
     var disableConfettiAnimation = false
 
     override var TOTAL_ASYNC_IMAGES = 5
+    override var GIFT_BOX_START_DELAY = 0L
+    companion object{
+        const val REWARD_START_DELAY = 300L // added because GIFT_BOX_START_DELAY was 300L in base class
+    }
+
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 

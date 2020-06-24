@@ -36,7 +36,7 @@ open class GiftBoxDailyView : FrameLayout {
 
     open var TOTAL_ASYNC_IMAGES = 3
     var imagesLoaded = AtomicInteger(0)
-    val GIFT_BOX_START_DELAY = 300L
+    open var GIFT_BOX_START_DELAY = 300L
     var LID_ANIMATION_DURATION = 450L
     var SCALE_UP_ANIMATION_DURATION = 500L
 
@@ -92,6 +92,8 @@ open class GiftBoxDailyView : FrameLayout {
         animatorSet.addListener(onEnd = {
             boxCallback?.onBoxOpened()
         })
+
+        //total duration ins 750
         boxCallback?.onBoxOpenAnimationStart(pairAnimation.second + GIFT_BOX_START_DELAY - NEGATIVE_DELAY_FOR_LARGE_REWARD_ANIM)
         animatorSet.start()
 
