@@ -124,11 +124,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun startLiveStreaming(ingestUrl: String) {
-        parentViewModel.startPushBroadcast(ingestUrl)
+        parentViewModel.startPushStream(ingestUrl)
     }
 
     private fun stopLiveStreaming() {
-        parentViewModel.stopPushBroadcast()
+        parentViewModel.stopPushStream()
     }
 
     /**

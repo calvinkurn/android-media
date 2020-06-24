@@ -112,10 +112,6 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     init {
-        permissionUtil.checkPermission(arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO))
-        playPusher.create()
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
 
         mockChatList()
@@ -178,7 +174,11 @@ class PlayBroadcastViewModel @Inject constructor(
     /**
      * Apsara integration
      */
-    fun startPushBroadcast(ingestUrl: String) {
+    fun initPushStream() {
+        playPusher.create()
+    }
+
+    fun startPushStream(ingestUrl: String) {
         scope.launch {
             if (ingestUrl.isNotEmpty()) {
                 startWebSocket()
@@ -206,7 +206,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun stopPushBroadcast() {
+    fun stopPushStream() {
         scope.launch {
             updateChannelStatus(PlayChannelStatus.Finish)
             playPusher.stopPush()

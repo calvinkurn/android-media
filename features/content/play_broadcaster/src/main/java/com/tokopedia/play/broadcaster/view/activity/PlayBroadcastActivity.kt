@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -58,6 +59,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
+        checkPermission()
+        initPushStream()
         setupContent()
         initView()
         getConfiguration()
@@ -77,6 +80,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
+    }
+
+    private fun checkPermission() {
+        viewModel.getPermissionUtil().checkPermission(arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO))
+    }
+
+    private fun initPushStream() {
+        viewModel.initPushStream()
     }
 
     private fun setFragmentFactory() {
