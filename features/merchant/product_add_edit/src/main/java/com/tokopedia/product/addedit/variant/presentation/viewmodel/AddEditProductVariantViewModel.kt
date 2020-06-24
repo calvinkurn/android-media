@@ -14,10 +14,8 @@ import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
-import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -46,7 +44,6 @@ class AddEditProductVariantViewModel @Inject constructor(
     private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<List<UnitValue>>()
 
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<List<UnitValue>>()
-
 
     private val mGetCategoryVariantCombinationResult = MutableLiveData<Result<GetCategoryVariantCombinationResponse>>()
     val getCategoryVariantCombinationResult: LiveData<Result<GetCategoryVariantCombinationResponse>>
@@ -130,14 +127,14 @@ class AddEditProductVariantViewModel @Inject constructor(
         mSelectedVariantUnitValuesLevel2.value = selectedVariantUnitValues
     }
 
-    fun updateVariantInputModel(variantDetails: List<VariantDetail>) {
+    fun updateVariantInputModel(variantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>) {
         val variantInputModel = productInputModel.value?.variantInputModel
         val variantTypesSelected = variantValuesLayoutMap.map { it.key }
         val variantDetailsSelected =
                 variantDetails.filterIndexed { index, _ -> variantTypesSelected.contains(index) }
 
         variantInputModel?.apply {
-            this.products = mapProducts()
+            this.products = mapProducts(variantPhotos)
             this.selections = mapSelections(variantDetailsSelected)
             this.sizecharts = variantSizechart.value ?: PictureVariantInputModel()
         }
@@ -206,33 +203,46 @@ class AddEditProductVariantViewModel @Inject constructor(
                 )
             }
 
-    private fun mapProducts(): List<ProductVariantInputModel> {
+    private fun mapProducts(variantPhotos: List<VariantPhoto>): List<ProductVariantInputModel> {
         val result: MutableList<ProductVariantInputModel> = mutableListOf()
-        val selectedLevel1 = selectedVariantUnitValuesMap[0]
-        selectedLevel1?.let { unitValueLevel1 ->
-            val selectedLevel2 = selectedVariantUnitValuesMap[1]
-            if (selectedLevel2.isNullOrEmpty()) {
-                unitValueLevel1.forEachIndexed { optionIndex, _ ->
+        val selectedLevel1: MutableList<UnitValue> = selectedVariantUnitValuesMap
+                .getOrElse(VARIANT_VALUE_LEVEL_ONE_POSITION) { mutableListOf() }
+        val selectedLevel2: MutableList<UnitValue> = selectedVariantUnitValuesMap
+                .getOrElse(VARIANT_VALUE_LEVEL_TWO_POSITION) { mutableListOf()}
+
+        selectedLevel1.forEachIndexed { optionIndexLevel1, _ ->
+            val variantPicture = mapVariantPhoto(variantPhotos.getOrNull(optionIndexLevel1))
+            if (selectedLevel2.isEmpty()) {
+                result.add(
+                        ProductVariantInputModel(
+                                pictures = variantPicture,
+                                combination = listOf(optionIndexLevel1),
+                                status = STATUS_ACTIVE_STRING
+                        )
+                )
+            } else {
+                selectedLevel2.forEachIndexed { optionIndexLevel2, _ ->
                     result.add(
                             ProductVariantInputModel(
-                                    combination = listOf(optionIndex),
+                                    pictures = variantPicture,
+                                    combination = listOf(optionIndexLevel1, optionIndexLevel2),
                                     status = STATUS_ACTIVE_STRING
                             )
                     )
                 }
-            } else {
-                unitValueLevel1.forEachIndexed { optionIndexLevel1, _ ->
-                    selectedLevel2.forEachIndexed { optionIndexLevel2, _ ->
-                        result.add(
-                                ProductVariantInputModel(
-                                        combination = listOf(optionIndexLevel1, optionIndexLevel2),
-                                        status = STATUS_ACTIVE_STRING
-                                )
-                        )
-                    }
-                }
             }
         }
+
         return result
+    }
+
+    private fun mapVariantPhoto(variantPhoto: VariantPhoto?): List<PictureVariantInputModel> {
+        return variantPhoto?.let {
+            val result = PictureVariantInputModel(
+                    filePath = variantPhoto.imageUrlOrPath
+            )
+            listOf(result)
+        } ?: emptyList()
+
     }
 }
