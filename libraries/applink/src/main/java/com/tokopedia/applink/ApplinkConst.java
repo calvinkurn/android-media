@@ -304,7 +304,6 @@ public interface ApplinkConst {
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
 
     String DFFALLBACKURL_KEY = "dffallbackurl";
-    String ADD_PHONE = "tokopedia://add-phone";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
