@@ -180,9 +180,12 @@ class LottieBottomNavbar : LinearLayout {
             bottomMenu.animName?.let {
                 icon.setAnimation(bottomMenu.animName)
             }
-            bottomMenu.imageName?.let {
-                icon.setImageResource(it)
+            if (bottomMenu.animName == null) {
+                bottomMenu.imageName?.let {
+                    icon.setImageResource(it)
+                }
             }
+
             iconList.add(index, icon)
 
             val imageContainer = FrameLayout(context)
