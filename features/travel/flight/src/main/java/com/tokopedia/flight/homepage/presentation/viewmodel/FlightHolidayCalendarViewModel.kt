@@ -4,18 +4,18 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.calendar.Legend
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 class FlightHolidayCalendarViewModel @Inject constructor(private val useCase: TravelCalendarHolidayUseCase,
-                                                         dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+                                                         dispatcherProvider: TravelDispatcherProvider)
+    : BaseViewModel(dispatcherProvider.io()) {
 
     val holidayCalendarData = MutableLiveData<ArrayList<Legend>>()
 
