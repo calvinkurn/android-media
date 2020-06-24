@@ -472,13 +472,26 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_CANCELED && requestCode == CreateMerchantVoucherStepsActivity.REQUEST_CODE) {
-            view?.run {
-                val errorMessage = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE).toBlankOrString()
-                Toaster.make(this,
-                        errorMessage,
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_ERROR)
+        if (requestCode == CreateMerchantVoucherStepsActivity.REQUEST_CODE) {
+            when (resultCode) {
+                Activity.RESULT_CANCELED -> {
+                    view?.run {
+                        val errorMessage = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE)
+                        errorMessage?.let { message ->
+                            Toaster.make(this,
+                                    message,
+                                    Toaster.LENGTH_SHORT,
+                                    Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+                Activity.RESULT_OK -> {
+                    if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
+                        showSuccessCreateBottomSheet(successVoucherId)
+                    } else if (isNeedToShowSuccessUpdateDialog) {
+                        showSuccessUpdateToaster()
+                    }
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.fragment.step
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -352,6 +353,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                     putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data)
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                 }
+                                activity?.run {
+                                    setResult(Activity.RESULT_OK, intent)
+                                    finish()
+                                }
                                 startActivity(intent)
                                 sharedPref?.run {
                                     if (getBoolean(IS_MVC_FIRST_TIME, true)) {
@@ -383,6 +388,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                 val intent = VoucherListActivity.createInstance(this, true).apply {
                                     putExtra(VoucherListActivity.UPDATE_VOUCHER_KEY, true)
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                }
+                                activity?.run {
+                                    setResult(Activity.RESULT_OK, intent)
+                                    finish()
                                 }
                                 startActivity(intent)
                             }
