@@ -32,7 +32,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
         return listComponents
     }
 
-    fun parseComponent(component: ComponentsItem, position: Int): List<ComponentsItem> {
+    private fun parseComponent(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         when (component.name) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
@@ -43,13 +43,15 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
                     listComponents.add(component)
                 }
             }
+            ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
+            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName -> listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
             else -> listComponents.add(component)
         }
         return listComponents
     }
 
 
-    fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
+    private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
 
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         listComponents.add(component)
@@ -82,7 +84,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
         return listComponents
     }
 
-    fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
+    private fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0) {
             listComponents.add(component.copy().apply {

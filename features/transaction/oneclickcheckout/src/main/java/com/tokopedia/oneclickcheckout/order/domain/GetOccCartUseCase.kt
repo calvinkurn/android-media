@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -20,7 +19,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import kotlin.math.min
 
-class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) : UseCase<OrderData>() {
+class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) : UseCase<OrderData>() {
 
     fun createRequestParams(source: String): RequestParams {
         return RequestParams.create().apply {

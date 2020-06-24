@@ -28,24 +28,6 @@ public class ShopReputation implements Parcelable {
     /**
      * 
      * @return
-     *     The reputationBadge
-     */
-    public ReputationBadge getReputationBadge() {
-        return reputationBadge;
-    }
-
-    /**
-     * 
-     * @param reputationBadge
-     *     The reputation_badge
-     */
-    public void setReputationBadge(ReputationBadge reputationBadge) {
-        this.reputationBadge = reputationBadge;
-    }
-
-    /**
-     * 
-     * @return
      *     The tooltip
      */
     public String getTooltip() {
@@ -64,24 +46,6 @@ public class ShopReputation implements Parcelable {
     /**
      * 
      * @return
-     *     The reputationScore
-     */
-    public String getReputationScore() {
-        return reputationScore;
-    }
-
-    /**
-     * 
-     * @param reputationScore
-     *     The reputation_score
-     */
-    public void setReputationScore(String reputationScore) {
-        this.reputationScore = reputationScore;
-    }
-
-    /**
-     * 
-     * @return
      *     The score
      */
     public int getScore() {
@@ -95,24 +59,6 @@ public class ShopReputation implements Parcelable {
      */
     public void setScore(int score) {
         this.score = score;
-    }
-
-    /**
-     * 
-     * @return
-     *     The minBadgeScore
-     */
-    public int getMinBadgeScore() {
-        return minBadgeScore;
-    }
-
-    /**
-     * 
-     * @param minBadgeScore
-     *     The min_badge_score
-     */
-    public void setMinBadgeScore(int minBadgeScore) {
-        this.minBadgeScore = minBadgeScore;
     }
 
     @Override

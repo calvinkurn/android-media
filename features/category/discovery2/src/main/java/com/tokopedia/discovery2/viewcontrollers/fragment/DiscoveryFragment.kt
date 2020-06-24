@@ -281,7 +281,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun onPause() {
         super.onPause()
-        getDiscoveryAnalytics().trackEventImpressionProductCard()
         trackingQueue.sendAll()
     }
 

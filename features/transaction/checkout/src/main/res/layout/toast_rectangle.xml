@@ -3,7 +3,7 @@
     android:id="@+id/toast_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_checkout_shadow"
+    android:background="@drawable/checkout_module_bg_checkout_shadow"
     android:orientation="horizontal">
 
     <TextView

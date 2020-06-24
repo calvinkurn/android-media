@@ -178,7 +178,7 @@ class DigitalTopupAnalytics {
             productTelcoList.add(DataLayer.mapOf(
                     DigitalTopupEventTracking.EnhanceEccomerce.NAME, element.itemProduct.attributes.desc,
                     DigitalTopupEventTracking.EnhanceEccomerce.ID, element.itemProduct.id,
-                    DigitalTopupEventTracking.EnhanceEccomerce.PRICE, element.itemProduct.attributes.price,
+                    DigitalTopupEventTracking.EnhanceEccomerce.PRICE, element.itemProduct.attributes.pricePlain.toString(),
                     DigitalTopupEventTracking.EnhanceEccomerce.BRAND, "none",
                     DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(element.itemProduct.attributes.categoryId),
                     DigitalTopupEventTracking.EnhanceEccomerce.LIST, "${getCategoryName(element.itemProduct.attributes.categoryId)} - product ${element.position} - " +
@@ -212,7 +212,7 @@ class DigitalTopupAnalytics {
         productTelcoList.add(DataLayer.mapOf(
                 DigitalTopupEventTracking.EnhanceEccomerce.NAME, itemProduct.attributes.desc,
                 DigitalTopupEventTracking.EnhanceEccomerce.ID, itemProduct.id,
-                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.attributes.price,
+                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.attributes.pricePlain.toString(),
                 DigitalTopupEventTracking.EnhanceEccomerce.BRAND, operatorName,
                 DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(itemProduct.attributes.categoryId),
                 DigitalTopupEventTracking.EnhanceEccomerce.LIST, itemProduct.attributes.desc,
@@ -245,7 +245,7 @@ class DigitalTopupAnalytics {
         productTelcoList.add(DataLayer.mapOf(
                 DigitalTopupEventTracking.EnhanceEccomerce.NAME, itemProduct.attributes.desc,
                 DigitalTopupEventTracking.EnhanceEccomerce.ID, itemProduct.id,
-                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.attributes.price,
+                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.attributes.pricePlain.toString(),
                 DigitalTopupEventTracking.EnhanceEccomerce.BRAND, operatorName,
                 DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(itemProduct.attributes.categoryId),
                 DigitalTopupEventTracking.EnhanceEccomerce.VARIANT, "none",

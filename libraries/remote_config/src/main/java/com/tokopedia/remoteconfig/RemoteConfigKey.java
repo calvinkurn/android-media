@@ -134,8 +134,6 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
 
-    public static final String ANDROID_PM_F1_ENABLED = "android_power_merchant_f1_enabled";
-
     //feed section
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
     public static final String APP_ENABLE_SALDO_LOCK = "app_enable_saldo_lock";
@@ -225,4 +223,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
 
     public static final String ENABLE_TICKER_CHARGE_BO = "enable_ticker_editshipping";
+
+    public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
+    public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
 }
