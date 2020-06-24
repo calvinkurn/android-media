@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ALL_ETALASE
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -96,7 +97,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             val staggeredLayoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
             staggeredLayoutParams.isFullSpan = !(getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT ||
                     getItemViewType(position) == ShopProductAddViewHolder.LAYOUT ||
-                    getItemViewType(position) == ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT)
+                    getItemViewType(position) == ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT ||
+                    getItemViewType(position) == LoadingMoreViewHolder.LAYOUT)
         }
         super.onBindViewHolder(holder, position)
     }
@@ -116,9 +118,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     override fun onStickyHide() {
-        Handler().post {
-            notifyChangedItem(shopProductSortFilterPosition)
-        }
+        notifyChangedItem(shopProductSortFilterPosition)
     }
 
     override fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener) {
@@ -139,6 +139,18 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         super.clearAllElements()
         refreshSticky()
         mapDataModel()
+    }
+
+
+    override fun showLoading() {
+        if (!isLoading) {
+            if (isShowLoadingMore) {
+                visitables.add(loadingMoreModel)
+            } else {
+                visitables.add(loadingModel)
+            }
+            notifyInsertedItem(visitables.size -1)
+        }
     }
 
     override fun hideLoading() {

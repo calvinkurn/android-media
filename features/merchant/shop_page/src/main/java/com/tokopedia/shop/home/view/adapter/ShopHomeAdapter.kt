@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
@@ -50,7 +51,8 @@ class ShopHomeAdapter(
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-            layoutParams.isFullSpan = getItemViewType(position) != ShopHomeProductViewHolder.LAYOUT
+            layoutParams.isFullSpan = !(getItemViewType(position) == ShopHomeProductViewHolder.LAYOUT ||
+                    getItemViewType(position) == LoadingMoreViewHolder.LAYOUT)
         }
         super.onBindViewHolder(holder, position)
     }
@@ -63,13 +65,14 @@ class ShopHomeAdapter(
     }
 
     fun setEtalaseTitleData() {
-        visitables.add(ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, ""))
-        notifyInsertedItem(visitables.size)
+        val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
+        visitables.add(etalaseTitleUiModel)
+        notifyInsertedItem(visitables.indexOf(etalaseTitleUiModel))
     }
 
     fun setSortFilterData(shopProductSortFilterUiModel: ShopProductSortFilterUiModel) {
         visitables.add(shopProductSortFilterUiModel)
-        notifyInsertedItem(visitables.size)
+        notifyInsertedItem(visitables.indexOf(shopProductSortFilterUiModel))
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
@@ -87,6 +90,17 @@ class ShopHomeAdapter(
             val itemPosition = visitables.indexOf(loadingMoreModel)
             visitables.remove(loadingMoreModel)
             notifyRemovedItem(itemPosition)
+        }
+    }
+
+    override fun showLoading() {
+        if (!isLoading) {
+            if (isShowLoadingMore) {
+                visitables.add(loadingMoreModel)
+            } else {
+                visitables.add(loadingModel)
+            }
+            notifyInsertedItem(visitables.size - 1)
         }
     }
 
@@ -124,9 +138,7 @@ class ShopHomeAdapter(
     }
 
     override fun onStickyHide() {
-        Handler().post {
-            notifyChangedItem(shopProductEtalaseListPosition)
-        }
+        notifyChangedItem(shopProductEtalaseListPosition)
     }
 
     override fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
@@ -199,6 +211,8 @@ class ShopHomeAdapter(
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, position)) {
                 notifyItemChanged(position)
+            } else {
+                notifyDataSetChanged()
             }
         }
     }
@@ -207,6 +221,8 @@ class ShopHomeAdapter(
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, position)) {
                 notifyItemRemoved(position)
+            } else {
+                notifyDataSetChanged()
             }
         }
     }
@@ -215,6 +231,8 @@ class ShopHomeAdapter(
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, startPosition)) {
                 notifyItemRangeRemoved(startPosition, totalItem)
+            } else {
+                notifyDataSetChanged()
             }
         }
     }
@@ -223,6 +241,8 @@ class ShopHomeAdapter(
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, startPosition)) {
                 notifyItemRangeInserted(startPosition, totalItem)
+            } else {
+                notifyDataSetChanged()
             }
         }
     }
@@ -231,6 +251,8 @@ class ShopHomeAdapter(
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, position)) {
                 notifyItemInserted(position)
+            } else {
+                notifyDataSetChanged()
             }
         }
     }
