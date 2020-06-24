@@ -135,7 +135,7 @@ class HomeUseCaseModule {
             "    }\n" +
             "}"
 
-    val walletBalanceQuery : String = "{\n" +
+    val walletBalanceQuery : String = "query(\$isGetTopup:Boolean){\n" +
             "  wallet {\n" +
             "    linked\n" +
             "    balance\n" +

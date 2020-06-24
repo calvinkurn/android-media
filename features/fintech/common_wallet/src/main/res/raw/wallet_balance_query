@@ -27,7 +27,7 @@
     help_applink
     tnc_applink
     show_announcement
-    topup_url
-    isShowTopup
+    topup_applink
+    is_show_topup
   }
 }
