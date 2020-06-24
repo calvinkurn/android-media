@@ -81,6 +81,8 @@ public class FingerprintInterceptor implements Interceptor {
         String adsId = getGoogleAdId(context);
         if(!TextUtils.isEmpty(adsId)){
             adsId = trimGoogleAdId(getGoogleAdId(context));
+        }else{
+            adsId = "";
         }
         newRequest.addHeader(KEY_ADSID, adsId);
 
