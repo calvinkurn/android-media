@@ -71,7 +71,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
     fun boxBounceAnimation(): Animator {
         fmGiftBox.pivotY = fmGiftBox.height.toFloat()
-        val duration = 500L
+        val duration = 250L
 
         val scaleYAnimDown = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0.9f, 1f)
         val bounceAnimDown: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(fmGiftBox, scaleYAnimDown)
@@ -89,7 +89,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
     }
 
     fun getRandomNumber(): Int {
-        return (2..5).random()
+        return (3..5).random()
     }
 
     fun showParticleAnimation() {

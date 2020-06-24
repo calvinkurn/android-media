@@ -45,4 +45,8 @@
     <dimen name="gami_dp_12">12dp</dimen>
     <dimen name="gami_waktu_habis_h_overlap">15dp</dimen>
     <dimen name="gami_waktu_habis_w_overlap">11dp</dimen>
+    <dimen name="gami_cl_transaction_height">52dp</dimen>
+    <dimen name="gami_rv_coupons_top_margin">36dp</dimen>
+    <dimen name="gami_rv_coupons_right_margin">13dp</dimen>
+    <dimen name="gami_lid_top_distance_for_reward_text">29dp</dimen>
 </resources>

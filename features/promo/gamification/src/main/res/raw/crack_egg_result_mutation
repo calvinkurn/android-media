@@ -18,6 +18,11 @@ crackResult(tokenUserIDstr: $tokenUserIDstr, campaignID: $campaignID) {
        valueAfter
        tierInformation
        multiplier
+       referenceID
+       dummyCode
+       autoApplyMsg
+       isAutoApply
+       isBigPrize
      }
      ctaButton {
        title

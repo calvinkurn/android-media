@@ -4,19 +4,22 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -55,6 +58,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import rx.Observable
 import javax.inject.Inject
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
@@ -64,6 +68,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var tvProgressCount: Typography
     lateinit var rewardSummary: RewardSummaryView
     lateinit var lottieTimeUp: LottieAnimationView
+    var fmCoupons: FrameLayout? = null
 
     //Inactive views
     lateinit var tvInactiveTitle: Typography
@@ -127,13 +132,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     private fun showRewardAnimation(@RewardContainer.RewardState rewardState: Int, startDelay: Long, isFirstTime: Boolean) {
         var stageLightAnim: Animator? = null
-        var greenGlowAnim: Animator? = null
 
         if (isFirstTime) {
             stageLightAnim = giftBoxDailyView.stageGlowAnimation()
             stageLightAnim.startDelay = startDelay
-            greenGlowAnim = rewardContainer.greenGlowAlphaAnimation(true)
-            greenGlowAnim.startDelay = startDelay
         }
 
         var soundDelay = 700L
@@ -148,8 +150,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 ovoPointsTextAnim.startDelay = startDelay + 100L
 
                 val animatorSet = AnimatorSet()
-                if (stageLightAnim != null && greenGlowAnim != null) {
-                    animatorSet.playTogether(stageLightAnim, greenGlowAnim, anim1, ovoPointsTextAnim)
+                if (stageLightAnim != null) {
+                    animatorSet.playTogether(stageLightAnim, anim1, ovoPointsTextAnim)
                 } else {
                     animatorSet.playTogether(anim1, ovoPointsTextAnim)
                 }
@@ -162,8 +164,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 anim.addListener(onEnd = { afterRewardAnimationEnds() })
 
                 val animatorSet = AnimatorSet()
-                if (stageLightAnim != null && greenGlowAnim != null) {
-                    animatorSet.playTogether(stageLightAnim, greenGlowAnim, anim)
+                if (stageLightAnim != null) {
+                    animatorSet.playTogether(stageLightAnim, anim)
                 } else {
                     animatorSet.playTogether(anim)
                 }
@@ -178,8 +180,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val rewardAnim = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay)
 
                 val animatorSet = AnimatorSet()
-                if (stageLightAnim != null && greenGlowAnim != null) {
-                    animatorSet.playTogether(rewardAnim, stageLightAnim, greenGlowAnim)
+                if (stageLightAnim != null) {
+                    animatorSet.playTogether(rewardAnim, stageLightAnim)
                 } else {
                     animatorSet.playTogether(rewardAnim)
                 }
@@ -320,8 +322,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         }
 
 
+
                         getTapTapView().fmGiftBox.setOnClickListener {
                             handleGiftBoxTap()
+                            if (fmCoupons != null) {
+                                fmParent.removeView(fmCoupons)
+                                fmCoupons = null
+                            }
                         }
                     }
                 }
@@ -430,6 +437,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             playTapSound()
             getTapTapView().isGiftTapAble = false
             if (getTapTapView().tapCount == getTapTapView().targetTapCount) {
+//                if (boxState == OPEN)
+//                    getTapTapView().showConfettiAnimation()
                 crackGiftBox()
                 getTapTapView().targetTapCount = getTapTapView().getRandomNumber()
             } else {
@@ -528,15 +537,28 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     fun setPositionOfViewsAtBoxOpen() {
 
-        giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
-            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_height)
-            val lidTop = fmGiftBox.top
-            val translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
+        fmCoupons?.doOnLayout { fmCoupon ->
+            giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
 
-            rewardContainer.rvCoupons.translationY = translationY
-            val distanceFromLidTop = fmGiftBox.dpToPx(29)
-            rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
+                val heightOfRvCoupons = if (isTablet)
+                    fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_height).toInt()
+                else
+                    fmCoupon.height
 
+                val lidTop = fmGiftBox.top
+                val clTransactionHeight = if (isTablet)
+                    0
+                else fmGiftBox.context.resources.getDimension(R.dimen.gami_cl_transaction_height).toInt()
+                val translationY = lidTop - heightOfRvCoupons + clTransactionHeight + fmGiftBox.dpToPx(3)
+
+                val sideMargin = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_top_margin).toInt()
+                val ratio = 3 //coming from R.layout.list_item_coupons
+                rewardContainer.rvCoupons.translationY = translationY + (2 * sideMargin / ratio)
+
+                val distanceFromLidTop = fmGiftBox.context.resources.getDimension(R.dimen.gami_lid_top_distance_for_reward_text)
+                rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
+
+            }
         }
 
         giftBoxDailyView.imageGiftBoxLid.doOnLayout { lid ->
@@ -584,6 +606,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     override fun initialViewSetup() {
         super.initialViewSetup()
+        tvToolbarTitle.text = activity?.getString(com.tokopedia.gamification.R.string.gami_gift_box_toolbar_title)
+        ImageViewCompat.setImageTintList(imageToolbarIcon, ColorStateList.valueOf(ContextCompat.getColor(imageToolbarIcon.context, android.R.color.white)))
+        tvToolbarTitle.setTextColor(ContextCompat.getColor(tvToolbarTitle.context, android.R.color.white))
+
         tvTimer.alpha = 0f
         progressBarTimer.alpha = 0f
         tvProgressCount.alpha = 0f
@@ -602,6 +628,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         imageInactive = v.findViewById(R.id.imageInactive)
         btnInactiveFirst = v.findViewById(R.id.btnInactiveFirst)
         imageInactiveBg = v.findViewById(R.id.imageInactiveBg)
+        fmCoupons = v.findViewById(R.id.fmCoupons)
 
         rewardSummary.visibility = View.GONE
 
@@ -643,34 +670,42 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     fun startOneMinuteCounter(totalSeconds: Long) {
-        //todo Rahul uncomment this
-//        val time = totalSeconds * 1000L
-        val time = 60 * 1000L
-        minuteCountDownTimer = object : CountDownTimer(time, 1000) {
-            override fun onFinish() {
-                minuteTimerState = FINISHED
-                rewardSummary.visibility = View.VISIBLE
-                lottieTimeUp.visible()
-                lottieTimeUp.playAnimation()
+
+        fun onTimeUp() {
+            (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
+            minuteTimerState = FINISHED
+            rewardSummary.visibility = View.VISIBLE
+            lottieTimeUp.visible()
+            lottieTimeUp.playAnimation()
+            playTimeOutSound()
 //                val timeUpAnimation = timeUpAnimation()
 //                timeUpAnimation.start()
-                (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
 
-                giftBoxDailyView.postDelayed({
-                    val item = benefitItems.find { it.isBigPrize }
-                    if (item != null) {
-                        viewModel.getCouponDetails(benefitItems)
-                    } else {
-                        rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it) })
-                        fadeOutWaktuHabisAndShowReward()
-                    }
-                }, 3000L)
+            giftBoxDailyView.postDelayed({
+                val item = benefitItems.find { it.isBigPrize }
+                if (item != null) {
+                    viewModel.getCouponDetails(benefitItems)
+                } else {
+                    rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it) })
+                    fadeOutWaktuHabisAndShowReward()
+                }
+            }, 3000L)
+        }
+        //todo Rahul uncomment this
+//        val time = totalSeconds * 1000L
+        val time = 30 * 1000L
+        minuteCountDownTimer = object : CountDownTimer(time, 1000) {
+            override fun onFinish() {
+                onTimeUp()
             }
 
             override fun onTick(millisUntilFinished: Long) {
                 val seconds = millisUntilFinished / 1000
                 tvProgressCount.text = "$seconds"
                 progressBarTimer.progress = 100 - (seconds / 60f * 100).toInt()
+                if (seconds == 3L) {
+                    playCountDownSound()
+                }
             }
         }
 
@@ -840,6 +875,21 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             }
             dialog.show()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        val drawable = menu.getItem(0).icon
+        drawable.mutate()
+        context?.let {
+            drawable.setColorFilter(ContextCompat.getColor(it, android.R.color.white), PorterDuff.Mode.SRC_IN)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        hourCountDownTimer?.cancel()
+        minuteCountDownTimer?.cancel()
     }
 }
 

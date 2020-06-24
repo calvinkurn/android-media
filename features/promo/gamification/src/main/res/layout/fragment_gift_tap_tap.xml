@@ -6,6 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/fmCoupons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/list_item_coupons"/>
+    </FrameLayout>
+
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
@@ -155,5 +162,6 @@
     </ViewFlipper>
 
     <include layout="@layout/gami_gift_box_toolbar" />
+
 
 </FrameLayout>

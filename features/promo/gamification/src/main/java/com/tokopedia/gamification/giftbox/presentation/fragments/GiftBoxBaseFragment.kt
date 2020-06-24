@@ -42,7 +42,7 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var tvLoaderTitle: AppCompatTextView
     lateinit var tvLoaderMessage: AppCompatTextView
     lateinit var toolbar: Toolbar
-    lateinit var imageToolbarIcon: View
+    lateinit var imageToolbarIcon: AppCompatImageView
     lateinit var tvToolbarTitle: AppCompatTextView
     lateinit var fmParent: FrameLayout
     lateinit var imageSound: AppCompatImageView
@@ -58,6 +58,8 @@ open class GiftBoxBaseFragment : Fragment() {
     var bgSoundManager: AudioManager? = null
     var rewardSoundManager: AudioManager? = null
     var mAudiosManager: AudioManager? = null
+    var timeoutAudioManager: AudioManager? = null
+    var countDownAudioManager: AudioManager? = null
     var defaultErrorMessage = ""
     var userSession: UserSession? = null
     var isTablet = false
@@ -268,6 +270,28 @@ open class GiftBoxBaseFragment : Fragment() {
                     mAudiosManager = AudioFactory.createAudio(soundIt)
                 }
                 mAudiosManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_tap)
+            }
+        }
+    }
+
+    fun playTimeOutSound() {
+        if (isSoundEnabled()) {
+            context?.let { soundIt ->
+                if (timeoutAudioManager == null) {
+                    timeoutAudioManager = AudioFactory.createAudio(soundIt)
+                }
+                timeoutAudioManager?.playAudio(com.tokopedia.gamification.R.raw.gami_timeout)
+            }
+        }
+    }
+
+    fun playCountDownSound() {
+        if (isSoundEnabled()) {
+            context?.let { soundIt ->
+                if (countDownAudioManager == null) {
+                    countDownAudioManager = AudioFactory.createAudio(soundIt)
+                }
+                countDownAudioManager?.playAudio(com.tokopedia.gamification.R.raw.gami_count_down)
             }
         }
     }

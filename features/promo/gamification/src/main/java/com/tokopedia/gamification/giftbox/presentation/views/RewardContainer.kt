@@ -100,8 +100,8 @@ class RewardContainer : FrameLayout {
         rvCoupons.addItemDecoration(CouponItemDecoration(isTablet,
                 listItemWidthInTablet.toInt(),
                 getScreenWidth(),
-                rvCoupons.dpToPx(36).toInt(),
-                rvCoupons.dpToPx(13).toInt()
+                rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_top_margin).toInt(),
+                rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_right_margin).toInt()
         ))
         couponAdapter = CouponAdapter(couponList, isTablet)
         rvCoupons.adapter = couponAdapter
