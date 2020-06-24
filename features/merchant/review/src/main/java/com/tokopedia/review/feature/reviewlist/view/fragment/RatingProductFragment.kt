@@ -28,12 +28,16 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
-import com.tokopedia.review.common.di.DaggerReviewSellerComponent
-import com.tokopedia.review.common.di.ReviewSellerModule
+import com.tokopedia.review.common.di.ReviewComponentBuilder
+import com.tokopedia.review.common.di.ReviewModule
 import com.tokopedia.review.common.util.*
+import com.tokopedia.review.feature.reviewdetail.di.component.DaggerReviewProductDetailComponent
+import com.tokopedia.review.feature.reviewdetail.di.module.ReviewProductDetailModule
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.review.feature.reviewlist.analytics.ProductReviewTracking
+import com.tokopedia.review.feature.reviewlist.di.component.DaggerReviewProductListComponent
+import com.tokopedia.review.feature.reviewlist.di.module.ReviewProductListModule
 import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.review.feature.reviewlist.view.adapter.ReviewSellerAdapter
 import com.tokopedia.review.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
@@ -150,8 +154,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         viewModelListReviewList = ViewModelProvider(this, viewModelFactory).get(SellerReviewListViewModel::class.java)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         prefs = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
-        sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(getString(R.string.most_review))
-        filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(getString(R.string.last_week))
+        sortBy = ReviewConstants.mapSortReviewProduct().getKeyByValue(getString(R.string.most_review))
+        filterBy = ReviewConstants.mapFilterReviewProduct().getKeyByValue(getString(R.string.last_week))
         filterAllText = filterBy
     }
 
@@ -181,7 +185,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            ReviewSellerConstant.RESULT_INTENT_DETAIL -> {
+            ReviewConstants.RESULT_INTENT_DETAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val stringData = data?.getStringExtra(SellerReviewDetailFragment.SELECTED_DATE_CHIP)
                     val updatedPosition = data?.getIntExtra(SellerReviewDetailFragment.SELECTED_DATE_POSITION, 0)
@@ -240,10 +244,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun inject() {
         if (activity != null) {
-            val appComponent = (activity?.application as? BaseMainApplication)?.baseAppComponent
-            DaggerReviewSellerComponent.builder()
-                    .reviewSellerModule(ReviewSellerModule())
-                    .baseAppComponent(appComponent)
+            DaggerReviewProductListComponent
+                    .builder()
+                    .reviewComponent(ReviewComponentBuilder.getComponent(activity?.application))
+                    .reviewProductListModule(ReviewProductListModule())
                     .build()
                     .inject(this)
         }
@@ -302,7 +306,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                         tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_keyword)
                     } else {
                         searchFilterText = "$searchQuery=$query"
-                        filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
+                        filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
                         searchBarPlaceholder = query
                         loadInitialData()
                     }
@@ -315,7 +319,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onSearchKeywordEmpty() {
         searchFilterText = "$searchQuery="
-        filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
+        filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
         searchBarRatingProduct.searchBarTextField.text.clear()
         searchBarRatingProduct.searchBarPlaceholder = getString(R.string.product_search)
         loadInitialData()
@@ -419,9 +423,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun coachMarkFilterAndSort() {
         prefs?.let {
-            if (!it.getBoolean(ReviewSellerConstant.HAS_FILTER_AND_SORT, false)) {
+            if (!it.getBoolean(ReviewConstants.HAS_FILTER_AND_SORT, false)) {
                 coachMarkItems.add(coachMarkFilterAndSort)
-                it.edit().putBoolean(ReviewSellerConstant.HAS_FILTER_AND_SORT, true).apply()
+                it.edit().putBoolean(ReviewConstants.HAS_FILTER_AND_SORT, true).apply()
             }
         }
     }
@@ -429,9 +433,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun coachMarkSummary() {
         prefs?.let {
             coachMarkSummary?.also { coachMark ->
-                if (!it.getBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, false)) {
+                if (!it.getBoolean(ReviewConstants.HAS_OVERALL_RATING_PRODUCT, false)) {
                     coachMarkItems.add(coachMark)
-                    it.edit().putBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, true).apply()
+                    it.edit().putBoolean(ReviewConstants.HAS_OVERALL_RATING_PRODUCT, true).apply()
                 }
             }
         }
@@ -439,9 +443,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun coachMarkItemRatingProduct() {
         prefs?.let {
-            if (!it.getBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, false)) {
+            if (!it.getBoolean(ReviewConstants.HAS_TAB_RATING_PRODUCT, false)) {
                 coachMarkItemRatingProduct?.let { it1 -> coachMarkItems.add(it1) }
-                it.edit().putBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, true).apply()
+                it.edit().putBoolean(ReviewConstants.HAS_TAB_RATING_PRODUCT, true).apply()
             }
         }
     }
@@ -586,7 +590,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
             putExtra(SellerReviewDetailFragment.CHIP_FILTER, chipsFilterText)
             putExtra(SellerReviewDetailFragment.PRODUCT_IMAGE, imageUrl)
-        }, ReviewSellerConstant.RESULT_INTENT_DETAIL)
+        }, ReviewConstants.RESULT_INTENT_DETAIL)
     }
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
@@ -664,11 +668,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             positionFilter = position
             chipsFilterText = filterListItemUnify[position].listTitleText
             tracking.eventClickFilterBottomSheet(userSession.shopId.orEmpty(), chipsFilterText.orEmpty())
-            reviewSellerAdapter.updateDatePeriod(ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText))
+            reviewSellerAdapter.updateDatePeriod(ReviewConstants.mapFilterReviewProduct().getKeyByValue(chipsFilterText))
             chipsFilter?.chip_text?.text = chipsFilterText
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
-            filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
-            filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
+            filterBy = ReviewConstants.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
+            filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
             loadInitialData()
             bottomSheetFilter?.dismiss()
         } catch (e: Exception) {
@@ -684,7 +688,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             tracking.eventClickSortBottomSheet(userSession.shopId.orEmpty(), chipsSortText.orEmpty())
             chipsSort?.chip_text?.text = chipsSortText
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
-            sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(chipsSortText)
+            sortBy = ReviewConstants.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
             bottomSheetSort?.dismiss()
         } catch (e: Exception) {

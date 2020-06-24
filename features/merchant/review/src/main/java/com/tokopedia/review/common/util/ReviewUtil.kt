@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.round
 
-object ReviewSellerUtil {
+object ReviewUtil {
 
     fun setFilterJoinValueFormat(old: String, newValue: String = ""): String {
         return if (newValue.isNotEmpty()) {

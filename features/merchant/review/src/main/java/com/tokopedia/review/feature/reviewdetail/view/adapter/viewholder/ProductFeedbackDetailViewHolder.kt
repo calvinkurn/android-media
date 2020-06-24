@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
-import com.tokopedia.review.common.util.PaddingItemDecoratingReviewSeller
+import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.common.util.toReviewDescriptionFormatted
@@ -138,7 +138,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         rvItemAttachmentFeedback?.apply {
             layoutManager = linearLayoutManager
             if (itemDecorationCount == 0) {
-                addItemDecoration(PaddingItemDecoratingReviewSeller())
+                addItemDecoration(PaddingItemDecoratingReview())
             }
             adapter = reviewDetailFeedbackImageAdapter
         }

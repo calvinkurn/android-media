@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.review.common.ReviewConstants
 import com.tokopedia.review.common.analytics.ReviewTracking
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.ui.fragment.CreateReviewFragment
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW

@@ -1,8 +1,8 @@
 package com.tokopedia.review.feature.reviewlist.util.mapper
 
-import com.tokopedia.review.common.util.ReviewSellerConstant.LAST_MONTH_KEY
-import com.tokopedia.review.common.util.ReviewSellerConstant.LAST_WEEK_KEY
-import com.tokopedia.review.common.util.ReviewSellerConstant.LAST_YEAR_KEY
+import com.tokopedia.review.common.util.ReviewConstants.LAST_MONTH_KEY
+import com.tokopedia.review.common.util.ReviewConstants.LAST_WEEK_KEY
+import com.tokopedia.review.common.util.ReviewConstants.LAST_YEAR_KEY
 import com.tokopedia.review.feature.reviewlist.data.ProductRatingOverallResponse
 import com.tokopedia.review.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.review.feature.reviewlist.view.model.ProductRatingOverallUiModel

@@ -8,14 +8,14 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
-import com.tokopedia.review.common.util.CoroutineDispatcherProviderImpl
+import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevWaitForFeedbackUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewPendingViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatcherProviderImpl,
+        private val dispatchers: CoroutineDispatcherProvider,
         private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase
 ) : BaseViewModel(dispatchers.io()) {
 

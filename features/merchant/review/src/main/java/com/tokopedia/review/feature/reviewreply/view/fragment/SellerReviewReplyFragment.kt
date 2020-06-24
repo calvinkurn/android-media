@@ -16,7 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
-import com.tokopedia.review.common.util.PaddingItemDecoratingReviewSeller
+import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.analytics.SellerReviewReplyTracking
@@ -408,7 +408,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         list_template?.apply {
             layoutManager = linearLayoutManager
             if (itemDecorationCount == 0) {
-                addItemDecoration(PaddingItemDecoratingReviewSeller())
+                addItemDecoration(PaddingItemDecoratingReview())
             }
             adapter = reviewTemplateListAdapter
         }

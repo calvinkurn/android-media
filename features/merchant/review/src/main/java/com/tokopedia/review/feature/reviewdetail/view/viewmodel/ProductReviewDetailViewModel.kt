@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
-import com.tokopedia.review.common.util.ReviewSellerConstant
-import com.tokopedia.review.common.util.ReviewSellerUtil
+import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.common.util.getKeyByValue
 import com.tokopedia.review.feature.reviewdetail.data.ProductFeedbackFilterData
 import com.tokopedia.review.feature.reviewdetail.data.ProductReviewDetailOverallResponse
@@ -62,7 +62,7 @@ class ProductReviewDetailViewModel @Inject constructor(
 
     init {
         //Add Default Filter Date Value
-        filterByList = mutableListOf(ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipsFilterText))
+        filterByList = mutableListOf(ReviewConstants.mapFilterReviewDetail().getKeyByValue(chipsFilterText))
 
         setupFeedBackDetail()
         setSortDetailBottomSheet()
@@ -70,9 +70,9 @@ class ProductReviewDetailViewModel @Inject constructor(
 
     fun setChipFilterDateText(chipFilterText: String) {
         chipsFilterText = chipFilterText
-        filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipFilterText)
+        filterPeriod = ReviewConstants.mapFilterReviewDetail().getKeyByValue(chipFilterText)
         removeFilterElement(prefixTime)
-        filterByList.add(ReviewSellerUtil.setFilterJoinValueFormat(filterPeriod))
+        filterByList.add(ReviewUtil.setFilterJoinValueFormat(filterPeriod))
     }
 
     private fun setupFeedBackDetail() {
@@ -145,7 +145,7 @@ class ProductReviewDetailViewModel @Inject constructor(
         val data = SellerReviewProductDetailMapper.mapToItemSortTopic()
         sortTopicData = data
         val sortValue = data.firstOrNull { it.isSelected }?.title.orEmpty()
-        sortBy = ReviewSellerConstant.mapSortReviewDetail().getKeyByValue(sortValue)
+        sortBy = ReviewConstants.mapSortReviewDetail().getKeyByValue(sortValue)
     }
 
     fun setSortAndFilterTopicData(data: Pair<List<SortFilterItemWrapper>, String>) {
@@ -241,7 +241,7 @@ class ProductReviewDetailViewModel @Inject constructor(
                 productID,
                 sortBy,
                 filterBy,
-                ReviewSellerConstant.DEFAULT_PER_PAGE,
+                ReviewConstants.DEFAULT_PER_PAGE,
                 page
         )
 

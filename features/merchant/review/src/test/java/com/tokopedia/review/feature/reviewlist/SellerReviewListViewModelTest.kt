@@ -1,6 +1,6 @@
 package com.tokopedia.review.reviewlist
 
-import com.tokopedia.review.common.util.ReviewSellerConstant
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reviewlist.data.ProductRatingOverallResponse
 import com.tokopedia.review.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductListMapper
@@ -35,7 +35,7 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
             val expectedResult = Success(ProductRatingOverallUiModel(
                     rating = 5.0F,
                     reviewCount = 50,
-                    period = SellerReviewProductListMapper.getPastDateCalculate(ReviewSellerConstant.LAST_WEEK_KEY)))
+                    period = SellerReviewProductListMapper.getPastDateCalculate(ReviewConstants.LAST_WEEK_KEY)))
 
             verifySuccessProductRatingOverallUseCaseCalled()
             verifySuccessReviewProductListUseCaseCalled()
@@ -61,7 +61,7 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
             val expectedResult = Success(ProductRatingOverallUiModel(
                     rating = 5.0F,
                     reviewCount = 50,
-                    period = SellerReviewProductListMapper.getPastDateCalculate(ReviewSellerConstant.LAST_WEEK_KEY)))
+                    period = SellerReviewProductListMapper.getPastDateCalculate(ReviewConstants.LAST_WEEK_KEY)))
 
             verifySuccessProductRatingOverallUseCaseCalled()
             verifySuccessReviewProductListUseCaseCalled()
@@ -86,7 +86,7 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
             val expectedResult = Success(ProductRatingOverallUiModel(
                     rating = 5.0F,
                     reviewCount = 50,
-                    period = SellerReviewProductListMapper.getPastDateCalculate(ReviewSellerConstant.LAST_WEEK_KEY)))
+                    period = SellerReviewProductListMapper.getPastDateCalculate(ReviewConstants.LAST_WEEK_KEY)))
 
             verifySuccessProductRatingOverallUseCaseCalled()
             verifySuccessReviewProductListUseCaseCalled()

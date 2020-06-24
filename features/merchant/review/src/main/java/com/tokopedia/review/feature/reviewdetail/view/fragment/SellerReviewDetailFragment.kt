@@ -137,8 +137,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun initFilterData() {
         val filterDetailList: Array<String> = resources.getStringArray(R.array.filter_review_detail_array)
-        viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipFilterBundle)
-        positionFilterPeriod = ReviewSellerUtil.getDateChipFilterPosition(filterDetailList, chipFilterBundle)
+        viewModelProductReviewDetail?.filterPeriod = ReviewConstants.mapFilterReviewDetail().getKeyByValue(chipFilterBundle)
+        positionFilterPeriod = ReviewUtil.getDateChipFilterPosition(filterDetailList, chipFilterBundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -444,7 +444,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         returnIntent.putExtra(SELECTED_DATE_CHIP, selectedDateChip)
         returnIntent.putExtra(SELECTED_DATE_POSITION, position)
 
-        if (selectedDateChip == ReviewSellerConstant.ALL_VALUE) activity?.setResult(Activity.RESULT_CANCELED) else activity?.setResult(Activity.RESULT_OK, returnIntent)
+        if (selectedDateChip == ReviewConstants.ALL_VALUE) activity?.setResult(Activity.RESULT_CANCELED) else activity?.setResult(Activity.RESULT_OK, returnIntent)
     }
 
     private fun initViewBottomSheet() {
@@ -598,7 +598,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private fun onTopicsClicked(topic: List<SortFilterItemWrapper>, sort: List<SortItemUiModel>) {
         var isDifferent = false
         val sortBy = sort.firstOrNull { it.isSelected }?.title.orEmpty()
-        val sortValue = ReviewSellerConstant.mapSortReviewDetail().getKeyByValue(sortBy)
+        val sortValue = ReviewConstants.mapSortReviewDetail().getKeyByValue(sortBy)
 
         viewModelProductReviewDetail?.sortAndFilter?.first?.mapIndexed { index, data ->
             isDifferent = topic[index].isSelected == data.isSelected

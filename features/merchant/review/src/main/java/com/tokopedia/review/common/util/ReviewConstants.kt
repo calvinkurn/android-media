@@ -4,7 +4,7 @@ package com.tokopedia.review.common.util
  * @author by milhamj on 2020-02-14.
  */
 
-object ReviewSellerConstant {
+object ReviewConstants {
     const val RESULT_INTENT_DETAIL = 772
 
     const val LAST_WEEK_KEY = "time=7d"
@@ -69,6 +69,10 @@ object ReviewSellerConstant {
     const val HAS_TAB_RATING_PRODUCT = "hasTabRatingProduct"
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
     const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
+
+    const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
+    const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
+    const val ARGS_RATING = "ARGS_RATING"
 }
 
 

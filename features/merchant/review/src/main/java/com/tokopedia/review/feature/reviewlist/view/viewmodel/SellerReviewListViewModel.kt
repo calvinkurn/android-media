@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
-import com.tokopedia.review.common.util.ReviewSellerConstant
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reviewlist.domain.GetProductRatingOverallUseCase
 import com.tokopedia.review.feature.reviewlist.domain.GetReviewProductListUseCase
 import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductListMapper
@@ -83,7 +83,7 @@ class SellerReviewListViewModel @Inject constructor(
         getReviewProductListUseCase.params = GetReviewProductListUseCase.createParams(
                 sortBy,
                 filterBy,
-                ReviewSellerConstant.DEFAULT_PER_PAGE,
+                ReviewConstants.DEFAULT_PER_PAGE,
                 page
         )
 
