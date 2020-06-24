@@ -31,7 +31,7 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
             val data = graphqlResponse.getData<RewardResponse>(RewardResponse::class.java)
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             if (data != null && dataSection != null && dataSection.sectionContent != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection!!, dataSection.sectionContent.sectionContent))
+                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection, dataSection.sectionContent.sectionContent))
             }
             //handling for lucky egg data
             val tokenDetail = graphqlResponse.getData<TokenDetailOuter>(TokenDetailOuter::class.java)
@@ -69,4 +69,4 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
         }
 }
 
-data class TokopointSuccess(val tokoPointEntity: TokopediaRewardTopSection, val sectionList: MutableList<SectionContent>)
+data class TokopointSuccess(val tokoPointEntity: TokopediaRewardTopSection?, val sectionList: MutableList<SectionContent>)

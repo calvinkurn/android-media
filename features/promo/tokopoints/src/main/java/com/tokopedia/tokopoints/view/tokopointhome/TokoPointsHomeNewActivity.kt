@@ -38,11 +38,7 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
         if (isLogin) {
             loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin)
             tokoPointsHomeFragmentNew.arguments = loginStatusBundle
-        }/* else {
-            loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin)
-            tokoPointsHomeFragmentNew.arguments = loginStatusBundle
-            tokoPointsHomeFragmentNew
-        }*/
+        }
 
         return tokoPointsHomeFragmentNew
     }

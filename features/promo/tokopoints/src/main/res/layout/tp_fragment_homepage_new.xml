@@ -61,7 +61,7 @@
                                 android:layout_alignParentTop="true"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
-                                android:layout_marginTop="-13dp"
+                                android:layout_marginTop="@dimen/tp_bg_img_margintop"
                                 android:layout_marginEnd="0dp"
                                 android:layout_marginRight="0dp"
                                 android:scaleType="fitXY" />
@@ -173,9 +173,9 @@
                                 android:background="@color/white"
                                 android:orientation="vertical">
 
-                               <!-- <include layout="@layout/tp_layout_section_category_parent" />
+                                <!-- <include layout="@layout/tp_layout_section_category_parent" />
 
-                                <include layout="@layout/tp_layout_section_ticker_new" />-->
+                                 <include layout="@layout/tp_layout_section_ticker_new" />-->
 
                             </LinearLayout>
                         </RelativeLayout>

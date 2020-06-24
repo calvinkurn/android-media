@@ -650,11 +650,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         categoryParent.addView(viewCategory)
     }
 
-    override fun renderToolbarWithHeader(data: TokopediaRewardTopSection) {
-        tokoPointToolbar?.setScrolledItem(data.dynamicActionList)
-        mTextMembershipLabel?.text = data.introductionText
+    override fun renderToolbarWithHeader(data: TokopediaRewardTopSection?) {
+        tokoPointToolbar?.setScrolledItem(data?.dynamicActionList)
+        mTextMembershipLabel?.text = data?.introductionText
 
-        data.target?.let {
+        data?.target?.let {
             mTargetText?.setTextColor(Color.parseColor("#" + it.textColor))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 mTargetText?.text = Html.fromHtml(it.text, Html.FROM_HTML_MODE_LEGACY)
@@ -667,16 +667,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             }
         }
 
-        ImageHandler.loadImageCircle2(activityContext, mImgEgg, data.profilePicture)
+        ImageHandler.loadImageCircle2(activityContext, mImgEgg, data?.profilePicture)
         mTextMembershipValueBottom?.text = mValueMembershipDescription
-        collapsingToolbarLayout?.title = data.title
+        collapsingToolbarLayout?.title = data?.title
 
-        if (data.tier != null) {
+        if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
             ImageHandler.loadImageFitCenter(mImgBackground?.context, mImgBackground, data.backgroundImageURL)
         }
 
-        renderDynamicActionList(data.dynamicActionList)
+        renderDynamicActionList(data?.dynamicActionList)
     }
 
     fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {
@@ -778,7 +778,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         })
     }
 
-    override fun onSuccessResponse(data: TokopediaRewardTopSection, sections: List<SectionContent>) {
+    override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>) {
         mContainerMain?.displayedChild = CONTAINER_DATA
         renderToolbarWithHeader(data)
         renderSections(sections)

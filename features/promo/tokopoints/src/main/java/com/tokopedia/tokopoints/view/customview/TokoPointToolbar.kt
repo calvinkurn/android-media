@@ -89,9 +89,9 @@ class TokoPointToolbar : Toolbar {
     }
 
     override fun setTitle(title: CharSequence) {
-        if (title == "Rewards") return
-        super.setTitle("Rewards")
-        tvToolbarTitle?.text = "Rewards"
+        if (title == resources.getString(R.string.tp_title_tokopoints)) return
+        super.setTitle(resources.getString(R.string.tp_title_tokopoints))
+        tvToolbarTitle?.text = resources.getString(R.string.tp_title_tokopoints)
     }
 
 
@@ -112,7 +112,7 @@ class TokoPointToolbar : Toolbar {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && navigationIcon != null) {
             val valueAnimator = ValueAnimator.ofArgb(startColor, endColor)
             valueAnimator.duration = 200L
-            valueAnimator.addUpdateListener { animation: ValueAnimator -> navigationIcon!!.setColorFilter((animation.animatedValue as Int), PorterDuff.Mode.SRC_ATOP) }
+            valueAnimator.addUpdateListener { animation: ValueAnimator -> navigationIcon?.setColorFilter((animation.animatedValue as Int), PorterDuff.Mode.SRC_ATOP) }
             valueAnimator.start()
         }
     }
@@ -130,26 +130,29 @@ class TokoPointToolbar : Toolbar {
     }
 
     fun applyAlphaToToolbarBackground(alpha: Float) {
-        setBackgroundColor(
-                adjustAlpha(mContext!!.resources.getColor(com.tokopedia.design.R.color.white), alpha))
+        mContext?.resources?.getColor(com.tokopedia.design.R.color.white)?.let { adjustAlpha(it, alpha) }?.let {
+            setBackgroundColor(it)
+        }
     }
 
     private fun getBitmapDrawableFromVectorDrawable(context: Context?, drawableId: Int): Drawable? {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ContextCompat.getDrawable(context!!, drawableId)
-        } else BitmapDrawable(context!!.resources, getBitmapFromVectorDrawable(context, drawableId))
+            context?.let { ContextCompat.getDrawable(it, drawableId) }
+        } else BitmapDrawable(context?.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
-    private fun getBitmapFromVectorDrawable(context: Context?, drawableId: Int): Bitmap {
-        var drawable = ContextCompat.getDrawable(context!!, drawableId)
+    private fun getBitmapFromVectorDrawable(context: Context?, drawableId: Int): Bitmap? {
+        var drawable = context?.let { ContextCompat.getDrawable(it, drawableId) }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = DrawableCompat.wrap(drawable!!).mutate()
+            drawable = drawable?.let { DrawableCompat.wrap(it).mutate() }
         }
-        val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
-                drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val bitmap = drawable?.intrinsicWidth?.let {
+            Bitmap.createBitmap(it,
+                    drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        }
         val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
+        drawable?.setBounds(0, 0, canvas.width, canvas.height)
+        drawable?.draw(canvas)
         return bitmap
     }
 

@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/iv_bg"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
         android:background="@drawable/ic_squircle"
         android:padding="@dimen/dp_10"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -41,8 +41,8 @@
         android:paddingLeft="@dimen/dp_2"
         android:paddingEnd="@dimen/dp_2"
         android:paddingRight="@dimen/dp_2"
-        android:textColor="#f531353b"
-        android:textSize="10sp"
+        android:textColor="@color/tp_loyalty_color"
+        android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintTop_toBottomOf="@+id/iv_bg"
         tools:text="Kupon Membership" />
 </androidx.constraintlayout.widget.ConstraintLayout>

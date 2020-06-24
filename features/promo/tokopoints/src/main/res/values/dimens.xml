@@ -53,5 +53,6 @@
     <dimen name="tp_cta_container_nonlogin">136dp</dimen>
     <dimen name="tp_item_left_margin">22dp</dimen>
     <dimen name="tp_item_right_margin">28dp</dimen>
+    <dimen name="tp_bg_img_margintop">-13dp</dimen>
 
 </resources>

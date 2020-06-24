@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.tp_layout_reward_intro.*
 class RewardIntroFragment : Fragment() {
 
     companion object {
+        private const val INTRO_KEY = "intro"
         fun newInstance(extras: Bundle?): Fragment {
             val fragment = RewardIntroFragment()
             fragment.arguments = extras
@@ -33,7 +34,7 @@ class RewardIntroFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         container_main.displayedChild = 0
-        val data = arguments?.get("intro") as? TokopediaRewardIntroPage
+        val data = arguments?.get(INTRO_KEY) as? TokopediaRewardIntroPage
 
         if (data != null) {
             container_main.displayedChild = 1

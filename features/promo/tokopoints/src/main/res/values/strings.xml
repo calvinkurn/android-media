@@ -103,5 +103,8 @@
     <string name="tp_phone_verification_desc">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
     <string name="tp_verifikasi_title">Ayo verifikasi nomor HP kamu!</string>
     <string name="tp_btn_verifikasi">Verifikasi Nomor HP</string>
-
+    <string name="tp_catalog_code_error_title">Waduh, tujuanmu nggak ada!</string>
+    <string name="tp_catalog_code_error_desc">Mungkin kamu salah jalan atau alamat. Ayo balik sebelum gelap!</string>
+    <string name="tp_catalog_code_error_btn">Ke Homepage</string>
+    <string name="tp_see_all">See All</string>
 </resources>
