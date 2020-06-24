@@ -14,9 +14,9 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
+import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -309,19 +309,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun getClassById(classId: Int): FlightClassModel {
         return when (classId) {
-            1 -> FlightClassModel().apply {
-                id = 1
-                title = "Ekonomi"
-            }
-            2 -> FlightClassModel().apply {
-                id = 2
-                title = "Bisnis"
-            }
-            3 -> FlightClassModel().apply {
-                id = 3
-                title = "Utama"
-            }
-            else -> FlightClassModel()
+            1 -> FlightClassModel(1, "Ekonomi")
+            2 -> FlightClassModel(2, "Bisnis")
+            3 -> FlightClassModel(3, "Utama")
+            else -> FlightClassModel(0, "")
         }
     }
 

@@ -1,11 +1,11 @@
-package com.tokopedia.flight.dashboard.view.viewmodel
+package com.tokopedia.flight.homepage.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
-import com.tokopedia.flight.dashboard.view.model.FlightFareAttributes
-import com.tokopedia.flight.dashboard.view.model.FlightFareData
-import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
+import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
+import com.tokopedia.flight.homepage.presentation.model.FlightFareData
+import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

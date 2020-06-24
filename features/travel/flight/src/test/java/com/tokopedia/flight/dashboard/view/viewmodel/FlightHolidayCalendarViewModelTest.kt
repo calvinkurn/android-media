@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.dummy.HOLIDAY_EMPTY_DATA
 import com.tokopedia.flight.dummy.HOLIDAY_WITH_DATA
+import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHolidayCalendarViewModel
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail

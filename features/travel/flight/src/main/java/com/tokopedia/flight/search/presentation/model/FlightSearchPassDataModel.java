@@ -4,14 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel;
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel;
 
 /**
  * Created by alvarisi on 11/1/17.
  */
 
-public class FlightSearchPassDataModel implements Parcelable{
+public class FlightSearchPassDataModel implements Parcelable {
     private String departureDate;
     private String returnDate;
     private boolean isOneWay;
@@ -23,9 +23,9 @@ public class FlightSearchPassDataModel implements Parcelable{
     private String searchRequestId;
 
     public FlightSearchPassDataModel(String departureDate, String returnDate, boolean isOneWay,
-                                         FlightPassengerModel flightPassengerViewModel,
-                                         FlightAirportModel departureAirport, FlightAirportModel arrivalAirport,
-                                         FlightClassModel flightClass, String linkUrl, String searchRequestId) {
+                                     FlightPassengerModel flightPassengerViewModel,
+                                     FlightAirportModel departureAirport, FlightAirportModel arrivalAirport,
+                                     FlightClassModel flightClass, String linkUrl, String searchRequestId) {
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.isOneWay = isOneWay;

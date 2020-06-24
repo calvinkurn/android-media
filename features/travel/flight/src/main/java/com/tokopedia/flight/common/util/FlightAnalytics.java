@@ -6,10 +6,10 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel;
+import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel;
 import com.tokopedia.flight.search.data.api.single.response.Route;
 import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
@@ -149,7 +149,7 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventSearchClick(FlightDashboardModel dashboardViewModel) {
+    public void eventSearchClick(FlightHomepageModel dashboardViewModel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(CLICK_SEARCH_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH,
@@ -416,7 +416,7 @@ public class FlightAnalytics {
     }
 
     public void eventProductViewEnchanceEcommerceOld(FlightSearchPassDataModel searchPassDataViewModel,
-                                                  List<com.tokopedia.flight.search.presentation.model.FlightJourneyModel> listJourneyViewModel) {
+                                                     List<com.tokopedia.flight.search.presentation.model.FlightJourneyModel> listJourneyViewModel) {
 
         List<Object> products = new ArrayList<>();
         int position = 0;

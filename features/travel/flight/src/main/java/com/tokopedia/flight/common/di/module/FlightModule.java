@@ -28,7 +28,6 @@ import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.country.database.FlightAirportCountryDao;
-import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
@@ -111,11 +110,10 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public FlightRepository provideFlightRepository(FlightClassesDataSource getFlightClassesUseCase,
-                                                    FlightOrderDataSource flightOrderDataSource,
+    public FlightRepository provideFlightRepository(FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
-        return new FlightRepositoryImpl(getFlightClassesUseCase, flightOrderDataSource,
+        return new FlightRepositoryImpl(flightOrderDataSource,
                 flightOrderMapper, flightCancellationCloudDataSource);
     }
 

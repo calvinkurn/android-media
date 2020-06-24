@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.fragment.model;
+package com.tokopedia.flight.homepage.presentation.model;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -17,7 +17,7 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel;
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightDashboardModel implements Parcelable, Cloneable {
+public class FlightHomepageModel implements Parcelable, Cloneable {
     private String departureDate;
     private String departureDateFmt;
     private String returnDate;
@@ -31,21 +31,21 @@ public class FlightDashboardModel implements Parcelable, Cloneable {
     private String arrivalAirportFmt;
     private FlightClassModel flightClass;
 
-    public FlightDashboardModel() {
+    public FlightHomepageModel() {
     }
 
-    public FlightDashboardModel(String departureDate,
-                                String departureDateFmt,
-                                String returnDate,
-                                String returnDateFmt,
-                                boolean isOneWay,
-                                FlightPassengerModel flightPassengerViewModel,
-                                String flightPassengerFmt,
-                                FlightAirportModel departureAirport,
-                                String departureAirportFmt,
-                                FlightAirportModel arrivalAirport,
-                                String arrivalAirportFmt,
-                                FlightClassModel flightClass) {
+    public FlightHomepageModel(String departureDate,
+                               String departureDateFmt,
+                               String returnDate,
+                               String returnDateFmt,
+                               boolean isOneWay,
+                               FlightPassengerModel flightPassengerViewModel,
+                               String flightPassengerFmt,
+                               FlightAirportModel departureAirport,
+                               String departureAirportFmt,
+                               FlightAirportModel arrivalAirport,
+                               String arrivalAirportFmt,
+                               FlightClassModel flightClass) {
         this.departureDate = departureDate;
         this.departureDateFmt = departureDateFmt;
         this.returnDate = returnDate;
@@ -60,7 +60,7 @@ public class FlightDashboardModel implements Parcelable, Cloneable {
         this.flightClass = flightClass;
     }
 
-    protected FlightDashboardModel(Parcel in) {
+    protected FlightHomepageModel(Parcel in) {
         departureDate = in.readString();
         departureDateFmt = in.readString();
         returnDate = in.readString();
@@ -75,15 +75,15 @@ public class FlightDashboardModel implements Parcelable, Cloneable {
         flightClass = in.readParcelable(FlightClassModel.class.getClassLoader());
     }
 
-    public static final Creator<FlightDashboardModel> CREATOR = new Creator<FlightDashboardModel>() {
+    public static final Creator<FlightHomepageModel> CREATOR = new Creator<FlightHomepageModel>() {
         @Override
-        public FlightDashboardModel createFromParcel(Parcel in) {
-            return new FlightDashboardModel(in);
+        public FlightHomepageModel createFromParcel(Parcel in) {
+            return new FlightHomepageModel(in);
         }
 
         @Override
-        public FlightDashboardModel[] newArray(int size) {
-            return new FlightDashboardModel[size];
+        public FlightHomepageModel[] newArray(int size) {
+            return new FlightHomepageModel[size];
         }
     };
 
@@ -348,8 +348,8 @@ public class FlightDashboardModel implements Parcelable, Cloneable {
         }
 
 
-        public FlightDashboardModel build() {
-            return new FlightDashboardModel(departureDate,
+        public FlightHomepageModel build() {
+            return new FlightHomepageModel(departureDate,
                     departureDateFmt,
                     returnDate,
                     returnDateFmt,
