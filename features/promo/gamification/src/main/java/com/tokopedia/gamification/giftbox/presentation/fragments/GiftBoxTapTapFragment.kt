@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.util.TypedValue
 import android.view.*
 import android.widget.FrameLayout
@@ -58,7 +57,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import rx.Observable
+import rx.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
@@ -86,6 +86,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     val benefitItems = arrayListOf<CrackBenefitEntity>()
     var backButton: BackButton? = null
     var isUserAfterFirstTapInactive = false
+    val clickSubject = PublishSubject.create<Int>()
 
     @RewardContainer.RewardState
     var rewardState: Int = RewardContainer.RewardState.COUPON_ONLY
@@ -321,15 +322,25 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                             }
                         }
 
-
-
                         getTapTapView().fmGiftBox.setOnClickListener {
+//                            clickSubject.onNext(0)
                             handleGiftBoxTap()
                             if (fmCoupons != null) {
                                 fmParent.removeView(fmCoupons)
                                 fmCoupons = null
                             }
                         }
+
+                        clickSubject.throttleLast(250L, TimeUnit.MILLISECONDS)
+                                .subscribe({
+                                    handleGiftBoxTap()
+                                    if (fmCoupons != null) {
+                                        fmParent.removeView(fmCoupons)
+                                        fmCoupons = null
+                                    }
+                                }, {
+                                    //Do nothing
+                                })
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
