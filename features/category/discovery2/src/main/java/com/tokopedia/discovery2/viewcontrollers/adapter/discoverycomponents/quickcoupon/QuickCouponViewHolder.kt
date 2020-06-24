@@ -130,8 +130,6 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             applyButton.show()
         }
         titleTextView.text = quickCouponViewModel.getCouponTitle()
-
-        if (componentData.couponDetailClicked) redirectCouponPage()
     }
 
     override fun onClick(view: View?) {
