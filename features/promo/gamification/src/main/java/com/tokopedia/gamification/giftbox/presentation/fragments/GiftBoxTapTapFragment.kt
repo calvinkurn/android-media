@@ -57,8 +57,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import rx.subjects.PublishSubject
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
@@ -85,8 +83,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     val rewardItems = arrayListOf<RewardSummaryItem>()
     val benefitItems = arrayListOf<CrackBenefitEntity>()
     var backButton: BackButton? = null
-    var isUserAfterFirstTapInactive = false
-    val clickSubject = PublishSubject.create<Int>()
 
     @RewardContainer.RewardState
     var rewardState: Int = RewardContainer.RewardState.COUPON_ONLY
@@ -157,7 +153,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 } else {
                     animatorSet.playTogether(pairAnim1.first, ovoPointsTextAnim)
                 }
-                ovoPointsTextAnim.addListener(onEnd = { afterRewardAnimationEnds() })
+                ovoPointsTextAnim.addListener(onEnd = { toggleInActiveHint(true) })
                 animatorSet.start()
                 getTapTapView().postDelayed({ afterRewardAnimationEnds() }, startDelay + pairAnim1.second + NEGATIVE_DURATION)
             }
@@ -176,6 +172,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
                 val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
                 ovoPointsTextAnim.startDelay = startDelay + 100L
+                ovoPointsTextAnim.addListener(onEnd = { toggleInActiveHint(true) })
                 ovoPointsTextAnim.start()
                 getTapTapView().postDelayed({ afterRewardAnimationEnds() }, startDelay + pairAnim.second + NEGATIVE_DURATION)
             }
@@ -188,6 +185,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 } else {
                     animatorSet.play(pairAnim.first)
                 }
+                pairAnim.first.addListener(onEnd = { toggleInActiveHint(true) })
                 animatorSet.startDelay = startDelay
                 animatorSet.start()
                 getTapTapView().postDelayed({ afterRewardAnimationEnds() }, startDelay + pairAnim.second + NEGATIVE_DURATION)
@@ -325,7 +323,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         }
 
                         getTapTapView().fmGiftBox.setOnClickListener {
-//                            clickSubject.onNext(0)
                             handleGiftBoxTap()
                             if (fmCoupons != null) {
                                 fmParent.removeView(fmCoupons)
@@ -333,16 +330,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                             }
                         }
 
-                        clickSubject.throttleLast(250L, TimeUnit.MILLISECONDS)
-                                .subscribe({
-                                    handleGiftBoxTap()
-                                    if (fmCoupons != null) {
-                                        fmParent.removeView(fmCoupons)
-                                        fmCoupons = null
-                                    }
-                                }, {
-                                    //Do nothing
-                                })
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
@@ -361,10 +348,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
                         if (!resultCode.isNullOrEmpty() && resultCode == "200") {
                             boxState = OPEN
-                            if (benefitItems.isEmpty()) {
-                                isUserAfterFirstTapInactive = true
-                                getTapTapView().postDelayed({ checkInactivity() }, 4000L)
-                            }
 
                             getTapTapView().disableConfettiAnimation = true
                             getTapTapView().resetTapCount()
@@ -428,20 +411,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         })
     }
 
-    private fun checkInactivity() {
-        if (isUserAfterFirstTapInactive && benefitItems.size == 1) {
-            tvTapHint.text = getString(R.string.gami_ayo_tap)
-            tvTapHint.animate().alpha(1f).setDuration(300L).start()
-            isUserAfterFirstTapInactive = false
-        }
+    fun toggleInActiveHint(show: Boolean) {
+        tvTapHint.animate().alpha(if (show) 1f else 0f).setDuration(300L).start()
     }
 
     private fun handleGiftBoxTap() {
         if (benefitItems.isNotEmpty()) {
-            isUserAfterFirstTapInactive = false
-            if (tvTapHint.alpha > 0f) {
-                fadeOutViews()
-            }
+            toggleInActiveHint(false)
         }
 
         if (isTimeOut) {
@@ -450,8 +426,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             playTapSound()
             getTapTapView().isGiftTapAble = false
             if (getTapTapView().tapCount == getTapTapView().targetTapCount) {
-//                if (boxState == OPEN)
-//                    getTapTapView().showConfettiAnimation()
                 crackGiftBox()
                 getTapTapView().targetTapCount = getTapTapView().getRandomNumber()
             } else {
@@ -691,8 +665,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             lottieTimeUp.visible()
             lottieTimeUp.playAnimation()
             playTimeOutSound()
-//                val timeUpAnimation = timeUpAnimation()
-//                timeUpAnimation.start()
+            toggleInActiveHint(false)
 
             giftBoxDailyView.postDelayed({
                 val item = benefitItems.find { it.isBigPrize }
@@ -805,12 +778,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     fun fadeOutViews() {
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(tapHintAnim)
-        animatorSet.duration = 300L
-
-        animatorSet.start()
+        tapHintAnim.duration = 300L
+        tapHintAnim.addListener(onEnd = { tvTapHint.text = getString(R.string.gami_ayo_tap) })
+        tapHintAnim.start()
     }
 
 
