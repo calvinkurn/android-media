@@ -1,10 +1,10 @@
 package com.tokopedia.cart.view.subscriber
 
-import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalDataModel
+import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cart.view.ICartListView
 import rx.Subscriber
 
-class AddToCartExternalSubscriber(val view: ICartListView?) : Subscriber<AddToCartExternalDataModel>() {
+class AddToCartExternalSubscriber(val view: ICartListView?) : Subscriber<AddToCartExternalModel>() {
 
     override fun onCompleted() {
 
@@ -19,7 +19,7 @@ class AddToCartExternalSubscriber(val view: ICartListView?) : Subscriber<AddToCa
         }
     }
 
-    override fun onNext(model: AddToCartExternalDataModel) {
+    override fun onNext(model: AddToCartExternalModel) {
         if (view != null) {
             view.hideProgressLoading()
             if (model.message.isNotEmpty()) {
