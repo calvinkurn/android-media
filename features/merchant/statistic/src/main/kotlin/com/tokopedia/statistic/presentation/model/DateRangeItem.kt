@@ -12,15 +12,27 @@ sealed class DateRangeItem(
         open val label: String = "",
         open val startDate: Date? = null,
         open val endDate: Date? = null,
-        open var isSelected: Boolean = false
+        open var isSelected: Boolean = false,
+        open val type: Int
 ) : Visitable<DateRangeAdapterFactory> {
+
+    companion object {
+        const val TYPE_TODAY = 0
+        const val TYPE_LAST_7_DAYS = 1
+        const val TYPE_LAST_30_DAYS = 2
+        const val TYPE_PER_DAY = 3
+        const val TYPE_PER_WEEK = 4
+        const val TYPE_PER_MONTH = 5
+        const val TYPE_BUTTON = 6
+    }
 
     data class Click(
             override val label: String,
             override val startDate: Date,
             override val endDate: Date,
-            override var isSelected: Boolean = false
-    ) : DateRangeItem(label, startDate, endDate, isSelected) {
+            override var isSelected: Boolean = false,
+            override val type: Int
+    ) : DateRangeItem(label, startDate, endDate, isSelected, type) {
 
         override fun type(typeFactory: DateRangeAdapterFactory): Int {
             return typeFactory.type(this)
@@ -32,22 +44,15 @@ sealed class DateRangeItem(
             override var startDate: Date? = null,
             override var endDate: Date? = null,
             override var isSelected: Boolean = false,
-            val isSingleDateMode: Boolean = false,
-            val type: Int
-    ) : DateRangeItem(label, startDate, endDate, isSelected) {
-
-        companion object {
-            const val TYPE_PER_DAY = 0
-            const val TYPE_PER_WEEK = 1
-            const val TYPE_PER_MONTH = 2
-        }
+            override val type: Int
+    ) : DateRangeItem(label, startDate, endDate, isSelected, type) {
 
         override fun type(typeFactory: DateRangeAdapterFactory): Int {
             return typeFactory.type(this)
         }
     }
 
-    object ApplyButton : DateRangeItem() {
+    object ApplyButton : DateRangeItem(type = TYPE_BUTTON) {
 
         override fun type(typeFactory: DateRangeAdapterFactory): Int {
             return typeFactory.type(this)

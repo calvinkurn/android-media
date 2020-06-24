@@ -36,11 +36,11 @@ class DateRangeSingleViewHolder(
     private var element: DateRangeItem.Pick? = null
     private val datePicker: CalendarPicker by lazy {
         val picker = CalendarPicker(this.itemView.context)
-        if (element?.type == DateRangeItem.Pick.TYPE_PER_WEEK) {
+        if (element?.type == DateRangeItem.TYPE_PER_WEEK) {
             val title = itemView?.context?.getString(R.string.stc_per_week).orEmpty()
             picker.init(CalendarPickerView.SelectionMode.RANGE)
             picker.setTitle(title)
-        } else if (element?.type == DateRangeItem.Pick.TYPE_PER_DAY) {
+        } else if (element?.type == DateRangeItem.TYPE_PER_DAY) {
             val title = itemView?.context?.getString(R.string.stc_per_day).orEmpty()
             picker.init(CalendarPickerView.SelectionMode.SINGLE)
             picker.setTitle(title)
@@ -63,7 +63,7 @@ class DateRangeSingleViewHolder(
                 showApplyButton(element)
             }
 
-            if (element.type == DateRangeItem.Pick.TYPE_PER_MONTH) {
+            if (element.type == DateRangeItem.TYPE_PER_MONTH) {
                 setupMontPicker()
             } else {
                 setupDatePicker()
@@ -90,7 +90,7 @@ class DateRangeSingleViewHolder(
         if (startDate != null && endDate != null) {
             element?.startDate = startDate
             element?.endDate = endDate
-            itemView.edtStcSingle.valueStr = if (element?.type == DateRangeItem.Pick.TYPE_PER_DAY) {
+            itemView.edtStcSingle.valueStr = if (element?.type == DateRangeItem.TYPE_PER_DAY) {
                 DateTimeUtil.format(startDate.time, "dd MMM yyyy")
             } else {
                 DateRangeFormatUtil.getDateRangeStr(startDate, endDate)
