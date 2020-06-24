@@ -25,6 +25,9 @@ import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.mapper.EditProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -67,6 +70,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
     abstract fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String)
+    abstract fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel)
 
     override fun onCreate() {
         super.onCreate()
@@ -84,6 +88,31 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     fun setUploadProductDataError(errorMessage: String) {
         notificationManager?.onFailedUpload(errorMessage)
+    }
+
+    fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
+        val urlImageCount = imageUrlOrPathList.size
+        val uploadIdList: ArrayList<String> = ArrayList()
+
+        // if sizeChartPath valid then add to progress
+        notificationManager = getNotificationManager(urlImageCount)
+        notificationManager?.onSubmitUpload()
+
+        launchCatchError(block = {
+            repeat(urlImageCount) { i ->
+                val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
+                uploadIdList.add(imageId)
+            }
+
+            variantInputModel.products = uploadProductVariantImages(variantInputModel.products)
+            variantInputModel.sizecharts = uploadProductSizechart(variantInputModel.sizecharts)
+
+            delay(NOTIFICATION_CHANGE_DELAY)
+            onUploadProductImagesSuccess(uploadIdList, variantInputModel)
+        }, onError = { throwable ->
+            setUploadProductDataError(getErrorMessage(throwable))
+            logError(RequestParams.EMPTY, throwable)
+        })
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantPicturePath: List<String>, sizeChartPath: String) {
@@ -148,6 +177,24 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 .addEditProductPreviewModule(AddEditProductPreviewModule())
                 .build()
                 .inject(this)
+    }
+
+    private suspend fun uploadProductSizechart(
+            sizecharts: PictureVariantInputModel
+    ): PictureVariantInputModel {
+        sizecharts.uploadId = uploadImageAndGetId(sizecharts.filePath)
+        return sizecharts
+    }
+
+    private suspend fun uploadProductVariantImages(
+            productVariants: List<ProductVariantInputModel>
+    ): List<ProductVariantInputModel> {
+        productVariants.forEach {
+            it.pictures.firstOrNull()?.let { picture ->
+                picture.uploadId = uploadImageAndGetId(picture.filePath)
+            }
+        }
+        return productVariants
     }
 
     private suspend fun uploadImageAndGetId(imagePath: String): String {

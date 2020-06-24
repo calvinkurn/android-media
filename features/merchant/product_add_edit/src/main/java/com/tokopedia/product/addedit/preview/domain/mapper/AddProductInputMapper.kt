@@ -28,23 +28,10 @@ class AddProductInputMapper @Inject constructor() {
         const val UNIT_DAY = "DAY"
         const val UNIT_WEEK = "WEEK"
         const val UNIT_MONTH = "MONTH"
-        const val IS_ACTIVE = 1
-        const val IS_INACTIVE = 0
-        const val IS_ACTIVE_STRING = "ACTIVE"
-        const val IS_INACTIVE_STRING = "INACTIVE"
-
-        fun getActiveStatus(status: Int) =
-                when (status) {
-                    IS_INACTIVE -> IS_INACTIVE_STRING
-                    IS_ACTIVE -> IS_ACTIVE_STRING
-                    else -> IS_ACTIVE_STRING
-                }
     }
 
     fun mapInputToParam(shopId: String,
                         uploadIdList: ArrayList<String>,
-                        variantOptionUploadId: List<String>,
-                        sizeChartUploadId: String,
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel,
@@ -111,12 +98,40 @@ class AddProductInputMapper @Inject constructor() {
                 it.sku,
                 it.status,
                 it.stock,
-                emptyList()
+                mapPictureVariant(it.pictures)
+        )
+    }
+
+    private fun mapPictureVariant(pictures: List<PictureVariantInputModel>) = pictures.map {
+        Picture(
+                it.description,
+                it.fileName,
+                it.filePath,
+                it.picID,
+                it.isFromIG == "true",
+                it.width.toInt(),
+                it.height.toInt(),
+                it.uploadId
         )
     }
 
     private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture>? {
-        return emptyList()
+        return if (sizecharts.filePath.isEmpty()) {
+            emptyList()
+        } else {
+            val sizechart = Picture(
+                    sizecharts.description,
+                    sizecharts.fileName,
+                    sizecharts.filePath,
+                    sizecharts.picID,
+                    sizecharts.isFromIG == "true",
+                    sizecharts.width.toInt(),
+                    sizecharts.height.toInt(),
+                    sizecharts.uploadId
+            )
+
+            listOf(sizechart)
+        }
     }
 
     private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {

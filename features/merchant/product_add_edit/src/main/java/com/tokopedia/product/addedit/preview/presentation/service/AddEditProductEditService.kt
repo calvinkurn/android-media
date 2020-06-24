@@ -98,6 +98,10 @@ class AddEditProductEditService : AddEditProductBaseService() {
         editProduct(uploadIdList, variantOptionUploadId, sizeChartId)
     }
 
+    override fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel) {
+        //
+    }
+
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : AddEditProductNotificationManager(urlImageCount, manager,
