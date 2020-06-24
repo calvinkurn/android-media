@@ -47,6 +47,7 @@ public abstract class MainApplication extends MainRouterApplication{
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
+    private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
 
 
     public static MainApplication getInstance() {
@@ -61,7 +62,7 @@ public abstract class MainApplication extends MainRouterApplication{
                 return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
     }
 
     @Override

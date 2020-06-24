@@ -59,6 +59,15 @@ class DiscoveryDataMapper {
             }
             return list
         }
+
+        fun mapBannerComponentData(bannerComponent: ComponentsItem): ComponentsItem {
+            return bannerComponent.apply {
+                this.data?.forEach {
+                    it.id = this.id
+                    it.name = this.name
+                }
+            }
+        }
     }
 
     fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,
@@ -90,6 +99,8 @@ class DiscoveryDataMapper {
         val product = ProductItem()
         product.name = item.headline?.shop?.slogan
         product.buttonText = item.headline?.buttonText
+        product.shopAdsClickUrl = item.adClickUrl
+        product.shopAdsViewUrl = item.headline?.image?.fullUrl
         product.imageProduct = ImageProduct()
         product.imageProduct?.imageUrl = item.headline?.image?.fullEcs
         product.applinks = item.applinks
@@ -105,6 +116,8 @@ class DiscoveryDataMapper {
             val litDataItem = mutableListOf<DataItem>()
             val dataItem = DataItem()
             dataItem.name = element?.name
+            dataItem.shopAdsClickURL = element?.shopAdsClickUrl
+            dataItem.shopAdsViewURL = element?.shopAdsViewUrl
             dataItem.imageUrlMobile = element?.imageProduct?.imageUrl
             dataItem.applinks = element?.applinks
             dataItem.buttonText = element?.buttonText
@@ -124,7 +137,7 @@ class DiscoveryDataMapper {
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             val dataItem = mutableListOf<DataItem>()
-            it.typeProductCard = typeProductCard
+            it.typeProductCard = subComponentName
             dataItem.add(it)
             componentsItem.data = dataItem
             list.add(componentsItem)
@@ -155,7 +168,6 @@ class DiscoveryDataMapper {
         }
         return list
     }
-
 
     data class CpmTopAdsData(var promotedText: String = "",
                              var imageUrl: String = "",

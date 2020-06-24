@@ -85,6 +85,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     private val defaultBrandLetter: String = ""
     private var totalBrandsNumber: Int = 0
     private var recyclerViewLastState: Parcelable? = null
+    private var lastTimeChipIsClicked: Long = 0L
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -306,7 +307,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
                     val existingTotalBrands: Int = viewModel.getTotalBrandSizeForChipHeader()
                     if (!isLoadMore && existingTotalBrands !== totalBrandsFiltered) {
-                        adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip, recyclerViewLastState)
+                        adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip, lastTimeChipIsClicked, recyclerViewLastState)
                     }
 
                     var _brandlistSearchMapperResult: List<BrandlistSearchResultViewModel> = listOf()
@@ -369,9 +370,10 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                 imgUrl, true, keywordSearch)
     }
 
-    override fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?) {
+    override fun onClickedChip(position: Int, chipName: String, current: Long, recyclerViewState: Parcelable?) {
         selectedChip = position
         recyclerViewLastState = recyclerViewState
+        lastTimeChipIsClicked = current
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false

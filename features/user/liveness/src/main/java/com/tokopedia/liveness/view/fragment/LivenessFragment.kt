@@ -129,7 +129,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     activity?.finish()
                 }
                 is Fail -> {
-                    Timber.d("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId';stack_trace='${it.throwable.printStackTrace()}'")
+                    Timber.w("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId';stack_trace='${it.throwable.printStackTrace()}'")
                    val errorCode = LivenessErrorCodeUtil.getErrorCode(it.throwable)
                     when (it.throwable) {
                         is SocketTimeoutException -> {
@@ -394,13 +394,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 if (cameraResultFile.exists()) {
                     return cameraResultFile.absolutePath
                 } else {
-                    Timber.d("P2#LIVENESS_IMAGE_ERROR#'FailedImageFileNotFound';absolutePath='${cameraResultFile.absolutePath}'")
+                    Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageFileNotFound';absolutePath='${cameraResultFile.absolutePath}'")
                 }
             } else {
-                Timber.d("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
+                Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
             }
         } catch (error: Throwable) {
-            Timber.d("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='${error.printStackTrace()}'")
+            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='${error.printStackTrace()}'")
         }
         return ""
     }
@@ -424,7 +424,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             out.close()
         } catch (e: Throwable) {
             e.printStackTrace()
-            Timber.d("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='${e.printStackTrace()}'")
+            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='${e.printStackTrace()}'")
         }
         return file
     }
