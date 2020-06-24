@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/layout_lvl2"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:paddingTop="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/layout_lvl2"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewHistoryProductName"
@@ -13,7 +13,9 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:textColor="@color/Neutral_N700_96"
-        android:text="Nike Air Force 1 Low White Red Casual Shoes wfajnknfkasnfksankfnasfksnafjnkfasalfnas"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -23,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        android:text="Varian: Red black"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
         app:layout_constraintTop_toBottomOf="@id/reviewHistoryProductName"
         app:typographyType="body_3"/>
@@ -34,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:textColor="@color/Neutral_N700_96"
-        tools:src="@drawable/ic_rating_star_four"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
         app:layout_constraintTop_toBottomOf="@id/reviewHistoryProductVariant"/>
 
@@ -45,7 +47,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_68"
-        android:text="• Hari ini"
+        android:visibility="gone"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="@id/reviewHistoryStars"
         app:layout_constraintBottom_toBottomOf="@id/reviewHistoryStars"
@@ -57,23 +59,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:maxLines="2"
         android:ellipsize="end"
-        android:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga dari sini menj gka kgkakandkgnkangkadgkankka"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/reviewHistoryStars" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reviewHistoryAttachedImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp_10"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/reviewHistoryDescription"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewHistoryReply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Neutral_N700_68"
-        android:text="Ada 1 balasan"
+        android:text="@string/review_history_reply_exists"
         android:layout_marginTop="@dimen/dp_10"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
         app:typographyType="body_3"
-        app:layout_constraintTop_toBottomOf="@id/reviewHistoryDescription"/>
+        app:layout_constraintTop_toBottomOf="@id/reviewHistoryAttachedImages"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

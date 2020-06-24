@@ -125,6 +125,8 @@
 
     <string name="review_history_tab_title">Riwayat</string>
     <string name="review_history_search_bar_hint">Cari produk di sini</string>
+    <string name="review_history_date">• %s</string>
+    <string name="review_history_reply_exists">Ada 1 balasan</string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 </resources>

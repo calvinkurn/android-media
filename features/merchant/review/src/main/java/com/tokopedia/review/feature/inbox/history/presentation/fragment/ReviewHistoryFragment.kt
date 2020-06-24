@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.history.di.DaggerReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.di.ReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapterTypeFactory
@@ -62,12 +65,23 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun loadData(page: Int) {
-        // No Op
-    }
-
-    private fun goToReviewDetails() {
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeObservers(viewModel.reviewList)
+    }
+
+    override fun getDefaultInitialPage(): Int {
+        return ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE
+    }
+
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return reviewHistorySwipeRefresh
+    }
+
+
 
 
 }
