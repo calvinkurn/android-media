@@ -4,20 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.common.coroutine.CoroutineDispatchers
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.common.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevWaitForFeedbackUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewPendingViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
+        private val dispatchers: CoroutineDispatcherProviderImpl,
         private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase
-) : BaseViewModel(dispatchers.io) {
+) : BaseViewModel(dispatchers.io()) {
 
     private val _reviewList = MutableLiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>()
     val reviewList: LiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>
@@ -28,7 +28,7 @@ class ReviewPendingViewModel @Inject constructor(
             _reviewList.value = LoadingView
         }
         launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
+            val response = withContext(dispatchers.io()) {
                 productrevWaitForFeedbackUseCase.setParams(page = page)
                 productrevWaitForFeedbackUseCase.executeOnBackground()
             }

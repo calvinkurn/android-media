@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.review.common.coroutine.CoroutineDispatchers
+import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
@@ -15,5 +15,5 @@ interface ReviewComponent {
     fun getContext(): Context
     fun graphqlRepository(): GraphqlRepository
     fun userSession(): UserSessionInterface
-    fun coroutineDispatchers(): CoroutineDispatchers
+    fun coroutineDispatchers(): CoroutineDispatcherProvider
 }

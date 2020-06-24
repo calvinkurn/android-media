@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.createreputation.ui.fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.review.common.coroutine.CoroutineDispatchers
+import com.tokopedia.review.common.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.review.feature.createreputation.model.*
 import com.tokopedia.review.feature.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.createreputation.usecase.GetProductReputationForm
@@ -18,10 +18,10 @@ import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
-class CreateReviewViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
+class CreateReviewViewModel @Inject constructor(dispatcher: CoroutineDispatcherProviderImpl,
                                                 private val getProductReputationForm: GetProductReputationForm,
                                                 private val getProductIncentiveOvo: GetProductIncentiveOvo
-) : BaseViewModel(dispatcher.io) {
+) : BaseViewModel(dispatcher.io()) {
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
