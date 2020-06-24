@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.util
 
 import android.content.Context
 import android.text.SpannableString
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.power_merchant.subscribe.R
@@ -12,7 +13,7 @@ object PowerMerchantDateFormatter {
 
     fun formatCancellationDate(
         context: Context,
-        warningTextFormat: Int,
+        @StringRes warningTextFormat: Int,
         expiredDate: String
     ): SpannableString {
         val cancellationDate = DateFormatUtils.formatDate(PowerMerchantDate.EXPIRED_DATE_FORMAT,
