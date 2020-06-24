@@ -107,6 +107,8 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
             balanceTokoCash.rawTotalBalance = walletBalanceEntity.rawTotalBalance.toLong()
             balanceTokoCash.redirectUrl = walletBalanceEntity.redirectUrl
             balanceTokoCash.totalBalance = walletBalanceEntity.totalBalance
+            balanceTokoCash.isShowTopup = walletBalanceEntity.isShowTopup
+            balanceTokoCash.topupUrl = walletBalanceEntity.topupUrl
 
             var labelName = remoteConfig.getString(RemoteConfigKey.MAINAPP_WALLET_LABEL_NAME)
             if (labelName.isEmpty()) {

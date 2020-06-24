@@ -135,12 +135,18 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                     tokoCashHolder.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkBalance) }
 
                     if (homeHeaderWalletAction.isLinked) {
+
                         tvTitleTokocash.text = homeHeaderWalletAction.cashBalance
                         tvActionTokocash.visibility = View.VISIBLE
                         tvBalanceTokocash.visibility = View.VISIBLE
-                        tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
                         tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                         tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
+                        if (homeHeaderWalletAction.isShowTopup) {
+                            tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
+                            tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.appLinkBalance) }
+                        } else {
+                            tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
+                        }
                     } else {
                         tvTitleTokocash.text = TITLE
                         tvActionTokocash.visibility = View.VISIBLE
@@ -339,6 +345,14 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             } else {
                 HomePageTracking.eventOvo(itemView.context)
             }
+            val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
+            context.startActivity(intentBalanceWallet)
+        }
+    }
+    private fun gotToTopupOvo( applinkString: String) {
+        if (RouteManager.isSupportApplink(context, applinkString)) {
+            //add tracker topup
+//            HomePageTracking.eventOvo(itemView.context)
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
         }
