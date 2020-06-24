@@ -34,12 +34,4 @@ public class GetUserInfoDomainModel {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
-
-    public int getResponseCode() {
-        return responseCode;
-    }
-
-    public void setResponseCode(int responseCode) {
-        this.responseCode = responseCode;
-    }
 }
