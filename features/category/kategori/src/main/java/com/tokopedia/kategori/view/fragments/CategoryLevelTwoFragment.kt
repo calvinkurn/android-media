@@ -57,9 +57,6 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         currentPosition = id
         currentCategoryName = categoryName
         categoryLevelTwoViewModel.refresh(id)
-        categoryLevelTwoViewModel.childItem?.let {
-            setUpObserver()
-        }
         categoryApplink = applink
     }
 
@@ -73,11 +70,12 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
+        setUpObserver()
         initView()
     }
 
     private fun setUpObserver() {
-        categoryLevelTwoViewModel.childItem?.observe(viewLifecycleOwner, Observer {
+        categoryLevelTwoViewModel.getLevelTwoList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     categoryLevelTwoAdapter.pushTrackingEvents()

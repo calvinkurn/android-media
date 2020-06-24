@@ -1,31 +1,44 @@
 package com.tokopedia.kategori.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.kategori.model.CategoryChildItem
-import com.tokopedia.kategori.subscriber.CategoryLevelTwoSubscriber
-import com.tokopedia.kategori.usecase.AllCategoryQueryUseCase
+import com.tokopedia.kategori.usecase.CategoryLevelTwoItemsUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 const val categoryDepth = 2
 
-class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQueryUseCase: AllCategoryQueryUseCase) : ViewModel() {
+class CategoryLevelTwoViewModel @Inject constructor() : ViewModel() {
 
-    var childItem: LiveData<Result<List<CategoryChildItem>>>? = null
+    private var childItem = MutableLiveData<Result<List<CategoryChildItem>>>()
+
+    @Inject
+    lateinit var categoryLevelTwoItemsUseCase: CategoryLevelTwoItemsUseCase
 
     fun refresh(id: String) {
-        val subscriber = getSubscriber(id)
-        childItem = subscriber.getCategoryList()
-        allCategoryQueryUseCase.execute(allCategoryQueryUseCase.createRequestParams(categoryDepth, true), subscriber)
+        viewModelScope.launchCatchError(
+                block = {
+                    val response = categoryLevelTwoItemsUseCase.getCategoryListItems(categoryLevelTwoItemsUseCase.createRequestParams(categoryDepth, true, id))
+                    response?.let {
+                        childItem.value = Success(it)
+                    }
+
+                },
+                onError = {
+                    childItem.value = Fail(it)
+
+                }
+        )
     }
 
-    internal fun getSubscriber(id: String): CategoryLevelTwoSubscriber {
-        return CategoryLevelTwoSubscriber(id)
+    fun getLevelTwoList(): LiveData<Result<List<CategoryChildItem>>> {
+        return childItem
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        allCategoryQueryUseCase.unsubscribe()
-    }
 }

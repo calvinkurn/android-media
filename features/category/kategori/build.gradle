@@ -36,6 +36,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.features.basemvvm)
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+
+
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk

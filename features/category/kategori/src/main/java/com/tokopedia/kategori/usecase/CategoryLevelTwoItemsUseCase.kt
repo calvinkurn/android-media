@@ -1,42 +1,52 @@
-package com.tokopedia.kategori.subscriber
+package com.tokopedia.kategori.usecase
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kategori.Constants
 import com.tokopedia.kategori.model.CategoriesItem
 import com.tokopedia.kategori.model.CategoryAllList
 import com.tokopedia.kategori.model.CategoryChildItem
 import com.tokopedia.kategori.model.ChildItem
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import rx.Subscriber
+import com.tokopedia.kategori.repository.KategoriRepository
+import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
+import javax.inject.Named
 
-class CategoryLevelTwoSubscriber(val id: String) : Subscriber<CategoryAllList>() {
 
+private const val KEY_DEPTH = "depth"
+private const val KEY_IS_TRENDING = "isTrending"
+private const val KEY_ID = "id"
+
+
+class CategoryLevelTwoItemsUseCase @Inject constructor() {
+
+    @field:[Inject Named(Constants.GQL_CATEGORY_LIST)]
+    lateinit var categoryListQuery: String
 
     private var YANG_LAGI_HITS_TITLE = "yanglagihits"
-    var mutableChildItem = MutableLiveData<Result<List<CategoryChildItem>>>()
 
-    override fun onNext(categoryAllList: CategoryAllList?) {
-        mutableChildItem.value = createChildList((categoryAllList as CategoryAllList), id)
+    @Inject
+    lateinit var kategoriRepository: KategoriRepository
+
+    suspend fun getCategoryListItems(reqParams: RequestParams): List<CategoryChildItem>? {
+        val id = reqParams.getString("id", "")
+        val categoryParam = RequestParams.create()
+        categoryParam.putInt(KEY_DEPTH, reqParams.getInt(KEY_DEPTH, 2))
+        categoryParam.putBoolean(KEY_IS_TRENDING, reqParams.getBoolean(KEY_IS_TRENDING, true))
+        return createChildList(kategoriRepository.getCategoryListItems(categoryParam.paramsAllValueInString), id
+                ?: "0")
     }
 
-    override fun onCompleted() {
+    fun createRequestParams(depth: Int, isTrending: Boolean, id: String): RequestParams {
+        val requestParams = RequestParams.create()
+        requestParams.putInt(KEY_DEPTH, depth)
+        requestParams.putBoolean(KEY_IS_TRENDING, isTrending)
+        requestParams.putString(KEY_ID, id)
+
+        return requestParams
     }
 
-    override fun onError(e: Throwable) {
-        mutableChildItem.value = Fail(e)
-    }
-
-    fun getCategoryList(): LiveData<Result<List<CategoryChildItem>>> {
-        return mutableChildItem
-    }
-
-
-    private fun createChildList(categoryAllList: CategoryAllList, id: String): Result<List<CategoryChildItem>>? {
+    private fun createChildList(categoryAllList: CategoryAllList?, id: String): List<CategoryChildItem>? {
         val defaultCaseID = "0"
-        val iterator = categoryAllList.categories
+        val iterator = categoryAllList?.categories
         val childList: MutableList<CategoryChildItem>? = ArrayList()
 
         iterator?.forEach {
@@ -70,7 +80,7 @@ class CategoryLevelTwoSubscriber(val id: String) : Subscriber<CategoryAllList>()
                             }
                         }
                     }
-                    return Success(childList as List<CategoryChildItem>)
+                    return childList as List<CategoryChildItem>
 
                 } else {
                     childList?.add(createChildItem(Constants.ProductHeaderView, it))
@@ -82,11 +92,11 @@ class CategoryLevelTwoSubscriber(val id: String) : Subscriber<CategoryAllList>()
                             position++
                         }
                     }
-                    return Success(childList as List<CategoryChildItem>)
+                    return childList as List<CategoryChildItem>
                 }
             }
         }
-        return Fail(Throwable("NO DATA"))
+        return null
     }
 
     private fun createChildItem(itemType: Int, childItem: ChildItem?, position: Int = 0, sameCategoryTotalCount: Int = 0): CategoryChildItem {

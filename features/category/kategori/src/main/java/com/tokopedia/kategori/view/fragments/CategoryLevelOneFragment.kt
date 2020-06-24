@@ -102,7 +102,7 @@ class CategoryLevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     }
 
     private fun setUpObserver() {
-        categoryBrowseViewModel.categoryListLiveData?.observe(viewLifecycleOwner, Observer {
+        categoryBrowseViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     categoryList.clear()
