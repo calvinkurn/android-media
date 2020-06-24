@@ -92,6 +92,8 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
                 if (quickCouponViewModel.getCouponAppliedStatus() == false && quickCouponViewModel.getCouponApplicableStatus() == true) {
                     quickCouponViewModel.checkMobileVerificationStatus()
                 }
+            } else if (componentData.couponDetailClicked) {
+                redirectCouponPage()
             }
         } else {
             if (componentData.couponDetailClicked || componentData.couponAppliedClicked) {
@@ -129,31 +131,42 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
         }
         titleTextView.text = quickCouponViewModel.getCouponTitle()
 
-        if (componentData.couponDetailClicked) {
-            componentData.couponDetailClicked = false
-            RouteManager.route(itemView.context, quickCouponViewModel.getCouponApplink())
-        }
+        if (componentData.couponDetailClicked) redirectCouponPage()
     }
 
     override fun onClick(view: View?) {
         when (view) {
             applyButton -> {
-                componentData.couponAppliedClicked = true
-                componentData.couponDetailClicked = false
-                quickCouponViewModel.loggedInStatus()
-                quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
-                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponApply(clickCouponData)
-                }
+                enableCouponApplyClick()
             }
 
             cardLayout -> {
-                componentData.couponDetailClicked = true
-                componentData.couponAppliedClicked = false
-                quickCouponViewModel.loggedInStatus()
-                quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
-                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponClick(clickCouponData)
-                }
+                enableCouponDetailClick()
             }
+        }
+    }
+
+    private fun enableCouponDetailClick() {
+        componentData.couponDetailClicked = true
+        componentData.couponAppliedClicked = false
+        quickCouponViewModel.loggedInStatus()
+        quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponClick(clickCouponData)
+        }
+    }
+
+
+    private fun redirectCouponPage() {
+        componentData.couponDetailClicked = false
+        RouteManager.route(itemView.context, quickCouponViewModel.getCouponApplink())
+    }
+
+    private fun enableCouponApplyClick() {
+        componentData.couponAppliedClicked = true
+        componentData.couponDetailClicked = false
+        quickCouponViewModel.loggedInStatus()
+        quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponApply(clickCouponData)
         }
     }
 }
