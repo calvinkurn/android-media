@@ -26,8 +26,8 @@ class InitialSearchViewModel @Inject constructor(
     val deleteHistorySearch: LiveData<Result<DeleteHistorySearchUiModel>>
         get() = _deleteHistorySearch
 
-    private val _getSearchSeller = MutableLiveData<Result<List<InitialSearchUiModel>>>()
-    val getSellerSearch: LiveData<Result<List<InitialSearchUiModel>>>
+    private val _getSearchSeller = MutableLiveData<Result<InitialSearchUiModel>>()
+    val getSellerSearch: LiveData<Result<InitialSearchUiModel>>
         get() = _getSearchSeller
 
     fun getSellerSearch(keyword: String, section: String = "", shopId: String) {

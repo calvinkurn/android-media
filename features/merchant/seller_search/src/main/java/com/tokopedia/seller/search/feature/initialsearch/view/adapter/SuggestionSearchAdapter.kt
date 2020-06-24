@@ -5,7 +5,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.LoadingSearc
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoResultUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
 
-class SuggestionSearchAdapter(private val typeFactory: SuggestionSearchAdapterTypeFactory):
+class SuggestionSearchAdapter(typeFactory: SuggestionSearchAdapterTypeFactory):
         BaseAdapter<SuggestionSearchAdapterTypeFactory>(typeFactory) {
 
     fun addAll(list: List<SellerSearchUiModel>) {

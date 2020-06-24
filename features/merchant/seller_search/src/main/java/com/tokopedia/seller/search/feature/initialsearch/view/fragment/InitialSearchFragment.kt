@@ -9,6 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
@@ -22,6 +25,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.initial_search_fragment.*
+import kotlinx.android.synthetic.main.initial_search_with_history_section.*
 import javax.inject.Inject
 
 class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
@@ -86,6 +90,9 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
             layoutManager = LinearLayoutManager(context)
             adapter = initialSearchAdapter
         }
+        tvClearAll?.setOnClickListener {
+            onClearAllSearch()
+        }
     }
 
     override fun onClearSearchItem(keyword: String, adapterPosition: Int) {
@@ -111,7 +118,6 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
                     setHistorySearch(it.data)
                 }
                 is Fail -> {
-
                 }
             }
         })
@@ -128,24 +134,27 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     }
 
     private fun removePositionHistory() {
-        if(isDeleteAll) {
-            onMinCharState()
+        if (isDeleteAll) {
+            initialSearchAdapter.clearAllElements()
         } else {
-            if(initialSearchAdapter.itemCount == 1) {
-                onMinCharState()
-            } else {
-                initialSearchAdapter.removeHistory(positionHistory)
-            }
+            initialSearchAdapter.removeHistory(positionHistory)
+        }
+
+        if(initialSearchAdapter.itemCount.isZero()) {
+            sectionSearchHistory?.hide()
+            initialSearchAdapter.addNoHistoryState()
         }
     }
 
-    private fun setHistorySearch(data: List<InitialSearchUiModel>) {
+    private fun setHistorySearch(data: InitialSearchUiModel) {
         initialSearchAdapter.clearAllElements()
-        if (data.isEmpty()) {
+        if (data.sellerSearchList.isEmpty()) {
+            sectionSearchHistory?.hide()
             initialSearchAdapter.addNoHistoryState()
         } else {
-            titleList = data[0].titleList
-            initialSearchAdapter.addAll(data)
+            sectionSearchHistory?.show()
+            titleList = data.titleList
+            initialSearchAdapter.addAll(data.sellerSearchList)
         }
         historyViewUpdateListener?.showHistoryView()
     }
@@ -160,6 +169,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     }
 
     fun onMinCharState() {
+        sectionSearchHistory?.hide()
         initialSearchAdapter.apply {
             clearAllElements()
             addMinCharState()

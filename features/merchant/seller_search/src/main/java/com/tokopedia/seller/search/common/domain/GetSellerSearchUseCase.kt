@@ -21,8 +21,8 @@ class GetSellerSearchUseCase @Inject constructor(
         private const val LANG_ID = "id"
 
         private val gqlQuery = """
-            query sellerSearch(${'$'}keyword: String!, ${'$'} lang :String!, ${'$'}shop_id: String!) {
-              	sellerSearch(keyword: ${'$'}keyword, lang: ${'$'}lang, shop_id: ${'$'}shop_id) {
+            query sellerSearch(${'$'}keyword: String!, ${'$'}lang :String!, ${'$'}shop_id: String!, ${'$'}section: String!) {
+              	sellerSearch(keyword: ${'$'}keyword, lang: ${'$'}lang, shop_id: ${'$'}shop_id, section: ${'$'}section) {
                 data{
                   sections {
                     id
@@ -51,10 +51,10 @@ class GetSellerSearchUseCase @Inject constructor(
 
         @JvmStatic
         fun createParams(keyword: String, shopId: String, section: String): Map<String, String> =
-                mapOf(KEYWORD to keyword, LANG to LANG_ID, SHOP_ID to shopId, SHOP_ID to shopId, SECTION to section)
+                mapOf(KEYWORD to keyword, LANG to LANG_ID, SHOP_ID to shopId, SECTION to section)
     }
 
-    var params = mapOf<String, String>()
+    var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): SellerSearchResponse.SellerSearch {
         val gqlRequest = GraphqlRequest(gqlQuery, SellerSearchResponse::class.java, params)

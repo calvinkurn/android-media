@@ -3,19 +3,21 @@ package com.tokopedia.seller.search.feature.initialsearch.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchMinCharUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 
 class InitialSearchAdapter(initialSearchAdapterTypeFactory: InitialSearchAdapterTypeFactory):
         BaseAdapter<InitialSearchAdapterTypeFactory>(initialSearchAdapterTypeFactory) {
 
-    fun addAll(list: List<InitialSearchUiModel>) {
+    fun addAll(list: List<ItemInitialSearchUiModel>) {
         visitables.addAll(list)
         notifyDataSetChanged()
     }
 
     fun removeHistory(position: Int) {
-        visitables.removeAt(position)
-        notifyItemRemoved(position)
+        if(position != -1) {
+            visitables.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 
     fun addMinCharState() {

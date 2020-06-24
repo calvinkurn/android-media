@@ -118,7 +118,6 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
         } else {
             rvSearchFilter?.show()
             filterAdapter.setFilterSearch(filterList)
-            filterAdapter.updatedSortFilter(positionFilter)
             suggestionSearchAdapter.addAll(data)
         }
         suggestionViewUpdateListener?.showSuggestionView()
@@ -168,7 +167,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     override fun onFilterItemClicked(title: String, chipType: String, position: Int) {
         val section = if(title == ALL) "" else title
         positionFilter = position
-        onFilterSearchSuggestion(section)
+        onFilterSearchSuggestion(section, positionFilter)
     }
 
     override fun onNavigationItemClicked(data: ItemSellerSearchUiModel, position: Int) {
@@ -189,13 +188,13 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
         dropKeyBoard()
     }
 
-    private fun onFilterSearchSuggestion(section: String) {
+    private fun onFilterSearchSuggestion(section: String, position: Int) {
         suggestionSearchAdapter.apply {
             rvSearchFilter?.hide()
             clearAllElements()
             addLoading()
         }
-        viewModel.getSellerSearch(keyword = searchKeyword, section = section, shopId = shopId)
+        viewModel.getSellerSearch(keyword = searchKeyword, section = section, shopId = shopId, position = position)
     }
 
 }

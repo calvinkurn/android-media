@@ -31,13 +31,13 @@ class SuggestionSearchViewModel @Inject constructor(
     val insertSuccessSearch: LiveData<Result<RegisterSearchUiModel>>
         get() = _insertSuccessSearch
 
-    fun getSellerSearch(keyword: String, section: String = "", shopId: String) {
+    fun getSellerSearch(keyword: String, section: String = "", shopId: String, position: Int = 0) {
         launchCatchError(block = {
             val responseGetSellerSearch  = withContext(dispatcherProvider.io()) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(
                         keyword, shopId, section)
                 Pair(GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground(), keyword),
-                        GlobalSearchSellerMapper.mapTopItemFilterSearch(getSellerSearchUseCase.executeOnBackground()))
+                        GlobalSearchSellerMapper.mapTopItemFilterSearch(getSellerSearchUseCase.executeOnBackground(), position))
             }
             _getSearchSeller.postValue(Success(Pair(responseGetSellerSearch.first, responseGetSellerSearch.second)))
         }, onError = {

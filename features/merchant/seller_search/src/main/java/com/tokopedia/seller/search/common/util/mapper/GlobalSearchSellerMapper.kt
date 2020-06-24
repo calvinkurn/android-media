@@ -17,7 +17,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch
 
 object GlobalSearchSellerMapper {
 
-    private fun mapToTitleListSearch(searchSeller: SellerSearchResponse.SellerSearch): List<String> {
+    fun mapToTitleListSearch(searchSeller: SellerSearchResponse.SellerSearch): List<String> {
         return mutableListOf<String>().apply {
             searchSeller.data.sections.map {
                 it.items.map { item ->
@@ -27,15 +27,42 @@ object GlobalSearchSellerMapper {
         }
     }
 
-    fun mapTopItemFilterSearch(sellerSearch: SellerSearchResponse.SellerSearch): List<FilterSearchUiModel> {
+    fun mapTopItemFilterSearch(sellerSearch: SellerSearchResponse.SellerSearch, position: Int = 0): List<FilterSearchUiModel> {
         return mutableListOf<FilterSearchUiModel>().apply {
-            sellerSearch.data.sections.mapIndexed { i, section ->
-                if(i.isZero()) {
-                    add(FilterSearchUiModel(title = ALL, isSelected = true))
+            //only one section
+            if (sellerSearch.data.sections.size == 1) {
+                sellerSearch.data.sections.mapIndexed { _, section ->
+                    add(FilterSearchUiModel(title = section.title, isSelected = true))
+                    return@apply
                 }
-                if(section.id != FAQ) {
-                    if (section.has_more == true) {
-                        add(FilterSearchUiModel(title = section.title, isSelected = false))
+            } else {
+                if (position > 0) {
+                    sellerSearch.data.sections.mapIndexed { i, section ->
+                        when {
+                            i.isZero() -> {
+                                add(FilterSearchUiModel(title = ALL, isSelected = false))
+                            }
+                            i == position -> {
+                                add(FilterSearchUiModel(title = section.title, isSelected = true))
+                            }
+                            else -> {
+                                add(FilterSearchUiModel(title = section.title, isSelected = false))
+                            }
+                        }
+                    }
+                } else {
+                    sellerSearch.data.sections.mapIndexed { i, section ->
+                        if (i.isZero()) {
+                            add(FilterSearchUiModel(title = ALL, isSelected = true))
+                        } else {
+                            if (section.id != FAQ) {
+                                if (section.has_more == true) {
+                                    add(FilterSearchUiModel(title = section.title, isSelected = false))
+                                } else {
+                                    return@mapIndexed
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -70,28 +97,26 @@ object GlobalSearchSellerMapper {
         }
     }
 
-    fun mapToInitialSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): List<InitialSearchUiModel> {
-        return mutableListOf<InitialSearchUiModel>().apply {
+    fun mapToInitialSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): InitialSearchUiModel {
 
+        return InitialSearchUiModel().apply {
             val titleList = mapToTitleListSearch(sellerSearch)
 
             val searchSellerList = mutableListOf<ItemInitialSearchUiModel>()
-            sellerSearch.data.sections.map {
-                it.items.map { itemSearch ->
+            sellerSearch.data.sections.map { section ->
+                section.items.map { itemSearch ->
                     searchSellerList.add(
                             ItemInitialSearchUiModel(id = itemSearch.id, title = itemSearch.title,
                                     desc = itemSearch.description, imageUrl = itemSearch.image_url,
                                     appUrl = itemSearch.app_url))
                 }
 
-                add(InitialSearchUiModel(
-                        id = it.id,
-                        title = it.title,
-                        hasMore = it.has_more ?: false,
-                        count = sellerSearch.data.count.orZero(),
-                        titleList = titleList,
-                        sellerSearchList = searchSellerList
-                ))
+                this.id = section.id
+                this.title = section.title
+                this.hasMore = section.has_more ?: false
+                this.count = sellerSearch.data.count.orZero()
+                this.titleList = titleList
+                this.sellerSearchList = searchSellerList
             }
         }
     }

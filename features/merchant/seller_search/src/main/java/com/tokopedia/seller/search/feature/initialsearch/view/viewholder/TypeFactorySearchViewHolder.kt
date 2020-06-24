@@ -4,11 +4,11 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.LoadingSearc
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchMinCharUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoResultUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
 
 interface TypeFactoryInitialSearchAdapter {
-    fun type(initialSearchUiModel: InitialSearchUiModel): Int
+    fun type(initialSearchUiModel: ItemInitialSearchUiModel): Int
     fun type(sellerSearchMinCharUiModel: SellerSearchMinCharUiModel): Int
     fun type(sellerSearchNoHistoryUiModel: SellerSearchNoHistoryUiModel): Int
 }
