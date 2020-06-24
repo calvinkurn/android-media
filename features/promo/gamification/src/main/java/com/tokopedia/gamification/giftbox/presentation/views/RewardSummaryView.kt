@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.presentation.adapter.RewardSummaryAdapter
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.helpers.RewardItemDecoration
@@ -109,8 +110,17 @@ class RewardSummaryView : FrameLayout {
                         button.setOnClickListener {
                             if (rb.type == RewardButtonType.EXIT) {
                                 (it.context as? AppCompatActivity)?.finish()
+
+                                if (dataList.isEmpty()) {
+                                    GtmGiftTapTap.clickExitNoReward()
+                                } else {
+                                    GtmGiftTapTap.clickExitButtonReward()
+                                }
+                            } else{
+                                GtmGiftTapTap.clickCheckRewards()
                             }
                             RouteManager.route(it.context, rb.applink)
+
                         }
 
                         if (index == 0) {
@@ -132,8 +142,10 @@ class RewardSummaryView : FrameLayout {
 
         if (rewardSummaryItemList.isEmpty()) {
             showEmpty()
+            GtmGiftTapTap.viewNoRewardsPage()
         } else {
             setRewardSummaryData(rewardSummaryItemList)
+            GtmGiftTapTap.viewRewardSummary()
         }
     }
 

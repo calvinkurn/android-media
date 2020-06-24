@@ -28,7 +28,7 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.InactiveImageLoader
-import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
@@ -157,7 +157,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
                 ovoPointsTextAnim.addListener(onEnd = { toggleInActiveHint(true) })
                 animatorSet.start()
-                getTapTapView().postDelayed({ afterRewardAnimationEnds() }, startDelay + pairAnim1.second + NEGATIVE_DURATION)
+                getTapTapView().postDelayed({
+                    afterRewardAnimationEnds()
+                }, startDelay + pairAnim1.second + NEGATIVE_DURATION)
             }
             RewardContainer.RewardState.POINTS_ONLY -> {
 
@@ -176,7 +178,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 ovoPointsTextAnim.startDelay = startDelay + 100L
                 ovoPointsTextAnim.addListener(onEnd = { toggleInActiveHint(true) })
                 ovoPointsTextAnim.start()
-                getTapTapView().postDelayed({ afterRewardAnimationEnds() }, startDelay + pairAnim.second + NEGATIVE_DURATION)
+                getTapTapView().postDelayed({
+                    afterRewardAnimationEnds()
+                    GtmGiftTapTap.viewRewards(OVO)
+                }, startDelay + pairAnim.second + NEGATIVE_DURATION)
             }
             RewardContainer.RewardState.COUPON_ONLY -> {
                 val pairAnim = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay) // 1 second
@@ -190,7 +195,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 pairAnim.first.addListener(onEnd = { toggleInActiveHint(true) })
                 animatorSet.startDelay = startDelay
                 animatorSet.start()
-                getTapTapView().postDelayed({ afterRewardAnimationEnds() }, startDelay + pairAnim.second + NEGATIVE_DURATION)
+                getTapTapView().postDelayed({
+                    afterRewardAnimationEnds()
+                    GtmGiftTapTap.viewRewards(COUPON)
+                }, startDelay + pairAnim.second + NEGATIVE_DURATION)
             }
         }
     }
@@ -245,7 +253,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         //for empty state
                         val state = it.data.gamiTapEggHome?.tokensUser?.state
                         state?.let { tokenUserState ->
-                            when (tokenUserState.toLowerCase()) {
+                            when (tokenUserState) {
                                 EMPTY -> {
                                     val title = it.data.gamiTapEggHome?.tokensUser?.text
                                     val desc = it.data.gamiTapEggHome?.tokensUser?.desc
@@ -267,18 +275,24 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     it.data.gamiTapEggHome?.actionButton?.let { items ->
                                         if (!items.isNullOrEmpty())
                                             btnInactiveFirst.text = items[0].text
-                                    }
 
+                                        btnInactiveFirst.setOnClickListener {
+                                            GtmGiftTapTap.clickHomePageButton()
+                                        }
+                                    }
+                                    GtmGiftTapTap.campaignOver()
                                 }
                                 LOBBY -> {
                                     it.data.gamiTapEggHome?.let { gamiTapEggHome ->
                                         setupLobbyUi(gamiTapEggHome)
+                                        GtmGiftTapTap.impressionGiftBox()
                                     }
 
                                 }
                                 CRACK_UNLIMITED -> {
                                     it.data.gamiTapEggHome?.let { gamiTapEggHome ->
                                         setupCrackUnlimitedUi(gamiTapEggHome)
+                                        GtmGiftTapTap.impressionGiftBox()
                                     }
                                 }
                                 else -> {
@@ -389,7 +403,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                             if (it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty()) {
                                 val couponDetail = result.data.couponMap["id_${it.referenceID}"]
                                 rewardItems.add(RewardSummaryItem(couponDetail, it))
-                            } else if (it.benefitType == BenefitType.OVO) {
+                            } else if (it.benefitType == OVO) {
                                 rewardItems.add(RewardSummaryItem(null, it))
                             }
                         }
@@ -433,6 +447,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     getTapTapView().isGiftTapAble = true
             }
             getTapTapView().incrementTapCount()
+            GtmGiftTapTap.clickGiftBox()
         }
     }
 
@@ -571,6 +586,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             } else {
                 showRedError(fmParent, message, actionText, ::handleGiftBoxTap)
             }
+            GtmGiftTapTap.viewError()
         }
     }
 
@@ -582,6 +598,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
             }
+            GtmGiftTapTap.viewError()
         }
     }
 
@@ -817,12 +834,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     if (!benefit.color.isNullOrEmpty()) {
                         rewardContainer.tvSmallReward.setTextColor(Color.parseColor(benefit.color))
                     }
-                    GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
+//                    GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
 
                 } else if (benefit.benefitType == COUPON) {
                     hasCoupons = true
                     benefit.referenceID?.let { refId ->
-                        GtmEvents.viewRewards(refId, userSession?.userId)
+//                        GtmEvents.viewRewards(refId, userSession?.userId)
                     }
                     rewardContainer.couponList.add(CouponTapTap(imageUrl))
                 }
@@ -862,10 +879,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             dialog.setDescription(backButton.text)
             dialog.setPrimaryCTAText(backButton.yesText)
             dialog.setPrimaryCTAClickListener {
+                GtmGiftTapTap.clickContinueButton()
                 activity?.finish()
             }
             dialog.setSecondaryCTAText(backButton.cancelText)
             dialog.setSecondaryCTAClickListener {
+                GtmGiftTapTap.clickExitButton()
                 dialog.cancel()
             }
             dialog.show()

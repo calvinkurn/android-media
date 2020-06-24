@@ -19,6 +19,7 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.audio.AudioManager
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
@@ -102,7 +103,10 @@ open class GiftBoxBaseFragment : Fragment() {
         toggleSound(isSoundEnabled())
 
         imageToolbarIcon.setOnClickListener {
-            GtmEvents.clickBackButton(userSession?.userId)
+            when (this) {
+                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickMainBackButton()
+                is GiftBoxDailyFragment -> GtmEvents.clickBackButton(userSession?.userId)
+            }
             activity?.finish()
         }
 
@@ -166,7 +170,7 @@ open class GiftBoxBaseFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun performShareAction() {
+    open fun performShareAction() {
         try {
             var userName = ""
             var shareText = ""
@@ -183,7 +187,10 @@ open class GiftBoxBaseFragment : Fragment() {
             }
             val shareIntent = Intent.createChooser(sendIntent, null)
             startActivity(shareIntent)
-            GtmEvents.clickShareButton(userSession?.userId)
+            when (this) {
+                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickShareButton()
+                is GiftBoxDailyFragment -> GtmEvents.clickShareButton(userSession?.userId)
+            }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -207,7 +214,11 @@ open class GiftBoxBaseFragment : Fragment() {
         dialog.btnRetry.setOnClickListener {
             dialog.closeAbleDialog.dismiss()
             method.invoke()
-            GtmEvents.clickTryAgainButton(userSession?.userId)
+            when (this) {
+                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickTryAgain()
+                is GiftBoxDailyFragment -> GtmEvents.clickTryAgainButton(userSession?.userId)
+            }
+
         }
     }
 
