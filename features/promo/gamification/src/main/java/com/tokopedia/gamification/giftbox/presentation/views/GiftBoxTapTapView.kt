@@ -27,7 +27,6 @@ class GiftBoxTapTapView : GiftBoxDailyView {
     var isBoxAlreadyOpened = false
     var tapCount = 0
     var targetTapCount = 0
-    var boxRewardCallback: BoxRewardCallback? = null
     var isTimeOut = false
 
     var disableConfettiAnimation = false

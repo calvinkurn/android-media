@@ -6,7 +6,6 @@ import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity
 import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.entities.CouponDetailResponse
-import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.domain.CouponDetailUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxTapTapCrackUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxTapTapHomeUseCase
@@ -15,6 +14,7 @@ import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.taptap.data.entiity.TapTapBaseEntity
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -29,6 +29,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
 
     @Volatile
     var campaignId: Long = 0
+    var waitingForCrackResult = false
 
     val giftHomeLiveData: MutableLiveData<LiveDataResult<TapTapBaseEntity>> = MutableLiveData()
     val giftCrackLiveData: MutableLiveData<LiveDataResult<ResponseCrackResultEntity>> = MutableLiveData()
@@ -45,6 +46,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     }
 
     fun crackGiftBox() {
+        waitingForCrackResult = true
         launchCatchError(block = {
             val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
             giftCrackLiveData.postValue(LiveDataResult.success(response))
@@ -59,7 +61,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
                     .map { it.referenceID }
             val data = getCatalogDetail(ids)
             couponLiveData.postValue(LiveDataResult.success(data))
-        },onError={
+        }, onError = {
             couponLiveData.postValue(LiveDataResult.error(it))
         })
     }

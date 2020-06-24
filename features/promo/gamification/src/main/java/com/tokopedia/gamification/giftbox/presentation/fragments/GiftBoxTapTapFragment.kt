@@ -93,8 +93,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     @MinuteTimerState
     var minuteTimerState: Int = NOT_STARTED
 
-
     val CONTAINER_INACTIVE = 2
+    val SERVER_LIMIT_REACHED = "47004"
+    val STATUS_OK = "200"
+    var clientLimitReached = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -309,45 +311,72 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     val responseCrackResultEntity = it.data
                     if (it.data != null) {
                         val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
-                        if (!resultCode.isNullOrEmpty() && resultCode == "200") {
-                            boxState = OPEN
-                            toggleInActiveHint(false)
-                            getTapTapView().disableConfettiAnimation = true
-                            getTapTapView().resetTapCount()
+                        if (!resultCode.isNullOrEmpty()) {
+                            when (resultCode) {
+                                STATUS_OK -> {
+                                    boxState = OPEN
+                                    toggleInActiveHint(false)
+                                    getTapTapView().disableConfettiAnimation = true
+                                    getTapTapView().resetTapCount()
 
-                            val benefits = responseCrackResultEntity.crackResultEntity?.benefits
+                                    val benefits = responseCrackResultEntity.crackResultEntity?.benefits
 
-                            if (responseCrackResultEntity.crackResultEntity != null) {
-                                updateRewardStateAndRewards(benefits, responseCrackResultEntity.crackResultEntity.imageUrl)
+                                    if (responseCrackResultEntity.crackResultEntity != null) {
+                                        updateRewardStateAndRewards(benefits, responseCrackResultEntity.crackResultEntity.imageUrl)
 
-                                if (!isTimeOut) {
-                                    if (!getTapTapView().isBoxAlreadyOpened) {
-                                        getTapTapView().firstTimeBoxOpenAnimation()
-                                        getTapTapView().isBoxAlreadyOpened = true
-                                    } else {
-                                        getTapTapView().boxBounceAnimation().start()
-                                        showRewardAnimation(rewardState, 0L, false)
+                                        if (!isTimeOut) {
+                                            if (!getTapTapView().isBoxAlreadyOpened) {
+                                                getTapTapView().firstTimeBoxOpenAnimation()
+                                                getTapTapView().isBoxAlreadyOpened = true
+                                            } else {
+                                                getTapTapView().boxBounceAnimation().start()
+                                                showRewardAnimation(rewardState, 0L, false)
+                                            }
+                                        }
                                     }
 
                                 }
-                            }
+                                SERVER_LIMIT_REACHED -> {
+                                    //todo Rahul how to show the ui - how to
+                                    // show you have won all the rewards
 
-                        } else {
-                            getTapTapView().isGiftTapAble = true
-                            val status = responseCrackResultEntity?.crackResultEntity?.resultStatus
-                            val messageList = status?.message
-                            if (!messageList.isNullOrEmpty()) {
-                                renderGiftBoxOpenError(messageList[0], getString(R.string.gami_oke))
-                            } else {
-                                renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                                    viewModel.waitingForCrackResult = false
+                                    getTapTapView().isGiftTapAble = false
+                                    minuteCountDownTimer?.cancel()
+                                    minuteTimerState = FINISHED
+                                    rewardSummary.visibility = View.VISIBLE
+                                    toggleInActiveHint(false)
+                                    showRewardSummary()
+                                    return@Observer
+                                }
+                                else -> {
+                                    getTapTapView().isGiftTapAble = true
+                                    val status = responseCrackResultEntity?.crackResultEntity?.resultStatus
+                                    val messageList = status?.message
+                                    if (!messageList.isNullOrEmpty()) {
+                                        renderGiftBoxOpenError(messageList[0], getString(R.string.gami_oke))
+                                    } else {
+                                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                                    }
+                                }
                             }
-
                         }
+                    }
+                    viewModel.waitingForCrackResult = false
+
+                    if (isTimeOut) {
+                        showRewardSummary()
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    getTapTapView().isGiftTapAble = true
-                    renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                    viewModel.waitingForCrackResult = false
+
+                    if (isTimeOut) {
+                        showRewardSummary()
+                    } else {
+                        getTapTapView().isGiftTapAble = true
+                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                    }
                 }
             }
         })
@@ -369,9 +398,18 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
 
                 LiveDataResult.STATUS.ERROR -> {
+                    fadeOutWaktuHabisAndShowReward()
                 }
             }
         })
+    }
+
+    fun maxLimitReachedServer() {
+
+    }
+
+    fun maxLimitReachedClient() {
+
     }
 
     fun toggleInActiveHint(show: Boolean) {
@@ -548,7 +586,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     fun afterRewardAnimationEnds() {
-        (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
+        if (clientLimitReached) {
+            minuteCountDownTimer?.cancel()
+            minuteTimerState = FINISHED
+            rewardSummary.visibility = View.VISIBLE
+            toggleInActiveHint(false)
+            showRewardSummary()
+        } else {
+            (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
+        }
     }
 
     override fun initialViewSetup() {
@@ -616,6 +662,21 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         return alphaAnim
     }
 
+    private fun showRewardSummary() {
+        val notWaitingForApi = !viewModel.waitingForCrackResult
+        if (notWaitingForApi) {
+            giftBoxDailyView.postDelayed({
+                val item = benefitItems.find { it.isBigPrize }
+                if (item != null) {
+                    viewModel.getCouponDetails(benefitItems)
+                } else {
+                    rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it) })
+                    fadeOutWaktuHabisAndShowReward()
+                }
+            }, 2000L)
+        }
+    }
+
     fun startOneMinuteCounter(totalSeconds: Long) {
 
         fun onTimeUp() {
@@ -626,16 +687,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             lottieTimeUp.playAnimation()
             playTimeOutSound()
             toggleInActiveHint(false)
-
-            giftBoxDailyView.postDelayed({
-                val item = benefitItems.find { it.isBigPrize }
-                if (item != null) {
-                    viewModel.getCouponDetails(benefitItems)
-                } else {
-                    rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it) })
-                    fadeOutWaktuHabisAndShowReward()
-                }
-            }, 3000L)
+            showRewardSummary()
         }
         //todo Rahul uncomment this
 //        val time = totalSeconds * 1000L
@@ -720,7 +772,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    fun fadeOutWaktuHabisAndShowReward() {
+    private fun fadeOutWaktuHabisAndShowReward() {
         val animatorSet = AnimatorSet()
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
         val fadeOutAnim = ObjectAnimator.ofPropertyValuesHolder(lottieTimeUp, alphaProp)
