@@ -6,7 +6,7 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel
  * Created by alvarisi on 12/12/17.
  */
 
-class FlightOrderPassengerViewModel(
+class FlightOrderPassengerModel(
         val type: Int,
         val status: Int,
         val secondStatus: Int,
