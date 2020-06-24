@@ -19,6 +19,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     private lateinit var tabsViewModel: TabsViewModel
     private val tabsRecyclerViewAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
     private lateinit var linearLayoutManager: LinearLayoutManager
+    private val tabViewOffSet = 30
 
     init {
         attachRecyclerView()
@@ -56,7 +57,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     }
 
     fun onTabClick(id: String, position: Int) {
-        linearLayoutManager.scrollToPositionWithOffset(position, 0)
+        linearLayoutManager.scrollToPositionWithOffset(position, tabViewOffSet)
         tabsViewModel.onTabClick(id)
     }
 }
