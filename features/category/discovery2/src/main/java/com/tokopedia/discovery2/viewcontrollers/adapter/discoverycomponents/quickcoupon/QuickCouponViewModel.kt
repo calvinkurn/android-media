@@ -89,10 +89,10 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     override fun loggedInCallback() {
         val isLoggedIn = UserSession(application).isLoggedIn
-        components.couponDetailClicked = false
         if(isLoggedIn){
             fetchCouponDetailData()
         }else{
+            components.couponDetailClicked = false
             components.couponAppliedClicked = false
         }
     }
