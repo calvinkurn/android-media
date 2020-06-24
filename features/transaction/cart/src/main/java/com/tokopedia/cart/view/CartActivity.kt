@@ -2,10 +2,8 @@ package com.tokopedia.cart.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.atc_common.AtcConstant.APPLINK_PARAM_PRODUCT_ID
 import com.tokopedia.cart.R
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
-import com.tokopedia.purchase_platform.common.constant.CartConstant
 
 /**
  * @author anggaprasetiyo on 18/01/18.

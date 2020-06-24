@@ -1,12 +1,12 @@
 package com.tokopedia.atc_common.domain.model.response.atcexternal
 
-data class AddToCartExternalDataModel(
+data class AddToCartExternalModel(
         var message: List<String> = emptyList(),
         var success: Int = 0,
-        var data: DataAddToCartModel = DataAddToCartModel()
+        var data: AddToCartExternalDataModel = AddToCartExternalDataModel()
 )
 
-data class DataAddToCartModel(
+data class AddToCartExternalDataModel(
         var productId: Int = 0,
         var productName: String = "",
         var quantity: Int = 0,

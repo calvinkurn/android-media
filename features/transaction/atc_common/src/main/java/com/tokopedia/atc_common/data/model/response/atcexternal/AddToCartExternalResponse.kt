@@ -18,10 +18,10 @@ data class DataResponse(
         @SerializedName("success")
         val success: Int = 0,
         @SerializedName("data")
-        val data: DataAddToCartResponse = DataAddToCartResponse()
+        val data: AddToCartExternalDataResponse = AddToCartExternalDataResponse()
 )
 
-data class DataAddToCartResponse(
+data class AddToCartExternalDataResponse(
         @SerializedName("product_id")
         val productId: Int = 0,
         @SerializedName("product_name")
