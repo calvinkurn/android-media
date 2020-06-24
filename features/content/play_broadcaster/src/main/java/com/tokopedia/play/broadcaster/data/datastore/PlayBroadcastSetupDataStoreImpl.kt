@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.data.datastore
 import androidx.lifecycle.LiveData
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.type.OverwriteMode
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -61,7 +62,11 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     }
 
     override suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit> {
-        return productDataStore.uploadSelectedProducts(channelId)
+//        val uploadResult = productDataStore.uploadSelectedProducts(channelId)
+        //TODO("Remove Mock Code")
+        val uploadResult = NetworkResult.Success(Unit)
+        if (uploadResult is NetworkResult.Success) validateCover()
+        return uploadResult
     }
 
     override fun setSelectedProducts(selectedProducts: List<ProductData>) {
@@ -93,5 +98,21 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
         return coverDataStore.uploadSelectedCover(channelId)
+    }
+
+    private fun validateCover() {
+        val selectedCover = getSelectedCover()
+        val selectedProducts = getSelectedProducts()
+        val chosenCoverSource = when (val croppedCover = selectedCover?.croppedCover) {
+            is CoverSetupState.Cropped -> croppedCover.coverSource
+            is CoverSetupState.Cropping.Image -> croppedCover.coverSource
+            else -> null
+        }
+
+        if (chosenCoverSource is CoverSource.Product) {
+            val productId = chosenCoverSource.id
+            if (selectedProducts.none { it.id == productId })
+                updateCoverState(CoverSetupState.Blank)
+        }
     }
 }

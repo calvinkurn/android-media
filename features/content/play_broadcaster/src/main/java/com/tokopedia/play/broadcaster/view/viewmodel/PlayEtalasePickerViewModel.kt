@@ -104,15 +104,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     fun uploadProduct(channelId: String) {
         _observableUploadProductEvent.value = NetworkResult.Loading
-//        scope.launch {
-//            val result = setupDataStore.uploadSelectedProducts(channelId)
-//                if (result is NetworkResult.Success) _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
-//                else if (result is NetworkResult.Fail) _observableUploadProductEvent.value = result
-//        }
-        //TODO("Remove Mock Behavior")
         scope.launch {
-            delay(1500)
-            _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
+            val result = setupDataStore.uploadSelectedProducts(channelId)
+                if (result is NetworkResult.Success) _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
+                else if (result is NetworkResult.Fail) _observableUploadProductEvent.value = result
         }
     }
 

@@ -22,7 +22,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
@@ -135,7 +135,7 @@ class PlayCoverSetupFragment @Inject constructor(
     private fun onGetCoverFromCamera(imageUri: Uri?) {
         showCoverCropLayout(null)
         imageUri?.let {
-            viewModel.setCroppingCoverByUri(it, CoverSourceEnum.CAMERA)
+            viewModel.setCroppingCoverByUri(it, CoverSource.Camera)
         }
     }
 
@@ -146,7 +146,7 @@ class PlayCoverSetupFragment @Inject constructor(
     private fun onGetCoverFromGallery(imageUri: Uri?) {
         showCoverCropLayout(null)
         imageUri?.let {
-            viewModel.setCroppingCoverByUri(it, CoverSourceEnum.GALLERY)
+            viewModel.setCroppingCoverByUri(it, CoverSource.Gallery)
         }
         getImagePickerHelper().dismiss()
     }
@@ -215,7 +215,7 @@ class PlayCoverSetupFragment @Inject constructor(
             }
 
             override fun onChangeButtonClicked(view: CoverCropPartialView) {
-                onCancelCropImage(CoverSourceEnum.NONE)
+                onCancelCropImage(CoverSource.None)
             }
         })
     }
@@ -233,7 +233,7 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private fun openCoverChooser() {
         getImagePickerHelper()
-                .show(CoverSourceEnum.NONE)
+                .show(CoverSource.None)
     }
 
     private fun showCoverCropLayout(coverImageUri: Uri?) {
@@ -258,7 +258,7 @@ class PlayCoverSetupFragment @Inject constructor(
         viewModel.removeCover()
     }
 
-    private fun onCancelCropImage(source: CoverSourceEnum) {
+    private fun onCancelCropImage(source: CoverSource) {
         onBackFromCropping(source)
         showInitCoverLayout(null)
         removeCover()
@@ -324,13 +324,13 @@ class PlayCoverSetupFragment @Inject constructor(
         }
     }
 
-    private fun onBackFromCropping(source: CoverSourceEnum): Boolean {
+    private fun onBackFromCropping(source: CoverSource): Boolean {
         return when (source) {
-            CoverSourceEnum.GALLERY -> {
+            CoverSource.Gallery -> {
                 openGalleryPage()
                 true
             }
-            CoverSourceEnum.CAMERA -> {
+            CoverSource.Camera -> {
                 openCameraPage()
                 true
             }
@@ -348,7 +348,7 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private fun openGalleryPage() {
         getImagePickerHelper()
-                .show(CoverSourceEnum.GALLERY)
+                .show(CoverSource.Gallery)
     }
 
     private fun handleCroppingState(state: CoverSetupState.Cropping) {
@@ -369,7 +369,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     .load(originalImageUrl)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            viewModel.setCroppingCoverByBitmap(resource, CoverSourceEnum.PRODUCT)
+                            viewModel.setCroppingCoverByBitmap(resource, CoverSource.Product(productCropping.productId))
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
