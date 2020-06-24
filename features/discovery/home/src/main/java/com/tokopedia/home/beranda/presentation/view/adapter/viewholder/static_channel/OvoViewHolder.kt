@@ -34,6 +34,7 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
+import com.tokopedia.kotlin.extensions.view.getResColor
 import kotlin.math.roundToInt
 
 /**
@@ -107,6 +108,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val ivLogoTokocash = itemView.findViewById<ImageView>(R.id.iv_logo_tokocash)
         val tokocashProgressBar = itemView.findViewById<View>(R.id.progress_bar_tokocash)
         scanHolder.setOnClickListener { goToScanner() }
+        tvBalanceTokocash.setTextColor(itemView.context.getResColor(R.color.font_black_disabled_38))
 
         if (element.homeHeaderWalletActionData == null && element.isWalletDataError) {
             tokoCashHolder.setOnClickListener {
@@ -142,6 +144,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                         tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
                         if (homeHeaderWalletAction.isShowTopup) {
+                            tvBalanceTokocash.setTextColor(itemView.context.getResColor(R.color.tkpd_main_green))
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
                             tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
                         } else {
