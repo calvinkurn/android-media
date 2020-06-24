@@ -14,8 +14,7 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 
-class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
-                                 val transactionListener: DigitalHomePageTransactionViewHolder.TransactionListener?)
+class DigitalHomePageTypeFactory(val listener: OnItemBindListener)
     : BaseAdapterTypeFactory(), HomeComponentTypeFactory {
 
     fun type(digitalHomePageBannerModel: DigitalHomePageBannerModel): Int {
@@ -86,6 +85,10 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
         return RechargeHomepageDualBannersViewHolder.LAYOUT
     }
 
+    fun type(productCardsModel: RechargeHomepageProductCardsModel): Int {
+        return RechargeHomepageProductCardsViewHolder.LAYOUT
+    }
+
     fun type(productBannerModel: RechargeHomepageProductBannerModel): Int {
         return RechargeHomepageProductBannerViewHolder.LAYOUT
     }
@@ -118,6 +121,7 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
             RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(parent, listener)
             RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(parent, listener)
             DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, listener, listener)
+            RechargeHomepageProductCardsViewHolder.LAYOUT -> RechargeHomepageProductCardsViewHolder(parent, listener)
             RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }

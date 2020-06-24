@@ -38,7 +38,7 @@ class DigitalHomePageViewModel @Inject constructor(
 
             // Filter out sections with no items then map sections based on their types
             val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(data.sections.filter {
-                it.items.isNotEmpty()
+                it.items.isNotEmpty() || it.template == SECTION_PRODUCT_CARD_ROW
             }).filterNotNull()
             mutableRechargeHomepageSections.postValue(Success(mappedData))
         }) {

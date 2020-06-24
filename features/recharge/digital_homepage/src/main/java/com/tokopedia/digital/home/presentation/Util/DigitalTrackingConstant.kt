@@ -32,6 +32,8 @@ object DigitalHomepageTrackingActionConstant {
     const val SINGLE_BANNER_CLICK = "single banner click"
     const val DUAL_BANNER_IMPRESSION = "dual banner impression"
     const val DUAL_BANNER_CLICK = "dual banner click"
+    const val PRODUCT_CARDS_IMPRESSION = "product cards impression"
+    const val PRODUCT_CARDS_CLICK = "product cards click"
     const val PRODUCT_BANNER_IMPRESSION = "product banner impression"
     const val PRODUCT_BANNER_CLICK = "product banner click"
 }

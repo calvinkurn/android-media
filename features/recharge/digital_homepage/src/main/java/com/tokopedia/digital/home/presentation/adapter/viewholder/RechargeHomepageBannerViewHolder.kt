@@ -91,6 +91,6 @@ class RechargeHomepageBannerViewHolder(itemView: View,
         val LAYOUT = R.layout.view_recharge_home_banner
         // TODO: Add empty banner layout
         @LayoutRes
-        val LAYOUT_EMPTY = R.layout.view_recharge_home_banner
+        val LAYOUT_EMPTY = R.layout.view_recharge_home_banner_empty
     }
 }

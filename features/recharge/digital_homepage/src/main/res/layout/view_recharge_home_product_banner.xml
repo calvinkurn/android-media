@@ -107,7 +107,7 @@
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/tv_recharge_home_product_banner_discount_label"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/spacing_lvl1"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginLeft="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/dp_4"
@@ -121,7 +121,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_recharge_home_product_banner_slashed_price"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/spacing_lvl1"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginRight="@dimen/spacing_lvl3"
                 android:ellipsize="end"

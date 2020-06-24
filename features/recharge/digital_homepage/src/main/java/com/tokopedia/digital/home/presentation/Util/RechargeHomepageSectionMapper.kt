@@ -14,6 +14,7 @@ object RechargeHomepageSectionMapper {
     // TODO: Finish section mapper
     fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>): List<Visitable<*>?> {
         return sections.map {
+            // TODO: Remove temporary data
             with(DigitalHomePageViewModel.Companion) {
                 when (it.template) {
                     SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
@@ -26,11 +27,30 @@ object RechargeHomepageSectionMapper {
                     SECTION_COUNTDOWN_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
                     SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
                     SECTION_LEGO_BANNERS -> getDynamicLegoBannerModel(it)
+//                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
+                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(RechargeHomepageSections.Section(
+                            id = 100,
+                            title = "Product Card Row",
+                            items = listOf(
+                                    RechargeHomepageSections.Item(
+                                            title = "Product 1",
+                                            mediaUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
+                                            label1 = "Rp 10.000",
+                                            label2 = "Mulai dari",
+                                            label3 = "Streaming"),
+                                    RechargeHomepageSections.Item(
+                                            title = "Product 2",
+                                            mediaUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
+                                            label1 = "Rp 20.000",
+                                            label2 = "Mulai dari",
+                                            label3 = "Voucher"
+                                    )
+                            )
+                    ))
 //                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
-                    // TODO: Remove temporary data
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(RechargeHomepageSections.Section(
-                            id = 1,
-                            title = "Test",
+                            id = 101,
+                            title = "Product Banner",
                             items = listOf(RechargeHomepageSections.Item(
                                     title = "Test Product",
                                     subtitle = "This product is cool",

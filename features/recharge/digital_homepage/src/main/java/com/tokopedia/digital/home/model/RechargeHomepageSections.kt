@@ -136,6 +136,12 @@ class RechargeHomepageDualBannersModel(section: RechargeHomepageSections.Section
         }
 }
 
+class RechargeHomepageProductCardsModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
 class RechargeHomepageProductBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)

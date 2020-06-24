@@ -300,7 +300,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
-        return DigitalHomePageTypeFactory(this, this)
+        return DigitalHomePageTypeFactory(this)
     }
 
     override fun onItemClicked(t: Visitable<*>) {
@@ -341,7 +341,6 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     companion object {
         val TOOLBAR_TRANSITION_RANGE = com.tokopedia.design.R.dimen.dp_8
-
         fun getInstance() = DigitalHomePageFragment()
     }
 }
