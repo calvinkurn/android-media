@@ -72,17 +72,27 @@ open class TkpdAuthInterceptor : TkpdBaseInterceptor {
             throwChainProcessCauseHttpError(response)
         }
         response = checkForceLogout(chain, response, finalRequest)
-        checkResponse(response)
+        checkResponse(finalRequest, response)
         return response
     }
 
-    protected fun checkResponse(response: Response) {
+    private fun isNeedForceLogout(request: Request): Boolean {
+        if (userSession.isLoggedIn && !userSession.accessToken.isEmpty()) {
+            if (request.header(HEADER_ACCOUNTS_AUTHORIZATION)?.contains(userSession.accessToken) == true) return true
+        }
+        return false
+    }
+
+    protected fun checkResponse(finalRequest: Request, response: Response) {
         val bodyResponse: String
         try {
             // Improvement for response, only check maintenance, server error and timezone by only peeking the body
             // instead of getting all string and create the new response.
             bodyResponse = response.peekBody(BYTE_COUNT.toLong()).string()
-            if (isMaintenance(bodyResponse)) {
+            if(isNeedGcmUpdate(response) && isNeedForceLogout(finalRequest)){
+                networkRouter.showForceLogoutTokenDialog(bodyResponse)
+            }
+            else if (isMaintenance(bodyResponse)) {
                 showMaintenancePage()
             } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
                 showServerError(response)

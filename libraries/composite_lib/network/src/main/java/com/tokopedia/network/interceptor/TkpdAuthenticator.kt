@@ -19,15 +19,10 @@ class TkpdAuthenticator(
         val networkRouter: NetworkRouter,
         val userSession: UserSession): Authenticator {
 
-    private fun isNeedForceLogout(request: Request): Boolean {
-        if (userSession.isLoggedIn && !userSession.accessToken.isEmpty()) {
-            if (request.header(HEADER_ACCOUNTS_AUTHORIZATION)?.contains(userSession.accessToken) == true) return true
-        }
-        return false
-    }
+    private fun isNeedRefresh() = userSession.isLoggedIn
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        if(!isNeedForceLogout(response.request())) {
+        if(isNeedRefresh()) {
             return try {
                 val originalRequest = response.request()
                 val accessTokenRefresh = AccessTokenRefresh()
@@ -37,8 +32,6 @@ class TkpdAuthenticator(
             } catch (ex: Exception) {
                 response.request()
             }
-        }else {
-            networkRouter.showForceLogoutTokenDialog(response.peekBody(BYTE_COUNT).string())
         }
         return response.request()
     }
