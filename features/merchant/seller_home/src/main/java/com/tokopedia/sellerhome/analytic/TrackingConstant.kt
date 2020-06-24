@@ -59,6 +59,11 @@ object TrackingConstant {
     const val CLICK_ORDER = "click order"
     const val CLICK_OTHERS = "click others"
 
+    //search
+    const val CLICK_SEARCH = "clickSearch"
+    const val GLOBAL_SEARCH = "global search"
+    const val CLICK_SEARCH_BUTTON = "click search button"
+
     //other value
     const val SELLER_WIDGET = "/seller widget"
     const val SCREEN_NAME_SELLER_HOME = "Seller Home"
