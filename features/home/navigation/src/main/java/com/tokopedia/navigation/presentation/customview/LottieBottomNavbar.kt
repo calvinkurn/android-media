@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.customview
 
+import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -14,6 +15,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieListener
 import com.tokopedia.navigation.R
 
 private const val DEFAULT_HEIGHT = 56f
@@ -183,14 +186,10 @@ class LottieBottomNavbar : LinearLayout {
             iconList.add(index, icon)
 
             val imageContainer = FrameLayout(context)
-            val fLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            val fLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+            resources.getDimensionPixelOffset(R.dimen.dp_32))
             imageContainer.layoutParams = fLayoutParams
             imageContainer.addView(icon)
-            if (menu[index].imageName != null) {
-                imageContainer.setPadding(0, resources.getDimensionPixelOffset(R.dimen.dp_4), 0, resources.getDimensionPixelOffset(R.dimen.dp_3))
-            } else {
-                imageContainer.setPadding(0, 0, 0, 0)
-            }
 
             if (bottomMenu.useBadge) {
                 val badge: View = LayoutInflater.from(context)
@@ -204,7 +203,6 @@ class LottieBottomNavbar : LinearLayout {
             }
 
             buttonContainer.addView(imageContainer)
-
 
             // add text view to show title
             val title = TextView(context)
@@ -257,8 +255,30 @@ class LottieBottomNavbar : LinearLayout {
 
         selectedItem?.let {
             iconList[it].setColorFilter(buttonColor, PorterDuff.Mode.SRC_ATOP)
-            iconList[it].speed = -4f
+            menu[it].imageName?.let { imageName ->
+                iconList[it].setImageDrawable(ContextCompat.getDrawable(context, imageName))
+            }
+            menu[it].animToEnabledName?.let { animToEnabledName ->
+                iconList[it].setAnimation(animToEnabledName)
+            }
             iconList[it].playAnimation()
+            iconList[it].addAnimatorListener(object: Animator.AnimatorListener {
+                override fun onAnimationRepeat(p0: Animator?) {
+
+                }
+
+                override fun onAnimationEnd(p0: Animator?) {
+
+                }
+
+                override fun onAnimationCancel(p0: Animator?) {
+
+                }
+
+                override fun onAnimationStart(p0: Animator?) {
+
+                }
+            })
 
             titleList[it].setTextColor(buttonColor)
             iconList[it].invalidate()
@@ -267,6 +287,12 @@ class LottieBottomNavbar : LinearLayout {
 
         // change currently selected item color
         val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
+        menu[newPosition].imageEnabledName?.let { imageEnabledName ->
+            iconList[newPosition].setImageDrawable(ContextCompat.getDrawable(context, imageEnabledName))
+        }
+        menu[newPosition].animName?.let { animName ->
+            iconList[newPosition].setAnimation(animName)
+        }
         iconList[newPosition].repeatCount = 0
         iconList[newPosition].setColorFilter(activeSelectedItemColor, PorterDuff.Mode.SRC_ATOP)
 
@@ -307,7 +333,14 @@ class LottieBottomNavbar : LinearLayout {
     }
 }
 
-data class BottomMenu(val id: Long, val title: String, val animName: Int? = null, val imageName: Int? = null, val activeButtonColor: Int, val useBadge: Boolean = true)
+data class BottomMenu(val id: Long,
+                      val title: String,
+                      val animName: Int? = null,
+                      val animToEnabledName: Int? = null,
+                      val imageName: Int? = null,
+                      val imageEnabledName: Int? = null,
+                      val activeButtonColor: Int,
+                      val useBadge: Boolean = true)
 interface IBottomClickListener {
     fun menuClicked(position: Int, id: Long): Boolean
     fun menuReselected(position: Int, id: Long)

@@ -400,16 +400,26 @@ public class MainParentActivity extends BaseActivity implements
     private void afterBottomNavigationInflation(Bundle savedInstanceState){
         bottomNavigation = findViewById(R.id.bottom_navbar);
         bottomNavigation.setMenuClickListener(this);
-        menu.add(new BottomMenu(0L, getResources().getString(R.string.home), R.raw.bottom_nav_home, null, R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(1L, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, null, R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(2L, getResources().getString(R.string.official), R.raw.bottom_nav_official, null, R.color.color_active_bottom_nav_os, true));
-        menu.add(new BottomMenu(3L, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, null, R.color.color_active_bottom_nav, true));
-        if (userSession.isLoggedIn()) {
-            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), R.raw.bottom_nav_account, null, R.color.color_active_bottom_nav, true));
-        } else {
-            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), null, R.drawable.ic_mainparent_login_enable, R.color.color_active_bottom_nav, true));
-        }
+//        menu.add(new BottomMenu(0L, getResources().getString(R.string.home), R.raw.bottom_nav_home, null, R.color.color_active_bottom_nav, true));
+//        menu.add(new BottomMenu(1L, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, null, R.color.color_active_bottom_nav, true));
+//        menu.add(new BottomMenu(2L, getResources().getString(R.string.official), R.raw.bottom_nav_official, null, R.color.color_active_bottom_nav_os, true));
+//        menu.add(new BottomMenu(3L, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, null, R.color.color_active_bottom_nav, true));
+//        if (userSession.isLoggedIn()) {
+//            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), R.raw.bottom_nav_account, null, R.color.color_active_bottom_nav, true));
+//        } else {
+//            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), null, R.drawable.ic_mainparent_login_enable, R.color.color_active_bottom_nav, true));
+//        }
 
+        menu.add(new BottomMenu(0L, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(1L, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(2L, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true));
+        menu.add(new BottomMenu(3L, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled,  R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
+
+        if (userSession.isLoggedIn()) {
+            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), R.raw.bottom_nav_account,   R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
+        } else {
+            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), null,   null, R.drawable.ic_mainparent_login_enable, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
+        }
         bottomNavigation.setMenu(menu);
         showSelectedPage();
 
