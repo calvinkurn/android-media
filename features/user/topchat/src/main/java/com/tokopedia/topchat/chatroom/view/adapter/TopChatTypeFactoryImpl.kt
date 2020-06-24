@@ -153,7 +153,7 @@ open class TopChatTypeFactoryImpl(
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(parent, imageUploadListener)
             LeftFallbackMessageViewHolder.LAYOUT -> LeftFallbackMessageViewHolder(parent, chatLinkHandlerListener)
             RightFallbackMessageViewHolder.LAYOUT -> RightFallbackMessageViewHolder(parent, chatLinkHandlerListener)
-            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener)
+            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent, imageDualAnnouncementListener)
             TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent, voucherListener)

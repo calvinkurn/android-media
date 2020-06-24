@@ -29,6 +29,7 @@ class RightChatMessageViewHolder(
     private fun bindHeader(message: MessageViewModel) {
         if (
                 message.source == BaseChatViewModel.SOURCE_AUTO_REPLY &&
+                message.source == BaseChatViewModel.SOURCE_TOPBOT &&
                 message.isSender &&
                 commonListener.isSeller()
         ) {
