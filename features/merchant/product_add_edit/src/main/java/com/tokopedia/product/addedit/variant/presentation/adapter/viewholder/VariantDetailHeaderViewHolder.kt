@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.variant.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.addedit.R
@@ -15,19 +14,20 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
     }
 
     private var unitValueHeader: AppCompatTextView? = null
-    private var accordionButton: AppCompatImageView? = null
+
+    private var headerPosition = 0
 
     init {
         unitValueHeader = itemView?.findViewById(R.id.tv_unit_value_header)
-        accordionButton = itemView?.findViewById(R.id.btn_accordion)
 
         itemView?.setOnClickListener {
-            listener.onHeaderClicked(adapterPosition)
+            listener.onHeaderClicked(headerPosition)
         }
     }
 
     override fun bind(element: VariantDetailHeaderViewModel?) {
         element?.run {
+            headerPosition = element.position
             unitValueHeader?.text = element.header
         }
     }
