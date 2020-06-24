@@ -83,9 +83,7 @@ class CalendarPicker(
             }
         }
         this.selectedDates = cpv.selectedDates
-        Handler().postDelayed({
-            dismiss()
-        }, 500)
+        dismiss()
     }
 
     private fun showSelectedDate(dates: List<Date>, mode: CalendarPickerView.SelectionMode) {
