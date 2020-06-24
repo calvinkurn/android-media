@@ -18,15 +18,7 @@ public class Resolution {
         return resolutionBuyer;
     }
 
-    public void setResolutionBuyer(int resolutionBuyer) {
-        this.resolutionBuyer = resolutionBuyer;
-    }
-
     public int getResolutionSeller() {
         return resolutionSeller;
-    }
-
-    public void setResolutionSeller(int resolutionSeller) {
-        this.resolutionSeller = resolutionSeller;
     }
 }
