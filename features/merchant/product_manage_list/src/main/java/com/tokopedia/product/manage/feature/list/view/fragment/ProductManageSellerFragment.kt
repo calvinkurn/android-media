@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
@@ -35,22 +36,12 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     companion object {
         private const val FILTER_OPTIONS = "filter_options"
-        private const val SEARCH_KEYWORD = "search_keyword"
 
         @JvmStatic
         fun newInstance(filterOptions: ArrayList<String>): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
-                }
-            }
-        }
-
-        @JvmStatic
-        fun newInstance(searchKeyword: String): ProductManageSellerFragment {
-            return ProductManageSellerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(SEARCH_KEYWORD, searchKeyword)
                 }
             }
         }
@@ -77,8 +68,8 @@ class ProductManageSellerFragment : ProductManageFragment() {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
         tvDraftProduct.visibility = View.GONE
-        getDefaultFilterOptionsFromArguments()
         getDefaultKeywordOptionFromArguments()
+        getDefaultFilterOptionsFromArguments()
         observeGetAllDraftCount()
     }
 
@@ -166,8 +157,12 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     private fun getDefaultKeywordOptionFromArguments() {
-        val searchKeyword = arguments?.getString(SEARCH_KEYWORD).orEmpty()
-        super.setSearchKeywordOptions(searchKeyword)
+        context?.let {
+            activity?.intent?.data?.apply {
+                val searchKeyword = getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SEARCH).orEmpty()
+                super.setSearchKeywordOptions(searchKeyword)
+            }
+        }
     }
 
     private fun getDefaultFilterOptionsFromArguments() {
@@ -219,7 +214,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     private fun observeGetAllDraftCount() {
         observe(productDraftListCountViewModel.getAllDraftCountResult) {
-            when(it) {
+            when (it) {
                 is Success -> onDraftCountLoaded(it.data)
                 is Fail -> onDraftCountLoadError()
             }

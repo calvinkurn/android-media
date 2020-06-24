@@ -70,6 +70,9 @@ class GlobalSearchView : BaseCustomView {
     fun setKeywordSearchBar(keyword: String) {
         searchKeyword = keyword
         searchBarView.searchBarTextField.setText(searchKeyword)
+        searchBarView.searchBarTextField.postDelayed({
+            searchBarView.searchBarTextField.text?.length?.let { searchBarView.searchBarTextField.setSelection(it) }
+        }, 200)
         searchViewListener?.onQueryTextChangeListener(searchKeyword)
     }
 

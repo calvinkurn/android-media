@@ -55,18 +55,21 @@ object DeepLinkMapperProductManage {
                 }
                 searchKeyword.isNotBlank() -> {
                     val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-                    UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST, param)
+                    UriUtil.buildUriAppendParam(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST, param)
                 }
                 else -> {
                     ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST
                 }
             }
         } else {
-            if (filterId.isNotBlank()) {
-                val param = mapOf(QUERY_PARAM_FILTER to filterId)
-                UriUtil.buildUriAppendParam(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST, param)
-            } else {
-                ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
+            when {
+                filterId.isNotBlank() -> {
+                    val param = mapOf(QUERY_PARAM_FILTER to filterId)
+                    UriUtil.buildUriAppendParam(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST, param)
+                }
+                else -> {
+                    ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
+                }
             }
         }
     }

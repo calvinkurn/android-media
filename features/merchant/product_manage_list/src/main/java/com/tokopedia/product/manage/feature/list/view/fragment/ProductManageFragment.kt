@@ -332,8 +332,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     fun setSearchKeywordOptions(keyword: String) {
-        searchBar.searchTextView.setText(keyword)
-        getProductList(searchKeyword = keyword)
+        isLoadingInitialData = true
+        tabSortFilter?.show()
+        searchBar?.show()
+        searchBar?.searchTextView?.setText(keyword)
+        showLoadingProgress()
+        getProductList()
+        searchBar.clearFocus()
     }
 
     private fun showProductEmptyState(): Boolean {
@@ -523,8 +528,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         renderCheckedView()
     }
 
-    private fun getProductList(page: Int = 1, isRefresh: Boolean = false, withDelay: Boolean = false, searchKeyword: String = "") {
-        val keyword = if(searchKeyword.isNotEmpty()) searchKeyword else searchBar.searchTextView.text.toString()
+    private fun getProductList(page: Int = 1, isRefresh: Boolean = false, withDelay: Boolean = false) {
+        val keyword = searchBar.searchTextView.text.toString()
         val selectedFilter = viewModel.selectedFilterAndSort.value
         val filterOptions = createFilterOptions(page, keyword)
         val sortOption = selectedFilter?.sortOption
