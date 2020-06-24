@@ -69,7 +69,6 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     }
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
-    abstract fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String)
     abstract fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel)
 
     override fun onCreate() {
@@ -111,39 +110,6 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             onUploadProductImagesSuccess(uploadIdList, variantInputModel)
         }, onError = { throwable ->
             setUploadProductDataError(getErrorMessage(throwable))
-            logError(RequestParams.EMPTY, throwable)
-        })
-    }
-
-    fun uploadProductImages(imageUrlOrPathList: List<String>, variantPicturePath: List<String>, sizeChartPath: String) {
-        val uploadIdList: ArrayList<String> = ArrayList()
-        val variantOptionUploadId: ArrayList<String> = ArrayList()
-        val urlImageCount = imageUrlOrPathList.size
-        var sizeChartUploadId = ""
-        // if sizeChartPath valid then add to progress
-        notificationManager = if (sizeChartPath.isNotEmpty()) {
-            getNotificationManager(urlImageCount + 1)
-        } else {
-            getNotificationManager(urlImageCount)
-        }
-        notificationManager?.onSubmitUpload()
-        launchCatchError(block = {
-            repeat(urlImageCount) { i ->
-                val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
-                uploadIdList.add(imageId)
-            }
-            repeat(variantPicturePath.size) { i ->
-                val imageId = uploadImageAndGetId(variantPicturePath[i])
-                variantOptionUploadId.add(imageId)
-            }
-            if (sizeChartPath.isNotEmpty()) { // if sizeChartPath valid then upload the image
-                sizeChartUploadId = uploadImageAndGetId(sizeChartPath)
-            }
-            delay(NOTIFICATION_CHANGE_DELAY)
-            onUploadProductImagesDone(uploadIdList, variantOptionUploadId, sizeChartUploadId)
-        }, onError = { throwable ->
-            setUploadProductDataError(getErrorMessage(throwable))
-
             logError(RequestParams.EMPTY, throwable)
         })
     }

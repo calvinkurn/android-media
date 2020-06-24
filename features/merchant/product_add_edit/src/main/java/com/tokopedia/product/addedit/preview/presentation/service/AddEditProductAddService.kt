@@ -86,14 +86,6 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 it.startsWith(AddEditProductConstants.HTTP_PREFIX)
             }
 
-    override fun onUploadProductImagesDone(
-            uploadIdList: ArrayList<String>,
-            variantOptionUploadId: List<String>,
-            sizeChartId: String
-    ) {
-        ///
-    }
-
     override fun onUploadProductImagesSuccess(
             uploadIdList: ArrayList<String>,
             variantInputModel: VariantInputModel

@@ -74,8 +74,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
             // (2)
             uploadProductImages(
                     filterPathOnly(productInputModel.detailInputModel.imageUrlOrPathList),
-                    getVariantFilePath(productInputModel.variantInputModel.selections),
-                    "")
+                    productInputModel.variantInputModel)
         }
     }
 
@@ -84,22 +83,9 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 it.startsWith(HTTP_PREFIX)
             }
 
-    private fun getVariantFilePath(variantOptionParent: List<SelectionInputModel>): List<String> {
-        val imageList: ArrayList<String> = ArrayList()
-        return imageList
-    }
-
-    override fun onUploadProductImagesDone(
-            uploadIdList: ArrayList<String>,
-            variantOptionUploadId: List<String>,
-            sizeChartId: String
-    ) {
-        // (3)
-        editProduct(uploadIdList, variantOptionUploadId, sizeChartId)
-    }
-
     override fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel) {
-        //
+        // (3)
+        editProduct(uploadIdList, variantInputModel)
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
@@ -122,20 +108,17 @@ class AddEditProductEditService : AddEditProductBaseService() {
 
     private fun editProduct(
             uploadIdList: ArrayList<String>,
-            variantOptionUploadId: List<String>,
-            sizeChartId: String
+            variantInputModel: VariantInputModel
     ) {
         val shopId = userSession.shopId
         val param = editProductInputMapper.mapInputToParam(
                 shopId,
                 productInputModel.productId.toString(),
                 uploadIdList,
-                variantOptionUploadId,
-                sizeChartId,
                 productInputModel.detailInputModel,
                 productInputModel.descriptionInputModel,
                 productInputModel.shipmentInputModel,
-                productInputModel.variantInputModel)
+                variantInputModel)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)

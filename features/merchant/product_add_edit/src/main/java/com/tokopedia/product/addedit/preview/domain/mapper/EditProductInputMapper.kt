@@ -44,8 +44,6 @@ class EditProductInputMapper @Inject constructor() {
     fun mapInputToParam(shopId: String,
                         productId: String,
                         uploadIdList: ArrayList<String>,
-                        variantOptionUploadId: List<String>,
-                        sizeChartUploadId: String,
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel,
@@ -114,12 +112,40 @@ class EditProductInputMapper @Inject constructor() {
                 it.sku,
                 it.status,
                 it.stock,
-                emptyList()
+                mapPictureVariant(it.pictures)
+        )
+    }
+
+    private fun mapPictureVariant(pictures: List<PictureVariantInputModel>) = pictures.map {
+        Picture(
+                it.description,
+                it.fileName,
+                it.filePath,
+                it.picID,
+                it.isFromIG == "true",
+                it.width.toInt(),
+                it.height.toInt(),
+                it.uploadId
         )
     }
 
     private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture>? {
-        return emptyList()
+        return if (sizecharts.filePath.isEmpty()) {
+            emptyList()
+        } else {
+            val sizechart = Picture(
+                    sizecharts.description,
+                    sizecharts.fileName,
+                    sizecharts.filePath,
+                    sizecharts.picID,
+                    sizecharts.isFromIG == "true",
+                    sizecharts.width.toInt(),
+                    sizecharts.height.toInt(),
+                    sizecharts.uploadId
+            )
+
+            listOf(sizechart)
+        }
     }
 
     private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {
