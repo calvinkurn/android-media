@@ -419,7 +419,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
                 KEY_ID to clickCouponData.componentID,
-                KEY_NAME to "name: `/tokopoints/penukaran points - ${clickCouponData.componentPosition} - promo list - mini coupon`",
+                KEY_NAME to "/tokopoints/penukaran points - ${clickCouponData.componentPosition} - promo list - mini coupon",
                 KEY_CREATIVE to (clickCouponData.componentName ?: EMPTY_STRING),
                 KEY_POSITION to clickCouponData.componentPosition
         ))
@@ -432,13 +432,13 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     }
 
     fun trackQuickCouponClick(clickCouponData: ClickCouponData) {
-        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
                 eventAction = CLICK_MINI_COUPON_DETAIL,
-                eventLabel = "${clickCouponData.codePromo} - ${clickCouponData.realCode}")
+                eventLabel = "${clickCouponData.codePromo ?: EMPTY_STRING} - ${clickCouponData.realCode ?: EMPTY_STRING}")
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
                 KEY_ID to clickCouponData.componentID,
-                KEY_NAME to "name: `/tokopoints/penukaran points - ${clickCouponData.componentPosition} - promo list - mini coupon`",
+                KEY_NAME to "/tokopoints/penukaran points - ${clickCouponData.componentPosition} - promo list - mini coupon",
                 KEY_CREATIVE to (clickCouponData.componentName ?: EMPTY_STRING),
                 KEY_POSITION to clickCouponData.componentPosition
         ))
@@ -452,7 +452,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     fun trackQuickCouponApply(clickCouponData: ClickCouponData) {
         val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
-                eventAction = IMPRESSION_MINI_COUPON_USE,
+                eventAction = CLICK_ON_MINI_COUPON_USE,
                 eventLabel = "${clickCouponData.codePromo} - ${clickCouponData.realCode}")
         getTracker().sendGeneralEvent(map)
     }

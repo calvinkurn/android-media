@@ -41,13 +41,13 @@ data class ComponentsItem(
         var noOfPagesLoaded: Int = 0,
         var componentsPerPage: Int = 20,
         var pageEndPoint: String = "",
+        var pagePath: String = "",
         var parentComponentId: String = "",
         var cpmData: DiscoveryDataMapper.CpmTopAdsData? = null,
         var chipSelectionData: DataItem? = null,
         var chipSelectionChange: Boolean = false,
         var couponDetailClicked: Boolean = false,
-        var couponAppliedClicked: Boolean = false,
-        var couponViewImpression: Boolean = false) {
+        var couponAppliedClicked: Boolean = false) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

@@ -298,6 +298,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     fun openMobileVerificationWithBottomSheet(componentPosition: Int = -1) {
         this.componentPosition = componentPosition
         showVerificationBottomSheet()
+        getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -315,7 +316,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             MOBILE_VERIFICATION_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     discoveryBaseViewModel?.isPhoneVerificationSuccess(true)
-                    getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
                 } else {
                     discoveryBaseViewModel?.isPhoneVerificationSuccess(false)
                 }

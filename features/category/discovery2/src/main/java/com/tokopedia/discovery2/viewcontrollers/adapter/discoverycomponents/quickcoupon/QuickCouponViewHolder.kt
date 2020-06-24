@@ -70,10 +70,7 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
     private fun handleCouponVisibility(couponVisibleStatus: Boolean) {
         if (couponVisibleStatus) {
             quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
-                if (!componentData.couponViewImpression) {
-                    componentData.couponViewImpression = true
-                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
-                }
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
             }
         } else {
             if (componentData.couponDetailClicked || componentData.couponAppliedClicked) {
@@ -137,7 +134,6 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             applyButton -> {
                 enableCouponApplyClick()
             }
-
             cardLayout -> {
                 enableCouponDetailClick()
             }
@@ -152,7 +148,6 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponClick(clickCouponData)
         }
     }
-
 
     private fun redirectCouponPage() {
         componentData.couponDetailClicked = false

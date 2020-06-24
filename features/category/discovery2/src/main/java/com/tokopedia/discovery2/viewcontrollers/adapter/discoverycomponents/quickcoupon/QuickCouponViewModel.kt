@@ -19,7 +19,6 @@ import kotlin.coroutines.CoroutineContext
 class QuickCouponViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val clickCouponLiveData: MutableLiveData<ClickCouponData> = MutableLiveData()
     private val couponAppliedStatus: MutableLiveData<Boolean> = MutableLiveData()
-    private val userLoggedInLiveData: MutableLiveData<Boolean?> = MutableLiveData()
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
     private val phoneVerificationStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val couponVisibilityStatus: MutableLiveData<Boolean> = MutableLiveData()
@@ -63,7 +62,7 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     private fun fetchCouponDetailData() {
         launchCatchError(block = {
-            quickCouponUseCase.getCouponDetail(components.pageEndPoint).clickCouponData?.let {
+            quickCouponUseCase.getCouponDetail(components.pagePath).clickCouponData?.let {
                 clickCouponLiveData.value = it
                 checkComponentVisibility()
                 loggedInStatus()
