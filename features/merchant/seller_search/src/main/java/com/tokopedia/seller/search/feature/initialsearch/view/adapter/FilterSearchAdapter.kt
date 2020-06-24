@@ -19,24 +19,6 @@ class FilterSearchAdapter(private val filterSearchListener: FilterSearchListener
         notifyDataSetChanged()
     }
 
-    fun updatedSortFilter(position: Int) {
-        val itemSelected = filterSearchList?.getOrNull(position)
-
-        filterSearchList?.filter {
-            it.isSelected
-        }?.filterNot { it == itemSelected }?.onEach { it.isSelected = false }
-
-        itemSelected?.isSelected = true
-        notifyDataSetChanged()
-    }
-
-    fun resetSortFilter() {
-        filterSearchList?.mapIndexed { index, sortItemUiModel ->
-            sortItemUiModel.isSelected = index == 0
-        }
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterSearchViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chips_filter, parent, false)
         return FilterSearchViewHolder(view, filterSearchListener)
