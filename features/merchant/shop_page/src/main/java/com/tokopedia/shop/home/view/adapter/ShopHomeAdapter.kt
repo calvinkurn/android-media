@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.view.adapter
 
-import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -57,28 +56,33 @@ class ShopHomeAdapter(
         super.onBindViewHolder(holder, position)
     }
 
-    fun setProductListData(productList: List<ShopHomeProductViewModel>) {
+    override fun clearAllElements() {
+        super.clearAllElements()
+        refreshSticky()
+    }
+
+    fun setProductListData(productList: List<ShopHomeProductViewModel>, initialData: Boolean) {
         val lastIndex = visitables.size
         productListViewModel.addAll(productList)
         visitables.addAll(productList)
-        notifyInsertedItemRange(lastIndex, productList.size)
+        if (initialData)
+            notifyDataSetChanged()
+        else
+            notifyInsertedItemRange(lastIndex, productList.size)
     }
 
     fun setEtalaseTitleData() {
         val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
         visitables.add(etalaseTitleUiModel)
-        notifyInsertedItem(visitables.indexOf(etalaseTitleUiModel))
     }
 
     fun setSortFilterData(shopProductSortFilterUiModel: ShopProductSortFilterUiModel) {
         visitables.add(shopProductSortFilterUiModel)
-        notifyInsertedItem(visitables.indexOf(shopProductSortFilterUiModel))
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
-        val lastIndex = visitables.size
         visitables.addAll(data)
-        notifyInsertedItemRange(lastIndex, data.size)
+        notifyDataSetChanged()
     }
 
     override fun hideLoading() {
