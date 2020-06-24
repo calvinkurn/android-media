@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
+import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import javax.inject.Inject
@@ -40,15 +40,15 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     /**
      * Product
      */
-    override fun getObservableSelectedProducts(): LiveData<List<ProductContentUiModel>> {
+    override fun getObservableSelectedProducts(): LiveData<List<ProductData>> {
         return productDataStore.getObservableSelectedProducts()
     }
 
-    override fun getSelectedProducts(): List<ProductContentUiModel> {
+    override fun getSelectedProducts(): List<ProductData> {
         return productDataStore.getSelectedProducts()
     }
 
-    override fun selectProduct(product: ProductContentUiModel, isSelected: Boolean) {
+    override fun selectProduct(product: ProductData, isSelected: Boolean) {
         productDataStore.selectProduct(product, isSelected)
     }
 
@@ -64,7 +64,7 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         return productDataStore.uploadSelectedProducts(channelId)
     }
 
-    override fun setSelectedProducts(selectedProducts: List<ProductContentUiModel>) {
+    override fun setSelectedProducts(selectedProducts: List<ProductData>) {
         productDataStore.setSelectedProducts(selectedProducts)
     }
 

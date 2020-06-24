@@ -73,7 +73,7 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
                         title = cover.title,
                         state = SetupDataState.Uploaded
                 ),
-                selectedProductList = productList
+                selectedProductList = productList.map { ProductContentUiModel.createFromData(it) }
         )
     }
 

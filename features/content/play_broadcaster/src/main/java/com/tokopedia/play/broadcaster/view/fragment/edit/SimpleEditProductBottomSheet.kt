@@ -149,7 +149,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private fun observeSelectedProducts() {
         viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
             updateTitle(it.size)
-            btnAction.isEnabled = it.size != selectableProductAdapter.itemCount
+            btnAction.isEnabled = (it.size != selectableProductAdapter.itemCount) && it.isNotEmpty()
         })
     }
 

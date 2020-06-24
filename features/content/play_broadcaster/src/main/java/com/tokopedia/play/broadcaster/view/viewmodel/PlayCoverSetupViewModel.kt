@@ -76,8 +76,9 @@ class PlayCoverSetupViewModel @Inject constructor(
             it.title
         }
 
-    val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
-        get() = setupDataStore.getObservableSelectedProducts()
+    val observableSelectedProducts: LiveData<List<ProductContentUiModel>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
+        dataList.map { ProductContentUiModel.createFromData(it) }
+    }
 
     val observableUploadCoverEvent: LiveData<NetworkResult<Event<Unit>>>
         get() = _observableUploadCoverEvent

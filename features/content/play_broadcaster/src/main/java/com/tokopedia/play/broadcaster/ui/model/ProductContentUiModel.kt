@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.model
 
+import com.tokopedia.play.broadcaster.data.model.ProductData
+import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 
 /**
@@ -20,6 +22,35 @@ data class ProductContentUiModel(
 
     val hasStock: Boolean
         get() = stock != 0
+
+    fun extractData() = ProductData(
+            id = id,
+            name = name,
+            imageUrl = imageUrl,
+            originalImageUrl = originalImageUrl,
+            stock = stock
+    )
+
+    companion object {
+
+        fun createFromData(
+                data: ProductData,
+                isSelectedHandler: (Long) -> Boolean = { false },
+                isSelectable: (Boolean) -> SelectableState = { NotSelectable(Throwable()) },
+                transitionName: String? = null): ProductContentUiModel {
+
+            return ProductContentUiModel(
+                    id = data.id,
+                    name = data.name,
+                    imageUrl = data.imageUrl,
+                    originalImageUrl = data.originalImageUrl,
+                    stock = data.stock,
+                    isSelectedHandler = isSelectedHandler,
+                    isSelectable = isSelectable,
+                    transitionName = transitionName
+            )
+        }
+    }
 }
 
 object ProductLoadingUiModel : ProductUiModel()

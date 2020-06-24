@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
@@ -50,8 +51,9 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableSelectedEtalase
     private val _observableSelectedEtalase = MutableLiveData<PageResult<EtalaseContentUiModel>>()
 
-    val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
-        get() = setupDataStore.getObservableSelectedProducts()
+    val observableSelectedProducts: LiveData<List<ProductContentUiModel>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
+        dataList.map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
+    }
 
     val observableUploadProductEvent: LiveData<NetworkResult<Event<Unit>>>
         get() = _observableUploadProductEvent
@@ -60,7 +62,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
 
     val selectedProductList: List<ProductContentUiModel>
-        get() = setupDataStore.getSelectedProducts()
+        get() = setupDataStore.getSelectedProducts().map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
 
     private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
@@ -89,7 +91,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     fun selectProduct(productId: Long, isSelected: Boolean) {
         productsMap[productId]?.let {
-            setupDataStore.selectProduct(it, isSelected)
+            setupDataStore.selectProduct(it.extractData(), isSelected)
         }
     }
 
@@ -273,6 +275,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         } catch (e: Throwable) {
             NetworkResult.Fail(e)
         }
+//        return@withContext NetworkResult.Success(Pair(PlayBroadcastMocker.getMockProductList(10), 10))
     }
 
     private suspend fun getEtalaseList() = withContext(dispatcher.io) {
@@ -300,6 +303,5 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
         private const val MAX_PRODUCT_IMAGE_COUNT = 4
         private const val PRODUCTS_PER_PAGE = 26
-        private const val SEARCH_SUGGESTIONS_PER_PAGE = 30
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 
 /**
@@ -9,11 +9,11 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
  */
 interface ProductDataStore {
 
-    fun getObservableSelectedProducts(): LiveData<List<ProductContentUiModel>>
+    fun getObservableSelectedProducts(): LiveData<List<ProductData>>
 
-    fun getSelectedProducts(): List<ProductContentUiModel>
+    fun getSelectedProducts(): List<ProductData>
 
-    fun selectProduct(product: ProductContentUiModel, isSelected: Boolean)
+    fun selectProduct(product: ProductData, isSelected: Boolean)
 
     fun isProductSelected(productId: Long): Boolean
 
@@ -21,5 +21,5 @@ interface ProductDataStore {
 
     suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit>
 
-    fun setSelectedProducts(selectedProducts: List<ProductContentUiModel>)
+    fun setSelectedProducts(selectedProducts: List<ProductData>)
 }
