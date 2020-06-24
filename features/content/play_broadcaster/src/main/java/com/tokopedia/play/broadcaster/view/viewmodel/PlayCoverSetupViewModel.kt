@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
+import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -76,8 +77,8 @@ class PlayCoverSetupViewModel @Inject constructor(
             it.title
         }
 
-    val observableSelectedProducts: LiveData<List<ProductContentUiModel>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
-        dataList.map { ProductContentUiModel.createFromData(it) }
+    val observableSelectedProducts: LiveData<List<CarouselCoverUiModel.Product>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
+        dataList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) }
     }
 
     val observableUploadCoverEvent: LiveData<NetworkResult<Event<Unit>>>
