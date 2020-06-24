@@ -176,7 +176,6 @@ public class ProductListFragment
     private PerformanceMonitoring performanceMonitoring;
     private Config topAdsConfig;
     private SearchParameter searchParameter;
-    private FilterController quickFilterController = new FilterController();
     private FilterController filterController = new FilterController();
     private IrisSession irisSession;
     private SortFilter searchSortFilter;
@@ -1052,7 +1051,7 @@ public class ProductListFragment
     }
 
     private void applyParamsFromTicker(HashMap<String, String> tickerParams) {
-        HashMap<String, String> params = new HashMap<>(quickFilterController.getParameter());
+        HashMap<String, String> params = new HashMap<>(filterController.getParameter());
         params.putAll(tickerParams);
         refreshSearchParameter(params);
         refreshFilterController(params);
@@ -1127,20 +1126,20 @@ public class ProductListFragment
 
     @Override
     public boolean isQuickFilterSelected(Option option) {
-        if (quickFilterController == null) return false;
+        if (filterController == null) return false;
 
-        return quickFilterController.getFilterViewState(option.getUniqueId());
+        return filterController.getFilterViewState(option.getUniqueId());
     }
 
     @Override
     public void onQuickFilterSelected(Option option) {
-        if (quickFilterController == null) return;
+        if (filterController == null) return;
 
         boolean isQuickFilterSelectedReversed = !isQuickFilterSelected(option);
 
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed);
 
-        Map<String, String> queryParams = quickFilterController.getParameter();
+        Map<String, String> queryParams = filterController.getParameter();
         refreshSearchParameter(queryParams);
         refreshFilterController(new HashMap<>(queryParams));
 
@@ -1151,12 +1150,12 @@ public class ProductListFragment
     }
 
     private void setFilterToQuickFilterController(Option option, boolean isQuickFilterSelected) {
-        if (quickFilterController == null) return;
+        if (filterController == null) return;
 
         if (option.isCategoryOption()) {
-            quickFilterController.setFilter(option, isQuickFilterSelected, true);
+            filterController.setFilter(option, isQuickFilterSelected, true);
         } else {
-            quickFilterController.setFilter(option, isQuickFilterSelected);
+            filterController.setFilter(option, isQuickFilterSelected);
         }
     }
 
@@ -1284,8 +1283,7 @@ public class ProductListFragment
 
     private void initFilters() {
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
-        filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
-        quickFilterController.appendFilterList(searchParameter.getSearchParameterHashMap(), initializedFilterList);
+        filterController.appendFilterList(searchParameter.getSearchParameterHashMap(), initializedFilterList);
     }
 
     private void refreshAdapterForQuickFilter() {
@@ -1519,9 +1517,9 @@ public class ProductListFragment
 
     @Override
     public void initQuickFilter(List<Filter> quickFilterList) {
-        if (quickFilterController == null) return;
+        if (filterController == null) return;
 
-        quickFilterController.initFilterController(getSearchParameter().getSearchParameterHashMap(), quickFilterList);
+        filterController.initFilterController(getSearchParameter().getSearchParameterHashMap(), quickFilterList);
     }
 
     @Override
