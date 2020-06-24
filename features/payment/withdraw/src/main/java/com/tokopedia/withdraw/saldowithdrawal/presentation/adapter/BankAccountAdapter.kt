@@ -11,9 +11,10 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder.Ba
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder.BankSettingButtonViewHolder
 
 class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
-                         private val listener: BankAdapterListener,
-                         private var needToShowRPCoachMark: Boolean)
+                         private val listener: BankAdapterListener)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var needToShowRPCoachMark : Boolean = false
 
     private val bankAccountList: ArrayList<BankAccount> = arrayListOf()
     private var checkEligible: CheckEligible? = null
@@ -66,7 +67,9 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
                     openBankAccountSetting = ::openBankAccountSetting)
     }
 
-    fun updateBankList(newBankList: ArrayList<BankAccount>, checkEligible: CheckEligible) {
+    fun updateBankList(newBankList: ArrayList<BankAccount>, checkEligible: CheckEligible,
+                       needToShowRPCoachMark : Boolean) {
+        this.needToShowRPCoachMark = needToShowRPCoachMark;
         this.checkEligible = checkEligible
         bankAccountList.clear()
         bankAccountList.addAll(updateDefaultBankList(newBankList))

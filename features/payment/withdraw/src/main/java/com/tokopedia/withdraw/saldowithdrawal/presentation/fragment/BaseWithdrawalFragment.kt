@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -190,14 +191,15 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                     return false
                 }
             }
-            bankAccountAdapter = BankAccountAdapter(analytics, this, canShowRekeningPremiumCoachMark())
+            bankAccountAdapter = BankAccountAdapter(analytics, this)
             recyclerBankList.adapter = bankAccountAdapter
         }
     }
 
     private fun updateBankAccountAdapter(data: ArrayList<BankAccount>) {
         recyclerBankList.post {
-            bankAccountAdapter.updateBankList(data, checkEligible)
+            val needToShowRPCoachMark = canShowRekeningPremiumCoachMark()
+            bankAccountAdapter.updateBankList(data, checkEligible, needToShowRPCoachMark)
             bankAccountAdapter.notifyDataSetChanged()
             onBankAccountChanged()
         }
@@ -303,21 +305,17 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     override fun showCoachMarkOnRPIcon(iconView: View) {
-        if (!canShowRekeningPremiumCoachMark()) {
-            return
-        }
-        updateRekeningPremiumCoachMarkShown()
-        recyclerBankList.post {
+        if (canShowRekeningPremiumCoachMark()) {
+            updateRekeningPremiumCoachMarkShown()
             val coachMarks = ArrayList<CoachMarkItem>()
             coachMarks.add(CoachMarkItem(iconView,
                     getString(R.string.swd_join_premium_account_icon_title),
                     getString(R.string.swd_join_premium_account_icon_description),
                     CoachMarkContentPosition.TOP, ContextCompat.getColor(context!!,
-                    R.color.Neutral_N700_68), scrollView))
+                    R.color.Neutral_N700_68)))
             val coachMark = CoachMarkBuilder().build()
             coachMark.show(activity, TAG_RP_COACH_MARK, coachMarks)
         }
-
     }
 
     override fun onDisabledBankClick() {
@@ -372,6 +370,5 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     companion object {
         const val TAG_RP_COACH_MARK = "RP_COACH_MARK"
     }
-
 }
 
