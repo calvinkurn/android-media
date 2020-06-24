@@ -34,7 +34,10 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             showBrokenProductImage()
             return
         }
-        itemView.reviewPendingProductImage.loadImage(productImageUrl)
+        itemView.reviewPendingProductImage.apply {
+            loadImage(productImageUrl)
+            show()
+        }
     }
 
     private fun showBrokenProductImage() {
@@ -56,13 +59,13 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setListener(reputationId: Int, productId: String) {
+    private fun setListener(reputationId: Int, productId: Int) {
         itemView.setOnClickListener {
             reviewPendingItemListener.onCardClicked(reputationId, productId)
         }
     }
 
-    private fun setupStars(reputationId: Int, productId: String) {
+    private fun setupStars(reputationId: Int, productId: Int) {
         itemView.reviewPendingStars.apply {
             resetStars()
             setListener(object : AnimatedReputationView.AnimatedReputationListener {
@@ -79,6 +82,6 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     }
 
     private fun showNew(seen: Boolean) {
-        itemView.reviewPendingNewIcon.showWithCondition(seen)
+        itemView.reviewPendingNewIcon.showWithCondition(!seen)
     }
 }

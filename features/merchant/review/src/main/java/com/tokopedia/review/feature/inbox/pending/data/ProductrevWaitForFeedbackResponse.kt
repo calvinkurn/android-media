@@ -18,5 +18,5 @@ data class ProductrevWaitForFeedbackResponse (
         val limit: Int = 0,
         @SerializedName("hasNext")
         @Expose
-        val hasNext: Int = 0
+        val hasNext: Boolean = false
 )

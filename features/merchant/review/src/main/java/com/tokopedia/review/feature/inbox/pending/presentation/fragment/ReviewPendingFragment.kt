@@ -71,7 +71,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         getPendingReviewData(page)
     }
 
-    override fun onCardClicked(reputationId: Int, productId: String) {
+    override fun onCardClicked(reputationId: Int, productId: Int) {
         goToCreateReviewActivity(reputationId, productId)
     }
 
@@ -95,9 +95,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        showEmptyState()
-//        showLoading()
-//        observeReviewList()
+        showLoading()
+        observeReviewList()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -115,10 +114,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun getDefaultInitialPage(): Int {
         return ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE
-    }
-
-    override fun callInitialLoadAutomatically(): Boolean {
-        return false
     }
 
     private fun initView() {
@@ -205,15 +200,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         })
     }
 
-    private fun renderReviewData(reviewData: List<ReviewPendingUiModel>, hasNextPage: Int) {
+    private fun renderReviewData(reviewData: List<ReviewPendingUiModel>, hasNextPage: Boolean) {
         hideEmptyState()
         hideError()
         showList()
-        renderList(reviewData, hasNextPage == 1)
+        renderList(reviewData, hasNextPage)
     }
 
-    private fun goToCreateReviewActivity(reputationId: Int, productId: String) {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId)
+    private fun goToCreateReviewActivity(reputationId: Int, productId: Int) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString())
     }
 
     private fun goToSettings() {

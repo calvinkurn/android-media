@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/layout_lvl2"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewHistoryProductName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/Neutral_N700_96"
+        android:text="Nike Air Force 1 Low White Red Casual Shoes wfajnknfkasnfksankfnasfksnafjnkfasalfnas"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewHistoryProductVariant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:text="Varian: Red black"
+        app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
+        app:layout_constraintTop_toBottomOf="@id/reviewHistoryProductName"
+        app:typographyType="body_3"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/reviewHistoryStars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:textColor="@color/Neutral_N700_96"
+        tools:src="@drawable/ic_rating_star_four"
+        app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
+        app:layout_constraintTop_toBottomOf="@id/reviewHistoryProductVariant"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewHistoryDate"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        android:text="• Hari ini"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="@id/reviewHistoryStars"
+        app:layout_constraintBottom_toBottomOf="@id/reviewHistoryStars"
+        app:layout_constraintStart_toEndOf="@id/reviewHistoryStars"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewHistoryDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga dari sini menj gka kgkakandkgnkangkadgkankka"
+        app:layout_constraintTop_toBottomOf="@id/reviewHistoryStars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewHistoryReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_68"
+        android:text="Ada 1 balasan"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@id/reviewHistoryDescription"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
