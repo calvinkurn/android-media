@@ -41,6 +41,7 @@ object DeepLinkMapperProductManage {
     /**
      * @param deepLink : tokopedia://seller/product/manage?filter=isEmptyStockOnly
      * @return if seller app : tokopedia-android-internal://sellerapp/sellerhome-product-list?filter=isEmptyStockOnly
+     * @return if seller app with param search : tokopedia-android-internal://marketplace/product-manage-list?search=baju bagus
      * @return if not seller app : tokopedia-android-internal://marketplace/product-manage-list?filter=isEmptyStockOnly
      * */
     fun getProductListInternalAppLink(deepLink: String): String {
