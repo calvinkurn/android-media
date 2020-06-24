@@ -212,43 +212,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             }
         }
 
-        (giftBoxDailyView as GiftBoxTapTapView).boxRewardCallback = object : GiftBoxDailyView.BoxRewardCallback {
-            override fun showPoints(): Animator {
-                val anim1 = rewardContainer.showSingleLargeRewardAnimationFadeOut()
-
-                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
-                ovoPointsTextAnim.startDelay = 100L
-
-                val animatorSet = AnimatorSet()
-                animatorSet.playTogether(anim1, ovoPointsTextAnim)
-                animatorSet.addListener(onEnd = { afterRewardAnimationEnds() })
-                animatorSet.start()
-                return animatorSet
-            }
-
-            override fun showPointsWithCoupons(): Animator {
-
-                val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut()
-
-                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
-                ovoPointsTextAnim.startDelay = 100L
-
-                val animatorSet = AnimatorSet()
-                animatorSet.playTogether(anim1, ovoPointsTextAnim)
-                animatorSet.addListener(onEnd = { afterRewardAnimationEnds() })
-                animatorSet.start()
-                return animatorSet
-            }
-
-            override fun showCoupons(): Animator {
-                val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut()
-
-                anim1.addListener(onEnd = { afterRewardAnimationEnds() })
-                anim1.start()
-                return anim1
-            }
-        }
-
         viewModel.giftHomeLiveData.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
@@ -348,7 +311,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
                         if (!resultCode.isNullOrEmpty() && resultCode == "200") {
                             boxState = OPEN
-
+                            toggleInActiveHint(false)
                             getTapTapView().disableConfettiAnimation = true
                             getTapTapView().resetTapCount()
 
@@ -416,9 +379,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun handleGiftBoxTap() {
-        if (benefitItems.isNotEmpty()) {
-            toggleInActiveHint(false)
-        }
 
         if (isTimeOut) {
             //Do nothing
