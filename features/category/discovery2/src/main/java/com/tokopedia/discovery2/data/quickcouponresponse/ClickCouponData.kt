@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ClickCouponData(
         @SerializedName("coupon_applied")
-        val couponApplied: Boolean? = false,
+        var couponApplied: Boolean? = false,
         @SerializedName("is_applicable")
         val isApplicable: Boolean? = false,
         @SerializedName("code_promo")

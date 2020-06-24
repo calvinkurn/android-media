@@ -125,17 +125,15 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
         if (it) {
             couponAddedImage.visible()
             applyButton.hide()
+            quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
+                clickCouponData.couponApplied = true
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
+            }
         } else {
             couponAddedImage.hide()
             applyButton.show()
         }
         titleTextView.text = quickCouponViewModel.getCouponTitle()
-
-        if (quickCouponViewModel.getCouponAppliedStatus() == true && quickCouponViewModel.getCouponApplicableStatus() == true) {
-            quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
-            }
-        }
     }
 
     override fun onClick(view: View?) {
