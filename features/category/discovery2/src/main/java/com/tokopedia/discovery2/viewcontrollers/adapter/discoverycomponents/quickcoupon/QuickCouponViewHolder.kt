@@ -70,7 +70,10 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
     private fun handleCouponVisibility(couponVisibleStatus: Boolean) {
         if (couponVisibleStatus) {
             quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
+                if (!componentData.couponViewImpression) {
+                    componentData.couponViewImpression = true
+                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
+                }
             }
         } else {
             if (componentData.couponDetailClicked || componentData.couponAppliedClicked) {
@@ -127,6 +130,12 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
             applyButton.show()
         }
         titleTextView.text = quickCouponViewModel.getCouponTitle()
+
+        if (quickCouponViewModel.getCouponAppliedStatus() == true && quickCouponViewModel.getCouponApplicableStatus() == true) {
+            quickCouponViewModel.getCouponDetail()?.let { clickCouponData ->
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackQuickCouponImpression(clickCouponData)
+            }
+        }
     }
 
     override fun onClick(view: View?) {
