@@ -28,6 +28,7 @@ class ProductManageFilterTab(
 
     init {
         sortFilterTab.chipItems = arrayListOf()
+        changeTabSortFilterText()
     }
 
     fun show(data: GetFilterTabResult) {

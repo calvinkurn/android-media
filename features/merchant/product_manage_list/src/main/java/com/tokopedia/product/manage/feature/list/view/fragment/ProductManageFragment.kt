@@ -10,10 +10,8 @@ import android.content.IntentFilter
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -147,18 +145,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var filterTab: ProductManageFilterTab? = null
-
-//    private val tabFilterSortTextChangeListener: TextWatcher = object: TextWatcher {
-//        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {/* no op */}
-//
-//        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {/* no op */}
-//
-//        override fun afterTextChanged(s: Editable?) {
-//            tabSortFilter.textView.removeTextChangedListener(this)
-//            tabSortFilter.textView.text = getString(R.string.product_manage_filter)
-//            tabSortFilter.textView.addTextChangedListener(this)
-//        }
-//    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(getLayoutRes(), container, false)
