@@ -60,5 +60,7 @@ class SeamlessLoginAnalytics {
         val LABEL_SUCCESS = "success"
         val LABEL_FAILED = "failed -"
 
+        val LOGIN_METHOD_SEAMLESS = "seamlessLogin"
+
     }
 }

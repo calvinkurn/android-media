@@ -22,10 +22,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
@@ -37,6 +40,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
@@ -53,6 +57,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRO
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
+import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OPPORTUNITY
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
@@ -61,16 +67,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
-import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
-import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
-import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -231,6 +234,10 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DF_BASE, R.string.user_identification_common_title))
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) ||
                 it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DF_BASE, R.string.applink_topads_dashboard_title))
+
+            add(DFP({ it.startsWith(CREATE_VOUCHER) ||
+                    it.startsWith(VOUCHER_LIST) ||
+                    it.startsWith(VOUCHER_DETAIL)}, DF_BASE, R.string.title_voucher_creation))
         }
     }
 

@@ -87,12 +87,6 @@ public interface TkpdCoreRouter {
 
     Intent getInboxReputationIntent(Context context);
 
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getResolutionCenterIntentSeller(Context context);
-
     Intent getPhoneVerificationActivationIntent(Context context);
 
     /**

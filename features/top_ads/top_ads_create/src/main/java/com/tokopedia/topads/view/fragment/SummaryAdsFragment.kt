@@ -39,6 +39,7 @@ import javax.inject.Inject
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var viewModel: SummaryViewModel
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     var map = HashMap<String, Any>()
@@ -55,6 +56,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     companion object {
         private const val MORE_INFO = " Info Selengkapnya"
         private const val MULTIPLIER = 40
+        private const val UNLIMITED_BUDGET = "0"
+        private const val DEFINED_BUDGET = "1"
+        private const val INPUT = "input"
         fun createInstance(): Fragment {
 
             val fragment = SummaryAdsFragment()
@@ -146,9 +150,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 daily_budget.setError(false)
                 daily_budget.setMessage("")
                 btn_submit.isEnabled = true
-
             }
-
         }
         daily_budget.textFieldInput.addTextChangedListener(watcher())
         val spannableText = SpannableString(MORE_INFO)
@@ -182,7 +184,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                     btn_submit.isEnabled = true
                     daily_budget.setMessage("")
                     daily_budget.setError(false)
-
                 }
             }
         }
@@ -194,11 +195,14 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             daily_budget.textFieldInput.setText(dailyBudget.toString())
             daily_budget.refreshDrawableState()
         }
-
     }
 
     private fun convertToParam(view: View): HashMap<String, Any> {
         val userSession = UserSession(view.context)
+        if (!toggle.isChecked)
+            input.group.groupBudget = UNLIMITED_BUDGET
+        else
+            input.group.groupBudget = DEFINED_BUDGET
         input.shopID = userSession.shopId
         input.group.groupName = stepperModel?.groupName ?: ""
         input.group.priceBid = stepperModel?.finalBidPerClick ?: 0
@@ -228,7 +232,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             }
             input.group.ads = adsItemsList
         }
-        map["input"] = input
+        map[INPUT] = input
         return map
     }
 
@@ -241,7 +245,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 throwable.message,
                 Snackbar.LENGTH_LONG)
                 .show()
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -249,12 +252,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         product_count.text = stepperModel?.selectedProductIds?.count().toString()
         keyword_count.text = stepperModel?.selectedKeywords?.count().toString()
         group_name.text = stepperModel?.groupName
-
     }
 
     override fun updateToolBar() {
         (activity as StepperActivity).updateToolbarTitle(getString(R.string.summary_page_step))
-
     }
 
 }

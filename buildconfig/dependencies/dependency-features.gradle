@@ -16,9 +16,7 @@ ext {
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
 
-            broadcastMessage                : ":features:communication:broadcast_message",
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
-            broadcastMessageCommon          : ":features:communication:broadcast_message_common",
 
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
@@ -144,6 +142,7 @@ ext {
 //            shopPage                        : ":features:merchant:shop_page_no_op",
             shopSettings                    : ":features:merchant:shop_settings",
             officialStore                  : ":features:merchant:official_store",
+            voucherCreation                 : ":features:merchant:voucher_creation",
             brandlist                       : ":features:merchant:brandlist",
             favorite                        : ":features:merchant:favorite",
             youtubeCommon                   : ":features:merchant:youtube_common",
