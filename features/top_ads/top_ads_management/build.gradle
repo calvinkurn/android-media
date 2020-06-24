@@ -30,7 +30,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.shopScore)
     implementation project(rootProject.ext.libraries.core_legacy)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
