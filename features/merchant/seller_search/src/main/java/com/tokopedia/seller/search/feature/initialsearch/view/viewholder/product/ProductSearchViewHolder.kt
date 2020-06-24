@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUCT
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.ProductSearchListener
 import kotlinx.android.synthetic.main.search_result_product.view.*
@@ -36,7 +37,9 @@ class ProductSearchViewHolder(private val view: View,
 
         if (element.sellerSearchList.isNotEmpty()) {
             adapterProduct.clearAllData()
-            adapterProduct.setItemProductList(element.sellerSearchList)
+            element.takeIf { it.id == PRODUCT }?.sellerSearchList?.let {
+                adapterProduct.setItemProductList(it)
+            }
         }
     }
 }

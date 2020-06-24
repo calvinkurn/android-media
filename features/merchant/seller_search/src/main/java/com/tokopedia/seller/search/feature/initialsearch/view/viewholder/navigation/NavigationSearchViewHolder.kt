@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.NAVIGATION
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.NavigationSearchListener
 import kotlinx.android.synthetic.main.search_result_navigation.view.*
@@ -34,7 +35,9 @@ class NavigationSearchViewHolder(private val view: View,
 
         if (element.sellerSearchList.isNotEmpty()) {
             adapterNavigation.clearAllData()
-            adapterNavigation.setItemNavigationList(element.sellerSearchList)
+            element.takeIf { it.id == NAVIGATION }?.sellerSearchList?.let {
+                adapterNavigation.setItemNavigationList(it)
+            }
         }
     }
 }

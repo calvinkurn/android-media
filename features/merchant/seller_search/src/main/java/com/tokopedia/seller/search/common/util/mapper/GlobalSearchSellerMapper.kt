@@ -74,8 +74,8 @@ object GlobalSearchSellerMapper {
 
             val titleList = mapToTitleListSearch(sellerSearch)
 
-            val searchSellerList = mutableListOf<ItemSellerSearchUiModel>()
             sellerSearch.data.sections.map {
+                val searchSellerList = mutableListOf<ItemSellerSearchUiModel>()
                 if (it.id != FAQ) {
                     it.items.map { itemSearch ->
                         searchSellerList.add(
