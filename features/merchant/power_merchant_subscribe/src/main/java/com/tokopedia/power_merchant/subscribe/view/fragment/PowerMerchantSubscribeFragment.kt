@@ -1,8 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
-
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -12,7 +10,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -56,7 +53,6 @@ import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
 import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
-import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
 
@@ -168,26 +164,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         activity?.let {
             Toaster.make(view!!, getString(R.string.pm_cancellation_success), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
-    }
-
-    private fun setupDialogKyc(): Dialog? {
-        context?.let {
-            val dialog = Dialog(it)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(true)
-            dialog.setContentView(R.layout.dialog_kyc_verification)
-            dialog.btn_submit_kyc.setOnClickListener {
-                openTermsAndCondition()
-                dialog.hide()
-            }
-            dialog.btn_close_kyc.setOnClickListener {
-                dialog.hide()
-            }
-
-            return dialog
-        }
-        return null
     }
 
     private fun showBottomSheetSuccess(freeShipping: PowerMerchantFreeShippingStatus) {
