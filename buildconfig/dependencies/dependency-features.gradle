@@ -7,6 +7,7 @@ ext {
             resourcesCommon                 : ":features:common:resources_common",
             qrscanner                       : ":features:common:qr_scanner",
             developerOptions                : ":features:common:developer_options",
+            developerOptionsNoop            : ":features:common:developer_options_noop",
             nps                             : ":features:common:nps",
 
             catalog                         : ":features:category:catalog",

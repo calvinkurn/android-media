@@ -60,8 +60,8 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    debugImplementation project(rootProject.ext.libraries.translator)
-    debugImplementation rootProject.ext.debugToolsDependencies.stetho
+    implementation project(rootProject.ext.libraries.translator)
+    implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
