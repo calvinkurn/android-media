@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Authenticator;
 import okhttp3.CipherSuite;
 import okhttp3.ConnectionSpec;
 import okhttp3.Interceptor;
@@ -37,6 +38,11 @@ public class TkpdOkHttpBuilder {
 
     public TkpdOkHttpBuilder addInterceptor(Interceptor interceptor) {
         builder.addInterceptor(interceptor);
+        return this;
+    }
+
+    public TkpdOkHttpBuilder addAuthenticator(Authenticator authenticator){
+        builder.authenticator(authenticator);
         return this;
     }
 
