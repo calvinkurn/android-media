@@ -28,9 +28,10 @@ open class TkpdAuthInterceptor : TkpdBaseInterceptor {
     var authKey: String
     var networkRouter: NetworkRouter
 
-    @Deprecated("") /*
+    @Deprecated("")
+    /*
       use interface instead.
-     */
+    */
     constructor(context: Context,
                 networkRouter: NetworkRouter,
                 userSession: UserSession) {
