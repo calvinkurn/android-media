@@ -30,16 +30,18 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            if (it.containsKey(ARG_CHECK_ELIGIBLE_DATA))
+            if (it.containsKey(ARG_CHECK_ELIGIBLE_DATA)) {
                 checkEligible = it.getParcelable(ARG_CHECK_ELIGIBLE_DATA)
-            else {
+                addChildView()
+            } else {
                 this.dismiss()
-                return
             }
         } ?: run {
             this.dismiss()
-            return
         }
+    }
+
+    private fun addChildView() {
         childView = LayoutInflater.from(context).inflate(childLayout, null, false)
         setChild(childView)
         context?.let { context ->
@@ -49,17 +51,16 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
                     childView.findViewById(R.id.tvPremiumAccountInfoLineTwo))
             addBulletToTextView(context, R.string.swd_premium_account_info_line_Three,
                     childView.findViewById(R.id.tvPremiumAccountInfoLineThree))
-            if (!checkEligible.data.isPowerMerchant)
-                childView.findViewById<View>(R.id.btnJoinPremiumAccount).gone()
-            else if (checkEligible.data.isIsPowerWD) {
-                childView.findViewById<View>(R.id.btnJoinPremiumAccount).gone()
-            } else {
+
+            if (checkEligible.data.isPowerMerchant && !checkEligible.data.isIsPowerWD) {
                 childView.findViewById<View>(R.id.btnJoinPremiumAccount).visible()
                 childView.findViewById<View>(R.id.btnJoinPremiumAccount).setOnClickListener {
                     dismiss()
                     WithdrawConstant.openRekeningAccountInfoPage(context)
                 }
-            }
+            } else
+                childView.findViewById<View>(R.id.btnJoinPremiumAccount).gone()
+
             childView.findViewById<View>(R.id.tvMoreInfo).setOnClickListener {
                 dismiss()
                 WithdrawConstant.openRekeningAccountInfoPage(context)

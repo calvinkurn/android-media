@@ -117,7 +117,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     abstract fun updateWithdrawalButtonState(bankAccount: BankAccount?,
                                              withdrawalAmount: Long)
 
-    private fun observeCheckRPEligibility(){
+    private fun observeCheckRPEligibility() {
         rekeningPremiumViewModel?.rekeningPremiumMutableData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -321,17 +321,17 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     override fun onDisabledBankClick() {
-        activity?.let {
-            val disabledAccountBottomSheet = DisabledAccountBottomSheet()
-            disabledAccountBottomSheet.isFullpage = false
-            disabledAccountBottomSheet.show(it.supportFragmentManager, "")
-        }
+        if (checkEligible.data.isIsPowerWD)
+            activity?.let {
+                val disabledAccountBottomSheet = DisabledAccountBottomSheet()
+                disabledAccountBottomSheet.isFullpage = false
+                disabledAccountBottomSheet.show(it.supportFragmentManager, "")
+            }
     }
 
     override fun showPremiumAccountDialog() {
         activity?.let {
-            val premiumAccountBottomSheet
-                    = RekPremBankAccountInfoBottomSheet.getInstance(checkEligible)
+            val premiumAccountBottomSheet = RekPremBankAccountInfoBottomSheet.getInstance(checkEligible)
             premiumAccountBottomSheet.isFullpage = false
             premiumAccountBottomSheet.show(it.supportFragmentManager, "")
         }
@@ -372,5 +372,6 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     companion object {
         const val TAG_RP_COACH_MARK = "RP_COACH_MARK"
     }
+
 }
 
