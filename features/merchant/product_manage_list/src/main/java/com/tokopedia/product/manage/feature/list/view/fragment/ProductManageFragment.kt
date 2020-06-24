@@ -237,6 +237,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
         else if (item.itemId == R.id.action_more_menu) {
             showMoreMenuBottomSheet()
+            ProductManageTracking.eventClickMoreMenuEllipses()
         }
 
         return super.onOptionsItemSelected(item)
@@ -247,6 +248,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             // goto showcase list
             RouteManager.route(requireContext(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             productManageMoreMenuBottomSheet?.dismiss()
+            ProductManageTracking.eventClickMoreMenuShopShowcase()
         }
     }
 
