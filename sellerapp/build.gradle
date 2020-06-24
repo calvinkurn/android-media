@@ -321,6 +321,12 @@ dependencies {
     }
 
     if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.preReleaseInspector)
+    } else {
+        implementation project(rootProject.ext.libraries.preReleaseInspectorNoop)
+    }
+
+    if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp

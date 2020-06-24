@@ -46,6 +46,7 @@ import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
@@ -203,6 +204,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
     }
 
     @Override
