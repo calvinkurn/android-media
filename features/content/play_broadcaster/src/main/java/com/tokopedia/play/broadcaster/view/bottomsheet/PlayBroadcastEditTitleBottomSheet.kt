@@ -3,8 +3,10 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.broadcaster.R
@@ -70,8 +72,8 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
                 0,
                 bottomSheetWrapper.paddingBottom)
 
+        etPlayCoverTitleText.setRawInputType(InputType.TYPE_CLASS_TEXT)
         etPlayCoverTitleText.setText(arguments?.getString(EXTRA_CURRENT_TITLE).orEmpty())
-        etPlayCoverTitleText.setSingleLine(false)
         etPlayCoverTitleText.filters = arrayOf(InputFilter.LengthFilter(PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE))
         etPlayCoverTitleText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
@@ -83,6 +85,11 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
                 setupSaveButton()
             }
         })
+        etPlayCoverTitleText.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) v.clearFocus()
+            false
+        }
+
         setupTitleCounter()
         btnPlayPrepareBroadcastSave.setOnClickListener {
             mListener?.onSaveEditedTitle(title)

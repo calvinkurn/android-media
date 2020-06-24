@@ -169,6 +169,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 },
                 listener = object : CoverSetupPartialView.Listener {
                     override fun onImageAreaClicked(view: CoverSetupPartialView) {
+                        viewModel.saveCover(coverSetupView.coverTitle)
                         openCoverChooser()
                     }
 
