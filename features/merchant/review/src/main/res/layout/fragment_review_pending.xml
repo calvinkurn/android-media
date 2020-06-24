@@ -32,4 +32,11 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <include layout="@layout/partial_review_pending_loading"
+        android:id="@+id/reviewPendingLoading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

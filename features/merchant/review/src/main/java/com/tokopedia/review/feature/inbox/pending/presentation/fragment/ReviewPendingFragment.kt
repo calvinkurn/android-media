@@ -127,7 +127,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun setupErrorPage() {
         reviewConnectionErrorRetryButton.setOnClickListener {
-            getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE)
+            getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
         }
         reviewConnectionErrorGoToSettingsButton.setOnClickListener {
             goToSettings()
@@ -164,18 +164,27 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         reviewPendingEmpty.hide()
     }
 
+    private fun showFullPageLoading() {
+        reviewPendingLoading.show()
+    }
+
+    private fun hideFullPageLoading() {
+        reviewPendingLoading.hide()
+    }
+
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit) {
         view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
     }
 
-    private fun getPendingReviewData(page: Int) {
-        viewModel.getReviewData(page)
+    private fun getPendingReviewData(page: Int, isRefresh: Boolean = false) {
+        viewModel.getReviewData(page, isRefresh)
     }
 
     private fun observeReviewList() {
         viewModel.reviewList.observe(this, Observer {
             when(it) {
                 is Success -> {
+                    hideFullPageLoading()
                     if(it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         showEmptyState()
                     } else {
@@ -186,12 +195,12 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                     hideError()
                 }
                 is LoadingView -> {
-                    showLoading()
-                    hideList()
+                    showFullPageLoading()
                     hideError()
                     hideEmptyState()
                 }
                 is Fail -> {
+                    hideFullPageLoading()
                     if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         showError()
                         hideEmptyState()
