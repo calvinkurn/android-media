@@ -145,7 +145,7 @@ public class AutocompleteTracking {
 
     public static void eventClickCurated(String label, String campaignCode) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, EVENT_CLICK_TOP_NAV,
+                DataLayer.mapOf(EVENT, EVENT_CLICK_SEARCH_RESULT,
                         EVENT_CATEGORY, EVENT_CATEGORY_DIGITAL_TOP_NAV,
                         EVENT_ACTION, CLICK_DIGITAL_PRODUCT_SUGGESTION,
                         EVENT_LABEL, label,
