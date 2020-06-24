@@ -443,11 +443,15 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     private CategoryItem getCarouselOrTop(List<CategoryItem> categoryList, String carouselOrTop) {
 
-        if (categoryList.get(1).getName().equalsIgnoreCase(carouselOrTop)) {
-            return categoryList.get(1);
-        } else {
-            return categoryList.get(0);
+        if(categoryList != null && categoryList.size() > 0) {
+            if (categoryList.get(1) != null && categoryList.get(1).getName().equalsIgnoreCase(carouselOrTop)) {
+                return categoryList.get(1);
+            } else {
+                return categoryList.get(0);
+            }
         }
+
+        return null;
     }
 
     private List<CategoryItem> getCuratedDeals(List<CategoryItem> categoryItems, String carouselOrTop) {
