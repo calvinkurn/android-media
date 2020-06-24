@@ -19,12 +19,11 @@ class ReviewInboxContainerAdapter(private val tabs: List<ReviewInboxTabs>,
                 ReviewPendingFragment.createNewInstance()
             }
             is ReviewInboxTabs.ReviewInboxHistory -> {
-                // Change this to history fragment
                 ReviewHistoryFragment.createNewInstance()
             }
             is ReviewInboxTabs.ReviewInboxSeller -> {
                 // Change this to seller fragment
-                ReviewPendingFragment.createNewInstance()
+                ReviewHistoryFragment.createNewInstance()
             }
         }
     }

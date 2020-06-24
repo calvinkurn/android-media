@@ -61,7 +61,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     private fun setListener(reputationId: Int, productId: Int) {
         itemView.setOnClickListener {
-            reviewPendingItemListener.onCardClicked(reputationId, productId)
+            reviewPendingItemListener.onCardClicked(reputationId, productId, 0)
         }
     }
 
@@ -70,7 +70,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             resetStars()
             setListener(object : AnimatedReputationView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
-                    reviewPendingItemListener.onCardClicked(reputationId, productId)
+                    reviewPendingItemListener.onCardClicked(reputationId, productId, position)
                 }
             })
             show()

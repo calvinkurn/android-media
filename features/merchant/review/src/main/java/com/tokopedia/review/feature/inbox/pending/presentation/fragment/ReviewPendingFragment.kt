@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +13,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -23,6 +26,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.feature.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
@@ -71,8 +75,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         getPendingReviewData(page)
     }
 
-    override fun onCardClicked(reputationId: Int, productId: Int) {
-        goToCreateReviewActivity(reputationId, productId)
+    override fun onCardClicked(reputationId: Int, productId: Int, rating: Int) {
+        goToCreateReviewActivity(reputationId, productId, rating)
     }
 
     override fun getComponent(): ReviewPendingComponent? {
@@ -207,8 +211,14 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         renderList(reviewData, hasNextPage)
     }
 
-    private fun goToCreateReviewActivity(reputationId: Int, productId: Int) {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString())
+    private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int) {
+        RouteManager.route(context,
+                Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
+                        .buildUpon()
+                        .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
+                        .build()
+                        .toString()
+        )
     }
 
     private fun goToSettings() {
