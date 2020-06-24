@@ -8,9 +8,9 @@ import com.tokopedia.statistic.presentation.model.DateRangeItem
 
 interface DateRangeAdapterFactory {
 
-    fun type(item: DateRangeItem.Default): Int
+    fun type(item: DateRangeItem.Click): Int
 
-    fun type(item: DateRangeItem.Single): Int
+    fun type(item: DateRangeItem.Pick): Int
 
     fun type(item: DateRangeItem.ApplyButton): Int
 }

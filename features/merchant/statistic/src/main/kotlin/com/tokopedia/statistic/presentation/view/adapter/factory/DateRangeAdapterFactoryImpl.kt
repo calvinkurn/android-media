@@ -19,9 +19,9 @@ class DateRangeAdapterFactoryImpl(
         private val fm: FragmentManager
 ) : BaseAdapterTypeFactory(), DateRangeAdapterFactory {
 
-    override fun type(item: DateRangeItem.Default): Int = DateRangeDefaultViewHolder.RES_LAYOUT
+    override fun type(item: DateRangeItem.Click): Int = DateRangeDefaultViewHolder.RES_LAYOUT
 
-    override fun type(item: DateRangeItem.Single): Int = DateRangeSingleViewHolder.RES_LAYOUT
+    override fun type(item: DateRangeItem.Pick): Int = DateRangeSingleViewHolder.RES_LAYOUT
 
     override fun type(item: DateRangeItem.ApplyButton): Int = DateRangeApplyViewHolder.RES_LAYOUT
 

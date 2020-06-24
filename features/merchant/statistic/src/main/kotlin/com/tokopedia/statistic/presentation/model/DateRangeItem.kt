@@ -15,7 +15,7 @@ sealed class DateRangeItem(
         open var isSelected: Boolean = false
 ) : Visitable<DateRangeAdapterFactory> {
 
-    data class Default(
+    data class Click(
             override val label: String,
             override val startDate: Date,
             override val endDate: Date,
@@ -27,7 +27,7 @@ sealed class DateRangeItem(
         }
     }
 
-    data class Single(
+    data class Pick(
             override val label: String,
             override var startDate: Date? = null,
             override var endDate: Date? = null,
