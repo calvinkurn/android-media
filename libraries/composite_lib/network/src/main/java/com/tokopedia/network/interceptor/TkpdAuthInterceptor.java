@@ -386,14 +386,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = userSession.getAccessToken();
-        return chain.request().newBuilder()
-                .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
-                .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
-                .build();
-    }
-
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
         try {
@@ -413,6 +405,21 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
+    private Request recreateRequestWithNewAccessToken(Chain chain) {
+        String freshAccessToken = userSession.getAccessToken();
+        Request.Builder newRequest = chain.request().newBuilder();
+
+        try {
+            generateHmacAuthRequest(chain.request(), newRequest);
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+
+        return newRequest
+                .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
+                .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
+                .build();
+    }
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
         String freshAccessToken = userSession.getAccessToken();
