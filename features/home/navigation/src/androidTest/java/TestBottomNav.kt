@@ -58,11 +58,11 @@ class TestBottomNav {
 
     @Test
     fun testWhenItemClicked_bottomNavItem_shouldFinishAnyAnimationAfter2sec() {
-        onView(withTagStringValue(getBadgeTextViewId(POSITION_HOME))).perform(click())
-        onView(withTagStringValue(getBadgeTextViewId(POSITION_FEED))).perform(click())
-        onView(withTagStringValue(getBadgeTextViewId(POSITION_OS))).perform(click())
-        onView(withTagStringValue(getBadgeTextViewId(POSITION_CART))).perform(click())
-        onView(withTagStringValue(getBadgeTextViewId(POSITION_ACCOUNT))).perform(click())
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_HOME))).perform(click())
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_FEED))).perform(click())
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_OS))).perform(click())
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_CART))).perform(click())
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_ACCOUNT))).perform(click())
 
         Thread.sleep(2000)
 
@@ -158,5 +158,4 @@ class TestBottomNav {
     private fun waitForData() {
         Thread.sleep(1000000)
     }
-
 }
