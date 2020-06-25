@@ -22,6 +22,10 @@ import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -67,7 +71,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
 
+    private val productPreviewChannel = BroadcastChannel<String>(Channel.BUFFERED)
+
     init {
+        scope.launch { initProductPreviewChannel() }
         loadEtalaseList()
     }
 
@@ -97,8 +104,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     fun loadEtalaseProductPreview(etalaseId: String) {
         scope.launch {
-            fetchEtalaseProduct(etalaseId, 1)
-            broadcastNewEtalaseList(etalaseMap)
+            productPreviewChannel.send(etalaseId)
         }
     }
 
@@ -242,6 +248,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     private suspend fun updateEtalaseMap(newEtalaseList: List<EtalaseContentUiModel>) = withContext(dispatcher.computation) {
         newEtalaseList.forEach {
+            println("Etalase: ${it.id} - ${it.totalProduct} - ${it.productMap}")
             val etalase = etalaseMap[it.id]
             if (etalase == null) etalaseMap[it.id] = it
         }
@@ -292,6 +299,16 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
                 productList.meta.totalHits
         )
+    }
+
+    private suspend fun initProductPreviewChannel() = withContext(dispatcher.main) {
+        productPreviewChannel.asFlow().collect {
+            val result = fetchEtalaseProduct(it, 1)
+            if (result.state is PageResultState.Success) {
+                val etalaseMap = updateEtalaseMap(listOf(result.currentValue))
+                broadcastNewEtalaseList(etalaseMap)
+            }
+        }
     }
 
     companion object {
