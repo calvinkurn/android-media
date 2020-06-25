@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
@@ -34,6 +35,8 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteraction
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -52,6 +55,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private lateinit var containerSetup: FrameLayout
     private lateinit var viewActionBar: ActionBarPartialView
     private lateinit var viewRequestPermission: PlayRequestPermissionView
+    private lateinit var loaderView: LoaderUnify
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
@@ -105,6 +109,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private fun initView() {
         containerSetup = findViewById(R.id.fl_setup)
         viewRequestPermission = findViewById(R.id.view_request_permission)
+        loaderView = findViewById(R.id.loader_initial)
 
         viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener{
             override fun onCameraIconClicked() {
@@ -192,11 +197,22 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
      * Observe
      */
     private fun observeConfiguration() {
-        viewModel.observableConfigInfo.observe(this, Observer {
-            when(it) {
-                is NetworkResult.Loading -> { /* TODO("show loading state") */ }
-                is NetworkResult.Success -> handleChannelConfiguration(it.data)
-                is NetworkResult.Fail -> { /* TODO("show toaster error") */ }
+        viewModel.observableConfigInfo.observe(this, Observer { result ->
+            when(result) {
+                is NetworkResult.Loading -> loaderView.show()
+                is NetworkResult.Success -> {
+                    loaderView.hide()
+                    handleChannelConfiguration(result.data)
+                }
+                is NetworkResult.Fail -> {
+                    loaderView.hide()
+                    findViewById<View>(android.R.id.content).showToaster(
+                            message = getString(R.string.play_broadcast_global_error),
+                            duration = Toaster.LENGTH_INDEFINITE,
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = View.OnClickListener { result.onRetry }
+                    )
+                }
             }
         })
     }

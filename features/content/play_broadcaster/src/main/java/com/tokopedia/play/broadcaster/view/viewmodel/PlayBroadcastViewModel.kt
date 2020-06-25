@@ -49,19 +49,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val scope = CoroutineScope(job + dispatcher.main)
 
     val channelId: String
-        get() = channelIdLiveData.value.orEmpty()
-
-    private val channelIdLiveData: MutableLiveData<String> = MediatorLiveData<String>().apply {
-        addSource(_observableConfigInfo) {
-            value = if (it is NetworkResult.Success) it.data.channelId else ""
-        }
-        addSource(_observableCreateChannel) {
-            value = if (it is NetworkResult.Success) it.data else ""
-        }
-        addSource(_observableChannelInfo) {
-            value = it.channelId
-        }
-    }
+        get() = _observableChannelId.value.orEmpty()
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
@@ -103,6 +91,18 @@ class PlayBroadcastViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
+    private val _observableChannelId: MutableLiveData<String> = MediatorLiveData<String>().apply {
+        addSource(_observableConfigInfo) {
+            value = if (it is NetworkResult.Success) it.data.channelId else ""
+        }
+        addSource(_observableCreateChannel) {
+            value = if (it is NetworkResult.Success) it.data else ""
+        }
+        addSource(_observableChannelInfo) {
+            value = it.channelId
+        }
+    }
+
     private val _observableLiveNetworkState = MediatorLiveData<Event<PlayPusherNetworkState>>().apply {
         addSource(playPusher.getObservablePlayPusherNetworkState()) {
             value = Event(it)
@@ -152,13 +152,13 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
-            val config = withContext(dispatcher.io) {
-                getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
-                return@withContext getConfigurationUseCase.executeOnBackground()
-            }
-            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
-//            delay(3000)
-//            val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel()
+//            val config = withContext(dispatcher.io) {
+//                getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
+//                return@withContext getConfigurationUseCase.executeOnBackground()
+//            }
+//            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
+            delay(3000)
+            val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel()
 
             launch {
                 if (configUiModel.channelStatus == PlayChannelStatus.Unknown) createChannel()
@@ -166,10 +166,11 @@ class PlayBroadcastViewModel @Inject constructor(
             }
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+            // configure maximum pause duration
+            playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration)
 
-            playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
         }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it)
+            _observableConfigInfo.value = NetworkResult.Fail(it) { getConfiguration() }
         }
     }
 

@@ -6,10 +6,12 @@ import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * Created by jegul on 26/05/20
@@ -84,3 +86,16 @@ internal fun Context.getDialog(
 
 internal val <T> T.exhaustive: T
     get() = this
+
+internal fun View.showToaster(
+        message: String,
+        type: Int = Toaster.TYPE_NORMAL,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener { }
+) = Toaster.make(this,
+        text = message,
+        duration = duration,
+        type = type,
+        actionText = actionLabel,
+        clickListener = actionListener)

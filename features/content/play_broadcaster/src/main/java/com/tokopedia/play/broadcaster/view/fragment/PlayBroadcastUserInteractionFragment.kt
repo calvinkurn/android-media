@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -233,15 +234,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             actionLabel: String = "",
             actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
-        view?.let { view ->
+        view?.let{ view ->
             if (actionLabel.isNotEmpty()) Toaster.toasterCustomCtaWidth = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
             Toaster.toasterCustomBottomHeight =  ivShareLink.height + resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-            Toaster.make(view,
-                    text = message,
+            view.showToaster(
+                    message = message,
                     duration = duration,
                     type = type,
-                    actionText = actionLabel,
-                    clickListener = actionListener)
+                    actionLabel = actionLabel,
+                    actionListener = actionListener
+            )
         }
     }
 
