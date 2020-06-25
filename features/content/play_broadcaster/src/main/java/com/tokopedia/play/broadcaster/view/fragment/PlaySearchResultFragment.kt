@@ -84,6 +84,7 @@ class PlaySearchResultFragment @Inject constructor(
     }
 
     override fun refresh() {
+        searchProductsAdapter.notifyDataSetChanged()
     }
 
     private fun initView(view: View) {
