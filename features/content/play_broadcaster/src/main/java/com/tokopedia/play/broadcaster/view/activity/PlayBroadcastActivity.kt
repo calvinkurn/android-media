@@ -59,7 +59,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
-        checkPermission()
         initPushStream()
         setupContent()
         initView()
@@ -82,13 +81,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
-    private fun checkPermission() {
-        viewModel.getPermissionUtil().checkPermission(arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO))
-    }
-
     private fun initPushStream() {
+        viewModel.checkPermission()
         viewModel.initPushStream()
     }
 

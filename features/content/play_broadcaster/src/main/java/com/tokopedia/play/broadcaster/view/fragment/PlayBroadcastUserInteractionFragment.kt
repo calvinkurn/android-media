@@ -119,8 +119,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        showDialogWhenActionClose()
-        return true
+        return showDialogWhenActionClose()
     }
 
     private fun startLiveStreaming(ingestUrl: String) {
@@ -171,8 +170,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         return productLiveBottomSheet
     }
 
-    private fun showDialogWhenActionClose() {
-        getExitDialog().show()
+    private fun showDialogWhenActionClose(): Boolean {
+        return if (parentViewModel.allPermissionGranted()) {
+            getExitDialog().show()
+            true
+        }
+        else false
     }
 
     private fun getExitDialog(): DialogUnify {
@@ -288,9 +291,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleLiveInfo(pusherInfoState: PlayPusherInfoState) {
         when (pusherInfoState) {
-            is PlayPusherInfoState.Active -> showTimeLeft(pusherInfoState.timeLeft)
-            is PlayPusherInfoState.AlmostFinish -> showTimeRunOut(pusherInfoState.minutesUntilFinished)
-            is PlayPusherInfoState.Finish -> {
+            is PlayPusherInfoState.TimerActive -> showTimeLeft(pusherInfoState.timeRemaining)
+            is PlayPusherInfoState.TimerAlmostFinish -> showTimeRunOut(pusherInfoState.minutesUntilFinished)
+            is PlayPusherInfoState.TimerFinish -> {
                 stopLiveStreaming()
                 showDialogWhenTimeout()
             }
@@ -328,7 +331,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 // Layanan live streaming tidak didukung pada perangkat Anda.
                 // showDialogWhenUnSupportedDevices()
             }
-            PlayPusherErrorType.ReachMaximumDuration -> doEndStreaming()
+            PlayPusherErrorType.ReachMaximumPauseDuration -> doEndStreaming()
         }
     }
 

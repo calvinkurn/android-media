@@ -6,11 +6,9 @@ package com.tokopedia.play.broadcaster.pusher.state
  */
 sealed class PlayPusherInfoState {
 
-    data class Active(val timeLeft: String) : PlayPusherInfoState()
-
-    data class AlmostFinish(val minutesUntilFinished: Long) : PlayPusherInfoState()
-
-    data class Finish(val timeElapsed: String) : PlayPusherInfoState()
+    data class TimerActive(val timeRemaining: String) : PlayPusherInfoState()
+    data class TimerAlmostFinish(val minutesUntilFinished: Long) : PlayPusherInfoState()
+    data class TimerFinish(val timeElapsed: String) : PlayPusherInfoState()
 
     data class Error(val errorType: PlayPusherErrorType) : PlayPusherInfoState()
 }

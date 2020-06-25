@@ -104,6 +104,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             }
             return
         }
+        if (isPushing())
+            return
         try {
             mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
             mTimerDuration?.start()
@@ -175,6 +177,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun destroy() {
         try {
             mAliVcLivePusher?.destroy()
+            mTimerDuration?.destroy()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -305,19 +308,19 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private val mPlayPusherTimerListener = object : PlayPusherTimerListener{
         override fun onCountDownActive(timeLeft: String) {
-            _observableInfoState.postValue(PlayPusherInfoState.Active(timeLeft))
+            _observableInfoState.postValue(PlayPusherInfoState.TimerActive(timeLeft))
         }
 
         override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
-            _observableInfoState.postValue(PlayPusherInfoState.AlmostFinish(minutesUntilFinished))
+            _observableInfoState.postValue(PlayPusherInfoState.TimerAlmostFinish(minutesUntilFinished))
         }
 
         override fun onCountDownFinish(timeElapsed: String) {
-            _observableInfoState.postValue(PlayPusherInfoState.Finish(timeElapsed))
+            _observableInfoState.postValue(PlayPusherInfoState.TimerFinish(timeElapsed))
         }
 
         override fun onReachMaximumPauseDuration() {
-            _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.ReachMaximumDuration))
+            _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.ReachMaximumPauseDuration))
         }
     }
 
