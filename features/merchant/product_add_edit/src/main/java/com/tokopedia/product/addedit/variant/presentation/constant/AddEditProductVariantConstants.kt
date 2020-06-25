@@ -9,6 +9,8 @@ class AddEditProductVariantConstants {
         const val MAX_SELECTED_VARIANT_TYPE = 2
         const val VARIANT_VALUE_LEVEL_ONE_POSITION = 0
         const val VARIANT_VALUE_LEVEL_TWO_POSITION = 1
+        const val MIN_PRODUCT_PRICE_LIMIT = 100
+        const val MIN_PRODUCT_STOCK_LIMIT = 1
         const val VARIANT_VALUE_LEVEL_ONE_COUNT = 1
         const val VARIANT_VALUE_LEVEL_TWO_COUNT = 2
         const val VARIANT_IDENTIFIER_HAS_SIZECHART = "size"

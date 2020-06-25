@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.adapter.viewholder
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
@@ -8,10 +10,29 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewmodel.VariantDetailFieldsViewModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import java.text.NumberFormat
+import java.util.*
 
-class VariantDetailFieldsViewHolder(itemView: View?) : AbstractViewHolder<VariantDetailFieldsViewModel>(itemView) {
+class VariantDetailFieldsViewHolder(itemView: View?,
+                                    onStatusSwitchCheckedChangeListener: OnStatusSwitchCheckedChangeListener,
+                                    onPriceInputTextChangedListener: OnPriceInputTextChangedListener,
+                                    onStockInputTextChangedListener: OnStockInputTextChangedListener) :
+        AbstractViewHolder<VariantDetailFieldsViewModel>(itemView) {
+
+    interface OnStatusSwitchCheckedChangeListener {
+        fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int)
+    }
+
+    interface OnPriceInputTextChangedListener {
+        fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
+    }
+
+    interface OnStockInputTextChangedListener {
+        fun onStockInputTextChanged(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
+    }
 
     private var unitValueLabel: AppCompatTextView? = null
     private var statusSwitch: SwitchUnify? = null
@@ -19,17 +40,100 @@ class VariantDetailFieldsViewHolder(itemView: View?) : AbstractViewHolder<Varian
     private var stockField: TextFieldUnify? = null
     private var skuField: TextFieldUnify? = null
 
+    var isRendered = false
+    var isPriceFieldEdited = false
+
     init {
         unitValueLabel = itemView?.findViewById(R.id.tv_unit_value_label)
         statusSwitch = itemView?.findViewById(R.id.su_variant_status)
         priceField = itemView?.findViewById(R.id.tfu_price_field)
         stockField = itemView?.findViewById(R.id.tfu_stock_field)
         skuField = itemView?.findViewById(R.id.tfu_sku_field)
+
+        statusSwitch?.setOnCheckedChangeListener { _, isChecked ->
+            onStatusSwitchCheckedChangeListener.onCheckedChanged(isChecked, adapterPosition)
+        }
+
+        priceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
+                isPriceFieldEdited = start != after
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                if (isRendered && isPriceFieldEdited) {
+                    // clean any kind of number formatting here
+                    var priceInput = charSequence?.toString()?.replace(".", "") ?: ""
+                    // remove scientific notation e.g. 20E7
+                    priceInput.format("%f")
+                    // handle the price input
+                    val validatedInputModel = onPriceInputTextChangedListener.onPriceInputTextChanged(priceInput, adapterPosition)
+                    priceField?.setError(validatedInputModel.isPriceError)
+                    priceField?.setMessage(validatedInputModel.priceFieldErrorMessage)
+                    // format the price with period delimiter
+                    priceField?.textFieldInput?.let {
+                        // remove the listener to prevent recursive callback
+                        it.removeTextChangedListener(this)
+                        // add the period delimiters
+                        if (priceInput.isNotBlank()) {
+                            priceInput = NumberFormat.getNumberInstance(Locale.US).format(priceInput.toBigDecimal()).replace(",", ".")
+                        }
+                        // set the text
+                        it.setText(priceInput)
+                        it.setSelection(priceInput.length)
+                        // reset the listener
+                        it.addTextChangedListener(this)
+                    }
+                }
+            }
+        })
+
+        stockField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                if (isRendered) {
+                    // clean any kind of number formatting here
+                    var stockInput = charSequence?.toString()?.replace(".", "") ?: ""
+                    // remove scientific notation e.g. 20E7
+                    stockInput.format("%f")
+                    // handle the stock input
+                    val validatedInputModel = onStockInputTextChangedListener.onStockInputTextChanged(stockInput, adapterPosition)
+                    stockField?.setError(validatedInputModel.isStockError)
+                    stockField?.setMessage(validatedInputModel.stockFieldErrorMessage)
+                    // format the stock with period delimiter
+                    stockField?.textFieldInput?.let {
+                        // remove the listener to prevent recursive callback
+                        it.removeTextChangedListener(this)
+                        // add the period delimiters
+                        if (stockInput.isNotBlank()) {
+                            stockInput = NumberFormat.getNumberInstance(Locale.US).format(stockInput.toBigDecimal()).replace(",", ".")
+                        }
+                        // set the text
+                        it.setText(stockInput)
+                        it.setSelection(stockInput.length)
+                        // reset the listener
+                        it.addTextChangedListener(this)
+                    }
+                }
+            }
+        })
     }
 
     override fun bind(element: VariantDetailFieldsViewModel?) {
         element?.run {
             val variantDetailInputLayoutModel = this.variantDetailInputLayoutModel
+
+            // render input data to
             unitValueLabel?.text = variantDetailInputLayoutModel.unitValueLabel
             statusSwitch?.isChecked = variantDetailInputLayoutModel.isActive
             priceField?.textFieldInput?.setText(variantDetailInputLayoutModel.price)
@@ -39,8 +143,13 @@ class VariantDetailFieldsViewHolder(itemView: View?) : AbstractViewHolder<Varian
             stockField?.setError(variantDetailInputLayoutModel.isStockError)
             stockField?.setMessage(variantDetailInputLayoutModel.stockFieldErrorMessage)
             skuField?.textFieldInput?.setText(variantDetailInputLayoutModel.sku)
+
+            // show / hide sku field
             if (variantDetailInputLayoutModel.isSkuFieldVisible) skuField?.show()
             else skuField?.hide()
+
+            // flag to prevent exception from
+            isRendered = true
         }
     }
 

@@ -1,17 +1,23 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import kotlinx.coroutines.CoroutineDispatcher
+import java.math.BigInteger
 import javax.inject.Inject
 
 class AddEditProductVariantDetailViewModel @Inject constructor(
-        coroutineDispatcher: CoroutineDispatcher
+        val provider: ResourceProvider, coroutineDispatcher: CoroutineDispatcher
 ) : BaseViewModel(coroutineDispatcher) {
 
     var productInputModel = MutableLiveData<ProductInputModel>()
@@ -24,14 +30,53 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
-    private val variantDetailFieldMapLayout: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
+    private val mErrorCounter = MutableLiveData(0)
+    val errorCounter: LiveData<Int> get() = mErrorCounter
+
+    private var inputFieldSize = 0
+
+    private var collapsedFields = 0
+
+    private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
+
+    private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
+
+    fun getInputFieldSize(): Int {
+        return inputFieldSize
+    }
+
+    fun setInputFieldSize(inputFieldSize: Int) {
+        this.inputFieldSize = inputFieldSize
+    }
+
+    fun increaseCollapsedFields(inputFieldSize: Int) {
+        collapsedFields += inputFieldSize
+    }
+
+    fun decreaseCollapsedFields(inputFieldSize: Int) {
+        collapsedFields -= inputFieldSize
+    }
 
     fun hasVariantCombination(selectedVariantSize: Int): Boolean {
         return selectedVariantSize == MAX_SELECTED_VARIANT_TYPE
     }
 
+    fun isVariantDetailHeaderCollapsed(headerPosition: Int): Boolean {
+        return if (headerStatusMap.containsKey(headerPosition)) {
+            headerStatusMap[headerPosition] ?: false
+        } else false
+    }
+
+    fun updateVariantDetailHeaderMap(adapterPosition: Int, isCollapsed: Boolean) {
+        headerStatusMap[adapterPosition] = isCollapsed
+    }
+
     fun updateVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
-        variantDetailFieldMapLayout[fieldPosition] = variantDetailInputLayoutModel
+        inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
+    }
+
+    fun editVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
+        if (inputLayoutModelMap.containsKey(fieldPosition)) inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
     }
 
     fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {
@@ -55,31 +100,90 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
-    fun getVariantDetailFieldMap(): HashMap<Int, VariantDetailInputLayoutModel> {
-        return this.variantDetailFieldMapLayout
-    }
-
-    fun showSkuFields(): HashMap<Int, VariantDetailInputLayoutModel> {
-        variantDetailFieldMapLayout.forEach {
-            it.value.isSkuFieldVisible = true
+    fun updateSkuVisibilityStatus(isVisible: Boolean) {
+        inputLayoutModelMap.forEach {
+            it.value.isSkuFieldVisible = isVisible
         }
-        return variantDetailFieldMapLayout
     }
 
-    fun hideSkuFields(): HashMap<Int, VariantDetailInputLayoutModel> {
-        variantDetailFieldMapLayout.forEach {
-            it.value.isSkuFieldVisible = false
+    fun getVariantDetailHeaderData(headerPosition: Int): MutableList<VariantDetailInputLayoutModel> {
+        val dataMap = inputLayoutModelMap.filterValues { it.headerPosition == headerPosition }
+        return dataMap.values.toMutableList()
+    }
+
+    fun getAvailableFields(): Map<Int, VariantDetailInputLayoutModel> {
+        // without combinations and headers
+        if (headerStatusMap.isEmpty()) return inputLayoutModelMap
+        // with variant combinations and headers
+        val expandedHeaderPositions = mutableListOf<Int>()
+        headerStatusMap.forEach {
+            if (!it.value) expandedHeaderPositions.add(it.key)
         }
-        return variantDetailFieldMapLayout
+        val filteredMap = inputLayoutModelMap.filterValues { expandedHeaderPositions.contains(it.headerPosition) }
+        if (collapsedFields != 0) {
+            val fieldsMap = mutableMapOf<Int, VariantDetailInputLayoutModel>()
+            filteredMap.forEach {
+                val newFieldPosition = it.key - collapsedFields
+                fieldsMap[newFieldPosition] = it.value
+            }
+            return fieldsMap
+        }
+        return filteredMap
     }
 
-    fun validatePriceField() {
-
+    fun updateSwitchStatus(isChecked: Boolean, adapterPosition: Int): VariantDetailInputLayoutModel {
+        val inputModel = inputLayoutModelMap[adapterPosition]
+                ?: VariantDetailInputLayoutModel()
+        inputModel.isActive = isChecked
+        return inputModel
     }
 
-    fun validateStockField() {
+    fun validateVariantPriceInput(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
+        val inputModel = inputLayoutModelMap[adapterPosition]
+                ?: VariantDetailInputLayoutModel()
+        inputModel.price = priceInput
+        if (priceInput.isEmpty()) {
+            inputModel.isPriceError = true
+            inputModel.priceFieldErrorMessage = provider.getEmptyProductPriceErrorMessage() ?: ""
+            mErrorCounter.value = +1
+            return inputModel
+        }
+        val productPrice: BigInteger = priceInput.toBigIntegerOrNull().orZero()
+        if (productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger()) {
+            inputModel.isPriceError = true
+            inputModel.priceFieldErrorMessage = provider.getMinLimitProductPriceErrorMessage() ?: ""
+            mErrorCounter.value = +1
+            return inputModel
+        }
+        inputModel.isPriceError = false
+        inputModel.priceFieldErrorMessage = ""
+        val errorCounter = mErrorCounter.value ?: 0
+        if (errorCounter > 0) mErrorCounter.value = -1
+        return inputModel
+    }
 
-
+    fun validateProductVariantStockInput(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
+        val inputModel = inputLayoutModelMap[adapterPosition]
+                ?: VariantDetailInputLayoutModel()
+        inputModel.stock = stockInput
+        if (stockInput.isEmpty()) {
+            inputModel.isStockError = true
+            inputModel.stockFieldErrorMessage = provider.getEmptyProductStockErrorMessage() ?: ""
+            mErrorCounter.value = +1
+            return inputModel
+        }
+        val productStock: BigInteger = stockInput.toBigIntegerOrNull().orZero()
+        if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
+            inputModel.isStockError = true
+            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage() ?: ""
+            mErrorCounter.value = +1
+            return inputModel
+        }
+        inputModel.isStockError = false
+        inputModel.stockFieldErrorMessage = ""
+        val errorCounter = mErrorCounter.value ?: 0
+        if (errorCounter > 0) mErrorCounter.value = -1
+        return inputModel
     }
 
 }

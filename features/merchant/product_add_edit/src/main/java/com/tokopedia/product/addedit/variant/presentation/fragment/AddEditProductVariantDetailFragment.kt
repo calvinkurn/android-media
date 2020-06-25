@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +19,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailFieldsAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailInputTypeFactoryImpl
+import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailFieldsViewHolder
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailHeaderViewHolder
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
@@ -33,6 +35,9 @@ import javax.inject.Inject
 
 class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
+        VariantDetailFieldsViewHolder.OnStatusSwitchCheckedChangeListener,
+        VariantDetailFieldsViewHolder.OnPriceInputTextChangedListener,
+        VariantDetailFieldsViewHolder.OnStockInputTextChangedListener,
         MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener,
         SelectVariantMainBottomSheet.SelectVariantMainListener {
 
@@ -69,6 +74,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             viewModel.productInputModel.value = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
                     ProductInputModel::class.java) ?: ProductInputModel()
         }
+
+        activity?.window?.setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -79,15 +88,21 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //buttonSave.isEnabled = false
+        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        val variantInputModel = viewModel.productInputModel.value?.variantInputModel
+        multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
-        variantDetailFieldsAdapter = VariantDetailFieldsAdapter(VariantDetailInputTypeFactoryImpl(this))
+        variantDetailFieldsAdapter = VariantDetailFieldsAdapter(VariantDetailInputTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this))
         recyclerViewVariantDetailFields.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields.layoutManager = LinearLayoutManager(context)
 
         switchUnifySku.setOnCheckedChangeListener { _, isChecked ->
-            if (!isChecked) variantDetailFieldsAdapter?.updateAllField(viewModel.hideSkuFields())
-            else variantDetailFieldsAdapter?.updateAllField(viewModel.showSkuFields())
+            viewModel.updateSkuVisibilityStatus(isVisible = isChecked)
+            variantDetailFieldsAdapter?.updateSkuVisibilityStatus(viewModel.getAvailableFields(), isChecked)
         }
 
         imageViewMultipleEdit.setOnClickListener {
@@ -103,12 +118,37 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         }
 
         observeSelectedVariantSize()
+        observeInputStatus()
     }
 
     override fun onHeaderClicked(adapterPosition: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        // get target fields (indexes)
-        // remove indexes from visitables
+        val isCollapsed = viewModel.isVariantDetailHeaderCollapsed(adapterPosition)
+        if (!isCollapsed) {
+            variantDetailFieldsAdapter?.collapseUnitValueHeader(adapterPosition, viewModel.getInputFieldSize())
+            viewModel.increaseCollapsedFields(viewModel.getInputFieldSize())
+            viewModel.updateVariantDetailHeaderMap(adapterPosition, true)
+        } else {
+            variantDetailFieldsAdapter?.expandDetailFields(adapterPosition, viewModel.getVariantDetailHeaderData(adapterPosition))
+            viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
+            viewModel.updateVariantDetailHeaderMap(adapterPosition, false)
+        }
+    }
+
+    override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
+        val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
+        viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
+    }
+
+    override fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
+        val validatedInputModel = viewModel.validateVariantPriceInput(priceInput, adapterPosition)
+        viewModel.editVariantDetailInputMap(adapterPosition, validatedInputModel)
+        return validatedInputModel
+    }
+
+    override fun onStockInputTextChanged(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
+        val validatedInputModel = viewModel.validateProductVariantStockInput(stockInput, adapterPosition)
+        viewModel.editVariantDetailInputMap(adapterPosition, validatedInputModel)
+        return validatedInputModel
     }
 
     override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
@@ -139,6 +179,13 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun observeInputStatus() {
+        viewModel.errorCounter.observe(this, Observer {
+            val errorCount = it ?: 0
+            buttonSave.isEnabled = errorCount <= 0
+        })
+    }
+
     private fun setupVariantDetailFields(selectedUnitValues: List<OptionInputModel>) {
         // without variant unit values combination
         selectedUnitValues.forEach { unitValue ->
@@ -156,16 +203,21 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val selectedVariantLevel2 = selectedVariants[VARIANT_VALUE_LEVEL_TWO_POSITION]
         val unitValueLevel2 = selectedVariantLevel2.options
         // start rendering
-        unitValueLevel1.forEach { level1Value ->
+        unitValueLevel1.forEachIndexed { index, level1Value ->
             // render collapsible header
-            val headerAdapterPosition = variantDetailFieldsAdapter?.addUnitValueHeader(level1Value.value)
+            val headerPosition = variantDetailFieldsAdapter?.addUnitValueHeader(level1Value.value, index)
+                    ?: 0
+            viewModel.updateVariantDetailHeaderMap(headerPosition, false)
             // render variant unit value fields
             unitValueLevel2.forEach { level2Value ->
-                val variantDetailInputModel = VariantDetailInputLayoutModel(unitValueLabel = level2Value.value)
+                val variantDetailInputModel = VariantDetailInputLayoutModel(headerPosition = headerPosition, unitValueLabel = level2Value.value)
                 val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
                 fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
+
             }
         }
+        // set input field size
+        viewModel.setInputFieldSize(unitValueLevel2.size)
     }
 
     private fun showMultipleEditBottomSheet() {
