@@ -106,7 +106,9 @@ class FilterBottomSheet(
 
     private fun resetFilter() {
         filterAdapter.items.filterIsInstance<FilterItem>().forEach { it.isSelected = false }
-        filterAdapter.notifyDataSetChanged()
+        view?.rvMcvFilter?.post {
+            filterAdapter.notifyDataSetChanged()
+        }
         clearAction()
     }
 

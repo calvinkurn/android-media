@@ -896,13 +896,15 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
         voucherSort = VoucherSort.FINISH_TIME
 
-        val activeSort = sortItems.first { it.isSelected }
-        view?.headerChipMvc?.run {
-            setActiveSort(activeSort)
-            showResetButton()
-        }
+        val activeSort = sortItems.firstOrNull { it.isSelected }
+        activeSort?.let { sort ->
+            view?.headerChipMvc?.run {
+                setActiveSort(sort)
+                showResetButton()
+            }
 
-        isInverted = activeSort.key == SortBy.OLDEST_DONE_DATE
+            isInverted = sort.key == SortBy.OLDEST_DONE_DATE
+        }
 
         loadData(1)
     }
