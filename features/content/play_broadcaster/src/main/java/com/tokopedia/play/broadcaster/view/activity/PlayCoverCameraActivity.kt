@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -22,14 +23,20 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
 import kotlinx.android.synthetic.main.activity_play_cover_camera.*
 import java.io.File
-import java.util.*
+import kotlin.math.ceil
 
 class PlayCoverCameraActivity : AppCompatActivity() {
 
-    private lateinit var cameraListener: CameraListener
-    private var cameraTimerEnum: CameraTimerEnum = CameraTimerEnum.IMMEDIATE
-    private var timeToCapture: Int = 0
+    private var cameraTimerEnum: CameraTimerEnum = CameraTimerEnum.Immediate
     private var isTimerRunning = false
+
+    private lateinit var timer: CountDownTimer
+
+    private val cameraListener = object : CameraListener() {
+        override fun onPictureTaken(result: PictureResult) {
+            saveToFile(result.data)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +55,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        if (::timer.isInitialized) timer.cancel()
         cvPlayCameraView.close()
     }
 
@@ -61,12 +69,6 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         btnPlayCameraCancel.setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
             finish()
-        }
-
-        cameraListener = object : CameraListener() {
-            override fun onPictureTaken(result: PictureResult) {
-                saveToFile(result.data)
-            }
         }
 
         cvPlayCameraView.addCameraListener(cameraListener)
@@ -93,29 +95,23 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun takePicture() {
-        if (timeToCapture > 0) {
-            showTimerLayout()
-            val timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    runOnUiThread {
-                        if (timeToCapture > 0)
-                            showTimerLayout()
-                    }
-                    timeToCapture--
-                    if (timeToCapture <= 0) {
-                        runOnUiThread {
-                            hideTimerLayout()
-                        }
+        when (cameraTimerEnum) {
+            CameraTimerEnum.Immediate -> cvPlayCameraView.takePicture()
+            else -> {
+                timer = object : CountDownTimer(cameraTimerEnum.seconds * SECONDS_IN_MILIS, SECONDS_IN_MILIS) {
+                    private val secondsInDouble = SECONDS_IN_MILIS.toDouble()
+
+                    override fun onFinish() {
+                        hideTimerLayout()
                         cvPlayCameraView.takePicture()
-                        timeToCapture = cameraTimerEnum.seconds
-                        timer.cancel()
-                        timer.purge()
                     }
-                }
-            }, SECONDS_IN_MILIS, SECONDS_IN_MILIS)
-        } else {
-            cvPlayCameraView.takePicture()
+
+                    override fun onTick(millisUntilFinished: Long) {
+                        val secondsLeft = ceil(millisUntilFinished / secondsInDouble).toInt()
+                        showTimerLayout(secondsLeft)
+                    }
+                }.start()
+            }
         }
     }
 
@@ -168,8 +164,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
             tvPlayCameraTimer0.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
             tvPlayCameraTimer5.setTextColor(resources.getColor(R.color.play_white_68))
             tvPlayCameraTimer10.setTextColor(resources.getColor(R.color.play_white_68))
-            cameraTimerEnum = CameraTimerEnum.IMMEDIATE
-            timeToCapture = cameraTimerEnum.seconds
+            cameraTimerEnum = CameraTimerEnum.Immediate
         }
     }
 
@@ -178,8 +173,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
             tvPlayCameraTimer0.setTextColor(resources.getColor(R.color.play_white_68))
             tvPlayCameraTimer5.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
             tvPlayCameraTimer10.setTextColor(resources.getColor(R.color.play_white_68))
-            cameraTimerEnum = CameraTimerEnum.FIVE_SECONDS
-            timeToCapture = cameraTimerEnum.seconds
+            cameraTimerEnum = CameraTimerEnum.Five
         }
     }
 
@@ -188,13 +182,12 @@ class PlayCoverCameraActivity : AppCompatActivity() {
             tvPlayCameraTimer0.setTextColor(resources.getColor(R.color.play_white_68))
             tvPlayCameraTimer5.setTextColor(resources.getColor(R.color.play_white_68))
             tvPlayCameraTimer10.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-            cameraTimerEnum = CameraTimerEnum.TEN_SECONDS
-            timeToCapture = cameraTimerEnum.seconds
+            cameraTimerEnum = CameraTimerEnum.Ten
         }
     }
 
-    private fun showTimerLayout() {
-        tvPlayCameraTimeToCapture.text = timeToCapture.toString()
+    private fun showTimerLayout(seconds: Int) {
+        tvPlayCameraTimeToCapture.text = seconds.toString()
         containerPlayCameraTimer.visibility = View.VISIBLE
     }
 
