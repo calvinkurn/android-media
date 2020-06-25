@@ -40,6 +40,8 @@ public class HomePageTracking {
     public static final String FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
     public static final String FORMAT_2_VALUE_UNDERSCORE = "%s_%s";
 
+    public static final String FORMAT_3_VALUE_SPACE = "%s %s %s";
+
     public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
     public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
     public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
@@ -743,7 +745,7 @@ public class HomePageTracking {
             tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
-                    String.format("%s %s %s", CLICK, ON, OVO),
+                    String.format(FORMAT_3_VALUE_SPACE, CLICK, ON, OVO),
                     ""
             );
         }
@@ -755,7 +757,7 @@ public class HomePageTracking {
             Map<String, Object> data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_HOME_PAGE,
                     EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                    EVENT_ACTION, String.format("%s %s %s", CLICK, ON, OVO_TOPUP),
+                    EVENT_ACTION, String.format(FORMAT_3_VALUE_SPACE, CLICK, ON, OVO_TOPUP),
                     EVENT_LABEL, "",
                     BaseTracking.Screen.KEY, BaseTracking.Screen.DEFAULT,
                     BaseTracking.CurrentSite.KEY, BaseTracking.CurrentSite.DEFAULT,
