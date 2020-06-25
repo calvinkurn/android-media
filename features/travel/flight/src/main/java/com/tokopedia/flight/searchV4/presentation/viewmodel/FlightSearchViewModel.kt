@@ -3,6 +3,7 @@ package com.tokopedia.flight.searchV4.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
@@ -75,13 +76,19 @@ class FlightSearchViewModel @Inject constructor(
         get() = mutableTickerData
 
     val progress = MutableLiveData<Int>()
+    private var isSearchViewSent: Boolean = false
 
     init {
         progress.value = DEFAULT_PROGRESS_VALUE
+        isSearchViewSent = false
         fetchTickerData()
     }
 
     fun initialize(needDeleteData: Boolean, isReturnTrip: Boolean) {
+        if (flightSearchPassData.linkUrl.contains(DeeplinkConstant.SCHEME_INTERNAL)) {
+            flightSearchPassData.linkUrl.replace(DeeplinkConstant.SCHEME_INTERNAL, DeeplinkConstant.SCHEME_TOKOPEDIA)
+        }
+
         if (needDeleteData) {
             if (isReturnTrip) {
                 deleteFlightReturnSearch {}
@@ -211,7 +218,6 @@ class FlightSearchViewModel @Inject constructor(
     fun fetchSortAndFilter() {
         launchCatchError(context = dispatcherProvider.ui(), block = {
             flightSortAndFilterUseCase.execute(selectedSortOption, filterModel).let {
-                flightAnalytics.eventSearchView(flightSearchPassData, true)
                 mutableJourneyList.postValue(Success(it))
             }
         }) {
@@ -246,6 +252,10 @@ class FlightSearchViewModel @Inject constructor(
 
     fun isDoneLoadData(): Boolean {
         progress.value?.let {
+            if (it >= MAX_PROGRESS && !isSearchViewSent) {
+                flightAnalytics.eventSearchView(flightSearchPassData, true)
+                isSearchViewSent = true
+            }
             return it >= MAX_PROGRESS
         }
         return false

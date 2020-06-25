@@ -32,7 +32,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
             return
         setViewSpanType(holder)
-
         holder.bindView(viewHolderListModel.getViewHolderModel(
                 DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position],position),parentComponent)
     }
@@ -43,6 +42,13 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
             return 0
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
         return id ?: 0
+    }
+
+    override fun getItemId(position: Int): Long {
+        if (componentList.isNullOrEmpty() || position >= componentList.size || componentList[position].data.isNullOrEmpty()) {
+            return super.getItemId(position)
+        }
+        return componentList[position].data?.get(0)?.productId?.toLong()!!
     }
 
     fun addDataList(dataList: List<ComponentsItem>) {

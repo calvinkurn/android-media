@@ -23,26 +23,4 @@ public interface TkpdCoreRouter {
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getSplashScreenIntent(Context context);
-
-    Intent getPhoneVerificationActivationIntent(Context context);
-
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getLoginGoogleIntent(Context context);
-
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getLoginFacebookIntent(Context context);
-
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getLoginWebviewIntent(Context context, String name, String url);
-
-    Intent getCreateResCenterActivityIntent(Context context, String orderId);
 }

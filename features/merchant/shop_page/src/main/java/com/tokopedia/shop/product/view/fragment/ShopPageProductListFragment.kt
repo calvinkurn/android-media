@@ -472,9 +472,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     if (shopProductAdapter.isLoading) {
                         return
                     }
-                    shopPageTracking?.sortProduct(sortName, isOwner, customDimensionShopPage)
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                    shopPageTracking?.sortProduct(sortName, isOwner, customDimensionShopPage)
                     shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
                     shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
                     shopProductAdapter.refreshSticky()
@@ -873,7 +873,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             if (!shopProductAdapter.isLoading) {
                 sortId = it.first
                 sortName = it.second
-                shopPageTracking?.sortProduct(sortName, isOwner, customDimensionShopPage)
                 shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
                 shopProductAdapter.refreshSticky()
                 loadNewProductData()

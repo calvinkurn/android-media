@@ -65,50 +65,6 @@ public class AccountsModel implements Parcelable {
         return isLogin;
     }
 
-    /**
-     *
-     * @param isLogin
-     *     The is_login
-     */
-    public void setIsLogin(String isLogin) {
-        this.isLogin = isLogin;
-    }
-
-    /**
-     *
-     * @return
-     *     The shopHasTerms
-     */
-    public int getShopHasTerms() {
-        return shopHasTerms;
-    }
-
-    /**
-     *
-     * @param shopHasTerms
-     *     The shop_has_terms
-     */
-    public void setShopHasTerms(int shopHasTerms) {
-        this.shopHasTerms = shopHasTerms;
-    }
-
-    /**
-     *
-     * @return
-     *     The shopReputation
-     */
-    public ShopReputation getShopReputation() {
-        return shopReputation;
-    }
-
-    /**
-     *
-     * @param shopReputation
-     *     The shop_reputation
-     */
-    public void setShopReputation(ShopReputation shopReputation) {
-        this.shopReputation = shopReputation;
-    }
 
     /**
      *
@@ -117,33 +73,6 @@ public class AccountsModel implements Parcelable {
      */
     public int getShopIsGold() {
         return shopIsGold;
-    }
-
-    /**
-     *
-     * @param shopIsGold
-     *     The shop_is_gold
-     */
-    public void setShopIsGold(int shopIsGold) {
-        this.shopIsGold = shopIsGold;
-    }
-
-    /**
-     *
-     * @return
-     *     The isRegisterDevice
-     */
-    public int getIsRegisterDevice() {
-        return isRegisterDevice;
-    }
-
-    /**
-     *
-     * @param isRegisterDevice
-     *     The is_register_device
-     */
-    public void setIsRegisterDevice(int isRegisterDevice) {
-        this.isRegisterDevice = isRegisterDevice;
     }
 
     /**
@@ -164,26 +93,8 @@ public class AccountsModel implements Parcelable {
         this.fullName = fullName;
     }
 
-    /**
-     *
-     * @return
-     *     The msisdnIsVerified
-     */
-    public String getMsisdnIsVerified() {
-        return msisdnIsVerified;
-    }
-
     public boolean getMsisdnIsVerifiedBoolean() {
         return msisdnIsVerified.equals("1");
-    }
-
-    /**
-     *
-     * @param msisdnIsVerified
-     *     The msisdn_is_verified
-     */
-    public void setMsisdnIsVerified(String msisdnIsVerified) {
-        this.msisdnIsVerified = msisdnIsVerified;
     }
 
     /**
@@ -207,42 +118,6 @@ public class AccountsModel implements Parcelable {
     /**
      *
      * @return
-     *     The userImage
-     */
-    public String getUserImage() {
-        return userImage;
-    }
-
-    /**
-     *
-     * @param userImage
-     *     The user_image
-     */
-    public void setUserImage(String userImage) {
-        this.userImage = userImage;
-    }
-
-    /**
-     *
-     * @return
-     *     The userReputation
-     */
-    public UserReputation getUserReputation() {
-        return userReputation;
-    }
-
-    /**
-     *
-     * @param userReputation
-     *     The user_reputation
-     */
-    public void setUserReputation(UserReputation userReputation) {
-        this.userReputation = userReputation;
-    }
-
-    /**
-     *
-     * @return
      *     The shopName
      */
     public String getShopName() {
@@ -256,42 +131,6 @@ public class AccountsModel implements Parcelable {
      */
     public void setShopName(String shopName) {
         this.shopName = shopName;
-    }
-
-    /**
-     *
-     * @return
-     *     The msisdnShowDialog
-     */
-    public int getMsisdnShowDialog() {
-        return msisdnShowDialog;
-    }
-
-    /**
-     *
-     * @param msisdnShowDialog
-     *     The msisdn_show_dialog
-     */
-    public void setMsisdnShowDialog(int msisdnShowDialog) {
-        this.msisdnShowDialog = msisdnShowDialog;
-    }
-
-    /**
-     *
-     * @return
-     *     The shopAvatar
-     */
-    public String getShopAvatar() {
-        return shopAvatar;
-    }
-
-    /**
-     *
-     * @param shopAvatar
-     *     The shop_avatar
-     */
-    public void setShopAvatar(String shopAvatar) {
-        this.shopAvatar = shopAvatar;
     }
 
     /**

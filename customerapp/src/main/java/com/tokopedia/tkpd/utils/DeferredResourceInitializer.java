@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tkpd.remoteresourcerequest.callback.DeferredCallback;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.home.account.AccountHomeUrl;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -17,6 +18,7 @@ import static com.tkpd.remoteresourcerequest.task.ResourceDownloadManager.MANAGE
 
 public class DeferredResourceInitializer implements DeferredCallback {
     private static String RELATIVE_URL = "/android/res/";
+    private static final String ENABLE_ASYNC_REMOTERESOURCE_INIT = "android_async_remoteresource_init";
 
     public void initializeResourceDownloadManager(Context context) {
         WeaveInterface libInitWeave = new WeaveInterface() {
@@ -26,7 +28,7 @@ public class DeferredResourceInitializer implements DeferredCallback {
                 return init(context);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(libInitWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(libInitWeave, ENABLE_ASYNC_REMOTERESOURCE_INIT, context.getApplicationContext());
     }
 
     private boolean init(Context context) {
