@@ -23,4 +23,8 @@ interface PlayEtalaseSetupCoordinator {
     fun goBack(clazz: Class<out Fragment>)
 
     fun showBottomAction(shouldShow: Boolean)
+
+    fun showGlobalError(errorType: Int, errorAction: () -> Unit)
+
+    fun hideGlobalError()
 }

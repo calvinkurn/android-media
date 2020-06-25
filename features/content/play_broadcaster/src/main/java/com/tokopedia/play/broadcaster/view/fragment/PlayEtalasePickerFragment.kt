@@ -15,6 +15,9 @@ import androidx.transition.Fade
 import androidx.transition.Slide
 import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.compatTransitionName
@@ -45,6 +48,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var tvInfo: TextView
     private lateinit var flEtalaseFlow: FrameLayout
     private lateinit var psbSearch: PlaySearchBar
+    private lateinit var errorEtalase: GlobalError
     private lateinit var bottomSheetHeader : PlayBottomSheetHeader
 
     private lateinit var selectedProductPage: SelectedProductPagePartialView
@@ -134,6 +138,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             tvInfo = findViewById(R.id.tv_info)
             flEtalaseFlow = findViewById(R.id.fl_etalase_flow)
             psbSearch = findViewById(R.id.psb_search)
+            errorEtalase = findViewById(R.id.error_etalase)
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
 
@@ -185,6 +190,8 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
         })
         bottomSheetHeader.setHeader(getString(R.string.play_etalase_picker_title), isRoot = true)
+
+        errorEtalase.setActionClickListener { viewModel.loadEtalaseList() }
     }
 
 
@@ -229,6 +236,24 @@ class PlayEtalasePickerFragment @Inject constructor(
         if (shouldShow) bottomActionView.show() else bottomActionView.hide()
     }
 
+    override fun showGlobalError(errorType: Int, errorAction: () -> Unit) {
+        errorEtalase.setType(errorType)
+        errorEtalase.setActionClickListener { errorAction() }
+        errorEtalase.show()
+
+        tvInfo.hide()
+        psbSearch.hide()
+        flEtalaseFlow.hide()
+    }
+
+    override fun hideGlobalError() {
+        errorEtalase.hide()
+
+        tvInfo.show()
+        psbSearch.show()
+        flEtalaseFlow.show()
+    }
+
     private fun onSelectedProductChanged() {
         (currentFragment as? PlayBaseEtalaseSetupFragment)?.refresh()
     }
@@ -254,7 +279,9 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun observeUploadProduct() {
         viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
-                NetworkResult.Loading -> bottomActionView.setLoading(true)
+                NetworkResult.Loading -> {
+                    bottomActionView.setLoading(true)
+                }
                 is NetworkResult.Fail -> {
                     bottomActionView.setLoading(false)
                     Toaster.make(requireView(), it.error.localizedMessage)

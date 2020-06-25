@@ -27,17 +27,16 @@ object PlayBroadcastUiMapper {
     }
 
     fun mapProductList(
-            productsResponse: GetProductsByEtalaseResponse.GetShopProductData,
+            productsResponse: GetProductsByEtalaseResponse.GetProductListData,
             isSelectedHandler: (Long) -> Boolean,
             isSelectableHandler: (Boolean) -> SelectableState
     ) = productsResponse.data.map {
         ProductContentUiModel(
-                id = it.productId.toLong(),
+                id = it.id.toLong(),
                 name = it.name,
-                imageUrl = it.primaryImage.resize300,
-                originalImageUrl = it.primaryImage.original,
-                stock = 2,
-//                stock = it.stock, // TODO("uncomment")
+                imageUrl = it.pictures.first().urlThumbnail,
+                originalImageUrl = it.pictures.first().urlThumbnail,
+                stock = it.stock,
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
         )
@@ -45,7 +44,7 @@ object PlayBroadcastUiMapper {
 
     fun mapSearchSuggestionList(
             keyword: String,
-            productsResponse: GetProductsByEtalaseResponse.GetShopProductData
+            productsResponse: GetProductsByEtalaseResponse.GetProductListData
     ) = productsResponse.data.map {
         val fullSuggestedText = it.name
         val startIndex = fullSuggestedText.indexOf(keyword)

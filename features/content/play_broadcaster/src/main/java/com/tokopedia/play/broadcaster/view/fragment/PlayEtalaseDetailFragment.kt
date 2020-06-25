@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
@@ -19,6 +22,7 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
+import com.tokopedia.play.broadcaster.util.productEtalaseEmpty
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
@@ -47,6 +51,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private lateinit var tvInfo: TextView
     private lateinit var rvProduct: RecyclerView
+    private lateinit var errorEmptyProduct: GlobalError
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
     private lateinit var selectedProductPage: SelectedProductPagePartialView
@@ -114,6 +119,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         with(view) {
             tvInfo = findViewById(R.id.tv_info)
             rvProduct = findViewById(R.id.rv_product)
+            errorEmptyProduct = findViewById(R.id.error_empty_product)
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
 
@@ -166,6 +172,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 bottomSheetCoordinator.goBack()
             }
         })
+
+        errorEmptyProduct.productEtalaseEmpty()
     }
 
     private fun uploadProduct() {
@@ -187,6 +195,20 @@ class PlayEtalaseDetailFragment @Inject constructor(
         mListener?.onProductSetupFinished(listOf(nextBtnView), dataStoreViewModel.getDataStore())
     }
 
+    private fun showProductEmptyError(shouldShow: Boolean) {
+        if (shouldShow) {
+            errorEmptyProduct.show()
+
+            tvInfo.hide()
+            rvProduct.hide()
+        } else {
+            errorEmptyProduct.hide()
+
+            tvInfo.show()
+            rvProduct.show()
+        }
+    }
+
     /**
      * Observe
      */
@@ -196,6 +218,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
             when (it.state) {
                 is PageResultState.Success -> {
+                    showProductEmptyError(it.currentValue.productMap.values.isEmpty())
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
 
                     startPostponedTransition()
@@ -204,6 +227,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
                     scrollListener.updateState(true)
                 }
                 PageResultState.Loading -> {
+                    showProductEmptyError(false)
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten() + ProductLoadingUiModel)
                 }
                 is PageResultState.Fail -> {
@@ -213,6 +237,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(false)
+
+                    showProductEmptyError(it.currentValue.productMap.values.isEmpty())
                 }
             }
         })

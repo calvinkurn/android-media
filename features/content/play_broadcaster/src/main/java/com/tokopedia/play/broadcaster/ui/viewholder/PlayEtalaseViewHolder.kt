@@ -52,7 +52,8 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     fun bind(item: EtalaseContentUiModel) {
         setupProductPreview(item.productMap, item.totalProduct)
 
-        listener.onEtalaseBound(item.id)
+        if (item.productMap.isEmpty() && item.totalProduct > 0) listener.onEtalaseBound(item.id)
+
         vClickArea.setOnClickListener {
             listener.onEtalaseClicked(item.id, (0 until rvProductPreview.childCount).mapNotNull {
                 val childView = rvProductPreview.getChildAt(it)
