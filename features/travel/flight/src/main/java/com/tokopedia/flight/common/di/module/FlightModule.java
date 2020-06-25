@@ -9,12 +9,10 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
 import com.tokopedia.common.travel.utils.TravelProductionDispatcherProvider;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.db.FlightRoomDb;
@@ -47,8 +45,6 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -247,13 +243,6 @@ public class FlightModule {
     @Provides
     public TravelDispatcherProvider provideDispatcherProvider() {
         return new TravelProductionDispatcherProvider();
-    }
-
-    @FlightScope
-    @Provides
-    @Named("flight_search_single_query")
-    public String provideFlightSearchSingleQuery(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.flight_search_single);
     }
 
 }

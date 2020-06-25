@@ -68,8 +68,6 @@ public interface FlightComponent {
 
     TravelDispatcherProvider dispatcherProvider();
 
-    String flightSearchSingleQuery();
-
     void inject(BaseFlightActivity baseFlightActivity);
 
     void inject(FlightDetailOrderFragment flightDetailOrderFragment);

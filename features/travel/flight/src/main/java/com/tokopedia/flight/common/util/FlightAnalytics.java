@@ -345,32 +345,6 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventProductViewEnchanceEcommerceOld(FlightSearchPassDataModel searchPassDataViewModel,
-                                                     List<com.tokopedia.flight.search.presentation.model.FlightJourneyModel> listJourneyViewModel) {
-
-        List<Object> products = new ArrayList<>();
-        int position = 0;
-        for (com.tokopedia.flight.search.presentation.model.FlightJourneyModel item : listJourneyViewModel) {
-            position++;
-            products.add(transformSearchProductView(searchPassDataViewModel, item, position));
-        }
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, PRODUCT_VIEW_EVENT,
-                        EVENT_CATEGORY, Category.DIGITAL_FLIGHT,
-                        EVENT_ACTION, Action.PRODUCT_VIEW_ACTION,
-                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
-                                (searchPassDataViewModel.getDepartureAirport().getAirportCode() == null || searchPassDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
-                                        searchPassDataViewModel.getDepartureAirport().getCityCode() :
-                                        searchPassDataViewModel.getDepartureAirport().getAirportCode(),
-                                (searchPassDataViewModel.getArrivalAirport().getAirportCode() == null || searchPassDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
-                                        searchPassDataViewModel.getArrivalAirport().getCityCode() :
-                                        searchPassDataViewModel.getArrivalAirport().getAirportCode()),
-                        ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, DEFAULT_CURRENCY_CODE, IMPRESSIONS, products)
-                )
-        );
-    }
-
     public void eventSearchProductClickFromList(FlightSearchPassDataModel flightSearchPassData, FlightJourneyModel viewModel) {
         List<Object> products = new ArrayList<>();
         products.add(transformSearchProductClick(flightSearchPassData, viewModel, 0));
