@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -39,7 +38,10 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.DisabledAccoun
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.RekPremBankAccountInfoBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
-import com.tokopedia.withdraw.saldowithdrawal.util.*
+import com.tokopedia.withdraw.saldowithdrawal.util.BuyerSaldoWithdrawal
+import com.tokopedia.withdraw.saldowithdrawal.util.SaldoWithdrawal
+import com.tokopedia.withdraw.saldowithdrawal.util.SellerSaldoWithdrawal
+import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_fragment_base_withdrawal.*
 import javax.inject.Inject
 
@@ -55,9 +57,6 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-
-    @Inject
-    lateinit var localCacheHandler: dagger.Lazy<LocalCacheHandler>
 
     private val saldoWithdrawalViewModel: SaldoWithdrawalViewModel? by lazy(LazyThreadSafetyMode.NONE) {
         parentFragment?.let {
@@ -198,8 +197,8 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     private fun updateBankAccountAdapter(data: ArrayList<BankAccount>) {
         recyclerBankList.post {
-            val needToShowRPCoachMark = canShowRekeningPremiumCoachMark()
-            bankAccountAdapter.updateBankList(data, checkEligible, needToShowRPCoachMark)
+            val needToShowRPCoachMark = isRekeningPremiumCoachMarkShown()
+            bankAccountAdapter.updateBankList(data, checkEligible, !needToShowRPCoachMark)
             bankAccountAdapter.notifyDataSetChanged()
             onBankAccountChanged()
         }
@@ -305,7 +304,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     override fun showCoachMarkOnRPIcon(iconView: View) {
-        if (canShowRekeningPremiumCoachMark()) {
+        if (!isRekeningPremiumCoachMarkShown()) {
             updateRekeningPremiumCoachMarkShown()
             val coachMarks = ArrayList<CoachMarkItem>()
             coachMarks.add(CoachMarkItem(iconView,
@@ -356,19 +355,23 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         }
     }
 
-    private fun canShowRekeningPremiumCoachMark(): Boolean {
-        return localCacheHandler.get()
-                .getBoolean(LocalCacheConstant.KEY_CAN_SHOW_RP_COACH_MARK, true)
+    private fun isRekeningPremiumCoachMarkShown(): Boolean {
+        context?.let {
+            return CoachMarkPreference.hasShown(it, KEY_CAN_SHOW_RP_COACH_MARK)
+        } ?: run {
+            return true
+        }
     }
 
     private fun updateRekeningPremiumCoachMarkShown() {
-        localCacheHandler.get()
-                .putBoolean(LocalCacheConstant.KEY_CAN_SHOW_RP_COACH_MARK, false)
-        localCacheHandler.get().applyEditor()
+        context?.let {
+            CoachMarkPreference.setShown(it, KEY_CAN_SHOW_RP_COACH_MARK, true)
+        }
     }
 
     companion object {
         const val TAG_RP_COACH_MARK = "RP_COACH_MARK"
+        const val KEY_CAN_SHOW_RP_COACH_MARK = "com.tokopedia.withdraw.saldowithdrawal.key_can_show_rp_coach_mark"
     }
 }
 
