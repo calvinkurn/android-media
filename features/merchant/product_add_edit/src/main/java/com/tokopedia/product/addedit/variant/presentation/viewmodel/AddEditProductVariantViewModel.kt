@@ -213,27 +213,43 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedLevel1.forEachIndexed { optionIndexLevel1, _ ->
             val variantPicture = mapVariantPhoto(variantPhotos.getOrNull(optionIndexLevel1))
             if (selectedLevel2.isEmpty()) {
-                result.add(
-                        ProductVariantInputModel(
-                                pictures = variantPicture,
-                                combination = listOf(optionIndexLevel1),
-                                status = STATUS_ACTIVE_STRING
-                        )
-                )
+                result.add(mapProductVariant(
+                        variantPicture,
+                        listOf(optionIndexLevel1)
+                ))
             } else {
                 selectedLevel2.forEachIndexed { optionIndexLevel2, _ ->
-                    result.add(
-                            ProductVariantInputModel(
-                                    pictures = variantPicture,
-                                    combination = listOf(optionIndexLevel1, optionIndexLevel2),
-                                    status = STATUS_ACTIVE_STRING
-                            )
-                    )
+                    result.add(mapProductVariant(
+                            variantPicture,
+                            listOf(optionIndexLevel1, optionIndexLevel2)
+                    ))
                 }
             }
         }
 
         return result
+    }
+
+    private fun mapProductVariant(
+            variantPicture: List<PictureVariantInputModel>,
+            combination: List<Int>
+    ): ProductVariantInputModel {
+        val products =
+                productInputModel.value?.variantInputModel?.products.orEmpty()
+        val productVariant = products.firstOrNull {
+            it.combination == combination
+        }
+
+        return if (productVariant == null) {
+            ProductVariantInputModel(
+                    pictures = variantPicture,
+                    combination = combination,
+                    status = STATUS_ACTIVE_STRING
+            )
+        } else {
+            productVariant.pictures = variantPicture
+            productVariant
+        }
     }
 
     private fun mapVariantPhoto(variantPhoto: VariantPhoto?): List<PictureVariantInputModel> {
