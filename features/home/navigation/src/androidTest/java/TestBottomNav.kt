@@ -31,6 +31,7 @@ class TestBottomNav {
 
     @Test
     fun testWhenPageInflatedWithoutNotification_bottomNavHome_showAllFiveComponent() {
+        waitForData()
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_HOME))).check(matches(isDisplayed()))
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_FEED))).check(matches(isDisplayed()))
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_OS))).check(matches(isDisplayed()))

@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -29,6 +30,7 @@ class LottieBottomNavbar : LinearLayout {
     private var menu: MutableList<BottomMenu> = ArrayList()
     private var listener: IBottomClickListener? = null
     private var iconList: MutableList<LottieAnimationView> = ArrayList()
+    private var iconPlaceholderList: MutableList<ImageView> = ArrayList()
     private var titleList: MutableList<TextView> = ArrayList()
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
@@ -171,7 +173,6 @@ class LottieBottomNavbar : LinearLayout {
             buttonContainer.setBackgroundColor(Color.TRANSPARENT)
             containerList.add(index, buttonContainer)
 
-
             // add image view to display menu icon
             val icon = LottieAnimationView(context)
             icon.tag = context.getString(R.string.tag_lottie_animation_view)+bottomMenu.id
@@ -192,7 +193,16 @@ class LottieBottomNavbar : LinearLayout {
             val fLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
             resources.getDimensionPixelOffset(R.dimen.dp_32))
             imageContainer.layoutParams = fLayoutParams
+
+            val iconPlaceholder = ImageView(context)
+            iconPlaceholder.tag = "iconPlaceholder"+bottomMenu.id
+            iconPlaceholder.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
+            iconPlaceholder.layoutParams = imgLayoutParam
+            iconPlaceholder.visibility = View.INVISIBLE
+            iconPlaceholderList.add(index, iconPlaceholder)
+
             imageContainer.addView(icon)
+            imageContainer.addView(iconPlaceholder)
 
             if (bottomMenu.useBadge) {
                 val badge: View = LayoutInflater.from(context)
@@ -262,26 +272,14 @@ class LottieBottomNavbar : LinearLayout {
                 iconList[it].setImageDrawable(ContextCompat.getDrawable(context, imageName))
             }
             menu[it].animToEnabledName?.let { animToEnabledName ->
+                menu[it].imageName?.let {imageName->
+                    iconPlaceholderList[it].setImageResource(imageName)
+                    iconPlaceholderList[it].visibility = View.VISIBLE
+                }
                 iconList[it].setAnimation(animToEnabledName)
+                iconPlaceholderList[it].visibility = View.INVISIBLE
             }
             iconList[it].playAnimation()
-            iconList[it].addAnimatorListener(object: Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {
-
-                }
-
-                override fun onAnimationEnd(p0: Animator?) {
-
-                }
-
-                override fun onAnimationCancel(p0: Animator?) {
-
-                }
-
-                override fun onAnimationStart(p0: Animator?) {
-
-                }
-            })
 
             titleList[it].setTextColor(buttonColor)
             iconList[it].invalidate()
@@ -293,9 +291,16 @@ class LottieBottomNavbar : LinearLayout {
         menu[newPosition].imageEnabledName?.let { imageEnabledName ->
             iconList[newPosition].setImageDrawable(ContextCompat.getDrawable(context, imageEnabledName))
         }
+
+        menu[newPosition].imageEnabledName?.let {imageEnabledName->
+            iconPlaceholderList[newPosition].setImageResource(imageEnabledName)
+            iconPlaceholderList[newPosition].visibility = View.VISIBLE
+        }
         menu[newPosition].animName?.let { animName ->
             iconList[newPosition].setAnimation(animName)
         }
+        iconPlaceholderList[newPosition].visibility = View.INVISIBLE
+
         iconList[newPosition].repeatCount = 0
         iconList[newPosition].setColorFilter(activeSelectedItemColor, PorterDuff.Mode.SRC_ATOP)
 
