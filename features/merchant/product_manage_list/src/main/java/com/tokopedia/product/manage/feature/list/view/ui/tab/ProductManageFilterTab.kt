@@ -15,9 +15,8 @@ class ProductManageFilterTab(
 ) {
 
     companion object {
-        const val ACTIVE_TAB_POSITION = 0
-        const val INACTIVE_TAB_POSITION = 1
-        const val VIOLATION_TAB_POSITION = 2
+        const val ACTIVE_TAB = "Aktif"
+        const val INACTIVE_TAB = "Nonaktif"
     }
 
     private var activeFilterCount = 0
@@ -77,16 +76,21 @@ class ProductManageFilterTab(
     }
 
     fun getSelectedFilter(): ProductStatus? {
-        val chipItems = sortFilterTab.chipItems
         val selectedFilter = selectedTab?.filter
-        val index = chipItems.indexOf(selectedFilter)
-
-        return when (index) {
-            ACTIVE_TAB_POSITION -> ProductStatus.ACTIVE
-            INACTIVE_TAB_POSITION -> ProductStatus.INACTIVE
-            VIOLATION_TAB_POSITION -> ProductStatus.VIOLATION
-            else -> null
+        selectedFilter?.title?.let {
+            return when {
+                it.contains(ACTIVE_TAB) -> {
+                    ProductStatus.ACTIVE
+                }
+                it.contains(INACTIVE_TAB) -> {
+                    ProductStatus.INACTIVE
+                }
+                else -> {
+                    ProductStatus.VIOLATION
+                }
+            }
         }
+        return null
     }
 
     fun setActiveFilterCount(count: Int) {
