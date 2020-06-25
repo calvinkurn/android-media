@@ -216,6 +216,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
         observeShopSortSharedViewModel()
         observeLiveData()
+        loadInitialData()
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 
     private fun observeShopSortSharedViewModel() {
@@ -295,7 +300,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     addProductListHeader()
-                    updateProductListData(it.data.first, it.data.second)
+                    updateProductListData(it.data.first, it.data.second, true)
                 }
             }
             stopPerformanceMonitor()
@@ -305,7 +310,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
-                    updateProductListData(it.data.first, it.data.second)
+                    updateProductListData(it.data.first, it.data.second, false)
                 }
             }
         })
@@ -408,13 +413,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun updateProductListData(hasNextPage: Boolean, productList: List<ShopHomeProductViewModel>) {
-        shopHomeAdapter.setProductListData(productList)
+    private fun updateProductListData(
+            hasNextPage: Boolean,
+            productList: List<ShopHomeProductViewModel>,
+            isInitialData: Boolean
+    ) {
+        shopHomeAdapter.setProductListData(productList, isInitialData)
         updateScrollListenerState(hasNextPage)
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
-        shopHomeAdapter.hideLoading()
         val listProductWidget = data.listWidget.filterIsInstance<ShopHomeCarousellProductUiModel>()
         viewModel?.getWishlistStatus(listProductWidget)
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
