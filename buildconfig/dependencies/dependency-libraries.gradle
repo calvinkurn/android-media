@@ -97,6 +97,7 @@ ext {
             mapviewer               : ":libraries:mapviewer",
             tokofix                 : ":libraries:tokofix",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
-            screenRecorder          : ":libraries:screen_recorder"
+            screenRecorder          : ":libraries:screen_recorder",
+            lint                    : ":libraries:lint"
     ]
 }
