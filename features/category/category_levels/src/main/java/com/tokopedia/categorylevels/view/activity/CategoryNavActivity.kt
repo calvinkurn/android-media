@@ -245,11 +245,12 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         categoryNavViewModel.getCatalogCountLiveData().observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if(it.data == 0){
+                    if (it.data == 0) {
                         removeCatalogTab()
                     }
                 }
             }
+            container.show()
         })
     }
 
