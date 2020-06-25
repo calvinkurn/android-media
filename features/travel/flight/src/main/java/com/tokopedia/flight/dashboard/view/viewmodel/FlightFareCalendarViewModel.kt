@@ -2,6 +2,7 @@ package com.tokopedia.flight.dashboard.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.dashboard.view.model.FlightFareAttributes
 import com.tokopedia.flight.dashboard.view.model.FlightFareData
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
@@ -14,16 +15,14 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
 import com.tokopedia.travelcalendar.dateToString
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class FlightFareCalendarViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
+class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProvider: TravelDispatcherProvider,
                                                       private val gqlRepository: GraphqlRepository)
-    : BaseViewModel(dispatcher) {
+    : BaseViewModel(dispatcherProvider.io()) {
 
     val fareFlightCalendarData = MutableLiveData<List<FlightFareAttributes>>()
 
@@ -43,7 +42,7 @@ class FlightFareCalendarViewModel @Inject constructor(dispatcher: CoroutineDispa
             val diffYear = (maxYear - minYear)
 
             for (i in 0..diffYear) {
-                val data = withContext(Dispatchers.Default) {
+                val data = withContext(dispatcherProvider.ui()) {
                     val graphqlRequest = GraphqlRequest(rawQuery, FlightFareData::class.java, mapParam)
                     gqlRepository.getReseponse(listOf(graphqlRequest),
                             GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)

@@ -14,7 +14,7 @@ import java.util.*
 import javax.inject.Inject
 
 class FlightHolidayCalendarViewModel @Inject constructor(private val useCase: TravelCalendarHolidayUseCase,
-                                                         val dispatcher: CoroutineDispatcher)
+                                                         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val holidayCalendarData = MutableLiveData<ArrayList<Legend>>()
