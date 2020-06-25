@@ -87,8 +87,11 @@ class TestBottomNav {
 
     @Test
     fun testWhenSelectAnItem_theLastSelectedWillFadeOut_andTheCurrentSelectedWillFadeIn() {
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_OS))))).perform(click())
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_CART))))).perform(click())
+        val currentSelectedTag = getLottieAnimationViewId(POSITION_OS)
+        val newSelectedTag = getLottieAnimationViewId(POSITION_CART)
+
+        onView(withTagStringValue(currentSelectedTag)).perform(click())
+        onView(withTagStringValue(newSelectedTag)).perform(click())
 
         Thread.sleep(3000)
 
@@ -96,10 +99,12 @@ class TestBottomNav {
                 activityRule.activity.findViewById(R.id.bottom_navbar)
 
         val linearLayout = lottieBottomNavbar.getChildAt(0)
-        val lottieAnimation3 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_OS))
+
+        //assert both currentSelectedItem and nextSelectedItem is animating
+        val lottieAnimation3 = linearLayout.findViewWithTag<LottieAnimationView>(currentSelectedTag)
         assertThat(lottieAnimation3.speed, Matchers.greaterThan(0f))
 
-        val lottieAnimation4 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_CART))
+        val lottieAnimation4 = linearLayout.findViewWithTag<LottieAnimationView>(newSelectedTag)
         assertThat(lottieAnimation4.speed, Matchers.greaterThan(0f))
     }
 
@@ -110,39 +115,40 @@ class TestBottomNav {
                     activityRule.activity.findViewById(R.id.bottom_navbar)
             lottieBottomNavbar.setBadge(0, POSITION_HOME)
         }
-        onView(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_HOME)))).check(matches(isDisplayed()))
-        onView(withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_HOME)))).check(matches(isDisplayed()))
-        onView(withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_HOME)))).check(matches(withText("")))
-
-        val lottieBottomNavbar: LottieBottomNavbar =
-                activityRule.activity.findViewById(R.id.bottom_navbar)
-        val textViewBadgeNumber: TextView = lottieBottomNavbar.getChildAt(POSITION_HOME).findViewWithTag(getBadgeTextViewId(POSITION_HOME))
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_HOME))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getBadgeTextViewId(POSITION_HOME))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getBadgeTextViewId(POSITION_HOME))).check(matches(withText("")))
     }
 
     @Test
     fun testWhenBadgeUpdatedWithAbove0_bottomNavItem_shouldShowBadgeTextViewWithNumberInPosition() {
+        val badgeTestValue = 88
+        val selectedPosition = POSITION_HOME
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val lottieBottomNavbar: LottieBottomNavbar =
                     activityRule.activity.findViewById(R.id.bottom_navbar)
-            lottieBottomNavbar.setBadge(88, POSITION_HOME)
+            lottieBottomNavbar.setBadge(badgeTestValue, selectedPosition)
         }
-        onView(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_HOME)))).check(matches(isDisplayed()))
-        onView(withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_HOME)))).check(matches(isDisplayed()))
-        onView(withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_HOME)))).check(matches(withText("88")))
+        onView(withTagStringValue(getLottieAnimationViewId(selectedPosition))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getBadgeTextViewId(selectedPosition))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getBadgeTextViewId(selectedPosition))).check(matches(withText(badgeTestValue.toString())))
     }
 
     @Test
     fun testWhenBadgeRemoved_bottomNavItem_shouldNotShowAnyBadge() {
+        val badgeTestValue = 88
+        val selectedPosition = POSITION_HOME
+
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val lottieBottomNavbar: LottieBottomNavbar =
                     activityRule.activity.findViewById(R.id.bottom_navbar)
-            lottieBottomNavbar.setBadge(88, POSITION_HOME)
+            lottieBottomNavbar.setBadge(badgeTestValue, selectedPosition)
 
             //remove
-            lottieBottomNavbar.setBadge(visibility = View.INVISIBLE, iconPosition = POSITION_HOME)
+            lottieBottomNavbar.setBadge(visibility = View.INVISIBLE, iconPosition = selectedPosition)
         }
-        onView(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_HOME)))).check(matches(isDisplayed()))
-        onView(withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_HOME)))).check(matches(not(isDisplayed())))
+        onView(withTagStringValue(getLottieAnimationViewId(selectedPosition))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getBadgeTextViewId(selectedPosition))).check(matches(not(isDisplayed())))
     }
 
     private fun getLottieAnimationViewId(id: Int) = context.getString(R.string.tag_lottie_animation_view)+id
