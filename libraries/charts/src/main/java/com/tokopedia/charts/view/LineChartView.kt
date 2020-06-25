@@ -1,12 +1,30 @@
 package com.tokopedia.charts.view
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.tokopedia.charts.R
+import com.tokopedia.charts.config.linechart.model.LeftAxisConfig
+import com.tokopedia.charts.config.linechart.model.LegendConfig
+import com.tokopedia.charts.config.linechart.model.LineChartConfig
+import com.tokopedia.charts.config.linechart.model.XAxisConfig
+import com.tokopedia.charts.model.LineChartEntry
+import com.tokopedia.charts.model.YAxisLabel
+import com.tokopedia.charts.utils.XAxisLabelFormatter
+import com.tokopedia.charts.utils.YAxisLabelFormatter
+import com.tokopedia.kotlin.extensions.view.getResColor
+import kotlinx.android.synthetic.main.view_line_chart.view.*
 
 /**
  * Created By @ilhamsuaib on 24/06/20
@@ -23,7 +41,133 @@ class LineChartView : LinearLayout {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    var typeface: Typeface? = null
+        set(value) {
+            field = value
+            lineChart.xAxis.typeface = value
+            lineChart.axisLeft.typeface = value
+        }
+
+    @ColorRes
+    var xAxisTextColor: Int
+        set(value) {
+            field = value
+            lineChart.xAxis.textColor = value
+        }
+
+    @ColorRes
+    var yAxisTextColor: Int
+        set(value) {
+            field = value
+            lineChart.axisLeft.textColor = value
+        }
+
     init {
         View.inflate(context, R.layout.view_line_chart, this)
+
+        xAxisTextColor = context.getResColor(R.color.Neutral_N700_96)
+        yAxisTextColor = context.getResColor(R.color.Neutral_N700_96)
+    }
+
+    fun setConfig(config: LineChartConfig) {
+        if (typeface == null) {
+            typeface = Typeface.createFromAsset(context.assets, "SFProText-Regular.ttf")
+        }
+
+        with(lineChart) {
+            axisRight.isEnabled = config.rightAxisConfig.isEnabled
+
+            setupXAxis(xAxis, config.xAxisConfig)
+            setupYAxis(axisLeft, config.leftAxisConfig)
+            setupLegend(legend, config.legendConfig)
+
+            description.isEnabled = config.isDescriptionEnabled
+
+            setDrawMarkers(config.isDrawMarkersEnabled)
+            setScaleEnabled(config.isScaleEnabled)
+            setPinchZoom(config.isPitchZoomEnabled)
+
+            animateXY(200, 200)
+        }
+    }
+
+    fun setData(chartEntry: List<LineChartEntry>) {
+        val isDataSetExist = lineChart.data != null && lineChart.data.dataSetCount > 0
+
+        val entries: List<Entry> = getLineChartData(chartEntry)
+
+        setXAxisLabelFormatter(chartEntry)
+
+        val dataSet: LineDataSet = if (isDataSetExist) {
+            lineChart.data.getDataSetByIndex(0) as LineDataSet
+        } else {
+            LineDataSet(entries, "Data Set")
+        }
+
+        with(dataSet) {
+            mode = LineDataSet.Mode.LINEAR
+            setDrawCircles(false)
+            setDrawFilled(true)
+            setDrawHorizontalHighlightIndicator(false)
+            setDrawVerticalHighlightIndicator(false)
+            //setup chart line
+            lineWidth = 1.8f
+            color = context.getResColor(R.color.line_chart_line_color_4fba68)
+            //setup fill
+            fillColor = context.getResColor(R.color.line_chart_fill_color_35d6ffde)
+            setDrawValues(false)
+        }
+
+        lineChart.data = LineData(dataSet)
+    }
+
+    fun setCustomYAxisLabel(labels: List<YAxisLabel>) {
+        lineChart.axisLeft.run {
+            setLabelCount(labels.size, true)
+            valueFormatter = YAxisLabelFormatter(labels)
+        }
+    }
+
+    private fun setXAxisLabelFormatter(entries: List<LineChartEntry>) {
+        val labelsStr: List<String> = entries.map { it.xLabel }
+        lineChart.xAxis.valueFormatter = XAxisLabelFormatter(labelsStr)
+    }
+
+    private fun getLineChartData(dataSet: List<LineChartEntry>): List<Entry> {
+        return dataSet.mapIndexed { i, e ->
+            Entry(i.toFloat(), e.yValue, e)
+        }
+    }
+
+    private fun setupLegend(legend: Legend, config: LegendConfig) = with(legend) {
+        isEnabled = config.isEnabled
+    }
+
+    override fun invalidate() {
+        lineChart.invalidate()
+    }
+
+    private fun setupXAxis(axis: XAxis, config: XAxisConfig) = with(axis) {
+        if (config.typeface != null) {
+            typeface = config.typeface
+        } else if (typeface != null) {
+            typeface = this@LineChartView.typeface
+        }
+
+        textColor = config.textColor
+        position = config.getPosition()
+        setDrawGridLines(config.isDrawGridLines)
+    }
+
+    private fun setupYAxis(axis: YAxis, config: LeftAxisConfig) = with(axis) {
+        if (config.typeface != null) {
+            typeface = config.typeface
+        } else if (typeface != null) {
+            typeface = this@LineChartView.typeface
+        }
+
+        textColor = config.textColor
+        setPosition(config.getPosition())
+        setDrawGridLines(config.isDrawGridLines)
     }
 }
