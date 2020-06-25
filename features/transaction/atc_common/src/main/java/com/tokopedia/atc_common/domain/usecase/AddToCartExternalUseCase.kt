@@ -4,11 +4,11 @@ import com.tokopedia.atc_common.AtcConstant.ATC_ERROR_GLOBAL
 import com.tokopedia.atc_common.AtcConstant.MUTATION_ATC_EXTERNAL
 import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartExternalGqlResponse
 import com.tokopedia.atc_common.domain.AddToCartExternalAnalytics
-import com.tokopedia.atc_common.domain.AddToCartResponseErrorException
 import com.tokopedia.atc_common.domain.mapper.AddToCartExternalDataMapper
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -42,10 +42,10 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
                     if (response.response.data.message.isNotEmpty()) {
                         message = response.response.data.message[0]
                     }
-                    throw AddToCartResponseErrorException(message)
+                    throw MessageErrorException(message)
                 }
             } else {
-                throw AddToCartResponseErrorException(ATC_ERROR_GLOBAL)
+                throw MessageErrorException(ATC_ERROR_GLOBAL)
             }
         }
     }

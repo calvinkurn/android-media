@@ -13,7 +13,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -38,7 +41,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.AtcConstant
-import com.tokopedia.atc_common.domain.AddToCartResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
@@ -61,6 +63,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.navigation_common.listener.CartNotifyListener
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
@@ -794,7 +797,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val productId = getAtcProductId()
             if (isAtcExternalFlow()) {
                 if (productId == INVALID_PRODUCT_ID) {
-                    showToastMessageRed(AddToCartResponseErrorException(AtcConstant.ATC_ERROR_GLOBAL))
+                    showToastMessageRed(MessageErrorException(AtcConstant.ATC_ERROR_GLOBAL))
                     refreshCart()
                 } else {
                     addToCartExternal(productId)
@@ -2209,9 +2212,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
-        if (!(throwable is CartResponseErrorException ||
-                        throwable is AddToCartResponseErrorException ||
-                        throwable is AkamaiErrorException)) {
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
 
