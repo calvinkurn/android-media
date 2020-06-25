@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.data.model.response.AddToCartOccExternalGqlRespo
 import com.tokopedia.atc_common.data.model.response.DetailOccResponse
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.tracking.AddToCartOccExternalTracking
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.linker.LinkerConstants
@@ -56,9 +57,9 @@ class AddToCartOccExternalUseCase @Inject constructor(@ApplicationContext privat
             val addToCartOccGqlResponse = it.getData<AddToCartOccExternalGqlResponse>(AddToCartOccExternalGqlResponse::class.java)
             val result = addToCartDataMapper.mapAddToCartOccResponse(addToCartOccGqlResponse)
             if (addToCartOccGqlResponse.addToCartOccResponse.data.success == 1) {
-                sendEETracking(addToCartOccGqlResponse.addToCartOccResponse.data.detail)
-                sendAppsFlyerTracking(addToCartOccGqlResponse.addToCartOccResponse.data.detail)
-                sendBranchIoTracking(addToCartOccGqlResponse.addToCartOccResponse.data.detail)
+                AddToCartOccExternalTracking.sendEETracking(addToCartOccGqlResponse.addToCartOccResponse.data.detail)
+                AddToCartOccExternalTracking.sendAppsFlyerTracking(addToCartOccGqlResponse.addToCartOccResponse.data.detail)
+                AddToCartOccExternalTracking.sendBranchIoTracking(context, addToCartOccGqlResponse.addToCartOccResponse.data.detail)
             }
             result
         }
