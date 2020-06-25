@@ -431,11 +431,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         activity?.let {
             if (filterMenu.isAdded) return@let
             val itemMenus = ArrayList<Menus.ItemMenus>()
-            val arrayFilterString = arrayListOf(
-                    it.getString(R.string.filter_chat_all),
-                    it.getString(R.string.filter_chat_unread),
-                    it.getString(R.string.filter_chat_unreplied)
-            )
+            val arrayFilterString = chatItemListViewModel.getFilterTittles(it, isTabSeller())
 
             for ((index, title) in arrayFilterString.withIndex()) {
                 if (index == filterChecked) itemMenus.add(Menus.ItemMenus(title, true))
@@ -453,6 +449,13 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     dismiss()
                 }
             }.show(childFragmentManager, FilterMenu.TAG)
+        }
+    }
+
+    override fun loadInitialData() {
+        super.loadInitialData()
+        if (isTabSeller()) {
+            chatItemListViewModel.loadTopBotWhiteList()
         }
     }
 

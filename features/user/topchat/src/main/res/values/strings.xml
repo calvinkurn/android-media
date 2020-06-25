@@ -164,4 +164,5 @@ yang ditemukan</string>
     <string name="tittle_load_more">Lihat Lebih</string>
     <string name="tittle_header_auto_reply">Dibalas oleh Smart Reply</string>
     <string name="tittle_info_auto_reply">Pesan ini dibalas oleh sistem</string>
+    <string name="filter_chat_smart_reply">Dibalas Smart Reply</string>
 </resources>
