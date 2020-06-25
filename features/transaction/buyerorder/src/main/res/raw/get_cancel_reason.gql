@@ -7,7 +7,10 @@ query GETCANCELREASON($input:CancelReasonRequest!) {
     reasons{
       title,
       question,
-      sub_reasons
+      sub_reasons{
+        r_code,
+        reason
+      }
     }
   }
 }

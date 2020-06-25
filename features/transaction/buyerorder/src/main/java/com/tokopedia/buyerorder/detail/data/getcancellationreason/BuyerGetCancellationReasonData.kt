@@ -42,11 +42,22 @@ data class BuyerGetCancellationReasonData(
 
 					@SerializedName("sub_reasons")
 					@Expose
-					val subReasons: List<String> = emptyList(),
+					val subReasons: List<SubReasonsItem> = emptyList(),
 
 					@SerializedName("title")
 					@Expose
-					val title: String = "")
+					val title: String = "") {
+
+				data class SubReasonsItem(
+						@SerializedName("r_code")
+						@Expose
+						val rCode: Int = -1,
+
+						@SerializedName("reason")
+						@Expose
+						val reason: String = ""
+				)
+			}
 		}
 	}
 }

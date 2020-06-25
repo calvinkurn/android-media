@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomShe
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerGetCancellationReasonViewModel
+import com.tokopedia.buyerorder.list.common.OrderListContants
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -46,10 +48,13 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var shopName = ""
     private var invoiceNum = ""
     private var orderId = ""
+    private var uri = ""
     private var listProductsSerializable : Serializable? = null
     private var listProduct = emptyList<Items>()
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var bottomSheet = BottomSheetUnify()
+    private var reasonCancel = ""
+    private var reasonCode = -1
 
     private val buyerGetCancellationReasonViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[BuyerGetCancellationReasonViewModel::class.java]
@@ -64,6 +69,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     putString(BuyerConsts.PARAM_INVOICE, bundle.getString(BuyerConsts.PARAM_INVOICE))
                     putSerializable(BuyerConsts.PARAM_LIST_PRODUCT, bundle.getSerializable(BuyerConsts.PARAM_LIST_PRODUCT))
                     putString(BuyerConsts.PARAM_ORDER_ID, bundle.getString(BuyerConsts.PARAM_ORDER_ID))
+                    putString(BuyerConsts.PARAM_URI, bundle.getString(BuyerConsts.PARAM_URI))
                 }
             }
         }
@@ -77,6 +83,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             listProductsSerializable = arguments?.getSerializable(BuyerConsts.PARAM_LIST_PRODUCT)
             listProduct = listProductsSerializable as List<Items>
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
+            uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
         }
         getCancelReasons()
     }
@@ -116,6 +123,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         tf_choose_reason?.textFieldInput?.isFocusable = false
         tf_choose_reason?.textFieldInput?.isClickable = true
+
+        setListeners()
+    }
+
+    private fun setListeners() {
         tf_choose_reason?.setOnClickListener {
             showReasonBottomSheet()
         }
@@ -124,6 +136,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
         tf_choose_reason?.textFieldIcon1?.setOnClickListener {
             showReasonBottomSheet()
+        }
+
+        btn_req_cancel?.setOnClickListener {
+            if (reasonCancel.isNotBlank() && reasonCode != -1) {
+                submitResultReason()
+            }
         }
     }
 
@@ -216,6 +234,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     override fun onReasonClicked(reason: String) {
         bottomSheet.dismiss()
         tf_choose_reason?.textFieldInput?.setText(reason)
+        reasonCancel += reason
 
         if (cancelReasonResponse.reasons.isNotEmpty()) {
             tf_choose_sub_reason?.visible()
@@ -245,8 +264,19 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun onSubReasonClicked(reason: String) {
+    override fun onSubReasonClicked(rCode: Int, reason: String) {
         bottomSheet.dismiss()
         tf_choose_sub_reason?.textFieldInput?.setText(reason)
+        reasonCancel += " - $reason"
+        reasonCode = rCode
+    }
+
+    private fun submitResultReason() {
+        val intent = Intent()
+        intent.putExtra(OrderListContants.REASON, reasonCancel)
+        intent.putExtra(OrderListContants.REASON_CODE, reasonCode)
+        intent.putExtra(MarketPlaceDetailFragment.ACTION_BUTTON_URL, uri)
+        activity?.setResult(MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST, intent)
+        activity?.finish()
     }
 }

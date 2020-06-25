@@ -95,6 +95,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.CANCEL_BUYER_REQUEST_TWO_LAYER;
 
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
 
@@ -814,7 +815,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
-                        startActivity(buyerReqCancelIntent);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
+                        startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
                     } else if (this.status.status().equals(STATUS_CODE_11)) {
                         startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
@@ -869,6 +871,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
             } else if (resultCode == CANCEL_BUYER_REQUEST) {
+                reason = data.getStringExtra(OrderListContants.REASON);
+                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
+                presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
+            } else if (resultCode == CANCEL_BUYER_REQUEST_TWO_LAYER) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));

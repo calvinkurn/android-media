@@ -25,6 +25,7 @@ class BuyerRequestCancelActivity: BaseSimpleActivity(), HasComponent<OrderDetail
             bundle.putString(BuyerConsts.PARAM_INVOICE, "")
             bundle.putSerializable(BuyerConsts.PARAM_LIST_PRODUCT, null)
             bundle.putString(BuyerConsts.PARAM_ORDER_ID, "")
+            bundle.putString(BuyerConsts.PARAM_URI, "")
         }
         return BuyerRequestCancelFragment.newInstance(bundle)
     }

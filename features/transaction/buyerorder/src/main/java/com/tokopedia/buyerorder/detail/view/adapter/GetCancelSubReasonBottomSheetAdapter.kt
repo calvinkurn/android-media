@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import kotlinx.android.synthetic.main.bottomsheet_cancel_item.view.*
 
 /**
@@ -13,10 +14,10 @@ import kotlinx.android.synthetic.main.bottomsheet_cancel_item.view.*
 
 class GetCancelSubReasonBottomSheetAdapter(private var listener: ActionListener): RecyclerView.Adapter<GetCancelSubReasonBottomSheetAdapter.ViewHolder>() {
     // var mapKey = HashMap<String, String>()
-    var listSubReason = listOf<String>()
+    var listSubReason = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem>()
 
     interface ActionListener {
-        fun onSubReasonClicked(reason: String)
+        fun onSubReasonClicked(rCode: Int, reason: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,10 +30,10 @@ class GetCancelSubReasonBottomSheetAdapter(private var listener: ActionListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.label_cancel.text = listSubReason[position]
+        holder.itemView.label_cancel.text = listSubReason[position].reason
 
         holder.itemView.setOnClickListener {
-            listener.onSubReasonClicked(listSubReason[position])
+            listener.onSubReasonClicked(listSubReason[position].rCode, listSubReason[position].reason)
         }
     }
 

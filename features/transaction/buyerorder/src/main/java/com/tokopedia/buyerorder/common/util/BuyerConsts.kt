@@ -11,4 +11,6 @@ object BuyerConsts {
     const val PARAM_INVOICE = "param_invoice"
     const val PARAM_INPUT = "input"
     const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_URI = "uri"
+    const val CANCEL_BUYER_REQUEST_TWO_LAYER = 105
 }
