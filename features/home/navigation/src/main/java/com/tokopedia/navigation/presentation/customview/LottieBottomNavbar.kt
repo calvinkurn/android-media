@@ -373,7 +373,6 @@ class LottieBottomNavbar : LinearLayout {
             val selectedIconPair = iconList[it]
             val selectedIcon = selectedIconPair.first
             if (!selectedIconPair.second) selectedIcon.playAnimation()
-            else selectedIcon.cancelAnimation()
 //            iconPlaceholderList[it].visibility = View.INVISIBLE
             iconList[it] = Pair(selectedIcon, true)
             titleList[it].setTextColor(buttonColor)
@@ -402,7 +401,6 @@ class LottieBottomNavbar : LinearLayout {
         val newSelectedItemPair = iconList[newPosition]
         val newSelectedItem = newSelectedItemPair.first
         if (!newSelectedItemPair.second) newSelectedItem.playAnimation()
-        else newSelectedItem.cancelAnimation()
 
         iconList[newPosition] = Pair(newSelectedItem, true)
 
