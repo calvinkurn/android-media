@@ -29,7 +29,7 @@ class LottieBottomNavbar : LinearLayout {
     private var badgeLayoutParam: FrameLayout.LayoutParams? = null
     private var menu: MutableList<BottomMenu> = ArrayList()
     private var listener: IBottomClickListener? = null
-    private var iconList: MutableList<LottieAnimationView> = ArrayList()
+    private var iconList: MutableList<Pair<LottieAnimationView, Boolean>> = ArrayList()
     private var iconPlaceholderList: MutableList<ImageView> = ArrayList()
     private var titleList: MutableList<TextView> = ArrayList()
     private var containerList: MutableList<LinearLayout> = ArrayList()
@@ -187,7 +187,7 @@ class LottieBottomNavbar : LinearLayout {
                 }
             }
 
-            iconList.add(index, icon)
+            iconList.add(index, Pair(icon, false))
 
             val imageContainer = FrameLayout(context)
             val fLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
@@ -203,6 +203,93 @@ class LottieBottomNavbar : LinearLayout {
 
             imageContainer.addView(icon)
             imageContainer.addView(iconPlaceholder)
+
+            icon.addAnimatorListener(object: Animator.AnimatorListener {
+                override fun onAnimationRepeat(p0: Animator?) {
+
+                }
+
+                override fun onAnimationEnd(p0: Animator?) {
+                    if (selectedItem != index) {
+                        val bottomMenuSelected = bottomMenu
+                        val iconSelected = icon
+
+                        bottomMenuSelected.imageEnabledName?.let {
+                            iconPlaceholder.setImageResource(it)
+                        }
+                        bottomMenuSelected.animName?.let {
+                            iconSelected.setAnimation(it)
+                        }
+                    } else {
+                        val bottomMenuSelected = bottomMenu
+                        val iconSelected = icon
+
+                        bottomMenuSelected.imageName?.let {
+                            iconPlaceholder.setImageResource(it)
+                        }
+                        bottomMenuSelected.animToEnabledName?.let {
+                            iconSelected.setAnimation(it)
+                        }
+                    }
+
+                    iconList[index] = Pair(icon, false)
+//                    val bottomMenuSelected = menu[selectedItem?:0]
+//                    val bottomMenuCurrent = bottomMenu
+//
+//                    val iconSelected = iconList[selectedItem?:0]
+//                    val iconCurrent = icon
+//
+//                    bottomMenuSelected.imageName?.let {
+//                        iconSelected.setImageResource(it)
+//                    }
+//                    bottomMenuSelected.animToEnabledName?.let {
+//                        iconSelected.setAnimation(it)
+//                    }
+//
+//                    bottomMenuCurrent.imageEnabledName?.let {
+//                        iconCurrent.setImageResource(it)
+//                    }
+//                    bottomMenuCurrent.animName?.let {
+//                        iconCurrent.setAnimation(it)
+//                    }
+
+                    icon.visibility = View.INVISIBLE
+                    iconPlaceholder.visibility = View.VISIBLE
+                }
+
+                override fun onAnimationCancel(p0: Animator?) {
+                    if (selectedItem != index) {
+                        val bottomMenuSelected = bottomMenu
+                        val iconSelected = icon
+
+                        bottomMenuSelected.imageEnabledName?.let {
+                            iconPlaceholder.setImageResource(it)
+                        }
+                        bottomMenuSelected.animName?.let {
+                            iconSelected.setAnimation(it)
+                        }
+                    } else {
+                        val bottomMenuSelected = bottomMenu
+                        val iconSelected = icon
+
+                        bottomMenuSelected.imageName?.let {
+                            iconPlaceholder.setImageResource(it)
+                        }
+                        bottomMenuSelected.animToEnabledName?.let {
+                            iconSelected.setAnimation(it)
+                        }
+                    }
+                    icon.visibility = View.INVISIBLE
+                    iconPlaceholder.visibility = View.VISIBLE
+                }
+
+                override fun onAnimationStart(p0: Animator?) {
+                    icon.visibility = View.VISIBLE
+                    iconPlaceholder.visibility = View.INVISIBLE
+                }
+            })
+
+            iconPlaceholder.bringToFront()
 
             if (bottomMenu.useBadge) {
                 val badge: View = LayoutInflater.from(context)
@@ -267,48 +354,60 @@ class LottieBottomNavbar : LinearLayout {
         }
 
         selectedItem?.let {
-            iconList[it].setColorFilter(buttonColor, PorterDuff.Mode.SRC_ATOP)
-            menu[it].imageName?.let { imageName ->
-                iconList[it].setImageDrawable(ContextCompat.getDrawable(context, imageName))
-            }
-            menu[it].animToEnabledName?.let { animToEnabledName ->
-                menu[it].imageName?.let {imageName->
-                    iconPlaceholderList[it].setImageResource(imageName)
-                    iconPlaceholderList[it].visibility = View.VISIBLE
-                }
-                iconList[it].setAnimation(animToEnabledName)
-                iconPlaceholderList[it].visibility = View.INVISIBLE
-            }
-            iconList[it].playAnimation()
+//            iconList[it].setColorFilter(buttonColor, PorterDuff.Mode.SRC_ATOP)
+//            menu[it].imageName?.let { imageName ->
+//                iconList[it].setImageDrawable(ContextCompat.getDrawable(context, imageName))
+//            }
+//            menu[it].imageName?.let {imageName->
+//                iconPlaceholderList[it].setImageResource(imageName)
+//                iconPlaceholderList[it].visibility = View.VISIBLE
+//            }
+//            menu[it].animToEnabledName?.let { animToEnabledName ->
+//                iconList[it].setAnimation(animToEnabledName)
+//            }
 
+//            iconList[it].repeatCount = 0
+//            iconList[it].setColorFilter(buttonColor, PorterDuff.Mode.SRC_ATOP)
+//
+//            iconList[it].speed = 1f
+            val selectedIconPair = iconList[it]
+            val selectedIcon = selectedIconPair.first
+            if (!selectedIconPair.second) selectedIcon.playAnimation()
+            else selectedIcon.cancelAnimation()
+//            iconPlaceholderList[it].visibility = View.INVISIBLE
+            iconList[it] = Pair(selectedIcon, true)
             titleList[it].setTextColor(buttonColor)
-            iconList[it].invalidate()
+            selectedIcon.invalidate()
             titleList[it].invalidate()
         }
 
         // change currently selected item color
         val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
-        menu[newPosition].imageEnabledName?.let { imageEnabledName ->
-            iconList[newPosition].setImageDrawable(ContextCompat.getDrawable(context, imageEnabledName))
-        }
+//        menu[newPosition].imageEnabledName?.let { imageEnabledName ->
+//            iconList[newPosition].setImageDrawable(ContextCompat.getDrawable(context, imageEnabledName))
+//        }
 
-        menu[newPosition].imageEnabledName?.let {imageEnabledName->
-            iconPlaceholderList[newPosition].setImageResource(imageEnabledName)
-            iconPlaceholderList[newPosition].visibility = View.VISIBLE
-        }
-        menu[newPosition].animName?.let { animName ->
-            iconList[newPosition].setAnimation(animName)
-        }
-        iconPlaceholderList[newPosition].visibility = View.INVISIBLE
+//        menu[newPosition].imageEnabledName?.let {imageEnabledName->
+//            iconPlaceholderList[newPosition].setImageResource(imageEnabledName)
+//            iconPlaceholderList[newPosition].visibility = View.VISIBLE
+//        }
+//        menu[newPosition].animName?.let { animName ->
+//            iconList[newPosition].setAnimation(animName)
+//        }
+//
+//        iconList[newPosition].repeatCount = 0
+//        iconList[newPosition].setColorFilter(activeSelectedItemColor, PorterDuff.Mode.SRC_ATOP)
+//
+//        iconList[newPosition].speed = 1f
+        val newSelectedItemPair = iconList[newPosition]
+        val newSelectedItem = newSelectedItemPair.first
+        if (!newSelectedItemPair.second) newSelectedItem.playAnimation()
+        else newSelectedItem.cancelAnimation()
 
-        iconList[newPosition].repeatCount = 0
-        iconList[newPosition].setColorFilter(activeSelectedItemColor, PorterDuff.Mode.SRC_ATOP)
-
-        iconList[newPosition].speed = 1f
-        iconList[newPosition].playAnimation()
+        iconList[newPosition] = Pair(newSelectedItem, true)
 
         titleList[newPosition].setTextColor(activeSelectedItemColor)
-        iconList[newPosition].invalidate()
+        newSelectedItem.invalidate()
         titleList[newPosition].invalidate()
 
         selectedItem = newPosition
