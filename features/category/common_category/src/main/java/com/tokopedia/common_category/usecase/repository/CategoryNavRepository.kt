@@ -1,13 +1,17 @@
 package com.tokopedia.common_category.usecase.repository
 
 import android.content.res.Resources
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common_category.R
 import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.data.catalogModel.CatalogListResponse
 import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
 import com.tokopedia.common_category.model.bannedCategory.Data
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.RequestParams
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 class CategoryNavRepository @Inject constructor() {
@@ -25,6 +29,56 @@ class CategoryNavRepository @Inject constructor() {
         return (baseRepository.getGQLData(query, BannedCategoryResponse::class.java, params.parameters)
                 as BannedCategoryResponse).categoryDetailQuery?.data as Data
     }
+
+    suspend fun getCategoryDetailWithCatalogCount(departmentId: String): GraphqlResponse? {
+        val type: MutableList<Type> = ArrayList()
+        type.add(BannedCategoryResponse::class.java)
+        type.add(CatalogListResponse::class.java)
+        return baseRepository.getGQLData(getQueries(), type, getRequests(departmentId))
+    }
+
+    private fun getQueries(): MutableList<String> {
+        val queries: MutableList<String> = ArrayList()
+        queries.add(GraphqlHelper.loadRawString(resources, R.raw.gql_nav_category_detail_v3))
+        queries.add(GraphqlHelper.loadRawString(resources, R.raw.gql_nav_search_catalog_count))
+        return queries
+    }
+
+    private fun getRequests(departmentId: String) : MutableList<HashMap<String, Any>> {
+        val request: MutableList<HashMap<String, Any>> = ArrayList()
+        request.add(getSubCategoryParam(departmentId).parameters)
+        request.add(getCatalogParam(departmentId).parameters)
+        return request
+    }
+
+    private fun getCatalogParam(departmentId: String): RequestParams {
+        val catalogMap = RequestParams()
+        catalogMap.putInt(CategoryNavConstants.START, 0)
+        catalogMap.putString(CategoryNavConstants.QUERY, "")
+        catalogMap.putString(CategoryNavConstants.SOURCE, "directory")
+        catalogMap.putString(CategoryNavConstants.ST, "catalog")
+        catalogMap.putInt(CategoryNavConstants.ROWS, 10)
+        catalogMap.putInt("ob", 23)
+        val hashmap = HashMap<String, String>()
+        var pmin = ""
+        var pmax = ""
+        if (hashmap.containsKey("pmin")) {
+            pmin = hashmap["pmin"] ?: ""
+        }
+        if (hashmap.containsKey("pmax")) {
+            pmax = hashmap["pmax"] ?: ""
+        }
+        catalogMap.putObject("filter", AceFilterInput(pmin, pmax, departmentId))
+        return catalogMap
+    }
+
+    data class AceFilterInput(
+            @field:SerializedName("pmin")
+            var pmin: String,
+            @field:SerializedName("pmax")
+            var pmax: String,
+            @field:SerializedName("sc")
+            var sc: String)
 
     private fun getSubCategoryParam(departmentId: String): RequestParams {
         val subCategoryMap = RequestParams()
