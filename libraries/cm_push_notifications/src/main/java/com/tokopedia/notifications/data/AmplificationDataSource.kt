@@ -1,7 +1,6 @@
 package com.tokopedia.notifications.data
 
 import android.app.Application
-import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -17,7 +16,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loa
 
 object AmplificationDataSource {
 
-    private val useCase by lazy(LazyThreadSafetyMode.NONE) {
+    private val useCase by lazy {
         GraphqlUseCase<AmplificationNotifier>(
                 GraphqlInteractor.getInstance().graphqlRepository
         )
@@ -49,8 +48,13 @@ object AmplificationDataSource {
     private fun inAppData(amplification: Amplification) {
         if (amplification.inAppData.isNotEmpty()) {
             amplification.inAppData.forEach {
-                val cmInApp = Gson().fromJson(it, CMInApp::class.java)
-                RepositoryManager.getInstance().storageProvider.putDataToStore(cmInApp)
+                try {
+                    val cmInApp = Gson().fromJson(it, CMInApp::class.java)
+                    RepositoryManager
+                            .getInstance()
+                            .storageProvider
+                            .putDataToStore(cmInApp)
+                } catch (e: Exception) {}
             }
         }
     }
