@@ -85,6 +85,18 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $
                 phone
                 fax
             }
+            shopStats {
+                productSold
+                totalTx
+                totalShowcase
+            }
+            createInfo{
+                shopCreated
+                epochShopCreated
+                epochShopCreatedUTC
+                openSince
+            }
+            activeProduct
             shopHomeType
         }
     }

@@ -257,7 +257,9 @@ class MixTopComponentViewHolder(
                                     element.isFreeOngkirActive,
                                     element.freeOngkirImageUrl
                             ),
-                            isOutOfStock = element.isOutOfStock
+                            isOutOfStock = element.isOutOfStock,
+                            ratingCount = element.rating,
+                            reviewCount = element.countReview
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

@@ -136,7 +136,9 @@ public class ShipmentMapper implements IShipmentMapper {
             Addresses addresses = shipmentAddressFormDataResponse.getAddresses();
             DataAddressData dataAddressData = new DataAddressData();
             if (addresses != null) {
-                if (addresses.getData() != null) {
+                if (addresses.getData() != null &&
+                        shipmentAddressFormDataResponse.getGroupAddress() != null &&
+                        shipmentAddressFormDataResponse.getGroupAddress().size() > 0) {
                     com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultTradeInAddress = null;
                     for (com.tokopedia.checkout.data.model.response.shipment_address_form.Data dataAddress : addresses.getData()) {
                         if (dataAddress.getKey().equals(AddressesData.DEFAULT_ADDRESS)) {

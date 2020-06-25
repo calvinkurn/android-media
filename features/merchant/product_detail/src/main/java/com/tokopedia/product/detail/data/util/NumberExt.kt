@@ -18,12 +18,12 @@ fun Number.numberFormatted(digitAfterComa: Int = 2): String {
     return decimalFormat.format(this)
 }
 
-fun Number.productThousandFormatted(): String {
+fun Number.productThousandFormatted(digitAfterComa: Int = 1): String {
     if (toDouble() < 10000) return decimalThousandFormatted()
 
     val exp = (Math.log(this.toDouble()) / Math.log(1000.00)).toInt()
     val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
-    return "${number.numberFormatted(1)} ${listOf("rb", "jt", "M", "T")[exp - 1]}"
+    return "${number.numberFormatted(digitAfterComa)} ${listOf("rb", "jt", "M", "T")[exp - 1]}"
 }
 
 fun Number.decimalThousandFormatted(): String = NumberFormat.getIntegerInstance(Locale("in", "id")).format(this)
