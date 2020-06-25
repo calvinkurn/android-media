@@ -12,7 +12,7 @@ import com.tokopedia.flight.common.data.model.FlightException
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.search.domain.*
 import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment

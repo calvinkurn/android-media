@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.widget
+package com.tokopedia.flight.homepage.presentation.widget
 
 import android.app.Application
 import android.os.Bundle
@@ -18,10 +18,10 @@ import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent
-import com.tokopedia.flight.dashboard.view.model.FlightFareAttributes
-import com.tokopedia.flight.dashboard.view.viewmodel.FlightFareCalendarViewModel
-import com.tokopedia.flight.dashboard.view.viewmodel.FlightHolidayCalendarViewModel
+import com.tokopedia.flight.homepage.di.DaggerFlightHomepageComponent
+import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
+import com.tokopedia.flight.homepage.presentation.viewmodel.FlightFareCalendarViewModel
+import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHolidayCalendarViewModel
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
 import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
@@ -94,7 +94,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
     }
 
     fun initInjector() {
-        val component = DaggerFlightDashboardComponent.builder()
+        val component = DaggerFlightHomepageComponent.builder()
                 .flightComponent(FlightComponentInstance
                         .getFlightComponent(activity?.application as Application))
                 .build()

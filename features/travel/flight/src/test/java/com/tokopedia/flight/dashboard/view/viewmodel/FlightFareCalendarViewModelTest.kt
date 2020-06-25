@@ -2,8 +2,9 @@ package com.tokopedia.flight.dashboard.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
-import com.tokopedia.flight.dashboard.view.model.FlightFareData
 import com.tokopedia.flight.dummy.FARE_CALENDAR_DATA
+import com.tokopedia.flight.homepage.presentation.model.FlightFareData
+import com.tokopedia.flight.homepage.presentation.viewmodel.FlightFareCalendarViewModel
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError

@@ -1,6 +1,6 @@
-package com.tokopedia.flight.dashboard.view.validator;
+package com.tokopedia.flight.homepage.presentation.validator;
 
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel;
 
 import javax.inject.Inject;
 

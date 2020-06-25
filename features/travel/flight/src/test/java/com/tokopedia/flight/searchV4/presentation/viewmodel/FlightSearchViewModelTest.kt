@@ -7,9 +7,9 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dummy.*
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.FlightAirportCombineModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel

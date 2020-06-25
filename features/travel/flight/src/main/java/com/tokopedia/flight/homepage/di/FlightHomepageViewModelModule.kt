@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.flight.homepage.presentation.viewmodel.FlightFareCalendarViewModel
+import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHolidayCalendarViewModel
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,5 +25,15 @@ abstract class FlightHomepageViewModelModule {
     @IntoMap
     @ViewModelKey(FlightHomepageViewModel::class)
     abstract fun flightDashboardViewModel(flightHomepageViewModel: FlightHomepageViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FlightHolidayCalendarViewModel::class)
+    internal abstract fun flightHolidayCalendarViewModel(customViewModel: FlightHolidayCalendarViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FlightFareCalendarViewModel::class)
+    internal abstract fun flightFareCalendarViewModel(customViewModel: FlightFareCalendarViewModel): ViewModel
 
 }

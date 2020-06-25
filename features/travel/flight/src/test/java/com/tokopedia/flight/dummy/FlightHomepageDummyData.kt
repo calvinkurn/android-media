@@ -2,9 +2,9 @@ package com.tokopedia.flight.dummy
 
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.flight.dashboard.view.model.FlightFare
-import com.tokopedia.flight.dashboard.view.model.FlightFareAttributes
-import com.tokopedia.flight.dashboard.view.model.FlightFareData
+import com.tokopedia.flight.homepage.presentation.model.FlightFare
+import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
+import com.tokopedia.flight.homepage.presentation.model.FlightFareData
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 
 /**
