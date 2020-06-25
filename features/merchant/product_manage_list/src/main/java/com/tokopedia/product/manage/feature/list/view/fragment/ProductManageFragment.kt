@@ -72,6 +72,7 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductManageMoreMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
+import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
 import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
@@ -122,7 +123,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     ProductManageFilterFragment.OnFinishedListener,
     ProductManageQuickEditPriceFragment.OnFinishedListener,
     ProductManageQuickEditStockFragment.OnFinishedListener,
-    ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener {
+    ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
+    ProductManageListListener{
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
@@ -1200,6 +1202,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         ProductManageTracking.eventOnProduct(product.id)
     }
 
+    override fun clearAndGetProductList() {
+        clearAllData()
+        resetMultiSelect()
+        disableMultiSelect()
+        getProductList()
+    }
     /**
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
@@ -1448,13 +1456,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     if(data is ShowFilterTab) {
                         filterTab?.show(data)
                     } else {
-                        filterTab?.update(data,
-                                ::clearAllData,
-                                ::resetMultiSelect,
-                                ::disableMultiSelect,
-                                ::getProductList)
+                        filterTab?.update(data, this)
                     }
-
                     renderCheckedView()
                 }
             }

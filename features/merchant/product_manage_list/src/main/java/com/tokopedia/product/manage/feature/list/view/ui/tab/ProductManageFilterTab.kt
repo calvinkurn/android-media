@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.ui.tab
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -34,11 +35,7 @@ class ProductManageFilterTab(
         setOnClickMoreFilter(tabs)
     }
 
-    fun update(data: GetFilterTabResult,
-               clearAllData: () -> Unit,
-               resetMultiSelect:() -> Unit,
-               disableMultiSelect:() -> Unit,
-               getProductList:(page: Int, isRefresh: Boolean, withDelay: Boolean) -> Unit) {
+    fun update(data: GetFilterTabResult, productManageListListener: ProductManageListListener) {
         val tabs = data.tabs
         // keep index and prev filter of selected tab
         var selectedTabIndex = -1
@@ -50,16 +47,29 @@ class ProductManageFilterTab(
                 return@forEachIndexed
             }
         }
+
         // clear old items from sort filter tab
         sortFilterTab.chipItems.clear()
         sortFilterTab.sortFilterItems.removeAllViews()
+
         // add or remove the tabs
         updateTabs(tabs)
         // check if prev index bigger than current chips size or not
         val currentChipsCount = sortFilterTab.chipItems.count() - 1
         if(selectedTabIndex > currentChipsCount) {
+            // if bigger, select the last of chips
             selectedTabIndex = currentChipsCount
+        } else if(selectedTabIndex < currentChipsCount) {
+            // if smaller, find the same chip has been selected before
+            sortFilterTab.chipItems.forEachIndexed { i, chip ->
+                val newFilter = checkFilterContaining(chip.title)
+                if (prevfilter == newFilter) {
+                    selectedTabIndex = i
+                }
+                return@forEachIndexed
+            }
         }
+
         sortFilterTab.chipItems.forEachIndexed { i, chip ->
             if(i == selectedTabIndex) {
                 // set initial counter with count of filter active
@@ -71,14 +81,12 @@ class ProductManageFilterTab(
                 val newFilter = checkFilterContaining(chip.title)
                 if (prevfilter != newFilter) {
                     // get product list again cause product list will be different
-                    clearAllData()
-                    resetMultiSelect()
-                    disableMultiSelect()
-                    getProductList(1, false, false)
+                    productManageListListener.clearAndGetProductList()
                 }
                 return@forEachIndexed
             }
         }
+
     }
 
     fun getSelectedFilter(): ProductStatus? {
