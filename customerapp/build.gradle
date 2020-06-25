@@ -550,7 +550,7 @@ dependencies {
     } else {
         implementation project.ext.debugToolsDependencies.blockCanaryNoOp
     }
-    debugImplementation project.ext.debugToolsDependencies.leakCanary
+//    debugImplementation project.ext.debugToolsDependencies.leakCanary
 
     //[START] test and androidTest dependencies
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
