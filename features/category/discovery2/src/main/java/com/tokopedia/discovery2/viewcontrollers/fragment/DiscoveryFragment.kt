@@ -298,7 +298,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     fun openMobileVerificationWithBottomSheet(componentPosition: Int = -1) {
         this.componentPosition = componentPosition
         showVerificationBottomSheet()
-        getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -336,6 +335,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         childView.findViewById<UnifyButton>(R.id.verify_btn).setOnClickListener {
             closeableBottomSheetDialog.dismiss()
             startActivityForResult(RouteManager.getIntent(activity, ADD_PHONE), MOBILE_VERIFICATION_REQUEST_CODE)
+            getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
         }
         closeableBottomSheetDialog.setCloseClickListener {
             closeableBottomSheetDialog.dismiss()
