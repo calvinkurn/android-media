@@ -1,6 +1,6 @@
 package com.tokopedia.seller.search.feature.suggestion.view.model.registersearch
 
 data class RegisterSearchUiModel(
-        var message: String? = "",
-        var status: String? = ""
+        val message: String? = "",
+        val status: String? = ""
 )

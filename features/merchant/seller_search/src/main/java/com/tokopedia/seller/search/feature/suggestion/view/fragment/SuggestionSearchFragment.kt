@@ -95,7 +95,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        viewModel.getSellerSearch.observe(this, Observer {
+        viewModel.getSellerSearch.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     setSuggestionSearch(it.data.first, it.data.second)
@@ -104,7 +104,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
             }
         })
 
-        viewModel.insertSuccessSearch.observe(this, Observer {
+        viewModel.insertSuccessSearch.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     dropKeyBoard()

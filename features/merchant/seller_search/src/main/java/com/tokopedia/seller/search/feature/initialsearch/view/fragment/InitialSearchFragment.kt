@@ -20,7 +20,6 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearc
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.initial_search_fragment.*
@@ -120,22 +119,18 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     }
 
     private fun observeLiveData() {
-        viewModel.getSellerSearch.observe(this, Observer {
+        viewModel.getSellerSearch.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     setHistorySearch(it.data)
                 }
-                is Fail -> {
-                }
             }
         })
 
-        viewModel.deleteHistorySearch.observe(this, Observer {
+        viewModel.deleteHistorySearch.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     removePositionHistory()
-                }
-                is Fail -> {
                 }
             }
         })
