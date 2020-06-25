@@ -90,10 +90,10 @@ class ReviewVoucherViewModel @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( object : Subscriber<MutableList<String?>>() {
-                    override fun onNext(t: MutableList<String?>?) {
+                    override fun onNext(urlList: MutableList<String?>?) {
                         createVoucherParam.run {
-                            image = t?.get(0).toBlankOrString()
-                            image_square = t?.get(1).toBlankOrString()
+                            image = urlList?.getOrNull(0).toBlankOrString()
+                            imageSquare = urlList?.getOrNull(1).toBlankOrString()
                         }
                         createVoucher(createVoucherParam)
                     }
@@ -129,10 +129,10 @@ class ReviewVoucherViewModel @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( object : Subscriber<MutableList<String?>>() {
-                    override fun onNext(t: MutableList<String?>?) {
+                    override fun onNext(urlList: MutableList<String?>?) {
                         updateVoucherParam.run {
-                            image = t?.get(0).toBlankOrString()
-                            image_square = t?.get(1).toBlankOrString()
+                            image = urlList?.getOrNull(0).toBlankOrString()
+                            imageSquare = urlList?.getOrNull(1).toBlankOrString()
                         }
                         updateVoucher(updateVoucherParam)
                     }
