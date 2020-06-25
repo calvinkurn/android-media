@@ -19,12 +19,6 @@ class FlightSearchModule {
 
     @Provides
     @FlightSearchScope
-    @Named(FlightSearchDataCloudSource.NAMED_FLIGHT_SEARCH_SINGLE_QUERY)
-    fun provideFlightSearchSingleQuery(@ApplicationContext context: Context) =
-            GraphqlHelper.loadRawString(context.resources, R.raw.flight_search_single)
-
-    @Provides
-    @FlightSearchScope
     @Named(FlightSearchDataCloudSource.NAMED_FLIGHT_SEARCH_COMBINE_QUERY)
     fun provideFlightSearchCombineQuery(@ApplicationContext context: Context) =
             GraphqlHelper.loadRawString(context.resources, R.raw.flight_search_combine)
