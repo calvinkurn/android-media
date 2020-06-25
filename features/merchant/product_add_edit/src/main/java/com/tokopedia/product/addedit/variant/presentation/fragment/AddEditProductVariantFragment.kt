@@ -223,7 +223,7 @@ class AddEditProductVariantFragment :
             }
         }
 
-        viewModel.updateSizechartFieldVisibility(variantDetail)
+        viewModel.updateSizechartFieldVisibility(variantDetail, true)
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail) {
@@ -246,7 +246,7 @@ class AddEditProductVariantFragment :
             variantPhotoLayout.hide()
         }
 
-        viewModel.updateSizechartFieldVisibility(variantDetail)
+        viewModel.updateSizechartFieldVisibility(variantDetail, false)
     }
 
     private fun setupVariantValueSection(layoutPosition: Int, variantTypeDetail: VariantDetail, selectedVariantUnitValues: List<UnitValue>) {

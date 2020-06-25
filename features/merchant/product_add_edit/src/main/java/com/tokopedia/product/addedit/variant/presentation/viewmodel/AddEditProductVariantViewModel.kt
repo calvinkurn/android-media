@@ -155,10 +155,9 @@ class AddEditProductVariantViewModel @Inject constructor(
         mVariantSizechart.value = newSizechart
     }
 
-    fun updateSizechartFieldVisibility(variantDetail: VariantDetail) {
+    fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
         if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
-            // toggle boolean for visibility
-            mIsVariantSizechartVisible.value = mIsVariantSizechartVisible.value != true
+            mIsVariantSizechartVisible.value = isVisible
         }
     }
 
