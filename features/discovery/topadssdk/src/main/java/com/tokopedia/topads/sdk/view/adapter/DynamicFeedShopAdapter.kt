@@ -119,6 +119,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
             itemView.setOnClickListener { itemClickListener.onShopItemClicked(adapterPosition, data) }
             btnFollow.setOnClickListener {
                 if (!data.isFavorit) {
+                    btnFollow.buttonVariant = UnifyButton.Variant.GHOST
                     btnFollow.buttonType = UnifyButton.Type.ALTERNATE
                     btnFollow.text = btnFollow.context.getString(R.string.topads_visit_shop)
                 }
@@ -143,9 +144,11 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
 
         private fun bindFavorite(data: Data) {
             if (data.isFavorit) {
+                btnFollow.buttonVariant = UnifyButton.Variant.GHOST
                 btnFollow.buttonType = UnifyButton.Type.ALTERNATE
                 btnFollow.text = btnFollow.context.getString(R.string.topads_visit_shop)
             } else {
+                btnFollow.buttonVariant = UnifyButton.Variant.FILLED
                 btnFollow.buttonType = UnifyButton.Type.MAIN
                 btnFollow.text = btnFollow.context.getString(R.string.topads_follow)
             }
