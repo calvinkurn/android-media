@@ -133,7 +133,7 @@ class WithdrawAnalytics @Inject constructor() {
     }
 
     companion object {
-        const val SCREEN_WITHDRAW = "/withdraw/"
+        const val SCREEN_WITHDRAW = "/withdrawpage"
         const val SCREEN_WITHDRAW_SUCCESS_PAGE = "/penarikan-diproses/"
         private const val EVENT_NAME_CLICK_SALDO = "clickWithdrawal"
         private const val EVENT_CATEGORY_WITHDRAWAL_PAGE = "withdrawal page"

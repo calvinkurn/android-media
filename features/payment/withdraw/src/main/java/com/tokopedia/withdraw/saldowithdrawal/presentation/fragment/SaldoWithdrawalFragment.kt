@@ -141,8 +141,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         saldoWithdrawalViewModel.bannerListLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    bannerList = it.data
-                    addBannerToUI(bannerList)
+                    addBannerToUI(it.data)
                     showUIComponent()
                     saldoWithdrawalViewModel.getBankList()
                 }

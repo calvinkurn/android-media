@@ -14,10 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkContentPosition
-import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.coachmark.*
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -66,6 +63,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             null
         }
     }
+
     private val rekeningPremiumViewModel: RekeningPremiumViewModel? by lazy(LazyThreadSafetyMode.NONE) {
         parentFragment?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory.get())
@@ -312,8 +310,9 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                     getString(R.string.swd_join_premium_account_icon_description),
                     CoachMarkContentPosition.TOP, ContextCompat.getColor(context!!,
                     R.color.Neutral_N700_68)))
-            val coachMark = CoachMarkBuilder().build()
-            coachMark.show(activity, TAG_RP_COACH_MARK, coachMarks)
+            val coachMark = CoachMarkBuilder()
+                    .build()
+            coachMark.show(activity, KEY_CAN_SHOW_RP_COACH_MARK, coachMarks, 0)
         }
     }
 
@@ -370,7 +369,6 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     companion object {
-        const val TAG_RP_COACH_MARK = "RP_COACH_MARK"
         const val KEY_CAN_SHOW_RP_COACH_MARK = "com.tokopedia.withdraw.saldowithdrawal.key_can_show_rp_coach_mark"
     }
 }
