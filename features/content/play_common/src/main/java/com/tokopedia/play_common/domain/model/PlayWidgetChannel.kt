@@ -3,8 +3,8 @@ package com.tokopedia.play_common.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-const val TYPE_BANNER = "banner"
-const val TYPE_CHANNEL = "channel"
+const val TYPE_BANNER = "PlayWidgetBanner"
+const val TYPE_CHANNEL = "PlayWidgetChannel"
 
 data class BufferControl (
     @SerializedName("maxBufferInSecond")
@@ -68,15 +68,15 @@ data class PlayWidgetItem (
     @Expose
     val stats: Stats = Stats(),
     @SerializedName("backgroundURL")
-    val backgroundURL : String,
+    val backgroundURL : String = "",
     @SerializedName("buttonColor")
-    val buttonColor : String,
+    val buttonColor : String = "",
     @SerializedName("buttonText")
-    val buttonText : String,
+    val buttonText : String = "",
     @SerializedName("buttonAppLink")
-    val buttonAppLink : String,
+    val buttonAppLink : String = "",
     @SerializedName("buttonWebLink")
-    val buttonWebLink : String
+    val buttonWebLink : String = ""
 ){
     fun isBanner() = typename == TYPE_BANNER
     fun isChannel() = typename == TYPE_CHANNEL
