@@ -23,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.charts)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.banner
