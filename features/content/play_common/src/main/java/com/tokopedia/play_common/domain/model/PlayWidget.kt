@@ -12,7 +12,7 @@ data class PlayWidget (
 )
 
 data class Meta (
-    @SerializedName("isAutoRefresh") val isAutoRefresh : Boolean,
+    @SerializedName("isAutoRefresh") val isAutoRefresh : Boolean = false,
     @SerializedName("autoRefreshTimer") val autoRefreshTimer : Int,
     @SerializedName("widgetTitle") val widgetTitle : String,
     @SerializedName("buttonText") val buttonText : String,
@@ -22,8 +22,8 @@ data class Meta (
     @SerializedName("buttonApplink") val buttonApplink : String,
     @SerializedName("buttonWeblink") val buttonWeblink : String,
     @SerializedName("overlayImage") val overlayImage : String,
-    @SerializedName("overlayImageApplink") val overlayImageApplink : String,
-    @SerializedName("overlayImageWeblink") val overlayImageWeblink : String,
+    @SerializedName("overlayImageApplink") val overlayImageApplink : String = "",
+    @SerializedName("overlayImageWeblink") val overlayImageWeblink : String = "",
     @SerializedName("gradient") val gradient : List<String> = listOf(),
     @SerializedName("serverTimeOffset") val serverTimeOffset : Long
 )

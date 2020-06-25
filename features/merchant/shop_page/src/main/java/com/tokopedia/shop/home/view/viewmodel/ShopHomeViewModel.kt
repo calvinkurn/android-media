@@ -102,11 +102,14 @@ class ShopHomeViewModel @Inject constructor(
                 val newShopPageHomeLayoutUiModel = asyncCatchError(
                         dispatcherProvider.io(),
                         block = { getPlayWidgetCarousel(shopId, it) },
-                        onError = {null}
+                        onError = {
+                            it.printStackTrace()
+                            null
+                        }
                 )
 
-                newShopPageHomeLayoutUiModel.await()?.let { newShopPageHomeLayoutUiModelData ->
-                    _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
+                newShopPageHomeLayoutUiModel.await().let { newShopPageHomeLayoutUiModelData ->
+                    if(newShopPageHomeLayoutUiModelData != null) _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
                 }
                 productList.await()?.let { productListData ->
                     _productListData.postValue(Success(productListData))

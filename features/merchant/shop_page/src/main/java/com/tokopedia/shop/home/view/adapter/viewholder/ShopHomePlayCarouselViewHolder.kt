@@ -33,13 +33,13 @@ class ShopHomePlayCarouselViewHolder(
 
     override fun bind(element: ShopHomePlayCarouselUiModel?) {
         playCarouselCardDataModel = element
-        itemView.visibility = if(element == null) View.GONE else View.VISIBLE
+        itemView.play_banner_carousel.visibility = if(element == null) View.GONE else View.VISIBLE
         element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
     }
 
     override fun bind(element: ShopHomePlayCarouselUiModel?, payloads: MutableList<Any>) {
         playCarouselCardDataModel = element
-        itemView.visibility = if(element == null) View.GONE else View.VISIBLE
+        itemView.play_banner_carousel.visibility = if(element == null) View.GONE else View.VISIBLE
         element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
     }
 

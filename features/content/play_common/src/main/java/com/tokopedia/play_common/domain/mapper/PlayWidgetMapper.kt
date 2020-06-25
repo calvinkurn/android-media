@@ -11,8 +11,8 @@ object PlayWidgetMapper {
         if(playWidget.meta.overlayImage.isNotBlank())
         list.add(PlayBannerCarouselOverlayImageDataModel(
                 imageUrl = playWidget.meta.overlayImage,
-                applink = playWidget.meta.overlayImageApplink,
-                weblink = playWidget.meta.overlayImageWeblink
+                applink = playWidget.meta.overlayImageApplink ?: "",
+                weblink = playWidget.meta.overlayImageWeblink ?: ""
         ))
 
         list.addAll(

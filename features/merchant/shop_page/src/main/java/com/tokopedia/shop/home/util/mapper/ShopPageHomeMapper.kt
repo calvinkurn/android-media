@@ -117,10 +117,10 @@ object ShopPageHomeMapper {
             isMyOwnProduct: Boolean
     ): List<BaseShopHomeWidgetUiModel> {
         return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
-//            add(mapToPlayWidgetUiModel(ShopLayoutWidget.Widget(
-//                    name = WidgetName.PLAY_CAROUSEL_WIDGET,
-//                    type = WidgetType.DYNAMIC
-//            )))
+            add(mapToPlayWidgetUiModel(ShopLayoutWidget.Widget(
+                    name = WidgetName.PLAY_CAROUSEL_WIDGET,
+                    type = WidgetType.DYNAMIC
+            )))
             shopLayoutWidgetResponse.filter { it.data.isNotEmpty() }.onEach {
                 val widgetUiModel = mapToWidgetUiModel(it, isMyOwnProduct)
                 widgetUiModel?.let { model ->
