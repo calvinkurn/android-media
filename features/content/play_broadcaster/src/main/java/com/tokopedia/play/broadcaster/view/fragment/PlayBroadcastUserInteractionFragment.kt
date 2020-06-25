@@ -226,18 +226,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ).show()
     }
 
-    private fun showDialogWhenActiveOnOtherDevices() {
-        requireContext().getDialog(
-                title = getString(R.string.play_dialog_error_active_other_devices_title),
-                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
-                primaryCta = getString(R.string.play_broadcast_exit),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    activity?.finish()
-                }
-        ).show()
-    }
-
     private fun showToast(
             message: String,
             type: Int,
@@ -281,11 +269,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun handleChannelInfo(channelInfo: ChannelInfoUiModel) {
-        when(channelInfo.status) {
-            PlayChannelStatus.UnStarted -> startLiveStreaming(channelInfo.ingestUrl)
-            PlayChannelStatus.Active -> showDialogWhenActiveOnOtherDevices()
+        when (channelInfo.status) {
+            PlayChannelStatus.Active -> startLiveStreaming(channelInfo.ingestUrl)
             PlayChannelStatus.Pause -> showDialogContinueLiveStreaming(channelInfo.channelId)
-            PlayChannelStatus.Finish -> navigateToSummary()
+            PlayChannelStatus.Stop -> navigateToSummary()
         }
     }
 
@@ -344,7 +331,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveInfo() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer(::handleLiveInfo))
+        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver(::handleLiveInfo))
     }
 
     private fun observeTotalViews() {

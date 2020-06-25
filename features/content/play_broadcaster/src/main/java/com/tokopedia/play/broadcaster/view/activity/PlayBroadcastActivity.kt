@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.activity
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -21,6 +20,10 @@ import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
+import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
@@ -190,13 +193,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
      */
     private fun observeConfiguration() {
         viewModel.observableConfigInfo.observe(this, Observer {
-            if (it.streamAllowed) {
-                when {
-                    it.haveOnGoingLive -> openBroadcastActivePage()
-                    else -> openBroadcastSetupPage()
-                }
-            } else {
-                // TODO("handle when stream not allowed")
+            when(it) {
+                is NetworkResult.Loading -> { /* TODO("show loading state") */ }
+                is NetworkResult.Success -> handleChannelConfiguration(it.data)
+                is NetworkResult.Fail -> { /* TODO("show toaster error") */ }
             }
         })
     }
@@ -211,6 +211,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         })
     }
     //endregion
+
+    private fun handleChannelConfiguration(config: ConfigurationUiModel) =
+            if (config.streamAllowed) {
+                when(config.channelStatus) {
+                    PlayChannelStatus.Live -> showDialogWhenActiveOnOtherDevices()
+                    PlayChannelStatus.Pause -> openBroadcastActivePage()
+                    else -> openBroadcastSetupPage() /* TODO("handle when channel Deleted & Stop") */
+                }
+            } else { /* TODO("handle when stream not allowed") */ }
 
     private fun onPermissionGranted() {
         containerSetup.show()
@@ -239,5 +248,17 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun openBroadcastActivePage() {
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
+    }
+
+    private fun showDialogWhenActiveOnOtherDevices() {
+        getDialog(
+                title = getString(R.string.play_dialog_error_active_other_devices_title),
+                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                primaryCta = getString(R.string.play_broadcast_exit),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    finish()
+                }
+        ).show()
     }
 }

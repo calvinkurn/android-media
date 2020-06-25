@@ -4,9 +4,11 @@ import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
@@ -116,4 +118,57 @@ object PlayBroadcastUiMapper {
                 interval = data.interval
         )
     }
+
+    fun mapConfiguration(config: Config): ConfigurationUiModel {
+        val channelStatus = PlayChannelStatus.getChannelStatus(
+                config.activeLiveChannel,
+                config.pausedChannel,
+                config.draftChannel
+        )
+        return ConfigurationUiModel(
+                streamAllowed = config.streamAllowed,
+                channelId = channelStatus.first,
+                channelStatus =  channelStatus.second,
+                durationConfig = DurationConfigUiModel(
+                        duration = config.maxDuration,
+                        pauseDuration = config.maxPauseDuration,
+                        errorMessage = config.maxDurationDesc),
+                productTagConfig = ProductTagConfigUiModel(
+                        maxProduct = config.maxTaggedProduct,
+                        minProduct = config.minTaggedProduct,
+                        errorMessage = config.maxTaggedProductDesc
+                ),
+                countDown = config.countdownSec
+        )
+    }
+
+    fun mapChannelInfo(channel: GetChannelResponse.Channel) = ChannelInfoUiModel(
+            channelId = channel.basic.channelId,
+            title = channel.basic.title,
+            description = channel.basic.description,
+            ingestUrl = channel.medias.firstOrNull()?.ingestUrl.orEmpty(),
+            coverUrl = channel.medias.firstOrNull()?.coverUrl.orEmpty(),
+            status = PlayChannelStatus.getByValue(channel.basic.status.id)
+    )
+
+    fun mapProductList(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
+        ProductContentUiModel(
+                id = it.id.toLongOrZero(),
+                name = it.productName,
+                imageUrl = "", // TODO("ask BE to return image url")
+                originalImageUrl = "", // TODO("ask BE to return image url")
+                stock = it.quantity,
+                isSelectedHandler = { false },
+                isSelectable = { NotSelectable(Throwable("should not be selectable")) }
+        )
+    }
+
+    fun mapShareInfo(channel: GetChannelResponse.Channel) = ShareUiModel(
+            id = channel.basic.channelId,
+            title = channel.basic.title,
+            description = channel.basic.description,
+            slug = channel.basic.slug,
+            imageUrl = channel.medias.firstOrNull()?.coverUrl.orEmpty(),
+            redirectUrl = "" // TODO("ask for redirect url, atau apakah sama dengan slug?")
+    )
 }
