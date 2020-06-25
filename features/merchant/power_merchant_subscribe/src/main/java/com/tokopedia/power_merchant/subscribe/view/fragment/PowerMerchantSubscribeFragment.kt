@@ -371,7 +371,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun openTermsAndCondition() {
         val intent = context?.let { PowerMerchantTermsActivity.createIntent(it) }
-        startActivity(intent)
+        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
     }
 
     private fun showEmptyState(throwable: Throwable) {
