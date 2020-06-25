@@ -233,54 +233,12 @@ class LottieBottomNavbar : LinearLayout {
                     }
 
                     iconList[index] = Pair(icon, false)
-//                    val bottomMenuSelected = menu[selectedItem?:0]
-//                    val bottomMenuCurrent = bottomMenu
-//
-//                    val iconSelected = iconList[selectedItem?:0]
-//                    val iconCurrent = icon
-//
-//                    bottomMenuSelected.imageName?.let {
-//                        iconSelected.setImageResource(it)
-//                    }
-//                    bottomMenuSelected.animToEnabledName?.let {
-//                        iconSelected.setAnimation(it)
-//                    }
-//
-//                    bottomMenuCurrent.imageEnabledName?.let {
-//                        iconCurrent.setImageResource(it)
-//                    }
-//                    bottomMenuCurrent.animName?.let {
-//                        iconCurrent.setAnimation(it)
-//                    }
-
                     icon.visibility = View.INVISIBLE
                     iconPlaceholder.visibility = View.VISIBLE
                 }
 
                 override fun onAnimationCancel(p0: Animator?) {
-                    if (selectedItem != index) {
-                        val bottomMenuSelected = bottomMenu
-                        val iconSelected = icon
 
-                        bottomMenuSelected.imageEnabledName?.let {
-                            iconPlaceholder.setImageResource(it)
-                        }
-                        bottomMenuSelected.animName?.let {
-                            iconSelected.setAnimation(it)
-                        }
-                    } else {
-                        val bottomMenuSelected = bottomMenu
-                        val iconSelected = icon
-
-                        bottomMenuSelected.imageName?.let {
-                            iconPlaceholder.setImageResource(it)
-                        }
-                        bottomMenuSelected.animToEnabledName?.let {
-                            iconSelected.setAnimation(it)
-                        }
-                    }
-                    icon.visibility = View.INVISIBLE
-                    iconPlaceholder.visibility = View.VISIBLE
                 }
 
                 override fun onAnimationStart(p0: Animator?) {
@@ -353,27 +311,20 @@ class LottieBottomNavbar : LinearLayout {
             return
         }
 
-        selectedItem?.let {
-//            iconList[it].setColorFilter(buttonColor, PorterDuff.Mode.SRC_ATOP)
-//            menu[it].imageName?.let { imageName ->
-//                iconList[it].setImageDrawable(ContextCompat.getDrawable(context, imageName))
-//            }
-//            menu[it].imageName?.let {imageName->
-//                iconPlaceholderList[it].setImageResource(imageName)
-//                iconPlaceholderList[it].visibility = View.VISIBLE
-//            }
-//            menu[it].animToEnabledName?.let { animToEnabledName ->
-//                iconList[it].setAnimation(animToEnabledName)
-//            }
+        if (iconList[selectedItem?:0].second) {
+            val pair = iconList[selectedItem?:0]
+            pair.first.cancelAnimation()
+            menu[selectedItem?:0].animToEnabledName?.let {
+                pair.first.setAnimation(it)
+            }
 
-//            iconList[it].repeatCount = 0
-//            iconList[it].setColorFilter(buttonColor, PorterDuff.Mode.SRC_ATOP)
-//
-//            iconList[it].speed = 1f
+            iconList[selectedItem?:0] = Pair(pair.first, false)
+        }
+
+        selectedItem?.let {
             val selectedIconPair = iconList[it]
             val selectedIcon = selectedIconPair.first
             if (!selectedIconPair.second) selectedIcon.playAnimation()
-//            iconPlaceholderList[it].visibility = View.INVISIBLE
             iconList[it] = Pair(selectedIcon, true)
             titleList[it].setTextColor(buttonColor)
             selectedIcon.invalidate()
@@ -382,22 +333,6 @@ class LottieBottomNavbar : LinearLayout {
 
         // change currently selected item color
         val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
-//        menu[newPosition].imageEnabledName?.let { imageEnabledName ->
-//            iconList[newPosition].setImageDrawable(ContextCompat.getDrawable(context, imageEnabledName))
-//        }
-
-//        menu[newPosition].imageEnabledName?.let {imageEnabledName->
-//            iconPlaceholderList[newPosition].setImageResource(imageEnabledName)
-//            iconPlaceholderList[newPosition].visibility = View.VISIBLE
-//        }
-//        menu[newPosition].animName?.let { animName ->
-//            iconList[newPosition].setAnimation(animName)
-//        }
-//
-//        iconList[newPosition].repeatCount = 0
-//        iconList[newPosition].setColorFilter(activeSelectedItemColor, PorterDuff.Mode.SRC_ATOP)
-//
-//        iconList[newPosition].speed = 1f
         val newSelectedItemPair = iconList[newPosition]
         val newSelectedItem = newSelectedItemPair.first
         if (!newSelectedItemPair.second) newSelectedItem.playAnimation()

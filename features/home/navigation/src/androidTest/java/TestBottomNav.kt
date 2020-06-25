@@ -31,7 +31,6 @@ class TestBottomNav {
 
     @Test
     fun testWhenPageInflatedWithoutNotification_bottomNavHome_showAllFiveComponent() {
-        waitForData()
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_HOME))).check(matches(isDisplayed()))
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_FEED))).check(matches(isDisplayed()))
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_OS))).check(matches(isDisplayed()))
@@ -54,35 +53,6 @@ class TestBottomNav {
                 withTagStringValue(getBadgeTextViewId(POSITION_CART)))).check(matches(not(isDisplayed())))
         onView(allOf(withId(R.id.notification_badge),
                 withTagStringValue(getBadgeTextViewId(POSITION_ACCOUNT)))).check(matches(not(isDisplayed())))
-    }
-
-    @Test
-    fun testWhenItemClicked_bottomNavItem_shouldFinishAnyAnimationAfter2sec() {
-        onView(withTagStringValue(getLottieAnimationViewId(POSITION_HOME))).perform(click())
-        onView(withTagStringValue(getLottieAnimationViewId(POSITION_FEED))).perform(click())
-        onView(withTagStringValue(getLottieAnimationViewId(POSITION_OS))).perform(click())
-        onView(withTagStringValue(getLottieAnimationViewId(POSITION_CART))).perform(click())
-        onView(withTagStringValue(getLottieAnimationViewId(POSITION_ACCOUNT))).perform(click())
-
-        Thread.sleep(2000)
-
-        val lottieBottomNavbar: LottieBottomNavbar =
-                activityRule.activity.findViewById(R.id.bottom_navbar)
-        val linearLayout = lottieBottomNavbar.getChildAt(0)
-        val lottieAnimation1 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_HOME))
-        assertThat(lottieAnimation1.progress, Matchers.greaterThan(0.9f))
-
-        val lottieAnimation2 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_FEED))
-        assertThat(lottieAnimation2.progress, Matchers.greaterThan(0.9f))
-
-        val lottieAnimation3 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_OS))
-        assertThat(lottieAnimation3.progress, Matchers.greaterThan(0.9f))
-
-        val lottieAnimation4 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_CART))
-        assertThat(lottieAnimation4.progress, Matchers.greaterThan(0.9f))
-
-        val lottieAnimation5 = linearLayout.findViewWithTag<LottieAnimationView>(getLottieAnimationViewId(POSITION_ACCOUNT))
-        assertThat(lottieAnimation5.progress, Matchers.greaterThan(0.9f))
     }
 
     @Test
