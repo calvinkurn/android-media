@@ -84,7 +84,7 @@ class PlayTimerCountDown @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        timer.cancel()
+        if (::timer.isInitialized) timer.cancel()
     }
 
     fun startCountDown(seconds: Int, interval: Long, listener: Listener? = null){
