@@ -146,6 +146,6 @@ class PlayBannerCardViewHolder(
     }
 
     fun onDestroy(){
-//        itemView.play_banner_carousel?.onDestroy()
+        playBannerCarouselView?.onDestroy()
     }
 }

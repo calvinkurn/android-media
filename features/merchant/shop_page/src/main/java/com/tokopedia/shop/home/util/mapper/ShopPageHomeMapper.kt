@@ -121,7 +121,7 @@ object ShopPageHomeMapper {
                     name = WidgetName.PLAY_CAROUSEL_WIDGET,
                     type = WidgetType.DYNAMIC
             )))
-            shopLayoutWidgetResponse.filter { it.data.isNotEmpty() }.onEach {
+            shopLayoutWidgetResponse.onEach {
                 val widgetUiModel = mapToWidgetUiModel(it, isMyOwnProduct)
                 widgetUiModel?.let { model ->
                     add(model)
