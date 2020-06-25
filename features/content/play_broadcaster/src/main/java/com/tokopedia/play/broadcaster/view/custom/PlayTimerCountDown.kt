@@ -7,7 +7,7 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.CountDownTimer
 import android.util.AttributeSet
-import android.view.LayoutInflater
+import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -48,8 +48,7 @@ class PlayTimerCountDown @JvmOverloads constructor(
         get() = mainJob + Dispatchers.Main
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.widget_play_timer_count_down, null, false)
-        addView(view)
+        val view = View.inflate(context, R.layout.widget_play_timer_count_down, this)
 
         progressCircular = view.findViewById(R.id.progress_circular)
 
@@ -81,6 +80,11 @@ class PlayTimerCountDown @JvmOverloads constructor(
             override fun onAnimationStart(animation: Animator?) {
             }
         })
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        timer.cancel()
     }
 
     fun startCountDown(seconds: Int, interval: Long, listener: Listener? = null){

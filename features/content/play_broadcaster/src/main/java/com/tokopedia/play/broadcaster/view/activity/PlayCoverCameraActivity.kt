@@ -18,6 +18,8 @@ import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
@@ -97,6 +99,9 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         when (cameraTimerEnum) {
             CameraTimerEnum.Immediate -> cvPlayCameraView.takePicture()
             else -> {
+                countdownTimer.visible()
+                groupAction.gone()
+
                 countdownTimer.startCountDown(cameraTimerEnum.seconds, 1000L, object : PlayTimerCountDown.Listener {
                     override fun onTick(milisUntilFinished: Long) {
 
@@ -104,6 +109,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
                     override fun onFinish() {
                         cvPlayCameraView.takePicture()
+                        countdownTimer.gone()
                     }
                 })
             }
@@ -180,14 +186,6 @@ class PlayCoverCameraActivity : AppCompatActivity() {
             cameraTimerEnum = CameraTimerEnum.Ten
         }
     }
-
-//    private fun showTimerLayout(seconds: Int) {
-//        countdownTimer.visibility = View.VISIBLE
-//    }
-//
-//    private fun hideTimerLayout() {
-//        countdownTimer.visibility = View.GONE
-//    }
 
     private fun requestCameraPermission() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),

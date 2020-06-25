@@ -121,13 +121,21 @@
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
-        android:id="@+id/countdownTimer"
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:constraint_referenced_ids="btnPlayCameraCancel, ivPlayCameraShutter, ivPlayCameraFlash, ivPlayCameraReverse, tvPlayCameraTimer, tvPlayCameraTimer0, tvPlayCameraTimer5, tvPlayCameraTimer10"
+        />
+
+    <com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
+        android:id="@+id/countdownTimer"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
 
