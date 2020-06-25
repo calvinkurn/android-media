@@ -8,13 +8,20 @@ import com.tokopedia.review.feature.inbox.container.presentation.fragment.Review
 
 class ReviewInboxActivity : BaseSimpleActivity() {
 
+    private val reviewInboxContainerFragment = ReviewInboxContainerFragment.createNewInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
-        return ReviewInboxContainerFragment.createNewInstance()
+        return reviewInboxContainerFragment
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        reviewInboxContainerFragment.onBackPressed()
     }
 
     private fun setUpToolBar() {

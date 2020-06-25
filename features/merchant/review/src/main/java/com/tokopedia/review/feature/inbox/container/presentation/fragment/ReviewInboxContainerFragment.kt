@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.feature.inbox.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContainerComponent
@@ -23,7 +24,7 @@ import com.tokopedia.review.feature.inbox.container.presentation.viewmodel.Revie
 import kotlinx.android.synthetic.main.fragment_review_inbox_container.*
 import javax.inject.Inject
 
-class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent> {
+class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener {
 
     companion object {
         const val PENDING_TAB_INDEX = 0
@@ -69,6 +70,11 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     override fun onDestroy() {
         super.onDestroy()
         removeObservers(viewModel.reviewTabs)
+    }
+
+
+    override fun onBackPressed() {
+        ReviewInboxContainerTracking.eventOnClickBackButton(viewModel.userId)
     }
 
     private fun setupViewPager(tabTitles: List<String>) {
