@@ -16,7 +16,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -46,7 +45,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         ReviewPendingItemListener, HasComponent<ReviewPendingComponent> {
 
     companion object {
-        const val REVIEW_PENDING_NO_PRODUCTS_BOUGHT_IMAGE = "https://ecs7.tokopedia.net/android/others/review_inbox_no_products.png"
         fun createNewInstance() : ReviewPendingFragment {
             return ReviewPendingFragment()
         }
@@ -135,7 +133,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun setupEmptyState() {
-        reviewEmptyImage.loadImage(REVIEW_PENDING_NO_PRODUCTS_BOUGHT_IMAGE)
+        reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
         reviewEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
         reviewEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
     }

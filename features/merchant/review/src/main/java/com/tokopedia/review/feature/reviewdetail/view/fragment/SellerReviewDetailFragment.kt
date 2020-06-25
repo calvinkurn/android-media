@@ -38,7 +38,7 @@ import com.tokopedia.review.feature.reviewdetail.view.viewmodel.ProductReviewDet
 import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
-import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -467,7 +467,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun onOptionFeedbackClicked(view: View, title: String, data: FeedbackUiModel,
                                          optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {
         this.variantName = data.variantName.orEmpty()
-        val feedbackReplyUiModel = ProductReplyUiModel(productID, productImageUrl, productName, variantName)
+        val feedbackReplyUiModel = ReviewProductUiModel(productID, productImageUrl, productName, variantName)
 
         cacheManager = context?.let {
             SaveInstanceCacheManager(it, true).apply {

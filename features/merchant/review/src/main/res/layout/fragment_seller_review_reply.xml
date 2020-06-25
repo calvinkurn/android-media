@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.tokopedia.review.feature.reviewreply.view.widget.ProductItemReply
+            <com.tokopedia.review.common.presentation.widget.ReviewProductCard
                 android:id="@+id/productItemReplyWidget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,5 +1,4 @@
 <resources>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_review_rating_product">Rating Produk</string>
     <string name="title_review_inbox">Inbox Ulasan</string>
@@ -107,6 +106,8 @@
     <string name="image_description">Keterangan gambar...</string>
     <string name="txt_success_submit_review">Terima kasih %s sudah memberikan ulasanmu untuk barang ini</string>
 
+    <string name="review_date">• %s</string>
+
     <string name="review_pending_search_error_toaster">Ketik min. 3 karakter agar menemukan barang yang dicari.</string>
     <string name="review_pending_search_error_toaster_dismiss">Oke</string>
     <string name="review_pending_lazy_load_network_error_toaster">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
@@ -125,8 +126,11 @@
 
     <string name="review_history_tab_title">Riwayat</string>
     <string name="review_history_search_bar_hint">Cari produk di sini</string>
-    <string name="review_history_date">• %s</string>
     <string name="review_history_reply_exists">Ada 1 balasan</string>
+
+    <string name="review_detail_name">Sebagai &lt;b>%s&lt;/b></string>
+    <string name="review_detail_anonymous">Sebagai &lt;b>Anonim&lt;/b></string>
+    <string name="review_detail_by">Oleh &lt;b>%s&lt;/b></string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 </resources>

@@ -10,7 +10,7 @@ data class ProductrevGetReviewDetailResponse(
         @SerializedName("responseTime")
         @Expose
         val responseTime: String = "",
-        @SerializedName("")
+        @SerializedName("responseTimeFormatted")
         @Expose
         val responseTimeFormatted: String = "",
         @SerializedName("responderData")

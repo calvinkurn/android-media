@@ -9,9 +9,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
-import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAttachedProductAdapter
+import com.tokopedia.review.common.presentation.adapter.ReviewAttachedImagesAdapter
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import kotlinx.android.synthetic.main.item_review_history.view.*
+import kotlinx.android.synthetic.main.widget_review_attached_images.view.*
 
 class ReviewHistoryViewHolder(view: View) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
 
@@ -54,13 +55,7 @@ class ReviewHistoryViewHolder(view: View) : AbstractViewHolder<ReviewHistoryUiMo
         if(attachedImages.isEmpty()) {
             return
         }
-        val attachedImageAdapter = ReviewHistoryAttachedProductAdapter()
-        attachedImageAdapter.setData(attachedImages)
-        itemView.reviewHistoryAttachedImages.apply {
-            adapter = attachedImageAdapter
-            layoutManager = LinearLayoutManager(context)
-            show()
-        }
+        itemView.reviewHistoryAttachedImages.setImages(attachedImages)
     }
 
     private fun setupStarRatings(rating: Int) {

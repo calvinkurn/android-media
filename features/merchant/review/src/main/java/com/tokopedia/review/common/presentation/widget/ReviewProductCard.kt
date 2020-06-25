@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.reviewreply.view.widget
+package com.tokopedia.review.common.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,11 +6,11 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
-import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_reply_product_item.view.*
 
-class ProductItemReply: BaseCustomView {
+class ReviewProductCard: BaseCustomView {
 
     constructor(context: Context): super(context) {
         init()
@@ -27,7 +27,7 @@ class ProductItemReply: BaseCustomView {
         View.inflate(context, R.layout.widget_reply_product_item, this)
     }
 
-    fun setItem(data: ProductReplyUiModel) {
+    fun setItem(data: ReviewProductUiModel) {
         ivItemProduct?.setImageUrl(data.productImageUrl.orEmpty())
         tgTitleProduct?.text = data.productName
         setupVariant(data.variantName.orEmpty())

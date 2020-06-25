@@ -1,6 +1,6 @@
-package com.tokopedia.review.feature.reviewreply.view.model
+package com.tokopedia.review.common.presentation.uimodel
 
-data class ProductReplyUiModel(
+data class ReviewProductUiModel(
         var productID: Int? = 0,
         var productImageUrl: String? = "",
         var productName: String? = "",
