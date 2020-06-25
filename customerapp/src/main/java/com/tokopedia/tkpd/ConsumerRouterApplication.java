@@ -595,17 +595,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-            Context context, String platform, String category, String defaultSelectedTab) {
-        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
-    }
-
-    @Override
-    public Intent getPhoneVerificationActivationIntent(Context context) {
-        return PhoneVerificationActivationActivity.getCallingIntent(context);
-    }
-
-    @Override
     public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
         return ReviewShopFragment.createInstance(shopId, shopDomain);
     }
