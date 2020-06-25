@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
@@ -15,7 +13,6 @@ public class ReactNativeDeveloperOptionsActivity
         extends ReactFragmentActivity<GeneralReactNativeFragment> {
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
 
-    @DeepLink({ApplinkConst.SETTING_DEVELOPER_OPTIONS})
     public static Intent reactDevOptDeepLinkIntent(Context ctx, Bundle extras) {
         return createScreenLink(
                 ctx,
