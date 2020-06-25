@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.InitialSearchAdapter
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.InitialSearchAdapterTypeFactory
@@ -48,6 +49,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     private var searchKeyword = ""
     private var shopId = ""
+    private var userId = ""
     private var positionHistory = 0
 
     private var historyViewUpdateListener: HistoryViewUpdateListener? = null
@@ -57,6 +59,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         super.onCreate(savedInstanceState)
         retainInstance = true
         shopId = userSession.shopId.orEmpty()
+        userId = userSession.userId.orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -97,15 +100,18 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         positionHistory = adapterPosition
         viewModel.deleteSuggestionSearch(listOf(keyword))
         isDeleteAll = false
+        SellerSearchTracking.clickDeleteSelectedSearch(userId)
     }
 
     override fun onClearAllSearch() {
         viewModel.deleteSuggestionSearch(titleList ?: listOf())
         isDeleteAll = true
+        SellerSearchTracking.clickDeleteAllSearchEvent(userId)
     }
 
     override fun onHistoryItemClicked(keyword: String) {
         historyViewUpdateListener?.setKeywordSearchBarView(keyword)
+        SellerSearchTracking.clickRecommendWordingEvent(userId)
     }
 
     private fun observeLiveData() {

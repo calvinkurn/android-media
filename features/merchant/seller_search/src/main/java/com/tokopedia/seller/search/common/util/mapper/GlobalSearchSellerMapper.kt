@@ -6,14 +6,14 @@ import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ALL
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FAQ
 import com.tokopedia.seller.search.common.data.SellerSearchResponse
 import com.tokopedia.seller.search.feature.initialsearch.data.DeleteHistoryResponse
-import com.tokopedia.seller.search.feature.initialsearch.data.SuccessSearchResponse
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.filter.FilterSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.registersearch.RegisterSearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.ItemSellerSearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.data.SuccessSearchResponse
+import com.tokopedia.seller.search.feature.suggestion.view.model.filter.FilterSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.SellerSearchUiModel
 
 object GlobalSearchSellerMapper {
 

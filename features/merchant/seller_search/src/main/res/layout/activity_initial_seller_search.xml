@@ -30,7 +30,7 @@
 
         <fragment
             android:id="@+id/search_suggestion"
-            android:name="com.tokopedia.seller.search.feature.initialsearch.view.fragment.SuggestionSearchFragment"
+            android:name="com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

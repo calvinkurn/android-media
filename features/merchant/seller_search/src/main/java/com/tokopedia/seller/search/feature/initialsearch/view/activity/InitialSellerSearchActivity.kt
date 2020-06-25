@@ -10,14 +10,17 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerComponentBuilder
+import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.DaggerInitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.module.InitialSearchModule
 import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
-import com.tokopedia.seller.search.feature.initialsearch.view.fragment.SuggestionSearchFragment
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.SuggestionViewUpdateListener
 import com.tokopedia.seller.search.feature.initialsearch.view.widget.GlobalSearchView
+import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchComponent>,
         GlobalSearchView.GlobalSearchViewListener, HistoryViewUpdateListener, SuggestionViewUpdateListener {
@@ -25,6 +28,9 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     companion object {
         const val MIN_CHARACTER_SEARCH = 3
     }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var searchBarView: GlobalSearchView? = null
 
@@ -40,6 +46,11 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         setContentView(R.layout.activity_initial_seller_search)
         window?.decorView?.setBackgroundColor(Color.WHITE)
         proceed()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        SellerSearchTracking.sendScreenSearchEvent(userSession.userId.orEmpty())
     }
 
     override fun getComponent(): InitialSearchComponent {
@@ -81,6 +92,14 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
                 suggestionFragment?.setSuggestionViewUpdateListener(this)
             }
         }
+    }
+
+    override fun onClearTextBoxListener() {
+        SellerSearchTracking.clickClearSearchBoxEvent(userSession.userId.orEmpty())
+    }
+
+    override fun onBackButtonSearchBar() {
+        SellerSearchTracking.clickBackButtonSearchEvent(userSession.userId.orEmpty())
     }
 
     override fun showHistoryView() {

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.seller.search.feature.initialsearch.di.scope.InitialSearchScope
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
-import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.SuggestionSearchViewModel
+import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionSearchViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

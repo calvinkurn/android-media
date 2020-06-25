@@ -4,7 +4,7 @@ import com.tokopedia.seller.search.common.di.component.GlobalSearchSellerCompone
 import com.tokopedia.seller.search.feature.initialsearch.di.module.InitialSearchModule
 import com.tokopedia.seller.search.feature.initialsearch.di.scope.InitialSearchScope
 import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
-import com.tokopedia.seller.search.feature.initialsearch.view.fragment.SuggestionSearchFragment
+import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
 import dagger.Component
 
 @InitialSearchScope

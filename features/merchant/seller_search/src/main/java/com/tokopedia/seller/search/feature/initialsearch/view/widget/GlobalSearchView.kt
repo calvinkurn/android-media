@@ -30,7 +30,6 @@ class GlobalSearchView : BaseCustomView {
 
     private var mClearingFocus: Boolean = false
     private var searchKeyword = ""
-    private var hint: String? = ""
 
     private var activity: AppCompatActivity? = null
 
@@ -83,6 +82,9 @@ class GlobalSearchView : BaseCustomView {
                 override fun onQueryTextChangeListener(keyword: String) {
                     subscriber.onNext(keyword)
                 }
+
+                override fun onClearTextBoxListener() {}
+                override fun onBackButtonSearchBar() {}
             }
         })
                 .debounce(DEBOUNCE_DELAY_MILLIS, TimeUnit.MILLISECONDS)
@@ -146,6 +148,7 @@ class GlobalSearchView : BaseCustomView {
             isClearable = true
             iconListener = {
                 if (searchBarPlaceholder.isNotEmpty()) {
+                    searchViewListener?.onClearTextBoxListener()
                     searchBarTextField.text.clear()
                     searchKeyword = searchBarTextField.text.trim().toString()
                     searchViewListener?.onQueryTextChangeListener(searchKeyword)
@@ -196,6 +199,7 @@ class GlobalSearchView : BaseCustomView {
 
     private fun btnBackHome() {
         actionUpBtn?.setOnClickListener {
+            searchViewListener?.onBackButtonSearchBar()
             KeyboardHandler.DropKeyboard(activity, searchBarView?.searchBarTextField)
             activity?.finish()
         }
@@ -203,5 +207,7 @@ class GlobalSearchView : BaseCustomView {
 
     interface GlobalSearchViewListener {
         fun onQueryTextChangeListener(keyword: String)
+        fun onClearTextBoxListener()
+        fun onBackButtonSearchBar()
     }
 }

@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.seller.search.R
-import com.tokopedia.seller.search.feature.initialsearch.view.model.LoadingSearchModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.LoadingSearchModel
 
 class ShimmerLoadingViewHolder(view: View): AbstractViewHolder<LoadingSearchModel>(view) {
 

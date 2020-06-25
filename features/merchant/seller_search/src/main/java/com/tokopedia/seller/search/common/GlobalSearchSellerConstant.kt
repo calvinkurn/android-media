@@ -8,5 +8,7 @@ object GlobalSearchSellerConstant {
     const val NAVIGATION = "navigation"
     const val ALL = "Semua"
 
-    val filterList = listOf("Semua", "Pesanan", "Produk", "Fitur")
+    const val PESANAN = "Pesanan"
+    const val PRODUK = "Produk"
+    const val FITUR = "Fitur"
 }
