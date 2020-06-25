@@ -1189,6 +1189,7 @@ final class ProductListPresenter
     private void setSortFilterItemState(SortFilterItem item, Option option) {
         if(getView().isQuickFilterSelected(option)){
             item.setType(ChipsUnify.TYPE_SELECTED);
+            item.setTypeUpdated(false);
         }
     }
 

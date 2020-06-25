@@ -8,6 +8,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -328,6 +329,8 @@ public class SearchActivity extends BaseActivity
     }
 
     private void onPageSelected(int position) {
+        new Handler().postDelayed(() -> animateTab(true), 300);
+
         switch (position) {
             case TAB_FIRST_POSITION:
                 SearchTracking.eventSearchResultTabClick(this, productTabTitle);

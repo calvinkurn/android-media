@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1922,11 +1923,9 @@ public class ProductListFragment
     public void setNewQuickFilter(List<SortFilterItem> items) {
         searchSortFilter.getSortFilterItems().removeAllViews();
         searchSortFilter.setVisibility(View.VISIBLE);
-        searchSortFilter.setFilterType(SortFilter.TYPE_ADVANCED);
         searchSortFilter.getSortFilterHorizontalScrollView().setScrollX(0);
         searchSortFilter.addItem((ArrayList<SortFilterItem>) items);
-        searchSortFilter.getTextView().setText(getString(R.string.filter));
-        searchSortFilter.setIndicatorCounter(getSortFilterIndicatorCounter());
+        searchSortFilter.getTextView().setText(getString(R.string.search_filter));
         searchSortFilter.setParentListener(this::openBottomSheetFilterRevamp);
         setSortFilterNewNotification(items);
     }
