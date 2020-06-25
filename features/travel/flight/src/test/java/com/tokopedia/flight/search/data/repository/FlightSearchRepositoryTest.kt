@@ -4,7 +4,7 @@ package com.tokopedia.flight.search.data.repository
 import com.tokopedia.flight.search.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.search.data.api.single.FlightSearchDataCloudSource
 import com.tokopedia.flight.search.data.api.single.response.Meta
-import com.tokopedia.flight.search.data.cache.FlightSearchDataCacheSource
+import com.tokopedia.flight.searchV4.data.cache.FlightSearchDataCacheSource
 import com.tokopedia.flight.search.data.db.*
 import com.tokopedia.flight.search.data.repository.mapper.FlightSearchMapper
 import com.tokopedia.flight.search.data.repository.util.createCombine

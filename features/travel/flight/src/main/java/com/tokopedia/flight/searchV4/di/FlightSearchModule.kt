@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flight.R
-import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.data.cloud.FlightSearchDataCloudSource
+import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
