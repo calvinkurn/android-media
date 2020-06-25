@@ -440,13 +440,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     progressDialog?.dismiss()
                     swipeRefreshLayout?.isRefreshing = false
                     handleAtcError(it)
-//                    view?.let { v ->
-//                        var message = it.errorMessage
-//                        if (message.isBlank()) {
-//                            message = ErrorHandler.getErrorMessage(context, it.throwable)
-//                        }
-//                        Toaster.make(v, message, type = Toaster.TYPE_ERROR)
-//                    }
                 }
                 is OccGlobalEvent.AtcSuccess -> {
                     progressDialog?.dismiss()
