@@ -431,4 +431,7 @@ Anda di sini.</string>
     <string name="popup_selesai_cancel_btn">Kembali</string>
     <string name="title_other_reason">Lainnya</string>
     <string name="error_note_empty">Catatan harus diisi</string>
+
+    <string name="msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
 </resources>
