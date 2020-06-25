@@ -348,7 +348,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun setListeners() {
-        search_input_view.searchTextView.setText(searchKeyword)
+        if(GlobalConfig.isSellerApp()) {
+            if(searchKeyword.isNotBlank()) {
+                search_input_view.searchTextView.setText(searchKeyword)
+                search_input_view.searchTextView.postDelayed({
+                    search_input_view.searchTextView.text?.length?.let { search_input_view.searchTextView.setSelection(it) }
+                }, 200)
+            }
+        }
         search_input_view?.setListener(this)
         search_input_view?.setResetListener(this)
         search_input_view?.searchTextView?.setOnClickListener {
