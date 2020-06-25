@@ -74,11 +74,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
     public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_CHUCK_ENABLED = "is_enable";
-    public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
-    public static final String SP_REACT_ENABLE_SHAKE = "SP_REACT_ENABLE_SHAKE";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
-    public static final String IS_ENABLE_SHAKE_REACT = "IS_ENABLE_SHAKE_REACT";
-    public static final String RN_DEV_LOGGER = "rn_dev_logger";
     public static final String REMOTE_CONFIG_PREFIX = "remote_config_prefix";
     private static final String IP_GROUPCHAT = "ip_groupchat";
     private static final String LOG_GROUPCHAT = "log_groupchat";
@@ -93,12 +89,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView resetOnBoarding;
     private TextView testOnBoarding;
     private TextView vForceCrash;
-    private TextView vDevOptionRN;
     private TextView reviewNotifBtn;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
-    private ToggleButton toggleReactDeveloperMode;
-    private ToggleButton toggleReactEnableDeveloperOptions;
     private ToggleButton toggleTimberDevOption;
     private Spinner spinnerEnvironmentChooser;
 
@@ -200,7 +193,6 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private void setupView() {
         vForceCrash = findViewById(R.id.force_crash);
-        vDevOptionRN = findViewById(R.id.rn_dev_options);
 
         resetOnBoarding = findViewById(R.id.reset_onboarding);
         testOnBoarding = findViewById(R.id.test_onboarding);
@@ -236,10 +228,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
 
-        toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
-        toggleReactEnableDeveloperOptions = findViewById(R.id.toggle_reactnative_dev_options);
-        toggleReactEnableDeveloperOptions.setChecked(true);
-
         toggleTimberDevOption = findViewById(R.id.toggle_timber_dev_options);
         toggleTimberDevOption.setChecked(false);
 
@@ -268,8 +256,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
-
-        validateIfSellerapp();
     }
 
     private void initListener() {
@@ -283,57 +269,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             throw new RuntimeException("Throw Runtime Exception");
         });
 
-        vDevOptionRN.setOnClickListener(v -> {
-            if (!GlobalConfig.isSellerApp()) {
-                RouteManager.route(this,
-                        ApplinkConst.SETTING_DEVELOPER_OPTIONS
-                                .replace("{type}", RN_DEV_LOGGER)
-                );
-            }
-        });
-
         resetOnBoarding.setOnClickListener(v -> {
             userSession.setFirstTimeUser(true);
             getSharedPreferences(CACHE_FREE_RETURN).edit().clear().apply();
             Toast.makeText(this, "Reset Onboarding", Toast.LENGTH_SHORT).show();
-        });
-
-        SharedPreferences rnSharedPref = getSharedPreferences(SP_REACT_DEVELOPMENT_MODE);
-        if (rnSharedPref.contains(IS_RELEASE_MODE)) {
-            boolean stateReleaseMode = rnSharedPref.getBoolean(IS_RELEASE_MODE, false);
-            toggleReactDeveloperMode.setChecked(stateReleaseMode);
-        }
-
-        toggleReactDeveloperMode.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            SharedPreferences.Editor editor = rnSharedPref.edit();
-            if (isChecked) {
-                Toast.makeText(this, "React Native set to released mode", Toast.LENGTH_SHORT).show();
-                editor.putBoolean(IS_RELEASE_MODE, true).apply();
-            } else {
-                Toast.makeText(this, "React Native set to development mode", Toast.LENGTH_SHORT).show();
-                editor.putBoolean(IS_RELEASE_MODE, false).apply();
-            }
-        });
-
-
-
-        SharedPreferences rnShakeReact = getSharedPreferences(SP_REACT_ENABLE_SHAKE);
-        if (rnShakeReact.contains(IS_ENABLE_SHAKE_REACT)) {
-            boolean stateReleaseMode = rnShakeReact.getBoolean(IS_ENABLE_SHAKE_REACT, false);
-            toggleReactEnableDeveloperOptions.setChecked(stateReleaseMode);
-        }
-
-        toggleReactEnableDeveloperOptions.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            SharedPreferences.Editor editor = rnShakeReact.edit();
-            if (isChecked) {
-                Toast.makeText(this, "RN Dev Options is disabled", Toast.LENGTH_SHORT).show();
-                editor.putBoolean(IS_ENABLE_SHAKE_REACT, true);
-                editor.apply();
-            } else {
-                Toast.makeText(this, "RN Dev Options is enabled", Toast.LENGTH_SHORT).show();
-                editor.putBoolean(IS_ENABLE_SHAKE_REACT, false);
-                editor.apply();
-            }
         });
 
         toggleTimberDevOption.setOnCheckedChangeListener((compoundButton, isChecked) -> {
@@ -616,12 +555,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         SharedPreferences.Editor editor = groupChatSf.edit();
         editor.putBoolean(LOG_GROUPCHAT, check);
         editor.apply();
-    }
-
-    private void validateIfSellerapp() {
-        if (GlobalConfig.isSellerApp() && vDevOptionRN != null) {
-            vDevOptionRN.setVisibility(View.GONE);
-        }
     }
 
     private SharedPreferences getSharedPreferences(String name) {

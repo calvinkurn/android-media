@@ -3,11 +3,6 @@
 
     <application>
         <activity
-            android:name=".presentation.activity.ReactNativeDeveloperOptionsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Base.Theme"
-            android:label="@string/react_native_logger_title" />
-        <activity
             android:name=".presentation.activity.DeveloperOptionActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden"
