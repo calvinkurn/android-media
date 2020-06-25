@@ -11,11 +11,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
@@ -24,6 +23,7 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSchedulePresenter
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
@@ -256,16 +256,16 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(this, throwable)
-        ToasterError.make(findViewById(android.R.id.content),
-                message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again)) { onSaveButtonClicked() }.show()
+        Toaster.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            onSaveButtonClicked()
+        })
     }
 
     private fun showErrorMessage(throwable: Throwable, retryHandler: View.OnClickListener) {
         val message = ErrorHandler.getErrorMessage(this, throwable)
-        ToasterError.make(findViewById(android.R.id.content),
-                message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler).show()
+        Toaster.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler)
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

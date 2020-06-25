@@ -4,34 +4,44 @@ import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.home.account.BuildConfig
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
-import java.net.URLEncoder
+import timber.log.Timber
 
 object AccountHomeErrorHandler {
     @JvmStatic
     fun getExceptionMessage(t: Throwable): String {
-        return if (t is ResponseV4ErrorException && !TextUtils.isEmpty(t.errorList.firstOrNull())) {
-            t.errorList.firstOrNull() ?: t.localizedMessage
-        } else {
-            t.localizedMessage
+        return try {
+            if (t is ResponseV4ErrorException && !TextUtils.isEmpty(t.errorList.firstOrNull())) {
+                t.errorList.firstOrNull() ?: t.localizedMessage
+            } else if(t.localizedMessage != null){
+                t.localizedMessage
+            } else {
+                t.toString()
+            }
+        }
+        catch (e: Exception){
+            ""
         }
     }
 
     @JvmStatic
     fun logExceptionToCrashlytics(t: Throwable, userId: String, email:String, errorCode:String) {
-        if (!BuildConfig.DEBUG) {
-            val errorMessage = String.format(
-                    "\"Error account home.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\",\"%s\"",
-                    userId,
-                    email,
-                    AccountHomeErrorHandler.getExceptionMessage(t),
-                    errorCode)
-            val exception = AccountHomeException(errorMessage, t)
+        val errorMessage = String.format(
+                "userId='%s';email='%s';error_msg='%s';error_code='%s'",
+                userId,
+                email,
+                getExceptionMessage(t),
+                errorCode)
+        val exception = AccountHomeException(errorMessage, t)
 
+
+        if (!BuildConfig.DEBUG) {
             try {
                 Crashlytics.logException(exception)
-            } catch (e: IllegalStateException) {
-                e.printStackTrace()
+            } catch (exception: Exception) {
+                Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render C;$errorMessage;'$exception'")
             }
+        } else {
+            Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';$errorMessage")
         }
     }
 }

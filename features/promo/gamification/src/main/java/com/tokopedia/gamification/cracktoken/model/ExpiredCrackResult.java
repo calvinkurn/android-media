@@ -21,20 +21,20 @@ public class ExpiredCrackResult extends CrackResultEntity {
 
     public ExpiredCrackResult(Context context, ResultStatusEntity crackResultStatus) {
 
-        setBenefitLabel(context.getString(R.string.expired_reward_title));
+        setBenefitLabel(context.getString(com.tokopedia.gamification.R.string.expired_reward_title));
 
         List<CrackBenefitEntity> crackBenefits = new ArrayList<>();
         CrackBenefitEntity crackBenefit = new CrackBenefitEntity();
-        crackBenefit.setText(context.getString(R.string.expired_reward_message));
-        crackBenefit.setColor(context.getString(R.string.expired_reward_color));
-        crackBenefit.setSize(context.getString(R.string.expired_reward_size));
+        crackBenefit.setText(context.getString(com.tokopedia.gamification.R.string.expired_reward_message));
+        crackBenefit.setColor(context.getString(com.tokopedia.gamification.R.string.expired_reward_color));
+        crackBenefit.setSize(context.getString(com.tokopedia.gamification.R.string.expired_reward_size));
         crackBenefits.add(crackBenefit);
 
         Bitmap errorBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.image_error_crack_result_expired);
+                R.drawable.gf_image_error_crack_result_expired);
 
         CrackButtonEntity returnButton = new CrackButtonEntity();
-        returnButton.setTitle(context.getString(R.string.ok_button));
+        returnButton.setTitle(context.getString(com.tokopedia.gamification.R.string.ok_button));
         returnButton.setType(CrackResultEntity.TYPE_BTN_DISMISS);
 
         setBenefits(crackBenefits);

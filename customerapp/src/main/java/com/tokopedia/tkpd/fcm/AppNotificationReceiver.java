@@ -29,6 +29,8 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     private Context mContext;
     private ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
 
+    String ARG_NOTIFICATION_ISPROMO = "ispromo";
+
     public AppNotificationReceiver() {
 
     }
@@ -57,7 +59,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     }
 
     public void onNotificationReceived(String from, Bundle bundle) {
-        if (bundle.containsKey(Constants.ARG_NOTIFICATION_ISPROMO)) {
+        if (bundle.containsKey(ARG_NOTIFICATION_ISPROMO)) {
             bundle.putString(Constants.KEY_ORIGIN, Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL);
         }
 

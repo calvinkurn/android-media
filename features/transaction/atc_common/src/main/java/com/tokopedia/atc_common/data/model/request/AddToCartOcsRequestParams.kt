@@ -38,5 +38,10 @@ data class AddToCartOcsRequestParams(
         var isTradeIn: Boolean = false,
 
         @SerializedName("shipping_price")
-        var shippingPrice: Int = 0
+        var shippingPrice: Int = 0,
+
+        // appflyer analytics data
+        var productName: String = "",
+        var category: String = "",
+        var price: String = ""
 )

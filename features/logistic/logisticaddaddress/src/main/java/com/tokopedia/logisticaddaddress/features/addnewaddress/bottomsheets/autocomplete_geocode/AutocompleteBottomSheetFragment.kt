@@ -11,16 +11,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FLOW
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
-import com.tokopedia.logisticaddaddress.utils.rxEditText
-import com.tokopedia.logisticaddaddress.utils.toCompositeSubs
+import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticdata.util.rxEditText
+import com.tokopedia.logisticdata.util.toCompositeSubs
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -46,6 +47,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var icCloseBtn: ImageView
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
+    private var isFullFlow: Boolean = true
+    private var isLogisticLabel: Boolean = true
 
     @Inject
     lateinit var presenter: AutocompleteBottomSheetPresenter
@@ -56,6 +59,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
             currentLat = it.getDouble(CURRENT_LAT, defaultLat)
             currentLong = it.getDouble(CURRENT_LONG, defaultLong)
             currentSearch = it.getString(CURRENT_SEARCH, "")
+            isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
+            isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
         }
     }
 
@@ -132,7 +137,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
         etSearch.run {
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi(true)
+                AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow, isLogisticLabel)
             }
             rxEditText(this).subscribe(object : Subscriber<String>() {
                 override fun onNext(t: String) {
@@ -185,7 +190,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress(isFullFlow, isLogisticLabel)
             hideKeyboardAndDismiss()
         }
     }
@@ -250,11 +255,11 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
             actionListener?.onGetPlaceId(placeId)
             hideKeyboardAndDismiss()
         }
-        AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(eventLabel = LOGISTIC_LABEL)
+        AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(isFullFlow, isLogisticLabel)
     }
 
     private fun showLocationInfoBottomSheet() {
-        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow = true)
+        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow, isLogisticLabel)
         fragmentManager?.run {
             locationInfoBottomSheetFragment.show(this, "")
         }
@@ -285,12 +290,13 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         private const val CURRENT_LONG = "CURRENT_LONG"
         private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 
-        fun newInstance(currentLat: Double, currentLong: Double, currentSearch: String): AutocompleteBottomSheetFragment {
+        fun newInstance(currentLat: Double, currentLong: Double, currentSearch: String, isLogisticLabel: Boolean): AutocompleteBottomSheetFragment {
             return AutocompleteBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putDouble(CURRENT_LAT, currentLat)
                     putDouble(CURRENT_LONG, currentLong)
                     putString(CURRENT_SEARCH, currentSearch)
+                    putBoolean(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
                 }
             }
         }

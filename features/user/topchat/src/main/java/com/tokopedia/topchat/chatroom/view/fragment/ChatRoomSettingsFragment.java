@@ -21,14 +21,12 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel;
-import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule;
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent;
@@ -37,6 +35,7 @@ import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.TopChatInternalRouter;
 import com.tokopedia.topchat.common.util.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 
 import javax.inject.Inject;
 
@@ -299,9 +298,9 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     public void setPersonalToast(boolean enable) {
         if (shouldShowToast) {
             if (!enable) {
-                ToasterNormal.show(getActivity(), String.format(getString(R.string.enable_chat_personal_settings), senderName));
+                Toaster.INSTANCE.make(getView(), String.format(getString(R.string.enable_chat_personal_settings), senderName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
             } else {
-                ToasterNormal.show(getActivity(), String.format(getString(R.string.disable_chat_personal_settings), senderName));
+                Toaster.INSTANCE.make(getView(), String.format(getString(R.string.disable_chat_personal_settings), senderName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
             }
         }
     }
@@ -311,11 +310,11 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     public void setPromotionToast(boolean enable) {
         if (shouldShowToast) {
             if (enable && this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked()) {
-                ToasterError.make(getView(), getString(R.string.enable_chat_promotion_blocked_settings), BaseToaster.LENGTH_LONG).show();
+                Toaster.INSTANCE.make(getView(), getString(R.string.enable_chat_promotion_blocked_settings), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
             } else if (!enable) {
-                ToasterNormal.show(getActivity(), String.format(getString(R.string.enable_chat_promotion_settings), senderName));
+                Toaster.INSTANCE.make(getView(), String.format(getString(R.string.enable_chat_promotion_settings), senderName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
             } else {
-                ToasterNormal.show(getActivity(), String.format(getString(R.string.disable_chat_promotion_settings), senderName));
+                Toaster.INSTANCE.make(getView(), String.format(getString(R.string.disable_chat_promotion_settings), senderName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
             }
         }
     }
@@ -334,7 +333,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     @Override
     public void showErrorMessage() {
         if (getContext() != null) {
-            ToasterNormal.show(getActivity(), getErrorChatMessage());
+            Toaster.INSTANCE.make(getView(), getErrorChatMessage(), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
         }
     }
 

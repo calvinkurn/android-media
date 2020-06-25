@@ -3,14 +3,14 @@ package com.tokopedia.flight.dashboard.view.presenter;
 import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 
 /**
  * Created by alvarisi on 10/26/17.
  */
 
 public interface FlightSelectPassengerView extends CustomerView {
-    FlightPassengerViewModel getCurrentPassengerViewModel();
+    FlightPassengerModel getCurrentPassengerViewModel();
 
     void showTotalPassengerErrorMessage(@StringRes int resId);
 
@@ -20,7 +20,7 @@ public interface FlightSelectPassengerView extends CustomerView {
 
     void showAdultShouldAtleastOneErrorMessage(@StringRes int resId);
 
-    void renderPassengerView(FlightPassengerViewModel passengerPassData);
+    void renderPassengerView(FlightPassengerModel passengerPassData);
 
-    void actionNavigateBack(FlightPassengerViewModel currentPassengerPassData);
+    void actionNavigateBack(FlightPassengerModel currentPassengerPassData);
 }

@@ -1,93 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.ContainerUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/dp_16"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_10">
-    <FrameLayout
+    app:container_color="GREEN">
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ImageView
-            android:layout_gravity="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_atc_done_pattern"
-            />
-    </FrameLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        app:cardCornerRadius="@dimen/dp_10">
 
-        android:padding="@dimen/dp_8">
-
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_4">
-
+            android:orientation="vertical"
+            android:padding="@dimen/dp_8">
             <ImageView
                 android:id="@+id/image_view_added_product"
-                android:layout_width="@dimen/dp_40"
+                android:layout_width="@dimen/dp_64"
+                android:layout_height="@dimen/dp_64"
                 android:src="@drawable/ic_logistic_som_tokocabang_normal"
-                android:layout_height="@dimen/dp_40"
-                android:layout_margin="@dimen/dp_8"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_view_added_product"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:orientation="vertical">
+                android:singleLine="true"
+                android:text="@string/atc_done_add_product_success"
+                android:textColor="@color/Neutral_N700"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                app:typographyType="heading_5"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_view_added_product"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textColor="@color/Neutral_N700"
-                    android:id="@+id/text_view_added_product"
-                    android:text="@string/atc_done_add_product_success"
-                    app:typographyType="heading_4" />
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/button_go_to_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/atc_done_see_cart"
+                android:textAllCaps="false"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                app:unifyButtonSize="micro"
+                app:unifyButtonVariant="ghost"
+                app:unifyButtonType="main"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_added_product"
+                app:layout_constraintStart_toEndOf="@+id/image_view_added_product"/>
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/text_view_product_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    app:typographyType="body_2"
-                    android:textColor="@color/Neutral_N700"
-                    tools:text="Blus Lengan pendek Wanita gaya" />
 
-                <ImageView
-                    android:id="@+id/img_free_ongkir"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_20"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:adjustViewBounds="true"
-                    tools:visibility="visible"
-                    android:scaleType="fitXY" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <com.tokopedia.design.component.ButtonCompat
-            android:layout_marginTop="@dimen/dp_5"
-            android:id="@+id/button_go_to_cart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/atc_done_see_cart"
-            android:textAllCaps="false"
-            android:gravity="center"
-            app:buttonCompatSize="medium"
-            app:buttonCompatType="primary"
-            />
-
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.ContainerUnify>

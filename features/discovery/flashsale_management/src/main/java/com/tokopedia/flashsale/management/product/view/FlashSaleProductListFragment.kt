@@ -4,11 +4,6 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -19,7 +14,12 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.AbstractionRouter
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -27,9 +27,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.data.FlashSaleCampaignStatusIdTypeDef
@@ -46,6 +43,7 @@ import com.tokopedia.flashsale.management.product.data.GetMojitoPostProduct
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
 import com.tokopedia.flashsale.management.tracking.FlashSaleTracking
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flash_sale_eligible_product.*
 import javax.inject.Inject
 
@@ -156,10 +154,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 },
                 onError = {
                     vgBottom.visibility = View.GONE
-                    ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
-                            .setAction(R.string.retry_label) {
-                                loadSellerStatus()
-                            }.show()
+                    Toaster.make(view!!, ErrorHandler.getErrorMessage(context, it),
+                            Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(R.string.retry_label), View.OnClickListener { loadSellerStatus() })
                 })
     }
 
@@ -206,16 +202,15 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 onSuccess = {
                     hideProgressDialog()
                     activity?.run {
-                        ToasterNormal.showClose(this, it.message)
+                        Toaster.make(view!!, it.message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                     }
                     loadInitialData()
                 },
                 onError = {
                     hideProgressDialog()
-                    ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
-                            .setAction(R.string.retry_label) {
-                                onClickToUpdateSubmission()
-                            }.show()
+                    Toaster.make(view!!, ErrorHandler.getErrorMessage(context, it),
+                            Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                            getString(R.string.retry_label), View.OnClickListener { onClickToUpdateSubmission() })
                 })
     }
 
@@ -224,10 +219,9 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 onSuccess = { onSuccessLoadTnc(it) },
                 onError = {
                     tvTnc.text = getString(R.string.with_click_button_you_agree_with_tnc)
-                    ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
-                            .setAction(R.string.retry_label) {
-                                loadCampaignInfoAndTnc()
-                            }.show()
+                    Toaster.make(view!!, ErrorHandler.getErrorMessage(context, it),
+                            Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                            getString(R.string.retry_label), View.OnClickListener { loadCampaignInfoAndTnc() })
                 })
     }
 

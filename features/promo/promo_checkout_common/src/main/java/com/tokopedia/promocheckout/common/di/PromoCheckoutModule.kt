@@ -21,6 +21,7 @@ import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 
+
 @Module
 class PromoCheckoutModule {
 
@@ -91,11 +92,9 @@ class PromoCheckoutModule {
         return (context as NetworkRouter)
     }
 
-    @PromoCheckoutQualifier
     @Provides
     fun provideUserSession(@ApplicationContext context: Context) : UserSession {
         val userSession = UserSession(context)
         return userSession
     }
-
 }

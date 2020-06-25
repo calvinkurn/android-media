@@ -23,8 +23,8 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NA
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_PM_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_PM_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.KEY_SHOP_TYPE
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.KEY_USER_ID
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.iris.util.KEY_USER_ID
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.TrackingConstant.ADS_PROMOTION
 import com.tokopedia.sellerhome.analytic.TrackingConstant.BUSINESS_UNIT

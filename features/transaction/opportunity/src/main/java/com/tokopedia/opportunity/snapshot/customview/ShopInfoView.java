@@ -11,12 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopBadge;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotFragmentView;
 
@@ -98,7 +97,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, SnapShotFragmentVi
                 getContext().getString(com.tokopedia.core2.R.string.title_poin)));
         if (data.getShopInfo().getShopStats().getShopBadge() != null) generateMedal(data);
         ImageHandler.loadImageCircle2(getContext(), ivShopAva, data.getShopInfo().getShopAvatar(),
-                com.tokopedia.core2.R.drawable.ic_default_shop_ava);
+                R.drawable.ic_default_shop_ava);
         LuckyShopImage.loadImage(ivLuckyShop, data.getShopInfo().getShopLucky());
 
         ivBtnFav.setVisibility(data.getShopInfo().getShopIsOwner() == 1 ? GONE : VISIBLE);

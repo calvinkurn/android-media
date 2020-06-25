@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_event_pdp_how_to_get_there_number"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:background="@drawable/background_event_pdp_cirle"
+        android:layout_alignParentLeft="true"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_toRightOf="@+id/tg_event_pdp_how_to_get_there_number"
+        android:id="@+id/tg_event_pdp_how_to_get_there_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Dari Hotel"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Neutral_N400"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        />
+
+</RelativeLayout>

@@ -24,10 +24,10 @@ public class DeeplinkNotification extends BasePromoNotification {
     @Override
     protected void configureNotificationData(Bundle data) {
         mNotificationPass.mIntent = NotificationUtils.configurePromoIntent(
-                new Intent(mContext, TkpdCoreRouter.getDeeplinkClass(mContext)),
+                new Intent(mContext, ((TkpdCoreRouter) mContext.getApplicationContext()).getDeeplinkClass()),
                 data
         );
-        mNotificationPass.classParentStack = TkpdCoreRouter.getDeeplinkClass(mContext);
+        mNotificationPass.classParentStack = ((TkpdCoreRouter) mContext.getApplicationContext()).getDeeplinkClass();
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, "");
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");

@@ -54,6 +54,5 @@ object RechargeRecommendationTracking : BaseTracking() {
             id = model.contentID,
             creative = model.iconURL,
             name = "$RECHARGE_RECOMMENDATION_NAME - ${model.applink}",
-            creativeUrl = model.iconURL,
             position = "none/other")
 }

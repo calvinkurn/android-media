@@ -6,7 +6,7 @@
         android:angle="270"
         />
     <corners
-        android:topRightRadius="@dimen/dp_8"
-        android:topLeftRadius="@dimen/dp_8"
+        android:topRightRadius="@dimen/layout_lvl1"
+        android:topLeftRadius="@dimen/layout_lvl1"
         />
 </shape>

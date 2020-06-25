@@ -1,24 +1,19 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointScope
-import com.tokopedia.tokopoints.view.model.*
+import com.tokopedia.tokopoints.view.model.ApplyCouponBaseEntity
+import com.tokopedia.tokopoints.view.model.CouponDetailOuter
+import com.tokopedia.tokopoints.view.model.CouponSwipeUpdateOuter
+import com.tokopedia.tokopoints.view.model.PhoneVerificationResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.NetworkDetector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rx.Subscriber
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
-import javax.inject.Provider
 
 @TokoPointScope
 class CouponDetailRepository @Inject constructor(private val repository: GraphqlRepository,private val map : Map<String, String>) {

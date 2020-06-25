@@ -6,7 +6,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
-import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.source.CloudEditUserInfoSource;
 import com.tokopedia.profilecompletion.data.source.CloudGetUserInfoSource;
 

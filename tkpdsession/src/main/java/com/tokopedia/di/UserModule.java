@@ -6,18 +6,19 @@ import android.text.TextUtils;
 
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
-import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.UserErrorInterceptor;
 import com.tokopedia.network.UserErrorResponse;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
@@ -69,11 +70,11 @@ public class UserModule {
     @Provides
     AccountsService provideBearerAccountsService(@ApplicationContext Context context,
                                                  SessionHandler sessionHandler) {
+        UserSessionInterface userSession = new UserSession(context);
         Bundle bundle = new Bundle();
         String authKey = "";
-        if (!TextUtils.isEmpty(sessionHandler.getAccessToken(context))) {
-            authKey = sessionHandler.getTokenType(context) + " " + sessionHandler
-                    .getAccessToken(context);
+        if (!TextUtils.isEmpty(userSession.getAccessToken())) {
+            authKey = sessionHandler.getTokenType(context) + " " + userSession.getAccessToken();
         }
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         return new AccountsService(bundle);
@@ -98,9 +99,10 @@ public class UserModule {
     @Named(WS_SERVICE)
     @Provides
     AccountsService provideWsAccountsService(@ApplicationContext Context context, SessionHandler sessionHandler) {
+        UserSessionInterface userSession = new UserSession(context);
         Bundle bundle = new Bundle();
         String authKey;
-        authKey = sessionHandler.getTokenType(context) + " " + sessionHandler.getAccessToken(context);
+        authKey = sessionHandler.getTokenType(context) + " " + userSession.getAccessToken();
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);
         return new AccountsService(bundle);

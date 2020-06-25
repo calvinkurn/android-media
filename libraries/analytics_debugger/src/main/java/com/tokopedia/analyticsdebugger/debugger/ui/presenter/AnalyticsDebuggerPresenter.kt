@@ -40,12 +40,16 @@ class AnalyticsDebuggerPresenter(private val getGtmLogUseCase: GetGtmLogUseCase,
     }
 
     override fun search(text: String) {
-        setRequestParams(page = 0, keyword = text)
+        page = 0
+        keyword = text
+        setRequestParams(page, keyword)
         getGtmLogUseCase.execute(requestParams, reloadSubscriber())
     }
 
     override fun reloadData() {
-        setRequestParams(page = 0, keyword = "")
+        page = 0
+        keyword = ""
+        setRequestParams(page, keyword)
         getGtmLogUseCase.execute(requestParams, reloadSubscriber())
     }
 

@@ -7,11 +7,4 @@
         <item>Ajukan</item>
         <item>Jual</item>
     </string-array>
-    <integer-array name="section_icon">
-        <item>@drawable/ic_beli</item>
-        <item>@drawable/ic_bayar</item>
-        <item>@drawable/ic_pesan</item>
-        <item>@drawable/ic_ajukan</item>
-        <item>@drawable/ic_jual</item>
-    </integer-array>
 </resources>

@@ -45,7 +45,7 @@ public class FileUtils {
 
     @NonNull
     private static File getTkpdCacheDirectory() {
-        String tkpdFolderPath = FileUtils.getFolderPathForUpload();
+        String tkpdFolderPath = getFolderPathForUpload();
 
         File tkpdRootdirectory = new File(tkpdFolderPath);
         if (!tkpdRootdirectory.exists()) {
@@ -70,7 +70,7 @@ public class FileUtils {
      */
     public static File writeImageToTkpdPath(byte[] buffer) {
         if (buffer != null) {
-            String fileName = FileUtils.generateUniqueFileName();
+            String fileName = generateUniqueFileName();
             File photo = getTkpdImageCacheFile(fileName);
             if (photo.exists()) {
                 // photo already exist in cache

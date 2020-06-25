@@ -34,7 +34,7 @@ class ChatroomViewModel(
         return (headerModel.isGold || headerModel.isOfficial) && headerModel.badge.isNotEmpty()
     }
 
-    fun getHeaderName(): CharSequence {
+    fun getHeaderName(): String {
         return headerModel.name
     }
 

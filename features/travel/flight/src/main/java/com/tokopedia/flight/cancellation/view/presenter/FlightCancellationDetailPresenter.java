@@ -2,8 +2,8 @@ package com.tokopedia.flight.cancellation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationDetailContract;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.List;
@@ -27,9 +27,9 @@ public class FlightCancellationDetailPresenter extends BaseDaggerPresenter<Fligh
     }
 
     private void addAirportDetailsToPassengers() {
-        FlightCancellationListViewModel cancellationListViewModelList = getView().getFlightCancellationList();
+        FlightCancellationListModel cancellationListViewModelList = getView().getFlightCancellationList();
 
-        for (FlightCancellationListPassengerViewModel passengerItem : cancellationListViewModelList.getCancellations().getPassengers()) {
+        for (FlightCancellationListPassengerModel passengerItem : cancellationListViewModelList.getCancellations().getPassengers()) {
             passengerItem.setDepartureAiportId(getDepartureAirportId(cancellationListViewModelList.getCancellations().getJourneys(), passengerItem.getJourneyId()));
             passengerItem.setArrivalAirportId(getArrivalAirportId(cancellationListViewModelList.getCancellations().getJourneys(), passengerItem.getJourneyId()));
         }

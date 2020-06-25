@@ -1,9 +1,5 @@
 package com.tokopedia.flight.common.domain;
 
-import com.tokopedia.flight.bookingV2.data.cloud.entity.CartEntity;
-import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest;
-import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
-import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
@@ -13,13 +9,7 @@ import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRe
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.domain.FlightOrderRepository;
-import com.tokopedia.flight.review.data.model.AttributesVoucher;
-import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
-import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
-import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
-import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,18 +25,6 @@ public interface FlightRepository extends FlightOrderRepository {
 
     Observable<FlightClassEntity> getFlightClassById(int classId);
 
-    Observable<CartEntity> addCart(FlightCartRequest request, String idEmpotencyKey);
-
-    Observable<AddToCartEntity> addCartV11(FlightCartRequest request, String idEmpotencyKey);
-
-    Observable<GetCartEntity> getCart(String cartId);
-
-    Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString);
-
-    Observable<DataResponseVerify> verifyBooking(VerifyRequest verifyRequest);
-
-    Observable<FlightCheckoutEntity> checkout(FlightCheckoutRequest request);
-
     Observable<OrderEntity> getOrderEntity(String id);
 
     Observable<Map<String, List<Passenger>>> getCancelablePassenger(String invoiceId);
@@ -57,5 +35,4 @@ public interface FlightRepository extends FlightOrderRepository {
 
     Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request);
 
-    Observable<Boolean> cancelVoucherApply();
 }

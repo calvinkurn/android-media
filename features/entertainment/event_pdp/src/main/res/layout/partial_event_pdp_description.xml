@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_event_pdp_title_small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="Johor Baru, Malaysia" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_event_pdp_title_big"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:textColor="@color/Neutral_N700"
+            app:typographyType="heading_1"
+            app:typographyWeight="bold"
+            tools:text="Legoland Malaysia in Johor Bahru Admission Ticket" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:nestedScrollingEnabled="false"
+            android:id="@+id/rv_event_pdp_highlight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl4" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/shimmering"
+        layout="@layout/partial_event_pdp_description_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
+</FrameLayout>
