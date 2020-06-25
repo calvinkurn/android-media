@@ -22,7 +22,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyBoolean
 
 @ExperimentalCoroutinesApi
 class CreateMerchantVoucherStepsViewModelTest {
@@ -168,7 +167,7 @@ class CreateMerchantVoucherStepsViewModelTest {
     }
 
     @Test
-    fun `success initiate edit duplicate voucher`() {
+    fun `success initiate edit duplicate voucher`() = runBlocking {
         val dummySuccessBasicInfo = ShopInfo()
         val dummySuccessInitiateVoucher = InitiateVoucherUiModel()
 
@@ -179,7 +178,7 @@ class CreateMerchantVoucherStepsViewModelTest {
             initiateVoucherUseCase.executeOnBackground()
         } returns dummySuccessInitiateVoucher
 
-        mViewModel.initiateEditDuplicateVoucher(anyBoolean())
+        mViewModel.initiateEditDuplicateVoucher()
 
         coVerify {
             basicShopInfoUseCase.executeOnBackground()
