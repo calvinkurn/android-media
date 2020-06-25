@@ -299,7 +299,7 @@ class LottieBottomNavbar : LinearLayout {
         iconList[newPosition].repeatCount = 0
         iconList[newPosition].setColorFilter(activeSelectedItemColor, PorterDuff.Mode.SRC_ATOP)
 
-        iconList[newPosition].speed = 2f
+        iconList[newPosition].speed = 1f
         iconList[newPosition].playAnimation()
 
         titleList[newPosition].setTextColor(activeSelectedItemColor)
