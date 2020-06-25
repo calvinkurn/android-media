@@ -22,6 +22,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceCartSho
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -381,7 +382,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             DisabledShopViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
                         .inflate(DisabledShopViewHolder.LAYOUT, parent, false)
-                return DisabledShopViewHolder(view)
+                return DisabledShopViewHolder(view, actionListener)
             }
             else -> throw RuntimeException("No view holder type found")
         }
@@ -838,14 +839,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 shipmentSellerCashbackModel = ShipmentSellerCashbackModel()
                 shipmentSellerCashbackModel?.let {
                     it.isVisible = true
-                    it.sellerCashback = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false)
+                    it.sellerCashback = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     cartDataList.add(++index, it)
                     notifyItemInserted(index)
                 }
             } else {
                 shipmentSellerCashbackModel?.let {
                     it.isVisible = true
-                    it.sellerCashback = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false)
+                    it.sellerCashback = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     val index = cartDataList.indexOf(it)
                     notifyItemChanged(index)
                 }
@@ -1074,5 +1075,15 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 notifyItemRemoved(0)
             }
         }
+    }
+
+    fun getItemCountBeforeCartItem(): Int {
+        var count = 0
+        cartDataList.forEach {
+            if (it is CartShopHolderData) return@forEach
+            count++
+        }
+
+        return count
     }
 }

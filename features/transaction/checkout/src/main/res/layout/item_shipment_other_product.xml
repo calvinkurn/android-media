@@ -47,7 +47,7 @@
             android:id="@+id/iv_expand_other_product"
             android:layout_width="@dimen/dp_10"
             android:layout_height="@dimen/dp_10"
-            android:src="@drawable/ic_down"
+            android:src="@drawable/checkout_module_ic_down"
             android:layout_toRightOf="@id/tv_expand_other_product"
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginStart="@dimen/dp_5"

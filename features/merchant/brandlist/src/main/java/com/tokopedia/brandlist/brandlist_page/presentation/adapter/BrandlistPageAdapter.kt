@@ -27,32 +27,31 @@ class BrandlistPageAdapter(
 
     private var recyclerView: RecyclerView? = null
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
-    private var isStickyChipsShowed = false
 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when (visitables[position].type(adapterTypeFactory)) {
-                    AllBrandViewHolder.LAYOUT -> ALL_BRAND_GRID_SPAN_COUNT
-                    else -> BRANDLIST_GRID_SPAN_COUNT
+                return try {
+                    return when (visitables[position].type(adapterTypeFactory)) {
+                        AllBrandViewHolder.LAYOUT -> ALL_BRAND_GRID_SPAN_COUNT
+                        else -> BRANDLIST_GRID_SPAN_COUNT
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                    BRANDLIST_GRID_SPAN_COUNT
                 }
             }
         }
     }
 
     fun initAdapter(recyclerViewLastState: Parcelable?) {
-        visitables.add(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(mutableListOf(), null, brandlistPageFragment))
-        visitables.add(POPULAR_BRAND_POSITION, PopularBrandViewModel(mutableListOf(), null, brandlistPageFragment))
-        visitables.add(NEW_BRAND_POSITION, NewBrandViewModel(mutableListOf(), null, brandlistPageFragment))
-        visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(brandlistPageFragment, 0, 1, recyclerViewLastState))
+        visitables.add(FEATURED_BRAND_POSITION, FeaturedBrandUiModel(mutableListOf(), null, brandlistPageFragment))
+        visitables.add(POPULAR_BRAND_POSITION, PopularBrandUiModel(mutableListOf(), null, brandlistPageFragment))
+        visitables.add(NEW_BRAND_POSITION, NewBrandUiModel(mutableListOf(), null, brandlistPageFragment))
+        visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderUiModel(brandlistPageFragment, 0, 1, 0, recyclerViewLastState))
     }
 
     fun getVisitables(): MutableList<Visitable<*>> {
         return visitables
-    }
-
-    fun getStickyChipsShowedStatus(): Boolean {
-        return isStickyChipsShowed
     }
 
     fun refreshSticky() {
@@ -98,7 +97,7 @@ class BrandlistPageAdapter(
 
     override fun bindSticky(viewHolder: RecyclerView.ViewHolder?) {
         if (viewHolder is AllBrandGroupHeaderViewHolder) {
-            (visitables.get(ALL_BRAND_GROUP_HEADER_POSITION) as? AllBrandGroupHeaderViewModel)?.let {
+            (visitables.get(ALL_BRAND_GROUP_HEADER_POSITION) as? AllBrandGroupHeaderUiModel)?.let {
                 viewHolder.bind(it)
             }
         }
@@ -112,9 +111,5 @@ class BrandlistPageAdapter(
         Handler().post {
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         }
-    }
-
-    override fun updateStickyStatus(isStickyShowed: Boolean) {
-        isStickyChipsShowed = isStickyShowed
     }
 }

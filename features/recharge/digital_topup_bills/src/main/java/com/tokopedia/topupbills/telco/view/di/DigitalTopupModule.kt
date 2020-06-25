@@ -22,5 +22,4 @@ class DigitalTopupModule {
     fun provideDigitalTopupAnalytics(): DigitalTopupAnalytics {
         return DigitalTopupAnalytics()
     }
-
 }

@@ -11,7 +11,7 @@ import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-
+const val RESCENTER_BUYER = "https://m.tokopedia.com/resolution-center/inbox/buyer"
 class StaticBuyerModelGenerator private constructor() {
 
     companion object {
@@ -61,7 +61,7 @@ class StaticBuyerModelGenerator private constructor() {
                 menu = context.getString(R.string.title_menu_buyer_complain)
                 menuDescription = context.getString(R.string.label_menu_buyer_complain)
                 count = accountModel?.notifications?.resolution?.buyer ?: 0
-                applink = ApplinkConst.RESCENTER_BUYER
+                applink = RESCENTER_BUYER
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_transaction)
             })

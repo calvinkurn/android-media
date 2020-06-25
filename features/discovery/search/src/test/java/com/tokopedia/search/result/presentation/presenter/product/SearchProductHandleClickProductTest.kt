@@ -5,10 +5,14 @@ import com.tokopedia.search.result.presentation.presenter.product.testinstance.t
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.topAdsImpressionUrl
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 
 internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixtures() {
+
+    private val position = 1
+    private val capturedProductItemViewModel = slot<ProductItemViewModel>()
 
     @Test
     fun `Handle onProductClick with null ProductItemViewModel`() {
@@ -35,22 +39,28 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             it.isTopAds = true
             it.topadsImpressionUrl = topAdsImpressionUrl
             it.topadsClickUrl = topAdsClickUrl
+            it.position = position
         }
-        val position = 0
 
         `When handle product click`(productItemViewModel, position)
 
         `Then verify view interaction for Top Ads Product`(productItemViewModel, position)
+        `Then verify position is correct`(productItemViewModel)
     }
 
     private fun `Then verify view interaction for Top Ads Product`(productItemViewModel: ProductItemViewModel, position: Int) {
         verify {
             productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsClickUrl)
-            productListView.sendTopAdsGTMTrackingProductClick(productItemViewModel, position)
+            productListView.sendTopAdsGTMTrackingProductClick(capture(capturedProductItemViewModel))
             productListView.routeToProductDetail(productItemViewModel, position)
         }
 
         confirmVerified(productListView)
+    }
+
+    private fun `Then verify position is correct`(productItemViewModel: ProductItemViewModel) {
+        val product = capturedProductItemViewModel.captured
+        assert(product.position == productItemViewModel.position)
     }
 
     @Test
@@ -62,7 +72,6 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             it.categoryID = 13
             it.isTopAds = false
         }
-        val position = 0
         val userId = "12345678"
 
         `Given user session data`(userId)

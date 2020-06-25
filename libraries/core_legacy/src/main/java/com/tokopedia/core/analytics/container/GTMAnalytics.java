@@ -802,6 +802,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         pushEventV5("openScreen", bundle, context);
+        iris.saveEvent(bundleToMap(bundle));
     }
 
     public void putNetworkSpeed(Bundle bundle) {

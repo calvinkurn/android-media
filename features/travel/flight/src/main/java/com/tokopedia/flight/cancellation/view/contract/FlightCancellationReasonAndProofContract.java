@@ -19,6 +19,8 @@ public interface FlightCancellationReasonAndProofContract {
 
         List<FlightCancellationAttachmentModel> getAttachments();
 
+        List<FlightCancellationAttachmentModel> getViewAttachments();
+
         void setAttachment(FlightCancellationAttachmentModel attachment, int position);
 
         void showRequiredMinimalOneAttachmentErrorMessage(int resId);
@@ -65,6 +67,8 @@ public interface FlightCancellationReasonAndProofContract {
         void initialize(List<FlightCancellationAttachmentModel> attachments);
 
         List<FlightCancellationAttachmentModel> buildAttachmentList();
+
+        List<FlightCancellationAttachmentModel> buildViewAttachmentList(int docType);
 
         void setNextButton();
 

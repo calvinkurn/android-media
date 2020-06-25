@@ -31,6 +31,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
@@ -110,9 +111,11 @@ final class ProductListPresenter
     private boolean hasLoadData = false;
     private boolean useRatingString = false;
     private String responseCode = "";
+    private int topAdsCount = 1;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
+    private List<InspirationCardViewModel> inspirationCardViewModel;
     private SuggestionViewModel suggestionViewModel = null;
     private RelatedViewModel relatedViewModel = null;
 
@@ -481,6 +484,7 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
         productList.addAll(list);
 
+        processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
 
         boolean isLastPage = isLastPage(searchProductModel.getSearchProduct());
@@ -519,6 +523,7 @@ final class ProductListPresenter
                     item.setPrice(topAds.getProduct().getPriceFormat());
                     item.setShopCity(topAds.getShop().getLocation());
                     item.setImageUrl(topAds.getProduct().getImage().getS_ecs());
+                    item.setImageUrl300(topAds.getProduct().getImage().getM_ecs());
                     item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
                     item.setWishlisted(topAds.getProduct().isWishlist());
                     item.setRatingString(useRatingString ? topAds.getProduct().getProductRatingFormat() : "");
@@ -532,8 +537,10 @@ final class ProductListPresenter
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     item.setFreeOngkirViewModel(mapFreeOngkir(topAds.getProduct().getFreeOngkir()));
+                    item.setPosition(topAdsCount);
                     list.add(i, item);
                     j++;
+                    topAdsCount++;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -925,6 +932,7 @@ final class ProductListPresenter
             }
         }
 
+        topAdsCount = 1;
         productList = convertToListOfVisitable(productViewModel);
         list.addAll(productList);
 
@@ -934,6 +942,9 @@ final class ProductListPresenter
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
         processInspirationCarouselPosition(searchParameter, list);
+
+        inspirationCardViewModel = productViewModel.getInspirationCardViewModel();
+        processInspirationCardPosition(searchParameter, list);
 
         if (isLastPage(searchProduct) && isShowBroadMatch()) {
             processSuggestionAndBroadMatch(list);
@@ -999,6 +1010,33 @@ final class ProductListPresenter
                 + "Gunakan <a href=\"" + liteUrl + "\">browser</a>";
 
         return new BannedProductsTickerViewModel(htmlErrorMessage);
+    }
+
+    private void processInspirationCardPosition(Map<String, Object> searchParameter, List<Visitable> list) {
+        if (inspirationCardViewModel.size() > 0) {
+            Iterator<InspirationCardViewModel> inspirationCardViewModelIterator = inspirationCardViewModel.iterator();
+
+            while(inspirationCardViewModelIterator.hasNext()) {
+                InspirationCardViewModel data = inspirationCardViewModelIterator.next();
+
+                if (data.getPosition() <= 0) {
+                    inspirationCardViewModelIterator.remove();
+                    continue;
+                }
+
+                if (data.getPosition() <= productList.size()) {
+                    try {
+                        Visitable product = productList.get(data.getPosition() - 1);
+                        list.add(list.indexOf(product) + 1, data);
+                        inspirationCardViewModelIterator.remove();
+                    }
+                    catch (Exception exception) {
+                        exception.printStackTrace();
+                        getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), exception);
+                    }
+                }
+            }
+        }
     }
 
     private void processInspirationCarouselPosition(Map<String, Object> searchParameter, List<Visitable> list) {
@@ -1345,12 +1383,12 @@ final class ProductListPresenter
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
+    public void onProductImpressed(ProductItemViewModel item) {
         if (getView() == null || item == null) return;
 
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
-            getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
+            getView().sendTopAdsGTMTrackingProductImpression(item);
         } else if (enableTrackingViewPort) {
             getView().sendProductImpressionTrackingEvent(item);
         }
@@ -1367,7 +1405,7 @@ final class ProductListPresenter
 
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
-            getView().sendTopAdsGTMTrackingProductClick(item, adapterPosition);
+            getView().sendTopAdsGTMTrackingProductClick(item);
         }
         else {
             getView().sendGTMTrackingProductClick(item, adapterPosition, getUserId());
