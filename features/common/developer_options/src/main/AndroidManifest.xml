@@ -15,8 +15,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/tokopedia_scheme"
-                    android:host="@string/host_devopt"
-                    android:pathPattern="@string/path_change_env_url"/>
+                    android:host="@string/host_setting"
+                    android:pathPrefix="@string/path_dev_opt"/>
             </intent-filter>
 
         </activity>

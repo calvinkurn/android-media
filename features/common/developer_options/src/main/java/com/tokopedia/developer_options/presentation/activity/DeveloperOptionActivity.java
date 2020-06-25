@@ -80,7 +80,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private static final String LOG_GROUPCHAT = "log_groupchat";
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
-    public static final String DEVELOPEROPTION = "developeroption";
+    public static final String CHANGEURL = "changeurl";
     public static final int DEFAULT_DELAY_UI_BLOCK = 500;
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
@@ -150,8 +150,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         if (GlobalConfig.isAllowDebuggingTools() && getIntent()!=null && getIntent().getData()!=null) {
             userSession = new UserSession(this);
+
             Uri uri = getIntent().getData();
-            if(uri.getHost().equals(DEVELOPEROPTION)) {
+            boolean isChangeUrlApplink
+                    = (uri.getPathSegments().size() == 3) && uri.getPathSegments().get(1).equals(CHANGEURL);
+
+            if(isChangeUrlApplink) {
                 handleUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
