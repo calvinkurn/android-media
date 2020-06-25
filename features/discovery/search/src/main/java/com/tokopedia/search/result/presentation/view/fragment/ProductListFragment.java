@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -393,7 +394,7 @@ public class ProductListFragment
         applyQuickFilterElevation(getContext());
 
         int paddingTop = IntExtKt.dpToPx(8, getContext().getResources().getDisplayMetrics());
-        setQuickFilterPaddingTop(paddingTop);
+        animateQuickFilterPaddingTopChanges(paddingTop);
     }
 
     private void applyQuickFilterElevation(@NonNull Context context) {
@@ -403,6 +404,13 @@ public class ProductListFragment
                 searchSortFilter.setElevation(elevation);
             }
         }
+    }
+
+    private void animateQuickFilterPaddingTopChanges(int paddingTop) {
+        ValueAnimator anim = ValueAnimator.ofInt(searchSortFilter.getPaddingTop(), paddingTop);
+        anim.addUpdateListener(animator -> setQuickFilterPaddingTop((Integer)animator.getAnimatedValue()));
+        anim.setDuration(300);
+        anim.start();
     }
 
     private void setQuickFilterPaddingTop(int paddingTop) {
@@ -417,7 +425,7 @@ public class ProductListFragment
         removeQuickFilterElevation();
 
         int paddingTop = IntExtKt.dpToPx(16, getContext().getResources().getDisplayMetrics());
-        setQuickFilterPaddingTop(paddingTop);
+        animateQuickFilterPaddingTopChanges(paddingTop);
     }
 
     private void removeQuickFilterElevation() {
