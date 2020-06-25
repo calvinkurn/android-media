@@ -4,9 +4,7 @@
     android:id="@+id/view_recharge_home_single_banner_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_lvl4"
-    android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4">
+    android:paddingRight="@dimen/spacing_lvl4">
 
     <com.tokopedia.home_component.customview.DynamicChannelHeaderView
         android:id="@+id/view_recharge_home_single_banner_header"

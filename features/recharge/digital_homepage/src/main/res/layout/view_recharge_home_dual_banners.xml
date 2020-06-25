@@ -4,7 +4,8 @@
     android:id="@+id/view_recharge_home_dual_banners_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_lvl4">
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/view_recharge_home_dual_banners_title"

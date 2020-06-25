@@ -1,14 +1,12 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
-import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -32,14 +30,12 @@ class RechargeHomepageBannerViewHolder(itemView: View,
     private val adapter = RechargeItemBannerAdapter(listOf(), this)
 
     override fun bind(element: RechargeHomepageBannerModel) {
-        if (!isEmpty) {
-            slidesList = element.section.items
-            if (slidesList.isNotEmpty()) {
-                initSeeAllPromo()
-                initBanner(slidesList.map { CircularModel(it.id, it.mediaUrl) })
-            } else {
-                itemView.view_recharge_home_banner_container.hide()
-            }
+        slidesList = element.section.items
+        if (slidesList.isNotEmpty()) {
+            initSeeAllPromo()
+            initBanner(slidesList.map { CircularModel(it.id, it.mediaUrl) })
+        } else {
+            itemView.view_recharge_home_banner_container.hide()
         }
     }
 
@@ -89,8 +85,5 @@ class RechargeHomepageBannerViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_banner
-        // TODO: Add empty banner layout
-        @LayoutRes
-        val LAYOUT_EMPTY = R.layout.view_recharge_home_banner_empty
     }
 }

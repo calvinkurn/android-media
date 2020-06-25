@@ -4,7 +4,6 @@
     android:id="@+id/digital_homepage_favorites_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 

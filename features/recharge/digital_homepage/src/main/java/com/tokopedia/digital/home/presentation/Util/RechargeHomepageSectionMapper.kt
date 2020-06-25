@@ -17,8 +17,9 @@ object RechargeHomepageSectionMapper {
             // TODO: Remove temporary data
             with(DigitalHomePageViewModel.Companion) {
                 when (it.template) {
-                    SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
-//                    SECTION_TOP_BANNER_EMPTY -> RechargeHomepageBannerEmptyModel(it)
+//                    SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
+                    SECTION_TOP_BANNER -> RechargeHomepageBannerEmptyModel(it)
+                    SECTION_TOP_BANNER_EMPTY -> RechargeHomepageBannerEmptyModel(it)
                     SECTION_TOP_ICONS -> RechargeHomepageFavoriteModel(it)
                     SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
                     SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)

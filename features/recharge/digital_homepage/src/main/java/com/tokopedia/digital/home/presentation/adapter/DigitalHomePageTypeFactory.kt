@@ -58,7 +58,7 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener)
     }
 
     fun type(emptyBannerModel: RechargeHomepageBannerEmptyModel): Int {
-        return RechargeHomepageBannerViewHolder.LAYOUT_EMPTY
+        return RechargeHomepageBannerEmptyViewHolder.LAYOUT
     }
 
     fun type(favoriteModel: RechargeHomepageFavoriteModel): Int {
@@ -116,7 +116,7 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener)
             RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, listener)
             RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, listener)
             RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
-            RechargeHomepageBannerViewHolder.LAYOUT_EMPTY -> RechargeHomepageBannerViewHolder(parent, listener, true)
+            RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(parent)
             RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
             RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(parent, listener)
             RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(parent, listener)

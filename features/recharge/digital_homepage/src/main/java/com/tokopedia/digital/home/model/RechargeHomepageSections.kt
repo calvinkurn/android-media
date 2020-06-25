@@ -30,6 +30,9 @@ data class RechargeHomepageSections (
             @SerializedName("template")
             @Expose
             val template: String = "",
+            @SerializedName("tracking")
+            @Expose
+            val tracking: List<Tracking> = listOf(),
             @SerializedName("items")
             @Expose
             val items: List<Item> = listOf()
@@ -45,6 +48,9 @@ data class RechargeHomepageSections (
             @SerializedName("sub_title")
             @Expose
             val subtitle: String = "",
+            @SerializedName("tracking")
+            @Expose
+            val tracking: List<Tracking> = listOf(),
             @SerializedName("content")
             @Expose
             val content: String = "",
@@ -81,6 +87,15 @@ data class RechargeHomepageSections (
             @SerializedName("due_date")
             @Expose
             val dueDate: String = ""
+    )
+
+    data class Tracking (
+            @SerializedName("action")
+            @Expose
+            val action: String = "",
+            @SerializedName("data")
+            @Expose
+            val data: String = ""
     )
 }
 
