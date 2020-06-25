@@ -315,7 +315,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     // Tambah dan ubah etalase
     override fun onEditEtalaseClicked() {
         shopPageSettingTracking?.clickAddAndEditEtalase(customDimensionShopPage)
-        // RouteManager.route(activity, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
         context?.let {
             val bundle = Bundle()
             bundle.putString(BUNDLE_SELECTED_ETALASE_ID, "")
