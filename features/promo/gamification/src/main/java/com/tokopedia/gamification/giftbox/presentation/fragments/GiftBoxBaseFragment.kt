@@ -176,7 +176,10 @@ open class GiftBoxBaseFragment : Fragment() {
             var shareText = ""
             context?.let {
                 userName = UserSession(it).name.trim()
-                shareText = String.format(it.getString(com.tokopedia.gamification.R.string.gami_gift_share), userName)
+                shareText = when (this) {
+                    is GiftBoxTapTapFragment -> String.format(it.getString(R.string.gami_gift_60_share), userName)
+                    else -> String.format(it.getString(R.string.gami_gift_share), userName)
+                }
             }
 
             val sendIntent: Intent = Intent().apply {

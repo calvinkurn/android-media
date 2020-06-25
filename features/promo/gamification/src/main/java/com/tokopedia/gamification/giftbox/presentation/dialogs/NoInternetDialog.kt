@@ -66,7 +66,7 @@ class NoInternetDialog {
                 val userSession = UserSession(it.context)
                 when(context){
                     is GiftBoxDailyActivity-> GtmEvents.clickSettingsButton(userSession.userId)
-                    is GiftBoxTapTapActivity-> GtmGiftTapTap.clickSettingsButton(userSession.userId)
+                    is GiftBoxTapTapActivity-> GtmGiftTapTap.clickSettingsButton()
                 }
 
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)

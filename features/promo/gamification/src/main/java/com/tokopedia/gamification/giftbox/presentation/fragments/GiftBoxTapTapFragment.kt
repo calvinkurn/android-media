@@ -616,7 +616,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     override fun initialViewSetup() {
         super.initialViewSetup()
-        tvToolbarTitle.text = activity?.getString(com.tokopedia.gamification.R.string.gami_gift_box_toolbar_title)
+        tvToolbarTitle.text = activity?.getString(com.tokopedia.gamification.R.string.gami_gift_60_toolbar_title)
         ImageViewCompat.setImageTintList(imageToolbarIcon, ColorStateList.valueOf(ContextCompat.getColor(imageToolbarIcon.context, android.R.color.white)))
         tvToolbarTitle.setTextColor(ContextCompat.getColor(tvToolbarTitle.context, android.R.color.white))
 
