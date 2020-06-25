@@ -10,7 +10,7 @@ import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.ACCOUNT_SELLER_MIGRATION_IMAGE_LINK
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.partial_seller_migration_warning.*
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_seller_migration_generic_bottom_sheet.*
 
 class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
@@ -22,6 +22,14 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
                 setChild(view)
             }
         }
+    }
+
+    override fun trackGoToSellerApp() {
+        // No Op
+    }
+
+    override fun trackGoToPlayStore() {
+        // No Op
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,8 +46,9 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
     private fun setupWarningCard() {
         val remoteConfigDate = getSellerMigrationDate(context)
         if(remoteConfigDate.isNotBlank()) {
+            val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
             sellerMigrationWarningCard.show()
-            sellerMigrationWarningDate.text = remoteConfigDate
+            sellerMigrationWarningDate?.text = remoteConfigDate
         }
     }
 
@@ -51,4 +60,5 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
         }
     }
 
+    override fun trackLearnMore() { /* noop */ }
 }

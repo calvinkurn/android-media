@@ -266,7 +266,7 @@
             android:layout_marginStart="@dimen/dp_topchat_12"
             android:layout_marginLeft="@dimen/dp_topchat_12"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:gravity="end"
+            android:gravity="end|center_vertical"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -286,5 +286,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="rect"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 </merge>

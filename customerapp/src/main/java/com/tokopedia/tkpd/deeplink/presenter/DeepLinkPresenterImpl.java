@@ -25,7 +25,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
-import com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -42,6 +41,7 @@ import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
@@ -262,10 +262,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     DeepLinkChecker.openPromoList(uriData.toString(), context, defaultBundle);
                     screenName = "";
                     break;
-                case DeepLinkChecker.SALE:
-                    openSale(linkSegment, defaultBundle);
-                    screenName = "";
-                    break;
                 case DeepLinkChecker.FLIGHT:
                     openFlight(uriData, defaultBundle);
                     screenName = "";
@@ -384,21 +380,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtra(ApplinkConstInternalTravel.EXTRA_DESTINATION_WEB_URL, uri.toString());
             context.startActivity(intent);
         }
-        context.finish();
-    }
-
-    private void openSale(List<String> linkSegment, Bundle bundle) {
-        Intent intent;
-        if (linkSegment.size() <= 1) {
-            intent = RouteManager.getIntent(context, ApplinkConst.PROMO_LIST);
-        } else {
-            String SLUG_PARAM = "{slug}";
-            String applink = ApplinkConst.PROMO_SALE_NO_SLASH.
-                    replace(SLUG_PARAM, linkSegment.get(1));
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(applink));
-        }
-        intent.putExtras(bundle);
-        context.startActivity(intent);
         context.finish();
     }
 
@@ -729,8 +710,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openCatalogDetail(List<String> linkSegment) {
         try {
             String catalogId = linkSegment.get(1);
-            Intent intent = CatalogDetailPageActivity.createIntent(context, catalogId);
-            context.startActivity(intent);
+            RouteManager.route(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_CATALOG + "/" + catalogId));
         } catch (Exception e) {
             Crashlytics.log(e.getLocalizedMessage());
         }
@@ -760,10 +740,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             List<String> linkSegment = uriData.getPathSegments();
             pageId = linkSegment.get(1);
         }
-        Intent intent = ReactNativeDiscoveryActivity.createCallingIntent(
+        Intent intent = DiscoveryActivity.createDiscoveryIntent(
                 context,
-                ReactConst.Screen.DISCOVERY_PAGE,
-                "",
                 pageId);
         intent.putExtras(bundle);
         context.startActivity(intent);

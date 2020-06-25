@@ -49,8 +49,8 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation 'org.assertj:assertj-core:3.8.0'
-    testImplementation 'org.json:json:20140107'
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.testDependencies.json
 }
 
 project.ext {

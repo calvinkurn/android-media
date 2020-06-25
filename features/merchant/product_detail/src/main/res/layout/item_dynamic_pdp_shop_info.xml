@@ -5,7 +5,6 @@
     android:id="@+id/base_shop_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:paddingBottom="@dimen/dp_16"
     android:visibility="visible">
 
@@ -131,7 +130,6 @@
             android:ellipsize="end"
             android:lines="1"
             android:maxLines="1"
-            android:textColor="@color/charcoal_grey_88"
             app:layout_constraintEnd_toStartOf="@+id/shop_feature"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -201,7 +199,7 @@
         layout="@layout/shimmering_shop_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shop_separator"
         app:layout_constraintBottom_toTopOf="@+id/shop_separator"
         tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

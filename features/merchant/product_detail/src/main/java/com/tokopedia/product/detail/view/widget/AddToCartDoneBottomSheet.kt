@@ -32,9 +32,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
@@ -46,6 +44,7 @@ import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductVie
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -243,8 +242,9 @@ class AddToCartDoneBottomSheet :
                 is Success -> {
                     viewShimmeringLoading.hide()
                     atcDoneAdapter.clearAllElements()
-                    if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
-                        atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(it.data.first(), addedProductDataModel?.shopId ?: -1))
+                    val abValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey)
+                    if(abValue.isNotEmpty() && abValue != oldVariantPDP){
+                        atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()), addedProductDataModel?.shopId ?: -1))
                     } else {
                         for (res in it.data) {
                             atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
@@ -264,6 +264,24 @@ class AddToCartDoneBottomSheet :
             }
             configBottomSheetHeight()
         })
+    }
+
+    private fun mapRecommendationWidgetToAddToCartRecommendationDataModel(recommendationWidget: RecommendationWidget): AddToCartDoneRecommendationWidgetDataModel{
+        return AddToCartDoneRecommendationWidgetDataModel(
+                title = recommendationWidget.title,
+                currentPage = recommendationWidget.currentPage,
+                foreignTitle = recommendationWidget.foreignTitle,
+                hasNext = recommendationWidget.hasNext,
+                layoutType = recommendationWidget.layoutType,
+                nextPage = recommendationWidget.nextPage,
+                pageName = recommendationWidget.pageName,
+                prevPage = recommendationWidget.prevPage,
+                recommendationItemList = recommendationWidget.recommendationItemList.map { AddToCartDoneRecommendationItemDataModel(it) },
+                seeMoreAppLink = recommendationWidget.seeMoreAppLink,
+                source = recommendationWidget.source,
+                tid = recommendationWidget.tid,
+                widgetUrl = recommendationWidget.widgetUrl
+        )
     }
 
     private fun showToasterRequestError(throwable: Throwable, onClickListener: View.OnClickListener) {
@@ -365,12 +383,13 @@ class AddToCartDoneBottomSheet :
         productDetailTracking.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
     }
 
-    override fun onRecommendationItemSelected(item: RecommendationItem, position: Int) {
+    override fun onRecommendationItemSelected(dataModel: AddToCartDoneRecommendationItemDataModel, position: Int) {
+        val item = dataModel.recommendationItem
         shadow.visible()
         price.visible()
         addToCartButton.visible()
-        stateAtcView.hide()
-        addToCartButton.show()
+        stateAtcView.visibility = if(dataModel.isAddedToCart) View.VISIBLE else View.GONE
+        addToCartButton.visibility = if(!dataModel.isAddedToCart) View.VISIBLE else View.GONE
         discountPercentage.visibility = if(item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
         slashedPrice.visibility = if(item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
         headerPrice.visibility = if(!item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
@@ -378,10 +397,11 @@ class AddToCartDoneBottomSheet :
         slashedPrice.text = item.slashedPrice
         slashedPrice.paintFlags = slashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         price.text = item.price
+
         addToCartButton.setOnClickListener {
             if(!addToCartButton.isLoading){
                 addToCartButton.isLoading = true
-                addToCartDoneViewModel.addToCart(item)
+                addToCartDoneViewModel.addToCart(dataModel)
                 productDetailTracking.eventAddToCartRecommendationATCClick(
                         item,
                         item.position,
