@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
@@ -165,7 +166,8 @@ class AddEditProductVariantFragment :
 
         buttonSave.setOnClickListener {
             val variantDetails = variantTypeAdapter?.getItems().orEmpty()
-            viewModel.updateVariantInputModel(variantDetails)
+            val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
+            viewModel.updateVariantInputModel(variantDetails, variantPhotos)
             startAddEditProductVariantDetailActivity()
         }
     }
@@ -404,7 +406,29 @@ class AddEditProductVariantFragment :
                         variantPhotoAdapter?.updateImageData(imageUrlOrPath, position)
                     }
                 }
+                REQUEST_CODE_VARIANT_DETAIL -> {
+                    val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID)
+                    val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+                    cacheManagerId?.let {
+                        viewModel.productInputModel.value = saveInstanceCacheManager
+                                .get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+                    }
+
+                    submitVariantInput()
+                }
             }
+        }
+    }
+
+    private fun submitVariantInput() {
+        val productInputModel = viewModel.productInputModel.value
+        productInputModel?.apply {
+            val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+
+            val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
         }
     }
 

@@ -3,10 +3,12 @@ package com.tokopedia.product.addedit.common.util
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.View
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifyprinciples.Typography
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
@@ -56,4 +58,9 @@ fun TextAreaUnify?.replaceTextAndRestoreCursorPosition(text: String) = this?.tex
     val cursorPosition = selectionEnd.orZero()
     setText(text)
     setSelection(cursorPosition.coerceAtMost(text.length))
+}
+
+fun Typography?.setTextOrGone(text: String) {
+    this?.text = text
+    this?.visibility = if (text.isNotEmpty()) View.VISIBLE else View.GONE
 }

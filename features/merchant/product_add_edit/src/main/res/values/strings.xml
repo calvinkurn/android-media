@@ -129,8 +129,9 @@
     <string name="label_variant_title">Varian</string>
     <string name="label_variant_subtitle">Tambah varian warna, ukuran atau tipe lain agar pembeli mudah memilih</string>
     <string name="label_variant_subtitle_added">Kamu sudah menambahkan varian</string>
+    <string name="label_variant_count_suffix">Varian</string>
     <string name="label_add_variant">Tambah varian</string>
-    <string name="label_edit_variant">Ubah varian</string>
+    <string name="label_edit_variant">Ubah</string>
     <string name="label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
     <string name="label_video_title">Video</string>
     <string name="label_video_subtitle">Tambah video agar pembeli lebih paham tentang produkmu</string>
@@ -144,16 +145,16 @@
     <!--Tooltip wording-->
     <string name="title_tooltip_photo_tips">Tips memilih foto produk</string>
     <string name="title_tooltip_description_tips">Tips buat deskripsi produk</string>
-    <string name="title_tooltip_variant_tips">Tips menentukan varian</string>
+    <string name="title_tooltip_variant_tips">4 cara mudah gunakan varian</string>
     <string name="message_tooltip_photo_tips_1">Gunakan foto dengan latar belakang putih.</string>
     <string name="message_tooltip_photo_tips_2">Tampilkan foto dari berbagai sisi supaya pembeli makin tertarik.</string>
     <string name="message_tooltip_photo_tips_3">Pastikan pencahayaan foto cukup agar produkmu jelas terlihat.</string>
     <string name="message_tooltip_description_tips_1">Deskripsi produk harus jelas (merek, ukuran, bahan)</string>
     <string name="message_tooltip_description_tips_2">Tambahkan keterangan pelengkap.</string>
     <string name="message_tooltip_description_tips_3">Bahasa harus mudah dipahami.</string>
-    <string name="message_tooltip_variant_tips_1">Isi nama dan kategori produkmu.</string>
-    <string name="message_tooltip_variant_tips_2">Klik ‘Tambah Varian Produk’.</string>
-    <string name="message_tooltip_variant_tips_3">Atur kategori varian dan lengkapi informasinya.</string>
+    <string name="message_tooltip_variant_tips_1">Tentukan maksimum 2 tipe varian yang sesuai produkmu.</string>
+    <string name="message_tooltip_variant_tips_2">Lengkapi tipe varianmu. Semakin lengkap, semakin banyak pilihan untuk membeli.</string>
+    <string name="message_tooltip_variant_tips_3">Pastikan isi detail varianmu seperti harga dan stok.</string>
     <string name="message_tooltip_variant_tips_4">Klik ‘Terapkan’.</string>
     <string name="error_cannot_get_variants">Tidak bisa mendapatkan data variant</string>
 

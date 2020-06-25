@@ -8,7 +8,7 @@ import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVariantEditSelectTypeAdapter
+import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVariantEditSelectAdapter
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -24,7 +24,7 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     private var contentView: View? = null
-    private var selectAdapter: MultipleVariantEditSelectTypeAdapter? = null
+    private var selectAdapter: MultipleVariantEditSelectAdapter? = null
     private var enableEditSku = true
 
     interface MultipleVariantEditListener {
@@ -32,7 +32,7 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     init {
-        selectAdapter = MultipleVariantEditSelectTypeAdapter()
+        selectAdapter = MultipleVariantEditSelectAdapter()
         setBehaviorAsKnob()
     }
 
@@ -49,8 +49,10 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
-        multipleVariantEditInputModel.selection = selectAdapter?.getSelectedData().orEmpty()
-        multipleVariantEditListener.onMultipleEditFinished(multipleVariantEditInputModel)
+        selectAdapter?.getSelectedData()?.let {
+            multipleVariantEditInputModel.selection = it
+            multipleVariantEditListener.onMultipleEditFinished(multipleVariantEditInputModel)
+        }
     }
 
     fun setData(items: VariantInputModel?) {

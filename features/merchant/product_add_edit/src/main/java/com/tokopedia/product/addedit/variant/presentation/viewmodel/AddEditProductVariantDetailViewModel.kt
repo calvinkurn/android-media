@@ -80,27 +80,23 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {
-        // get combination from selected input
-        inputModel.selection.forEachIndexed { index, values ->
-            values.forEach { value ->
-                // set new variant value to selected combination
-                val combination = listOf(index, value.key)
-                if (value.value) {
-                    setProductVariantByCombination(combination, inputModel)
-                }
+        val variantInputModel = productInputModel.value?.variantInputModel?.products
+        inputModel.selection.forEach { selectedCombination ->
+            // search product variant by comparing combination
+            val productVariant = variantInputModel?.findLast { it.combination == selectedCombination }
+            // set value if found
+            productVariant?.let {
+                it.price = inputModel.price
+                it.stock = inputModel.stock
+                it.sku = inputModel.sku
             }
         }
     }
 
-    private fun setProductVariantByCombination(combination: List<Int>, inputModel: MultipleVariantEditInputModel) {
+    fun updatePrimaryVariant(combination: List<Int>) {
         val variantInputModel = productInputModel.value?.variantInputModel?.products
-        // search product variant by comparing combination
-        val productVariant = variantInputModel?.findLast { it.combination == combination }
-        // set value if found
-        productVariant?.let {
-            it.price = inputModel.price
-            it.stock = inputModel.stock
-            it.sku = inputModel.sku
+        variantInputModel?.forEach {
+            it.isPrimary = it.combination == combination
         }
     }
 
@@ -189,4 +185,5 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         if (errorCounter > 0) mErrorCounter.value = -1
         return inputModel
     }
+
 }

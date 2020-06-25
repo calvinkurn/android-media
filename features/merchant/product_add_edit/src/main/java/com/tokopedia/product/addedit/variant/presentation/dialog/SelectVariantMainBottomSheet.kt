@@ -8,7 +8,7 @@ import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.presentation.adapter.SelectVariantMainTypeAdapter
+import com.tokopedia.product.addedit.variant.presentation.adapter.SelectVariantMainAdapter
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.add_edit_product_select_variant_main_bottom_sheet_content.view.*
@@ -22,14 +22,14 @@ class SelectVariantMainBottomSheet(
     }
 
     private var contentView: View? = null
-    private var selectAdapter: SelectVariantMainTypeAdapter? = null
+    private var selectAdapter: SelectVariantMainAdapter? = null
 
     interface SelectVariantMainListener {
         fun onSelectVariantMainFinished(combination: List<Int>)
     }
 
     init {
-        selectAdapter = SelectVariantMainTypeAdapter()
+        selectAdapter = SelectVariantMainAdapter()
         setBehaviorAsKnob()
     }
 

@@ -43,10 +43,6 @@ Step to submit edit product:
 class AddEditProductEditService : AddEditProductBaseService() {
     private var productDraftId = 0L
     private var productInputModel: ProductInputModel = ProductInputModel()
-    private var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
-    private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
-    private var detailInputModel: DetailInputModel = DetailInputModel()
-    private var variantInputModel: VariantInputModel = VariantInputModel()
 
     companion object {
         fun startService(context: Context, cacheManagerId: String?) {
@@ -62,12 +58,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
         SaveInstanceCacheManager(this, cacheManagerId).run {
             productInputModel =  get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
         }
-        productInputModel.let {
-            shipmentInputModel = it.shipmentInputModel
-            descriptionInputModel = it.descriptionInputModel
-            detailInputModel = it.detailInputModel
-            variantInputModel = it.variantInputModel
-        }
+
         // (1)
         saveProductToDraft()
     }
@@ -82,9 +73,8 @@ class AddEditProductEditService : AddEditProductBaseService() {
             }
             // (2)
             uploadProductImages(
-                    filterPathOnly(detailInputModel.imageUrlOrPathList),
-                    getVariantFilePath(variantInputModel.selections),
-                    variantInputModel.sizecharts.filePath)
+                    filterPathOnly(productInputModel.detailInputModel.imageUrlOrPathList),
+                    productInputModel.variantInputModel)
         }
     }
 
@@ -93,18 +83,9 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 it.startsWith(HTTP_PREFIX)
             }
 
-    private fun getVariantFilePath(variantOptionParent: List<SelectionInputModel>): List<String> {
-        val imageList: ArrayList<String> = ArrayList()
-        return imageList
-    }
-
-    override fun onUploadProductImagesDone(
-            uploadIdList: ArrayList<String>,
-            variantOptionUploadId: List<String>,
-            sizeChartId: String
-    ) {
+    override fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel) {
         // (3)
-        editProduct(uploadIdList, variantOptionUploadId, sizeChartId)
+        editProduct(uploadIdList, variantInputModel)
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
@@ -127,19 +108,16 @@ class AddEditProductEditService : AddEditProductBaseService() {
 
     private fun editProduct(
             uploadIdList: ArrayList<String>,
-            variantOptionUploadId: List<String>,
-            sizeChartId: String
+            variantInputModel: VariantInputModel
     ) {
         val shopId = userSession.shopId
         val param = editProductInputMapper.mapInputToParam(
                 shopId,
                 productInputModel.productId.toString(),
                 uploadIdList,
-                variantOptionUploadId,
-                sizeChartId,
-                detailInputModel,
-                descriptionInputModel,
-                shipmentInputModel,
+                productInputModel.detailInputModel,
+                productInputModel.descriptionInputModel,
+                productInputModel.shipmentInputModel,
                 variantInputModel)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
