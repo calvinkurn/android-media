@@ -1,7 +1,6 @@
 package com.tokopedia.thankyou_native.recommendationdigital.presentation.view
 
 import android.content.Context
-import android.content.Intent
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -12,9 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
@@ -25,6 +22,7 @@ import com.tokopedia.thankyou_native.recommendationdigital.model.Recommendations
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmodel.DigitalRecommendationViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
 import javax.inject.Inject
@@ -33,6 +31,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
 
     private lateinit var fragment: BaseDaggerFragment
+    private lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var analytics: dagger.Lazy<DigitalRecommendationAnalytics>
@@ -82,8 +81,9 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
     }
 
-    override fun loadRecommendation(fragment: BaseDaggerFragment) {
+    override fun loadRecommendation(fragment: BaseDaggerFragment, trackingQueue:TrackingQueue) {
         this.fragment = fragment
+        this.trackingQueue = trackingQueue
         startViewModelObserver()
         viewModel.getDigitalRecommendationData(5, "")
     }
@@ -126,7 +126,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
             }
 
             override fun onDigitalProductImpression(item: RecommendationsItem, position: Int) {
-                analytics.get().sendDigitalRecommendationItemDisplayed(item, position)
+                analytics.get().sendDigitalRecommendationItemDisplayed(trackingQueue, item, position)
             }
         }
 

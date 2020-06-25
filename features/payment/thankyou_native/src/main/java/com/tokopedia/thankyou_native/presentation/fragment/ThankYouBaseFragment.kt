@@ -29,10 +29,12 @@ import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommend
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
+
 
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
@@ -63,6 +65,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
+    private var trackingQueue: TrackingQueue? = null
 
     lateinit var thanksPageData: ThanksPageData
 
@@ -77,6 +80,17 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
             }
         }
+        trackingQueue = TrackingQueue(activity!!)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue!!.sendAll()
+    }
+
+
+    open fun getTrackingQueue(): TrackingQueue {
+        return trackingQueue!!
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -118,7 +132,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             container.addView(view)
             view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
         }
-        iDigitalRecommendationView?.loadRecommendation(this)
+        iDigitalRecommendationView?.loadRecommendation(this, getTrackingQueue())
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {

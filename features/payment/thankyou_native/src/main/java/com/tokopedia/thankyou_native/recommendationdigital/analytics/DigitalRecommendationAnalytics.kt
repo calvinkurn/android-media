@@ -1,12 +1,12 @@
 package com.tokopedia.thankyou_native.recommendationdigital.analytics
 
-import android.os.Bundle
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
@@ -20,7 +20,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
         get() = TrackApp.getInstance().gtm
 
 
-    fun sendDigitalRecommendationItemDisplayed(recommendationItem: RecommendationsItem,
+    fun sendDigitalRecommendationItemDisplayed(trackingQueue: TrackingQueue, recommendationItem: RecommendationsItem,
                                                position: Int) {
         CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
@@ -32,6 +32,8 @@ class DigitalRecommendationAnalytics @Inject constructor(
                                 KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
                                 KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
+
+                        trackingQueue.putEETracking(data as HashMap<String, Any>)
                     }
                 }, onError = {
             it.printStackTrace()
