@@ -13,4 +13,10 @@
     <string name="label_manage_address">Daftar Alamat</string>
     <string name="daftar_alamat">Daftar Alamat</string>
     <string name="tambah_alamat">Tambah Alamat</string>
+
+    <string name="title_empty_address">Belum ada alamat yang terdaftar</string>
+    <string name="text_empty_address">Tambah alamat untuk pengiriman pesananmu. Bisa daftarkan lebih dari satu alamat, lho.</string>
+
+    <string name="title_empty_search">Oops, alamat tidak ditemukan</string>
+    <string name="text_empty_search">Cek kata kuncimu dan coba lagi, ya.</string>
 </resources>

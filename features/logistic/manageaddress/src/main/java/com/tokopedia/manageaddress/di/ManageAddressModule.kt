@@ -18,8 +18,6 @@ class ManageAddressModule  {
     fun provideGraphQlRepository(): GraphqlRepository =
             GraphqlInteractor.getInstance().graphqlRepository
 
-    /*withouw gql*/
-    //ToDo:
     @Provides
     @ManageAddressScope
     fun provideGetPeopleAddressUseCase(repository: GraphqlRepository): GetPeopleAddressUseCase =

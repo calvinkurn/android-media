@@ -11,7 +11,6 @@ import com.tokopedia.manageaddress.domain.mapper.ManageAddressMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.response.GetPeopleAddressResponse
-import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 class ManageAddressViewModel @Inject constructor(
@@ -21,6 +20,9 @@ class ManageAddressViewModel @Inject constructor(
         private val mapper: ManageAddressMapper) : ViewModel() {
 
     private val token: Token = Token()
+    var savedQuery: String = ""
+    var page: Int = 1
+
     private val _addressList = MutableLiveData<ManageAddressState<ManageAddressModel>>()
     val addressList: LiveData<ManageAddressState<ManageAddressModel>>
         get() = _addressList
@@ -29,12 +31,12 @@ class ManageAddressViewModel @Inject constructor(
     val result: LiveData<ManageAddressState<String>>
         get() = _result
 
-    private val compositeSubscription = CompositeSubscription()
-
     fun searchAddress(query: String) {
+        _addressList.value = ManageAddressState.Loading
         getPeopleAddressUseCase.execute(query,
                 {
-                   _addressList.value = ManageAddressState.Success(mapToModel(it))
+                    savedQuery = query
+                    _addressList.value = ManageAddressState.Success(mapToModel(it))
 
                 },
                 {

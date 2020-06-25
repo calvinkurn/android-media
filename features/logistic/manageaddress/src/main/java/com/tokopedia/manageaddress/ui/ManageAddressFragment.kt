@@ -3,10 +3,12 @@ package com.tokopedia.manageaddress.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,24 +17,31 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.manageaddress.R
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
-import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics.sendScreenName
 import com.tokopedia.logisticdata.data.entity.address.AddressModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_EDIT
+import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.bottomsheet_action_address.view.*
+import kotlinx.android.synthetic.main.empty_manage_address.*
 import kotlinx.android.synthetic.main.fragment_manage_address.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -55,8 +64,19 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var searchInputView: SearchInputView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var bottomSheetLainnya: BottomSheetUnify? = null
+    private var maxItemPosition: Int = 0
+
+    private var emptySearchLayout: LinearLayout? = null
+
+    private var buttonAddEmpty: UnifyButton? = null
+    private var emptyStateLayout: LinearLayout? = null
+
+    private var globalErrorLayout: GlobalError? = null
 
     companion object {
+
+        private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
+        private const val EMPTY_SEARCH_PICT_URL = "https://ecs7.tokopedia.net/android/others/address_not_found3x.png"
 
         fun newInstance() : ManageAddressFragment{
             return ManageAddressFragment()
@@ -86,7 +106,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         initSearchView()
     }
 
-    override fun onSearchSubmitted(text: String?) {
+    override fun onSearchSubmitted(text: String) {
         performSearch(text)
     }
 
@@ -94,10 +114,16 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         openSoftKeyboard()
     }
 
-    /*flow from edit address*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        performSearch("")
+        if (requestCode == REQUEST_CODE_PARAM_CREATE) {
+            val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
+            if (addressDataModel != null) {
+                performSearch("")
+            }
+        } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
+            performSearch(searchAddress.searchTextView.text.toString())
+        }
     }
 
     private fun openSoftKeyboard() {
@@ -105,8 +131,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
     }
 
-    private fun performSearch(query: String?) {
-        query?.let { viewModel.searchAddress(it) }
+    private fun performSearch(query: String) {
+        viewModel.searchAddress(query)
     }
 
     private fun initHeader() {
@@ -122,6 +148,15 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         addressList = view?.findViewById(R.id.address_list)
         searchInputView = view?.findViewById(R.id.search_input_view)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
+        emptySearchLayout = view?.findViewById(R.id.empty_search)
+        emptyStateLayout = view?.findViewById(R.id.empty_state_manage_address)
+        globalErrorLayout = view?.findViewById(R.id.global_error)
+        buttonAddEmpty = view?.findViewById(R.id.btn_add_empty)
+
+        ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
+        ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
+
+
     }
 
     private fun initViewModel() {
@@ -129,6 +164,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             when (it) {
                 is ManageAddressState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
+                    globalErrorLayout?.gone()
+                    setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isNullOrEmpty())
                     renderData(it.data.listAddress)
                 }
 
@@ -146,8 +183,33 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         })
     }
 
+    private fun setEmptyState(isEmpty: Boolean, isFirstLoad: Boolean) {
+        Log.d("SAVED_QUERY", viewModel.savedQuery)
+        if(!isEmpty) {
+            emptyStateLayout?.gone()
+            searchAddress.visible()
+            addressList?.visible()
+            emptySearchLayout?.gone()
+        }
+        else if (isFirstLoad) {
+            buttonAddEmpty?.setOnClickListener {
+                openFormAddressView(null)
+            }
+            emptyStateLayout?.visible()
+            searchAddress.gone()
+            addressList?.gone()
+            emptySearchLayout?.gone()
+        }
+        else {
+            emptySearchLayout?.visible()
+            emptyStateLayout?.gone()
+            searchAddress.visible()
+            addressList?.gone()
+        }
+    }
+
     private fun initSearch() {
-        val searchKey = ""
+        val searchKey = viewModel.savedQuery
         searchInputView?.searchText = searchKey
         performSearch(searchKey)
     }
@@ -194,10 +256,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun openFormAddressView(data: AddressModel?) {
         val token = viewModel.getToken()
             if(data == null) {
-                //ToDO:: Analytics screen name benerin
-                sendScreenName(activity!!, AddressConstants.SCREEN_NAME_USER_NEW)
+                activity?.let { ManageAddressAnalytics.sendScreenName(it, SCREEN_NAME_USER_NEW) }
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-                intent.putExtra(AddressConstants.KERO_TOKEN, token)
+                intent.putExtra(KERO_TOKEN, token)
                 startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
             } else {
                 startActivityForResult(activity?.let {
@@ -264,6 +325,14 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun showGlobalError(type: Int) {
-//        ToDo:
+        globalErrorLayout?.setType(type)
+        globalErrorLayout?.setActionClickListener {
+            viewModel.searchAddress("")
+        }
+        searchAddress.gone()
+        addressList?.gone()
+        emptyStateLayout?.gone()
+        globalErrorLayout?.visible()
+        emptySearchLayout?.gone()
     }
 }

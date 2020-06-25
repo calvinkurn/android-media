@@ -24,4 +24,5 @@ class GetPeopleAddressUseCase @Inject constructor(val graphqlUseCase: GraphqlUse
         })
     }
 
+
 }
