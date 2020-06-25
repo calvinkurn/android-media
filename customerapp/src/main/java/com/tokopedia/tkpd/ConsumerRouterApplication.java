@@ -76,7 +76,6 @@ import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.nps.helper.InAppReviewHelper;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -97,6 +96,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
+import com.tokopedia.nps.helper.InAppReviewHelper;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
@@ -514,11 +514,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, orderId));
-    }
-
-    @Override
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
@@ -597,6 +592,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getGeoLocationActivityIntent(Context context, LocationPass locationPass) {
         return GeolocationActivity.createInstance(context, locationPass, false);
+    }
+
+    @Override
+    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
+            Context context, String platform, String category, String defaultSelectedTab) {
+        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
     }
 
     @Override
@@ -939,21 +940,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxTalkCallingIntent(Context mContext){
-        return null;
-    }
-
-    @Override
-    public Intent getLoginGoogleIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginFacebookIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return null;
     }
 }

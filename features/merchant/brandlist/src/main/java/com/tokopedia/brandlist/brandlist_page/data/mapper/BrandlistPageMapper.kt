@@ -7,7 +7,6 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreAllBrands
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandNotFoundViewHolder
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.common.LoadAllBrandState
@@ -24,15 +23,15 @@ class BrandlistPageMapper {
         const val ALL_BRAND_POSITION = 4
 
         fun mappingFeaturedBrand(featuredBrand: OfficialStoreFeaturedShop, adapter: BrandlistPageAdapter?, listener: BrandlistPageTrackingListener) {
-            notifyElement(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(featuredBrand.shops, featuredBrand.header, listener), adapter)
+            notifyElement(FEATURED_BRAND_POSITION, FeaturedBrandUiModel(featuredBrand.shops, featuredBrand.header, listener), adapter)
         }
 
         fun mappingPopularBrand(popularBrand: OfficialStoreBrandsRecommendation, adapter: BrandlistPageAdapter?, listener: BrandlistPageTrackingListener) {
-            notifyElement(POPULAR_BRAND_POSITION, PopularBrandViewModel(popularBrand.shops, popularBrand.header, listener), adapter)
+            notifyElement(POPULAR_BRAND_POSITION, PopularBrandUiModel(popularBrand.shops, popularBrand.header, listener), adapter)
         }
 
         fun mappingNewBrand(newBrand: OfficialStoreBrandsRecommendation, adapter: BrandlistPageAdapter?, listener: BrandlistPageTrackingListener) {
-            notifyElement(NEW_BRAND_POSITION, NewBrandViewModel(newBrand.shops, newBrand.header, listener), adapter)
+            notifyElement(NEW_BRAND_POSITION, NewBrandUiModel(newBrand.shops, newBrand.header, listener), adapter)
         }
 
         fun mappingAllBrandGroupHeader(
@@ -44,7 +43,7 @@ class BrandlistPageMapper {
                 recyclerViewLastState: Parcelable?
         ) {
             adapter?.let {
-                it.getVisitables().set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(
+                it.getVisitables().set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderUiModel(
                         listener, totalBrands, selectedChip, lastTimeClicked, recyclerViewLastState))
                 it.notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
                 it.refreshSticky()
@@ -59,7 +58,7 @@ class BrandlistPageMapper {
         }
 
         fun mappingRemoveBrandRecom(adapter: BrandlistPageAdapter?) {
-            val _totalAllBrandViewModel: Int = adapter?.getVisitables()?.filterIsInstance<AllBrandViewModel>()?.size ?: 0
+            val _totalAllBrandViewModel: Int = adapter?.getVisitables()?.filterIsInstance<AllBrandUiModel>()?.size ?: 0
             if (_totalAllBrandViewModel > 0) {
                 val _totalUnusedData: Int = adapter?.getVisitables()?.size ?: 0
                 adapter?.let {
@@ -77,8 +76,8 @@ class BrandlistPageMapper {
             val totalBrands: Int = allBrand.brands.size
 
             if (!isLoadMore && totalBrands == 0) {
-                adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllbrandNotFoundViewModel())
-                adapter?.notifyItemChanged(ALL_BRAND_POSITION, AllbrandNotFoundViewModel())
+                adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllbrandNotFoundUiModel())
+                adapter?.notifyItemChanged(ALL_BRAND_POSITION, AllbrandNotFoundUiModel())
             }
         }
 
@@ -93,14 +92,14 @@ class BrandlistPageMapper {
                 if (!isLoadMore) {
                     adapter?.let {
                         allBrand.brands.forEachIndexed { index, brand ->
-                            it.getVisitables().add(ALL_BRAND_POSITION, AllBrandViewModel(index, brand, listener))
+                            it.getVisitables().add(ALL_BRAND_POSITION, AllBrandUiModel(index, brand, listener))
                         }
                         it.notifyItemChanged(ALL_BRAND_POSITION)
                     }
                 } else {
                     adapter?.let {
                         allBrand.brands.forEachIndexed { index, brand ->
-                            it.getVisitables().add(AllBrandViewModel(index, brand, listener))
+                            it.getVisitables().add(AllBrandUiModel(index, brand, listener))
                         }
                         it.notifyItemRangeInserted(it.lastIndex, allBrand.brands.size)
                     }
@@ -110,14 +109,14 @@ class BrandlistPageMapper {
                 if (!isLoadMore) {
                     adapter?.let {
                         allBrand.brands.forEachIndexed { index, brand ->
-                            it.getVisitables().add(ALL_BRAND_POSITION, AllBrandViewModel(index, brand, listener))
+                            it.getVisitables().add(ALL_BRAND_POSITION, AllBrandUiModel(index, brand, listener))
                         }
                         it.notifyItemChanged(ALL_BRAND_POSITION)
                     }
                 } else {
                     adapter?.let {
                         allBrand.brands.forEachIndexed { index, brand ->
-                            it.getVisitables().add(AllBrandViewModel(index, brand, listener))
+                            it.getVisitables().add(AllBrandUiModel(index, brand, listener))
                         }
                         it.notifyItemRangeInserted(it.lastIndex, allBrand.brands.size)
                     }
@@ -132,7 +131,7 @@ class BrandlistPageMapper {
                                     listener: BrandlistPageTrackingListener, adapter: BrandlistPageAdapter?) {
             adapter?.let {
                 allBrand.brands.forEachIndexed { index, brand ->
-                    it.getVisitables().add(AllBrandViewModel(index, brand, listener))
+                    it.getVisitables().add(AllBrandUiModel(index, brand, listener))
                 }
                 it.notifyItemRangeInserted(adapter.lastIndex, allBrand.brands.size)
             }
