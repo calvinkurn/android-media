@@ -3,20 +3,21 @@ package com.tokopedia.play.broadcaster.view.custom
 import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
+import android.os.CountDownTimer
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
-import android.view.animation.RotateAnimation
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.broadcaster.R
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ticker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.ceil
 
 
 class PlayTimerCountDown @JvmOverloads constructor(
@@ -26,21 +27,20 @@ class PlayTimerCountDown @JvmOverloads constructor(
     private val progressCircular: LottieAnimationView
     private val info: LottieAnimationView
     private val countText: TextView
-    private var count: Int = 3
 
-    @ObsoleteCoroutinesApi
-    private val ticker = ticker(2000,0)
+    private lateinit var timer: CountDownTimer
 
     /**
      * Animation area
      */
-    private var rotateAnimation: RotateAnimation
+    private lateinit var rotateAnimator: Animator
 
     private val textAnimatorIn: AnimatorSet
     private val textAnimatorOut: AnimatorSet
     private val animatorProgressCircularOut: AnimatorSet
     private val animatorInfoOut: AnimatorSet
 
+    private val textAnimatorSet = AnimatorSet()
 
     private val mainJob = Job()
 
@@ -56,18 +56,11 @@ class PlayTimerCountDown @JvmOverloads constructor(
         countText = view.findViewById(R.id.count_text)
         info = view.findViewById(R.id.info)
 
-        countText.text = count.toString()
         countText.alpha = 0f
-        val degree = 360f * (count * 2 / 3)
-        Log.d("TEST", "degree :${degree}")
-        rotateAnimation = RotateAnimation(
-                0f,
-                degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
-        rotateAnimation.duration = (1000 * (count * 2)).toLong()
-        rotateAnimation.interpolator = LinearInterpolator()
 
         textAnimatorIn = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_scale_alpha) as AnimatorSet
         textAnimatorOut = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_reverse_alpha) as AnimatorSet
+        textAnimatorSet.playSequentially(textAnimatorIn, textAnimatorOut)
         animatorProgressCircularOut = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_reverse_scale_alpha) as AnimatorSet
         animatorInfoOut = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_translate_alpha) as AnimatorSet
         textAnimatorIn.setTarget(countText)
@@ -80,50 +73,72 @@ class PlayTimerCountDown @JvmOverloads constructor(
 
             override fun onAnimationEnd(animation: Animator?) {
                 progressCircular.removeAllAnimatorListeners()
-                progressCircular.startAnimation(rotateAnimation)
+                rotateAnimator.start()
             }
 
             override fun onAnimationCancel(animation: Animator?) {}
 
             override fun onAnimationStart(animation: Animator?) {
-                initTicker()
             }
         })
-
-        progressCircular.playAnimation()
-        info.playAnimation()
     }
 
-    private fun initTicker(){
-        launch {
-            delay(50)
-            repeat(count + 1){
-                ticker.receive()
-                if(count != 0) {
-                    countText.text = count.toString()
-                    textAnimatorIn.start()
-                    delay(1600)
-                    textAnimatorOut.start()
-                    if(count == 1){
-                        animatorInfoOut.start()
-                        animatorProgressCircularOut.start()
-                    }
-                    delay(300)
-                }
-                count--
+    fun startCountDown(seconds: Int, interval: Long, listener: Listener? = null){
+        setupAnimator(seconds, interval)
+
+        timer = object : CountDownTimer(seconds * MILLIS_IN_SECOND, MILLIS_IN_SECOND) {
+
+            private var alreadyTick = false
+            private val millisDouble = MILLIS_IN_SECOND.toDouble()
+
+            override fun onFinish() {
+                animatorInfoOut.start()
+                animatorProgressCircularOut.start()
+                listener?.onFinish()
             }
-        }
+
+            override fun onTick(millisUntilFinished: Long) {
+                if (!alreadyTick) {
+                    progressCircular.playAnimation()
+                    info.playAnimation()
+                    alreadyTick = true
+                }
+
+                val secondsLeft = ceil(millisUntilFinished / millisDouble).toInt()
+                countText.text = secondsLeft.toString()
+
+                textAnimatorSet.start()
+
+                listener?.onTick(millisUntilFinished)
+            }
+        }.start()
     }
 
-    fun setCountDown(number: Int){
-        count = number
-        rotateAnimation = RotateAnimation(0f, 360f * (count * 2 / 3), Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
-        rotateAnimation.duration = (1000 * (count * 2)).toLong()
-        rotateAnimation.interpolator = LinearInterpolator()
+    private fun setupAnimator(seconds: Int, interval: Long) {
+        val multiplier = interval / MILLIS_IN_SECOND
+        rotateAnimator = getRotateAnimator(seconds, interval)
+        textAnimatorIn.duration = 225 * multiplier
+        textAnimatorOut.duration = 150 * multiplier
+        textAnimatorOut.startDelay = 400 * multiplier
     }
 
-    fun start(){
-        progressCircular.playAnimation()
-        info.playAnimation()
+    private fun getRotateAnimator(seconds: Int, interval: Long): Animator {
+        val rotateAnimator = ObjectAnimator.ofFloat(progressCircular, "rotation", 0f, 360f)
+        rotateAnimator.interpolator = LinearInterpolator()
+        rotateAnimator.duration = interval
+        rotateAnimator.repeatCount = seconds
+        return rotateAnimator
+    }
+
+    companion object {
+
+        private const val MILLIS_IN_SECOND = 1000L
+    }
+
+    interface Listener {
+
+        fun onTick(milisUntilFinished: Long)
+
+        fun onFinish()
     }
 }

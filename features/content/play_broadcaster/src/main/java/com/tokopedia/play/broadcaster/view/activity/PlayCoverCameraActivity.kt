@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -21,9 +20,9 @@ import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import kotlinx.android.synthetic.main.activity_play_cover_camera.*
 import java.io.File
-import kotlin.math.ceil
 
 class PlayCoverCameraActivity : AppCompatActivity() {
 
@@ -98,19 +97,15 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         when (cameraTimerEnum) {
             CameraTimerEnum.Immediate -> cvPlayCameraView.takePicture()
             else -> {
-                timer = object : CountDownTimer(cameraTimerEnum.seconds * SECONDS_IN_MILIS, SECONDS_IN_MILIS) {
-                    private val secondsInDouble = SECONDS_IN_MILIS.toDouble()
+                countdownTimer.startCountDown(cameraTimerEnum.seconds, 1000L, object : PlayTimerCountDown.Listener {
+                    override fun onTick(milisUntilFinished: Long) {
+
+                    }
 
                     override fun onFinish() {
-                        hideTimerLayout()
                         cvPlayCameraView.takePicture()
                     }
-
-                    override fun onTick(millisUntilFinished: Long) {
-                        val secondsLeft = ceil(millisUntilFinished / secondsInDouble).toInt()
-                        showTimerLayout(secondsLeft)
-                    }
-                }.start()
+                })
             }
         }
     }
@@ -186,14 +181,13 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun showTimerLayout(seconds: Int) {
-        tvPlayCameraTimeToCapture.text = seconds.toString()
-        containerPlayCameraTimer.visibility = View.VISIBLE
-    }
-
-    private fun hideTimerLayout() {
-        containerPlayCameraTimer.visibility = View.GONE
-    }
+//    private fun showTimerLayout(seconds: Int) {
+//        countdownTimer.visibility = View.VISIBLE
+//    }
+//
+//    private fun hideTimerLayout() {
+//        countdownTimer.visibility = View.GONE
+//    }
 
     private fun requestCameraPermission() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Neutral_N700_96"
@@ -122,39 +121,14 @@
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
-    <LinearLayout
-        android:id="@+id/containerPlayCameraTimer"
+    <com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
+        android:id="@+id/countdownTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_play_select_from_camera"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_lvl4"
-        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvPlayCameraTimeToCapture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N0"
-            android:textSize="@dimen/fontSize_lvl9"
-            app:typographyWeight="bold"
-            tools:text="5" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/play_camera_get_ready_label"
-            android:textColor="@color/Neutral_N0"
-            android:textSize="@dimen/fontSize_lvl9"
-            app:typographyType="body_3"
-            app:typographyWeight="bold" />
-
-    </LinearLayout>
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
