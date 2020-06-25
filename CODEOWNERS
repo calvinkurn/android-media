@@ -263,6 +263,7 @@
 /libraries/iris_session/	                            @tokopedia/android-gatekeeper-analytic
 /libraries/kotlin_extensions/							@tokopedia/core-team
 /libraries/linker/										@tokopedia/core-team
+/libraries/lint/										@tokopedia/minion-darth
 /libraries/liveness_lib/								@tokopedia/core-team
 /libraries/locationmanager/								@tokopedia/core-team
 /libraries/logger/										@tokopedia/core-team
@@ -307,7 +308,6 @@
 /tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team
 /tkpddigital/                                       	@tokopedia/core-team
-/tkpdinbox/                                         	@tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
 /tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code

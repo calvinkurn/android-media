@@ -30,6 +30,7 @@ import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.session.model.LoginProviderModel;
+import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl;
@@ -246,8 +247,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
             @Override
             public void onClick(View v) {
                 if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                            .getLoginWebviewIntent(getActivity(), listProvider.get(position)
+                    Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginWebview(getActivity(), listProvider.get(position)
                                     .getName(), listProvider.get(position).getUrl());
                     startActivityForResult(intent, REQUEST_LOGIN);
                 }
@@ -260,16 +260,14 @@ public class WelcomeFragment extends BaseDaggerFragment implements
 
     public void onGoogleClick() {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                    .getLoginGoogleIntent(getActivity());
+            Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginGoogle(getActivity());
             startActivityForResult(intent, REQUEST_LOGIN);
         }
     }
 
     private void onFacebookClick() {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                    .getLoginFacebookIntent(getActivity());
+            Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginFacebook(getActivity());
             startActivityForResult(intent, REQUEST_LOGIN);
         }
     }

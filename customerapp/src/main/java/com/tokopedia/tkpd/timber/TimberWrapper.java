@@ -50,6 +50,8 @@ public class TimberWrapper {
 
     private static final String REMOTE_CONFIG_KEY_LOG = "android_customer_app_log_config";
 
+    private static final Object LOCK = new Object();
+
     public static void init(Application application) {
         LogManager.init(application);
         if (LogManager.instance != null) {
@@ -64,10 +66,9 @@ public class TimberWrapper {
     }
 
     public static void initByRemoteConfig(@NonNull Context context, @NonNull RemoteConfig remoteConfig){
-        Timber.uprootAll();
         boolean isDebug = GlobalConfig.DEBUG;
         if (isDebug) {
-            Timber.plant(new TimberDebugTree());
+            plantNewTree(new TimberDebugTree());
         } else {
             String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
             if (!TextUtils.isEmpty(logConfigString)) {
@@ -81,9 +82,16 @@ public class TimberWrapper {
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
                     timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
                     timberReportingTree.setQueryLimits(dataLogConfig.getQueryLimits());
-                    Timber.plant(timberReportingTree);
+                    plantNewTree(timberReportingTree);
                 }
             }
+        }
+    }
+
+    private static void plantNewTree(Timber.DebugTree tree){
+        synchronized (LOCK) {
+            Timber.uprootAll();
+            Timber.plant(tree);
         }
     }
 
