@@ -5,7 +5,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.gm.common.util.GMCacheApiWhiteList;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramCacheApiWhiteList;
 import com.tokopedia.seller.product.common.utils.ProductCacheApiWhiteList;
-import com.tokopedia.seller.shop.common.utils.ShopOpenCacheApiWhiteList;
 import com.tokopedia.shop.common.util.ShopCacheApiWhiteList;
 import com.tokopedia.topads.common.util.TopAdsCacheApiWhiteList;
 
@@ -34,7 +33,6 @@ public class CacheApiWhiteList {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(
                 TkpdBaseURL.User.URL_NOTIFICATION + TkpdBaseURL.User.PATH_GET_NOTIFICATION, THIRTY_SECOND));
 
-        cacheApiWhiteList.addAll(ShopOpenCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(ShopCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(ProductCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(GMCacheApiWhiteList.getWhiteList());

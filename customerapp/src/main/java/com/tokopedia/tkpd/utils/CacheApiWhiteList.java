@@ -3,9 +3,7 @@ package com.tokopedia.tkpd.utils;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramCacheApiWhiteList;
 import com.tokopedia.seller.product.common.utils.ProductCacheApiWhiteList;
-import com.tokopedia.seller.shop.common.utils.ShopOpenCacheApiWhiteList;
 import com.tokopedia.shop.common.util.ShopCacheApiWhiteList;
-import com.tokopedia.url.TokopediaUrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,6 @@ public class CacheApiWhiteList {
 
     public static List<CacheApiWhiteListDomain> getWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
-        cacheApiWhiteList.addAll(ShopOpenCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(ShopCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(ProductCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(InstagramCacheApiWhiteList.getWhiteList());
