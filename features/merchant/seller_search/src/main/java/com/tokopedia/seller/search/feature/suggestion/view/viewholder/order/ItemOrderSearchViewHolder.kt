@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.CUSTOMER
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.INV
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.SHIPPING
 import com.tokopedia.seller.search.common.util.indexOfSearchQuery
 import com.tokopedia.seller.search.common.util.safeSetSpan
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
@@ -25,7 +26,7 @@ class ItemOrderSearchViewHolder(
         with(itemViewOrder) {
             if(itemSellerSearchUiModel.imageUrl?.isBlank() == true) {
                 when (itemSellerSearchUiModel.id) {
-                    INV -> {
+                    INV, SHIPPING -> {
                         ivSearchResultOrder?.setImageDrawable(ContextCompat.getDrawable(itemViewOrder.context, R.drawable.ic_invoice_seller_search))
                     }
                     CUSTOMER -> {
