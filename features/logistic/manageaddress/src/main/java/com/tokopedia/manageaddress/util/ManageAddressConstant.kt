@@ -1,8 +1,15 @@
 package com.tokopedia.manageaddress.util
 
-const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
-const val DEFAULT_LOCAL_ERROR_MESSAGE = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+object ManageAddressConstant {
+    const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
+    const val DEFAULT_LOCAL_ERROR_MESSAGE = "Terjadi kesalahan. Ulangi beberapa saat lagi"
 
-const val LABEL_LAINNYA = "Lainnya"
+    const val LABEL_LAINNYA = "Lainnya"
 
-const val STATUS_OK = "OK"
+    const val STATUS_OK = "OK"
+
+    const val SCREEN_NAME_USER_NEW = "/user/address/create"
+
+    const val REQUEST_CODE_PARAM_CREATE = 101
+    const val REQUEST_CODE_PARAM_EDIT = 102
+}

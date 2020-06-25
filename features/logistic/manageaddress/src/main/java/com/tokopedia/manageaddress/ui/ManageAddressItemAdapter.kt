@@ -10,12 +10,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticdata.data.entity.address.AddressModel
+import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
 
 class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterListener) : RecyclerView.Adapter<ManageAddressItemAdapter.ManageAddressViewHolder>() {
 
     var addressList = mutableListOf<AddressModel>()
+    var token: Token? = null
 
     interface ManageAddressItemAdapterListener {
         fun onManageAddressEditClicked(peopleAddress: AddressModel)
@@ -51,6 +53,10 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 setListener(data)
 
             }
+        }
+
+        fun bindToken(data: Token) {
+            token = data
         }
 
         private fun setPrimary(peopleAddress: AddressModel) {

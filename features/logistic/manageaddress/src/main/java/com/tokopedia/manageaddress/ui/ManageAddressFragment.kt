@@ -15,15 +15,21 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.manageaddress.R
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics.sendScreenName
 import com.tokopedia.logisticdata.data.entity.address.AddressModel
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
-import com.tokopedia.manageaddress.util.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.manageaddress.util.LABEL_LAINNYA
+import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
+import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE
+import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_EDIT
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottomsheet_action_address.view.*
@@ -50,6 +56,13 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var bottomSheetLainnya: BottomSheetUnify? = null
 
+    companion object {
+
+        fun newInstance() : ManageAddressFragment{
+            return ManageAddressFragment()
+        }
+    }
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -64,6 +77,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initHeader()
         initView()
         initViewModel()
         initSearch()
@@ -93,6 +107,15 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun performSearch(query: String?) {
         query?.let { viewModel.searchAddress(it) }
+    }
+
+    private fun initHeader() {
+        val parent = activity
+        if (parent is ManageAddressActivity) {
+            parent.setAddButtonOnClickListener {
+               openFormAddressView(null)
+            }
+        }
     }
 
     private fun initView() {
@@ -168,11 +191,19 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         openBottomSheetView(peopleAddress)
     }
 
-    private fun openFormAddressView(data: AddressModel) {
+    private fun openFormAddressView(data: AddressModel?) {
         val token = viewModel.getToken()
-        startActivityForResult(activity?.let {
-            AddAddressActivity.createInstanceEditAddress(it, data, token)
-        }, 102)
+            if(data == null) {
+                //ToDO:: Analytics screen name benerin
+                sendScreenName(activity!!, AddressConstants.SCREEN_NAME_USER_NEW)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                intent.putExtra(AddressConstants.KERO_TOKEN, token)
+                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+            } else {
+                startActivityForResult(activity?.let {
+                    AddAddressActivity.createInstanceEditAddress(it, data, token)
+                }, REQUEST_CODE_PARAM_EDIT)
+            }
     }
 
     private fun openBottomSheetView(data: AddressModel) {

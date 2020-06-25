@@ -11,4 +11,6 @@
     <string name="pinpoint">Sudah Pinpoint</string>
     
     <string name="label_manage_address">Daftar Alamat</string>
+    <string name="daftar_alamat">Daftar Alamat</string>
+    <string name="tambah_alamat">Tambah Alamat</string>
 </resources>

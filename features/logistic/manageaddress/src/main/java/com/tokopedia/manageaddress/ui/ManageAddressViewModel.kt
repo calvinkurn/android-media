@@ -35,6 +35,7 @@ class ManageAddressViewModel @Inject constructor(
         getPeopleAddressUseCase.execute(query,
                 {
                    _addressList.value = ManageAddressState.Success(mapToModel(it))
+
                 },
                 {
                     _addressList.value = ManageAddressState.Fail(false, it, "")
