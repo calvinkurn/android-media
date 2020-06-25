@@ -2,8 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'de.mannodermaus.android-junit5'
-apply from: "../../../compile-unit-test.gradle"
-apply from: "../../../compile-instrument-test.gradle"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -92,6 +90,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.testDependencies.kotlinTest
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {

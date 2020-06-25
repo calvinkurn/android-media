@@ -624,7 +624,11 @@ data class DynamicHomeChannel(
             @SerializedName("labelGroup")
             val labelGroup: Array<LabelGroup> = arrayOf(),
             @SerializedName("has_buy_button")
-            val hasBuyButton: Boolean = false
+            val hasBuyButton: Boolean = false,
+            @SerializedName("rating")
+            var rating: Int = 0,
+            @SerializedName("count_review")
+            val countReview: Int = 0
     )
 
     data class Header(

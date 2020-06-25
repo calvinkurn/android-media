@@ -19,6 +19,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -76,10 +77,10 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mCbPPP = itemView.findViewById(R.id.checkbox_ppp);
         mCbPPPDisabled = itemView.findViewById(R.id.checkbox_ppp_disabled);
         mllProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
-        mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
-        mTvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
-        mTvPreOrder = itemView.findViewById(R.id.tv_pre_order);
-        mTvCashback = itemView.findViewById(R.id.tv_cashback);
+        mIvFreeReturnIcon = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.iv_free_return_icon);
+        mTvFreeReturnLabel = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.tv_free_return_label);
+        mTvPreOrder = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.tv_pre_order);
+        mTvCashback = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.tv_cashback);
         mTvNoteToSellerLabel = itemView.findViewById(R.id.tv_note_to_seller_label);
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         mSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
@@ -116,10 +117,10 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductPrice(CartItemModel cartItem) {
-        mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                (long) cartItem.getPrice(), false));
+        mTvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                (long) cartItem.getPrice(), false)));
         if (cartItem.getOriginalPrice() > 0) {
-            mTvProductOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false));
+            mTvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false)));
             mTvProductOriginalPrice.setPaintFlags(mTvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             mTvProductOriginalPrice.setVisibility(View.VISIBLE);
         } else {
@@ -144,7 +145,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderProductPropertyCashback(CartItemModel cartItem) {
         mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
-        String cashback = "    " + mTvCashback.getContext().getString(R.string.label_cashback) +
+        String cashback = "    " + mTvCashback.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_cashback) +
                 " " + cartItem.getCashback() + "    ";
         mTvCashback.setText(cashback);
     }
@@ -243,7 +244,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvOptionalNoteToSeller.setTextColor(colorGreyNonActiveText);
         mTvProductCountAndWeight.setTextColor(colorGreyNonActiveText);
         mTvCashback.setTextColor(colorGreyNonActiveText);
-        mTvCashback.setBackground(ContextCompat.getDrawable(mTvCashback.getContext(), R.drawable.bg_cashback_disabled));
+        mTvCashback.setBackground(ContextCompat.getDrawable(mTvCashback.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_cashback_disabled));
         setImageFilterGrayScale();
     }
 
@@ -258,16 +259,16 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void enableItemView() {
-        mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), R.color.black_70));
-        mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), R.color.orange_red));
-        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), R.color.n_700_44));
-        mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mTvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
-        mTvPreOrder.setTextColor(ContextCompat.getColor(mTvPreOrder.getContext(), R.color.font_black_secondary_54));
-        mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mTvNoteToSellerLabel.getContext(), R.color.black_38));
-        mTvProductCountAndWeight.setTextColor(ContextCompat.getColor(mTvProductCountAndWeight.getContext(), R.color.black_38));
-        mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mTvOptionalNoteToSeller.getContext(), R.color.black_38));
+        mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), com.tokopedia.design.R.color.black_70));
+        mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), com.tokopedia.design.R.color.orange_red));
+        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), com.tokopedia.purchase_platform.common.R.color.n_700_44));
+        mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mTvFreeReturnLabel.getContext(), com.tokopedia.abstraction.R.color.font_black_secondary_54));
+        mTvPreOrder.setTextColor(ContextCompat.getColor(mTvPreOrder.getContext(), com.tokopedia.abstraction.R.color.font_black_secondary_54));
+        mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mTvNoteToSellerLabel.getContext(), com.tokopedia.design.R.color.black_38));
+        mTvProductCountAndWeight.setTextColor(ContextCompat.getColor(mTvProductCountAndWeight.getContext(), com.tokopedia.design.R.color.black_38));
+        mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mTvOptionalNoteToSeller.getContext(), com.tokopedia.design.R.color.black_38));
         mTvCashback.setTextColor(ContextCompat.getColor(mTvCashback.getContext(), R.color.cashback_text_color));
-        mTvCashback.setBackground(ContextCompat.getDrawable(mTvCashback.getContext(), R.drawable.bg_cashback));
+        mTvCashback.setBackground(ContextCompat.getDrawable(mTvCashback.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_cashback));
         setImageFilterNormal();
     }
 
