@@ -53,7 +53,10 @@ class AddEditProductVariantViewModel @Inject constructor(
         get() = mGetCategoryVariantCombinationResult
 
     var productInputModel = MutableLiveData<ProductInputModel>()
-    var variantSizechart = MutableLiveData(PictureVariantInputModel())
+
+    private var mVariantSizechart = MutableLiveData(PictureVariantInputModel())
+    val variantSizechart: LiveData<PictureVariantInputModel> get() = mVariantSizechart
+
     private var mIsVariantSizechartVisible = MutableLiveData(false)
     val isVariantSizechartVisible: LiveData<Boolean> get() = mIsVariantSizechartVisible
 
@@ -146,7 +149,11 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun updateSizechart(url: String) {
         val newSizechart = PictureVariantInputModel()
         newSizechart.filePath = url
-        variantSizechart.value = newSizechart
+        mVariantSizechart.value = newSizechart
+    }
+
+    fun updateSizechart(newSizechart: PictureVariantInputModel) {
+        mVariantSizechart.value = newSizechart
     }
 
     fun updateSizechartFieldVisibility(variantDetail: VariantDetail) {

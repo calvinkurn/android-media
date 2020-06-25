@@ -468,7 +468,7 @@ class AddEditProductVariantFragment :
         if (viewModel.variantSizechart.value?.filePath.isNullOrEmpty()) {
             showSizechartPicker()
         } else {
-            val fm = activity!!.supportFragmentManager
+            val fm = this@AddEditProductVariantFragment.childFragmentManager
             val dialogFragment = AddEditProductVariantSizechartDialogFragment.newInstance()
             dialogFragment.show(fm, AddEditProductVariantSizechartDialogFragment.FRAGMENT_TAG)
             dialogFragment.setOnImageEditListener(object :
@@ -510,7 +510,9 @@ class AddEditProductVariantFragment :
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(this, Observer { productInputModel ->
             val categoryId = productInputModel.detailInputModel.categoryId
+            val sizechart = productInputModel.variantInputModel.sizecharts
             viewModel.getCategoryVariantCombination(categoryId)
+            viewModel.updateSizechart(sizechart)
         })
     }
 
@@ -527,7 +529,13 @@ class AddEditProductVariantFragment :
                 ivSizechart.visible()
                 typographySizechartDescription.text = getString(R.string.label_variant_sizechart_edit_description)
             }
-            ivSizechart.setImage(it.filePath, 0F)
+
+            // display sizechart image (use server image if exist)
+            if (it.urlThumbnail.isNotEmpty()) {
+                ivSizechart.setImage(it.urlThumbnail, 0F)
+            } else {
+                ivSizechart.setImage(it.filePath, 0F)
+            }
         })
     }
 
