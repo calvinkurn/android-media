@@ -91,7 +91,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     private fun observeLiveDuration() {
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer {
-            if (it is PlayPusherInfoState.Finish) setLiveDuration(it.timeElapsed)
+            if (it is PlayPusherInfoState.TimerFinish) setLiveDuration(it.timeElapsed)
         })
     }
 }

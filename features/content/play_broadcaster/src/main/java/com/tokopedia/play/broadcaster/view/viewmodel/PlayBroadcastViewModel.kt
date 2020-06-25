@@ -112,10 +112,6 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     init {
-        permissionUtil.checkPermission(arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO))
-        playPusher.create()
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
 
         mockChatList()
@@ -148,8 +144,6 @@ class PlayBroadcastViewModel @Inject constructor(
                     createChannel()
             }
 
-            // TODO("match local countdown timer with socket")
-            playPusher.addMaxStreamDuration(configurationUiModel.durationConfig.duration)
             playPusher.addMaxPauseDuration(configurationUiModel.durationConfig.pauseDuration)
         }
     }
@@ -176,11 +170,29 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     /**
+     * Permission
+     */
+    fun checkPermission() {
+        permissionUtil.checkPermission(arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO))
+    }
+
+    fun allPermissionGranted() = permissionUtil.isAllPermissionGranted()
+
+    fun getPermissionUtil(): PlayPermissionUtil {
+        return permissionUtil
+    }
+    /**
      * Apsara integration
      */
-    fun startPushBroadcast(ingestUrl: String) {
+    fun initPushStream() {
+        playPusher.create()
+    }
+
+    fun startPushStream(ingestUrl: String) {
         scope.launch {
-            if (ingestUrl.isNotEmpty()) {
+            if (ingestUrl.isNotEmpty() && allPermissionGranted()) {
                 startWebSocket()
                 updateChannelStatus(PlayChannelStatus.Active)
                 playPusher.startPush(ingestUrl)
@@ -190,7 +202,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun resumePushStream() {
         scope.launch {
-            if (!playPusher.isPushing()) {
+            if (!playPusher.isPushing() && allPermissionGranted()) {
                 updateChannelStatus(PlayChannelStatus.Active)
                 playPusher.resume()
             }
@@ -206,13 +218,17 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun stopPushBroadcast() {
+    fun stopPushStream() {
         scope.launch {
             updateChannelStatus(PlayChannelStatus.Finish)
             playPusher.stopPush()
             playPusher.stopPreview()
             playSocket.destroy()
         }
+    }
+
+    fun getPlayPusher(): PlayPusher {
+        return playPusher
     }
 
     private fun startWebSocket() {
@@ -245,14 +261,6 @@ class PlayBroadcastViewModel @Inject constructor(
                 metricList.remove(metric)
             }
         }
-    }
-
-    fun getPlayPusher(): PlayPusher {
-        return playPusher
-    }
-
-    fun getPermissionUtil(): PlayPermissionUtil {
-        return permissionUtil
     }
 
     /**
