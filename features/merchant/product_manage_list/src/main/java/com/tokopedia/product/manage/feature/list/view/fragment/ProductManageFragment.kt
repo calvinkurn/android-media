@@ -1448,7 +1448,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     if(data is ShowFilterTab) {
                         filterTab?.show(data)
                     } else {
-                        filterTab?.update(data)
+                        filterTab?.update(data,
+                                ::clearAllData,
+                                ::resetMultiSelect,
+                                ::disableMultiSelect,
+                                ::getProductList)
                     }
 
                     renderCheckedView()
