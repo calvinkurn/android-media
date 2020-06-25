@@ -13,16 +13,12 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.broadcaster.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlin.coroutines.CoroutineContext
 import kotlin.math.ceil
 
 
 class PlayTimerCountDown @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr), CoroutineScope {
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val progressCircular: LottieAnimationView
     private val info: LottieAnimationView
@@ -41,11 +37,6 @@ class PlayTimerCountDown @JvmOverloads constructor(
     private val animatorInfoOut: AnimatorSet
 
     private val textAnimatorSet = AnimatorSet()
-
-    private val mainJob = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = mainJob + Dispatchers.Main
 
     init {
         val view = View.inflate(context, R.layout.widget_play_timer_count_down, this)
@@ -87,13 +78,13 @@ class PlayTimerCountDown @JvmOverloads constructor(
         if (::timer.isInitialized) timer.cancel()
     }
 
-    fun startCountDown(seconds: Int, interval: Long, listener: Listener? = null){
+    fun startCountDown(seconds: Int, interval: Long = MILLIS_IN_SECOND, listener: Listener? = null){
         setupAnimator(seconds, interval)
 
-        timer = object : CountDownTimer(seconds * MILLIS_IN_SECOND, MILLIS_IN_SECOND) {
+        timer = object : CountDownTimer(seconds * interval, interval) {
 
             private var alreadyTick = false
-            private val millisDouble = MILLIS_IN_SECOND.toDouble()
+            private val intervalDouble = interval.toDouble()
 
             override fun onFinish() {
                 animatorInfoOut.start()
@@ -108,7 +99,7 @@ class PlayTimerCountDown @JvmOverloads constructor(
                     alreadyTick = true
                 }
 
-                val secondsLeft = ceil(millisUntilFinished / millisDouble).toInt()
+                val secondsLeft = ceil(millisUntilFinished / intervalDouble).toInt()
                 countText.text = secondsLeft.toString()
 
                 textAnimatorSet.start()
