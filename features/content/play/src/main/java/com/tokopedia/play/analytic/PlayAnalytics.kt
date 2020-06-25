@@ -177,7 +177,7 @@ object PlayAnalytics {
                             "view product",
                             "$channelId - ${listOfProducts[0].id} - ${channelType.value} - product in bottom sheet"
                     ),
-                    hashMapOf<String, Any>(
+                    hashMapOf(
                             "ecommerce" to hashMapOf(
                                     "currencyCode" to "IDR",
                                     "impressions" to convertProductsToListOfObject(listOfProducts)
@@ -189,6 +189,7 @@ object PlayAnalytics {
     fun clickProduct(trackingQueue: TrackingQueue,
                      channelId: String,
                      product: ProductLineUiModel,
+                     position: Int,
                      channelType: PlayChannelType) {
         trackingQueue.putEETracking(
                 EventModel(
@@ -201,7 +202,7 @@ object PlayAnalytics {
                         "ecommerce" to hashMapOf(
                                 "click" to hashMapOf(
                                         "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                                        "products" to convertProductsToListOfObject(listOf(product))
+                                        "products" to  listOf(convertProductToHashMapWithList(product, position))
                                 )
                         )
                 )
