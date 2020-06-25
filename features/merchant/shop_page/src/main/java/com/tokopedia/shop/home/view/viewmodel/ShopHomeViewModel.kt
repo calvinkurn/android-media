@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -111,11 +112,22 @@ class ShopHomeViewModel @Inject constructor(
                 newShopPageHomeLayoutUiModel.await().let { newShopPageHomeLayoutUiModelData ->
                     if(newShopPageHomeLayoutUiModelData != null) _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
                 }
+
+//                launchCatchError(coroutineContext, block = {
+//                    val carousel = getPlayWidgetCarousel(shopId, it)
+//                    if(carousel != null){
+//                        _shopHomeLayoutData.postValue(Success(carousel))
+//                    }
+//                }){
+//                    it.printStackTrace()
+//                    Log.e("LUKAS", it.toString())
+//                }
                 productList.await()?.let { productListData ->
                     _productListData.postValue(Success(productListData))
                 }
             }
         }) {
+            it.printStackTrace()
         }
     }
 
@@ -137,15 +149,12 @@ class ShopHomeViewModel @Inject constructor(
         val result = _shopHomeLayoutData.value
         if(result is Success){
             launchCatchError(block = {
-                val newShopPageHomeLayoutUiModel = asyncCatchError(
-                        dispatcherProvider.io(),
-                        block = { getPlayWidgetCarousel(shopId, result.data) },
-                        onError = {null}
-                )
-                newShopPageHomeLayoutUiModel.await()?.let {
+                val widgetCarouselData = getPlayWidgetCarousel(shopId, result.data)
+                widgetCarouselData?.let {
                     _shopHomeLayoutData.postValue(Success(it))
                 }
             }){
+                it.printStackTrace()
             }
         }
     }
