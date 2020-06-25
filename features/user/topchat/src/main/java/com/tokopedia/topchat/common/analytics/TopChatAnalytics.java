@@ -348,7 +348,7 @@ public class TopChatAnalytics {
     private String getItemList(ProductAttachmentViewModel product) {
         String blastId = product.getStringBlastId();
         if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
-            return "chat - search chat";
+            return "/chat - search chat";
         } else {
             return getField(blastId);
         }
@@ -357,7 +357,7 @@ public class TopChatAnalytics {
     private String getItemDimension40(ProductAttachmentViewModel product) {
         String blastId = product.getStringBlastId();
         if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
-            return "chat - search chat";
+            return "/chat - search chat";
         } else {
             return getField(blastId);
         }
