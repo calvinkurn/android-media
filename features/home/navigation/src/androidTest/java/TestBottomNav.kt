@@ -1,7 +1,6 @@
 package com.tokopedia.navigation
 
 import android.view.View
-import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
