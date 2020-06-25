@@ -126,7 +126,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
-    private fun loadEtalaseList() {
+    fun loadEtalaseList() {
         _observableEtalase.value = PageResult.Loading(emptyList())
         scope.launch {
             val etalaseList = getEtalaseList()

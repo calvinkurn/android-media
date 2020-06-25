@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
@@ -100,13 +101,18 @@ class PlayEtalaseListFragment @Inject constructor(
         viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
             when (it.state) {
                 PageResultState.Loading -> {
+                    etalaseSetupCoordinator.hideGlobalError()
                     etalaseAdapter.setItemsAndAnimateChanges(listOf(EtalaseLoadingUiModel))
                 }
                 is PageResultState.Success -> {
+                    etalaseSetupCoordinator.hideGlobalError()
                     etalaseAdapter.setItemsAndAnimateChanges(it.currentValue)
                     startPostponedTransition()
                 }
                 is PageResultState.Fail -> {
+                    etalaseSetupCoordinator.showGlobalError(GlobalError.SERVER_ERROR) {
+                        viewModel.loadEtalaseList()
+                    }
                     startPostponedTransition()
                 }
             }
