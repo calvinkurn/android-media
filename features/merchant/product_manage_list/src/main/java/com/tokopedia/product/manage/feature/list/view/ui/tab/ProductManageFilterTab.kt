@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.ui.tab
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -27,12 +28,14 @@ class ProductManageFilterTab(
 
     init {
         sortFilterTab.chipItems = arrayListOf()
+        changeTabSortFilterText()
     }
 
     fun show(data: GetFilterTabResult) {
         val tabs = data.tabs
         updateTabs(tabs)
         setOnClickMoreFilter(tabs)
+        changeTabSortFilterText()
     }
 
     fun update(data: GetFilterTabResult) {
@@ -60,6 +63,7 @@ class ProductManageFilterTab(
                 return@forEachIndexed
             }
         }
+        changeTabSortFilterText()
     }
 
     private fun updateTabs(tabs: List<FilterTabViewModel>) {
@@ -101,6 +105,7 @@ class ProductManageFilterTab(
         } else {
             activeFilterCount
         }
+        changeTabSortFilterText()
     }
 
     fun getProductCount(): Int = selectedTab?.count.orZero()
@@ -154,5 +159,9 @@ class ProductManageFilterTab(
             type = ChipsUnify.TYPE_NORMAL
         }
         selectedTab = null
+    }
+
+    private fun changeTabSortFilterText() {
+        sortFilterTab.textView.text = context.getString(R.string.product_manage_filter)
     }
 }
