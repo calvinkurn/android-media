@@ -16,7 +16,7 @@ import androidx.transition.Slide
 import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -241,13 +241,13 @@ class PlayEtalasePickerFragment @Inject constructor(
         errorEtalase.setActionClickListener { errorAction() }
         errorEtalase.show()
 
-        tvInfo.gone()
-        psbSearch.gone()
-        flEtalaseFlow.gone()
+        tvInfo.hide()
+        psbSearch.hide()
+        flEtalaseFlow.hide()
     }
 
     override fun hideGlobalError() {
-        errorEtalase.gone()
+        errorEtalase.hide()
 
         tvInfo.show()
         psbSearch.show()

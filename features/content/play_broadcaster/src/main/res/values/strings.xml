@@ -17,6 +17,9 @@
     <string name="play_product_not_found_title">Oops, produk nggak ditemukan</string>
     <string name="play_product_not_found_desc">Coba kata kunci lain untuk menemukan produk yang kamu inginkan</string>
 
+    <string name="play_product_etalase_empty_title">Yaah, etalase produkmu masih kosong</string>
+    <string name="play_product_etalase_empty_desc">Ayo tambah produk dulu supaya bisa ditampilkan di etalase ini</string>
+
     <string name="play_action_bar_prepare_title">Buat Live Streaming</string>
     <string name="play_action_bar_prepare_final_title">Ayo cek lagi info di bawah\n ini sebelum mulai!</string>
     <string name="play_action_bar_end">End</string>
