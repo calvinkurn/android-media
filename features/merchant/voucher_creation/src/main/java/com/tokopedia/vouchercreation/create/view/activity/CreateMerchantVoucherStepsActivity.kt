@@ -107,7 +107,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     PromotionBudgetAndTypeFragment.createInstance(
                             ::setVoucherBenefit,
                             ::getBannerVoucherUiModel,
-                            viewModel::setVoucherPreviewBitmap,
                             ::getBannerBaseUiModel,
                             ::onSetShopInfo,
                             ::getVoucherReviewUiModel,
@@ -204,8 +203,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private var currentStepPosition = 0
 
     private var currentProgress = 0
-
-    private var voucherBitmap: Bitmap? = null
 
     private var promoCodePrefix = ""
 
@@ -358,9 +355,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     createMerchantVoucherViewPager?.currentItem = stepPosition
                 }
             }
-        })
-        viewModel.voucherPreviewBitmapLiveData.observe(this, Observer { bitmap ->
-            voucherBitmap = bitmap
         })
         viewModel.initiateVoucherLiveData.observe(this, Observer { result ->
             createMerchantVoucherLoader?.gone()

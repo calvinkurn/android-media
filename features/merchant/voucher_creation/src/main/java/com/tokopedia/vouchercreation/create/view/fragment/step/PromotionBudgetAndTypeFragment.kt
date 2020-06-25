@@ -48,14 +48,12 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
         @JvmStatic
         fun createInstance(onNext: (VoucherImageType, Int, Int) -> Unit,
                            getVoucherUiModel: () -> BannerVoucherUiModel,
-                           setVoucherBitmap: (Bitmap) -> Unit,
                            getBannerBaseUiModel: () -> BannerBaseUiModel,
                            onSetShopInfo: (String, String) -> Unit,
                            getVoucherReviewData: () -> VoucherReviewUiModel,
                            isCreateNew: Boolean) = PromotionBudgetAndTypeFragment().apply {
             this.onNextStep = onNext
             this.getVoucherUiModel = getVoucherUiModel
-            this.setVoucherBitmap = setVoucherBitmap
             this.getBannerBaseUiModel = getBannerBaseUiModel
             this.onSetShopInfo = onSetShopInfo
             this.getVoucherReviewData = getVoucherReviewData
@@ -71,7 +69,6 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                 "",
                 "")
     }
-    private var setVoucherBitmap: (Bitmap) -> Unit = { _ -> }
     private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
         BannerBaseUiModel(
                 CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
@@ -192,10 +189,6 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                     }
                     isWaitingForShopInfo = false
                 }
-            }
-            observe(viewModel.bannerBitmapLiveData) { bitmap ->
-                bannerImage?.setImageBitmap(bitmap)
-                setVoucherBitmap(bitmap)
             }
         }
 
