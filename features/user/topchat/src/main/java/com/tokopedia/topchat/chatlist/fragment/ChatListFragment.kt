@@ -44,6 +44,7 @@ import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImp
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
@@ -610,6 +611,12 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
             if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_UNREAD)) {
                 image = CHAT_BUYER_EMPTY
                 title = it.getString(R.string.empty_chat_read_all_title)
+                subtitle = ""
+                ctaText = ""
+                ctaApplink = ""
+            } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_TOPBOT)) {
+                image = CHAT_BUYER_EMPTY
+                title = it.getString(R.string.empty_chat_smart_reply)
                 subtitle = ""
                 ctaText = ""
                 ctaApplink = ""
