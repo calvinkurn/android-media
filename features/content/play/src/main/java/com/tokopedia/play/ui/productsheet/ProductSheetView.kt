@@ -59,8 +59,8 @@ class ProductSheetView(
             listener.onAtcButtonClicked(this@ProductSheetView, product)
         }
 
-        override fun onClickProductCard(product: ProductLineUiModel) {
-            listener.onProductCardClicked(this@ProductSheetView, product)
+        override fun onClickProductCard(product: ProductLineUiModel, position: Int) {
+            listener.onProductCardClicked(this@ProductSheetView, product, position)
         }
     })
     private val voucherAdapter = MerchantVoucherAdapter()
@@ -211,7 +211,7 @@ class ProductSheetView(
         fun onCloseButtonClicked(view: ProductSheetView)
         fun onBuyButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
         fun onAtcButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
-        fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel)
+        fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel, position: Int)
         fun onVoucherScrolled(lastPositionViewed: Int)
         fun onEmptyButtonClicked(partnerId: Long)
     }
