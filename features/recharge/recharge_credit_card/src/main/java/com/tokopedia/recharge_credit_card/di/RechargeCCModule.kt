@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalCommonScope
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.Iris
@@ -74,18 +75,20 @@ class RechargeCCModule {
     internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
                                      digitalInterceptor: DigitalInterceptor,
-                                     chuckerInterceptor: ChuckerInterceptor,
+                                     chuckInterceptor: ChuckerInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
         val builder = OkHttpClient.Builder()
-        return builder
-                .addInterceptor(digitalInterceptor)
+        builder.addInterceptor(digitalInterceptor)
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(chuckerInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .build()
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(chuckInterceptor)
+        }
+        return builder.build()
     }
 
     @Provides
