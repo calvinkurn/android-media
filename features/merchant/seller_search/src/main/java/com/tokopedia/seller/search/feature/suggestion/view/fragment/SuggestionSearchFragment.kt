@@ -16,7 +16,6 @@ import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ALL
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FITUR
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PESANAN
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUK
-import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.SEMUA
 import com.tokopedia.seller.search.common.util.FilterItemDecoration
 import com.tokopedia.seller.search.common.util.OnScrollListenerAutocomplete
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
