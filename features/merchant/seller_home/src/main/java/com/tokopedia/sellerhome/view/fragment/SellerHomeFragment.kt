@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.NavigationSearchTracking
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
@@ -54,6 +55,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import javax.inject.Inject
 
@@ -82,6 +84,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var widgetHasMap = hashMapOf<String, MutableList<BaseWidgetUiModel<*>>>()
     private val sellerHomeViewModel by lazy {
@@ -171,6 +176,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             NavigationTracking.sendClickNotificationEvent()
         } else if(item.itemId == SEARCH_MENU_ID) {
             RouteManager.route(requireContext(), ApplinkConst.SELLER_SEARCH)
+            NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
         }
         return super.onOptionsItemSelected(item)
     }
