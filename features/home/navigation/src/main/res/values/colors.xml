@@ -7,4 +7,5 @@
 
     <color name="color_active_bottom_nav">#00AA5B</color>
     <color name="color_active_bottom_nav_os">#7F37D7</color>
+    <color name="color_line_bottom_nav">#E4EAF3</color>
 </resources>
