@@ -172,6 +172,9 @@ class CreateMerchantVoucherStepsViewModelTest {
         val dummySuccessInitiateVoucher = InitiateVoucherUiModel()
 
         coEvery {
+            userSession.userId
+        } returns "1"
+        coEvery {
             basicShopInfoUseCase.executeOnBackground()
         } returns dummySuccessBasicInfo
         coEvery {
@@ -190,9 +193,12 @@ class CreateMerchantVoucherStepsViewModelTest {
     }
 
     @Test
-    fun `failed initiate edit duplicate voucher`() {
+    fun `failed initiate edit duplicate voucher`() = runBlocking {
         val throwable = MessageErrorException("")
 
+        coEvery {
+            userSession.userId
+        } returns "1"
         coEvery {
             basicShopInfoUseCase.executeOnBackground()
         } throws throwable
@@ -201,6 +207,8 @@ class CreateMerchantVoucherStepsViewModelTest {
         } throws throwable
 
         mViewModel.initiateEditDuplicateVoucher()
+
+        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             basicShopInfoUseCase.executeOnBackground()
