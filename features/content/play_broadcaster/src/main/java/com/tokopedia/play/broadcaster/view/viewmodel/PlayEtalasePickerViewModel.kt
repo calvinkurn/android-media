@@ -265,7 +265,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
             NetworkResult.Success(Pair(
                     PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
-                    productList.totalData
+                    productList.meta.totalHits
             ))
         } catch (e: Throwable) {
             NetworkResult.Fail(e)
@@ -290,7 +290,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
         return@withContext Pair(
                 PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
-                productList.totalData
+                productList.meta.totalHits
         )
     }
 
