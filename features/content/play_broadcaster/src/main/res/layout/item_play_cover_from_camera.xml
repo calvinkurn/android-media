@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_open_camera"
+    android:layout_width="@dimen/play_cover_from_selection_size"
+    android:layout_height="@dimen/play_cover_from_selection_size"
+    android:background="@drawable/bg_play_select_from_camera"
+    android:gravity="center"
+    android:orientation="vertical"
+    app:layout_constraintEnd_toStartOf="@+id/rv_product_cover"
+    app:layout_constraintHorizontal_chainStyle="packed"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        app:srcCompat="@drawable/ic_play_action_camera_white"
+        />
+
+</LinearLayout>

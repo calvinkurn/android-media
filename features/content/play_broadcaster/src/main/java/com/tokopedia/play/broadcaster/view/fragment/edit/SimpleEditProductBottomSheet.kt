@@ -21,11 +21,14 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
@@ -44,6 +47,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
+    private lateinit var parentViewModel: PlayBroadcastViewModel
     private lateinit var viewModel: PlayEditProductViewModel
     private lateinit var dataStoreViewModel: DataStoreViewModel
 
@@ -61,6 +65,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEditProductViewModel::class.java)
         dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
@@ -81,6 +86,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeSelectedProducts()
+        observeUploadProduct()
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -107,7 +113,9 @@ class SimpleEditProductBottomSheet @Inject constructor(
         rvSelectedProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
         rvSelectedProduct.addOnScrollListener(StopFlingScrollListener())
 
-        btnAction.setOnClickListener { mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore()) }
+        btnAction.setOnClickListener {
+            viewModel.uploadProduct(parentViewModel.channelId)
+        }
         tvChooseOver.setOnClickListener { mListener?.onChooseOver() }
 
         setSelectedProductList(viewModel.selectedProducts)
@@ -149,7 +157,26 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private fun observeSelectedProducts() {
         viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
             updateTitle(it.size)
-            btnAction.isEnabled = it.size != selectableProductAdapter.itemCount
+            btnAction.isEnabled = (it.size != selectableProductAdapter.itemCount) && it.isNotEmpty()
+        })
+    }
+
+    private fun observeUploadProduct() {
+        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                NetworkResult.Loading -> btnAction.isLoading = true
+                is NetworkResult.Fail -> {
+                    btnAction.isLoading = false
+                    Toaster.make(requireView(), it.error.localizedMessage)
+                }
+                is NetworkResult.Success -> {
+                    val data = it.data.getContentIfNotHandled()
+                    if (data != null) {
+                        btnAction.isLoading = false
+                        mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore())
+                    }
+                }
+            }
         })
     }
 

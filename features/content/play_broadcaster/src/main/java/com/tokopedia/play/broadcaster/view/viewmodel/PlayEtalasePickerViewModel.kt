@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
@@ -50,8 +51,9 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableSelectedEtalase
     private val _observableSelectedEtalase = MutableLiveData<PageResult<EtalaseContentUiModel>>()
 
-    val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
-        get() = setupDataStore.getObservableSelectedProducts()
+    val observableSelectedProducts: LiveData<List<ProductContentUiModel>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
+        dataList.map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
+    }
 
     val observableUploadProductEvent: LiveData<NetworkResult<Event<Unit>>>
         get() = _observableUploadProductEvent
@@ -60,7 +62,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
 
     val selectedProductList: List<ProductContentUiModel>
-        get() = setupDataStore.getSelectedProducts()
+        get() = setupDataStore.getSelectedProducts().map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
 
     private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
@@ -89,7 +91,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     fun selectProduct(productId: Long, isSelected: Boolean) {
         productsMap[productId]?.let {
-            setupDataStore.selectProduct(it, isSelected)
+            setupDataStore.selectProduct(it.extractData(), isSelected)
         }
     }
 
@@ -102,15 +104,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     fun uploadProduct(channelId: String) {
         _observableUploadProductEvent.value = NetworkResult.Loading
-//        scope.launch {
-//            val result = setupDataStore.uploadSelectedProducts(channelId)
-//                if (result is NetworkResult.Success) _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
-//                else if (result is NetworkResult.Fail) _observableUploadProductEvent.value = result
-//        }
-        //TODO("Remove Mock Behavior")
         scope.launch {
-            delay(1500)
-            _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
+            val result = setupDataStore.uploadSelectedProducts(channelId)
+                if (result is NetworkResult.Success) _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
+                else if (result is NetworkResult.Fail) _observableUploadProductEvent.value = result
         }
     }
 
@@ -167,18 +164,30 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
             } else {
                 //if not yet retrieved
-                val (productList, totalData) = getEtalaseProductsById(etalaseId, page)
-                etalase.productMap[page] = productList.map {
-                    it.copy(transitionName = "$etalaseId - ${it.id}")
+                when (val etalaseProductResult = getEtalaseProductsById(etalaseId, page)) {
+                    is NetworkResult.Success -> {
+                        val (productList, totalData) = etalaseProductResult.data
+                        etalase.productMap[page] = productList.map {
+                            it.copy(transitionName = "$etalaseId - ${it.id}")
+                        }
+                        launch { updateProductMap(productList) }
+
+                        val stillHasNextPage = etalase.productMap.values.size < totalData
+
+                        PageResult(
+                                currentValue = etalase.copy(stillHasProduct = stillHasNextPage),
+                                state = PageResultState.Success(stillHasNextPage)
+                        )
+                    }
+                    is NetworkResult.Fail -> {
+                        PageResult(
+                                currentValue = etalase,
+                                state = PageResultState.Fail(etalaseProductResult.error)
+                        )
+                    }
+                    else -> throw IllegalStateException("Impossible state other than success and fail")
                 }
-                launch { updateProductMap(productList) }
 
-                val stillHasNextPage = etalase.productMap.values.size < totalData
-
-                PageResult(
-                        currentValue = etalase.copy(stillHasProduct = stillHasNextPage),
-                        state = PageResultState.Success(stillHasNextPage)
-                )
             }
         } else {
             PageResult(
@@ -243,40 +252,30 @@ class PlayEtalasePickerViewModel @Inject constructor(
         newProductList.associateByTo(productsMap) { it.id }
     }
 
-    private suspend fun getEtalaseProductsById(etalaseId: String, page: Int) = withContext(dispatcher.io) {
-        val productList = getProductsInEtalaseUseCase.apply {
-            params = GetProductsInEtalaseUseCase.createParams(
-                    shopId = userSession.shopId,
-                    page = page,
-                    perPage = PRODUCTS_PER_PAGE,
-                    etalaseId = etalaseId
-            )
-        }.executeOnBackground()
+    private suspend fun getEtalaseProductsById(etalaseId: String, page: Int): NetworkResult<Pair<List<ProductContentUiModel>, Int>> = withContext(dispatcher.io) {
+        return@withContext try {
+            val productList = getProductsInEtalaseUseCase.apply {
+                params = GetProductsInEtalaseUseCase.createParams(
+                        shopId = userSession.shopId,
+                        page = page,
+                        perPage = PRODUCTS_PER_PAGE,
+                        etalaseId = etalaseId
+                )
+            }.executeOnBackground()
 
-        return@withContext Pair(
-                PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
-                productList.totalData
-        )
+            NetworkResult.Success(Pair(
+                    PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
+                    productList.totalData
+            ))
+        } catch (e: Throwable) {
+            NetworkResult.Fail(e)
+        }
+//        return@withContext NetworkResult.Success(Pair(PlayBroadcastMocker.getMockProductList(10), 10))
     }
 
     private suspend fun getEtalaseList() = withContext(dispatcher.io) {
         val etalaseList = getSelfEtalaseListUseCase.executeOnBackground()
         return@withContext PlayBroadcastUiMapper.mapEtalaseList(etalaseList)
-    }
-
-    private suspend fun getSearchSuggestions(keyword: String) = withContext(dispatcher.io) {
-        return@withContext if (keyword.isEmpty()) emptyList() else {
-            val suggestionList = getProductsInEtalaseUseCase.apply {
-                params = GetProductsInEtalaseUseCase.createParams(
-                        shopId = userSession.shopId,
-                        page = 1,
-                        perPage = SEARCH_SUGGESTIONS_PER_PAGE,
-                        keyword = keyword
-                )
-            }.executeOnBackground()
-
-            PlayBroadcastUiMapper.mapSearchSuggestionList(keyword, suggestionList)
-        }
     }
 
     private suspend fun getProductsByKeyword(keyword: String, page: Int) = withContext(dispatcher.io) {
@@ -299,6 +298,5 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
         private const val MAX_PRODUCT_IMAGE_COUNT = 4
         private const val PRODUCTS_PER_PAGE = 26
-        private const val SEARCH_SUGGESTIONS_PER_PAGE = 30
     }
 }

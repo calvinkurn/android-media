@@ -5,7 +5,5 @@
     android:id="@+id/iv_thumbnail"
     android:layout_width="@dimen/play_cover_from_selection_size"
     android:layout_height="@dimen/play_cover_from_selection_size"
-    android:layout_marginEnd="@dimen/play_dp_12"
-    android:layout_marginRight="@dimen/play_dp_12"
     app:cornerRadius="@dimen/spacing_lvl3"
     tools:src="@drawable/bg_play_title" />

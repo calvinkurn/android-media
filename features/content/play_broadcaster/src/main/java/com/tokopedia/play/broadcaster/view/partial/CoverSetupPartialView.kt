@@ -5,6 +5,7 @@ import android.net.Uri
 import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -18,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
+
 
 class CoverSetupPartialView(
         container: ViewGroup,
@@ -131,9 +133,7 @@ class CoverSetupPartialView(
     }
 
     private fun setupTitleTextField() {
-        etCoverTitle.setTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-        etCoverTitle.setHintTextColor(getColor(R.color.play_white_68))
-        etCoverTitle.setSingleLine(false)
+        etCoverTitle.setRawInputType(InputType.TYPE_CLASS_TEXT)
         etCoverTitle.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
@@ -147,6 +147,10 @@ class CoverSetupPartialView(
                 updateButtonState()
             }
         })
+        etCoverTitle.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) v.clearFocus()
+            false
+        }
         etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(mMaxTitleChars))
     }
 

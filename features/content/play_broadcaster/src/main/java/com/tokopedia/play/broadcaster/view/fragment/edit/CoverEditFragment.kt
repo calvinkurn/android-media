@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
-import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
@@ -98,12 +98,12 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
                         }
 
                         override fun onGetFromCamera(uri: Uri) {
-                            viewModel.setCroppingCoverByUri(uri, CoverSourceEnum.CAMERA)
+                            viewModel.setCroppingCoverByUri(uri, CoverSource.Camera)
                             openCoverCropEditFragment()
                         }
 
                         override fun onGetFromGallery(uri: Uri) {
-                            viewModel.setCroppingCoverByUri(uri, CoverSourceEnum.GALLERY)
+                            viewModel.setCroppingCoverByUri(uri, CoverSource.Gallery)
                             openCoverCropEditFragment()
                         }
                     },

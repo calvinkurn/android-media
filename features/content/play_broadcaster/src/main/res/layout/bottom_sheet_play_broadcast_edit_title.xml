@@ -24,7 +24,8 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:background="@drawable/unify_textfield_bg"
         android:hint="@string/play_prepare_cover_title_default_title_placeholder"
-        android:inputType="text"
+        android:inputType="textMultiLine"
+        android:imeOptions="actionDone"
         android:textColor="@color/Neutral_N700_96" />
 
     <com.tokopedia.unifyprinciples.Typography

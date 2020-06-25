@@ -11,11 +11,11 @@
         android:id="@+id/iv_image_preview"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/play_before_live_image_height"
+        android:background="@drawable/bg_play_cover"
         android:scaleType="centerInside"
-        app:layout_constraintStart_toStartOf="@id/btn_start_live"
-        app:layout_constraintDimensionRatio="W, 56:100"
         app:layout_constraintBottom_toBottomOf="@id/iv_share_link"
-        tools:background="@color/Neutral_N700_68"
+        app:layout_constraintDimensionRatio="W, 56:100"
+        app:layout_constraintStart_toStartOf="@id/btn_start_live"
         />
 
     <LinearLayout
