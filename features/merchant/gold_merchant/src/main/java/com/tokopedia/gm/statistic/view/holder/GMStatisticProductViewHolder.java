@@ -11,7 +11,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.gm.statistic.view.widget.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;

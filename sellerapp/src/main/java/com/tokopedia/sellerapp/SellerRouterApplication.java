@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
@@ -45,8 +46,6 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.inbox.common.ResolutionRouter;
-import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
@@ -62,7 +61,6 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
@@ -100,6 +98,7 @@ import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachP
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -135,7 +134,6 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter,
         SellerHomeRouter,
         LoginRouter {
 
@@ -309,27 +307,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getPhoneVerificationActivationIntent(Context context) {
-        return PhoneVerificationActivationActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public Intent getLoginGoogleIntent(Context context) {
-        return LoginActivity.DeepLinkIntents.getAutoLoginGoogle(context);
-    }
-
-    @Override
-    public Intent getLoginFacebookIntent(Context context) {
-        return LoginActivity.DeepLinkIntents.getAutoLoginFacebook(context);
-
-    }
-
-    @Override
-    public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return LoginActivity.DeepLinkIntents.getAutoLoginWebview(context, name, url);
-    }
-
-    @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
     }
@@ -389,6 +366,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
         return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    @Override
+    public Class getReviewFragmentClass() {
+        return ReviewShopFragment.class;
     }
 
     @Override
@@ -555,11 +537,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void refreshFCMTokenFromForegroundToCM() {
 
-    }
-
-    @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
     }
 
     @Override

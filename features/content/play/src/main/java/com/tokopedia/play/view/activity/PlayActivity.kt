@@ -18,10 +18,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.*
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.util.observer.PlayVideoUtilObserver
+import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
-import com.tokopedia.play_common.util.PlayLifecycleObserver
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
+import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 
@@ -29,7 +32,7 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  * {@link com.tokopedia.applink.internal.ApplinkConstInternalContent#PLAY_DETAIL}
  */
-class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
+class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
     companion object {
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
@@ -42,10 +45,16 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     }
 
     @Inject
-    lateinit var playLifecycleObserver: PlayLifecycleObserver
+    lateinit var playLifecycleObserver: PlayVideoPlayerObserver
+
+    @Inject
+    lateinit var playVideoUtilObserver: PlayVideoUtilObserver
 
     @Inject
     lateinit var playProcessLifecycleObserver: PlayProcessLifecycleObserver
+
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
@@ -101,6 +110,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
+        lifecycle.addObserver(playVideoUtilObserver)
         ProcessLifecycleOwner.get()
                 .lifecycle.addObserver(playProcessLifecycleObserver)
     }
@@ -111,20 +121,27 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
         }
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed(isSystemBack: Boolean) {
         val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
         if (fragment != null && fragment is PlayFragment) {
             if (!fragment.onBackPressed()) {
-                if (isTaskRoot) {
-                    val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    fragment.setResultBeforeFinish()
-                    supportFinishAfterTransition()
+                if (isSystemBack && orientation.isLandscape) fragment.onOrientationChanged(ScreenOrientation.Portrait, false)
+                else {
+                    if (isTaskRoot) {
+                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        fragment.setResultBeforeFinish()
+                        supportFinishAfterTransition()
+                    }
                 }
             }
         } else super.onBackPressed()
+    }
+
+    override fun onBackPressed() {
+        onBackPressed(true)
     }
 
     override fun onDestroy() {

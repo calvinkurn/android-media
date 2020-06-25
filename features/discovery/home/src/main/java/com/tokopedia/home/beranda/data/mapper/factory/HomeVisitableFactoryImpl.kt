@@ -23,6 +23,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.base.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.ProductImage
@@ -30,9 +36,11 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChanne
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
+import kotlin.collections.HashMap
 
-@Suppress("DEPRECATION")
-class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) : HomeVisitableFactory {
+class HomeVisitableFactoryImpl(
+        val userSessionInterface: UserSessionInterface?,
+        val remoteConfig: RemoteConfig) : HomeVisitableFactory {
     private var context: Context? = null
     private var trackingQueue: TrackingQueue? = null
     private var homeData: HomeData? = null
@@ -51,6 +59,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
         private const val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
         private const val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
         private const val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
+        private const val PROMO_NAME_CATEGORY_WIDGET = "/ - p%s - category widget banner - %s"
         private const val PROMO_NAME_SPRINT = "/ - p%s - %s"
         private const val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
         private const val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
@@ -168,10 +177,14 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                             trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
                             isCombined = true)
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingDataForCombination = channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
-                            isCombined = true)
+                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                        createDynamicLegoBannerComponent(channel, position, isCache)
+                    } else {
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingDataForCombination = channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
+                                isCombined = true)
+                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
                     createDynamicChannel(channel)
@@ -209,14 +222,24 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                     if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
-                    )
+                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                        createRecommendationListCarouselComponent(channel, position, isCache)
+                    } else {
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
+                        )
+                    }
                 }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
-                        channel = channel
-                )}
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
+                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                        createMixLeftComponent(channel, position, isCache)
+                    } else {
+                        createDynamicChannel(
+                                channel = channel
+                        )
+                    }
+                }
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createDynamicChannel(
                             channel = channel,
@@ -225,9 +248,15 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
-                        channel
-                ) }
+                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> {
+                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                        createMixTopComponent(channel, position, isCache)
+                    } else {
+                        createDynamicChannel(
+                                channel = channel
+                        )
+                    }
+                }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                     createDynamicChannel(
@@ -264,6 +293,42 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                 trackingDataForCombination,
                 isCombined,
                 isCache))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createDynamicLegoBannerComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingDynamicLegoBannerComponent(
+                channel,
+                isCache,
+                verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createRecommendationListCarouselComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingRecommendationListCarouselComponent(
+                channel,
+                isCache,
+                verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createMixLeftComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingMixLeftComponent(
+                channel, isCache, verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createMixTopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingMixTopComponent(
+                channel, isCache, verticalPosition
+        ))
         context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
                 visitableList.size, channel) }
     }
@@ -307,7 +372,11 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
             } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT) {
                 channel.promoName = String.format(PROMO_NAME_MIX_LEFT, position.toString(), channel.header.name)
                 channel.setPosition(position)
-            } else {
+            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET) {
+                channel.promoName = String.format(PROMO_NAME_CATEGORY_WIDGET, position.toString(), channel.header.name)
+                channel.setPosition(position)
+            }
+            else {
                 val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name
                 val layoutType = if (channel.layout.isEmpty()) VALUE_BANNER_UNKNOWN_LAYOUT_TYPE else channel.layout
                 channel.promoName = String.format(PROMO_NAME_UNKNOWN, position.toString(), layoutType, headerName)
@@ -360,6 +429,52 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
         }
         viewModel.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
                 channel.header.serverTimeUnix
+        )
+        return viewModel
+    }
+
+    private fun mappingDynamicLegoBannerComponent(channel: DynamicHomeChannel.Channels,
+                                                  isCache: Boolean,
+                                                  verticalPosition: Int): Visitable<*> {
+        val viewModel = DynamicLegoBannerDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        )
+        if (!isCache) {
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
+                    trackingQueue,
+                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+        }
+        return viewModel
+    }
+
+    private fun mappingRecommendationListCarouselComponent(channel: DynamicHomeChannel.Channels,
+                                                  isCache: Boolean,
+                                                  verticalPosition: Int): Visitable<*> {
+        val viewModel = RecommendationListCarouselDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        )
+        if (!isCache) {
+            trackingQueue?.putEETracking(
+                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as java.util.HashMap<String, Any>
+            )
+        }
+        return viewModel
+    }
+
+    private fun mappingMixLeftComponent(channel: DynamicHomeChannel.Channels,
+                                        isCache: Boolean,
+                                        verticalPosition: Int): Visitable<*> {
+        val viewModel = MixLeftDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        )
+        return viewModel
+    }
+
+    private fun mappingMixTopComponent(channel: DynamicHomeChannel.Channels,
+                                        isCache: Boolean,
+                                        verticalPosition: Int): Visitable<*> {
+        val viewModel = MixTopDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
         return viewModel
     }

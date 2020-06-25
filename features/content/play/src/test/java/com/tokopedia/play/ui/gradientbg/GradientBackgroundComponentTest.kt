@@ -176,7 +176,7 @@ class GradientBackgroundComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class GradientBackgroundComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : GradientBackgroundComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class GradientBackgroundComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : GradientBackgroundComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): GradientBackgroundView {
             return mockk(relaxed = true)
         }

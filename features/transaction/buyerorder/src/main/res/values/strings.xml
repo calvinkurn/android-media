@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="title_order_list">Daftar Transaksi</string>
     <string name="event_ticket_voucher_number_multiple">E-Voucher #</string>
     <string name="event_ticket_voucher_number">E-Voucher</string>
     <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>
@@ -428,7 +429,11 @@ Anda di sini.</string>
     <string name="popup_selesai_desc">Dengan klik selesai, dana akan diteruskan ke penjual dan Anda tidak dapat mengajukan komplain</string>
     <string name="popup_selesai_ok_btn">Selesai</string>
     <string name="popup_selesai_cancel_btn">Kembali</string>
-    <string name="title_order_list">Daftar Transaksi</string>
+    <string name="title_other_reason">Lainnya</string>
+    <string name="error_note_empty">Catatan harus diisi</string>
+
+    <string name="msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
 
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="store_name_placeholder">Store Name 24 Character</string>

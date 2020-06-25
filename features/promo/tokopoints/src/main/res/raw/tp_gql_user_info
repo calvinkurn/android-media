@@ -1,5 +1,5 @@
-query {
-    mf_get_user_info{
-      verified_msisdn
-    }
+query getProfile {
+  profile {
+    phone_verified
+  }
 }

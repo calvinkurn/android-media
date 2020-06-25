@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.query
 
 object HomeQuery{
     fun getQuery() = """
+        query homeData
         {
         status
           ticker {
@@ -111,6 +112,8 @@ object HomeQuery{
                   type
                 }
                 has_buy_button
+                rating
+                count_review
               }
               banner {
                 id

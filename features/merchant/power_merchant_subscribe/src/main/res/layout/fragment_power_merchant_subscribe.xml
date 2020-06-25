@@ -106,6 +106,26 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
+            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantFreeShippingView
+                android:id="@+id/freeShippingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/spacing_lvl5"/>
+
+            <com.tokopedia.unifycomponents.LocalLoad
+                android:id="@+id/freeShippingError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                app:unify_local_load_description="@string/power_merchant_click_to_reload"
+                app:unify_local_load_title="@string/power_merchant_free_shipping_load_error"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:visibility="gone" />
+
             <include
                 android:id="@+id/base_partial_benefit"
                 layout="@layout/partial_power_merchant_benefit"

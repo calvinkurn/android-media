@@ -223,8 +223,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.topAdsCreate)
     implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.tkpdsession)
-    implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
@@ -263,10 +261,9 @@ dependencies {
     implementation project(rootProject.ext.features.flashsaleManagementCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.opportunity)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.settingbank)
-    implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.managepassword)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.commonDigital)
@@ -353,7 +350,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.miscDependencies.rxJavaMath
 
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.logger)
