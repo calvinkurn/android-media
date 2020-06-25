@@ -9,7 +9,9 @@ data class AddToCartExternalGqlResponse(
 
 data class AddToCartExternalResponse(
         @SerializedName("data")
-        val data: DataResponse = DataResponse()
+        val data: DataResponse = DataResponse(),
+        @SerializedName("status")
+        val status: String = ""
 )
 
 data class DataResponse(

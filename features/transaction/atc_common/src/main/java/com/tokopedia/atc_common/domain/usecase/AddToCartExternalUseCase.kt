@@ -31,7 +31,7 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val response = it.getData<AddToCartExternalGqlResponse>(AddToCartExternalGqlResponse::class.java)
-            if (response != null) {
+            if (response != null && response.response.status.equals("OK", true)) {
                 val result = addToCartDataMapper.map(response)
                 if (result.success == 1) {
                     analytics.sendEnhancedEcommerceTracking(result.data)
@@ -40,7 +40,7 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
                 } else {
                     var message = ATC_ERROR_GLOBAL
                     if (response.response.data.message.isNotEmpty()) {
-                        message = response.response.data.message.joinToString { ". " }
+                        message = response.response.data.message[0]
                     }
                     throw AddToCartResponseErrorException(message)
                 }

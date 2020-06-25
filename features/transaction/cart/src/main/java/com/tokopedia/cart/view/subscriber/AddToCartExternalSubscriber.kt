@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.subscriber
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cart.view.ICartListView
 import rx.Subscriber
+import timber.log.Timber
 
 class AddToCartExternalSubscriber(val view: ICartListView?) : Subscriber<AddToCartExternalModel>() {
 
@@ -11,7 +12,7 @@ class AddToCartExternalSubscriber(val view: ICartListView?) : Subscriber<AddToCa
     }
 
     override fun onError(e: Throwable) {
-        e.printStackTrace()
+        Timber.d(e)
         if (view != null) {
             view.hideProgressLoading()
             view.showToastMessageRed(e)

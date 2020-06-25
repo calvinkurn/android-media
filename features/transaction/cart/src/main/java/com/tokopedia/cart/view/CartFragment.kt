@@ -2532,7 +2532,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun isAtcExternalFlow(): Boolean {
-        return getAtcProductId() != 0L || getAtcProductId() == INVALID_PRODUCT_ID
+        return getAtcProductId() != 0L
     }
 
     override fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops,
