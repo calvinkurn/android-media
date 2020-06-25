@@ -48,11 +48,6 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         proceed()
     }
 
-    override fun onStart() {
-        super.onStart()
-        SellerSearchTracking.sendScreenSearchEvent(userSession.userId.orEmpty())
-    }
-
     override fun getComponent(): InitialSearchComponent {
         return DaggerInitialSearchComponent
                 .builder()

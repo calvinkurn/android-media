@@ -62,6 +62,11 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         userId = userSession.userId.orEmpty()
     }
 
+    override fun onStart() {
+        super.onStart()
+        SellerSearchTracking.sendScreenSearchEvent(userSession.userId.orEmpty())
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.initial_search_fragment, container, false)
