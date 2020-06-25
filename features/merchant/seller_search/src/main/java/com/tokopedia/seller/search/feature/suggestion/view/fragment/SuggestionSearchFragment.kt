@@ -175,7 +175,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
         sendTrackingSelectedFilter(title)
         val section = if(title == ALL) "" else title
         positionFilter = position
-        onFilterSearchSuggestion(section, positionFilter)
+        onFilterSearchSuggestion(title, section)
     }
 
     override fun onNavigationItemClicked(data: ItemSellerSearchUiModel, position: Int) {
@@ -208,13 +208,14 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun onFilterSearchSuggestion(section: String, position: Int) {
+    private fun onFilterSearchSuggestion(title: String, section: String) {
         suggestionSearchAdapter.apply {
             rvSearchFilter?.hide()
             clearAllElements()
             addLoading()
         }
-        viewModel.getSellerSearch(keyword = searchKeyword, section = section, shopId = shopId, position = position)
+        val isFilter = title != ALL
+        viewModel.getSellerSearch(keyword = searchKeyword, section = section, shopId = shopId, isFilter = isFilter, title = title)
     }
 
 }

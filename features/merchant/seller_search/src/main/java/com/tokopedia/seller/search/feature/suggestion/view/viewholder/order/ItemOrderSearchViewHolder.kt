@@ -4,9 +4,12 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.CUSTOMER
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.INV
 import com.tokopedia.seller.search.common.util.indexOfSearchQuery
 import com.tokopedia.seller.search.common.util.safeSetSpan
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
@@ -19,12 +22,26 @@ class ItemOrderSearchViewHolder(
 ) : RecyclerView.ViewHolder(itemViewOrder) {
 
     fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
-        itemViewOrder.ivSearchResultOrder?.setImageUrl(itemSellerSearchUiModel.imageUrl.orEmpty())
-        bindTitleText(itemSellerSearchUiModel)
-        itemViewOrder.tvSearchResultOrderDesc?.text = itemSellerSearchUiModel.desc
+        with(itemViewOrder) {
+            if(itemSellerSearchUiModel.imageUrl?.isBlank() == true) {
+                when (itemSellerSearchUiModel.id) {
+                    INV -> {
+                        ivSearchResultOrder?.setImageDrawable(ContextCompat.getDrawable(itemViewOrder.context, R.drawable.ic_invoice_seller_search))
+                    }
+                    CUSTOMER -> {
+                        ivSearchResultOrder?.setImageDrawable(ContextCompat.getDrawable(itemViewOrder.context, R.drawable.ic_buyers))
+                    }
+                }
+            } else {
+                ivSearchResultOrder?.setImageUrl(itemSellerSearchUiModel.imageUrl.orEmpty())
+            }
 
-        itemViewOrder.setOnClickListener {
-            orderSearchListener.onOrderItemClicked(itemSellerSearchUiModel, adapterPosition)
+            bindTitleText(itemSellerSearchUiModel)
+            tvSearchResultOrderDesc?.text = itemSellerSearchUiModel.desc
+
+            setOnClickListener {
+                orderSearchListener.onOrderItemClicked(itemSellerSearchUiModel, adapterPosition)
+            }
         }
     }
 

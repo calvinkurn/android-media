@@ -23,7 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchComponent>,
-        GlobalSearchView.GlobalSearchViewListener, HistoryViewUpdateListener, SuggestionViewUpdateListener {
+        GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener, HistoryViewUpdateListener, SuggestionViewUpdateListener {
 
     companion object {
         const val MIN_CHARACTER_SEARCH = 3
@@ -66,6 +66,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     private fun initSearchBarView() {
         searchBarView?.setActivity(this)
         searchBarView?.setSearchViewListener(this)
+        searchBarView?.setSearchTextBoxListener(this)
         initialStateFragment?.setHistoryViewUpdateListener(this)
         suggestionFragment?.setSuggestionViewUpdateListener(this)
     }

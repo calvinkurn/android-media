@@ -11,4 +11,6 @@ object GlobalSearchSellerConstant {
     const val PESANAN = "Pesanan"
     const val PRODUK = "Produk"
     const val FITUR = "Fitur"
+    const val INV = "invoice"
+    const val CUSTOMER = "customer"
 }

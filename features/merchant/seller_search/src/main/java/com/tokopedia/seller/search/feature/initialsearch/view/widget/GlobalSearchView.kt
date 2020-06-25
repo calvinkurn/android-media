@@ -36,6 +36,7 @@ class GlobalSearchView : BaseCustomView {
     private var compositeSubscription: CompositeSubscription? = null
 
     private var searchViewListener: GlobalSearchViewListener? = null
+    private var searchTextBoxListener: SearchTextBoxListener? = null
 
     constructor(context: Context) : super(context) {
         init()
@@ -66,6 +67,10 @@ class GlobalSearchView : BaseCustomView {
         this.searchViewListener = searchViewListener
     }
 
+    fun setSearchTextBoxListener(searchTextBoxListener: SearchTextBoxListener) {
+        this.searchTextBoxListener = searchTextBoxListener
+    }
+
     fun setKeywordSearchBar(keyword: String) {
         searchKeyword = keyword
         searchBarView.searchBarTextField.setText(searchKeyword)
@@ -83,7 +88,6 @@ class GlobalSearchView : BaseCustomView {
                     subscriber.onNext(keyword)
                 }
 
-                override fun onClearTextBoxListener() {}
                 override fun onBackButtonSearchBar() {}
             }
         })
@@ -146,9 +150,11 @@ class GlobalSearchView : BaseCustomView {
     private fun initSearchBarView() {
         searchBarView?.apply {
             isClearable = true
+            clearListener = {
+                searchTextBoxListener?.onClearTextBoxListener()
+            }
             iconListener = {
                 if (searchBarPlaceholder.isNotEmpty()) {
-                    searchViewListener?.onClearTextBoxListener()
                     searchBarTextField.text.clear()
                     searchKeyword = searchBarTextField.text.trim().toString()
                     searchViewListener?.onQueryTextChangeListener(searchKeyword)
@@ -207,7 +213,10 @@ class GlobalSearchView : BaseCustomView {
 
     interface GlobalSearchViewListener {
         fun onQueryTextChangeListener(keyword: String)
-        fun onClearTextBoxListener()
         fun onBackButtonSearchBar()
+    }
+
+    interface SearchTextBoxListener {
+        fun onClearTextBoxListener()
     }
 }

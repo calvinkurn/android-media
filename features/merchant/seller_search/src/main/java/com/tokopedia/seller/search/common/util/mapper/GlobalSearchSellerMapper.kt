@@ -26,14 +26,14 @@ object GlobalSearchSellerMapper {
         }
     }
 
-    fun mapTopItemFilterSearch(sellerSearch: SellerSearchResponse.SellerSearch, position: Int = 0): List<FilterSearchUiModel> {
+    fun mapTopItemFilterSearch(sellerSearch: SellerSearchResponse.SellerSearch, isFilter: Boolean = false, title: String): List<FilterSearchUiModel> {
         return mutableListOf<FilterSearchUiModel>().apply {
             //only one section
-            if (position > 0) {
+            if (isFilter) {
                 add(FilterSearchUiModel(title = ALL, isSelected = false))
-                sellerSearch.data.sections.mapIndexed { i, section ->
-                    when (i) {
-                        position -> {
+                sellerSearch.data.sections.mapIndexed { _, section ->
+                    when (section.title) {
+                        title -> {
                             add(FilterSearchUiModel(title = section.title, isSelected = true))
                         }
                         else -> {
@@ -42,12 +42,10 @@ object GlobalSearchSellerMapper {
                     }
                 }
             } else {
+                add(FilterSearchUiModel(title = ALL, isSelected = true))
                 sellerSearch.data.sections.map { section ->
-                    add(FilterSearchUiModel(title = ALL, isSelected = true))
                     if (section.id != FAQ) {
-                        if (section.has_more == true) {
-                            add(FilterSearchUiModel(title = section.title, isSelected = false))
-                        }
+                        add(FilterSearchUiModel(title = section.title, isSelected = false))
                     }
                 }
             }
