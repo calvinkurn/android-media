@@ -615,7 +615,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 ctaText = ""
                 ctaApplink = ""
             } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_TOPBOT)) {
-                image = CHAT_BUYER_EMPTY
+                image = CHAT_SELLER_EMPTY_SMART_REPLY
                 title = it.getString(R.string.empty_chat_smart_reply)
                 subtitle = ""
                 ctaText = ""
@@ -652,6 +652,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         private const val CHAT_TAB_TITLE = "chat_tab_title"
         private const val CHAT_SELLER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-seller-empty.png"
         private const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
+        private const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://ecs7.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
 
         @JvmStatic
