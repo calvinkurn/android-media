@@ -248,7 +248,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     private suspend fun updateEtalaseMap(newEtalaseList: List<EtalaseContentUiModel>) = withContext(dispatcher.computation) {
         newEtalaseList.forEach {
-            println("Etalase: ${it.id} - ${it.totalProduct} - ${it.productMap}")
             val etalase = etalaseMap[it.id]
             if (etalase == null) etalaseMap[it.id] = it
         }
