@@ -25,6 +25,7 @@ interface FilterSearchListener {
 }
 
 interface HistoryViewUpdateListener {
+    fun setUserIdFromFragment(userId: String)
     fun showHistoryView()
     fun dropKeyboardHistory()
     fun setKeywordSearchBarView(keyword: String)

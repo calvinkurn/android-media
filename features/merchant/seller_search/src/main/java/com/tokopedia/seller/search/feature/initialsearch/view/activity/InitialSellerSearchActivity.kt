@@ -40,6 +40,8 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     private var suggestionFragment: SuggestionSearchFragment? = null
     private var initialStateFragment: InitialSearchFragment? = null
 
+    private var userId = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         overridePendingTransition(0, 0)
         super.onCreate(savedInstanceState)
@@ -64,6 +66,8 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     private fun initSearchBarView() {
         searchBarView?.setActivity(this)
         searchBarView?.setSearchViewListener(this)
+        initialStateFragment?.setHistoryViewUpdateListener(this)
+        suggestionFragment?.setSuggestionViewUpdateListener(this)
     }
 
     private fun initView() {
@@ -77,24 +81,25 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     override fun onQueryTextChangeListener(keyword: String) {
         if (keyword.isEmpty()) {
             initialStateFragment?.historySearch(keyword)
-            initialStateFragment?.setHistoryViewUpdateListener(this)
         } else {
             if(keyword.length < MIN_CHARACTER_SEARCH) {
                 initialStateFragment?.onMinCharState()
-                initialStateFragment?.setHistoryViewUpdateListener(this)
             } else {
                 suggestionFragment?.suggestionSearch(keyword)
-                suggestionFragment?.setSuggestionViewUpdateListener(this)
             }
         }
     }
 
     override fun onClearTextBoxListener() {
-        SellerSearchTracking.clickClearSearchBoxEvent(userSession.userId.orEmpty())
+        SellerSearchTracking.clickClearSearchBoxEvent(userId)
     }
 
     override fun onBackButtonSearchBar() {
-        SellerSearchTracking.clickBackButtonSearchEvent(userSession.userId.orEmpty())
+        SellerSearchTracking.clickBackButtonSearchEvent(userId)
+    }
+
+    override fun setUserIdFromFragment(userId: String) {
+        this.userId = userId
     }
 
     override fun showHistoryView() {

@@ -1,6 +1,5 @@
 package com.tokopedia.seller.search.common.util.mapper
 
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ALL
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FAQ
@@ -30,38 +29,24 @@ object GlobalSearchSellerMapper {
     fun mapTopItemFilterSearch(sellerSearch: SellerSearchResponse.SellerSearch, position: Int = 0): List<FilterSearchUiModel> {
         return mutableListOf<FilterSearchUiModel>().apply {
             //only one section
-            if (sellerSearch.data.sections.size == 1) {
-                sellerSearch.data.sections.mapIndexed { _, section ->
-                    add(FilterSearchUiModel(title = section.title, isSelected = true))
-                    return@apply
-                }
-            } else {
-                if (position > 0) {
-                    sellerSearch.data.sections.mapIndexed { i, section ->
-                        when {
-                            i.isZero() -> {
-                                add(FilterSearchUiModel(title = ALL, isSelected = false))
-                            }
-                            i == position -> {
-                                add(FilterSearchUiModel(title = section.title, isSelected = true))
-                            }
-                            else -> {
-                                add(FilterSearchUiModel(title = section.title, isSelected = false))
-                            }
+            if (position > 0) {
+                add(FilterSearchUiModel(title = ALL, isSelected = false))
+                sellerSearch.data.sections.mapIndexed { i, section ->
+                    when (i) {
+                        position -> {
+                            add(FilterSearchUiModel(title = section.title, isSelected = true))
+                        }
+                        else -> {
+                            add(FilterSearchUiModel(title = section.title, isSelected = false))
                         }
                     }
-                } else {
-                    sellerSearch.data.sections.mapIndexed { i, section ->
-                        if (i.isZero()) {
-                            add(FilterSearchUiModel(title = ALL, isSelected = true))
-                        } else {
-                            if (section.id != FAQ) {
-                                if (section.has_more == true) {
-                                    add(FilterSearchUiModel(title = section.title, isSelected = false))
-                                } else {
-                                    return@mapIndexed
-                                }
-                            }
+                }
+            } else {
+                sellerSearch.data.sections.map { section ->
+                    add(FilterSearchUiModel(title = ALL, isSelected = true))
+                    if (section.id != FAQ) {
+                        if (section.has_more == true) {
+                            add(FilterSearchUiModel(title = section.title, isSelected = false))
                         }
                     }
                 }
