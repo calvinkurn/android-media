@@ -355,7 +355,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                     step = VoucherCreationStep.TARGET,
                     action =
                     when(lastClickedVoucherDisplayType) {
-                        VoucherTargetCardType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PUBLIC
+                        VoucherTargetCardType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PUBLIK
                         VoucherTargetCardType.PRIVATE -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PRIVATE
                     },
                     label = "",
