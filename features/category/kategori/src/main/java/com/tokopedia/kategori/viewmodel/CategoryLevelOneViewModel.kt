@@ -18,13 +18,10 @@ import androidx.lifecycle.LiveData
 private const val KEY_DEPTH = "depth"
 private const val KEY_IS_TRENDING = "isTrending"
 
-class CategoryLevelOneViewModel @Inject constructor() : ViewModel() {
+class CategoryLevelOneViewModel @Inject constructor(val kategoriRepository: KategoriRepository) : ViewModel() {
 
     private var categoryDepth = 2
-    private var categoryListLiveData = MutableLiveData<Result<CategoryAllList>>()
-
-    @Inject
-    lateinit var kategoriRepository: KategoriRepository
+    var categoryListLiveData = MutableLiveData<Result<CategoryAllList>>()
 
     fun bound(performanceMonitoringListener: PerformanceMonitoringListener?) {
         performanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -48,7 +45,7 @@ class CategoryLevelOneViewModel @Inject constructor() : ViewModel() {
         return categoryListLiveData
     }
 
-    private fun createRequestParams(depth: Int, isTrending: Boolean): RequestParams {
+    fun createRequestParams(depth: Int, isTrending: Boolean): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putInt(KEY_DEPTH, depth)
         requestParams.putBoolean(KEY_IS_TRENDING, isTrending)

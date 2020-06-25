@@ -39,12 +39,12 @@ dependencies {
     implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
-
-
     //test
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
 }
 
 project.ext {

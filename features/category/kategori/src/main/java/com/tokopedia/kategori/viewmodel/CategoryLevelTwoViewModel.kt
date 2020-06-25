@@ -14,12 +14,9 @@ import javax.inject.Inject
 
 const val categoryDepth = 2
 
-class CategoryLevelTwoViewModel @Inject constructor() : ViewModel() {
+class CategoryLevelTwoViewModel @Inject constructor(val categoryLevelTwoItemsUseCase: CategoryLevelTwoItemsUseCase) : ViewModel() {
 
-    private var childItem = MutableLiveData<Result<List<CategoryChildItem>>>()
-
-    @Inject
-    lateinit var categoryLevelTwoItemsUseCase: CategoryLevelTwoItemsUseCase
+     var childItem = MutableLiveData<Result<List<CategoryChildItem>>>()
 
     fun refresh(id: String) {
         viewModelScope.launchCatchError(

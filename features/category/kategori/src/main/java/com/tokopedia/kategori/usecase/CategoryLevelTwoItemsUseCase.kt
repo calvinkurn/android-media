@@ -16,21 +16,18 @@ private const val KEY_IS_TRENDING = "isTrending"
 private const val KEY_ID = "id"
 
 
-class CategoryLevelTwoItemsUseCase @Inject constructor() {
-
-    @field:[Inject Named(Constants.GQL_CATEGORY_LIST)]
-    lateinit var categoryListQuery: String
+class CategoryLevelTwoItemsUseCase @Inject constructor(val kategoriRepository: KategoriRepository) {
 
     private var YANG_LAGI_HITS_TITLE = "yanglagihits"
 
-    @Inject
-    lateinit var kategoriRepository: KategoriRepository
-
     suspend fun getCategoryListItems(reqParams: RequestParams): List<CategoryChildItem>? {
-        val id = reqParams.getString("id", "")
+
+        val id = reqParams.getString(KEY_ID, "")
+
         val categoryRequestParams = RequestParams.create()
         categoryRequestParams.putInt(KEY_DEPTH, reqParams.getInt(KEY_DEPTH, 2))
         categoryRequestParams.putBoolean(KEY_IS_TRENDING, reqParams.getBoolean(KEY_IS_TRENDING, true))
+
         return createChildList(kategoriRepository.getCategoryListItems(categoryRequestParams.parameters), id
                 ?: "0")
     }
@@ -44,7 +41,7 @@ class CategoryLevelTwoItemsUseCase @Inject constructor() {
         return requestParams
     }
 
-    private fun createChildList(categoryAllList: CategoryAllList?, id: String): List<CategoryChildItem>? {
+    internal fun createChildList(categoryAllList: CategoryAllList?, id: String): List<CategoryChildItem>? {
         val defaultCaseID = "0"
         val iterator = categoryAllList?.categories
         val childList: MutableList<CategoryChildItem>? = ArrayList()

@@ -1,54 +1,74 @@
 package com.tokopedia.kategori.viewmodel
 
-import com.tokopedia.kategori.usecase.AllCategoryQueryUseCase
-import com.tokopedia.kategori.view.PerformanceMonitoringListener
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kategori.model.CategoryChildItem
+import com.tokopedia.kategori.usecase.CategoryLevelTwoItemsUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.setMain
+import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 
 class CategoryLevelTwoViewModelTest {
 
-    var allCategoryQueryUseCase: AllCategoryQueryUseCase = mockk(relaxed = true)
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
 
-    @RelaxedMockK
-    lateinit var performanceMonitoringListener: PerformanceMonitoringListener
+    private val categoryLevelTwoItemsUseCase: CategoryLevelTwoItemsUseCase = mockk(relaxed = true)
 
-   // val mockSubscriber: CategoryLevelTwoSubscriber = mockk(relaxed = true)
+    private val viewModel: CategoryLevelTwoViewModel by lazy {
+        spyk(CategoryLevelTwoViewModel(categoryLevelTwoItemsUseCase))
+    }
 
 
     @RelaxedMockK
     lateinit var requestParams: RequestParams
 
-    private lateinit var mViewModel: CategoryLevelTwoViewModel
-
     @Before
     fun setup() {
-        mViewModel = spyk(CategoryLevelTwoViewModel())
         MockKAnnotations.init(this)
+        Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
+    companion object {
+        const val ALL_CATEGORY_GQL_RESPONSE_JSON_FILE_PATH = "json/gql_all_category.json"
+    }
+
+
     @Test
-    fun refresh() {
-     //   val slotSubscriber = slot<CategoryLevelTwoSubscriber>()
+    fun ` category list call fails`() {
+        val exception = Exception("adfad")
+        every { categoryLevelTwoItemsUseCase.createRequestParams(2, true, "0") } returns requestParams
 
-        // given
-      //  every { mViewModel.getSubscriber("0") } returns mockSubscriber
-        every { allCategoryQueryUseCase.createRequestParams(2, true) } returns requestParams
-     //   every { allCategoryQueryUseCase.execute(requestParams, capture(slotSubscriber)) } just runs
+        coEvery { categoryLevelTwoItemsUseCase.getCategoryListItems(requestParams) } throws exception
 
-        //when
-        mViewModel.refresh("0")
+        viewModel.refresh("0")
+        Assert.assertEquals(viewModel.childItem.value, Fail(exception))
+    }
 
-        // then
-        verify {
-            allCategoryQueryUseCase.execute(requestParams, any())
-        }
 
-      //  Assert.assertEquals(slotSubscriber.captured, mockSubscriber)
+    @Test
+    fun `verify calls`() {
+        val list: ArrayList<CategoryChildItem> = ArrayList()
+        list.add(mockk())
+
+        every { categoryLevelTwoItemsUseCase.createRequestParams(2, true, "0") } returns requestParams
+
+        coEvery { categoryLevelTwoItemsUseCase.getCategoryListItems(requestParams) } returns list
+
+        viewModel.refresh("0")
+
+        Assert.assertEquals(viewModel.childItem.value, Success(list))
+
     }
 
 
