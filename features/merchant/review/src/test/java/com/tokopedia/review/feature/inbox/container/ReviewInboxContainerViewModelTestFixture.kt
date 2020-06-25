@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.inbox.container
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.reputation.common.domain.usecase.ProductrevReviewTabCounterUseCase
-import com.tokopedia.review.coroutines.TestCoroutineDispatchers
+import com.tokopedia.review.coroutine.TestCoroutineDispatchers
 import com.tokopedia.review.feature.inbox.container.presentation.viewmodel.ReviewInboxContainerViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
