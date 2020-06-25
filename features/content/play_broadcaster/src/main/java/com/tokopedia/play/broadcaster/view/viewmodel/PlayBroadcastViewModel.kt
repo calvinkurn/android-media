@@ -49,7 +49,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val scope = CoroutineScope(job + dispatcher.main)
 
     val channelId: String
-        get() = _observableChannelId.value.orEmpty()
+        get() = _observableChannelId.value?: throw IllegalStateException("Channel ID has not been retrieved")
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo

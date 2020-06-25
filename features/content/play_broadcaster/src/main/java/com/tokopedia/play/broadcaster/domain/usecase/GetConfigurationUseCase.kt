@@ -43,7 +43,7 @@ class GetConfigurationUseCase @Inject constructor(
 
     private fun mapConfiguration(shopConfig: GetBroadcasterShopConfigResponse.GetBroadcasterShopConfig): Config {
         return try {
-            val config= gson.fromJson(shopConfig.config, Config::class.java)
+            val config = gson.fromJson(shopConfig.config, Config::class.java)
             config.copy(streamAllowed = shopConfig.streamAllowed)
         } catch (e: Exception) {
             if (!GlobalConfig.DEBUG) {

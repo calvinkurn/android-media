@@ -272,7 +272,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleChannelInfo(channelInfo: ChannelInfoUiModel) {
         when (channelInfo.status) {
-            PlayChannelStatus.Active -> startLiveStreaming(channelInfo.ingestUrl)
+            PlayChannelStatus.Active, PlayChannelStatus.Live -> startLiveStreaming(channelInfo.ingestUrl)
             PlayChannelStatus.Pause -> showDialogContinueLiveStreaming(channelInfo.channelId)
             PlayChannelStatus.Stop -> navigateToSummary()
         }
