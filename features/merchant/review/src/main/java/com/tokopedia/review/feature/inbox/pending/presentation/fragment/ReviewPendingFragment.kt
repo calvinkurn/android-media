@@ -27,6 +27,7 @@ import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.feature.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
@@ -59,7 +60,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     override fun getScreenName(): String {
-        return ""
+        return ReviewInboxTrackingConstants.SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -123,6 +124,13 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun getDefaultInitialPage(): Int {
         return ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE
+    }
+
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            ReviewPendingTracking.sendScreen(screenName)
+        }
     }
 
     private fun initView() {

@@ -26,6 +26,10 @@ object ReviewPendingTracking {
         )
     }
 
+    fun sendScreen(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
     private fun generateTrackingMap(label: String, action: String, userId: String): Map<String, String> {
         with(ReviewTrackingConstant) {
             return mapOf(

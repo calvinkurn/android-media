@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.container.presentation.fragment.ReviewInboxContainerFragment
-import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
 
 class ReviewInboxActivity : BaseSimpleActivity() {
 
