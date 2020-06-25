@@ -169,7 +169,7 @@ object PlayAnalytics {
                               channelId: String,
                               listOfProducts: List<ProductLineUiModel>,
                               channelType: PlayChannelType) {
-        if (listOfProducts.isNotEmpty())
+        if (listOfProducts.isNotEmpty()) {
             trackingQueue.putEETracking(
                     EventModel(
                             "productView",
@@ -177,13 +177,14 @@ object PlayAnalytics {
                             "view product",
                             "$channelId - ${listOfProducts[0].id} - ${channelType.value} - product in bottom sheet"
                     ),
-                    hashMapOf(
+                    hashMapOf<String, Any>(
                             "ecommerce" to hashMapOf(
                                     "currencyCode" to "IDR",
                                     "impressions" to convertProductsToListOfObject(listOfProducts)
                             )
                     )
             )
+        }
     }
 
     fun clickProduct(trackingQueue: TrackingQueue,
