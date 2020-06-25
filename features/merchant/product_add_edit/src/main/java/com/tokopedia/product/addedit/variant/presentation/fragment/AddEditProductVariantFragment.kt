@@ -494,8 +494,11 @@ class AddEditProductVariantFragment :
                 is Success -> {
                     val variantDetails =
                             result.data.getCategoryVariantCombination.data.variantDetails
+                    val selections =
+                            viewModel.productInputModel.value?.variantInputModel?.selections.orEmpty()
                     variantTypeAdapter?.setData(variantDetails)
                     variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
+                    variantTypeAdapter?.setSelectedItems(selections)
                 }
                 is Fail -> {
                     context?.let {

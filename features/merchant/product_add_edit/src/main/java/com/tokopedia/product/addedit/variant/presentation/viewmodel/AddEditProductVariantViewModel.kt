@@ -47,7 +47,6 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<List<UnitValue>>()
 
-
     private val mGetCategoryVariantCombinationResult = MutableLiveData<Result<GetCategoryVariantCombinationResponse>>()
     val getCategoryVariantCombinationResult: LiveData<Result<GetCategoryVariantCombinationResponse>>
         get() = mGetCategoryVariantCombinationResult
