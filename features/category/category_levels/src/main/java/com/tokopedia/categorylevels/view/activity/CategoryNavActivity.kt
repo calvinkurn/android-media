@@ -103,6 +103,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         initializeSearchParameter(intent)
     }
 
+    override fun sendScreenAnalytics() {
+        //Empty to remove double open screen events
+    }
+
     private fun sendOpenScreenAnalytics(data: Data) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, getDimensionMap(data))
     }
