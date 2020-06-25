@@ -253,7 +253,7 @@ public class FlightModule {
     @Provides
     @Named("flight_search_single_query")
     public String provideFlightSearchSingleQuery(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.flight_search_single)
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.flight_search_single);
     }
 
 }
