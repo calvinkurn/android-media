@@ -19,8 +19,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,9 +32,6 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.chuckerteam.chucker.api.Chucker;
-import com.github.moduth.blockcanary.BlockCanary;
-import com.github.moduth.blockcanary.BlockCanaryContext;
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -46,34 +43,28 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
-import com.tokopedia.developer_options.notification.ReviewNotificationExample;
-import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
+import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.TimberWrapper;
-import com.tokopedia.logger.utils.DataLogConfig;
-import com.tokopedia.logger.utils.TimberReportingTree;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-
-import org.jetbrains.annotations.NotNull;
 
 import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
+import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
+import static com.tokopedia.developer_options.config.DevOptConfig.IS_CHUCK_ENABLED;
+
 public class DeveloperOptionActivity extends BaseActivity {
 
-    public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
     public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
-    public static final String IS_CHUCK_ENABLED = "is_enable";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     public static final String REMOTE_CONFIG_PREFIX = "remote_config_prefix";
     private static final String IP_GROUPCHAT = "ip_groupchat";
