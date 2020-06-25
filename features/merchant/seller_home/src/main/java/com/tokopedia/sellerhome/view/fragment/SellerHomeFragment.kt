@@ -153,8 +153,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (userVisibleHint)
+        if (userVisibleHint) {
             SellerHomeTracking.sendScreen(screenName)
+            view?.post {
+                requestVisibleWidgetsData()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
