@@ -11,6 +11,7 @@ import androidx.test.rule.ActivityTestRule
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar
 import com.tokopedia.navigation.test.R
+import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -31,37 +32,37 @@ class TestBottomNav {
 
     @Test
     fun testWhenPageInflatedWithoutNotification_bottomNavHome_showAllFiveComponent() {
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_HOME))))).check(matches(isDisplayed()))
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_FEED))))).check(matches(isDisplayed()))
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_OS))))).check(matches(isDisplayed()))
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_CART))))).check(matches(isDisplayed()))
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_ACCOUNT))))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_HOME))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_FEED))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_OS))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_CART))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_ACCOUNT))).check(matches(isDisplayed()))
 
-        onView(allOf(withTagValue(Matchers.`is`(getTitleTextViewId(POSITION_HOME))))).check(matches(isDisplayed()))
-        onView(allOf(withTagValue(Matchers.`is`(getTitleTextViewId(POSITION_FEED))))).check(matches(isDisplayed()))
-        onView(allOf(withTagValue(Matchers.`is`(getTitleTextViewId(POSITION_OS))))).check(matches(isDisplayed()))
-        onView(allOf(withTagValue(Matchers.`is`(getTitleTextViewId(POSITION_CART))))).check(matches(isDisplayed()))
-        onView(allOf(withTagValue(Matchers.`is`(getTitleTextViewId(POSITION_ACCOUNT))))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getTitleTextViewId(POSITION_HOME))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getTitleTextViewId(POSITION_FEED))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getTitleTextViewId(POSITION_OS))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getTitleTextViewId(POSITION_CART))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getTitleTextViewId(POSITION_ACCOUNT))).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.notification_badge),
-                withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_HOME))))).check(matches(not(isDisplayed())))
+                withTagStringValue(getBadgeTextViewId(POSITION_HOME)))).check(matches(not(isDisplayed())))
         onView(allOf(withId(R.id.notification_badge),
-                withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_FEED))))).check(matches(not(isDisplayed())))
+                withTagStringValue(getBadgeTextViewId(POSITION_FEED)))).check(matches(not(isDisplayed())))
         onView(allOf(withId(R.id.notification_badge),
-                withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_OS))))).check(matches(not(isDisplayed())))
+                withTagStringValue(getBadgeTextViewId(POSITION_OS)))).check(matches(not(isDisplayed())))
         onView(allOf(withId(R.id.notification_badge),
-                withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_CART))))).check(matches(not(isDisplayed())))
+                withTagStringValue(getBadgeTextViewId(POSITION_CART)))).check(matches(not(isDisplayed())))
         onView(allOf(withId(R.id.notification_badge),
-                withTagValue(Matchers.`is`(getBadgeTextViewId(POSITION_ACCOUNT))))).check(matches(not(isDisplayed())))
+                withTagStringValue(getBadgeTextViewId(POSITION_ACCOUNT)))).check(matches(not(isDisplayed())))
     }
 
     @Test
     fun testWhenItemClicked_bottomNavItem_shouldFinishAnyAnimationAfter2sec() {
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_HOME))))).perform(click())
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_FEED))))).perform(click())
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_OS))))).perform(click())
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_CART))))).perform(click())
-        onView(allOf(withTagValue(Matchers.`is`(getLottieAnimationViewId(POSITION_ACCOUNT))))).perform(click())
+        onView(withTagStringValue(getBadgeTextViewId(POSITION_HOME))).perform(click())
+        onView(withTagStringValue(getBadgeTextViewId(POSITION_FEED))).perform(click())
+        onView(withTagStringValue(getBadgeTextViewId(POSITION_OS))).perform(click())
+        onView(withTagStringValue(getBadgeTextViewId(POSITION_CART))).perform(click())
+        onView(withTagStringValue(getBadgeTextViewId(POSITION_ACCOUNT))).perform(click())
 
         Thread.sleep(2000)
 
