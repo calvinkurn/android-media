@@ -27,6 +27,7 @@ import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.feature.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
@@ -73,7 +74,13 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         getPendingReviewData(page)
     }
 
-    override fun onCardClicked(reputationId: Int, productId: Int, rating: Int) {
+    override fun onCardClicked(reputationId: Int, productId: Int) {
+        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.userId)
+        goToCreateReviewActivity(reputationId, productId, null)
+    }
+
+    override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int) {
+        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.userId)
         goToCreateReviewActivity(reputationId, productId, rating)
     }
 
@@ -218,14 +225,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         renderList(reviewData, hasNextPage)
     }
 
-    private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int) {
-        RouteManager.route(context,
-                Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
-                        .buildUpon()
-                        .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
-                        .build()
-                        .toString()
-        )
+    private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int?) {
+        val uri = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
+        val updatedUri = rating?.let {
+            uri.buildUpon()
+                    .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
+                    .build()
+                    .toString()
+        }
+        RouteManager.route(context, updatedUri ?: uri.toString())
     }
 
     private fun goToSettings() {

@@ -11,17 +11,21 @@ import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevWaitForFeedbackUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewPendingViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
+        userSession: UserSessionInterface,
         private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase
 ) : BaseViewModel(dispatchers.io()) {
 
     private val _reviewList = MutableLiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>()
     val reviewList: LiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>
         get() = _reviewList
+
+    val userId = userSession.userId ?: ""
 
     fun getReviewData(page: Int, isRefresh: Boolean = false) {
         if(isRefresh) {
