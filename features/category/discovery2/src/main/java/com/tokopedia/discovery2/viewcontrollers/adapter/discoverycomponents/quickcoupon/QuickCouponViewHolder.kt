@@ -31,9 +31,12 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
 
     private lateinit var quickCouponViewModel: QuickCouponViewModel
 
+    init {
+        initView()
+    }
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         quickCouponViewModel = discoveryBaseViewModel as QuickCouponViewModel
-        initView()
     }
 
     private fun initView() {
