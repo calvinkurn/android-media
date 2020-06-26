@@ -130,7 +130,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     private fun configureAutoRefresh(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
         if(playBannerCarouselDataModel.isAutoRefresh){
-            timer = object : CountDownTimer(playBannerCarouselDataModel.isAutoRefreshTimer.toLong(), 1000) {
+            timer = object : CountDownTimer(playBannerCarouselDataModel.isAutoRefreshTimer.toLong() * 1000, 1000) {
                 override fun onFinish() {
                     playBannerCarouselDataModel?.let {
                         recyclerView.resetVideoPlayer()
