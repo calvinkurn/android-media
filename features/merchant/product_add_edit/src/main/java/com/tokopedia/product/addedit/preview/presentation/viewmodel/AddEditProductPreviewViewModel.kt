@@ -14,8 +14,8 @@ import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantCombinationViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductPicture
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantCombination
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -204,7 +204,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
 
-    fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombination>,
                                variantOptionParent: ArrayList<ProductVariantOptionParent>) {
         productInputModel.value?.variantInputModel?.productVariant =
                 mapProductVariant(productVariant, variantOptionParent)
@@ -212,7 +212,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 mapVariantOption(variantOptionParent)
     }
 
-    fun updateSizeChart(productSizeChart: PictureViewModel?) {
+    fun updateSizeChart(productSizeChart: ProductPicture?) {
         productInputModel.value?.variantInputModel?.productSizeChart = productSizeChart
     }
 
@@ -319,9 +319,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return wholesaleList
     }
 
-    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombination>,
                                   variantOptionParent: ArrayList<ProductVariantOptionParent>
-    ): ArrayList<ProductVariantCombinationViewModel> {
+    ): ArrayList<ProductVariantCombination> {
         productVariant.forEach { variant ->
             val options: ArrayList<Int> = ArrayList()
             val level1Id = getVariantOptionIndex(variant.level1String, variantOptionParent)
