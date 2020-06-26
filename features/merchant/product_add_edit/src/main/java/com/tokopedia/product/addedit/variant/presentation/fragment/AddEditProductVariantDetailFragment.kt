@@ -23,10 +23,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
-import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
 import javax.inject.Inject
@@ -116,7 +113,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         observeInputStatus()
     }
 
-    override fun onHeaderClicked(adapterPosition: Int) {
+    override fun onHeaderClicked(adapterPosition: Int): Boolean {
         val isCollapsed = viewModel.isVariantDetailHeaderCollapsed(adapterPosition)
         if (!isCollapsed) {
             variantDetailFieldsAdapter?.collapseUnitValueHeader(adapterPosition, viewModel.getInputFieldSize())
@@ -124,9 +121,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             viewModel.updateVariantDetailHeaderMap(adapterPosition, true)
         } else {
             variantDetailFieldsAdapter?.expandDetailFields(adapterPosition, viewModel.getVariantDetailHeaderData(adapterPosition))
+            recyclerViewVariantDetailFields.scrollToPosition(adapterPosition)
             viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(adapterPosition, false)
         }
+        return viewModel.isVariantDetailHeaderCollapsed(adapterPosition)
     }
 
     override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
@@ -164,8 +163,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             val hasVariantCombination = viewModel.hasVariantCombination(size)
             // with collapsible header
             if (hasVariantCombination) {
+                val variantInputModels = viewModel.productInputModel.value?.variantInputModel?.products
+                        ?: listOf()
                 val selectedVariantList = viewModel.productInputModel.value?.variantInputModel?.selections
-                selectedVariantList?.run { setupVariantDetailCombinationFields(selectedVariantList) }
+                        ?: listOf()
+                setupVariantDetailCombinationFields(selectedVariantList, variantInputModels)
             } else {
                 val selectedVariant = viewModel.productInputModel.value?.variantInputModel?.selections?.firstOrNull()
                 val selectedUnitValues = selectedVariant?.options
@@ -190,7 +192,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>) {
+    private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>,
+                                                    variantInputModels: List<ProductVariantInputModel>) {
         // variant level 1 properties
         val selectedVariantLevel1 = selectedVariants[VARIANT_VALUE_LEVEL_ONE_POSITION]
         val unitValueLevel1 = selectedVariantLevel1.options
@@ -205,10 +208,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             viewModel.updateVariantDetailHeaderMap(headerPosition, false)
             // render variant unit value fields
             unitValueLevel2.forEach { level2Value ->
-                val variantDetailInputModel = VariantDetailInputLayoutModel(headerPosition = headerPosition, unitValueLabel = level2Value.value)
+                val variantDetailInputModel = VariantDetailInputLayoutModel(
+                        headerPosition = headerPosition,
+                        unitValueLabel = level2Value.value)
                 val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
                 fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
-
             }
         }
         // set input field size

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +15,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.gone
@@ -53,6 +53,7 @@ import com.tokopedia.product.addedit.variant.presentation.widget.CustomVariantUn
 import com.tokopedia.product.addedit.variant.presentation.widget.VariantDetailValuesPicker
 import com.tokopedia.product.addedit.variant.presentation.widget.VariantUnitPicker
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
@@ -76,7 +77,7 @@ class AddEditProductVariantFragment :
     companion object {
         private const val TAG_VARIANT_UNIT_PICKER = "VARIANT_UNIT_PICKER"
         private const val TAG_VARIANT_UNIT_VALUE_PICKER = "VARIANT_UNIT_VALUE_PICKER"
-        private const val TAG_VARIANT_UNIT_CUSTOM_VALUE_INPUT_FORM = "VARIANT_UNIT_CUSTOM_VALUE_INPUT_FORM"
+        private const val TAG_CUSTOM_VARIANT_UNIT_VALUE_INPUT_FORM = "VARIANT_UNIT_CUSTOM_VALUE_INPUT_FORM"
 
         fun createInstance(cacheManagerId: String?): Fragment {
             return AddEditProductVariantFragment().apply {
@@ -89,15 +90,14 @@ class AddEditProductVariantFragment :
 
     @Inject
     lateinit var viewModel: AddEditProductVariantViewModel
-
     private var variantTypeAdapter: VariantTypeAdapter? = null
     private var variantValueAdapterLevel1: VariantValueAdapter? = null
     private var variantValueAdapterLevel2: VariantValueAdapter? = null
     private var variantPhotoAdapter: VariantPhotoAdapter? = null
-
     private var variantValuePicker: BottomSheetUnify? = null
     private var variantUnitPicker: BottomSheetUnify? = null
-    private var variantCustomValueInputForm: BottomSheetUnify? = null
+    private var customVariantValueInputForm: BottomSheetUnify? = null
+    private var cancellationDialog: DialogUnify? = null
 
     override fun getScreenName(): String {
         return ""
@@ -141,6 +141,16 @@ class AddEditProductVariantFragment :
         setRecyclerViewToFlex(recyclerViewVariantValueLevel2)
         setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
 
+        // setup base cancellation dialog
+        context?.run {
+            cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            cancellationDialog?.setPrimaryCTAText(getString(R.string.action_cancel_cancellation))
+            cancellationDialog?.setSecondaryCTAText(getString(R.string.action_confirm_cancellation))
+            cancellationDialog?.setPrimaryCTAClickListener {
+                cancellationDialog?.dismiss()
+            }
+        }
+
         observeSizechartUrl()
         observeGetCategoryVariantCombinationResult()
         observeProductInputModel()
@@ -151,18 +161,21 @@ class AddEditProductVariantFragment :
             onSizechartClicked()
         }
 
+        // button "tambah" variant values level 1 on click listener
         linkAddVariantValueLevel1.setOnClickListener {
             val variantDetail: VariantDetail = it.getTag(R.id.variant_detail) as VariantDetail
-            if (variantDetail.units.isEmpty()) showVariantCustomInputForm(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail.variantID, variantDetail.name)
+            if (variantDetail.units.isEmpty()) showCustomVariantInputForm(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail.variantID, variantDetail.name)
             else showVariantValuePicker(variantDetail, VARIANT_VALUE_LEVEL_ONE_POSITION, null)
         }
 
+        // button "tambah" variant values level 2 on click listener
         linkAddVariantValueLevel2.setOnClickListener {
             val variantDetail: VariantDetail = it.getTag(R.id.variant_detail) as VariantDetail
-            if (variantDetail.units.isEmpty()) showVariantCustomInputForm(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail.variantID, variantDetail.name)
+            if (variantDetail.units.isEmpty()) showCustomVariantInputForm(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail.variantID, variantDetail.name)
             showVariantValuePicker(variantDetail, VARIANT_VALUE_LEVEL_TWO_POSITION, null)
         }
 
+        // button save on click listener
         buttonSave.setOnClickListener {
             val variantDetails = variantTypeAdapter?.getItems().orEmpty()
             viewModel.updateVariantInputModel(variantDetails)
@@ -173,65 +186,109 @@ class AddEditProductVariantFragment :
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
 
         if (viewModel.isVariantUnitValuesLayoutEmpty()) {
-
+            // get selected variant unit values for variant level 1
             val selectedVariantUnitValuesLevel1 = viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_ONE_POSITION)
+            // setup variant unit level 1 section
             setupVariantValueSection(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail, selectedVariantUnitValuesLevel1)
+            // update adapter - layout position map
             viewModel.updateVariantValuesLayoutMap(adapterPosition, VARIANT_VALUE_LEVEL_ONE_POSITION)
+            // save selected level 1 variant unit values
             viewModel.updateSelectedVariantUnitValuesLevel1(selectedVariantUnitValuesLevel1)
+            // update layout - selected unit values map
             viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnitValuesLevel1)
+            // set single selection flag to true
             viewModel.isSingleVariantTypeIsSelected = true
+        }
 
-        } else {
 
+        else {
             viewModel.isSingleVariantTypeIsSelected = false
 
             val renderedAdapterPosition = viewModel.getRenderedLayoutAdapterPosition()
 
             if (adapterPosition < renderedAdapterPosition) {
 
+                // render the new variant type values in level one position
+                // move the rendered to level two position
+
+                // get rendered variant detail
                 val renderedVariantDetail = variantTypeAdapter?.getItem(renderedAdapterPosition)
+                // get rendered layout position
                 val layoutPosition = viewModel.getVariantValuesLayoutPosition(renderedAdapterPosition)
+                // get rendered selected variant unit values by layout position
                 val renderedSelectedVariantUnitValues = viewModel.getSelectedVariantUnitValues(layoutPosition)
+
+                // move the rendered variant information to level two position
                 renderedVariantDetail?.run { setupVariantValueSection(VARIANT_VALUE_LEVEL_TWO_POSITION, this, renderedSelectedVariantUnitValues) }
+                // update adapter - layout mapping
                 viewModel.updateVariantValuesLayoutMap(renderedAdapterPosition, VARIANT_VALUE_LEVEL_TWO_POSITION)
+                // update selected variant unit values level 2
                 viewModel.updateSelectedVariantUnitValuesLevel2(renderedSelectedVariantUnitValues)
+                // update layout - selected unit values mapping
                 viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, renderedSelectedVariantUnitValues)
 
-
+                // render the new value type section in variant level one section
                 val selectedVariantUnitValuesLevel1 = mutableListOf<UnitValue>()
                 setupVariantValueSection(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail, selectedVariantUnitValuesLevel1)
+                // update adapter - layout mapping
                 viewModel.updateVariantValuesLayoutMap(adapterPosition, VARIANT_VALUE_LEVEL_ONE_POSITION)
+                // update selected variant unit values level 1
                 viewModel.updateSelectedVariantUnitValuesLevel1(selectedVariantUnitValuesLevel1)
+                // update layout - selected unit values mapping
                 viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnitValuesLevel1)
-
 
             } else {
 
+                // render the new variant type values in level two position
+                // get rendered layout position
+                val layoutPosition = viewModel.getVariantValuesLayoutPosition(renderedAdapterPosition)
                 val renderedVariantDetail = variantTypeAdapter?.getItem(renderedAdapterPosition)
-                val renderedSelectedVariantUnitValues = viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_ONE_POSITION)
+                val renderedSelectedVariantUnitValues = viewModel.getSelectedVariantUnitValues(layoutPosition)
                 renderedVariantDetail?.run { setupVariantValueSection(VARIANT_VALUE_LEVEL_ONE_POSITION, this, renderedSelectedVariantUnitValues) }
                 viewModel.updateVariantValuesLayoutMap(renderedAdapterPosition, VARIANT_VALUE_LEVEL_ONE_POSITION)
                 viewModel.updateSelectedVariantUnitValuesLevel1(renderedSelectedVariantUnitValues)
                 viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, renderedSelectedVariantUnitValues)
 
-                val selectedVariantUnitValues = viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_TWO_POSITION)
-                setupVariantValueSection(VARIANT_VALUE_LEVEL_TWO_POSITION, variantDetail, selectedVariantUnitValues)
+                // render the new value type section in variant level two section
+                val selectedVariantUnitValuesLevel2 = mutableListOf<UnitValue>()
+                setupVariantValueSection(VARIANT_VALUE_LEVEL_TWO_POSITION, variantDetail, selectedVariantUnitValuesLevel2)
                 viewModel.updateVariantValuesLayoutMap(adapterPosition, VARIANT_VALUE_LEVEL_TWO_POSITION)
-                viewModel.updateSelectedVariantUnitValuesLevel2(selectedVariantUnitValues)
-                viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnitValues)
+                viewModel.updateSelectedVariantUnitValuesLevel2(selectedVariantUnitValuesLevel2)
+                viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnitValuesLevel2)
             }
         }
 
         viewModel.updateSizechartFieldVisibility(variantDetail)
     }
 
-    override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail) {
-        val variantId = variantDetail.variantID
+    override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
         viewModel.isSingleVariantTypeIsSelected = true
         val layoutPosition = viewModel.getVariantValuesLayoutPosition(adapterPosition)
+        // if deselected variant type contain unit values show confirmation dialog
+        val isVariantUnitValuesEmpty = viewModel.isVariantUnitValuesEmpty(layoutPosition)
+        return if (!isVariantUnitValuesEmpty) {
+            setupCancellationDialog(layoutPosition, adapterPosition, variantDetail)
+            cancellationDialog?.show()
+            false
+        } else {
+            deselectVariantType(layoutPosition, adapterPosition, variantDetail)
+            true
+        }
+    }
+
+    private fun deselectVariantType(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
+
+        val variantId = variantDetail.variantID
+
+        // hide section
         resetVariantValueSection(layoutPosition)
+
+        // remove adapter - layout map entry
         viewModel.removeVariantValueLayoutMapEntry(adapterPosition)
+
+        // update layout - selected unit values map
         viewModel.updateSelectedVariantUnitValuesMap(layoutPosition, mutableListOf())
+
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                 viewModel.updateSelectedVariantUnitValuesLevel1(mutableListOf())
@@ -246,6 +303,18 @@ class AddEditProductVariantFragment :
         }
 
         viewModel.updateSizechartFieldVisibility(variantDetail)
+    }
+
+    private fun setupCancellationDialog(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
+        val title = getString(R.string.label_cancel) + " " + variantDetail.name + getString(R.string.label_question_mark)
+        val message = getString(R.string.label_data) + " " + variantDetail.name + " " + getString(R.string.label_variant_cancellation_message)
+        cancellationDialog?.setTitle(title)
+        cancellationDialog?.setDescription(message)
+        cancellationDialog?.setSecondaryCTAClickListener {
+            deselectVariantType(layoutPosition, adapterPosition, variantDetail)
+            variantTypeAdapter?.deselectItem(adapterPosition)
+            cancellationDialog?.dismiss()
+        }
     }
 
     private fun setupVariantValueSection(layoutPosition: Int, variantTypeDetail: VariantDetail, selectedVariantUnitValues: List<UnitValue>) {
@@ -320,16 +389,14 @@ class AddEditProductVariantFragment :
         }
     }
 
-    //
     override fun onAddButtonClicked(layoutPosition: Int, variantId: Int, unitName: String) {
         variantValuePicker?.dismiss()
-        viewModel.isSingleVariantTypeIsSelected
-        showVariantCustomInputForm(layoutPosition, variantId, unitName)
+        showCustomVariantInputForm(layoutPosition, variantId, unitName)
     }
 
     // custom value save
     override fun onCustomVariantUnitAdded(customVariantUnitValue: UnitValue, layoutPosition: Int, variantId: Int) {
-        variantCustomValueInputForm?.dismiss()
+        customVariantValueInputForm?.dismiss()
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                 viewModel.addCustomVariantUnitValue(layoutPosition, customVariantUnitValue)
@@ -381,7 +448,6 @@ class AddEditProductVariantFragment :
             }
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 variantValueLevel2Layout.hide()
-
             }
         }
     }
@@ -409,9 +475,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun showVariantValuePicker(variantDetail: VariantDetail, layoutPosition: Int, selectedVariantUnit: Unit?) {
-
         val selectedVariantUnitValues = viewModel.getSelectedVariantUnitValues(layoutPosition)
-
         variantDetail.let {
             variantValuePicker = BottomSheetUnify()
             variantValuePicker?.setTitle("Pilih " + variantDetail.name)
@@ -419,12 +483,7 @@ class AddEditProductVariantFragment :
             variantValuePicker?.showKnob = true
             val variantValuePickerLayout = VariantDetailValuesPicker(context)
             variantValuePickerLayout.setLayoutPosition(layoutPosition)
-            variantValuePicker?.setShowListener {
-                variantValuePicker?.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-            }
-
             selectedVariantUnit?.run { variantValuePickerLayout.setSelectedVariantUnit(this) }
-
             variantValuePickerLayout.setOnButtonSaveClickListener(this)
             variantValuePickerLayout.setOnVariantUnitPickerClickListener(this)
             variantValuePickerLayout.setOnAddCustomVariantUnitValueListener(this)
@@ -448,20 +507,15 @@ class AddEditProductVariantFragment :
         variantUnitPicker?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_PICKER)
     }
 
-    private fun showVariantCustomInputForm(layoutPosition: Int, variantId: Int, unitName: String) {
-        variantCustomValueInputForm = BottomSheetUnify()
-        variantCustomValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + unitName)
-        val variantCustomValueInputLayout = CustomVariantUnitValueForm(context)
-        variantCustomValueInputLayout.setLayoutPosition(layoutPosition)
-        variantCustomValueInputLayout.setOnButtonSaveClickListener(this)
-        variantCustomValueInputLayout.setupVariantCustomInputLayout(layoutPosition, variantId)
-        variantCustomValueInputForm?.setChild(variantCustomValueInputLayout)
-
-        variantCustomValueInputForm?.setShowListener {
-            variantCustomValueInputForm?.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        }
-
-        variantCustomValueInputForm?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_CUSTOM_VALUE_INPUT_FORM)
+    private fun showCustomVariantInputForm(layoutPosition: Int, variantId: Int, unitName: String) {
+        customVariantValueInputForm = BottomSheetUnify()
+        customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + unitName)
+        val customVariantValueInputLayout = CustomVariantUnitValueForm(context)
+        customVariantValueInputLayout.setLayoutPosition(layoutPosition)
+        customVariantValueInputLayout.setOnButtonSaveClickListener(this)
+        customVariantValueInputLayout.setupVariantCustomInputLayout(layoutPosition, variantId)
+        customVariantValueInputForm?.setChild(customVariantValueInputLayout)
+        customVariantValueInputForm?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_CUSTOM_VARIANT_UNIT_VALUE_INPUT_FORM)
     }
 
     private fun showPhotoVariantPicker() {
@@ -499,10 +553,41 @@ class AddEditProductVariantFragment :
         viewModel.getCategoryVariantCombinationResult.observe(this, Observer { result ->
             when (result) {
                 is Success -> {
-                    val variantDetails =
-                            result.data.getCategoryVariantCombination.data.variantDetails
+                    // all variant details
+                    val variantDetails = result.data.getCategoryVariantCombination.data.variantDetails
+                    // setup variant type section view
                     variantTypeAdapter?.setData(variantDetails)
                     variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
+                    // get selected variant details
+                    val selectedVariantDetails = viewModel.getSelectedVariantDetails()
+                    // get selected variant detail ids
+                    val selectedVariantDetailIds = viewModel.getSelectedVariantIds(selectedVariantDetails)
+                    // get variant type chip position by variant id
+                    val selectedAdapterPositions = variantTypeAdapter?.getPositionsByIds(selectedVariantDetailIds)
+                    // set selected variant types
+                    selectedAdapterPositions?.run {
+                        setSelectedVariantTypes(recyclerViewVariantType, selectedAdapterPositions)
+                    }
+                    // set selected variant unit and values
+                    selectedVariantDetails.forEachIndexed { index, variantDetail ->
+                        when (index) {
+                            VARIANT_VALUE_LEVEL_ONE_POSITION -> {
+                                val selectedVariantUnitValues = variantDetail.units.firstOrNull()?.unitValues
+                                        ?: listOf()
+                                setupVariantValueSection(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail, selectedVariantUnitValues)
+                            }
+                            VARIANT_VALUE_LEVEL_TWO_POSITION -> {
+                                val selectedVariantUnitValues = variantDetail.units.firstOrNull()?.unitValues
+                                        ?: listOf()
+                                setupVariantValueSection(VARIANT_VALUE_LEVEL_TWO_POSITION, variantDetail, selectedVariantUnitValues)
+                            }
+                        }
+                    }
+                    // set product variant images
+                    viewModel.productInputModel.value?.run {
+                        val variantPhotos = viewModel.getProductVariantPhotoImageUrlOrPathList(this)
+                        variantPhotoAdapter?.setData(variantPhotos)
+                    }
                 }
                 is Fail -> {
                     context?.let {
@@ -514,10 +599,24 @@ class AddEditProductVariantFragment :
         })
     }
 
+    private fun setSelectedVariantTypes(variantTypeView: RecyclerView, selectedAdapterPositions: List<Int>) {
+        selectedAdapterPositions.forEach { adapterPosition ->
+            val itemView = variantTypeView.layoutManager?.findViewByPosition(adapterPosition)
+            val variantTypeChip: ChipsUnify? = itemView?.findViewById(R.id.chipsVariantTypeName)
+            variantTypeChip?.chipType = ChipsUnify.TYPE_SELECTED
+        }
+    }
+
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(this, Observer { productInputModel ->
+            // extract selected variant details
+            val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
+            // set selected variant details
+            viewModel.setSelectedVariantDetails(selectedVariantDetails)
+            // get all variant details
             val categoryId = productInputModel.detailInputModel.categoryId
-            viewModel.getCategoryVariantCombination(categoryId)
+//            viewModel.getCategoryVariantCombination(categoryId)
+            viewModel.getCategoryVariantCombination("3426")
         })
     }
 

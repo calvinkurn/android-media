@@ -138,6 +138,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // product price
     private var productPriceField: TextFieldUnify? = null
     private var productPriceEditIcon: ImageView? = null
+    private var productPriceBulkEditDialog: DialogUnify? = null
     private var productPriceBulkEditBottomSheet: BottomSheetUnify? = null
     private var productPriceBulkPriceEditBottomSheetContent: ProductBulkPriceEditBottomSheetContent? = null
 
@@ -190,15 +191,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // set detail and variant input model
         cacheManagerId?.run {
-            viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+            viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+                    ?: ProductInputModel()
             viewModel.hasVariants = viewModel.productInputModel.variantInputModel.products.isNotEmpty()
             var pictureIndex = 0
             viewModel.productPhotoPaths = viewModel.productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
                 if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
                 else urlOrPath
             }.toMutableList()
-            viewModel.isEditing = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java) ?: false
-            viewModel.isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java) ?: false
+            viewModel.isEditing = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java)
+                    ?: false
+            viewModel.isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java)
+                    ?: false
         }
 
         userSession = UserSession(requireContext())
@@ -404,7 +408,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 viewModel.productInputModel.variantInputModel.products.isNotEmpty()) {
             productPriceField?.textFieldInput?.isEnabled = false
             productPriceEditIcon?.visible()
-            productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceBottomSheet() }
+            productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceDialog() }
         } else {
             productPriceEditIcon?.hide()
             productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -642,7 +646,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         activity?.finish()
                         return
                     }
-                    val cacheManagerId = data.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+                    val cacheManagerId = data.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+                            ?: ""
                     submitInput(cacheManagerId)
                 }
             }
@@ -654,7 +659,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         countTouchPhoto += 1
         // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
         // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
-        if(countTouchPhoto == 2) {
+        if (countTouchPhoto == 2) {
             if (viewModel.isEditing && !viewModel.isAdding) {
                 ProductEditMainTracking.trackDragPhoto(shopId)
             } else {
@@ -1027,7 +1032,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 else {
                     val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                         val pictureList = viewModel.productInputModel.detailInputModel.pictureList
-                        if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX))pictureList.find {
+                        if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) pictureList.find {
                             it.urlThumbnail == urlOrPath
                         }?.urlOriginal ?: urlOrPath
                         else urlOrPath
@@ -1155,7 +1160,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             ProductAddMainTracking.clickContinue(shopId)
         }
         inputAllDataInProductInputModel()
-        val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+        val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+                ?: ""
         SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
 
         val intent = AddEditProductDescriptionActivity.createInstance(context, cacheManagerId)
@@ -1237,8 +1243,34 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun onCategoryRecommendationSelected(categoryId: String) {
         productNameRecView?.hide()
         viewModel.productInputModel.detailInputModel.categoryId = categoryId
-        if(viewModel.isAdding) {
+        if (viewModel.isAdding) {
             ProductAddMainTracking.clickProductCategoryRecom(shopId)
+        }
+    }
+
+    private fun showEditAllVariantPriceDialog() {
+        if (productPriceBulkEditDialog == null) {
+            setupEditAllVariantDialog()
+        }
+        productPriceBulkEditDialog?.show()
+    }
+
+    private fun setupEditAllVariantDialog() {
+        context?.run {
+            productPriceBulkEditDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            productPriceBulkEditDialog?.setTitle(getString(R.string.label_change_price_dialog_title))
+            productPriceBulkEditDialog?.setDescription(getString(R.string.label_change_price_dialog_message))
+            productPriceBulkEditDialog?.setPrimaryCTAText(getString(R.string.action_cancel))
+            productPriceBulkEditDialog?.setSecondaryCTAText(getString(R.string.action_change_price))
+
+            productPriceBulkEditDialog?.setPrimaryCTAClickListener {
+                productPriceBulkEditDialog?.dismiss()
+            }
+            productPriceBulkEditDialog?.setSecondaryCTAClickListener {
+                productPriceField?.isEnabled = true
+                viewModel.shouldUpdateVariant = true
+                productPriceBulkEditDialog?.dismiss()
+            }
         }
     }
 
@@ -1362,7 +1394,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productInputModel.detailInputModel = detailInputModel
         viewModel.productInputModel.variantInputModel = variantInputModel
 
-        val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+        val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+                ?: ""
         SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
 
         val intent = Intent()

@@ -27,7 +27,6 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
 
     private var onButtonSaveClickListener: OnButtonSaveClickListener? = null
 
-
     interface OnVariantUnitPickerClickListener {
         fun onVariantUnitSelected(selectedVariantUnit: Unit, layoutPosition: Int)
     }
@@ -133,6 +132,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
                         selectedItem.listRightCheckbox?.isChecked = !this
                     }
                 } else {
+                    // add custom variant unit value
                     layoutPosition?.run {
                         onAddCustomVariantUnitValueListener?.onAddButtonClicked(this, variantId, unitName)
                     }
