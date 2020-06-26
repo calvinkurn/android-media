@@ -25,7 +25,6 @@ class CoverCropPartialView(
     private val llImageContainer: LinearLayout = findViewById(R.id.ll_image_container)
     private val loaderImage: LoaderUnify = findViewById(R.id.loader_image)
     private val ivCropOverlay: PlayRectCropImageOverlay = findViewById(R.id.iv_crop_overlay)
-    private val llCropAction: LinearLayout = findViewById(R.id.ll_crop_action)
     private val btnCropChange: UnifyButton = findViewById(R.id.btn_crop_change)
     private val btnCropAdd: UnifyButton = findViewById(R.id.btn_crop_add)
 
@@ -39,6 +38,12 @@ class CoverCropPartialView(
 
     fun clickAdd() {
         btnCropAdd.performClick()
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        btnCropAdd.isLoading = isLoading
+        btnCropAdd.isClickable = !isLoading
+        btnCropChange.isEnabled = !isLoading
     }
 
     fun setImageForCrop(imageUri: Uri?) {
@@ -56,6 +61,14 @@ class CoverCropPartialView(
             Handler().postDelayed({
                 ivPlayCoverCropImage.setCropRect(ivCropOverlay.getCropRect())
             }, SECONDS)
+
+            btnCropAdd.isLoading = true
+
+            Handler().postDelayed({
+                btnCropAdd.isEnabled = true
+                btnCropChange.isEnabled = true
+                btnCropAdd.isLoading = false
+            }, 1500)
 
             llImageContainer.addView(ivPlayCoverCropImage)
 
@@ -75,8 +88,6 @@ class CoverCropPartialView(
             }
 
             loaderImage.gone()
-            btnCropAdd.isEnabled = true
-            btnCropChange.isEnabled = true
         } else {
             loaderImage.show()
             btnCropAdd.isEnabled = false

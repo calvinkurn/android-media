@@ -114,6 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:textColor="@color/Neutral_N0"
+            android:visibility="invisible"
             app:typographyType="body_3"
             tools:text="31/38"
             />
