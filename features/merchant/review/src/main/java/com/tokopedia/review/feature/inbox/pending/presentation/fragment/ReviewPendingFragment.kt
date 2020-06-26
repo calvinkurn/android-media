@@ -22,6 +22,8 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.analytics.ReviewTracking
+import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
@@ -37,8 +39,17 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPen
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.data.mapper.IncentiveOvoMapper
+import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import kotlinx.android.synthetic.main.fragment_create_review.*
+import com.tokopedia.usecase.coroutines.Success as CoroutineSucess
+import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import kotlinx.android.synthetic.main.fragment_review_pending.*
+import kotlinx.android.synthetic.main.fragment_review_pending.ovoPointsTicker
 import kotlinx.android.synthetic.main.partial_review_connection_error.*
 import kotlinx.android.synthetic.main.partial_review_empty.*
 import javax.inject.Inject
@@ -109,7 +120,13 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         super.onViewCreated(view, savedInstanceState)
         initView()
         showLoading()
+        getIncentiveOvoData()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         observeReviewList()
+        observeOvoIncentive()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -196,6 +213,19 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         viewModel.getReviewData(page, isRefresh)
     }
 
+    private fun getIncentiveOvoData() {
+        viewModel.getProductIncentiveOvo()
+    }
+
+    private fun observeOvoIncentive() {
+        viewModel.incentiveOvo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is CoroutineSucess -> onSuccessGetIncentiveOvo(it.data)
+                is CoroutineFail -> onErrorGetIncentiveOvo()
+            }
+        })
+    }
+
     private fun observeReviewList() {
         viewModel.reviewList.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -228,6 +258,37 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                 }
             }
         })
+    }
+
+    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain) {
+        with(data.productrevIncentiveOvo) {
+            ovoPointsTicker.apply {
+                show()
+                tickerTitle = ticker.title
+                setHtmlDescription(ticker.subtitle)
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data), ReviewInboxTrackingConstants.PENDING_TAB)
+                        bottomSheet.isFullpage = true
+                        fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
+                        bottomSheet.setCloseClickListener {
+                            ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
+                            bottomSheet.dismiss()
+                        }
+                        ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, ReviewInboxTrackingConstants.PENDING_TAB)
+                    }
+
+                    override fun onDismiss() {
+                        ReviewTracking.onClickDismissIncentiveOvoTracker(tickerTitle, ReviewInboxTrackingConstants.PENDING_TAB)
+                    }
+                })
+                ReviewTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, ReviewInboxTrackingConstants.PENDING_TAB)
+            }
+        }
+    }
+
+    private fun onErrorGetIncentiveOvo() {
+        ovoPointsTicker.hide()
     }
 
     private fun renderReviewData(reviewData: List<ReviewPendingUiModel>, hasNextPage: Boolean) {

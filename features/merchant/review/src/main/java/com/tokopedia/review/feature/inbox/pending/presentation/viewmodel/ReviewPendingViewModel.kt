@@ -9,21 +9,32 @@ import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
+import com.tokopedia.review.feature.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevWaitForFeedbackUseCase
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Dispatchers
+import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
+import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewPendingViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
         userSession: UserSessionInterface,
-        private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase
+        private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
+        private val getProductIncentiveOvo: GetProductIncentiveOvo
 ) : BaseViewModel(dispatchers.io()) {
 
     private val _reviewList = MutableLiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>()
     val reviewList: LiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>
         get() = _reviewList
+
+    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>>()
+    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>>
+        get() = _incentiveOvo
 
     val userId = userSession.userId ?: ""
 
@@ -39,6 +50,15 @@ class ReviewPendingViewModel @Inject constructor(
             _reviewList.postValue(Success(response.productrevWaitForFeedbackWaitForFeedback, page))
         }) {
             _reviewList.postValue(Fail(it, page))
+        }
+    }
+
+    fun getProductIncentiveOvo() {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO) { getProductIncentiveOvo.getIncentiveOvo() }
+            _incentiveOvo.postValue(CoroutineSuccess(data))
+        }) {
+            _incentiveOvo.postValue(CoroutineFail(it))
         }
     }
 
