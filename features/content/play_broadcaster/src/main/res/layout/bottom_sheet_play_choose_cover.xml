@@ -1,44 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/ll_open_camera"
-        android:layout_width="@dimen/play_cover_from_selection_size"
-        android:layout_height="@dimen/play_cover_from_selection_size"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:background="@drawable/bg_play_select_from_camera"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/rv_product_cover"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            app:srcCompat="@drawable/ic_play_action_camera_white" />
-
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_product_cover"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:id="@+id/fl_product_camera_cover"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="@+id/ll_open_camera"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintLeft_toRightOf="@+id/ll_open_camera"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ll_open_camera"
-        />
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlSymmetry"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_product_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_max="@dimen/layout_lvl0"
+            />
+
+    </FrameLayout>
 
     <View
         android:id="@+id/v_separator"
@@ -46,7 +38,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/layout_lvl3"
         android:background="@color/Neutral_N75"
-        app:layout_constraintTop_toBottomOf="@+id/ll_open_camera" />
+        app:layout_constraintTop_toBottomOf="@+id/fl_product_camera_cover" />
 
     <LinearLayout
         android:id="@+id/ll_open_gallery"

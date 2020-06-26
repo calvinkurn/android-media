@@ -2,8 +2,8 @@ package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.withContext
@@ -17,21 +17,21 @@ class ProductDataStoreImpl @Inject constructor(
         private val addProductTagUseCase: AddProductTagUseCase
 ) : ProductDataStore {
 
-    private val mSelectedProductMap = mutableMapOf<Long, ProductContentUiModel>()
+    private val mSelectedProductMap = mutableMapOf<Long, ProductData>()
 
-    private val _selectedProductsLiveData = MutableLiveData<List<ProductContentUiModel>>().apply {
+    private val _selectedProductsLiveData = MutableLiveData<List<ProductData>>().apply {
         value = emptyList()
     }
 
-    override fun getObservableSelectedProducts(): LiveData<List<ProductContentUiModel>> {
+    override fun getObservableSelectedProducts(): LiveData<List<ProductData>> {
         return _selectedProductsLiveData
     }
 
-    override fun getSelectedProducts(): List<ProductContentUiModel> {
+    override fun getSelectedProducts(): List<ProductData> {
         return _selectedProductsLiveData.value.orEmpty()
     }
 
-    override fun selectProduct(product: ProductContentUiModel, isSelected: Boolean) {
+    override fun selectProduct(product: ProductData, isSelected: Boolean) {
         if (isSelected) mSelectedProductMap[product.id] = product
         else mSelectedProductMap.remove(product.id)
 
@@ -55,7 +55,7 @@ class ProductDataStoreImpl @Inject constructor(
         }
     }
 
-    override fun setSelectedProducts(selectedProducts: List<ProductContentUiModel>) {
+    override fun setSelectedProducts(selectedProducts: List<ProductData>) {
         mSelectedProductMap.clear()
         selectedProducts.associateByTo(mSelectedProductMap) { it.id }
 

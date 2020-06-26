@@ -138,7 +138,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             when (val croppedCover = it.cover.croppedCover) {
                 is CoverSetupState.Cropped -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
                 is CoverSetupState.Cropping.Image -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
-                else -> throw IllegalStateException("Cover cannot be blank")
+                else -> ivImagePreview.setImageDrawable(null)
             }
 
             tvCoverTitle.text = it.cover.title

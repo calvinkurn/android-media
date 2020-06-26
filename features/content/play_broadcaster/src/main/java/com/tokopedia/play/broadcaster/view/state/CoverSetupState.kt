@@ -1,23 +1,23 @@
 package com.tokopedia.play.broadcaster.view.state
 
 import android.net.Uri
-import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
 
 /**
  * Created by jegul on 18/06/20
  */
 sealed class CoverSetupState {
 
-    data class Cropped(val coverImage: Uri, val coverSource: CoverSourceEnum) : CoverSetupState()
+    data class Cropped(val coverImage: Uri, val coverSource: CoverSource) : CoverSetupState()
     sealed class Cropping : CoverSetupState() {
 
-        abstract val coverSource: CoverSourceEnum
+        abstract val coverSource: CoverSource
 
         data class Product(val productId: Long, val imageUrl: String) : Cropping() {
-            override val coverSource: CoverSourceEnum
-                get() = CoverSourceEnum.PRODUCT
+            override val coverSource: CoverSource
+                get() = CoverSource.Product(productId)
         }
-        data class Image(val coverImage: Uri, override val coverSource: CoverSourceEnum) : Cropping()
+        data class Image(val coverImage: Uri, override val coverSource: CoverSource) : Cropping()
     }
     object Blank : CoverSetupState()
 }

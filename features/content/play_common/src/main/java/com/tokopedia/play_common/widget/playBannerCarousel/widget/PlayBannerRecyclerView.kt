@@ -264,7 +264,10 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         this.mediaObjects.addAll(list)
         this.mediaObjectsLastPosition.addAll(list.map { 0 })
         resetVideoPlayer()
-        playVideos()
+        launch {
+            delay(100)
+            playVideos()
+        }
     }
 
     fun setAutoPlay(isAutoPlay: Boolean, autoPlayAmount: Int){

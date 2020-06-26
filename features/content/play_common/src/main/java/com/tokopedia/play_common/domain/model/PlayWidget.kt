@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class PlayGetWidgetEntity (
-    @SerializedName("playGetWidgetV2") @Expose val playGetWidgetV2 : PlayWidget = PlayWidget()
+        @SerializedName("playGetWidgetV2") @Expose val playGetWidgetV2 : PlayWidget = PlayWidget()
 )
 
 data class PlayWidget (

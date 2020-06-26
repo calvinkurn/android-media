@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -20,19 +19,17 @@ import androidx.transition.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
 import com.tokopedia.play.broadcaster.util.exhaustive
+import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
@@ -51,7 +48,7 @@ import javax.inject.Inject
 class PlayCoverSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val dispatcher: CoroutineDispatcherProvider
-) : PlayBaseSetupFragment(), PlayGalleryImagePickerBottomSheet.Listener {
+) : PlayBaseSetupFragment() {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -66,8 +63,7 @@ class PlayCoverSetupFragment @Inject constructor(
     private lateinit var coverSetupView: CoverSetupPartialView
     private lateinit var coverCropView: CoverCropPartialView
 
-    private lateinit var coverImageChooserBottomSheet: PlayCoverImageChooserBottomSheet
-    private lateinit var galleryImagePickerBottomSheet: PlayGalleryImagePickerBottomSheet
+    private lateinit var imagePickerHelper: CoverImagePickerHelper
 
     private var mListener: Listener? = null
 
@@ -94,7 +90,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_play_cover_title_setup, container, false)
+        return inflater.inflate(R.layout.fragment_play_cover_setup, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,14 +107,6 @@ class PlayCoverSetupFragment @Inject constructor(
         observeUploadCover()
     }
 
-    override fun onGetCoverFromGallery(imageUri: Uri?) {
-        showCoverCropLayout(null)
-        imageUri?.let {
-            viewModel.setCroppingCoverByUri(it, CoverSourceEnum.GALLERY)
-        }
-        getPlayCoverImageChooserBottomSheet().dismiss()
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             REQUEST_CODE_PERMISSION_COVER_CHOOSER -> onCoverChooserPermissionResult(grantResults)
@@ -130,13 +118,8 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_CODE_CAMERA_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val imageUri = data?.getParcelableExtra<Uri>(PlayCoverCameraActivity.EXTRA_IMAGE_URI)
-            imageUri?.let(::onGetCoverFromCamera)
-            getPlayCoverImageChooserBottomSheet().dismiss()
-        }
+        if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data))
+            super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onDestroyView() {
@@ -152,12 +135,20 @@ class PlayCoverSetupFragment @Inject constructor(
     private fun onGetCoverFromCamera(imageUri: Uri?) {
         showCoverCropLayout(null)
         imageUri?.let {
-            viewModel.setCroppingCoverByUri(it, CoverSourceEnum.CAMERA)
+            viewModel.setCroppingCoverByUri(it, CoverSource.Camera)
         }
     }
 
     private fun onGetCoverFromProduct(productId: Long, imageUrl: String) {
         viewModel.setCroppingProductCover(productId, imageUrl)
+    }
+
+    private fun onGetCoverFromGallery(imageUri: Uri?) {
+        showCoverCropLayout(null)
+        imageUri?.let {
+            viewModel.setCroppingCoverByUri(it, CoverSource.Gallery)
+        }
+        getImagePickerHelper().dismiss()
     }
 
     private fun initView(view: View) {
@@ -178,6 +169,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 },
                 listener = object : CoverSetupPartialView.Listener {
                     override fun onImageAreaClicked(view: CoverSetupPartialView) {
+                        viewModel.saveCover(coverSetupView.coverTitle)
                         openCoverChooser()
                     }
 
@@ -224,7 +216,7 @@ class PlayCoverSetupFragment @Inject constructor(
             }
 
             override fun onChangeButtonClicked(view: CoverCropPartialView) {
-                onCancelCropImage(CoverSourceEnum.NONE)
+                onCancelCropImage(CoverSource.None)
             }
         })
     }
@@ -241,8 +233,8 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun openCoverChooser() {
-        getPlayCoverImageChooserBottomSheet()
-                .show(childFragmentManager)
+        getImagePickerHelper()
+                .show(CoverSource.None)
     }
 
     private fun showCoverCropLayout(coverImageUri: Uri?) {
@@ -267,62 +259,36 @@ class PlayCoverSetupFragment @Inject constructor(
         viewModel.removeCover()
     }
 
-    private fun onCancelCropImage(source: CoverSourceEnum) {
+    private fun onCancelCropImage(source: CoverSource) {
         onBackFromCropping(source)
         showInitCoverLayout(null)
         removeCover()
     }
 
-    private fun getPlayCoverImageChooserBottomSheet(): PlayCoverImageChooserBottomSheet {
-        if (!::coverImageChooserBottomSheet.isInitialized) {
-            val fragmentFactory = childFragmentManager.fragmentFactory
-            val coverChooser = fragmentFactory.instantiate(
-                    requireContext().classLoader,
-                    PlayCoverImageChooserBottomSheet::class.java.name
-            ) as PlayCoverImageChooserBottomSheet
+    private fun getImagePickerHelper(): CoverImagePickerHelper {
+        if (!::imagePickerHelper.isInitialized) {
+            imagePickerHelper = CoverImagePickerHelper(
+                    context = requireContext(),
+                    fragmentManager = childFragmentManager,
+                    listener = object : CoverImagePickerHelper.OnChosenListener {
+                        override fun onGetFromProduct(productId: Long, imageUrl: String) {
+                            onGetCoverFromProduct(productId, imageUrl)
+                        }
 
-            coverChooser.mListener = getCoverImageChooserListener()
-            coverChooser.setShowListener { coverChooser.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+                        override fun onGetFromCamera(uri: Uri) {
+                            onGetCoverFromCamera(uri)
+                        }
 
-            coverImageChooserBottomSheet = coverChooser
+                        override fun onGetFromGallery(uri: Uri) {
+                            onGetCoverFromGallery(uri)
+                        }
+                    },
+                    intentHandler = { intent, requestCode ->
+                        startActivityForResult(intent, requestCode)
+                    }
+            )
         }
-
-        return coverImageChooserBottomSheet
-    }
-
-    private fun getCoverImageChooserListener(): PlayCoverImageChooserBottomSheet.Listener {
-        return object: PlayCoverImageChooserBottomSheet.Listener {
-
-            override fun onChooseProductCover(bottomSheet: PlayCoverImageChooserBottomSheet, productId: Long, imageUrl: String) {
-                onGetCoverFromProduct(productId, imageUrl)
-                bottomSheet.dismiss()
-            }
-
-            override fun onGetFromCamera(bottomSheet: PlayCoverImageChooserBottomSheet) {
-                openCameraPage()
-            }
-
-            override fun onChooseFromGalleryClicked(bottomSheet: PlayCoverImageChooserBottomSheet) {
-                openGalleryPage()
-            }
-        }
-    }
-
-    private fun getGalleryImagePickerBottomSheet(): PlayGalleryImagePickerBottomSheet {
-        if (!::galleryImagePickerBottomSheet.isInitialized) {
-            val fragmentFactory = childFragmentManager.fragmentFactory
-            val imagePicker = fragmentFactory.instantiate(
-                    requireContext().classLoader,
-                    PlayGalleryImagePickerBottomSheet::class.java.name
-            ) as PlayGalleryImagePickerBottomSheet
-
-            imagePicker.mListener = this
-            imagePicker.setShowListener { imagePicker.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-
-            galleryImagePickerBottomSheet = imagePicker
-        }
-
-        return galleryImagePickerBottomSheet
+        return imagePickerHelper
     }
 
     /**
@@ -359,13 +325,13 @@ class PlayCoverSetupFragment @Inject constructor(
         }
     }
 
-    private fun onBackFromCropping(source: CoverSourceEnum): Boolean {
+    private fun onBackFromCropping(source: CoverSource): Boolean {
         return when (source) {
-            CoverSourceEnum.GALLERY -> {
+            CoverSource.Gallery -> {
                 openGalleryPage()
                 true
             }
-            CoverSourceEnum.CAMERA -> {
+            CoverSource.Camera -> {
                 openCameraPage()
                 true
             }
@@ -382,8 +348,8 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun openGalleryPage() {
-        getGalleryImagePickerBottomSheet()
-                .show(childFragmentManager)
+        getImagePickerHelper()
+                .show(CoverSource.Gallery)
     }
 
     private fun handleCroppingState(state: CoverSetupState.Cropping) {
@@ -404,7 +370,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     .load(originalImageUrl)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            viewModel.setCroppingCoverByBitmap(resource, CoverSourceEnum.PRODUCT)
+                            viewModel.setCroppingCoverByBitmap(resource, CoverSource.Product(productCropping.productId))
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {}

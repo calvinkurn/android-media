@@ -12,6 +12,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.itemdecoration.CarouselCoverItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
+import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverCameraViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
@@ -29,15 +32,21 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
 
     private lateinit var viewModel: PlayCoverSetupViewModel
 
-    private lateinit var llOpenCamera: LinearLayout
     private lateinit var rvProductCover: RecyclerView
     private lateinit var llOpenGallery: LinearLayout
 
-    private val pdpCoverAdapter = PlayCoverProductAdapter(object : PlayCoverProductViewHolder.Listener {
-        override fun onProductCoverClicked(productId: Long, imageUrl: String) {
-            mListener?.onChooseProductCover(this@PlayCoverImageChooserBottomSheet, productId, imageUrl)
-        }
-    })
+    private val pdpCoverAdapter = PlayCoverProductAdapter(
+            coverProductListener = object : PlayCoverProductViewHolder.Listener {
+                override fun onProductCoverClicked(productId: Long, imageUrl: String) {
+                    mListener?.onChooseProductCover(this@PlayCoverImageChooserBottomSheet, productId, imageUrl)
+                }
+            },
+            coverCameraListener = object : PlayCoverCameraViewHolder.Listener {
+                override fun onCameraButtonClicked() {
+                    getCoverFromCamera()
+                }
+            }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +91,6 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
 
     private fun initView(view: View) {
         with (view) {
-            llOpenCamera = findViewById(R.id.ll_open_camera)
             rvProductCover = findViewById(R.id.rv_product_cover)
             llOpenGallery = findViewById(R.id.ll_open_gallery)
         }
@@ -95,25 +103,26 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
                 0,
                 bottomSheetWrapper.paddingBottom)
 
-        llOpenCamera.setOnClickListener {
-            if (isCameraPermissionGranted()) mListener?.onGetFromCamera(this@PlayCoverImageChooserBottomSheet)
-            else requestCameraPermission()
-        }
-
         llOpenGallery.setOnClickListener {
             if (isGalleryPermissionGranted()) chooseCoverFromGallery()
             else requestGalleryPermission()
         }
 
         rvProductCover.adapter = pdpCoverAdapter
+        rvProductCover.addItemDecoration(CarouselCoverItemDecoration(requireContext()))
     }
 
     private fun onCameraRequestPermissionResult(grantResults: IntArray) {
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) llOpenCamera.performClick()
+        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) getCoverFromCamera()
     }
 
     private fun onGalleryRequestPermissionResult(grantResults: IntArray) {
         if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) llOpenGallery.performClick()
+    }
+
+    private fun getCoverFromCamera() {
+        if (isCameraPermissionGranted()) mListener?.onGetFromCamera(this@PlayCoverImageChooserBottomSheet)
+        else requestCameraPermission()
     }
 
     /**
@@ -150,7 +159,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
      */
     private fun observeSelectedProduct() {
         viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
-            pdpCoverAdapter.setItemsAndAnimateChanges(it)
+            pdpCoverAdapter.setItemsAndAnimateChanges(listOf(CarouselCoverUiModel.Camera) + it)
         })
     }
 

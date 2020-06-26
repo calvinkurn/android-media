@@ -11,6 +11,7 @@ interface PlayBannerCarouselViewEventListener{
     fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel)
     fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel)
     fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int)
-    fun onSeeMoreClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int)
+    fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel)
+    fun onSeeMoreBannerClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int)
     fun onRefreshView(dataModel: PlayBannerCarouselDataModel)
 }

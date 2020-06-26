@@ -1,11 +1,13 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
+import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.type.OverwriteMode
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(
@@ -40,15 +42,15 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     /**
      * Product
      */
-    override fun getObservableSelectedProducts(): LiveData<List<ProductContentUiModel>> {
+    override fun getObservableSelectedProducts(): LiveData<List<ProductData>> {
         return productDataStore.getObservableSelectedProducts()
     }
 
-    override fun getSelectedProducts(): List<ProductContentUiModel> {
+    override fun getSelectedProducts(): List<ProductData> {
         return productDataStore.getSelectedProducts()
     }
 
-    override fun selectProduct(product: ProductContentUiModel, isSelected: Boolean) {
+    override fun selectProduct(product: ProductData, isSelected: Boolean) {
         productDataStore.selectProduct(product, isSelected)
     }
 
@@ -61,10 +63,15 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     }
 
     override suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit> {
-        return productDataStore.uploadSelectedProducts(channelId)
+//        val uploadResult = productDataStore.uploadSelectedProducts(channelId)
+        //TODO("Remove Mock Code")
+        delay(1000)
+        val uploadResult = NetworkResult.Success(Unit)
+        if (uploadResult is NetworkResult.Success) validateCover()
+        return uploadResult
     }
 
-    override fun setSelectedProducts(selectedProducts: List<ProductContentUiModel>) {
+    override fun setSelectedProducts(selectedProducts: List<ProductData>) {
         productDataStore.setSelectedProducts(selectedProducts)
     }
 
@@ -93,5 +100,21 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
         return coverDataStore.uploadSelectedCover(channelId)
+    }
+
+    private fun validateCover() {
+        val selectedCover = getSelectedCover()
+        val selectedProducts = getSelectedProducts()
+        val chosenCoverSource = when (val croppedCover = selectedCover?.croppedCover) {
+            is CoverSetupState.Cropped -> croppedCover.coverSource
+            is CoverSetupState.Cropping.Image -> croppedCover.coverSource
+            else -> null
+        }
+
+        if (chosenCoverSource is CoverSource.Product) {
+            val productId = chosenCoverSource.id
+            if (selectedProducts.none { it.id == productId })
+                updateCoverState(CoverSetupState.Blank)
+        }
     }
 }
