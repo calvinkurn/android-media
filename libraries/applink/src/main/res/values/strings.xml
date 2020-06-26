@@ -11,6 +11,10 @@
     <string name="host_product" translatable="false">product</string>
     <string name="path_add" translatable="false">/add</string>
 
+    <!--Developer Options-->
+    <string name="host_setting" translatable="false">setting</string>
+    <string name="path_dev_opt" translatable="false">/dev-opts</string>
+
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
 
