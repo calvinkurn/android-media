@@ -19,5 +19,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:layout_marginTop="@dimen/section_title_margin" />
+        android:layout_marginTop="@dimen/section_header_margin" />
 </LinearLayout>
