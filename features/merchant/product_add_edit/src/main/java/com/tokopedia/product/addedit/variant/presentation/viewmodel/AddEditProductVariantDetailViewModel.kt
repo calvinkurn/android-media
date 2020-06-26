@@ -5,6 +5,9 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
+import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
@@ -77,6 +80,21 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun editVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
         if (inputLayoutModelMap.containsKey(fieldPosition)) inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
+    }
+
+    fun updateProductInputModel() {
+        val products = productInputModel.value?.variantInputModel?.products.orEmpty()
+        var index = 0
+        inputLayoutModelMap.forEach {
+            val variantDetail = it.value
+            products.getOrNull(index)?.apply {
+                price = variantDetail.price.toBigIntegerOrNull().orZero()
+                sku = variantDetail.sku
+                stock = variantDetail.stock.toIntOrZero()
+                status = if (variantDetail.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
+            }
+            index++
+        }
     }
 
     fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {

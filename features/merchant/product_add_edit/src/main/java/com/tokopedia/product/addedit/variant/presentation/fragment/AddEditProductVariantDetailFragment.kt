@@ -236,8 +236,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitVariantInput() {
-        val productInputModel = viewModel.productInputModel.value
-        productInputModel?.apply {
+        viewModel.updateProductInputModel()
+        viewModel.productInputModel.value?.apply {
             val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
             SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
