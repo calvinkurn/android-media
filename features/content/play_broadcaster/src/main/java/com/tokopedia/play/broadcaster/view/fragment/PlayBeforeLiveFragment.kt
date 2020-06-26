@@ -52,8 +52,6 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private lateinit var editTitleBottomSheet: PlayBroadcastEditTitleBottomSheet
-
     private lateinit var exitDialog: DialogUnify
 
     private val setupResultListener = object : SetupResultListener {
@@ -234,15 +232,13 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun getEditTitleBottomSheet(): PlayBroadcastEditTitleBottomSheet {
-        if (!::editTitleBottomSheet.isInitialized) {
-            editTitleBottomSheet = PlayBroadcastEditTitleBottomSheet()
-            editTitleBottomSheet.setListener(object : PlayBroadcastEditTitleBottomSheet.Listener {
-                override fun onSaveEditedTitle(title: String) {
-                    prepareViewModel.title = title
-                }
-            })
-            editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-        }
+        val editTitleBottomSheet = PlayBroadcastEditTitleBottomSheet()
+        editTitleBottomSheet.setListener(object : PlayBroadcastEditTitleBottomSheet.Listener {
+            override fun onSaveEditedTitle(title: String) {
+                prepareViewModel.title = title
+            }
+        })
+        editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         return editTitleBottomSheet
     }
 }
