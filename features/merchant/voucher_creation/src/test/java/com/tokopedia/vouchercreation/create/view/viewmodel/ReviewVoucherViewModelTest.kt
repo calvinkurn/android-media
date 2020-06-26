@@ -1,7 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.viewmodel
 
 import android.graphics.Bitmap
-import android.graphics.Picture
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.vouchercreation.create.domain.usecase.*
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
@@ -24,8 +23,6 @@ import rx.Observable
 class ReviewVoucherViewModelTest {
 
     companion object {
-        private val PICTURE = Picture()
-
         private const val DUMMY_VOUCHER_BANNER = "banner"
         private const val DUMMY_VOUCHER_SQUARE = "square"
         private const val DUMMY_VOUCHER_BANNER_URL = "banner_url"
