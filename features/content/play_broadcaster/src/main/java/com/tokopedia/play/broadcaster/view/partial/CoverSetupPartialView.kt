@@ -132,7 +132,7 @@ class CoverSetupPartialView(
         tvCoverTitleCounter.setTextColor(
                 MethodChecker.getColor(
                         tvCoverTitleCounter.context,
-                        if (text.isEmpty() && etCoverTitle.hasFocus()) R.color.Red_R500 else R.color.Neutral_N0
+                        if (text.isEmpty() && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500 else com.tokopedia.unifyprinciples.R.color.Neutral_N0
                 )
         )
     }
@@ -145,7 +145,7 @@ class CoverSetupPartialView(
 
     private fun updateTextField(text: String) {
         etCoverTitle.setTextFieldColor(
-                if (text.isEmpty() && etCoverTitle.hasFocus()) R.color.Red_R500 else R.color.Neutral_N0
+                if (text.isEmpty() && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500 else com.tokopedia.unifyprinciples.R.color.Neutral_N0
         )
     }
 
@@ -188,7 +188,7 @@ class CoverSetupPartialView(
         val spanBuilder = SpannableStringBuilder(finalText)
         if (spanBuilder.contains(asterisk)) {
             spanBuilder.setSpan(
-                    ForegroundColorSpan(getColor(R.color.Red_R500)),
+                    ForegroundColorSpan(getColor(com.tokopedia.unifyprinciples.R.color.Red_R500)),
                     finalText.indexOf(asterisk),
                     finalText.length,
                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE
