@@ -16,6 +16,8 @@ open class FilterController {
     private val filterViewState = mutableSetOf<String>()
     private var pressedSliderMinValueState = -1
     private var pressedSliderMaxValueState = -1
+    val filterViewStateSet: Set<String>
+        get() = filterViewState
 
     fun initFilterController(parameter: Map<String, String>? = mapOf(),
                              filterList: List<Filter>? = listOf()) {
@@ -88,7 +90,7 @@ open class FilterController {
         iterateOptionAndCheckForBundledOption(optionsForFilterViewState)
 
         for(option in optionsForFilterViewState) {
-            if(option.value == "") option.value = parameter[option.key].toString()
+            if(option.value == "" || option.isTypeTextBox) option.value = parameter[option.key].toString()
             filterViewState.add(option.uniqueId)
         }
     }
@@ -96,7 +98,7 @@ open class FilterController {
     private fun isOptionSelected(parameter: Map<String, String>, option: Option) : Boolean {
         return if(parameter.containsKey(option.key))
             return when {
-                option.value == "" -> true
+                option.value == "" || option.isTypeTextBox -> true
                 isOptionValuesExistsInFilterParameter(parameter, option) -> true
                 else -> false
             }
@@ -260,24 +262,6 @@ open class FilterController {
         }
     }
 
-    private fun LevelTwoCategory.asOption(): Option {
-        val uniqueId = OptionHelper.constructUniqueId(this.key, this.value, this.name)
-        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
-
-        option.isPopular = this.isPopular
-
-        return option
-    }
-
-    private fun LevelThreeCategory.asOption(): Option {
-        val uniqueId = OptionHelper.constructUniqueId(this.key, this.value, this.name)
-        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
-
-        option.isPopular = this.isPopular
-
-        return option
-    }
-
     private fun putSelectedOptionsToList(selectedOptionList: MutableList<Option>, filter: Filter, popularOptionList: List<Option>) {
         if (isAddCategoryFilter(filter, popularOptionList)) {
             selectedOptionList.add(getSelectedCategoryAsOption(filter))
@@ -365,8 +349,28 @@ open class FilterController {
         return filterViewState.contains(uniqueId)
     }
 
-    fun getFilterViewStateSize() : Int {
-        return filterViewState.size
+    fun getFilterCount() : Int {
+        var filterCount = filterViewState.size
+
+        if (hasMinAndMaxPriceFilter()) filterCount -= 1
+
+        return filterCount
+    }
+
+    private fun hasMinAndMaxPriceFilter(): Boolean {
+        var hasMinPriceFilter = false
+        var hasMaxPriceFilter = false
+
+        for(optionUniqueId in filterViewState) {
+            val optionKey = OptionHelper.parseKeyFromUniqueId(optionUniqueId)
+            if (optionKey == SearchApiConst.PMIN) hasMinPriceFilter = true
+            if (optionKey == SearchApiConst.PMAX) hasMaxPriceFilter = true
+
+            // Immediately return so it doesn't continue the loop
+            if (hasMinPriceFilter && hasMaxPriceFilter) return true
+        }
+
+        return false
     }
 
     fun getParameter() : Map<String, String> {

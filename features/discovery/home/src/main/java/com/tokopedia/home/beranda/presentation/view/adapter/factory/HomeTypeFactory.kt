@@ -30,10 +30,6 @@ interface HomeTypeFactory {
 
     fun type(headerDataModel: HeaderDataModel): Int
 
-    fun type(topAdsDataModel: TopAdsDataModel): Int
-
-    fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int
-
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
     fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int
