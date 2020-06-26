@@ -6,30 +6,51 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraUtils
+import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
-import kotlinx.android.synthetic.main.activity_play_cover_camera.*
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import java.io.File
-import java.util.*
 
 class PlayCoverCameraActivity : AppCompatActivity() {
 
-    private lateinit var cameraListener: CameraListener
-    private var cameraTimerEnum: CameraTimerEnum = CameraTimerEnum.IMMEDIATE
-    private var timeToCapture: Int = 0
+    private var cameraTimerEnum: CameraTimerEnum = CameraTimerEnum.Immediate
     private var isTimerRunning = false
+
+    private val cvCamera by lazy { findViewById<CameraView>(R.id.cv_camera) }
+    private val tvCancel by lazy { findViewById<TextView>(R.id.tv_cancel) }
+    private val ivShutter by lazy { findViewById<ImageView>(R.id.iv_shutter) }
+    private val ivFlash by lazy { findViewById<ImageView>(R.id.iv_flash) }
+    private val ivReverse by lazy { findViewById<ImageView>(R.id.iv_reverse) }
+    private val tvTimer0 by lazy { findViewById<TextView>(R.id.tv_timer_0) }
+    private val tvTimer5 by lazy { findViewById<TextView>(R.id.tv_timer_5) }
+    private val tvTimer10 by lazy { findViewById<TextView>(R.id.tv_timer_10) }
+    
+    private val groupAction by lazy { findViewById<Group>(R.id.group_action) }
+    private val countDownTimer by lazy { findViewById<PlayTimerCountDown>(R.id.countdown_timer) }
+
+    private val cameraListener = object : CameraListener() {
+        override fun onPictureTaken(result: PictureResult) {
+            saveToFile(result.data)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +60,8 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isCameraPermissionGranted()) {
-            cvPlayCameraView.open()
+        if (isCameraPermissionGranted() && isWriteStoragePermissionGranted() && isReadStoragePermissionGranted()) {
+            cvCamera.open()
         } else {
             requestCameraPermission()
         }
@@ -48,79 +69,71 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        cvPlayCameraView.close()
+        cvCamera.close()
     }
 
     override fun onDestroy() {
-        cvPlayCameraView.close()
-        cvPlayCameraView.destroy()
+        cvCamera.close()
+        cvCamera.destroy()
         super.onDestroy()
     }
 
     private fun initView() {
-        btnPlayCameraCancel.setOnClickListener {
+        tvCancel.setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
             finish()
         }
 
-        cameraListener = object : CameraListener() {
-            override fun onPictureTaken(result: PictureResult) {
-                saveToFile(result.data)
-            }
-        }
-
-        cvPlayCameraView.addCameraListener(cameraListener)
-        ivPlayCameraShutter.setOnClickListener {
+        cvCamera.addCameraListener(cameraListener)
+        ivShutter.setOnClickListener {
             takePicture()
         }
-        ivPlayCameraFlash.setOnClickListener {
+        ivFlash.setOnClickListener {
             toggleFlash()
         }
-        ivPlayCameraReverse.setOnClickListener {
+        ivReverse.setOnClickListener {
             reverseCamera()
         }
-        tvPlayCameraTimer0.setOnClickListener {
+        tvTimer0.setOnClickListener {
             setImmediateCapture()
         }
-        tvPlayCameraTimer5.setOnClickListener {
+        tvTimer5.setOnClickListener {
             setTimerFiveSecondsCapture()
         }
-        tvPlayCameraTimer10.setOnClickListener {
+        tvTimer10.setOnClickListener {
             setTimerTenSecondsCapture()
         }
-        cvPlayCameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM)
-        cvPlayCameraView.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
+        cvCamera.mapGesture(Gesture.PINCH, GestureAction.ZOOM)
+        cvCamera.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
     }
 
     private fun takePicture() {
-        if (timeToCapture > 0) {
-            showTimerLayout()
-            val timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    runOnUiThread {
-                        if (timeToCapture > 0)
-                            showTimerLayout()
+        when (cameraTimerEnum) {
+            CameraTimerEnum.Immediate -> cvCamera.takePicture()
+            else -> {
+                countDownTimer.visible()
+                groupAction.gone()
+
+                val animationProcess = PlayTimerCountDown.AnimationProperty.Builder()
+                        .setTotalCount(cameraTimerEnum.seconds)
+                        .build()
+
+                countDownTimer.startCountDown(animationProcess, object : PlayTimerCountDown.Listener {
+                    override fun onTick(milisUntilFinished: Long) {
+
                     }
-                    timeToCapture--
-                    if (timeToCapture <= 0) {
-                        runOnUiThread {
-                            hideTimerLayout()
-                        }
-                        cvPlayCameraView.takePicture()
-                        timeToCapture = cameraTimerEnum.seconds
-                        timer.cancel()
-                        timer.purge()
+
+                    override fun onFinish() {
+                        cvCamera.takePicture()
+                        countDownTimer.gone()
                     }
-                }
-            }, SECONDS_IN_MILIS, SECONDS_IN_MILIS)
-        } else {
-            cvPlayCameraView.takePicture()
+                })
+            }
         }
     }
 
     private fun saveToFile(imageByte: ByteArray) {
-        val mCaptureNativeSize = cvPlayCameraView.pictureSize
+        val mCaptureNativeSize = cvCamera.pictureSize
         try {
             mCaptureNativeSize?.let {
                 CameraUtils.decodeBitmap(imageByte, it.width, it.height) { bitmap ->
@@ -146,64 +159,52 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun toggleFlash() {
-        if (cvPlayCameraView.flash == Flash.OFF) {
-            ivPlayCameraFlash.setImageDrawable(resources.getDrawable(R.drawable.ic_play_camera_off_flash))
-            cvPlayCameraView.flash = Flash.ON
+        if (cvCamera.flash == Flash.OFF) {
+            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_off_flash))
+            cvCamera.flash = Flash.ON
         } else {
-            ivPlayCameraFlash.setImageDrawable(resources.getDrawable(R.drawable.ic_play_camera_on_flash))
-            cvPlayCameraView.flash = Flash.OFF
+            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_on_flash))
+            cvCamera.flash = Flash.OFF
         }
     }
 
     private fun reverseCamera() {
-        if (cvPlayCameraView.facing == Facing.BACK) {
-            cvPlayCameraView.facing = Facing.FRONT
+        if (cvCamera.facing == Facing.BACK) {
+            cvCamera.facing = Facing.FRONT
         } else {
-            cvPlayCameraView.facing = Facing.BACK
+            cvCamera.facing = Facing.BACK
         }
     }
 
     private fun setImmediateCapture() {
         if (!isTimerRunning) {
-            tvPlayCameraTimer0.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-            tvPlayCameraTimer5.setTextColor(resources.getColor(R.color.play_white_68))
-            tvPlayCameraTimer10.setTextColor(resources.getColor(R.color.play_white_68))
-            cameraTimerEnum = CameraTimerEnum.IMMEDIATE
-            timeToCapture = cameraTimerEnum.seconds
+            tvTimer0.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+            tvTimer5.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
+            tvTimer10.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
+            cameraTimerEnum = CameraTimerEnum.Immediate
         }
     }
 
     private fun setTimerFiveSecondsCapture() {
         if (!isTimerRunning) {
-            tvPlayCameraTimer0.setTextColor(resources.getColor(R.color.play_white_68))
-            tvPlayCameraTimer5.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-            tvPlayCameraTimer10.setTextColor(resources.getColor(R.color.play_white_68))
-            cameraTimerEnum = CameraTimerEnum.FIVE_SECONDS
-            timeToCapture = cameraTimerEnum.seconds
+            tvTimer0.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
+            tvTimer5.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+            tvTimer10.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
+            cameraTimerEnum = CameraTimerEnum.Five
         }
     }
 
     private fun setTimerTenSecondsCapture() {
         if (!isTimerRunning) {
-            tvPlayCameraTimer0.setTextColor(resources.getColor(R.color.play_white_68))
-            tvPlayCameraTimer5.setTextColor(resources.getColor(R.color.play_white_68))
-            tvPlayCameraTimer10.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-            cameraTimerEnum = CameraTimerEnum.TEN_SECONDS
-            timeToCapture = cameraTimerEnum.seconds
+            tvTimer0.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
+            tvTimer5.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
+            tvTimer10.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+            cameraTimerEnum = CameraTimerEnum.Ten
         }
     }
 
-    private fun showTimerLayout() {
-        tvPlayCameraTimeToCapture.text = timeToCapture.toString()
-        containerPlayCameraTimer.visibility = View.VISIBLE
-    }
-
-    private fun hideTimerLayout() {
-        containerPlayCameraTimer.visibility = View.GONE
-    }
-
     private fun requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
                 PERMISSION_CODE)
     }
 
@@ -211,9 +212,16 @@ class PlayCoverCameraActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this,
                     Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
 
+    private fun isWriteStoragePermissionGranted() =
+            ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+
+    private fun isReadStoragePermissionGranted() =
+            ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+
     companion object {
         const val EXTRA_IMAGE_URI = "EXTRA_IMAGE_URI"
-        private const val SECONDS_IN_MILIS: Long = 1000
 
         private const val PERMISSION_CODE = 1010
     }
