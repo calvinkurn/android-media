@@ -8,7 +8,6 @@
     <dimen name="padding_16">16dp</dimen>
     <dimen name="padding_8">8dp</dimen>
     <dimen name="padding_4">4dp</dimen>
-    <dimen name="flight_elevation_level">2dp</dimen>
 
     <dimen name="banner_offset">32dp</dimen>
     <dimen name="banner_width">360dp</dimen>
