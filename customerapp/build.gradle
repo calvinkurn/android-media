@@ -94,6 +94,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+ext.lintchecks = [
+        'SetColourUsageError',
+        'CoreResourcesUsageError',
+        'VectorDrawableCompat'
+] as String[]
 
 
 android {
@@ -136,7 +141,11 @@ android {
 
     lintOptions {
         checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
         abortOnError false
+        check lintchecks
     }
 
     signingConfigs {
@@ -280,7 +289,6 @@ dependencies {
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.commonElectronicMoney)
-    implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flightOrderList)
     implementation project(rootProject.ext.features.travelCountryCode)
@@ -316,7 +324,11 @@ dependencies {
     implementation project(rootProject.ext.features.editshipping)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
-    implementation project(rootProject.ext.features.developerOptions)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.features.developerOptions)
+    } else {
+        implementation project(rootProject.ext.features.developerOptionsNoop)
+    }
     implementation project(rootProject.ext.features.qrscanner)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -598,6 +610,7 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    lintChecks project(rootProject.ext.libraries.lint)
 }
 
 

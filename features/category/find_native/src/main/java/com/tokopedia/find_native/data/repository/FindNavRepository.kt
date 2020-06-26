@@ -10,10 +10,7 @@ import com.tokopedia.filter.common.data.Filter
 import javax.inject.Inject
 import javax.inject.Named
 
-class FindNavRepository @Inject constructor() {
-
-    @Inject
-    lateinit var baseRepository: BaseRepository
+class FindNavRepository @Inject constructor() : BaseRepository() {
 
     @field:[Inject Named(FindNavConstants.GQL_NAV_SEARCH_PRODUCT)]
     lateinit var productListQuery: String
@@ -28,18 +25,18 @@ class FindNavRepository @Inject constructor() {
     lateinit var relatedLinkListQuery: String
 
     suspend fun getProductList(reqParams: Map<String, String>): ProductListResponse {
-        return baseRepository.getGQLData(productListQuery, ProductListResponse::class.java, reqParams) as ProductListResponse
+        return getGQLData(productListQuery, ProductListResponse::class.java, reqParams)
     }
 
-    suspend fun getQuickFilterList(reqParams: Map<String, String>): MutableList<Filter>? {
-        return (baseRepository.getGQLData(quickFilterListQuery, FilterResponse::class.java, reqParams) as FilterResponse).dynamicAttribute?.data?.filter as MutableList<Filter>?
+    suspend fun getQuickFilterList(reqParams: Map<String, String>): List<Filter>? {
+        return getGQLData(quickFilterListQuery, FilterResponse::class.java, reqParams).dynamicAttribute?.data?.filter
     }
 
     suspend fun getDynamicFilterList(reqParams: Map<String, String>): DynamicFilterModel? {
-        return (baseRepository.getGQLData(dynamicFilterListQuery, FilterResponse::class.java, reqParams) as FilterResponse).dynamicAttribute
+        return getGQLData(dynamicFilterListQuery, FilterResponse::class.java, reqParams).dynamicAttribute
     }
 
     suspend fun getRelatedLinkList(reqParams: Map<String, String>): RelatedLinkResponse? {
-        return baseRepository.getGQLData(relatedLinkListQuery, RelatedLinkResponse::class.java, reqParams) as RelatedLinkResponse
+        return getGQLData(relatedLinkListQuery, RelatedLinkResponse::class.java, reqParams)
     }
 }

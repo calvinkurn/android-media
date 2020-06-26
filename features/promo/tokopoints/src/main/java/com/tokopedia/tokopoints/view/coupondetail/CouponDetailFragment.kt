@@ -366,7 +366,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
 
         try {
-            val btnAction2 = view!!.findViewById<TextView>(com.tokopedia.session.R.id.btn_continue)
+            val btnAction2 = view!!.findViewById<TextView>(R.id.btn_continue)
             val progressBar = view!!.findViewById<ProgressBar>(R.id.progress_refetch_code)
             btnAction2.setText(R.string.tp_label_refresh_repeat)
             btnAction2.isEnabled = true
