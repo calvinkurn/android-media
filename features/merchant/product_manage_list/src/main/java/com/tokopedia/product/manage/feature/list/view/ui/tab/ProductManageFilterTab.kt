@@ -57,20 +57,10 @@ class ProductManageFilterTab(
 
         // add or remove the tabs
         updateTabs(tabs)
-        // check if prev index bigger than current chips size or not
         val currentChipsCount = sortFilterTab.chipItems.count() - 1
         if(selectedTabIndex > currentChipsCount) {
-            // if bigger, select the last of chips
+            //make the chip always the last of chips
             selectedTabIndex = currentChipsCount
-        } else if(selectedTabIndex < currentChipsCount) {
-            // if smaller, find the same chip has been selected before
-            sortFilterTab.chipItems.forEachIndexed { i, chip ->
-                val newFilter = checkFilterContaining(chip.title)
-                if (prevfilter == newFilter) {
-                    selectedTabIndex = i
-                }
-                return@forEachIndexed
-            }
         }
 
         sortFilterTab.chipItems.forEachIndexed { i, chip ->
