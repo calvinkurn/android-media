@@ -739,35 +739,6 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventOvo(Context context) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    String.format(FORMAT_3_VALUE_SPACE, CLICK, ON, OVO),
-                    ""
-            );
-        }
-    }
-
-    public static void eventTopupOvo(String userId) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            Map<String, Object> data = DataLayer.mapOf(
-                    EVENT, EVENT_CLICK_HOME_PAGE,
-                    EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                    EVENT_ACTION, String.format(FORMAT_3_VALUE_SPACE, CLICK, ON, OVO_TOPUP),
-                    EVENT_LABEL, "",
-                    BaseTracking.Screen.KEY, BaseTracking.Screen.DEFAULT,
-                    BaseTracking.CurrentSite.KEY, BaseTracking.CurrentSite.DEFAULT,
-                    BaseTracking.BusinessUnit.KEY, BaseTracking.BusinessUnit.DEFAULT,
-                    BaseTracking.UserId.KEY, userId
-            );
-            tracker.sendGeneralEvent(data);
-        }
-    }
-
     public static void eventQrCode(Context context) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {

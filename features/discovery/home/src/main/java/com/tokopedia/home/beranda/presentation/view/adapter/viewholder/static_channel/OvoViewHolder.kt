@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_OVO_VIEWHOLDER
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
@@ -346,7 +347,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                 }
                 walletAnalytics.eventClickActivationOvoHomepage()
             } else {
-                HomePageTracking.eventOvo(itemView.context)
+                OvoWidgetTracking.eventOvo(itemView.context)
             }
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
@@ -354,7 +355,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
     }
     private fun gotToTopupOvo(applinkString: String) {
         if (RouteManager.isSupportApplink(context, applinkString)) {
-            HomePageTracking.eventTopupOvo(listener.userId)
+            OvoWidgetTracking.eventTopupOvo(listener.userId)
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
         }
