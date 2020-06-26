@@ -132,13 +132,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     private fun showRewardAnimation(@RewardContainer.RewardState rewardState: Int, startDelay: Long, isFirstTime: Boolean) {
         var stageLightAnim: Animator? = null
 
+        var soundDelay = 100L
         if (isFirstTime) {
             stageLightAnim = giftBoxDailyView.stageGlowAnimation()
             stageLightAnim.startDelay = startDelay
+            soundDelay = 700L
         }
         val NEGATIVE_DURATION = -250L
 
-        var soundDelay = 700L
         giftBoxDailyView.postDelayed({ playPrizeSound() }, soundDelay)
 
         when (rewardState) {

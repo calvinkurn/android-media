@@ -21,7 +21,6 @@ import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.presentation.adapter.RewardSummaryAdapter
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.helpers.RewardItemDecoration
-import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.gamification.giftbox.presentation.views.RewardButtonType.Companion.DEFAULT
 import com.tokopedia.gamification.giftbox.presentation.views.RewardButtonType.Companion.EXIT
 import com.tokopedia.gamification.giftbox.presentation.views.RewardButtonType.Companion.PLAY_WITH_POINTS
@@ -47,6 +46,7 @@ class RewardSummaryView : FrameLayout {
     lateinit var imageBox: AppCompatImageView
 
     lateinit var rvAdapter: RewardSummaryAdapter
+    lateinit var decoration:RewardItemDecoration
     val dataList = arrayListOf<RewardSummaryItem>()
     val buttonsMap = HashMap<@RewardButtonType String, Typography>()
 
@@ -84,14 +84,18 @@ class RewardSummaryView : FrameLayout {
         rvAdapter = RewardSummaryAdapter(dataList)
 
         rvRewards.layoutManager = LinearLayoutManager(context)
-        rvRewards.addItemDecoration(RewardItemDecoration(rvRewards.dpToPx(8).toInt(), rvRewards.dpToPx(12).toInt()))
+        val smallPadding = rvRewards.context.resources.getDimension(R.dimen.gami_reward_item_padding_small).toInt()
+        val medPadding = rvRewards.context.resources.getDimension(R.dimen.gami_reward_item_padding_med).toInt()
+        val largePadding = rvRewards.context.resources.getDimension(R.dimen.gami_reward_item_padding_large).toInt()
+        decoration = RewardItemDecoration(smallPadding, medPadding, largePadding)
+        rvRewards.addItemDecoration(decoration)
 
         viewFlipper.alpha = 0f
         llButton.alpha = 0f
     }
 
     fun playRewardItemAnimation() {
-        val rewardItemAnimation = AnimationUtils.loadLayoutAnimation(context, com.tokopedia.gamification.R.anim.gf_box_rewards_list_item_anim)
+        val rewardItemAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.gf_box_rewards_list_item_anim)
         rvRewards.layoutAnimation = rewardItemAnimation
         rvRewards.scheduleLayoutAnimation()
         rvRewards.adapter = rvAdapter
@@ -116,7 +120,7 @@ class RewardSummaryView : FrameLayout {
                                 } else {
                                     GtmGiftTapTap.clickExitButtonReward()
                                 }
-                            } else{
+                            } else {
                                 GtmGiftTapTap.clickCheckRewards()
                             }
                             RouteManager.route(it.context, rb.applink)
@@ -170,6 +174,11 @@ class RewardSummaryView : FrameLayout {
         val filteredItems = rewardSummaryItemList.filter { it.benfit.isBigPrize }
         list.removeAll(filteredItems)
         list.addAll(filteredItems)
+
+        if(filteredItems.isNotEmpty()){
+            decoration.indexTillBigPrize = filteredItems.size -1
+        }
+
 
         rvAdapter.dataList.clear()
         rvAdapter.dataList.addAll(list)
