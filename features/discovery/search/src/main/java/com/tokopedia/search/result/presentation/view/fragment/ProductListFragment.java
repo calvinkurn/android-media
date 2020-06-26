@@ -410,7 +410,7 @@ public class ProductListFragment
     private void animateQuickFilterPaddingTopChanges(int paddingTop) {
         ValueAnimator anim = ValueAnimator.ofInt(searchSortFilter.getPaddingTop(), paddingTop);
         anim.addUpdateListener(animator -> setQuickFilterPaddingTop((Integer)animator.getAnimatedValue()));
-        anim.setDuration(300);
+        anim.setDuration(200);
         anim.start();
     }
 

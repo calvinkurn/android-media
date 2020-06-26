@@ -896,7 +896,7 @@ public class SearchActivity extends BaseActivity
         ValueAnimator anim = ValueAnimator.ofInt(tabLayout.getMeasuredHeight(), targetHeight);
         anim.addUpdateListener(this::changeTabHeightByAnimator);
         anim.addListener(createTabAnimatorListener(isVisible));
-        anim.setDuration(300);
+        anim.setDuration(200);
         anim.start();
     }
 
