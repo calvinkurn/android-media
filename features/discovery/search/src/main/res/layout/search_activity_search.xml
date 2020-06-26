@@ -245,7 +245,7 @@
                 style="@style/TextView.Small.BlackPrimary"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginStart="@dimen/dp_4"
-                android:text="@string/filter" />
+                android:text="@string/search_filter" />
 
         </LinearLayout>
 

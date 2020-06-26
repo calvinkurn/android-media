@@ -49,7 +49,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Given isBottomSheetFilterRevampABTestEnabled return true`() {
         every {
-            productListView.abTestRemoteConfig.getString(ABTestRemoteConfigKey.AB_TEST_OLD_FILER_VS_NEW_FILTER, AB_TEST_VARIANT_NEW_FILTER)
+            productListView.abTestRemoteConfig.getString(ABTestRemoteConfigKey.AB_TEST_OLD_FILER_VS_NEW_FILTER)
         } answers { AB_TEST_VARIANT_NEW_FILTER }
     }
 
