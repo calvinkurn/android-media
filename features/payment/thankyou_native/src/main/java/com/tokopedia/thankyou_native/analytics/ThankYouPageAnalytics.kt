@@ -345,7 +345,7 @@ class ThankYouPageAnalytics @Inject constructor(
         const val EVENT_LABEL_PROCESSING = "processing"
 
         const val EVENT_ACTION_PUSH_GTM_FALSE = "push false gtm"
-
+    }
 }
 
 
