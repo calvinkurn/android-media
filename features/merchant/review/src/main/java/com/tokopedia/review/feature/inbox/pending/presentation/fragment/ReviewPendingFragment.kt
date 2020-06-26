@@ -75,8 +75,16 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         getPendingReviewData(page)
     }
 
-    override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int) {
+    override fun trackCardClicked(reputationId: Int, productId: Int) {
+        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.userId)
+    }
+
+    override fun trackStarsClicked(reputationId: Int, productId: Int, rating: Int) {
         ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.userId)
+    }
+
+    override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int) {
+
         goToCreateReviewActivity(reputationId, productId, rating)
     }
 
@@ -189,7 +197,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun observeReviewList() {
-        viewModel.reviewList.observe(this, Observer {
+        viewModel.reviewList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     hideFullPageLoading()
@@ -215,7 +223,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                         hideEmptyState()
                         hideList()
                     } else {
-                        showErrorToaster(getString(R.string.review_pending_lazy_load_network_error_toaster), getString(R.string.review_pending_lazy_load_network_error_toaster_refresh)) { getPendingReviewData(currentPage) }
+                        showErrorToaster(getString(R.string.review_toaster_page_error), getString(R.string.review_refresh)) { getPendingReviewData(currentPage) }
                     }
                 }
             }

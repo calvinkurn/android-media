@@ -28,6 +28,7 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                       reviewTime
                       reviewTimeFormatted
                       attachmentsURL
+                      editable
                       reviewerData {
                         isAnonym
                         fullName
@@ -44,15 +45,12 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                     reputation {
                       reputationID
                       score
-                    }
-                    status {
                       editable
+                      lockTime
+                      lockTimeFormatted
                     }
-                    lockTime
-                    lockTimeFormatted
                   }
                 }
-
             """.trimIndent()
         }
     }

@@ -9,5 +9,14 @@ data class ProductrevGetReviewDetailReputation(
         val reputationId: Int = 0,
         @SerializedName("score")
         @Expose
-        val score: Int = 0
+        val score: Int = 0,
+        @SerializedName("editable")
+        @Expose
+        val editable: Boolean = false,
+        @SerializedName("lockTime")
+        @Expose
+        val lockTime: String = "",
+        @SerializedName("lockTimeFormatted")
+        @Expose
+        val lockTimeFormatted: String = ""
 )

@@ -11,12 +11,16 @@ import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.review.feature.details.data.ProductrevGetReviewDetail
 import com.tokopedia.review.feature.details.domain.ProductrevGetReviewDetailUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
+                                                userSession: UserSessionInterface,
                                                 private val productrevGetReviewDetailUseCase: ProductrevGetReviewDetailUseCase)
     : BaseViewModel(coroutineDispatcherProvider.io()) {
+
+    val userId = userSession.userId ?: ""
 
     private val _reviewDetails = MutableLiveData<ReviewViewState<ProductrevGetReviewDetail>>()
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>

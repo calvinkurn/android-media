@@ -36,13 +36,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/reviewHistorySearchBar"/>
 
     <include layout="@layout/partial_review_empty"
         android:id="@+id/reviewHistoryEmpty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/reviewHistorySearchBar"/>
+
+    <include layout="@layout/partial_review_history_shimmering"
+        android:id="@+id/reviewHistoryLoading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/reviewHistorySearchBar"/>
     
 </androidx.constraintlayout.widget.ConstraintLayout>

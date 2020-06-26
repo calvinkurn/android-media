@@ -107,11 +107,11 @@
     <string name="txt_success_submit_review">Terima kasih %s sudah memberikan ulasanmu untuk barang ini</string>
 
     <string name="review_date">• %s</string>
+    <string name="review_refresh">Refresh</string>
+    <string name="review_toaster_page_error">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
+    <string name="review_oke">Oke</string>
 
     <string name="review_pending_search_error_toaster">Ketik min. 3 karakter agar menemukan barang yang dicari.</string>
-    <string name="review_pending_search_error_toaster_dismiss">Oke</string>
-    <string name="review_pending_lazy_load_network_error_toaster">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
-    <string name="review_pending_lazy_load_network_error_toaster_refresh">Refresh</string>
     <string name="review_pending_network_error_title">Koneksi internetmu terganggu!</string>
     <string name="review_pending_network_error_content">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="review_pending_tab_title">Menunggu Diulas (%s)</string>
@@ -133,6 +133,15 @@
     <string name="review_detail_name">Sebagai &lt;b>%s&lt;/b></string>
     <string name="review_detail_anonymous">Sebagai &lt;b>Anonim&lt;/b></string>
     <string name="review_detail_by">Oleh &lt;b>%s&lt;/b></string>
+    <string name="review_detail_toaster_modify_smiley_error">Kamu hanya bisa ubah penilaian toko menjadi ‘Puas’.</string>
+    <string name="review_detail_toaster_modify_smiley_success">Penilaian toko berhasil kamu ubah</string>
+    <string name="review_detail_score_bad">Kecewa</string>
+    <string name="review_detail_score_mediocre">Biasa aja</string>
+    <string name="review_detail_score_excellent">Puas</string>
+    <string name="review_detail_score_title">Penilaian tentang toko ini</string>
+    <string name="review_detail_score_empty">Gimana layanan toko ini?</string>
+    <string name="review_detail_score_expired">Batas waktu penilaian toko sudah habis</string>
+
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 </resources>

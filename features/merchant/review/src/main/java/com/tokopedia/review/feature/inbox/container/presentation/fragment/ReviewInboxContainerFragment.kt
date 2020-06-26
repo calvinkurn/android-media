@@ -118,7 +118,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun observeReviewTabs() {
-        viewModel.reviewTabs.observe(this, Observer { tabs ->
+        viewModel.reviewTabs.observe(viewLifecycleOwner, Observer { tabs ->
             val tabTitles = mutableListOf<String>()
             tabs.forEach { tab ->
                 when(tab) {

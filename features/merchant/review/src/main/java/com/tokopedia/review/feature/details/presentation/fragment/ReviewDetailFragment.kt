@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -28,11 +29,13 @@ import com.tokopedia.review.feature.details.di.ReviewDetailComponent
 import com.tokopedia.review.feature.details.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
+import com.tokopedia.review.feature.details.analytics.ReviewDetailTracking
+import com.tokopedia.review.feature.inbox.common.util.OnBackPressedListener
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
 import javax.inject.Inject
 
-class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickedListener {
+class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickedListener, OnBackPressedListener {
 
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
@@ -90,6 +93,12 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         goToImagePreview(productName, attachedImages, position)
     }
 
+    override fun onBackPressed() {
+        (viewModel.reviewDetails.value as? Success)?.let {
+            ReviewDetailTracking.eventClickBack(it.data.product.productId, it.data.review.feedbackId, viewModel.userId)
+        }
+    }
+
     private fun getDataFromArguments() {
         arguments?.let {
             viewModel.setFeedbackAndReputationId(it.getInt(KEY_FEEDBACK_ID), it.getInt(KEY_REPUTATION_ID))
@@ -103,12 +112,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                     hideError()
                     hideLoading()
                     with(it.data) {
-                        setProduct(product)
-                        setReview(review, product.productName)
+                        setProduct(product, review.feedbackId)
+                        setReview(review, product.productName, product.productId)
                         setResponse(response)
-                        if(status.editable) {
-                            addEditHeaderIcon()
-                        }
                     }
                 }
                 is Fail -> {
@@ -123,13 +129,19 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         })
     }
 
-    private fun setProduct(product: ProductrevGetReviewDetailProduct) {
+    private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: Int) {
         with(product) {
-            reviewDetailProductCard.setItem(ReviewProductUiModel(productId, productImageUrl, productName, productVariantName))
+            reviewDetailProductCard.apply {
+                setItem(ReviewProductUiModel(productId, productImageUrl, productName, productVariantName))
+                setOnClickListener {
+                    ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.userId)
+                    goToPdp(productId)
+                }
+            }
         }
     }
 
-    private fun setReview(review: ProductrevGetReviewDetailReview, productName: String) {
+    private fun setReview(review: ProductrevGetReviewDetailReview, productName: String, productId: Int) {
         with(review) {
             reviewDetailStars.apply {
                 setImageResource(getReviewStar(rating))
@@ -143,6 +155,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
             reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
             reviewDetailContent.setTextAndCheckShow(reviewText)
             reviewDetailAttachedImages.setImages(attachments, productName, this@ReviewDetailFragment)
+            if(editable) {
+                addEditHeaderIcon()
+            }
         }
     }
 
@@ -206,5 +221,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
         startActivity(context?.let { ImagePreviewSliderActivity.getCallingIntent(it, productName, attachedImages, attachedImages, position) })
+    }
+
+    private fun goToPdp(productId: Int) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
     }
 }

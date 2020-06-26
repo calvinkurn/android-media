@@ -64,8 +64,8 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     private fun setListener(reputationId: Int, productId: Int) {
         itemView.setOnClickListener {
+            reviewPendingItemListener.trackCardClicked(reputationId, productId)
             itemView.reviewPendingStars.renderInitialReviewWithData(5)
-
         }
     }
 

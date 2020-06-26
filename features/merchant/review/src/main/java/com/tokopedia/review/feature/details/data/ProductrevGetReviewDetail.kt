@@ -15,14 +15,5 @@ data class ProductrevGetReviewDetail (
         val response: ProductrevGetReviewDetailResponse = ProductrevGetReviewDetailResponse(),
         @SerializedName("reputation")
         @Expose
-        val reputation: ProductrevGetReviewDetailReputation = ProductrevGetReviewDetailReputation(),
-        @SerializedName("status")
-        @Expose
-        val status: ProductrevGetReviewDetailStatus = ProductrevGetReviewDetailStatus(),
-        @SerializedName("lockTime")
-        @Expose
-        val lockTime: String = "",
-        @SerializedName("lockTimeFormatted")
-        @Expose
-        val lockTimeFormatted: String = ""
+        val reputation: ProductrevGetReviewDetailReputation = ProductrevGetReviewDetailReputation()
 )

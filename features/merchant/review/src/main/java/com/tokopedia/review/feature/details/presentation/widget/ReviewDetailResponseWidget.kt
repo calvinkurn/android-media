@@ -10,7 +10,7 @@ import com.tokopedia.review.feature.details.data.ProductrevGetReviewDetailRespon
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_review_detail_response.view.*
 
-class ReviewDetailResponse : BaseCustomView {
+class ReviewDetailResponseWidget : BaseCustomView {
 
     constructor(context: Context): super(context) {
         init()

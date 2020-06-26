@@ -109,9 +109,11 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     private fun observeReviewList() {
-        viewModel.reviewList.observe(this, Observer {
+        viewModel.reviewList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
+                    hidePageLoading()
+                    hideError()
                     if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty() && it.search.isNotEmpty()) {
                         showEmptySearchResult()
                     }
@@ -125,7 +127,13 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
                     hideError()
                 }
                 is Fail -> {
-                    showError()
+                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
+                        hidePageLoading()
+                        hideEmptyState()
+                        showError()
+                    } else {
+                        showErrorToaster(getString(R.string.review_toaster_page_error), getString(R.string.review_refresh)) {}
+                    }
                 }
             }
         })
@@ -148,11 +156,11 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     private fun showPageLoading() {
-
+        reviewHistoryLoading.show()
     }
 
     private fun hidePageLoading() {
-
+        reviewHistoryLoading.hide()
     }
 
     private fun renderReviewData(reviewData: List<ReviewHistoryUiModel>, hasNextPage: Boolean) {

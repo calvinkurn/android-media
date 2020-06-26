@@ -8,8 +8,14 @@ class ReviewDetailActivity : BaseSimpleActivity() {
 
     private var feedbackId: Int = 0
     private var reputationId: Int = 0
+    private val reviewDetailFragment = ReviewDetailFragment.createNewInstance(feedbackId, reputationId)
 
     override fun getNewFragment(): Fragment? {
-        return ReviewDetailFragment.createNewInstance(feedbackId, reputationId)
+        return reviewDetailFragment
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        reviewDetailFragment.onBackPressed()
     }
 }
