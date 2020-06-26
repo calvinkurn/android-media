@@ -49,7 +49,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val scope = CoroutineScope(job + dispatcher.main)
 
     val channelId: String
-        get() = _observableChannelId.value?: throw IllegalStateException("Channel ID has not been retrieved")
+        get() = observableChannelId.value?: throw IllegalStateException("Channel ID has not been retrieved")
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
@@ -91,7 +91,7 @@ class PlayBroadcastViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-    private val _observableChannelId: MutableLiveData<String> = MediatorLiveData<String>().apply {
+    val observableChannelId: MutableLiveData<String> = MediatorLiveData<String>().apply {
         addSource(_observableConfigInfo) {
             value = if (it is NetworkResult.Success) it.data.channelId else ""
         }
