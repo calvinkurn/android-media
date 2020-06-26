@@ -91,7 +91,7 @@ public class AutocompleteTracking {
     private static final String LABEL_RECENT_VIEW_CLICK = "po: %s - applink: %s";
     private static final String LABEL_HOTLIST_CLICK = "keyword: %s - hotlist: %s - hotlist id: %s - po: %s - applink: %s";
     public static final String ACTION_CLICK_HOTLIST_SUGGESTION = "click - hotlist suggestion";
-    public static final String CAMPAIGN_CODE_DIMENSION = "dimension15";
+    public static final String CAMPAIGN_CODE = "campaignCode";
 
     public static final String CURRENT_SITE_TKPD = "tokopediamarketplace";
     public static final String BUSINESS_UNIT_SEARCH = "search";
@@ -148,7 +148,7 @@ public class AutocompleteTracking {
                         EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
                         EVENT_ACTION, CLICK_DIGITAL_PRODUCT_SUGGESTION,
                         EVENT_LABEL, label,
-                        CAMPAIGN_CODE_DIMENSION, campaignCode
+                        CAMPAIGN_CODE, campaignCode
                 )
         );
     }
