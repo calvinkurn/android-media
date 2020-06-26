@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView
-    android:background="@drawable/bg_badge_circular"
+    android:background="@drawable/bg_badge_circle"
     android:id="@+id/notification_badge"
-    android:layout_width="8dp"
-    android:layout_height="8dp"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
     android:textColor="@color/white"
     android:textSize="10sp"
     android:paddingLeft="@dimen/dp_5"
