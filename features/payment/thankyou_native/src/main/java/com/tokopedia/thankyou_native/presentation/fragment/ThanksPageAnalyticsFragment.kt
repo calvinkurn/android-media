@@ -39,11 +39,13 @@ class ThanksPageAnalyticsFragment : BaseDaggerFragment() {
 
     private fun postThanksPageLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
-        if (!thanksPageData.pushGtm) {
+        if (thanksPageData.pushGtm) {
             when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
                 MarketPlaceThankPage -> thankYouPageAnalytics.get().sendThankYouPageDataLoadEvent(thanksPageData)
                 else -> thankYouPageAnalytics.get().sendigitalThankYouPageDataLoadEvent(thanksPageData)
             }
+        } else {
+            thankYouPageAnalytics.get().sendPushGtmFalseEvent(thanksPageData.paymentID.toString())
         }
         thankYouPageAnalytics.get().appsFlyerPurchaseEvent(thanksPageData)
         thankYouPageAnalytics.get().sendBranchIOEvent(thanksPageData)

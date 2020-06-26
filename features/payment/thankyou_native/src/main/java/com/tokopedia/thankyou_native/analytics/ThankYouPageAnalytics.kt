@@ -202,6 +202,14 @@ class ThankYouPageAnalytics @Inject constructor(
                 ))
     }
 
+    fun sendPushGtmFalseEvent(paymentId:String) {
+        analyticTracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                        EVENT_CATEGORY_ORDER_COMPLETE,
+                        EVENT_ACTION_PUSH_GTM_FALSE,
+                        paymentId
+                ))
+    }
 
     fun appsFlyerPurchaseEvent(thanksPageData: ThanksPageData) {
         CoroutineScope(mainDispatcher).launchCatchError(block = {
@@ -335,7 +343,8 @@ class ThankYouPageAnalytics @Inject constructor(
         const val EVENT_LABEL_INSTANT = "instant"
         const val EVENT_LABEL_DEFERRED = "deffer"
         const val EVENT_LABEL_PROCESSING = "processing"
-    }
+
+        const val EVENT_ACTION_PUSH_GTM_FALSE = "push false gtm"
 
 }
 
