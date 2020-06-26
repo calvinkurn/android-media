@@ -114,7 +114,11 @@ class PlayCoverCameraActivity : AppCompatActivity() {
                 countDownTimer.visible()
                 groupAction.gone()
 
-                countDownTimer.startCountDown(cameraTimerEnum.seconds, 1000L, object : PlayTimerCountDown.Listener {
+                val animationProcess = PlayTimerCountDown.AnimationProperty.Builder()
+                        .setTotalCount(cameraTimerEnum.seconds)
+                        .build()
+
+                countDownTimer.startCountDown(animationProcess, object : PlayTimerCountDown.Listener {
                     override fun onTick(milisUntilFinished: Long) {
 
                     }

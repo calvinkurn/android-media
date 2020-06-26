@@ -1,9 +1,6 @@
 package com.tokopedia.play.broadcaster.view.custom
 
-import android.animation.Animator
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
+import android.animation.*
 import android.content.Context
 import android.os.CountDownTimer
 import android.util.AttributeSet
@@ -78,13 +75,16 @@ class PlayTimerCountDown @JvmOverloads constructor(
         if (::timer.isInitialized) timer.cancel()
     }
 
-    fun startCountDown(seconds: Int, interval: Long = MILLIS_IN_SECOND, listener: Listener? = null){
-        setupAnimator(seconds, interval)
+    fun startCountDown(property: AnimationProperty, listener: Listener? = null){
+        val textInterval = property.textCountDownInterval
 
-        timer = object : CountDownTimer(seconds * interval, interval) {
+        setupTextCountAnimator(textInterval)
+        setupRotationAnimator(property.fullRotationInterval)
+
+        timer = object : CountDownTimer(textInterval * property.totalCount, textInterval) {
 
             private var alreadyTick = false
-            private val intervalDouble = interval.toDouble()
+            private val intervalDouble = textInterval.toDouble()
 
             override fun onFinish() {
                 animatorInfoOut.start()
@@ -109,20 +109,60 @@ class PlayTimerCountDown @JvmOverloads constructor(
         }.start()
     }
 
-    private fun setupAnimator(seconds: Int, interval: Long) {
+    private fun setupTextCountAnimator(interval: Long) {
         val multiplier = interval / MILLIS_IN_SECOND
-        rotateAnimator = getRotateAnimator(seconds, interval)
         textAnimatorIn.duration = 225 * multiplier
         textAnimatorOut.duration = 150 * multiplier
         textAnimatorOut.startDelay = 400 * multiplier
     }
 
-    private fun getRotateAnimator(seconds: Int, interval: Long): Animator {
+    private fun setupRotationAnimator(interval: Long) {
+        rotateAnimator = getRotateAnimator(interval)
+    }
+
+    private fun getRotateAnimator(interval: Long): Animator {
         val rotateAnimator = ObjectAnimator.ofFloat(progressCircular, "rotation", 0f, 360f)
         rotateAnimator.interpolator = LinearInterpolator()
         rotateAnimator.duration = interval
-        rotateAnimator.repeatCount = seconds
+        rotateAnimator.repeatCount = ValueAnimator.INFINITE
         return rotateAnimator
+    }
+
+    class AnimationProperty private constructor(
+            val fullRotationInterval: Long,
+            val textCountDownInterval: Long,
+            val totalCount: Int
+    ) {
+
+        class Builder {
+
+            private var fullRotationInterval: Long = MILLIS_IN_SECOND
+            private var textCountDownInterval: Long = MILLIS_IN_SECOND
+            private var totalCount: Int = 3
+
+            fun setFullRotationInterval(intervalInMillis: Long): Builder {
+                fullRotationInterval = intervalInMillis
+                return this
+            }
+
+            fun setTextCountDownInterval(intervalInMillis: Long): Builder {
+                textCountDownInterval = intervalInMillis
+                return this
+            }
+
+            fun setTotalCount(totalCount: Int): Builder {
+                this.totalCount = totalCount
+                return this
+            }
+
+            fun build(): AnimationProperty {
+                return AnimationProperty(
+                        fullRotationInterval = fullRotationInterval,
+                        textCountDownInterval = textCountDownInterval,
+                        totalCount = totalCount
+                )
+            }
+        }
     }
 
     companion object {
