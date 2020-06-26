@@ -1,8 +1,8 @@
 package com.tokopedia.charts.utils
 
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.tokopedia.charts.model.YAxisLabel
-import kotlin.math.abs
 
 /**
  * Created By @ilhamsuaib on 24/06/20
@@ -10,21 +10,29 @@ import kotlin.math.abs
 
 class YAxisLabelFormatter(private val labels: List<YAxisLabel>) : ValueFormatter() {
 
-    override fun getFormattedValue(value: Float): String {
-        return getClosestNumber(value)
-    }
+    private val cache: MutableMap<Float, String> = mutableMapOf()
+    private var i = 0
 
-    private fun getClosestNumber(value: Float): String {
-        if (labels.isEmpty()) return ""
-        var distance = abs(labels[0].yValue - value)
-        var idx = 0
-        labels.forEachIndexed { i, label ->
-            val cdistance = abs(label.yValue - value)
-            if (cdistance < distance) {
-                idx = i
-                distance = cdistance
+    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+        var label: String = value.toInt().toString()
+        if (!cache.containsKey(value)) {
+            try {
+                label = labels[i].yLabel
+                cache[value] = label
+                if (i < labels.size) {
+                    i++
+                }
+            } catch (e: IndexOutOfBoundsException) {
+                i = 0
+                label = labels[i].yLabel
+                cache[value] = label
+                i++
+            }
+        } else {
+            cache[value]?.let {
+                label = it
             }
         }
-        return labels[idx].yLabel
+        return label
     }
 }
