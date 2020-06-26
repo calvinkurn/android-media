@@ -19,7 +19,6 @@ import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 
 
-
 open class BaseRepository {
     private val restRepository: RestRepository
     private val graphqlRepository: GraphqlRepository
@@ -47,9 +46,9 @@ open class BaseRepository {
     }
 
     suspend fun <T : Any> postRestData(url: String,
-                                      typeOf: Type,
-                                      queryMap: MutableMap<String, Any> = RequestParams.EMPTY.parameters,
-                                      cacheType: com.tokopedia.common.network.data.model.CacheType = com.tokopedia.common.network.data.model.CacheType.ALWAYS_CLOUD): T {
+                                       typeOf: Type,
+                                       queryMap: MutableMap<String, Any> = RequestParams.EMPTY.parameters,
+                                       cacheType: com.tokopedia.common.network.data.model.CacheType = com.tokopedia.common.network.data.model.CacheType.ALWAYS_CLOUD): T {
         try {
             val restRequest = RestRequest.Builder(url, typeOf)
                     .setRequestType(RequestType.POST)
@@ -90,7 +89,25 @@ open class BaseRepository {
             gqlUseCase.setTypeClass(gqlResponseType)
             gqlUseCase.setGraphqlQuery(gqlQuery)
             gqlUseCase.setRequestParams(gqlParams)
+
             gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(cacheType).build())
+            return gqlUseCase.executeOnBackground()
+        } catch (t: Throwable) {
+            throw t
+        }
+    }
+
+    suspend fun <T : Any> getGQLData(gqlQuery: String,
+                                     gqlResponseType: Class<T>,
+                                     gqlParams: Map<String, Any>,
+                                     graphqlCacheStrategy: GraphqlCacheStrategy): T {
+        try {
+            val gqlUseCase = GraphqlUseCase<T>(graphqlRepository)
+            gqlUseCase.setTypeClass(gqlResponseType)
+            gqlUseCase.setGraphqlQuery(gqlQuery)
+            gqlUseCase.setRequestParams(gqlParams)
+
+            gqlUseCase.setCacheStrategy(graphqlCacheStrategy)
             return gqlUseCase.executeOnBackground()
         } catch (t: Throwable) {
             throw t
