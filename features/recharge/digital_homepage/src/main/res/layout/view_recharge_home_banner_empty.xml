@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/dp_80"
+        android:layout_marginTop="@dimen/banner_margin_top"
         android:layout_marginRight="@dimen/layout_lvl3"
         android:text="@string/recharge_home_empty_banner_title"
         android:textColor="@color/Neutral_N0"

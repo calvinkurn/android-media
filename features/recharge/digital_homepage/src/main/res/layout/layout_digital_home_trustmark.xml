@@ -12,15 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl1"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardElevation="@dimen/dp_2">
+        app:cardCornerRadius="@dimen/spacing_lvl3"
+        app:cardElevation="@dimen/spacing_lvl1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_digital_homepage_trust_mark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_8" />
+            android:padding="@dimen/spacing_lvl3" />
 
     </androidx.cardview.widget.CardView>
 

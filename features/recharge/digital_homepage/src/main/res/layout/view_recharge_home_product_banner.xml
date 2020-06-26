@@ -86,7 +86,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_recharge_home_product_banner_desc"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginLeft="@dimen/spacing_lvl3"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
                 android:gravity="center_vertical"
                 app:labelType="general_light_red"
                 app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
@@ -121,7 +121,7 @@
                 android:id="@+id/tv_recharge_home_product_banner_slashed_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
                 android:layout_marginRight="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
