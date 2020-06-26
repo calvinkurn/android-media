@@ -41,9 +41,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
 
 
-
-    implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation project(rootProject.ext.libraries.webview)
