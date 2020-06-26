@@ -1,6 +1,5 @@
 package com.tokopedia.thankyou_native.analytics
 
-import android.os.Bundle
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
 import com.google.gson.Gson
@@ -246,9 +245,9 @@ class ThankYouPageAnalytics @Inject constructor(
                 afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
                 afValue[AFInAppEventType.ORDER_ID] = orderIds
                 afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
-                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
-                    DigitalThankPage -> DIGITAL
-                    else -> MARKET_PLACE
+                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when(ThankPageTypeMapper.getThankPageType(thanksPageData)){
+                    MarketPlaceThankPage -> MARKET_PLACE
+                    else -> DIGITAL
                 }
                 afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
                 afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList

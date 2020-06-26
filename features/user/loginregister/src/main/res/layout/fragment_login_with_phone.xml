@@ -10,7 +10,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,8 +19,12 @@
         <LinearLayout
             android:id="@+id/ll_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker_announcement"
@@ -113,7 +117,22 @@
                 tools:text="Belum punya akun Tokopedia? Daftar"/>
 
         </LinearLayout>
-    </ScrollView>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/to_tokopedia_care"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_margin="@dimen/spacing_lvl5"
+            android:text="@string/need_help_call_tokopedia_care"
+            android:textAlignment="center"
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout
         android:id="@+id/progress_bar"
@@ -147,19 +166,5 @@
     android:layout_height="wrap_content"
     android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/to_tokopedia_care"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_margin="@dimen/spacing_lvl5"
-        android:text="@string/need_help_call_tokopedia_care"
-        android:textAlignment="center"
-        app:typographyWeight="reguler"
-        app:typographyType="body_2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

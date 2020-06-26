@@ -177,8 +177,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         IMAGE(TYPE_IMAGE)
     }
 
-    lateinit var data: LinkerData
-    private set
+    var data: LinkerData? = null
+        private set
 
     private var isAdding: Boolean = false
     private lateinit var listener: OnShareItemClickListener
@@ -206,7 +206,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     override fun title(): String {
-        return arguments?.getString(EXTRA_TITLE) ?: data.ogTitle
+        return arguments?.getString(EXTRA_TITLE) ?: data?.ogTitle ?: ""
     }
 
     private lateinit var mRecyclerView: RecyclerView
@@ -253,14 +253,15 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun actionCopy() {
-        data.source = COPY
+        data?.source = COPY
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0,
                         DataMapper().getLinkerShareData(data),
                         object : ShareCallback {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
                                 activity?.let {
-                                    ClipboardHandler().copyToClipboard(it, data.originalTextContent)
+                                    ClipboardHandler().copyToClipboard(it, data?.originalTextContent
+                                            ?: "")
                                 }
                             }
 
@@ -288,7 +289,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                         0, DataMapper().getLinkerShareData(data),
                         object : ShareCallback {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
-                                val intent = getIntent(data.originalTextContent, TYPE_TEXT)
+                                val intent = getIntent(data?.originalTextContent ?: "", TYPE_TEXT)
                                 startActivity(Intent.createChooser(intent, getString(R.string.other)))
                                 sendTracker(KEY_OTHER)
                             }
@@ -304,8 +305,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     private fun getIntent(textToShare: String, type: String): Intent {
         return Intent(Intent.ACTION_SEND)
                 .setType(type)
-                .putExtra(Intent.EXTRA_TITLE, data.name)
-                .putExtra(Intent.EXTRA_SUBJECT, data.name)
+                .putExtra(Intent.EXTRA_TITLE, data?.name ?: "")
+                .putExtra(Intent.EXTRA_SUBJECT, data?.name ?: "")
                 .putExtra(Intent.EXTRA_TEXT, textToShare)
     }
 
@@ -313,8 +314,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         return Intent(Intent.ACTION_SEND)
                 .setType(MimeType.TEXT.typeString)
                 .setComponent(ComponentName(packageName, className))
-                .putExtra(Intent.EXTRA_TITLE, data.name)
-                .putExtra(Intent.EXTRA_SUBJECT, data.name)
+                .putExtra(Intent.EXTRA_TITLE, data?.name ?: "")
+                .putExtra(Intent.EXTRA_SUBJECT, data?.name ?: "")
                 .putExtra(Intent.EXTRA_TEXT, arguments?.getString(EXTRA_SHARE_FORMAT).orEmpty())
     }
 

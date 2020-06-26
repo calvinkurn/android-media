@@ -82,6 +82,7 @@ interface DynamicProductDetailListener {
      * ProductShopInfoViewHolder
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
+    fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecommendationViewHolder

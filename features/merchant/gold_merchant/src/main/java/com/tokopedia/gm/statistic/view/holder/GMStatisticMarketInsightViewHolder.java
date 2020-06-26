@@ -1,6 +1,5 @@
 package com.tokopedia.gm.statistic.view.holder;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,9 +19,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.gm.statistic.view.widget.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.view.adapter.GMMarketInsightAdapter;
 import com.tokopedia.gm.R;

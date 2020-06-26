@@ -45,6 +45,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation(rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
 }
 
@@ -58,3 +61,5 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
