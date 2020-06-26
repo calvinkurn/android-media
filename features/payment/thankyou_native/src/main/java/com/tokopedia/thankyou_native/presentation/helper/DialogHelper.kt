@@ -87,7 +87,7 @@ class DialogHelper(val context: Context, val listener: OnDialogRedirectListener)
 }
 
 interface OnDialogRedirectListener {
-    fun gotoHomePage(applink: String)
+    fun launchApplink(applink: String)
     fun gotoHomePage()
     fun gotoPaymentWaitingPage()
     fun gotoOrderList()

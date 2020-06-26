@@ -111,7 +111,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
                 gotoHomePage()
             } else {
-                gotoHomePage(thanksPageData.thanksCustomization.customHomeUrlApp)
+                launchApplink(thanksPageData.thanksCustomization.customHomeUrlApp)
             }
         }
     }

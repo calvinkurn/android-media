@@ -211,7 +211,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         activity?.finish()
     }
 
-    override fun gotoHomePage(applink: String) {
+    override fun launchApplink(applink: String) {
         RouteManager.route(context, applink, "")
         thankYouPageAnalytics.get().sendBelanjaLagiClickEvent()
         activity?.finish()
@@ -253,7 +253,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             }else {
                 thankYouPageAnalytics.get().sendCheckTransactionListEvent()
                 val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
-                val orderListListIntent = RouteManager.getIntent(context, applink)//getOrderListPageIntent()//will check if applink not valid
+                val orderListListIntent = RouteManager.getIntent(context, applink)
                 orderListListIntent?.let {
                     TaskStackBuilder.create(context)
                             .addNextIntent(homeIntent)
