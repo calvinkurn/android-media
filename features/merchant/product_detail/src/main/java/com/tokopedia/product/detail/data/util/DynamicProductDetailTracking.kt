@@ -1179,10 +1179,7 @@ object DynamicProductDetailTracking {
             val products = generateProduct(irisSessionId, trackerListName, productInfo, shopInfo,
                     trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable)
 
-            val label = TrackingUtil.getEnhanceShopType(shopInfo?.goldOS)
-            + " - "
-            + shopInfo?.shopCore?.name
-            + " - " + productInfo?.data?.name
+            val label = TrackingUtil.getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name+ " - " + productInfo?.data?.name
 
             ProductDetailViewsBundler
                     .getBundle(
