@@ -11,17 +11,16 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.util.processor.Product
-import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
+import com.tokopedia.product.util.processor.Product
+import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.variant_common.model.ProductVariantCommon
-import kotlinx.coroutines.channels.ticker
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -1180,6 +1179,8 @@ object DynamicProductDetailTracking {
             val products = generateProduct(irisSessionId, trackerListName, productInfo, shopInfo,
                     trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable)
 
+            val label = TrackingUtil.getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name+ " - " + productInfo?.data?.name
+
             ProductDetailViewsBundler
                     .getBundle(
                             if (trackerListName?.isNotEmpty() == true) {
@@ -1217,6 +1218,7 @@ object DynamicProductDetailTracking {
                             ProductDetailViewsBundler.KEY,
                             "product page",
                             "view product page",
+                            label,
                             null,
                             null
                     )
@@ -1235,11 +1237,11 @@ object DynamicProductDetailTracking {
 
             val sentBundle = generateProductViewBundle(
                     irisSessionId, trackerListName, productInfo, shopInfo,
-                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl
-                    ,isStockAvailable
+                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
+                    isStockAvailable
             )
             sendTrackingBundle(
-                            ProductDetailViewsBundler.KEY,
+                    ProductDetailViewsBundler.KEY,
                     sentBundle
             )
 
