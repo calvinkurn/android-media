@@ -1957,7 +1957,9 @@ public class ProductListFragment
             CoachMarkItem item = createFilterOnBoardingCoachMarkItem();
             coachMarkItemList.add(item);
 
-            new CoachMarkBuilder().build().show(getActivity(), SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG, coachMarkItemList);
+            CoachMarkBuilder builder = new CoachMarkBuilder();
+            builder.allowPreviousButton(false);
+            builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG, coachMarkItemList);
         }
     }
 
