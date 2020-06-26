@@ -110,6 +110,11 @@ class PlayBannerCardViewHolder(
         listener.onPlayBannerReminderClick(dataModel)
     }
 
+    override fun onSeeMoreBannerClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
+        listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickSeeAll(dataModel.imageUrl, listener.userId))
+        RouteManager.route(itemView.context, dataModel.applink)
+    }
+
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel) {
         listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickSeeAll(dataModel.imageUrl, listener.userId))
         RouteManager.route(itemView.context, dataModel.seeMoreApplink)
