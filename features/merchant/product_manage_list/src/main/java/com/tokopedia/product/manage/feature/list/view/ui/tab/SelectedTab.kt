@@ -4,5 +4,6 @@ import com.tokopedia.sortfilter.SortFilterItem
 
 data class SelectedTab(
     val filter: SortFilterItem? = null,
-    val count: Int
+    val count: Int,
+    val statusName: String
 )
