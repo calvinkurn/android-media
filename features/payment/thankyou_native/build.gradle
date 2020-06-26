@@ -68,6 +68,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     implementation rootProject.ext.miscDependencies.lottie
+    implementation project(rootProject.ext.libraries.iris)
 
 
 }

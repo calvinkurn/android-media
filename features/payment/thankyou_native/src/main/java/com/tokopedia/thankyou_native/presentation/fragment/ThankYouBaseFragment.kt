@@ -123,7 +123,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             container.addView(view)
             view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
         }
-        iRecommendationView?.loadRecommendation(this)
+        iRecommendationView?.loadRecommendation(this, getTrackingQueue())
     }
     private fun addDigitalRecommendation(){
         val recomContainer = getRecommendationContainer()
