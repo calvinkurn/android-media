@@ -250,7 +250,9 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             stockTitle.hide()
         } else {
             stockTitle.setTextAndCheckShow(stockWording.title)
-            stockTitle.setTextColor(Color.parseColor(stockWording.color))
+            if (!stockWording.color.isNullOrEmpty()) {
+                stockTitle.setTextColor(Color.parseColor(stockWording.color))
+            }
         }
     }
 

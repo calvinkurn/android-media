@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -32,6 +33,7 @@ private const val SOURCE = "discovery"
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
 private const val NOTIFY_ME_TEXT = "tertarik"
+private const val DEFAULT_COLOR = "#1e31353b"
 
 class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -132,7 +134,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
     }
 
     fun getStockWord(): StockWording {
-        var stockWordTitleColour = "#1e31353b"
+        var stockWordTitleColour = getStockColor(R.color.clr_1e31353b)
         var stockWordTitle = dataItem.value?.stockWording?.title
         var stockAvailableCount: String? = ""
 
@@ -150,24 +152,24 @@ class ProductCardItemViewModel(val application: Application, private val compone
                     if (campaignSoldCount.toIntOrZero() > 0) {
                         when {
                             customStock == 0 -> {
-                                stockWordTitle = application.getString(R.string.terjual_habis)
+                                stockWordTitle = getStockText(R.string.terjual_habis)
                             }
                             customStock == 1 -> {
-                                stockWordTitle = application.getString(R.string.stok_terakhir_beli_sekarang)
+                                stockWordTitle = getStockText(R.string.stok_terakhir_beli_sekarang)
                             }
                             customStock <= threshold -> {
-                                stockWordTitle = application.getString(R.string.tersisa)
+                                stockWordTitle = getStockText(R.string.tersisa)
                                 stockAvailableCount = customStock.toString()
-                                stockWordTitleColour = "#ef144a"
+                                stockWordTitleColour = getStockColor(R.color.clr_ef144a)
                             }
                             else -> {
-                                stockWordTitle = application.getString(R.string.terjual)
+                                stockWordTitle = getStockText(R.string.terjual)
                                 stockAvailableCount = campaignSoldCount.toString()
                             }
                         }
                         stockWordTitle += stockAvailableCount
                     } else {
-                        stockWordTitle = application.getString(R.string.masih_tersedia)
+                        stockWordTitle = getStockText(R.string.masih_tersedia)
                     }
                 }
                 stockWordData.title = stockWordTitle
@@ -175,6 +177,23 @@ class ProductCardItemViewModel(val application: Application, private val compone
             }
         }
         return stockWordData
+    }
+
+    private fun getStockText(textID: Int): String {
+        var stockText = ""
+        try {
+            stockText = application.resources.getString(textID)
+        } catch (exception: Resources.NotFoundException) {
+        }
+        return stockText
+    }
+
+    private fun getStockColor(colorID: Int): String {
+        try {
+            application.resources.getString(colorID)
+        } catch (exception: Resources.NotFoundException) {
+        }
+        return DEFAULT_COLOR
     }
 
     fun handleNavigation() {
