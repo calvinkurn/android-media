@@ -72,7 +72,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
-        //thanksPageData.thanksCustomization ==null
         if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitle.isNullOrBlank()) {
             tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
         } else {

@@ -31,7 +31,6 @@ class RecommendationAnalytics @Inject constructor(
                                 KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
                                 KEY_EVENT_LABEL to position,
                                 KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
-                        //analyticTracker.sendEnhanceEcommerceEvent(data)
                         trackingQueue.putEETracking(data as HashMap<String, Any>)
                     }
                 }, onError = {

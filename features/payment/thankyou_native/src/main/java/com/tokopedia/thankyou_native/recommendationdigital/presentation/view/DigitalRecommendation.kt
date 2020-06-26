@@ -39,9 +39,6 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-//    @Inject
-//    lateinit var userSessionInterface: dagger.Lazy<UserSessionInterface>
-
     var isObserverAttached = false
 
     private val viewModel: DigitalRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {

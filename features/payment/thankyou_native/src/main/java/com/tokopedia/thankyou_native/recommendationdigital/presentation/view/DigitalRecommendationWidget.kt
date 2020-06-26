@@ -37,7 +37,6 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
         renderTitle(element)
         renderSubtitle(element)
-        //renderFooter(element)
     }
 
     open fun renderImage(element: RecommendationsItem) {
