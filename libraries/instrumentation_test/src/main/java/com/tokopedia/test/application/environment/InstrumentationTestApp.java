@@ -62,8 +62,6 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public void onCreate() {
-        initConfigValues();
-
         SplitCompat.install(this);
         FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
@@ -74,15 +72,12 @@ public class InstrumentationTestApp extends BaseMainApplication
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
-        GraphqlClient.init(this);
-        enableTopAdsDetector();
-
-        super.onCreate();
-    }
-
-    private void initConfigValues() {
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.66";
+        GraphqlClient.init(this);
+        com.tokopedia.config.GlobalConfig.DEBUG = true;
+        enableTopAdsDetector();
+        super.onCreate();
     }
 
     public void enableTopAdsDetector() {
