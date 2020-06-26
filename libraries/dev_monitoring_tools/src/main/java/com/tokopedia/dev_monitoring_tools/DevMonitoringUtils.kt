@@ -38,7 +38,7 @@ object DevMonitoringUtils {
 
     @JvmStatic
     fun initTooLargeTool(application: Application) {
-        var minSizeLog = DevToolsRemoteConfig.getConfig(application).tooLargeToolMinSizeLog
+        val minSizeLog = DevToolsRemoteConfig.getConfig(application).tooLargeToolMinSizeLog
         TooLargeTool.startLogging(application, object : Formatter {
             override fun format(activity: Activity, bundle: Bundle): String {
                 val (key, totalSize, subTrees) = sizeTreeFromBundle(bundle)
