@@ -74,4 +74,12 @@ class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun isFromAutoReply(): Boolean {
+        return source == SOURCE_AUTO_REPLY
+    }
+
+    fun isFromSmartReply(): Boolean {
+        return source == SOURCE_TOPBOT
+    }
 }

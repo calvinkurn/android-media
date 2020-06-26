@@ -1,8 +1,13 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
+import android.graphics.Color
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.LinearLayout
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import androidx.core.content.ContextCompat
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,15 +33,24 @@ class RightChatMessageViewHolder(
 
     private fun bindHeader(message: MessageViewModel) {
         if (
-                message.source == BaseChatViewModel.SOURCE_AUTO_REPLY &&
-                message.source == BaseChatViewModel.SOURCE_TOPBOT &&
+                (message.isFromAutoReply() || message.isFromSmartReply()) &&
                 message.isSender &&
                 commonListener.isSeller()
         ) {
-            val headerRoleText = itemView.context?.getString(R.string.tittle_header_auto_reply)
+            val headerRoleText = if (message.isFromSmartReply()) {
+                itemView.context?.getString(R.string.tittle_header_smart_reply)
+            } else {
+                itemView.context?.getString(R.string.tittle_header_auto_reply)
+            } ?: ""
+            val spanHeaderRoleText = SpannableStringBuilder(headerRoleText)
+            val color = getDotColor()
+            val span = SpannableString(" • ").apply {
+                setSpan(ForegroundColorSpan(color), 0, 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            spanHeaderRoleText.append(span)
             header?.show()
             headerRole?.show()
-            headerRole?.text = headerRoleText
+            headerRole?.text = spanHeaderRoleText
         } else {
             header?.hide()
         }
@@ -48,6 +62,13 @@ class RightChatMessageViewHolder(
 
     override fun alwaysShowTime(): Boolean {
         return true
+    }
+
+    private fun getDotColor(): Int {
+        itemView.context?.let {
+            return ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Blue_B500)
+        }
+        return Color.BLACK
     }
 
     companion object {
