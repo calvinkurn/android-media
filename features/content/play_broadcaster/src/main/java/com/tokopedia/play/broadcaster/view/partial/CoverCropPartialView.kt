@@ -62,6 +62,14 @@ class CoverCropPartialView(
                 ivPlayCoverCropImage.setCropRect(ivCropOverlay.getCropRect())
             }, SECONDS)
 
+            btnCropAdd.isLoading = true
+
+            Handler().postDelayed({
+                btnCropAdd.isEnabled = true
+                btnCropChange.isEnabled = true
+                btnCropAdd.isLoading = false
+            }, 1500)
+
             llImageContainer.addView(ivPlayCoverCropImage)
 
             btnCropAdd.setOnClickListener {
@@ -80,8 +88,6 @@ class CoverCropPartialView(
             }
 
             loaderImage.gone()
-            btnCropAdd.isEnabled = true
-            btnCropChange.isEnabled = true
         } else {
             loaderImage.show()
             btnCropAdd.isEnabled = false
