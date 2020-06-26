@@ -11,14 +11,16 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
+import com.tokopedia.play.broadcaster.error.CoverChangeForbiddenException
 import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
-import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
@@ -59,7 +61,12 @@ class PlayCoverSetupViewModel @Inject constructor(
             }
         }
 
-    private val source: CoverSource
+    val savedCoverTitle: String
+        get() {
+            return observableCoverTitle.value.orEmpty()
+        }
+
+    val source: CoverSource
         get() {
             return when (val currentCropState = observableCropState.value) {
                 is CoverSetupState.Cropped -> currentCropState.coverSource
@@ -72,8 +79,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         it.croppedCover
     }
 
-    val observableCoverTitle: LiveData<String>
-        get() = Transformations.map(setupDataStore.getObservableSelectedCover()) {
+    val observableCoverTitle: LiveData<String> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
             it.title
         }
 
@@ -114,23 +120,38 @@ class PlayCoverSetupViewModel @Inject constructor(
         _observableUploadCoverEvent.value = NetworkResult.Loading
         launchCatchError(block = {
             val currentCropState = cropState
-            val path = if (currentCropState is CoverSetupState.Cropped) currentCropState.coverImage.path else throw IllegalStateException("Cover is not cropped yet")
-            val url = uploadCoverToCloud(path)
-
-            setupDataStore.updateCoverTitle(coverTitle)
+            val path = if (currentCropState is CoverSetupState.Cropped) currentCropState.coverImage else throw IllegalStateException("Cover is not cropped yet")
+            val validatedImagePath = validateImageMinSize(path).path
+            if (validatedImagePath != null) {
+                val url = uploadCoverToCloud(validatedImagePath)
 
 //            val result = setupDataStore.uploadSelectedCover(channelId)
 //            if (result is NetworkResult.Success) _observableUploadCoverEvent.value = NetworkResult.Success(Event(Unit))
 //            else if (result is NetworkResult.Fail) throw result.error
 
-            //TODO("Remove mock behavior")
-            delay(3000)
-            _observableUploadCoverEvent.value = NetworkResult.Success(Event(Unit))
+                //TODO("Remove mock behavior")
+                delay(1500)
+                setupDataStore.setFullCover(
+                        PlayCoverUiModel(
+                                croppedCover = CoverSetupState.Cropped(Uri.parse(url), source),
+                                title = coverTitle,
+                                state = SetupDataState.Draft
+                        )
+                )
 
+                _observableUploadCoverEvent.value = NetworkResult.Success(Event(Unit))
+            } else {
+                _observableUploadCoverEvent.value = NetworkResult.Fail(Throwable("Error in uploading image"))
+            }
         }) {
             it.printStackTrace()
             _observableUploadCoverEvent.value = NetworkResult.Fail(it)
         }
+    }
+
+    fun coverChangeState(): CoverChangeState {
+        return if (observableUploadCoverEvent.value !is NetworkResult.Loading) Changeable
+        else NotChangeable(CoverChangeForbiddenException("Cover is uploading"))
     }
 
     fun setCroppingCoverByUri(coverUri: Uri, source: CoverSource) {
@@ -153,9 +174,8 @@ class PlayCoverSetupViewModel @Inject constructor(
     }
 
     fun setCroppedCover(coverUri: Uri) {
-        val imageValidated = validateImageMinSize(coverUri)
         setupDataStore.updateCoverState(
-                CoverSetupState.Cropped(imageValidated, source)
+                CoverSetupState.Cropped(coverUri, source)
         )
     }
 

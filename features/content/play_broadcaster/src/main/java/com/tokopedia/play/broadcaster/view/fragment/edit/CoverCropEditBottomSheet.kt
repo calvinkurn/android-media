@@ -17,9 +17,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import javax.inject.Inject
 
@@ -37,10 +39,21 @@ class CoverCropEditBottomSheet @Inject constructor(
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private var mListener: SetupResultListener? = null
+    private var mListener: EditCoverResultListener? = null
+
+    private val currentFragment: Fragment?
+        get() = childFragmentManager.findFragmentById(flFragment.id)
 
     override val channelId: String
         get() = parentViewModel.channelId
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return object : BottomSheetDialog(requireContext(), theme) {
+            override fun onBackPressed() {
+                goBack()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,15 +73,18 @@ class CoverCropEditBottomSheet @Inject constructor(
     }
 
     override fun goBack() {
-        mListener?.onSetupCanceled()
-        dismiss()
+        val currFragment = currentFragment
+        if (currFragment is PlayBaseSetupFragment) {
+            val isIntercepted = currFragment.onInterceptBackPressed()
+            if (!isIntercepted) cancelEdit()
+        } else cancelEdit()
     }
 
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
         //Not used
     }
 
-    fun setListener(listener: SetupResultListener) {
+    fun setListener(listener: EditCoverResultListener) {
         mListener = listener
     }
 
@@ -97,9 +113,16 @@ class CoverCropEditBottomSheet @Inject constructor(
                 mListener?.onSetupCompletedWithData(dataStore)
                 dismiss()
             }
+
+            override fun onCancelCropping(coverSource: CoverSource): Boolean {
+                mListener?.onChangeCoverFromCropping(coverSource)
+                dismiss()
+
+                return true
+            }
         })
         fragmentInstance.arguments = Bundle().apply {
-            putBoolean(PlayCoverSetupFragment.EXTRA_TITLE_EDITABLE, false)
+            putBoolean(PlayCoverSetupFragment.EXTRA_IS_EDIT_COVER_MODE, true)
         }
 
         childFragmentManager.beginTransaction()
@@ -126,7 +149,17 @@ class CoverCropEditBottomSheet @Inject constructor(
 
     private fun maxHeight(): Int = getScreenHeight()
 
+    private fun cancelEdit() {
+        mListener?.onSetupCanceled()
+        dismiss()
+    }
+
     companion object {
         private const val TAG = "Cover Crop Edit BottomSheet"
+    }
+
+    interface EditCoverResultListener : SetupResultListener {
+
+        fun onChangeCoverFromCropping(coverSource: CoverSource)
     }
 }

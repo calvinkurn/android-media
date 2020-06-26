@@ -7,12 +7,14 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_play_broadcast_edit_title.*
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * @author by furqan on 12/06/2020
@@ -22,13 +24,17 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
     private var mListener: Listener? = null
 
     private val title: String
-        get() = etPlayCoverTitleText.text.toString()
+        get() = etCoverTitle.text.toString()
 
     private val args: Bundle
         get() {
             if (arguments == null) arguments = Bundle()
             return arguments!!
         }
+
+    private lateinit var etCoverTitle: EditText
+    private lateinit var tvTitleCounter: TextView
+    private lateinit var btnSave: UnifyButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +44,8 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView(view)
+        setupView(view)
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -58,10 +65,19 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
         isDragable = true
         isHideable = true
         setTitle(getString(R.string.play_broadcast_edit_title_title))
-        setChild(View.inflate(requireContext(), R.layout.bottom_sheet_play_broadcast_edit_title, null))
+        val view = View.inflate(requireContext(), R.layout.bottom_sheet_play_broadcast_edit_title, null)
+        setChild(view)
     }
 
-    private fun initView() {
+    private fun initView(view: View) {
+        with (view) {
+            etCoverTitle = findViewById(R.id.et_cover_title)
+            tvTitleCounter = findViewById(R.id.tv_title_counter)
+            btnSave = findViewById(R.id.btn_save)
+        }
+    }
+
+    private fun setupView(view: View) {
         bottomSheetHeader.setPadding(
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
                 bottomSheetHeader.top,
@@ -72,10 +88,10 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
                 0,
                 bottomSheetWrapper.paddingBottom)
 
-        etPlayCoverTitleText.setRawInputType(InputType.TYPE_CLASS_TEXT)
-        etPlayCoverTitleText.setText(arguments?.getString(EXTRA_CURRENT_TITLE).orEmpty())
-        etPlayCoverTitleText.filters = arrayOf(InputFilter.LengthFilter(PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE))
-        etPlayCoverTitleText.addTextChangedListener(object : TextWatcher {
+        etCoverTitle.setText(arguments?.getString(EXTRA_CURRENT_TITLE).orEmpty())
+        etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE))
+        etCoverTitle.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        etCoverTitle.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -85,13 +101,13 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
                 setupSaveButton()
             }
         })
-        etPlayCoverTitleText.setOnEditorActionListener { v, actionId, _ ->
+        etCoverTitle.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) v.clearFocus()
             false
         }
 
         setupTitleCounter()
-        btnPlayPrepareBroadcastSave.setOnClickListener {
+        btnSave.setOnClickListener {
             mListener?.onSaveEditedTitle(title)
             dismiss()
         }
@@ -100,12 +116,12 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupTitleCounter() {
-        tvPlayTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
+        tvTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
                 title.length, PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE)
     }
 
     private fun setupSaveButton() {
-        btnPlayPrepareBroadcastSave.isEnabled = title.isNotEmpty() &&
+        btnSave.isEnabled = title.isNotEmpty() &&
                 title.length <= PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE
     }
 
