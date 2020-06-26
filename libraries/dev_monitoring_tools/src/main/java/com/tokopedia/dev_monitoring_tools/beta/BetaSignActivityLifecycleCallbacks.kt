@@ -9,7 +9,7 @@ import android.view.WindowManager
 import com.tokopedia.grapqhl.beta.notif.BetaInterceptor.Companion.isBeta
 
 class BetaSignActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle) { // No-op
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) { // No-op
     }
 
     override fun onActivityStarted(activity: Activity) { // No-op

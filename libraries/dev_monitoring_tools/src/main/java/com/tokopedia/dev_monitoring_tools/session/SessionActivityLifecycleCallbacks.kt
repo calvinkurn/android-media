@@ -21,7 +21,7 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
     private var lastSumTx: Long = 0
     private var lastSumRx: Long = 0
     private var running = false
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle) {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         openedPageCount++
         openedPageCountTotal++
     }
@@ -30,6 +30,7 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
     }
 
     override fun onActivityResumed(activity: Activity) {
+        UserJourney.addJourneyActivity(activity.javaClass.simpleName)
         if (running) {
             return
         }

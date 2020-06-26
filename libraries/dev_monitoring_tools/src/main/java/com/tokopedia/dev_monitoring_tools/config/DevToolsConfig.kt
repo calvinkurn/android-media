@@ -7,5 +7,5 @@ data class DevToolsConfig(
 
     @SerializedName("too_large_tool_min_size_log")
     @Expose
-    val tooLargeToolMinSizeLog: Long = 20000
+    val tooLargeToolMinSizeLog: Int = 20000
 )
