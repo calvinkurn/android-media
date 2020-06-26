@@ -308,6 +308,8 @@
     <string name="flight_cancellation_auto_check_dialog_desc">Berdasarkan kebijakan maskapai, terdapat penumpang yang harus kami batalkan secara otomatis. Silakan periksa ulang daftar penumpang Anda.</string>
     <string name="flight_cancellation_auto_check_dialog_button">OK, Mengerti</string>
     <string name="flight_cancellation_reason_view_image_label">Lihat</string>
+    <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
+
     <string name="flight_terminal_info">Terminal %s*</string>
     <string name="flight_airport_less_than_three_keyword_title_error">Oops, belum ada hasil</string>
     <string name="flight_airport_less_than_three_keyword_error">Coba lengkapi nama kota atau bandara yang kamu cari. Tuliskan min. 3 huruf, ya!</string>
