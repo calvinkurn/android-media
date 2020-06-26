@@ -49,19 +49,16 @@ object DeepLinkMapperProductManage {
         val filterId = uri.getQueryParameter(QUERY_PARAM_FILTER).orEmpty()
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp()) {
+            val param: HashMap<String, String> = hashMapOf()
             when {
                 filterId.isNotBlank() -> {
-                    val param = mapOf(QUERY_PARAM_FILTER to filterId)
-                    UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST, param)
+                    param[QUERY_PARAM_FILTER] =  filterId
                 }
                 searchKeyword.isNotBlank() -> {
-                    val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-                    UriUtil.buildUriAppendParam(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST, param)
-                }
-                else -> {
-                    ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST
+                    param[QUERY_PARAM_SEARCH] = searchKeyword
                 }
             }
+            UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST, param)
         } else {
             when {
                 filterId.isNotBlank() -> {
