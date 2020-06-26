@@ -212,7 +212,6 @@ class CreateMerchantVoucherStepsViewModelTest {
 
         coVerify {
             basicShopInfoUseCase.executeOnBackground()
-            initiateVoucherUseCase.executeOnBackground()
         }
 
         assert(mViewModel.initiateVoucherLiveData.value is Fail)
