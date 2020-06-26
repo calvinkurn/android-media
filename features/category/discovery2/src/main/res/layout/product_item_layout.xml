@@ -356,7 +356,7 @@
             android:layout_marginRight="@dimen/dp_8"
             android:visibility="gone"
             style="?android:attr/progressBarStyleHorizontal"
-            android:progressDrawable="@drawable/progress_bar_flash_sale"
+            android:progressDrawable="@drawable/product_progress_bar_flash_sale"
             app:layout_constraintEnd_toEndOf="@id/imageProduct"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
