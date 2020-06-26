@@ -7,7 +7,9 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.END_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
+import com.tokopedia.topads.common.data.internal.ParamObject.PAGE
 import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
+import com.tokopedia.topads.common.data.internal.ParamObject.SINGLE_ROW
 import com.tokopedia.topads.common.data.internal.ParamObject.SORT
 import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
@@ -23,14 +25,16 @@ import javax.inject.Inject
 class TopAdsGetGroupDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<GroupItemResponse>(graphqlRepository) {
 
 
-    fun setParams(search: String, sort: String, status: Int?, startDate: String, endDate: String) {
+    fun setParams(search: String, page: Int, sort: String, status: Int?, startDate: String, endDate: String) {
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_id] = userSession.shopId.toInt()
         queryMap[SORT] = sort
         queryMap[KEYWORD] = search
+        queryMap[PAGE] = page
         queryMap[START_DATE] = startDate
         queryMap[END_DATE] = endDate
         queryMap[STATUS] = status
+        queryMap[SINGLE_ROW] = "1"/*for keyword count*/
         setRequestParams(mapOf(QUERY_INPUT to queryMap))
     }
 

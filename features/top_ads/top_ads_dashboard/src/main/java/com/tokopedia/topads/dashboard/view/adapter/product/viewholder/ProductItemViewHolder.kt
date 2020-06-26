@@ -50,6 +50,11 @@ class ProductItemViewHolder(val view: View,
             view.btn_switch.setOnCheckedChangeListener { buttonView, isChecked ->
                 onSwitchAction.invoke(adapterPosition, isChecked)
             }
+            if (!view.check_box.isChecked) {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+            } else {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+            }
             view.item_card.setOnClickListener {
                 if (selectMode) {
                     view.check_box.isChecked = !it.check_box.isChecked

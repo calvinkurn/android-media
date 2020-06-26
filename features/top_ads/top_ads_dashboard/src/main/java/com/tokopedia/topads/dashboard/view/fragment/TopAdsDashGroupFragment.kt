@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
@@ -24,7 +22,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
-import com.tokopedia.topads.dashboard.data.model.groupitem.DataItem
+import com.tokopedia.topads.dashboard.data.model.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -56,10 +54,14 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private var SingleDelGroupId = ""
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
+
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
     private var deleteCancel = false
-    private lateinit var recyclerView:RecyclerView
+    private lateinit var recyclerView: RecyclerView
+    private var totalCount = 0
+    private var totalPage = 0
+    private var currentPage = 0
 
     override fun getScreenName(): String {
         return TopAdsDashGroupFragment::class.java.name
@@ -122,12 +124,21 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                fetchData()
-            }
-            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(view, dx, dy)
+                if (currentPage < totalPage) {
+                    currentPage++
+                    fetchNextPage(currentPage)
+                }
             }
         }
+    }
+
+    private fun fetchNextPage(currentPage: Int) {
+        val startDate = format.format((parentFragment as TopAdsProductIklanFragment).startDate)
+        val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
+        topAdsDashboardPresenter.getGroupData(resources, currentPage, searchBar?.searchBarTextField?.text.toString(),
+                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
+                startDate, endDate,
+                this::onSuccessResult)
     }
 
     private fun statusChange(pos: Int, status: Int) {
@@ -156,8 +167,6 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         SingleDelGroupId = (adapter.items[pos] as GroupItemsItemViewModel).data.groupId.toString()
         performAction(TopAdsDashboardConstant.ACTION_DELETE)
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -211,13 +220,15 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         (parentFragment as TopAdsProductIklanFragment).setGroupCount(0)
     }
 
-    private fun onSuccessResult(data: List<DataItem>) {
+    private fun onSuccessResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
         loader.visibility = View.GONE
-        data.forEach {
+        totalCount = response.meta.page.total
+        totalPage = totalCount / response.meta.page.perPage
+        response.data.forEach {
             if (it.groupType == PRODUCT)
                 adapter.items.add(GroupItemsItemViewModel(it))
         }
-        (parentFragment as TopAdsProductIklanFragment).setGroupCount(adapter.itemCount)
+        (parentFragment as TopAdsProductIklanFragment).setGroupCount(totalCount)
         if (adapter.items.size.isZero()) {
             onEmptyResult()
         }
@@ -239,7 +250,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         val startDate = format.format((parentFragment as TopAdsProductIklanFragment).startDate)
         val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
-        topAdsDashboardPresenter.getGroupData(resources, searchBar?.searchBarTextField?.text.toString(),
+        topAdsDashboardPresenter.getGroupData(resources, 1, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
                 startDate, endDate,
                 this::onSuccessResult)

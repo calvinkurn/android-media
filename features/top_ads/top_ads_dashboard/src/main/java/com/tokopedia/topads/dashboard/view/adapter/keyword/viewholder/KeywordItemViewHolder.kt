@@ -10,6 +10,7 @@ import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItem
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_dash_item_keyword_card.view.*
 
+
 /**
  * Created by Pika on 7/6/20.
  */
@@ -45,6 +46,11 @@ class KeywordItemViewHolder(val view: View,
             view.pendapatan_count.text = it.result.statTotalConversion
             view.produk_terjual_count.text = it.result.statTotalSold
             view.price_bid.text = it.result.keywordPriceBidFmt
+            if (!view.check_box.isChecked) {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+            } else {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+            }
             view.btn_switch.setOnCheckedChangeListener { buttonView, isChecked ->
                 onSwitchAction.invoke(adapterPosition, isChecked)
             }

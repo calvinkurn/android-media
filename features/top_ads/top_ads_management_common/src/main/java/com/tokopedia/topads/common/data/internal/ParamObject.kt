@@ -44,4 +44,5 @@ object ParamObject {
     const val TOGGLE ="toggle"
     const val DATA = "data"
     const val IDS = "ids"
+    const val SINGLE_ROW = "is_single_row"
  }

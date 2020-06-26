@@ -33,6 +33,11 @@ class NegKeywordItemViewHolder(val view: View,
             view.label.text = it.result.keywordTypeDesc
             view.label.setLabelType(Label.GENERAL_LIGHT_GREEN)
             view.check_box.isChecked = item.isChecked
+            if (!view.check_box.isChecked) {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+            } else {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+            }
             view.item_card.setOnClickListener {
                 if (selectMode) {
                     view.check_box.isChecked = !view.check_box.isChecked

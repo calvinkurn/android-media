@@ -23,24 +23,19 @@ data class GroupItemResponse(
         data class Meta(
 
                 @field:SerializedName("page")
-                val page: Page? = null
+                val page: Page = Page()
         ) {
             data class Page(
 
                     @field:SerializedName("per_page")
-                    val perPage: Int? = null,
+                    val perPage: Int = 0,
 
                     @field:SerializedName("current")
-                    val current: Int? = null,
+                    val current: Int = 0,
 
                     @field:SerializedName("total")
-                    val total: Int? = null,
+                    val total: Int = 0
 
-                    @field:SerializedName("min")
-                    val min: Int? = null,
-
-                    @field:SerializedName("max")
-                    val max: Int? = null
             )
         }
     }

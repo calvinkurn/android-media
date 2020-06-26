@@ -1,6 +1,13 @@
 query topadsDashboardGroupProducts($queryInput: topadsDashboardGroupProductsInputType!) {
   topadsDashboardGroupProducts(queryInput: $queryInput) {
     separate_statistic
+       meta {
+              page {
+                per_page
+                current
+                total
+              }
+            }
     data {
       ad_id
       item_id

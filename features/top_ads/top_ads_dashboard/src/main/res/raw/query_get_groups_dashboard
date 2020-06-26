@@ -3,9 +3,7 @@ query GetTopadsDashboardGroups($queryInput: GetTopadsDashboardGroupsInputType!) 
     separate_statistic
        meta {
           page {
-            min
             per_page
-            max
             current
             total
           }

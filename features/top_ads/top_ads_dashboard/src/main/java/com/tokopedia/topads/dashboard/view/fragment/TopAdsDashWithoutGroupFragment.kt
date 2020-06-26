@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
@@ -17,7 +19,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
@@ -51,6 +53,11 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private val PRODUCTS_WITHOUT_GROUP = -2
     private var deleteCancel = false
     private var SingleDelGroupId = ""
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
+    private var totalCount = 0
+    private var totalPage = 0
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -76,7 +83,38 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_non_group_list), container, false)
+        val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_non_group_list), container, false)
+        recyclerView = view.findViewById(R.id.non_group_list)
+        setAdapter()
+        return view
+    }
+
+    private fun setAdapter() {
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewScrollListener = onRecyclerViewListener()
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (currentPage < totalPage) {
+                    currentPage++
+                    fetchNextPage(currentPage)
+                }
+            }
+        }
+    }
+
+    private fun fetchNextPage(page: Int) {
+        val startDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
+        val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
+        topAdsDashboardPresenter.getGroupProductData(resources, page, PRODUCTS_WITHOUT_GROUP,
+                searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onSuccessResult, ::onEmptyResult)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,9 +166,6 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fetchData()
-        non_group_list.isNestedScrollingEnabled = false
-        non_group_list.adapter = adapter
-        non_group_list.layoutManager = LinearLayoutManager(context)
         btnFilter.setOnClickListener {
             groupFilterSheet.show()
             groupFilterSheet.onSubmitClick = { fetchData() }
@@ -247,14 +282,15 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         (parentFragment as TopAdsProductIklanFragment).setNonGroupCount(0)
     }
 
-    private fun onSuccessResult(data: List<WithoutGroupDataItem>) {
+    private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {
+        totalCount = response.meta.page.total
+        totalPage = totalCount / response.meta.page.perPage
         loader.visibility = View.GONE
-        adapter.items.clear()
-        data.forEach {
+        response.data.forEach {
             adapter.items.add(NonGroupItemsItemViewModel(it))
         }
         adapter.notifyDataSetChanged()
-        (parentFragment as TopAdsProductIklanFragment).setNonGroupCount(adapter.itemCount)
+        (parentFragment as TopAdsProductIklanFragment).setNonGroupCount(totalCount)
         setFilterCount()
     }
 
@@ -272,7 +308,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         val startDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
         val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
-        topAdsDashboardPresenter.getGroupProductData(resources, PRODUCTS_WITHOUT_GROUP,
+        topAdsDashboardPresenter.getGroupProductData(resources, 1, PRODUCTS_WITHOUT_GROUP,
                 searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
                 groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onSuccessResult, ::onEmptyResult)
     }

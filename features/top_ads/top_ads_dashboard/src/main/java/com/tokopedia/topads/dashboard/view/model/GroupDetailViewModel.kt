@@ -9,6 +9,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -36,17 +37,17 @@ class GroupDetailViewModel @Inject constructor(
         private val groupInfoUseCase: GroupInfoUseCase,
         private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
-    fun getGroupProductData(resources: Resources, groupId: Int, search: String, sort: String, status: Int?,
-                            startDate:String, endDate:String,onSuccess: ((List<WithoutGroupDataItem>) -> Unit), onEmpty: (() -> Unit)) {
+    fun getGroupProductData(resources: Resources, page:Int, groupId: Int, search: String, sort: String, status: Int?,
+                            startDate:String, endDate:String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
         topAdsGetGroupProductDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.query_get_group_products_dashboard))
-        topAdsGetGroupProductDataUseCase.setParams(groupId, search, sort, status,startDate,endDate)
+        topAdsGetGroupProductDataUseCase.setParams(groupId, page,search, sort, status,startDate,endDate)
         topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
                 {
                     if (it.topadsDashboardGroupProducts.data.isEmpty()) {
                         onEmpty()
                     } else
-                        onSuccess(it.topadsDashboardGroupProducts.data)
+                        onSuccess(it.topadsDashboardGroupProducts)
                 },
                 {
                     it.printStackTrace()

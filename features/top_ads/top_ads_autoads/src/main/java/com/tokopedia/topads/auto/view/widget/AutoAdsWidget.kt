@@ -227,6 +227,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 this,
                 false
         )
+        baseLayout?.removeAllViews()
         baseLayout?.addView(view)
     }
 

@@ -24,7 +24,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
                                private var editDone: ((groupId: Int, groupName: String) -> Unit),
-                               private var onClickItem: ((id:Int,priceSpent:String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemViewModel>(view) {
+                               private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -45,6 +45,11 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                 it.isChecked = false
             }
             view.check_box.isChecked = it.isChecked
+            if (!view.check_box.isChecked) {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+            } else {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+            }
             when (it.data.groupStatusDesc) {
                 ACTIVE -> view.label.setLabelType(Label.GENERAL_DARK_GREEN)
                 TIDAK_AKTIF -> view.label.setLabelType(Label.GENERAL_LIGHT_ORANGE)
@@ -66,9 +71,9 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             view.item_card?.setOnClickListener { _ ->
                 if (!selectedMode) {
                     if (item.data.groupPriceDailyBar.isNotEmpty())
-                        onClickItem.invoke(item.data.groupId,item.data.groupPriceDailySpentFmt)
+                        onClickItem.invoke(item.data.groupId, item.data.groupPriceDailySpentFmt)
                     else
-                        onClickItem.invoke(item.data.groupId,NOT_VALID)
+                        onClickItem.invoke(item.data.groupId, NOT_VALID)
                 } else {
                     view.check_box.isChecked = !view.check_box.isChecked
                     it.isChecked = view.check_box.isChecked
@@ -88,7 +93,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         }
 
         view.img_menu.setOnClickListener {
-            val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.groupStatus,item.data.groupName)
+            val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.groupStatus, item.data.groupName)
             sheet.onEditAction = {
                 editDone.invoke(item.data.groupId, item.data.groupName)
             }

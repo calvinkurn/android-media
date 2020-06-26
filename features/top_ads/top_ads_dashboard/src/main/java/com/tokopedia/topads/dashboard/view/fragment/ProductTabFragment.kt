@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
@@ -23,6 +25,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -59,6 +62,11 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var totalProductCount = -1
     private var singleAction = false
     private var getDateCallBack: FetchDate? = null
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
+    private var totalCount = 0
+    private var totalPage = 0
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -104,8 +112,41 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_product_list), container, false)
+        val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_product_list), container, false)
+        recyclerView = view.findViewById(R.id.product_list)
+        setAdapter()
+        return view
     }
+
+    private fun setAdapter() {
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewScrollListener = onRecyclerViewListener()
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (currentPage < totalPage) {
+                    currentPage++
+                    fetchNextPage(currentPage)
+                }
+            }
+        }
+    }
+
+    private fun fetchNextPage(page:Int) {
+        loader.visibility = View.VISIBLE
+        val startDate = getDateCallBack?.getStartDate() ?: ""
+        val endDate = getDateCallBack?.getEndDate() ?: ""
+        viewModel.getGroupProductData(resources, page, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
+                ?: 0, searchBar?.searchBarTextField?.text.toString(),
+                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId()
+                , startDate, endDate, ::onProductFetch, ::onEmptyProduct)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -142,8 +183,6 @@ class ProductTabFragment : BaseDaggerFragment() {
         }
         setSearchBar()
         Utils.setSearchListener(context, view, ::fetchData)
-        product_list.adapter = adapter
-        product_list.layoutManager = LinearLayoutManager(context)
     }
 
     private fun startEditActivity() {
@@ -246,24 +285,21 @@ class ProductTabFragment : BaseDaggerFragment() {
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
 
-        viewModel.getGroupProductData(resources, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
+        viewModel.getGroupProductData(resources, 1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
                 ?: 0, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onProductFetch, ::onEmptyProduct)
     }
 
-    private fun onProductFetch(data: List<WithoutGroupDataItem>) {
+    private fun onProductFetch(response: NonGroupResponse.TopadsDashboardGroupProducts) {
+        totalCount = response.meta.page.total
+        totalPage = totalCount / response.meta.page.perPage
         loader.visibility = View.GONE
-        if (searchBar?.searchBarTextField?.text.toString().isEmpty()
-                && groupFilterSheet.getSelectedSortId() == ""
-                && groupFilterSheet.getSelectedStatusId() == null) {
-            totalProductCount = data.size
-        }
-        data.forEach {
+        response.data.forEach {
             adapter.items.add(ProductItemViewModel(it))
         }
         adapter.notifyDataSetChanged()
         setFilterCount()
-        (activity as TopAdsGroupDetailViewActivity).setProductCount(adapter.itemCount)
+        (activity as TopAdsGroupDetailViewActivity).setProductCount(totalCount)
     }
 
     private fun setFilterCount() {

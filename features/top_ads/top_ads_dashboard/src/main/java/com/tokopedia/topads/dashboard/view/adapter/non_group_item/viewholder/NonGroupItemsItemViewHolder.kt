@@ -15,6 +15,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
 
+
 /**
  * Created by Pika on 2/6/20.
  */
@@ -65,6 +66,12 @@ class NonGroupItemsItemViewHolder(val view: View,
             view.produk_terjual_count.text = it.data.statTotalSold
             setProgressBar(it.data)
             view.check_box.isChecked = item.isChecked
+
+            if (!view.check_box.isChecked) {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+            } else {
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+            }
         }
 
         view.item_card.setOnClickListener {

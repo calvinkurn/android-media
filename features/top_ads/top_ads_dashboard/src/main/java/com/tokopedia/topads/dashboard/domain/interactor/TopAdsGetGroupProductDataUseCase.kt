@@ -17,11 +17,12 @@ import javax.inject.Inject
 class TopAdsGetGroupProductDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<NonGroupResponse>(graphqlRepository) {
 
 
-    fun setParams(groupId: Int?, search: String, sort: String, status: Int?, startDate: String, endDate: String) {
+    fun setParams(groupId: Int?, page: Int,  search: String, sort: String, status: Int?, startDate: String, endDate: String) {
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_id] = userSession.shopId.toInt()
         queryMap[ParamObject.GROUP] = groupId
         queryMap[ParamObject.SORT] = sort
+        queryMap[ParamObject.PAGE] = page
         queryMap[ParamObject.START_DATE] = startDate
         queryMap[ParamObject.END_DATE] = endDate
         queryMap[ParamObject.KEYWORD] = search
