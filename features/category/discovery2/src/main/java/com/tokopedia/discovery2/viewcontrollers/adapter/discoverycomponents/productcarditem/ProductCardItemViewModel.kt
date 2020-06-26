@@ -38,7 +38,6 @@ class ProductCardItemViewModel(val application: Application, private val compone
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val stockWordData: StockWording = StockWording()
     private lateinit var context: Context
-    private var productData: DataItem? = null
     private val showLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val showNotifyToast: MutableLiveData<Triple<Boolean, String?, Int?>> = MutableLiveData()
@@ -61,7 +60,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
         super.onAttachToViewHolder()
         components.data?.let {
             if (!it.isNullOrEmpty()) {
-                productData = it[0]
+                dataItem.value = it[0]
             }
         }
     }
@@ -86,14 +85,11 @@ class ProductCardItemViewModel(val application: Application, private val compone
         return UserSession(application).isLoggedIn
     }
 
-    fun getDataItemValue(): LiveData<DataItem> {
-        dataItem.value = components.data?.get(0)
-        return dataItem
-    }
-
+    fun getDataItemValue() = dataItem
 
     fun chooseShopBadge(): Int {
-        return if (productData?.goldMerchant == true && productData?.officialStore == true) {
+        val productData = dataItem.value
+        return if (productData?.goldMerchant == true && productData.officialStore == true) {
             OFFICIAL_STORE
         } else if (productData?.goldMerchant == true) {
             GOLD_MERCHANT
@@ -135,46 +131,48 @@ class ProductCardItemViewModel(val application: Application, private val compone
         }
     }
 
-    fun getStockWord(dataItem: DataItem): StockWording {
+    fun getStockWord(): StockWording {
         var stockWordTitleColour = "#1e31353b"
-        var stockWordTitle = dataItem.stockWording?.title
+        var stockWordTitle = dataItem.value?.stockWording?.title
         var stockAvailableCount: String? = ""
 
-        if (!stockWordTitle.isNullOrEmpty()) {
-            stockWordData.title = stockWordTitle
-            stockWordData.color = dataItem.stockWording?.color
-                    ?: stockWordTitleColour
-        } else {
-            val campaignSoldCount = dataItem.campaignSoldCount
-            val threshold: Int? = dataItem.threshold.toIntOrZero()
-            val customStock: Int? = dataItem.customStock.toIntOrZero()
+        dataItem.value?.let { it ->
+            if (!stockWordTitle.isNullOrEmpty()) {
+                stockWordData.title = stockWordTitle
+                stockWordData.color = it.stockWording?.color
+                        ?: stockWordTitleColour
+            } else {
+                val campaignSoldCount = it.campaignSoldCount
+                val threshold: Int? = it.threshold.toIntOrZero()
+                val customStock: Int? = it.customStock.toIntOrZero()
 
-            if (campaignSoldCount != null && threshold != null && customStock != null) {
-                if (campaignSoldCount.toIntOrZero() > 0) {
-                    when {
-                        customStock == 0 -> {
-                            stockWordTitle = "Terjual habis"
+                if (campaignSoldCount != null && threshold != null && customStock != null) {
+                    if (campaignSoldCount.toIntOrZero() > 0) {
+                        when {
+                            customStock == 0 -> {
+                                stockWordTitle = application.getString(R.string.terjual_habis)
+                            }
+                            customStock == 1 -> {
+                                stockWordTitle = application.getString(R.string.stok_terakhir_beli_sekarang)
+                            }
+                            customStock <= threshold -> {
+                                stockWordTitle = application.getString(R.string.tersisa)
+                                stockAvailableCount = customStock.toString()
+                                stockWordTitleColour = "#ef144a"
+                            }
+                            else -> {
+                                stockWordTitle = application.getString(R.string.terjual)
+                                stockAvailableCount = campaignSoldCount.toString()
+                            }
                         }
-                        customStock == 1 -> {
-                            stockWordTitle = "Stok terakhir, beli sekarang!"
-                        }
-                        customStock <= threshold -> {
-                            stockWordTitle = "Tersisa"
-                            stockAvailableCount = customStock.toString()
-                            stockWordTitleColour = "#ef144a"
-                        }
-                        else -> {
-                            stockWordTitle = "Terjual"
-                            stockAvailableCount = campaignSoldCount.toString()
-                        }
+                        stockWordTitle += stockAvailableCount
+                    } else {
+                        stockWordTitle = application.getString(R.string.masih_tersedia)
                     }
-                    stockWordTitle += stockAvailableCount
-                } else {
-                    stockWordTitle = "Masih Tersedia"
                 }
+                stockWordData.title = stockWordTitle
+                stockWordData.color = stockWordTitleColour
             }
-            stockWordData.title = stockWordTitle
-            stockWordData.color = stockWordTitleColour
         }
         return stockWordData
     }
@@ -191,7 +189,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
     fun subscribeUser() {
         if (isUserLoggedIn()) {
-            productData?.let { productItemData ->
+            dataItem.value?.let { productItemData ->
 
                 launchCatchError(block = {
                     val campaignNotifyResponse = campaignNotifyUserCase.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
@@ -216,7 +214,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
     }
 
     fun sendTopAdsClick() {
-        productData?.let {
+        dataItem.value?.let {
             val topAdsClickUrl = it.topadsClickUrl
             if (it.isTopads == true && topAdsClickUrl != null) {
                 discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, topAdsClickUrl)
@@ -225,7 +223,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
     }
 
     fun sendTopAdsView() {
-        productData?.let {
+        dataItem.value?.let {
             val topAdsViewUrl = it.topadsViewUrl
             if (it.isTopads == true && topAdsViewUrl != null && !components.topAdsTrackingStatus) {
                 discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, topAdsViewUrl)

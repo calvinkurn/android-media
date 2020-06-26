@@ -103,7 +103,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewProductViewCount"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
@@ -355,7 +355,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="@id/imageProduct"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
@@ -366,7 +366,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/stockText"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"

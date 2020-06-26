@@ -28,6 +28,8 @@ import com.tokopedia.unifycomponents.Toaster
 
 private const val OFFICIAL_STORE = 1
 private const val GOLD_MERCHANT = 2
+private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
+private const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
 
 class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -89,7 +91,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
                     }
                 }
             })
-
             productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
                 updateNotifyMeState(status)
             })
@@ -116,15 +117,16 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productName.setTextAndCheckShow(dataItem.name)
             setSlashedPrice(dataItem.discountedPrice)
             textViewPrice.setTextAndCheckShow(dataItem.price)
+            showProductsStockHabis(dataItem.stock)
         } else {
             productName.setTextAndCheckShow(dataItem.title)
             setSlashedPrice(dataItem.price)
             textViewPrice.setTextAndCheckShow(dataItem.discountedPrice)
-            setStockProgress(dataItem)
+            setStockProgress(dataItem.stockSoldPercentage)
+            showSaleProductStockHabis(dataItem.stockSoldPercentage)
         }
         setLabelDiscount(dataItem.discountPercentage.toString())
         setRating(dataItem)
-//        setCashbackLabel(dataItem.cashback)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
         showShopBadgeUI(dataItem)
@@ -132,12 +134,20 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         setPDPView(dataItem)
         showInterestedView(dataItem)
         showNotifyMe(dataItem)
-        showStokHabis(dataItem.stock)
+
     }
 
-    private fun showStokHabis(productStok: String?) {
-        if (productStok.toIntOrZero() > 0) {
+    private fun showProductsStockHabis(productStock: String?) {
+        if (productStock.toIntOrZero() > 0) {
             stokHabisLabel.hide()
+        } else {
+            stokHabisLabel.show()
+        }
+    }
+
+    private fun showSaleProductStockHabis(productStock: String?) {
+        if (productStock.toIntOrZero() == 100) {
+            stokHabisLabel.show()
         } else {
             stokHabisLabel.hide()
         }
@@ -214,25 +224,31 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun setStockProgress(dataItem: DataItem) {
-        val stockSold = dataItem.stockSoldPercentage
-        stockPercentageProgress.hide()
-        stockTitle.hide()
-        if (!stockSold.isNullOrEmpty()) {
-            if (stockSold.toIntOrZero() < 100) {
+
+    private fun setStockProgress(stockSoldPercentage: String?) {
+        if (stockSoldPercentage?.toIntOrNull() == null || stockSoldPercentage.isEmpty()) {
+            hideStockProgressUI()
+        } else {
+            if (stockSoldPercentage.toIntOrZero() in (SOLD_PERCENTAGE_LOWER_LIMIT) until SOLD_PERCENTAGE_UPPER_LIMIT) {
+                stockPercentageProgress.setValue(stockSoldPercentage.toIntOrZero())
                 stockPercentageProgress.show()
-                stockPercentageProgress.setValue(stockSold.toIntOrZero())
-                showStockProgressTitle(dataItem)
+                showStockProgressTitle()
+            } else {
+                hideStockProgressUI()
             }
         }
     }
 
-
-    private fun showStockProgressTitle(dataItem: DataItem) {
-        val stockWording = productCardItemViewModel.getStockWord(dataItem)
+    private fun hideStockProgressUI() {
+        stockPercentageProgress.hide()
         stockTitle.hide()
-        if (!stockWording.title.isNullOrEmpty() && productCardName != ComponentNames.ProductCardRevampItem.componentName
-                && productCardName != ComponentNames.ProductCardCarouselItem.componentName) {
+    }
+
+    private fun showStockProgressTitle() {
+        val stockWording = productCardItemViewModel.getStockWord()
+        if (stockWording.title.isNullOrEmpty()) {
+            stockTitle.hide()
+        } else {
             stockTitle.setTextAndCheckShow(stockWording.title)
             stockTitle.setTextColor(Color.parseColor(stockWording.color))
         }
