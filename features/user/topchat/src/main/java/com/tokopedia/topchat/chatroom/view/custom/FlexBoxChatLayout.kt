@@ -138,18 +138,20 @@ class FlexBoxChatLayout : FrameLayout {
 
         totalWidth = paddingLeft + paddingRight + messageWidth
         totalHeight = paddingTop + paddingBottom + messageHeight
+        var isAddStatusHeight = false
 
         if (messageWidth + statusWidth <= availableWidth) {
             totalWidth += statusWidth
         } else if (lastLineWidth + statusWidth > availableWidth) {
             totalHeight += statusHeight
+            isAddStatusHeight = true
         }
 
         if (infoWidth > 0 && info?.isVisible == true) {
             totalWidth += infoWidth
         }
 
-        if (infoHeight > 0 && info?.isVisible == true) {
+        if (infoHeight > 0 && info?.isVisible == true && !isAddStatusHeight) {
             totalHeight += infoHeight
         }
 
