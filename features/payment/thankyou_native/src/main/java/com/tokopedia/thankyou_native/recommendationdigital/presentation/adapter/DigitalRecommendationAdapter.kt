@@ -2,12 +2,12 @@ package com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.thankyou_native.recommendation.presentation.adapter.viewholder.MarketPlaceRecommendationViewHolder
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendationWidget
 
-class DigitalRecommendationAdapter(val items: List<RecommendationsItem>, val onItemBindListener: DigitalRecommendationViewListener)
+class DigitalRecommendationAdapter(val items: List<RecommendationsItem>,
+                                   private val onItemBindListener: DigitalRecommendationViewListener)
     : RecyclerView.Adapter<DigitalRecommendationAdapter.DigitalRecommendationViewHolder>() {
 
     override fun onBindViewHolder(viewHolder: DigitalRecommendationViewHolder, position: Int) {
@@ -29,10 +29,8 @@ class DigitalRecommendationAdapter(val items: List<RecommendationsItem>, val onI
 
     override fun onViewAttachedToWindow(holderDigital: DigitalRecommendationViewHolder) {
         super.onViewAttachedToWindow(holderDigital)
-        items?.let {
-
-          onItemBindListener.onDigitalProductImpression(items.get(holderDigital.adapterPosition),position = holderDigital.adapterPosition)
-        }
+        onItemBindListener.onDigitalProductImpression(items.get(holderDigital.adapterPosition),
+                position = holderDigital.adapterPosition)
     }
 
 
