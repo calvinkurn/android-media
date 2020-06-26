@@ -162,8 +162,6 @@ public interface ApplinkConst {
     String SELLER_INFO = "tokopedia://sellerinfo";
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
-    String SELLER_SEARCH = "tokopedia://seller-search";
-
     String TC_LANDING = "tokopedia://tc-landing";
 
     String PLAY_NOTIFICATION_VIDEO = "tokopedia://play-notif-video";
@@ -387,6 +385,7 @@ public interface ApplinkConst {
         String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
         String VOUCHER_DETAIL = "sellerapp://voucher-detail";
         String CREATE_VOUCHER = "sellerapp://create-voucher";
+        String SELLER_SEARCH = "sellerapp://seller-search";
     }
 
     interface Query {

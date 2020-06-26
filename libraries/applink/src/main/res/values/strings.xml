@@ -54,4 +54,7 @@
     <!-- Voucher Creation -->
     <string name="title_voucher_creation">Voucher Creation</string>
 
+    <!-- Seller Search -->
+    <string name="title_global_search_seller">Seller Search</string>
+
 </resources>

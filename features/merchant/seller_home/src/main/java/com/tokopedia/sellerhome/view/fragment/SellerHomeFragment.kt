@@ -175,7 +175,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
             NavigationTracking.sendClickNotificationEvent()
         } else if(item.itemId == SEARCH_MENU_ID) {
-            RouteManager.route(requireContext(), ApplinkConst.SELLER_SEARCH)
+            RouteManager.route(requireContext(), ApplinkConst.SellerApp.SELLER_SEARCH)
             NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
         }
         return super.onOptionsItemSelected(item)
