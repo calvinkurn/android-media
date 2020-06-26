@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.data.checkout.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.entertainment.pdp.data.Form
+import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.checkout.*
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMapResponse
@@ -24,16 +25,16 @@ object EventMetaDataMapper {
     }
 
 
-    fun getCheckoutParam(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData): CheckoutGeneralV2Params {
+    fun getCheckoutParam(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): CheckoutGeneralV2Params {
         val gson = Gson()
         val checkoutGeneralV2Params = CheckoutGeneralV2Params()
-        val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(metaDataResponse)),productDetailData.checkoutDataType)
+        val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(metaDataResponse,productDetailData,packageV3)),productDetailData.checkoutDataType)
         checkoutGeneralV2Params.carts.businessType = productDetailData.checkoutBusinessType
         checkoutGeneralV2Params.carts.cartInfo.add(0, cartInfo)
         return checkoutGeneralV2Params
     }
 
-    private fun mapToIntMetaData(metaDataResponse: MetaDataResponse): EventMetaDataCheckout {
+    private fun mapToIntMetaData(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): EventMetaDataCheckout {
         metaDataResponse.apply {
             return EventMetaDataCheckout(
                     categoryName = categoryName,
@@ -45,12 +46,12 @@ object EventMetaDataMapper {
                     itemIds = convertStringListtoIntList(itemIds),
                     productNames = productNames,
                     productIds = convertStringListtoIntList(productIds),
-                    itemMap = mapToItemMapCheckout(itemMap)
+                    itemMap = mapToItemMapCheckout(itemMap,productDetailData,packageV3)
             )
         }
     }
 
-    private fun mapToItemMapCheckout(itemMapResponses: List<ItemMapResponse>): List<ItemMapCheckout> {
+    private fun mapToItemMapCheckout(itemMapResponses: List<ItemMapResponse>, productDetailData: ProductDetailData, packageV3: PackageV3): List<ItemMapCheckout> {
         return itemMapResponses.map {
             ItemMapCheckout(
                     basePrice = it.basePrice.toInt(),
@@ -68,18 +69,18 @@ object EventMetaDataMapper {
                     invoiceId = it.invoiceId.toInt(),
                     invoiceItemId = it.invoiceItemId.toInt(),
                     invoiceStatus = it.invoiceStatus,
-                    locationName = it.locationName,
-                    locationDesc = it.locationDesc,
+                    locationName = productDetailData.outlets.firstOrNull().let { it?.district ?: "" },
+                    locationDesc = productDetailData.outlets.firstOrNull().let { it?.name ?: "" },
                     mobile = it.mobile,
                     name = it.name,
                     orderTraceId = it.orderTraceId,
-                    packageId = it.packageId.toInt(),
-                    packageName = it.packageName,
+                    packageId = packageV3.id.toInt(),
+                    packageName = packageV3.name,
                     paymentType = it.paymentType,
                     price = it.price,
                     productAppUrl = it.productAppUrl,
                     productId = it.productId.toInt(),
-                    productImage = it.productImage,
+                    productImage = productDetailData.thumbnailApp,
                     productName = it.productName,
                     providerInvoiceCode = it.providerInvoiceCode,
                     providerPackageId = it.providerPackageId,

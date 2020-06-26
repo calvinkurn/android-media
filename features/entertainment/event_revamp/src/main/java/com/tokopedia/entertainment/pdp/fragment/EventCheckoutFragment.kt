@@ -266,7 +266,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         if (email.isEmpty()) email = userSessionInterface.email
                         metadata = getPassengerMetaData(metadata, forms)
                         eventCheckoutViewModel.checkoutEvent(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_event_checkout_v2),
-                                getCheckoutParam(metadata,productDetailData))
+                                getCheckoutParam(metadata,productDetailData, getPackage(productDetailData,packageID)))
                     }
                 }
             }
