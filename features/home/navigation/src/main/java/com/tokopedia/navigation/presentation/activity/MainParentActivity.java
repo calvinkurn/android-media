@@ -409,7 +409,7 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.isLoggedIn()) {
             menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), R.raw.bottom_nav_account,   R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
         } else {
-            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), null,   null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
+            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun_non_login), null,   null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
         }
         bottomNavigation.setMenu(menu);
         showSelectedPage();
