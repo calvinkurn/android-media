@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -26,11 +27,12 @@ import com.tokopedia.review.feature.details.di.DaggerReviewDetailComponent
 import com.tokopedia.review.feature.details.di.ReviewDetailComponent
 import com.tokopedia.review.feature.details.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
 import javax.inject.Inject
 
-class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComponent> {
+class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickedListener {
 
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
@@ -84,6 +86,10 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         removeObservers(viewModel.reviewDetails)
     }
 
+    override fun onAttachedImagesClicked(productName: String, attachedImages: List<String>, position: Int) {
+        goToImagePreview(productName, attachedImages, position)
+    }
+
     private fun getDataFromArguments() {
         arguments?.let {
             viewModel.setFeedbackAndReputationId(it.getInt(KEY_FEEDBACK_ID), it.getInt(KEY_REPUTATION_ID))
@@ -98,7 +104,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                     hideLoading()
                     with(it.data) {
                         setProduct(product)
-                        setReview(review)
+                        setReview(review, product.productName)
                         setResponse(response)
                         if(status.editable) {
                             addEditHeaderIcon()
@@ -123,7 +129,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         }
     }
 
-    private fun setReview(review: ProductrevGetReviewDetailReview) {
+    private fun setReview(review: ProductrevGetReviewDetailReview, productName: String) {
         with(review) {
             reviewDetailStars.apply {
                 setImageResource(getReviewStar(rating))
@@ -136,7 +142,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
             }
             reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
             reviewDetailContent.setTextAndCheckShow(reviewText)
-            reviewDetailAttachedImages.setImages(attachments)
+            reviewDetailAttachedImages.setImages(attachments, productName, this@ReviewDetailFragment)
         }
     }
 
@@ -196,5 +202,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     private fun goToSharing() {
 
+    }
+
+    private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
+        startActivity(context?.let { ImagePreviewSliderActivity.getCallingIntent(it, productName, attachedImages, attachedImages, position) })
     }
 }

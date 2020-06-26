@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder
 
+import android.os.Handler
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
@@ -63,7 +64,8 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     private fun setListener(reputationId: Int, productId: Int) {
         itemView.setOnClickListener {
-            reviewPendingItemListener.onCardClicked(reputationId, productId)
+            itemView.reviewPendingStars.renderInitialReviewWithData(5)
+
         }
     }
 
@@ -72,7 +74,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             resetStars()
             setListener(object : AnimatedReputationView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
-                    reviewPendingItemListener.onStarsClicked(reputationId, productId, position)
+                    Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, position)}, 500)
                 }
             })
             show()

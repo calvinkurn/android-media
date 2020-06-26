@@ -10,11 +10,12 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.presentation.adapter.ReviewAttachedImagesAdapter
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import kotlinx.android.synthetic.main.item_review_history.view.*
 import kotlinx.android.synthetic.main.widget_review_attached_images.view.*
 
-class ReviewHistoryViewHolder(view: View) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
+class ReviewHistoryViewHolder(view: View, private val reviewAttachedImagesClickedListener: ReviewAttachedImagesClickedListener) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_review_history
@@ -28,7 +29,7 @@ class ReviewHistoryViewHolder(view: View) : AbstractViewHolder<ReviewHistoryUiMo
             }
             with(review) {
                 showDescription(reviewText)
-                showAttachedImages(attachments)
+                showAttachedImages(attachments, product.productName)
                 setupStarRatings(rating)
             }
             showDate(timestamp.createTimeFormatted)
@@ -51,11 +52,11 @@ class ReviewHistoryViewHolder(view: View) : AbstractViewHolder<ReviewHistoryUiMo
         }
     }
 
-    private fun showAttachedImages(attachedImages: List<String>) {
+    private fun showAttachedImages(attachedImages: List<String>, productName: String) {
         if(attachedImages.isEmpty()) {
             return
         }
-        itemView.reviewHistoryAttachedImages.setImages(attachedImages)
+        itemView.reviewHistoryAttachedImages.setImages(attachedImages, productName, reviewAttachedImagesClickedListener)
     }
 
     private fun setupStarRatings(rating: Int) {

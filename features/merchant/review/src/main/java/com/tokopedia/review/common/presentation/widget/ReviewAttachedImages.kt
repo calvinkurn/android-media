@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.adapter.ReviewAttachedImagesAdapter
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_review_attached_images.view.*
 
@@ -27,8 +28,8 @@ class ReviewAttachedImages : BaseCustomView {
         View.inflate(context, R.layout.widget_review_attached_images, this)
     }
 
-    fun setImages(attachedImages: List<String>) {
-        val attachedImageAdapter = ReviewAttachedImagesAdapter()
+    fun setImages(attachedImages: List<String>, productName: String, reviewAttachedImagesClickedListener: ReviewAttachedImagesClickedListener) {
+        val attachedImageAdapter = ReviewAttachedImagesAdapter(reviewAttachedImagesClickedListener, productName)
         this.reviewAttachedImages.apply {
             adapter = attachedImageAdapter
             layoutManager = LinearLayoutManager(context)

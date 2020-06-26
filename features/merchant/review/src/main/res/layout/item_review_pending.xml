@@ -25,22 +25,24 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/layout_lvl1"
-            android:layout_marginRight="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl1"
             android:visibility="gone"
+            android:textColor="@color/Neutral_N700_96"
             app:typographyWeight="bold"
             app:typographyType="body_2"
-            app:layout_constraintEnd_toStartOf="@id/reviewPendingDate"
             app:layout_constraintStart_toEndOf="@id/reviewPendingProductImage"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reviewPendingDate" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reviewPendingProductVariant"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl1"
             android:visibility="gone"
+            android:textColor="@color/Neutral_N700_96"
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"
@@ -51,13 +53,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:textColor="@color/Neutral_N700_68"
             android:visibility="gone"
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/reviewPendingProductImage" />
 
         <com.tokopedia.reputation.common.view.AnimatedReputationView
             android:id="@+id/reviewPendingStars"

@@ -26,7 +26,7 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
     private var reputationId: Int = 0
 
     fun getReviewDetails() {
-        _reviewDetails.value = LoadingView
+        _reviewDetails.value = LoadingView()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io()) {
                 productrevGetReviewDetailUseCase.setRequestParams(feedbackId, reputationId)

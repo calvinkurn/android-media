@@ -120,13 +120,15 @@
     <string name="review_pending_network_error_go_to_settings_button">Ke Pengaturan</string>
     <string name="review_pending_no_product_empty_title">Belum ada barang untuk kamu ulas</string>
     <string name="review_pending_no_product_empty_content">Saatnya kamu belanja dan kasih ulasanmu ke jutaan orang!</string>
-    <string name="review_pending_no_product_search_result_title">Oops, produk nggak ditemukan</string>
-    <string name="review_pending_no_product_search_content">Cari barang yang sudah kamu beli dengan kata kunci lain, lalu kasih ulasan sekarang.</string>
     <string name="review_pending_variant">Varian: %s</string>
 
     <string name="review_history_tab_title">Riwayat</string>
     <string name="review_history_search_bar_hint">Cari produk di sini</string>
     <string name="review_history_reply_exists">Ada 1 balasan</string>
+    <string name="review_history_no_product_search_result_title">Oops, barang nggak ditemukan</string>
+    <string name="review_history_no_product_search_content">Cari barang yang sudah kamu ulas dengan kata kunci lain.</string>
+    <string name="review_history_no_review_history_title">Belum ada riwayat ulasan</string>
+    <string name="review_history_no_review_history_content">Saatnya kamu belanja dan kasih ulasanmu ke jutaan orang!</string>
 
     <string name="review_detail_name">Sebagai &lt;b>%s&lt;/b></string>
     <string name="review_detail_anonymous">Sebagai &lt;b>Anonim&lt;/b></string>

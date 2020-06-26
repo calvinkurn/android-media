@@ -25,7 +25,7 @@ class ReviewHistoryViewModel @Inject constructor(
 
     fun getReviewData(page: Int, searchQuery: String, isRefresh: Boolean = false) {
         if(isRefresh) {
-            _reviewList.value = LoadingView
+            _reviewList.value = LoadingView()
         }
         launchCatchError(block = {
             val response = withContext(dispatchers.io()) {

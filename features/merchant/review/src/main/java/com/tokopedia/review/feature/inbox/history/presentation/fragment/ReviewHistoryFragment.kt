@@ -4,23 +4,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.data.Fail
+import com.tokopedia.review.common.data.LoadingView
+import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.history.di.DaggerReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.di.ReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapterTypeFactory
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_review_history.*
+import kotlinx.android.synthetic.main.partial_review_empty.view.*
 import javax.inject.Inject
 
-class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory>(), HasComponent<ReviewHistoryComponent> {
+class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory>(), HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickedListener {
 
     companion object {
         fun createNewInstance() : ReviewHistoryFragment {
@@ -48,8 +60,13 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         return inflater.inflate(R.layout.fragment_review_history, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeReviewList()
+    }
+
     override fun getAdapterTypeFactory(): ReviewHistoryAdapterTypeFactory {
-        return ReviewHistoryAdapterTypeFactory()
+        return ReviewHistoryAdapterTypeFactory(this)
     }
 
     override fun getScreenName(): String {
@@ -61,7 +78,9 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun onItemClicked(t: ReviewHistoryUiModel?) {
-        // No Op
+        t?.let {
+            goToReviewDetails(it.productrevFeedbackHistory.review.feedbackId, it.productrevFeedbackHistory.reputationId)
+        }
     }
 
     override fun loadData(page: Int) {
@@ -81,7 +100,88 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         return reviewHistorySwipeRefresh
     }
 
+    override fun onAttachedImagesClicked(productName: String, attachedImages: List<String>, position: Int) {
+        goToImagePreview(productName, attachedImages, position)
+    }
 
+    private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit) {
+        view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
+    }
+
+    private fun observeReviewList() {
+        viewModel.reviewList.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty() && it.search.isNotEmpty()) {
+                        showEmptySearchResult()
+                    }
+                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty()) {
+                        showNoProductEmpty()
+                    }
+                }
+                is LoadingView -> {
+                    showPageLoading()
+                    hideEmptyState()
+                    hideError()
+                }
+                is Fail -> {
+                    showError()
+                }
+            }
+        })
+    }
+
+    private fun goToReviewDetails(feedbackId: Int, reputationId: Int) {
+
+    }
+
+    private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
+        startActivity(context?.let { ImagePreviewSliderActivity.getCallingIntent(it, productName, attachedImages, attachedImages, position) })
+    }
+
+    private fun showError() {
+        reviewHistoryConnectionError.show()
+    }
+
+    private fun hideError() {
+        reviewHistoryConnectionError.hide()
+    }
+
+    private fun showPageLoading() {
+
+    }
+
+    private fun hidePageLoading() {
+
+    }
+
+    private fun renderReviewData(reviewData: List<ReviewHistoryUiModel>, hasNextPage: Boolean) {
+
+    }
+
+    private fun showEmptySearchResult() {
+        reviewHistoryEmpty.apply {
+            reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE)
+            reviewEmptyTitle.text = getString(R.string.review_history_no_review_history_title)
+            reviewEmptySubtitle.text = getString(R.string.review_history_no_product_search_content)
+            show()
+        }
+
+    }
+
+    private fun showNoProductEmpty() {
+        reviewHistoryEmpty.apply {
+            reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
+            reviewEmptyTitle.text = getString(R.string.review_history_no_product_search_result_title)
+            reviewEmptySubtitle.text = getString(R.string.review_history_no_product_search_content)
+            show()
+        }
+
+    }
+
+    private fun hideEmptyState() {
+        reviewHistoryEmpty.hide()
+    }
 
 
 }

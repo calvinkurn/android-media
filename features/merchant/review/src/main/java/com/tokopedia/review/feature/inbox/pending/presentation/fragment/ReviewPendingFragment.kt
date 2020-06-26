@@ -75,11 +75,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         getPendingReviewData(page)
     }
 
-    override fun onCardClicked(reputationId: Int, productId: Int) {
-        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.userId)
-        goToCreateReviewActivity(reputationId, productId, null)
-    }
-
     override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int) {
         ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.userId)
         goToCreateReviewActivity(reputationId, productId, rating)
@@ -198,6 +193,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             when(it) {
                 is Success -> {
                     hideFullPageLoading()
+                    hideError()
                     if(it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         showEmptyState()
                     } else {
@@ -228,20 +224,17 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun renderReviewData(reviewData: List<ReviewPendingUiModel>, hasNextPage: Boolean) {
         hideEmptyState()
-        hideError()
         showList()
         renderList(reviewData, hasNextPage)
     }
 
-    private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int?) {
-        val uri = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
-        val updatedUri = rating?.let {
-            uri.buildUpon()
-                    .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
-                    .build()
-                    .toString()
-        }
-        RouteManager.route(context, updatedUri ?: uri.toString())
+    private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int) {
+        RouteManager.route(context,
+                Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
+                        .buildUpon()
+                        .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
+                        .build()
+                        .toString())
     }
 
     private fun goToSettings() {
