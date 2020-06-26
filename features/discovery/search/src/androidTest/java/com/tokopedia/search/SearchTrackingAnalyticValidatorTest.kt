@@ -1,7 +1,6 @@
 package com.tokopedia.search
 
 import android.app.Activity
-import android.app.Instrumentation
 import android.app.Instrumentation.ActivityResult
 import android.content.Intent
 import android.net.Uri
@@ -29,7 +28,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
