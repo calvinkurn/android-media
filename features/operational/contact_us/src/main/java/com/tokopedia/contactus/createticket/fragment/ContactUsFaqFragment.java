@@ -24,7 +24,7 @@ import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.contactus.createticket.utils.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;

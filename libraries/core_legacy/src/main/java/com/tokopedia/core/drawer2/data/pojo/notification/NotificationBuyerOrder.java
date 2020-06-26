@@ -24,10 +24,6 @@ public class NotificationBuyerOrder {
         return confirmed;
     }
 
-    public void setConfirmed(int confirmed) {
-        this.confirmed = confirmed;
-    }
-
     public int getProcessed() {
         return processed;
     }
