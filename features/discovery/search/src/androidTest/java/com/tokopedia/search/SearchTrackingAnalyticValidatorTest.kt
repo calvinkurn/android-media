@@ -12,11 +12,14 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.Utils
 import com.tokopedia.analyticsdebugger.validator.core.*
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
@@ -33,7 +36,7 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_pr
 internal class SearchTrackingAnalyticValidatorTest {
 
     @get:Rule
-    var activityRule = ActivityTestRuleIntent(createIntent("samsung"), SearchActivity::class.java, false)
+    var activityRule = ActivityTestRule(SearchActivity::class.java, false, false)
 
     private fun createIntent(query: String): Intent {
         return Intent(InstrumentationRegistry.getInstrumentation().targetContext, SearchActivity::class.java).also {
@@ -49,6 +52,14 @@ internal class SearchTrackingAnalyticValidatorTest {
 
     @Before
     fun setUp() {
+        val firebase = FirebaseRemoteConfigImpl(context)
+        firebase.setString(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, "true")
+        firebase.setString(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, "false")
+        firebase.setString(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, "true")
+        firebase.setString(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, "true")
+
+        activityRule.launchActivity(createIntent("samsung"))
+
         recyclerView = activityRule.activity.findViewById(recyclerViewId)
         recyclerViewIdlingResource = RecyclerViewIdlingResource(recyclerView)
 

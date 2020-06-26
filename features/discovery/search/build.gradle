@@ -27,10 +27,8 @@ android {
     }
 
     defaultConfig {
-        defaultConfig {
-            multiDexEnabled true
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
     testOptions {
