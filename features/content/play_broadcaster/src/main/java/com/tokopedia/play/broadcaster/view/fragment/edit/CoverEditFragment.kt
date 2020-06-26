@@ -84,7 +84,8 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
     private fun setupView(view: View) {
         dataStoreViewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
 
-        getImagePickerHelper().show()
+        getImagePickerHelper()
+                .show()
     }
 
     private fun getImagePickerHelper(): CoverImagePickerHelper {

@@ -29,12 +29,15 @@ import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
 import com.tokopedia.play.broadcaster.util.exhaustive
 import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
 import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
+import com.tokopedia.play.broadcaster.view.state.Changeable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.state.NotChangeable
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -74,10 +77,17 @@ class PlayCoverSetupFragment @Inject constructor(
 
     override fun onInterceptBackPressed(): Boolean {
         val state = viewModel.cropState
+        val coverChangeState = viewModel.coverChangeState()
         return if (state is CoverSetupState.Cropping) {
             onChangeCoverFromCropping(state.coverSource)
             true
-        } else false
+        } else if (coverChangeState is NotChangeable) {
+            requireView().showToaster(
+                    message = coverChangeState.reason.localizedMessage,
+                    type = Toaster.TYPE_NORMAL
+            )
+            true
+        }else false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -170,15 +180,11 @@ class PlayCoverSetupFragment @Inject constructor(
                 listener = object : CoverSetupPartialView.Listener {
                     override fun onImageAreaClicked(view: CoverSetupPartialView) {
                         viewModel.saveCover(coverSetupView.coverTitle)
-                        openCoverChooser()
+                        openCoverChooser(CoverSource.None)
                     }
 
                     override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
-                        val coverUri = viewModel.coverUri
-                        if (coverUri != null && viewModel.isValidCoverTitle(coverTitle)) {
-                            if (isGalleryPermissionGranted()) viewModel.uploadCover(bottomSheetCoordinator.channelId, coverTitle)
-                            else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
-                        }
+                        shouldUploadCover(coverTitle)
                     }
                 }
         )
@@ -209,7 +215,6 @@ class PlayCoverSetupFragment @Inject constructor(
                         }
 
                         viewModel.setCroppedCover(croppedUri)
-                        if (isEditCoverMode) finishSetup()
                     }
                 } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
@@ -232,9 +237,19 @@ class PlayCoverSetupFragment @Inject constructor(
         })
     }
 
-    private fun openCoverChooser() {
-        getImagePickerHelper()
-                .show(CoverSource.None)
+    private fun openCoverChooser(coverSource: CoverSource) {
+        when (val coverChangeState = viewModel.coverChangeState()) {
+            Changeable -> {
+                getImagePickerHelper()
+                        .show(coverSource)
+            }
+            is NotChangeable -> {
+                requireView().showToaster(
+                        message = coverChangeState.reason.localizedMessage,
+                        type = Toaster.TYPE_NORMAL
+                )
+            }
+        }
     }
 
     private fun showCoverCropLayout(coverImageUri: Uri?) {
@@ -259,9 +274,17 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private fun onChangeCoverFromCropping(source: CoverSource) {
         if (mListener?.onCancelCropping(source) == false) {
-            onBackFromCropping(source)
+            openCoverChooser(source)
             showInitCoverLayout(null)
             removeCover()
+        }
+    }
+
+    private fun shouldUploadCover(coverTitle: String) {
+        val coverUri = viewModel.coverUri
+        if (coverUri != null && viewModel.isValidCoverTitle(coverTitle)) {
+            if (isGalleryPermissionGranted()) viewModel.uploadCover(bottomSheetCoordinator.channelId, coverTitle)
+            else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
         }
     }
 
@@ -305,7 +328,7 @@ class PlayCoverSetupFragment @Inject constructor(
     )
 
     private fun onCoverChooserPermissionResult(grantResults: IntArray) {
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) openCoverChooser()
+        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) openCoverChooser(CoverSource.None)
         else {
             Toaster.make(requireView(), "Cover Chooser Permission Failed")
         }
@@ -322,23 +345,6 @@ class PlayCoverSetupFragment @Inject constructor(
         if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) coverSetupView.clickNext()
         else {
             Toaster.make(requireView(), "Upload Permission Failed")
-        }
-    }
-
-    private fun onBackFromCropping(source: CoverSource): Boolean {
-        return when (source) {
-            CoverSource.Gallery -> {
-                openGalleryPage()
-                true
-            }
-            CoverSource.Camera -> {
-                openCameraPage()
-                true
-            }
-            else -> {
-                openCoverChooser()
-                true
-            }
         }
     }
 
@@ -392,7 +398,10 @@ class PlayCoverSetupFragment @Inject constructor(
             when (it) {
                 CoverSetupState.Blank -> showInitCoverLayout(null)
                 is CoverSetupState.Cropping -> handleCroppingState(it)
-                is CoverSetupState.Cropped -> showInitCoverLayout(it.coverImage)
+                is CoverSetupState.Cropped -> {
+                    if (isEditCoverMode) shouldUploadCover(coverTitle = viewModel.savedCoverTitle)
+                    else showInitCoverLayout(it.coverImage)
+                }
             }.exhaustive
         })
     }
@@ -406,15 +415,20 @@ class PlayCoverSetupFragment @Inject constructor(
     private fun observeUploadCover() {
         viewModel.observableUploadCoverEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
-                NetworkResult.Loading -> coverSetupView.setLoading(true)
+                NetworkResult.Loading -> {
+                    coverSetupView.setLoading(true)
+                    coverCropView.setLoading(true)
+                }
                 is NetworkResult.Fail -> {
                     coverSetupView.setLoading(false)
+                    coverCropView.setLoading(false)
                     Toaster.make(requireView(), it.error.localizedMessage)
                 }
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
                     if (data != null) {
                         coverSetupView.setLoading(false)
+                        coverCropView.setLoading(false)
                         finishSetup()
                     }
                 }
