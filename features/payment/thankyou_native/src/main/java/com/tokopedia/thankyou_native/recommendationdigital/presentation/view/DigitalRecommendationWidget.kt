@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
 import kotlinx.android.synthetic.main.thank_digital_recommendation_item.view.*
@@ -45,9 +47,9 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     open fun renderProduct(element: RecommendationsItem) {
         if (element.categoryName.isNullOrBlank()) {
-            thanks_dh_rec_name.visibility = View.GONE
+            thanks_dh_rec_name.gone()
         } else {
-            thanks_dh_rec_name.visibility = View.VISIBLE
+            thanks_dh_rec_name.visible()
             thanks_dh_rec_name.text = element.categoryName.capitalize().trim()
         }
     }
@@ -55,13 +57,13 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     open fun renderTitle(element: RecommendationsItem) {
         if (element.productName.isNullOrBlank()) {
             if (element.description.isNullOrBlank()) {
-                thanks_dg_rec_text_sub.visibility = View.GONE
+                thanks_dg_rec_text_sub.gone()
             } else {
-                thanks_dg_rec_text_sub.visibility = View.VISIBLE
+                thanks_dg_rec_text_sub.visible()
                 thanks_dg_rec_text_sub.text = element.description.trim()
             }
         } else {
-            thanks_dg_rec_text_sub.visibility = View.VISIBLE
+            thanks_dg_rec_text_sub.visible()
             thanks_dg_rec_text_sub.text = element.productName.trim()
         }
 
@@ -69,9 +71,9 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     open fun renderTitle(productName: String?) {
         if (productName.isNullOrBlank()) {
-            thanks_dg_rec_text_sub.visibility = View.GONE
+            thanks_dg_rec_text_sub.gone()
         } else {
-            thanks_dg_rec_text_sub.visibility = View.VISIBLE
+            thanks_dg_rec_text_sub.visible()
             thanks_dg_rec_text_sub.text = productName.trim()
         }
 
@@ -79,9 +81,9 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     open fun renderSubtitle(element: RecommendationsItem) {
         if (element.clientNumber.isNullOrBlank()) {
-            thanks_dg_rec_text_desc.visibility = View.GONE
+            thanks_dg_rec_text_desc.gone()
         } else {
-            thanks_dg_rec_text_desc.visibility = View.VISIBLE
+            thanks_dg_rec_text_desc.visible()
             thanks_dg_rec_text_desc.text = element.clientNumber.trim()
         }
 

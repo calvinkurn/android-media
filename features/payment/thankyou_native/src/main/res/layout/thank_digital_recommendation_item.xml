@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/thanks_digital_recom_bg"
-        android:minHeight="@dimen/layout_lvl9">
+        android:minHeight="@dimen/layout_lvl8">
 
         <ImageView
             android:id="@+id/thanks_dg_rec_image"
