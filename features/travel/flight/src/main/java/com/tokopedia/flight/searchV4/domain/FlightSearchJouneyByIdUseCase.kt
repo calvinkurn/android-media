@@ -2,13 +2,13 @@ package com.tokopedia.flight.searchV4.domain
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.flight.search.data.api.single.response.Amenity
-import com.tokopedia.flight.search.data.api.single.response.Info
-import com.tokopedia.flight.search.data.api.single.response.Route
-import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity
-import com.tokopedia.flight.search.data.db.JourneyAndRoutes
-import com.tokopedia.flight.search.presentation.model.FlightFareModel
 import com.tokopedia.flight.searchV4.data.FlightSearchRepository
+import com.tokopedia.flight.searchV4.data.cache.db.JourneyAndRoutes
+import com.tokopedia.flight.searchV4.data.cloud.single.Amenity
+import com.tokopedia.flight.searchV4.data.cloud.single.Info
+import com.tokopedia.flight.searchV4.data.cloud.single.Route
+import com.tokopedia.flight.searchV4.data.cloud.single.StopDetailEntity
+import com.tokopedia.flight.searchV4.presentation.model.FlightFareModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import javax.inject.Inject
 

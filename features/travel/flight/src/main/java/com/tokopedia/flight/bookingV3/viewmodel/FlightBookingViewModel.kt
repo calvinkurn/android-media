@@ -18,8 +18,8 @@ import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -651,9 +651,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     private fun createAddToCartParam(idempotencyKey: String): FlightAddToCartParam {
         val addToCartParam = FlightAddToCartParam()
 
-        addToCartParam.flight.adult = flightBookingParam.searchParam.flightPassengerViewModel.adult
-        addToCartParam.flight.child = flightBookingParam.searchParam.flightPassengerViewModel.children
-        addToCartParam.flight.infant = flightBookingParam.searchParam.flightPassengerViewModel.infant
+        addToCartParam.flight.adult = flightBookingParam.searchParam.flightPassengerModel.adult
+        addToCartParam.flight.child = flightBookingParam.searchParam.flightPassengerModel.children
+        addToCartParam.flight.infant = flightBookingParam.searchParam.flightPassengerModel.infant
         addToCartParam.flight.flightClass = flightBookingParam.searchParam.flightClass.id
         addToCartParam.idempotencyKey = idempotencyKey
         addToCartParam.did = 4

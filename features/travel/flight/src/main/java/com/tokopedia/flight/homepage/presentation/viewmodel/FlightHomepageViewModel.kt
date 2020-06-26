@@ -20,8 +20,8 @@ import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
-import com.tokopedia.flight.search.domain.FlightDeleteAllFlightSearchDataUseCase
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.searchV4.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,7 +38,7 @@ class FlightHomepageViewModel @Inject constructor(
         private val travelTickerUseCase: TravelTickerCoroutineUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
         private val dashboardCache: FlightDashboardCache,
-        private val deleteAllFlightSearchDataUseCase: FlightDeleteAllFlightSearchDataUseCase,
+        private val deleteAllFlightSearchDataUseCase: FlightSearchDeleteAllDataUseCase,
         private val passengerValidator: FlightSelectPassengerValidator,
         private val userSessionInterface: UserSessionInterface,
         private val dispatcherProvider: TravelDispatcherProvider)
@@ -243,7 +243,7 @@ class FlightHomepageViewModel @Inject constructor(
     fun onSearchTicket(flightSearchData: FlightSearchPassDataModel) {
         launch(dispatcherProvider.ui()) {
             flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData))
-            deleteAllFlightSearchDataUseCase.executeCoroutine()
+            deleteAllFlightSearchDataUseCase.execute()
         }
     }
 
@@ -267,7 +267,7 @@ class FlightHomepageViewModel @Inject constructor(
         dashboardModel.departureAirport = flightSearchData.departureAirport
         dashboardModel.arrivalAirport = flightSearchData.arrivalAirport
         dashboardModel.isOneWay = flightSearchData.isOneWay
-        dashboardModel.flightPassengerViewModel = flightSearchData.flightPassengerViewModel
+        dashboardModel.flightPassengerViewModel = flightSearchData.flightPassengerModel
         dashboardModel.flightClass = flightSearchData.flightClass
         dashboardModel.departureDate = flightSearchData.departureDate
         dashboardModel.returnDate = flightSearchData.returnDate

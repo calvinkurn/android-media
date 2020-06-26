@@ -32,10 +32,10 @@ import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
-import com.tokopedia.flight.search.data.db.FlightComboDao;
-import com.tokopedia.flight.search.data.db.FlightJourneyDao;
-import com.tokopedia.flight.search.data.db.FlightRouteDao;
-import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
+import com.tokopedia.flight.searchV4.data.FlightRouteDao;
+import com.tokopedia.flight.searchV4.data.cache.db.FlightSearchRoomDb;
+import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightComboDao;
+import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightJourneyDao;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
@@ -171,38 +171,20 @@ public class FlightModule {
 
     @Provides
     @FlightScope
-    FlightComboDao provideComboDao(FlightSearchRoomDb flightSearchRoomDb) {
-        return flightSearchRoomDb.flightComboDao();
-    }
-
-    @Provides
-    @FlightScope
-    FlightJourneyDao provideFlightJourneyDao(FlightSearchRoomDb flightSearchRoomDb) {
+    FlightJourneyDao provideFlightJourneyNewDao(FlightSearchRoomDb flightSearchRoomDb) {
         return flightSearchRoomDb.flightJourneyDao();
     }
 
     @Provides
     @FlightScope
-    FlightRouteDao provideRouteDao(FlightSearchRoomDb flightSearchRoomDb) {
+    FlightRouteDao provideRouteNewDao(FlightSearchRoomDb flightSearchRoomDb) {
         return flightSearchRoomDb.flightRouteDao();
     }
 
     @Provides
     @FlightScope
-    com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao provideFlightJourneyNewDao(FlightSearchRoomDb flightSearchRoomDb) {
-        return flightSearchRoomDb.flightJourneyCoroutineDao();
-    }
-
-    @Provides
-    @FlightScope
-    com.tokopedia.flight.searchV4.data.FlightRouteDao provideRouteNewDao(FlightSearchRoomDb flightSearchRoomDb) {
-        return flightSearchRoomDb.flightRouteCoroutineDao();
-    }
-
-    @Provides
-    @FlightScope
-    com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao provideComboNewDao(FlightSearchRoomDb flightSearchRoomDb) {
-        return flightSearchRoomDb.flightComboCoroutineDao();
+    FlightComboDao provideComboNewDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightComboDao();
     }
 
     @Provides

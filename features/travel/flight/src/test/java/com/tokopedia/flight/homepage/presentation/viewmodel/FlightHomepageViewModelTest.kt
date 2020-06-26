@@ -16,8 +16,8 @@ import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
-import com.tokopedia.flight.search.domain.FlightDeleteAllFlightSearchDataUseCase
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.searchV4.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.usecase.coroutines.Fail
@@ -48,7 +48,7 @@ class FlightHomepageViewModelTest {
     @RelaxedMockK
     private lateinit var flightAnalytics: FlightAnalytics
     @RelaxedMockK
-    private lateinit var deleteAllFlightSearch: FlightDeleteAllFlightSearchDataUseCase
+    private lateinit var deleteAllFlightSearch: FlightSearchDeleteAllDataUseCase
 
     private val passengerValidator = FlightSelectPassengerValidator()
     private lateinit var flightHomepageViewModel: FlightHomepageViewModel
@@ -832,7 +832,7 @@ class FlightHomepageViewModelTest {
         // then
         coVerifySequence {
             flightAnalytics.eventSearchClick(any())
-            deleteAllFlightSearch.executeCoroutine()
+            deleteAllFlightSearch.execute()
         }
     }
 

@@ -24,7 +24,7 @@ abstract class FlightHomepageViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(FlightHomepageViewModel::class)
-    abstract fun flightDashboardViewModel(flightHomepageViewModel: FlightHomepageViewModel): ViewModel
+    abstract fun flightHomepageViewModel(flightHomepageViewModel: FlightHomepageViewModel): ViewModel
 
     @Binds
     @IntoMap
