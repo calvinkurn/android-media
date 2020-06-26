@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -22,7 +23,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
 
 
@@ -44,7 +44,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var shopBadge: ImageView = itemView.findViewById(R.id.imageViewShopBadge)
     private var imageFreeOngkirPromo: ImageView = itemView.findViewById(R.id.imageFreeOngkirPromo)
     private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
-    private var stockPercentageProgress: ProgressBarUnify = itemView.findViewById(R.id.stockPercentageProgress)
+    private var stockPercentageProgress: ProgressBar = itemView.findViewById(R.id.stockPercentageProgress)
     private var pdpViewImage: ImageView = itemView.findViewById(R.id.imageViewProductViewCount)
     private var pdpViewCount: TextView = itemView.findViewById(R.id.textViewProductViewCount)
     private var stockTitle: TextView = itemView.findViewById(R.id.stockText)
@@ -230,7 +230,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             hideStockProgressUI()
         } else {
             if (stockSoldPercentage.toIntOrZero() in (SOLD_PERCENTAGE_LOWER_LIMIT) until SOLD_PERCENTAGE_UPPER_LIMIT) {
-                stockPercentageProgress.setValue(stockSoldPercentage.toIntOrZero())
+                stockPercentageProgress.progress = stockSoldPercentage.toIntOrZero()
                 stockPercentageProgress.show()
                 showStockProgressTitle()
             } else {
