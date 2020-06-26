@@ -44,7 +44,7 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.dev_monitoring_tools.DevMonitoringUtils;
+import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -247,10 +247,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         PushManager.getInstance().setMessageListener(new CustomPushListener());
 
         TimberWrapper.init(ConsumerMainApplication.this);
-        DevMonitoringUtils.initCrashMonitoring();
-        DevMonitoringUtils.initANRWatcher();
-        DevMonitoringUtils.initTooLargeTool(ConsumerMainApplication.this);
-        DevMonitoringUtils.initBlockCanary(context);
+        DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
+        devMonitoring.initCrashMonitoring();
+        devMonitoring.initANRWatcher();
+        devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
+        devMonitoring.initBlockCanary();
 
         initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());

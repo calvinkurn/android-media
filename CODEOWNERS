@@ -249,6 +249,7 @@
 /libraries/core_network/								@tokopedia/core-team
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
+/libraries/dev_monitoring_tools/					    @tokopedia/core-team
 /libraries/device_info/                                 @tokopedia/core-team
 /libraries/dynamic_features/							@tokopedia/core-team
 /libraries/encryption/							        @tokopedia/core-team

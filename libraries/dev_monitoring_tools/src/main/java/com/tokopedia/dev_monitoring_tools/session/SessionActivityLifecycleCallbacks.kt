@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.os.Process
+import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
 import com.tokopedia.utils.network.NetworkTrafficUtils.getUidRxBytes
 import com.tokopedia.utils.network.NetworkTrafficUtils.getUidTxBytes
@@ -30,7 +31,11 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
     }
 
     override fun onActivityResumed(activity: Activity) {
-        UserJourney.addJourneyActivity(activity.javaClass.simpleName)
+        var bundle = Bundle()
+        activity.intent.extras?.let {
+            bundle = it
+        }
+        UserJourney.addJourneyActivity(activity.javaClass.simpleName, bundle)
         if (running) {
             return
         }

@@ -70,10 +70,16 @@ public class TimberWrapper {
         if (isDebug) {
             plantNewTree(new TimberDebugTree());
         } else {
+            plantTimberReleaseTree(context, remoteConfig);
+        }
+    }
+
+    private static void plantTimberReleaseTree(Context context, @NonNull RemoteConfig remoteConfig) {
+        try {
             String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
-                if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
+                if (dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
                     UserSession userSession = new UserSession(context);
                     TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
                     timberReportingTree.setUserId(userSession.getUserId());
@@ -85,6 +91,8 @@ public class TimberWrapper {
                     plantNewTree(timberReportingTree);
                 }
             }
+        } catch (Throwable throwable) {
+            // do nothing
         }
     }
 
