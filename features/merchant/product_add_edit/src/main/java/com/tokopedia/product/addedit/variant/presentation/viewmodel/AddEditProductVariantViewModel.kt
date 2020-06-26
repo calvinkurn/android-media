@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
@@ -75,6 +76,10 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
     val isInputValid: LiveData<Boolean> get() = mIsInputValid
+
+    val isEditMode: LiveData<Boolean> = Transformations.map(productInputModel) {
+        it.productId > 0
+    }
 
     private fun isInputValid(isVariantUnitValuesLevel1Empty: Boolean, isVariantUnitValuesLevel2Empty: Boolean, isSingleVariantTypeIsSelected: Boolean): Boolean {
 
@@ -172,6 +177,14 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitValues?.removeAt(position)
     }
 
+    fun removeVariant() {
+        productInputModel.value?.variantInputModel = VariantInputModel()
+        variantValuesLayoutMap = TreeMap()
+        selectedVariantUnitValuesMap = HashMap()
+        mSelectedVariantUnitValuesLevel1.value = emptyList()
+        mSelectedVariantUnitValuesLevel2.value = emptyList()
+    }
+
     private fun mapSelections(variantDetailsSelected: List<VariantDetail>): List<SelectionInputModel> {
         val result: MutableList<SelectionInputModel> = mutableListOf()
         var index = 0
@@ -195,9 +208,9 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit? {
         val unitValue = value.firstOrNull()
-        return variantDetail.units.filter {
+        return variantDetail.units.firstOrNull {
             it.unitValues.contains(unitValue)
-        }.firstOrNull()
+        }
     }
 
     private fun mapOptions(unit: List<UnitValue>): List<OptionInputModel> =
@@ -265,6 +278,5 @@ class AddEditProductVariantViewModel @Inject constructor(
             )
             listOf(result)
         } ?: emptyList()
-
     }
 }
