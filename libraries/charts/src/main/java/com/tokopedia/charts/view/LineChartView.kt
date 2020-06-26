@@ -41,6 +41,8 @@ class LineChartView : LinearLayout {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    private var graphConfig: LineChartConfig? = null
+
     var typeface: Typeface? = null
         set(value) {
             field = value
@@ -69,7 +71,8 @@ class LineChartView : LinearLayout {
         yAxisTextColor = context.getResColor(R.color.Neutral_N700_96)
     }
 
-    fun setConfig(config: LineChartConfig) {
+    fun init(config: LineChartConfig) {
+        this.graphConfig = config
         if (typeface == null) {
             typeface = Typeface.createFromAsset(context.assets, "SFProText-Regular.ttf")
         }
@@ -84,7 +87,7 @@ class LineChartView : LinearLayout {
             description.isEnabled = config.isDescriptionEnabled
 
             setDrawMarkers(config.isDrawMarkersEnabled)
-            setScaleEnabled(config.isScaleEnabled)
+            setScaleEnabled(config.isXScaleEnabled)
             setPinchZoom(config.isPitchZoomEnabled)
 
             animateXY(200, 200)
@@ -99,7 +102,9 @@ class LineChartView : LinearLayout {
         setXAxisLabelFormatter(chartEntry)
 
         val dataSet: LineDataSet = if (isDataSetExist) {
-            lineChart.data.getDataSetByIndex(0) as LineDataSet
+            (lineChart.data.getDataSetByIndex(0) as LineDataSet).apply {
+                values = entries
+            }
         } else {
             LineDataSet(entries, "Data Set")
         }
@@ -119,9 +124,17 @@ class LineChartView : LinearLayout {
         }
 
         lineChart.data = LineData(dataSet)
+
+        val minY = entries.minBy { it.y }?.y ?: 0f
+        lineChart.axisLeft.axisMinimum = minY
+        lineChart.axisRight.axisMinimum = minY
     }
 
     fun setCustomYAxisLabel(labels: List<YAxisLabel>) {
+        val minY = labels.minBy { it.yValue }?.yValue ?: 0f
+        lineChart.axisLeft.axisMinimum = minY
+        lineChart.axisRight.axisMinimum = minY
+
         lineChart.axisLeft.run {
             setLabelCount(labels.size, true)
             valueFormatter = YAxisLabelFormatter(labels)
@@ -131,6 +144,15 @@ class LineChartView : LinearLayout {
     private fun setXAxisLabelFormatter(entries: List<LineChartEntry>) {
         val labelsStr: List<String> = entries.map { it.xLabel }
         lineChart.xAxis.valueFormatter = XAxisLabelFormatter(labelsStr)
+
+        if (labelsStr.size > 7) {
+            lineChart.isScaleXEnabled = true
+        } else {
+            lineChart.xAxis.setLabelCount(labelsStr.size, true)
+            lineChart.isScaleXEnabled = graphConfig?.isXScaleEnabled ?: false
+        }
+
+        lineChart.xAxis.axisMinimum = 0f
     }
 
     private fun getLineChartData(dataSet: List<LineChartEntry>): List<Entry> {
@@ -143,7 +165,7 @@ class LineChartView : LinearLayout {
         isEnabled = config.isEnabled
     }
 
-    override fun invalidate() {
+    fun invalidateChart() {
         lineChart.invalidate()
     }
 
