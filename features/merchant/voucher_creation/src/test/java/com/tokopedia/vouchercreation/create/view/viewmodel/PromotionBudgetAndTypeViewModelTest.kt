@@ -4,8 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.create.domain.usecase.validation.PromoCodeValidationUseCase
-import com.tokopedia.vouchercreation.create.view.uimodel.validation.PromoCodeValidation
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
+import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,13 +19,15 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
-class CreatePromoCodeViewModelTest {
+class PromotionBudgetAndTypeViewModelTest {
 
     @RelaxedMockK
-    lateinit var promoCodeValidationUseCase: PromoCodeValidationUseCase
+    lateinit var basicShopInfoUseCase: BasicShopInfoUseCase
+
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -44,43 +47,49 @@ class CreatePromoCodeViewModelTest {
     }
 
     private val mViewModel by lazy {
-        CreatePromoCodeViewModel(testDispatcher, promoCodeValidationUseCase)
+        PromotionBudgetAndTypeViewModel(testDispatcher, basicShopInfoUseCase, userSession)
     }
 
     @Test
-    fun `success validate promo code`() = runBlocking {
-        val dummySuccessValidation = PromoCodeValidation("")
+    fun `success get basic shop info`() {
+        val dummySuccessShopInfo = ShopInfo()
 
         coEvery {
-            promoCodeValidationUseCase.executeOnBackground()
-        } returns dummySuccessValidation
+            basicShopInfoUseCase.executeOnBackground()
+        } returns dummySuccessShopInfo
+        coEvery {
+            userSession.userId
+        } returns "1"
 
-        mViewModel.validatePromoCode(anyString())
+        mViewModel.getBasicShopInfo()
 
         coVerify {
-            promoCodeValidationUseCase.executeOnBackground()
+            basicShopInfoUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.promoCodeValidationLiveData.value == Success(dummySuccessValidation))
+        assert(mViewModel.basicShopInfoLiveData.value == Success(dummySuccessShopInfo))
     }
 
     @Test
-    fun `fail validate promo code`() = runBlocking {
+    fun `fail get basic shop info`() = runBlocking {
         val dummyThrowable = MessageErrorException("")
 
         coEvery {
-            promoCodeValidationUseCase.executeOnBackground()
+            basicShopInfoUseCase.executeOnBackground()
         } throws dummyThrowable
+        coEvery {
+            userSession.userId
+        } returns "1"
 
-        mViewModel.validatePromoCode(anyString())
+        mViewModel.getBasicShopInfo()
 
         mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
-            promoCodeValidationUseCase.executeOnBackground()
+            basicShopInfoUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.promoCodeValidationLiveData.value is Fail)
+        assert(mViewModel.basicShopInfoLiveData.value is Fail)
     }
 
 }
