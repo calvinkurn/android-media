@@ -139,7 +139,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
                 }
 
                 override fun onTick(millisUntilFinished: Long) {}
-            }
+            }.start()
         }
     }
 
