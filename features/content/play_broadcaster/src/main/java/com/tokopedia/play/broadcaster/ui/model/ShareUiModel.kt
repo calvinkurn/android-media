@@ -8,6 +8,7 @@ data class ShareUiModel(
     val id: String,
     val title: String,
     val description: String,
+    val slug: String,
     val imageUrl: String,
     val redirectUrl: String
 )

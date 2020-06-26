@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -226,18 +227,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ).show()
     }
 
-    private fun showDialogWhenActiveOnOtherDevices() {
-        requireContext().getDialog(
-                title = getString(R.string.play_dialog_error_active_other_devices_title),
-                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
-                primaryCta = getString(R.string.play_broadcast_exit),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    activity?.finish()
-                }
-        ).show()
-    }
-
     private fun showToast(
             message: String,
             type: Int,
@@ -245,15 +234,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             actionLabel: String = "",
             actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
-        view?.let { view ->
+        view?.let{ view ->
             if (actionLabel.isNotEmpty()) Toaster.toasterCustomCtaWidth = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
             Toaster.toasterCustomBottomHeight =  ivShareLink.height + resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-            Toaster.make(view,
-                    text = message,
+            view.showToaster(
+                    message = message,
                     duration = duration,
                     type = type,
-                    actionText = actionLabel,
-                    clickListener = actionListener)
+                    actionLabel = actionLabel,
+                    actionListener = actionListener
+            )
         }
     }
 
@@ -281,11 +271,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun handleChannelInfo(channelInfo: ChannelInfoUiModel) {
-        when(channelInfo.status) {
-            PlayChannelStatus.UnStarted -> startLiveStreaming(channelInfo.ingestUrl)
-            PlayChannelStatus.Active -> showDialogWhenActiveOnOtherDevices()
+        when (channelInfo.status) {
+            PlayChannelStatus.Active, PlayChannelStatus.Live -> startLiveStreaming(channelInfo.ingestUrl)
             PlayChannelStatus.Pause -> showDialogContinueLiveStreaming(channelInfo.channelId)
-            PlayChannelStatus.Finish -> navigateToSummary()
+            PlayChannelStatus.Stop -> navigateToSummary()
         }
     }
 
@@ -344,7 +333,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveInfo() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer(::handleLiveInfo))
+        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver(::handleLiveInfo))
     }
 
     private fun observeTotalViews() {

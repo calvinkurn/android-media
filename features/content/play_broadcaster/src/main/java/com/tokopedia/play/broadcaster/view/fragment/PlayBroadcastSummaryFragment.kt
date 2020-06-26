@@ -15,14 +15,13 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
-
 
 /**
  * @author by jessica on 26/05/20
  */
-
 class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFactory: ViewModelFactory) : PlayBaseBroadcastFragment() {
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
@@ -90,7 +89,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
             if (it is PlayPusherInfoState.TimerFinish) setLiveDuration(it.timeElapsed)
         })
     }

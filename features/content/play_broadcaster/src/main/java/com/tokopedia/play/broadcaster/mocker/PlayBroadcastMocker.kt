@@ -79,10 +79,10 @@ object PlayBroadcastMocker {
         )
     }
 
-    fun getMockConfiguration() = ConfigurationUiModel(
+    fun getMockConfigurationDraftChannel() = ConfigurationUiModel(
             streamAllowed = true,
-            haveOnGoingLive = false, // activeChannelId != 0
-            channelId = 1234, // if (haveOnGoingLive) activeChannelId else draftChannelId
+            channelStatus = PlayChannelStatus.Draft,
+            channelId = "10012",
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
                     pauseDuration = (1 * 60 * 1000),
@@ -92,12 +92,9 @@ object PlayBroadcastMocker {
                     maxProduct = 15,
                     minProduct = 1,
                     errorMessage = "Oops, kamu sudah memilih 15 produk"
-            )
+            ),
+            countDown = 5
     )
-
-    fun getMockUnStartedChannel() = getMockChannel(PlayChannelStatus.UnStarted)
-
-    fun getMockPausedChannel() = getMockChannel(PlayChannelStatus.Pause)
 
     private fun getMockChannel(status: PlayChannelStatus) = ChannelInfoUiModel(
             channelId = "1234",
@@ -149,6 +146,7 @@ object PlayBroadcastMocker {
             id = "1234",
             title = "Klarififikasi Bisa Tebak Siapa?",
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
+            slug = "Share",
             imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
             redirectUrl = "https://www.tokopedia.com/play/channels/1234"
     )
