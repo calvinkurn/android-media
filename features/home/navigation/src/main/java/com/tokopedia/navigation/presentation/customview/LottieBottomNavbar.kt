@@ -140,8 +140,8 @@ class LottieBottomNavbar : LinearLayout {
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-                resources.getDimensionPixelOffset(R.dimen.dp_5),
-                resources.getDimensionPixelOffset(R.dimen.dp_5))
+                resources.getDimensionPixelOffset(R.dimen.dp_12),
+                resources.getDimensionPixelOffset(R.dimen.dp_12))
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
                 resources.getDimensionPixelOffset(R.dimen.dp_0),
