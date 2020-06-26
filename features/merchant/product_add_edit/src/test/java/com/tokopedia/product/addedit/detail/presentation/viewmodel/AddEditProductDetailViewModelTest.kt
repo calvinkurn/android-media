@@ -26,6 +26,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.*
 import org.mockito.Matchers.any
+import kotlin.reflect.KFunction0
 
 @ExperimentalCoroutinesApi
 class AddEditProductDetailViewModelTest {
@@ -275,14 +276,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductNameInput should valid when product name isn't empty`() {
         val stringResMessage = "Tips: Jenis Produk + Merek Produk + Keterangan Tambahan"
 
-        every {
-            provider.getProductNameTips()
-        } returns stringResMessage
-
-        viewModel.validateProductNameInput("Baju")
-
-        verify {
-            provider.getProductNameTips()
+        runValidationWithAndProvideMessage(provider::getProductNameTips, stringResMessage) {
+            viewModel.validateProductNameInput("Baju")
         }
 
         val isError = viewModel.isProductNameInputError.getOrAwaitValue()
@@ -293,14 +288,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductNameInput should invalid when product name is empty`() {
         val stringResMessage = "Tips: Jenis Produk + Merek Produk + Keterangan Tambahan"
 
-        every {
-            provider.getEmptyProductNameErrorMessage()
-        } returns stringResMessage
-
-        viewModel.validateProductNameInput("")
-
-        verify {
-            provider.getEmptyProductNameErrorMessage()
+        runValidationWithAndProvideMessage(provider::getEmptyProductNameErrorMessage, stringResMessage) {
+            viewModel.validateProductNameInput("")
         }
 
         val isError = viewModel.isProductNameInputError.getOrAwaitValue()
@@ -319,14 +308,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductPriceInput should invalid when product price is empty`() {
         val stringResErrorMessage = "Harga produk tidak boleh kosong"
 
-        every {
-            provider.getEmptyProductPriceErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validateProductPriceInput("")
-
-        verify {
-            provider.getEmptyProductPriceErrorMessage()
+        runValidationWithAndProvideMessage(provider::getEmptyProductPriceErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductPriceInput("")
         }
 
         val isError = viewModel.isProductPriceInputError.getOrAwaitValue()
@@ -337,14 +320,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductPriceInput should invalid when product price isn't empty but less than min price`() {
         val stringResErrorMessage = "Harga kurang dari batas min. Rp100."
 
-        every {
-            provider.getMinLimitProductPriceErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validateProductPriceInput("${MIN_PRODUCT_PRICE_LIMIT - 1}")
-
-        verify {
-            provider.getMinLimitProductPriceErrorMessage()
+        runValidationWithAndProvideMessage(provider::getMinLimitProductPriceErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductPriceInput("${MIN_PRODUCT_PRICE_LIMIT - 1}")
         }
 
         val isError = viewModel.isProductPriceInputError.getOrAwaitValue()
@@ -397,14 +374,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductWholeSaleQuantityInput should invalid when wholeSaleQuantityInput is blank`() {
         val stringResErrorMessage = "Jumlah minimal tidak boleh kosong"
 
-        every {
-            provider.getEmptyWholeSaleQuantityErrorMessage()
-        } returns stringResErrorMessage
-
-        val errorMessage = viewModel.validateProductWholeSaleQuantityInput("", "", "")
-
-        verify {
-            provider.getEmptyWholeSaleQuantityErrorMessage()
+        val errorMessage = runValidationWithAndProvideMessage(provider::getEmptyWholeSaleQuantityErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductWholeSaleQuantityInput("", "", "")
         }
 
         Assert.assertTrue(errorMessage.isNotBlank() && errorMessage == stringResErrorMessage)
@@ -414,14 +385,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductWholeSaleQuantityInput should invalid when wholeSaleQuantityInput is zero`() {
         val stringResErrorMessage = "Minimum pemesanan tidak boleh 0"
 
-        every {
-            provider.getZeroWholeSaleQuantityErrorMessage()
-        } returns stringResErrorMessage
-
-        val errorMessage = viewModel.validateProductWholeSaleQuantityInput("0", "", "")
-
-        verify {
-            provider.getZeroWholeSaleQuantityErrorMessage()
+        val errorMessage = runValidationWithAndProvideMessage(provider::getZeroWholeSaleQuantityErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductWholeSaleQuantityInput("0", "", "")
         }
 
         Assert.assertTrue(errorMessage.isNotBlank() && errorMessage == stringResErrorMessage)
@@ -431,14 +396,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductWholeSaleQuantityInput should invalid when minOrderInput is more than wholeSaleQuantityInput`() {
         val stringResErrorMessage = "Jumlah harus lebih > dari min. pemesanan"
 
-        every {
-            provider.getMinLimitWholeSaleQuantityErrorMessage()
-        } returns stringResErrorMessage
-
-        val errorMessage = viewModel.validateProductWholeSaleQuantityInput("5", "6", "")
-
-        verify {
-            provider.getMinLimitWholeSaleQuantityErrorMessage()
+        val errorMessage = runValidationWithAndProvideMessage(provider::getMinLimitWholeSaleQuantityErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductWholeSaleQuantityInput("5", "6", "")
         }
 
         Assert.assertTrue(errorMessage.isNotBlank() && errorMessage == stringResErrorMessage)
@@ -448,14 +407,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductWholeSaleQuantityInput should invalid when previousInput is more than or equal to wholeSaleQuantityInput`() {
         val stringResErrorMessage = "Jumlah harus lebih > dari sebelumnya"
 
-        every {
-            provider.getPrevInputWholeSaleQuantityErrorMessage()
-        } returns stringResErrorMessage
-
-        val errorMessage = viewModel.validateProductWholeSaleQuantityInput("5", "", "5")
-
-        verify {
-            provider.getPrevInputWholeSaleQuantityErrorMessage()
+        val errorMessage = runValidationWithAndProvideMessage(provider::getPrevInputWholeSaleQuantityErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductWholeSaleQuantityInput("5", "", "5")
         }
 
         Assert.assertTrue(errorMessage.isNotBlank() && errorMessage == stringResErrorMessage)
@@ -507,14 +460,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductWholeSalePriceInput should invalid when wholeSalePriceInput is blank`() {
         val stringResErrorMessage = "Harga grosir tidak boleh kosong"
 
-        every {
-            provider.getEmptyWholeSalePriceErrorMessage()
-        } returns stringResErrorMessage
-
-        val errorMessage = viewModel.validateProductWholeSalePriceInput("", "500", "")
-
-        verify {
-            provider.getEmptyWholeSalePriceErrorMessage()
+        val errorMessage = runValidationWithAndProvideMessage(provider::getEmptyWholeSalePriceErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductWholeSalePriceInput("", "500", "")
         }
 
         Assert.assertTrue(errorMessage.isNotBlank() && errorMessage == stringResErrorMessage)
@@ -524,14 +471,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductWholeSalePriceInput should invalid when wholeSalePriceInput is zero`() {
         val stringResErrorMessage = "Harga grosir tidak boleh 0"
 
-        every {
-            provider.getZeroWholeSalePriceErrorMessage()
-        } returns stringResErrorMessage
-
-        val errorMessage = viewModel.validateProductWholeSalePriceInput("0", "500", "")
-
-        verify {
-            provider.getZeroWholeSalePriceErrorMessage()
+        val errorMessage = runValidationWithAndProvideMessage(provider::getZeroWholeSalePriceErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductWholeSalePriceInput("0", "500", "")
         }
 
         Assert.assertTrue(errorMessage.isNotBlank() && errorMessage == stringResErrorMessage)
@@ -541,14 +482,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductWholeSalePriceInput should invalid when wholeSalePriceInput is more than or equal productPriceInput`() {
         val stringResErrorMessage = "Harga grosir harus lebih murah dari harga satuan"
 
-        every {
-            provider.getWholeSalePriceTooExpensiveErrorMessage()
-        } returns stringResErrorMessage
-
-        val errorMessage = viewModel.validateProductWholeSalePriceInput("1000", "500", "")
-
-        verify {
-            provider.getWholeSalePriceTooExpensiveErrorMessage()
+        val errorMessage = runValidationWithAndProvideMessage(provider::getWholeSalePriceTooExpensiveErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductWholeSalePriceInput("1000", "500", "")
         }
 
         Assert.assertTrue(errorMessage.isNotBlank() && errorMessage == stringResErrorMessage)
@@ -558,14 +493,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductWholeSalePriceInput should invalid when previousInput is less or equal to wholeSalePriceInput`() {
         val stringResErrorMessage = "Harga harus lebih murah dari harga sebelumnya"
 
-        every {
-            provider.getPrevInputWholeSalePriceErrorMessage()
-        } returns stringResErrorMessage
-
-        val errorMessage = viewModel.validateProductWholeSalePriceInput("400", "500", "400")
-
-        verify {
-            provider.getPrevInputWholeSalePriceErrorMessage()
+        val errorMessage = runValidationWithAndProvideMessage(provider::getPrevInputWholeSalePriceErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductWholeSalePriceInput("400", "500", "400")
         }
 
         Assert.assertTrue(errorMessage.isNotBlank() && errorMessage == stringResErrorMessage)
@@ -594,14 +523,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductStockInput should invalid when productStockInput is empty`() {
         val stringResErrorMessage = "Stok produk tidak boleh kosong"
 
-        every {
-            provider.getEmptyProductStockErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validateProductStockInput("")
-
-        verify {
-            provider.getEmptyProductStockErrorMessage()
+        runValidationWithAndProvideMessage(provider::getEmptyProductStockErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductStockInput("")
         }
 
         val isError = viewModel.isProductStockInputError.getOrAwaitValue()
@@ -612,14 +535,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductStockInput should invalid when productStockInput is less than min stock limit`() {
         val stringResErrorMessage = "Stok produk tidak boleh kosong"
 
-        every {
-            provider.getEmptyProductStockErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validateProductStockInput("${MIN_PRODUCT_STOCK_LIMIT - 1}")
-
-        verify {
-            provider.getEmptyProductStockErrorMessage()
+        runValidationWithAndProvideMessage(provider::getEmptyProductStockErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductStockInput("${MIN_PRODUCT_STOCK_LIMIT - 1}")
         }
 
         val isError = viewModel.isProductStockInputError.getOrAwaitValue()
@@ -630,14 +547,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductStockInput should invalid when productStockInput is greater than max stock limit`() {
         val stringResErrorMessage = "Stok melebihi batas maks. 999.999"
 
-        every {
-            provider.getMaxLimitProductStockErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validateProductStockInput("${MAX_PRODUCT_STOCK_LIMIT + 1}")
-
-        verify {
-            provider.getMaxLimitProductStockErrorMessage()
+        runValidationWithAndProvideMessage(provider::getMaxLimitProductStockErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductStockInput("${MAX_PRODUCT_STOCK_LIMIT + 1}")
         }
 
         val isError = viewModel.isProductStockInputError.getOrAwaitValue()
@@ -666,14 +577,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductMinOrderInput should invalid when minOrderQuantityInput is empty`() {
         val stringResErrorMessage = "Minimum pemesanan tidak boleh kosong"
 
-        every {
-            provider.getEmptyOrderQuantityErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validateProductMinOrderInput("${MIN_MIN_ORDER_QUANTITY - 1}", "")
-
-        verify {
-            provider.getEmptyOrderQuantityErrorMessage()
+        runValidationWithAndProvideMessage(provider::getEmptyOrderQuantityErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductMinOrderInput("${MIN_MIN_ORDER_QUANTITY - 1}", "")
         }
 
         val isError = viewModel.isOrderQuantityInputError.getOrAwaitValue()
@@ -684,14 +589,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductMinOrderInput should invalid when minOrderQuantityInput is less than minimum`() {
         val stringResErrorMessage = "Minimum pemesanan tidak boleh kosong"
 
-        every {
-            provider.getEmptyOrderQuantityErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validateProductMinOrderInput("${MIN_MIN_ORDER_QUANTITY - 1}", "${MIN_MIN_ORDER_QUANTITY - 1}")
-
-        verify {
-            provider.getEmptyOrderQuantityErrorMessage()
+        runValidationWithAndProvideMessage(provider::getEmptyOrderQuantityErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductMinOrderInput("${MIN_MIN_ORDER_QUANTITY - 1}", "${MIN_MIN_ORDER_QUANTITY - 1}")
         }
 
         val isError = viewModel.isOrderQuantityInputError.getOrAwaitValue()
@@ -702,14 +601,8 @@ class AddEditProductDetailViewModelTest {
     fun `validateProductMinOrderInput should invalid when minOrderQuantityInput is greater than productStockInput`() {
         val stringResErrorMessage = "Minimum pemesanan tidak boleh melebihi jumlah stok"
 
-        every {
-            provider.getMinOrderExceedStockErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validateProductMinOrderInput("${MIN_MIN_ORDER_QUANTITY - 1}", "$MIN_MIN_ORDER_QUANTITY")
-
-        verify {
-            provider.getMinOrderExceedStockErrorMessage()
+        runValidationWithAndProvideMessage(provider::getMinOrderExceedStockErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductMinOrderInput("${MIN_MIN_ORDER_QUANTITY - 1}", "$MIN_MIN_ORDER_QUANTITY")
         }
 
         val isError = viewModel.isOrderQuantityInputError.getOrAwaitValue()
@@ -734,14 +627,8 @@ class AddEditProductDetailViewModelTest {
     fun `validatePreOrderDurationInput should invalid when preOrderDurationInput is blank`() {
         val stringResErrorMessage = "Durasi minimal 1"
 
-        every {
-            provider.getEmptyPreorderDurationErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_DAY, "")
-
-        verify {
-            provider.getEmptyPreorderDurationErrorMessage()
+        runValidationWithAndProvideMessage(provider::getEmptyPreorderDurationErrorMessage, stringResErrorMessage) {
+            viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_DAY, "")
         }
 
         val isError = viewModel.isPreOrderDurationInputError.getOrAwaitValue()
@@ -752,14 +639,8 @@ class AddEditProductDetailViewModelTest {
     fun `validatePreOrderDurationInput should invalid when preOrderDurationInput is less than minimum`() {
         val stringResErrorMessage = "Durasi minimal 1"
 
-        every {
-            provider.getMinLimitPreorderDurationErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_DAY, "${AddEditProductDetailConstants.MIN_PREORDER_DURATION - 1}")
-
-        verify {
-            provider.getMinLimitPreorderDurationErrorMessage()
+        runValidationWithAndProvideMessage(provider::getMinLimitPreorderDurationErrorMessage, stringResErrorMessage) {
+            viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_DAY, "${AddEditProductDetailConstants.MIN_PREORDER_DURATION - 1}")
         }
 
         val isError = viewModel.isPreOrderDurationInputError.getOrAwaitValue()
@@ -770,14 +651,8 @@ class AddEditProductDetailViewModelTest {
     fun `validatePreOrderDurationInput should invalid when preOrderDurationInput is greater than max duration in day`() {
         val stringResErrorMessage = "Durasi melebihi batas maks. \n90 hari"
 
-        every {
-            provider.getMaxDaysLimitPreorderDuratioErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_DAY, "${AddEditProductDetailConstants.MAX_PREORDER_DAYS + 1}")
-
-        verify {
-            provider.getMaxDaysLimitPreorderDuratioErrorMessage()
+        runValidationWithAndProvideMessage(provider::getMaxDaysLimitPreorderDuratioErrorMessage, stringResErrorMessage) {
+            viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_DAY, "${AddEditProductDetailConstants.MAX_PREORDER_DAYS + 1}")
         }
 
         val isError = viewModel.isPreOrderDurationInputError.getOrAwaitValue()
@@ -788,14 +663,8 @@ class AddEditProductDetailViewModelTest {
     fun `validatePreOrderDurationInput should invalid when preOrderDurationInput is greater than max duration in week`() {
         val stringResErrorMessage = "Durasi melebihi batas maks. \n13 minggu"
 
-        every {
-            provider.getMaxWeeksLimitPreorderDuratioErrorMessage()
-        } returns stringResErrorMessage
-
-        viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_WEEK, "${AddEditProductDetailConstants.MAX_PREORDER_WEEKS + 1}")
-
-        verify {
-            provider.getMaxWeeksLimitPreorderDuratioErrorMessage()
+        runValidationWithAndProvideMessage(provider::getMaxWeeksLimitPreorderDuratioErrorMessage, stringResErrorMessage) {
+            viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_WEEK, "${AddEditProductDetailConstants.MAX_PREORDER_WEEKS + 1}")
         }
 
         val isError = viewModel.isPreOrderDurationInputError.getOrAwaitValue()
@@ -895,5 +764,12 @@ class AddEditProductDetailViewModelTest {
             it.isAccessible = true
             return@let it.get(owner)
         }
+    }
+
+    private fun <T: Any> runValidationWithAndProvideMessage(provider: KFunction0<String?>, value: String, funcToCall: () -> T): T {
+        every { provider() } returns value
+        val result = funcToCall.invoke()
+        verify { provider() }
+        return result
     }
 }
