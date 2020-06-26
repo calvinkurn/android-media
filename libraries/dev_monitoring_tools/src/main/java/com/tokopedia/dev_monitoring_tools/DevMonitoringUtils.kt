@@ -13,7 +13,8 @@ import com.github.moduth.blockcanary.BlockCanaryContext
 import com.gu.toolargetool.Formatter
 import com.gu.toolargetool.Logger
 import com.gu.toolargetool.TooLargeTool
-import com.gu.toolargetool.TooLargeTool.startLogging
+import com.gu.toolargetool.sizeTreeFromBundle
+import com.tokopedia.dev_monitoring_tools.config.DevToolsRemoteConfig
 import timber.log.Timber
 
 /**
@@ -37,26 +38,37 @@ object DevMonitoringUtils {
 
     @JvmStatic
     fun initTooLargeTool(application: Application) {
-        startLogging(application, object : Formatter {
+        var minSizeLog = DevToolsRemoteConfig.getConfig(application).tooLargeToolMinSizeLog
+        TooLargeTool.startLogging(application, object : Formatter {
             override fun format(activity: Activity, bundle: Bundle): String {
-                return activity.javaClass.simpleName + ".onSaveInstanceState wrote: " + TooLargeTool.bundleBreakdown(bundle)
+                val (key, totalSize, subTrees) = sizeTreeFromBundle(bundle)
+                var message = ""
+                if (totalSize > minSizeLog) {
+                    message = "warning;size=$totalSize;name=${activity.javaClass.simpleName};detail='${TooLargeTool.bundleBreakdown(bundle)}'"
+                }
+                return message
             }
 
             override fun format(fragmentManager: FragmentManager, fragment: Fragment, bundle: Bundle): String {
-                var message = fragment.javaClass.simpleName + ".onSaveInstanceState wrote: " + TooLargeTool.bundleBreakdown(bundle)
-                val fragmentArguments = fragment.arguments
-                if (fragmentArguments != null) {
-                    message += "\n* fragment arguments = " + TooLargeTool.bundleBreakdown(fragmentArguments)
+                val (key, totalSize, subTrees) = sizeTreeFromBundle(bundle)
+                var message = ""
+                if (totalSize > minSizeLog) {
+                    message = "warning;size=$totalSize;name=${javaClass.javaClass.simpleName};detail='${TooLargeTool.bundleBreakdown(bundle)}'"
+                    val fragmentArguments = fragment.arguments
+                    if (fragmentArguments != null) {
+                        message += ";frag_arg=${TooLargeTool.bundleBreakdown(fragmentArguments)}"
+                    }
                 }
-
                 return message
             }
         }, object : Logger {
             override fun log(msg: String) {
-                Timber.w("P1#DEV_TOO_LARGE#'%s'", msg)
+                if (!msg.isBlank()) {
+                    Timber.w("P1#DEV_TOO_LARGE#$msg")
+                }
             }
             override fun logException(e: Exception) {
-                Timber.w("P1#DEV_TOO_LARGE#'%s'", Log.getStackTraceString(e))
+                Timber.w("P1#DEV_TOO_LARGE#exception;err='%s'", Log.getStackTraceString(e))
             }
         })
     }

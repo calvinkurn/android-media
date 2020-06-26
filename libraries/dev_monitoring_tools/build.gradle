@@ -14,6 +14,8 @@ buildscript {
 
 dependencies {
 
+    implementation project(rootProject.ext.libraries.remoteConfig)
+
     implementation rootProject.ext.debugToolsDependencies.tooLargeTool
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
     if (rootProject.ext.debugToolsEnabled) {
