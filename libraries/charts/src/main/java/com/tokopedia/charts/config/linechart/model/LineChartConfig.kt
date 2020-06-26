@@ -6,7 +6,7 @@ package com.tokopedia.charts.config.linechart.model
 
 data class LineChartConfig(
         val isDrawMarkersEnabled: Boolean = true,
-        val isScaleEnabled: Boolean = false,
+        val isScaleXEnabled: Boolean = false,
         val isPitchZoomEnabled: Boolean = false,
         val isDescriptionEnabled: Boolean = false,
         val xAnimationDuration: Int = 0,

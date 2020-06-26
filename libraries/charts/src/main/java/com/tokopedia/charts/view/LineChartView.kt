@@ -87,7 +87,7 @@ class LineChartView : LinearLayout {
             description.isEnabled = config.isDescriptionEnabled
 
             setDrawMarkers(config.isDrawMarkersEnabled)
-            setScaleEnabled(config.isXScaleEnabled)
+            setScaleEnabled(config.isScaleXEnabled)
             setPinchZoom(config.isPitchZoomEnabled)
 
             animateXY(200, 200)
@@ -149,7 +149,7 @@ class LineChartView : LinearLayout {
             lineChart.isScaleXEnabled = true
         } else {
             lineChart.xAxis.setLabelCount(labelsStr.size, true)
-            lineChart.isScaleXEnabled = graphConfig?.isXScaleEnabled ?: false
+            lineChart.isScaleXEnabled = graphConfig?.isScaleXEnabled ?: false
         }
 
         lineChart.xAxis.axisMinimum = 0f

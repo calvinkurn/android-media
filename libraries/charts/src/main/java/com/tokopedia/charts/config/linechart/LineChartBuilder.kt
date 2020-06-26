@@ -21,7 +21,7 @@ class LineChartConfigBuilder {
     }
 
     private var isDrawMarkersEnabled: Boolean = true
-    private var isScaleEnabled: Boolean = false
+    private var isScaleXEnabled: Boolean = false
     private var isPitchZoomEnabled: Boolean = false
     private var isDescriptionEnabled: Boolean = false
     private var xAnimationDuration: Int = 0
@@ -36,7 +36,7 @@ class LineChartConfigBuilder {
     }
 
     fun scaleEnabled(lambda: () -> Boolean) {
-        isScaleEnabled = lambda()
+        isScaleXEnabled = lambda()
     }
 
     fun pitchZoomEnabled(lambda: () -> Boolean) {
@@ -74,7 +74,7 @@ class LineChartConfigBuilder {
     fun build(): LineChartConfig {
         return LineChartConfig(
                 isDrawMarkersEnabled = isDrawMarkersEnabled,
-                isScaleEnabled = isScaleEnabled,
+                isScaleXEnabled = isScaleXEnabled,
                 isPitchZoomEnabled = isPitchZoomEnabled,
                 isDescriptionEnabled = isDescriptionEnabled,
                 xAnimationDuration = xAnimationDuration,
