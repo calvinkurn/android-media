@@ -13,10 +13,9 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import io.mockk.*
-import junit.framework.Assert.assertNotNull
-import junit.framework.Assert.assertNull
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
