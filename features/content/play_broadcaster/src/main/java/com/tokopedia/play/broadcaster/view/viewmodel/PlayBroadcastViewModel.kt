@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.domain.model.Metric
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.UpdateChannelUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
@@ -40,6 +41,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val getConfigurationUseCase: GetConfigurationUseCase,
         private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
+        private val updateChannelUseCase: UpdateChannelUseCase,
         private val dispatcher: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
         private val playSocket: PlayBroadcastSocket
@@ -152,13 +154,13 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
-//            val config = withContext(dispatcher.io) {
-//                getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
-//                return@withContext getConfigurationUseCase.executeOnBackground()
-//            }
-//            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
-            delay(3000)
-            val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel()
+            val config = withContext(dispatcher.io) {
+                getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
+                return@withContext getConfigurationUseCase.executeOnBackground()
+            }
+            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
+//            delay(3000)
+//            val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel()
 
             launch {
                 if (configUiModel.channelStatus == PlayChannelStatus.Unknown) createChannel()
@@ -196,8 +198,14 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
     }
 
-    private fun updateChannelStatus(status: PlayChannelStatus) {
-        // TODO("update channel status, still waiting for the API to finish")
+    private suspend fun updateChannelStatus(status: PlayChannelStatus)  = withContext(dispatcher.io) {
+        updateChannelUseCase.apply {
+            params = UpdateChannelUseCase.createParams(
+                    channelId = channelId,
+                    authorId = userSession.shopId,
+                    status = status
+            )
+        }.executeOnBackground()
     }
 
     /**
@@ -225,7 +233,7 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.launch {
             if (ingestUrl.isNotEmpty() && allPermissionGranted()) {
                 startWebSocket()
-                updateChannelStatus(PlayChannelStatus.Active)
+                updateChannelStatus(PlayChannelStatus.Live)
                 playPusher.startPush(ingestUrl)
             }
         }
@@ -234,7 +242,7 @@ class PlayBroadcastViewModel @Inject constructor(
     fun resumePushStream() {
         scope.launch {
             if (!playPusher.isPushing() && allPermissionGranted()) {
-                updateChannelStatus(PlayChannelStatus.Active)
+                updateChannelStatus(PlayChannelStatus.Live)
                 playPusher.resume()
             }
         }
