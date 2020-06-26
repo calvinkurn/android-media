@@ -6,15 +6,16 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 data class ConfigurationUiModel(
         val streamAllowed: Boolean,
-        val haveOnGoingLive: Boolean,
-        val channelId: Int,
+        val channelId: String,
+        val channelStatus: PlayChannelStatus,
         val durationConfig: DurationConfigUiModel,
-        val productTagConfig: ProductTagConfigUiModel
+        val productTagConfig: ProductTagConfigUiModel,
+        val countDown: Long // second
 )
 
 data class DurationConfigUiModel(
-        val duration: Long,
-        val pauseDuration: Long,
+        val duration: Long, // second
+        val pauseDuration: Long, // second
         val errorMessage: String
 )
 

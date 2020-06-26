@@ -121,7 +121,7 @@ class PlayPermissionUtil(private val mContext: Context) {
         }
     }
 
-    private fun isAllPermissionGranted() : Boolean = mPermission.none { !it.isGranted }
+    fun isAllPermissionGranted() : Boolean = mPermission.none { !it.isGranted }
 
     private fun isAnyPermissionDenied(): Boolean = mPermission.any { !it.isFirstTime }
 

@@ -2,12 +2,14 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.Manifest
 import androidx.lifecycle.*
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.Metric
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
@@ -17,6 +19,7 @@ import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
@@ -35,6 +38,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val playPusher: PlayPusher,
         private val permissionUtil: PlayPermissionUtil,
         private val getConfigurationUseCase: GetConfigurationUseCase,
+        private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
         private val dispatcher: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
@@ -45,9 +49,9 @@ class PlayBroadcastViewModel @Inject constructor(
     private val scope = CoroutineScope(job + dispatcher.main)
 
     val channelId: String
-        get() = observableConfigInfo.value?.channelId?.toString() ?: throw IllegalStateException("Channel ID has not been retrieved")
+        get() = _observableChannelId.value?: throw IllegalStateException("Channel ID has not been retrieved")
 
-    val observableConfigInfo: LiveData<ConfigurationUiModel>
+    val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
     val observableChannelInfo: LiveData<ChannelInfoUiModel>
         get() = _observableChannelInfo
@@ -55,7 +59,7 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
         get() = _observableTotalLike
-    val observableLiveInfoState: LiveData<PlayPusherInfoState>
+    val observableLiveInfoState: LiveData<Event<PlayPusherInfoState>>
         get() = _observableLiveInfoState
     val observableLiveNetworkState: LiveData<Event<PlayPusherNetworkState>>
         get() = _observableLiveNetworkState
@@ -69,16 +73,13 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableNewMetric
     val observableProductList: LiveData<List<ProductContentUiModel>>
         get() = _observableProductList
-    val observableShareInfo: LiveData<ShareUiModel>
-        get() = _observableShareInfo
 
-    val configuration: ConfigurationUiModel?
-        get() = _observableConfigInfo.value
     val shareInfo: ShareUiModel?
         get() = _observableShareInfo.value
 
-    private val _observableConfigInfo = MutableLiveData<ConfigurationUiModel>()
+    private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<ChannelInfoUiModel>()
+    private val _observableCreateChannel = MutableLiveData<NetworkResult<String>>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
@@ -90,12 +91,28 @@ class PlayBroadcastViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
+    private val _observableChannelId: LiveData<String> = MediatorLiveData<String>().apply {
+        addSource(_observableConfigInfo) {
+            value = if (it is NetworkResult.Success) it.data.channelId else ""
+        }
+        addSource(_observableCreateChannel) {
+            value = if (it is NetworkResult.Success) it.data else ""
+        }
+        addSource(_observableChannelInfo) {
+            value = it.channelId
+        }
+    }
+
     private val _observableLiveNetworkState = MediatorLiveData<Event<PlayPusherNetworkState>>().apply {
         addSource(playPusher.getObservablePlayPusherNetworkState()) {
             value = Event(it)
         }
     }
-    private val _observableLiveInfoState = playPusher.getObservablePlayPusherInfoState()
+    private val _observableLiveInfoState = MediatorLiveData<Event<PlayPusherInfoState>>().apply {
+        addSource(playPusher.getObservablePlayPusherInfoState()) {
+            value = Event(it)
+        }
+    }
     private val _observablePermissionState = permissionUtil.getObservablePlayPermissionState()
     private val socketResponseHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(playSocket.getObservablePlaySocketMessage()) {
@@ -112,10 +129,6 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     init {
-        permissionUtil.checkPermission(arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO))
-        playPusher.create()
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
 
         mockChatList()
@@ -136,39 +149,51 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun getConfiguration() {
-        scope.launch {
-            val configurationUiModel = PlayBroadcastMocker.getMockConfiguration()
-            _observableConfigInfo.value = configurationUiModel
+        scope.launchCatchError(block = {
+            _observableConfigInfo.value = NetworkResult.Loading
 
-            // TODO("tidying later, still waiting for the API to finish")
-            if (configurationUiModel.haveOnGoingLive) {
-                getChannel(configurationUiModel.channelId)
-            } else {
-                if (configurationUiModel.channelId == 0)
-                    createChannel()
+//            val config = withContext(dispatcher.io) {
+//                getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
+//                return@withContext getConfigurationUseCase.executeOnBackground()
+//            }
+//            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
+            delay(3000)
+            val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel()
+
+            launch {
+                if (configUiModel.channelStatus == PlayChannelStatus.Unknown) createChannel()
+                else getChannel(configUiModel.channelId)
             }
 
-            // TODO("match local countdown timer with socket")
-            playPusher.addMaxStreamDuration(configurationUiModel.durationConfig.duration)
-            playPusher.addMaxPauseDuration(configurationUiModel.durationConfig.pauseDuration)
+            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+            // configure maximum pause duration
+            playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration)
+
+        }) {
+            _observableConfigInfo.value = NetworkResult.Fail(it) { getConfiguration() }
         }
     }
 
     private suspend fun createChannel() = withContext(dispatcher.io) {
-        return@withContext createChannelUseCase.apply {
+        val channelId = createChannelUseCase.apply {
             params = CreateChannelUseCase.createParams(
                     authorId = userSession.shopId
             )
         }.executeOnBackground()
+
+        _observableCreateChannel.value = NetworkResult.Success(channelId.id)
     }
 
-    // TODO("get channel, still waiting for the API to finish")
-    fun getChannel(channelId: Int): ChannelInfoUiModel {
-        val channelInfo = PlayBroadcastMocker.getMockUnStartedChannel()
-        _observableChannelInfo.value = channelInfo
-        _observableTotalView.value = PlayBroadcastMocker.getMockTotalView()
-        _observableTotalLike.value = PlayBroadcastMocker.getMockTotalLike()
-        return channelInfo
+    private suspend fun getChannel(channelId: String) = withContext(dispatcher.io) {
+        val channel = getChannelUseCase.apply {
+            params = GetChannelUseCase.createParams(
+                    channelId = channelId
+            )
+        }.executeOnBackground()
+
+        _observableChannelInfo.value = PlayBroadcastUiMapper.mapChannelInfo(channel)
+        _observableProductList.value = PlayBroadcastUiMapper.mapProductList(channel.productTags)
+        _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
     }
 
     private fun updateChannelStatus(status: PlayChannelStatus) {
@@ -176,11 +201,29 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     /**
+     * Permission
+     */
+    fun checkPermission() {
+        permissionUtil.checkPermission(arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO))
+    }
+
+    fun allPermissionGranted() = permissionUtil.isAllPermissionGranted()
+
+    fun getPermissionUtil(): PlayPermissionUtil {
+        return permissionUtil
+    }
+    /**
      * Apsara integration
      */
-    fun startPushBroadcast(ingestUrl: String) {
+    fun initPushStream() {
+        playPusher.create()
+    }
+
+    fun startPushStream(ingestUrl: String) {
         scope.launch {
-            if (ingestUrl.isNotEmpty()) {
+            if (ingestUrl.isNotEmpty() && allPermissionGranted()) {
                 startWebSocket()
                 updateChannelStatus(PlayChannelStatus.Active)
                 playPusher.startPush(ingestUrl)
@@ -190,7 +233,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun resumePushStream() {
         scope.launch {
-            if (!playPusher.isPushing()) {
+            if (!playPusher.isPushing() && allPermissionGranted()) {
                 updateChannelStatus(PlayChannelStatus.Active)
                 playPusher.resume()
             }
@@ -206,13 +249,17 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun stopPushBroadcast() {
+    fun stopPushStream() {
         scope.launch {
-            updateChannelStatus(PlayChannelStatus.Finish)
+            updateChannelStatus(PlayChannelStatus.Stop)
             playPusher.stopPush()
             playPusher.stopPreview()
             playSocket.destroy()
         }
+    }
+
+    fun getPlayPusher(): PlayPusher {
+        return playPusher
     }
 
     private fun startWebSocket() {
@@ -245,14 +292,6 @@ class PlayBroadcastViewModel @Inject constructor(
                 metricList.remove(metric)
             }
         }
-    }
-
-    fun getPlayPusher(): PlayPusher {
-        return playPusher
-    }
-
-    fun getPermissionUtil(): PlayPermissionUtil {
-        return permissionUtil
     }
 
     /**

@@ -20,7 +20,12 @@ import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
+import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
@@ -30,6 +35,8 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteraction
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -48,6 +55,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private lateinit var containerSetup: FrameLayout
     private lateinit var viewActionBar: ActionBarPartialView
     private lateinit var viewRequestPermission: PlayRequestPermissionView
+    private lateinit var loaderView: LoaderUnify
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
@@ -58,6 +66,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
+        initPushStream()
         setupContent()
         initView()
         getConfiguration()
@@ -79,6 +88,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
+    private fun initPushStream() {
+        viewModel.checkPermission()
+        viewModel.initPushStream()
+    }
+
     private fun setFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
@@ -95,6 +109,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private fun initView() {
         containerSetup = findViewById(R.id.fl_setup)
         viewRequestPermission = findViewById(R.id.view_request_permission)
+        loaderView = findViewById(R.id.loader_initial)
 
         viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener{
             override fun onCameraIconClicked() {
@@ -182,14 +197,22 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
      * Observe
      */
     private fun observeConfiguration() {
-        viewModel.observableConfigInfo.observe(this, Observer {
-            if (it.streamAllowed) {
-                when {
-                    it.haveOnGoingLive -> openBroadcastActivePage()
-                    else -> openBroadcastSetupPage()
+        viewModel.observableConfigInfo.observe(this, Observer { result ->
+            when(result) {
+                is NetworkResult.Loading -> loaderView.show()
+                is NetworkResult.Success -> {
+                    loaderView.hide()
+                    handleChannelConfiguration(result.data)
                 }
-            } else {
-                // TODO("handle when stream not allowed")
+                is NetworkResult.Fail -> {
+                    loaderView.hide()
+                    findViewById<View>(android.R.id.content).showToaster(
+                            message = getString(R.string.play_broadcast_global_error),
+                            duration = Toaster.LENGTH_INDEFINITE,
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = View.OnClickListener { result.onRetry }
+                    )
+                }
             }
         })
     }
@@ -204,6 +227,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         })
     }
     //endregion
+
+    private fun handleChannelConfiguration(config: ConfigurationUiModel) =
+            if (config.streamAllowed) {
+                when(config.channelStatus) {
+                    PlayChannelStatus.Live -> showDialogWhenActiveOnOtherDevices()
+                    PlayChannelStatus.Pause -> openBroadcastActivePage()
+                    else -> openBroadcastSetupPage() /* TODO("handle when channel Deleted & Stop") */
+                }
+            } else { /* TODO("handle when stream not allowed") */ }
 
     private fun onPermissionGranted() {
         containerSetup.show()
@@ -232,5 +264,17 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun openBroadcastActivePage() {
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
+    }
+
+    private fun showDialogWhenActiveOnOtherDevices() {
+        getDialog(
+                title = getString(R.string.play_dialog_error_active_other_devices_title),
+                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                primaryCta = getString(R.string.play_broadcast_exit),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    finish()
+                }
+        ).show()
     }
 }

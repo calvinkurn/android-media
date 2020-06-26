@@ -38,9 +38,7 @@ class CreateChannelUseCase @Inject constructor(
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<CreateChannelBroadcastResponse.CreateChannelBroadcastData>(CreateChannelBroadcastResponse.CreateChannelBroadcastData::class.java)
-        response?.data?.channelId?.let {
-            return it
-        }
+        response?.data?.getChannelId?.let { return it }
         throw MessageErrorException("Terjadi kesalahan pada server") // TODO("replace with default error message")
     }
 

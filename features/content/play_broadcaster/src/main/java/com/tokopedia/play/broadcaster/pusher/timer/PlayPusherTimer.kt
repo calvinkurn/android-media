@@ -47,6 +47,10 @@ class PlayPusherTimer(val context: Context,
         saveLongValue(PLAY_TIMER_LAST_MILLIS, System.currentTimeMillis())
     }
 
+    fun destroy() {
+        countDownTimer.cancel()
+    }
+
     private fun getCountDownTimer(liveStreamDuration: Long): PlayCountDownTimer {
         return object : PlayCountDownTimer(liveStreamDuration, DEFAULT_INTERVAL) {
             override fun onFinish() {
