@@ -448,4 +448,5 @@ Anda di sini.</string>
     <string name="reason_cancel">Ingin mengubah pesanan</string>
     <string name="show_bottomsheet">Show Bottomsheet</string>
     <string name="bottomsheet_title">Pilih alasan pembatalan</string>
+    <string name="fail_cancellation">Terjadi kesalahan, mohon dicoba kembali</string>
 </resources>

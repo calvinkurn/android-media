@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.bottomsheet_cancel_item.view.*
  */
 
 class GetCancelSubReasonBottomSheetAdapter(private var listener: ActionListener): RecyclerView.Adapter<GetCancelSubReasonBottomSheetAdapter.ViewHolder>() {
-    // var mapKey = HashMap<String, String>()
     var listSubReason = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem>()
 
     interface ActionListener {
@@ -25,7 +24,6 @@ class GetCancelSubReasonBottomSheetAdapter(private var listener: ActionListener)
     }
 
     override fun getItemCount(): Int {
-        // return mapKey.size
         return listSubReason.size
     }
 

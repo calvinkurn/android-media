@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -225,7 +226,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    // muncul error default
+                    val toasterFail = Toaster
+                    view?.let { v ->
+                        toasterFail.make(v, getString(R.string.fail_cancellation), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, BuyerConsts.ACTION_OK)
+                    }
                 }
             }
         })
