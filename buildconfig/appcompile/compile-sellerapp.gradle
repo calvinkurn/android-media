@@ -5,6 +5,7 @@ include "features:category:tradein_common"
 include "features:category:tradein"
 
 include "features:common:developer_options"
+include "features:common:developer_options_noop"
 include "features:common:nps"
 include "features:common:resources_common"
 include "features:category:common_tradein"
@@ -151,7 +152,6 @@ include "features:fintech:merchant_lending_widget"
 
 include 'tkpdloyalty'
 include 'tkpdcore'
-include 'tkpdsession'
 include 'tkpddesign'
 include 'tkpdseller'
 include 'tkpdabstraction'
