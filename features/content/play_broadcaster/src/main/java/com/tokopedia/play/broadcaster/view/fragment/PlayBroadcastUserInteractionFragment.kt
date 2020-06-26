@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
@@ -20,6 +21,7 @@ import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
@@ -43,6 +45,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var ivShareLink: AppCompatImageView
     private lateinit var ivProductTag: AppCompatImageView
     private lateinit var pmvMetrics: PlayMetricsView
+    private lateinit var countdownTimer: PlayTimerCountDown
 
     private lateinit var chatListView: ChatListPartialView
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
@@ -85,6 +88,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ivShareLink = view.findViewById(R.id.iv_share_link)
         ivProductTag = view.findViewById(R.id.iv_product_tag)
         pmvMetrics = view.findViewById(R.id.pmv_metrics)
+        countdownTimer = view.findViewById(R.id.countdown_timer)
 
         chatListView = ChatListPartialView(view as ViewGroup)
     }
@@ -95,6 +99,22 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         ivShareLink.setOnClickListener{ doCopyShareLink() }
         ivProductTag.setOnClickListener { doShowProductInfo() }
+
+        val animationProperty = PlayTimerCountDown.AnimationProperty.Builder()
+                .setFullRotationInterval(3000)
+                .setTextCountDownInterval(2000)
+                .setTotalCount(3)
+                .build()
+
+        countdownTimer.startCountDown(animationProperty, object : PlayTimerCountDown.Listener {
+            override fun onTick(milisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                countdownTimer.gone()
+//                setupContent()
+            }
+        })
     }
 
     private fun setupContent() {
