@@ -6,6 +6,11 @@ import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponseWrapper
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.utils.verifyCoroutineFailEquals
+import com.tokopedia.review.utils.verifyCoroutineSuccessEquals
+import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
+import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.review.utils.verifyErrorEquals
 import com.tokopedia.review.utils.verifySuccessEquals
 import io.mockk.coEvery
@@ -56,6 +61,34 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
         verifyReviewListErrorEquals(Fail(exception, page))
     }
 
+    @Test
+    fun `when getProductIncentiveOvo should execute expected use case, and get expected data`() {
+        val response = ProductRevIncentiveOvoDomain()
+
+        onGetOvoIncentive_thenReturn(response)
+
+        viewModel.getProductIncentiveOvo()
+
+        val expectedResponse = CoroutineSuccess(response)
+
+        verifyGetOvoIncentiveUseCaseExecuted()
+        viewModel.incentiveOvo.verifyCoroutineSuccessEquals(expectedResponse)
+    }
+
+    @Test
+    fun `when getProductIncentiveOvo fails should execute expected use case, and fail with expected exception`() {
+        val exception = NetworkErrorException()
+
+        onGetOvoIncentiveFail_thenReturn(exception)
+
+        viewModel.getProductIncentiveOvo()
+
+        val expectedError = CoroutineFail(exception)
+
+        verifyGetOvoIncentiveUseCaseExecuted()
+        viewModel.incentiveOvo.verifyCoroutineFailEquals(expectedError)
+    }
+
     private fun verifyReviewListEquals(response: Success<ProductrevWaitForFeedbackResponse>) {
         viewModel.reviewList.verifySuccessEquals(response)
     }
@@ -66,6 +99,18 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
     private fun verifyGetReviewUseCaseExecuted() {
         coVerify { productrevWaitForFeedbackUseCase.executeOnBackground() }
+    }
+
+    private fun verifyGetOvoIncentiveUseCaseExecuted() {
+        coVerify { getProductIncentiveOvo.getIncentiveOvo() }
+    }
+
+    private fun onGetOvoIncentive_thenReturn(response: ProductRevIncentiveOvoDomain) {
+        coEvery { getProductIncentiveOvo.getIncentiveOvo() } returns response
+    }
+
+    private fun onGetOvoIncentiveFail_thenReturn(exception: Exception) {
+        coEvery { getProductIncentiveOvo.getIncentiveOvo() } throws exception
     }
 
     private fun onGetReview_thenReturn(response: ProductrevWaitForFeedbackResponseWrapper) {

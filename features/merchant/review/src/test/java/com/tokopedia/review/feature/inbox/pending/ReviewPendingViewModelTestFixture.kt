@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inbox.pending
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.review.coroutine.TestCoroutineDispatchers
+import com.tokopedia.review.feature.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevWaitForFeedbackUseCase
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,6 +19,9 @@ abstract class ReviewPendingViewModelTestFixture {
     @RelaxedMockK
     lateinit var productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase
 
+    @RelaxedMockK
+    lateinit var getProductIncentiveOvo: GetProductIncentiveOvo
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -26,6 +30,6 @@ abstract class ReviewPendingViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ReviewPendingViewModel(TestCoroutineDispatchers, userSession, productrevWaitForFeedbackUseCase)
+        viewModel = ReviewPendingViewModel(TestCoroutineDispatchers, userSession, productrevWaitForFeedbackUseCase, getProductIncentiveOvo)
     }
 }
