@@ -88,7 +88,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputLayoutModelMap.forEach {
             val variantDetail = it.value
             products.getOrNull(index)?.apply {
-                price = variantDetail.price.toBigIntegerOrNull().orZero()
+                price = variantDetail.price.replace(".", "").toBigIntegerOrNull().orZero()
                 sku = variantDetail.sku
                 stock = variantDetail.stock.toIntOrZero()
                 status = if (variantDetail.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING

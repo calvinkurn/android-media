@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
+import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
@@ -25,10 +27,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
-import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
 import javax.inject.Inject
@@ -188,14 +187,26 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun setupVariantDetailFields(selectedUnitValues: List<OptionInputModel>) {
         // without variant unit values combination
-        selectedUnitValues.forEach { unitValue ->
-            val variantDetailInputModel = VariantDetailInputLayoutModel(unitValueLabel = unitValue.value)
+        val productVariants = viewModel.productInputModel.value?.variantInputModel?.products.orEmpty()
+        selectedUnitValues.forEachIndexed { productVariantIndex, unitValue ->
+            val productVariant = productVariants
+                    .getOrElse(productVariantIndex) { ProductVariantInputModel() }
+            val priceString = productVariant.price.toString()
+            val variantDetailInputModel = VariantDetailInputLayoutModel(
+                    price = formatProductPriceInput(priceString),
+                    isActive = productVariant.status == STATUS_ACTIVE_STRING,
+                    sku = productVariant.sku,
+                    stock = productVariant.stock.toString(),
+                    unitValueLabel = unitValue.value)
             val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
             fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
         }
     }
 
     private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>) {
+        //increement for indexing product variant
+        var productVariantIndex = 0
+        val productVariants = viewModel.productInputModel.value?.variantInputModel?.products.orEmpty()
         // variant level 1 properties
         val selectedVariantLevel1 = selectedVariants[VARIANT_VALUE_LEVEL_ONE_POSITION]
         val unitValueLevel1 = selectedVariantLevel1.options
@@ -210,10 +221,19 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             viewModel.updateVariantDetailHeaderMap(headerPosition, false)
             // render variant unit value fields
             unitValueLevel2.forEach { level2Value ->
-                val variantDetailInputModel = VariantDetailInputLayoutModel(headerPosition = headerPosition, unitValueLabel = level2Value.value)
+                val productVariant = productVariants
+                        .getOrElse(productVariantIndex) { ProductVariantInputModel() }
+                val priceString = productVariant.price.toString()
+                val variantDetailInputModel = VariantDetailInputLayoutModel(
+                        price = formatProductPriceInput(priceString),
+                        isActive = productVariant.status == STATUS_ACTIVE_STRING,
+                        sku = productVariant.sku,
+                        stock = productVariant.stock.toString(),
+                        headerPosition = headerPosition,
+                        unitValueLabel = level2Value.value)
                 val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
                 fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
-
+                productVariantIndex++
             }
         }
         // set input field size
