@@ -59,7 +59,7 @@ class ChatItemListViewHolder(
     }
 
     private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
-        if (element.isReplyTopBot() && element.isRead() && listener.isTabSeller()) {
+        if (element.isReplyTopBot() && element.isUnread() && listener.isTabSeller()) {
             smartReplyIndicator?.show()
             unreadCounter.hide()
         } else {
@@ -115,7 +115,7 @@ class ChatItemListViewHolder(
         if (chat.isUnread() && attributes != null) {
             chat.markAsRead()
             listener.decreaseNotificationCounter()
-            bindReadState(chat)
+            bindSmartReplyIndicator(chat)
         }
 
         listener.chatItemClicked(chat, adapterPosition)
