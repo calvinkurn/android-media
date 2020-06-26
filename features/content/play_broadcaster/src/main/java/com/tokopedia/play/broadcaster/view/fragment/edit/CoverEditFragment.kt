@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
@@ -118,8 +119,20 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
     private fun openCoverCropEditFragment() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val fragmentInstance = fragmentFactory.instantiate(requireContext().classLoader, CoverCropEditBottomSheet::class.java.name) as CoverCropEditBottomSheet
-        mListener?.let { fragmentInstance.setListener(it) }
+        fragmentInstance.setListener(object : CoverCropEditBottomSheet.EditCoverResultListener {
+            override fun onChangeCoverFromCropping(coverSource: CoverSource) {
+                getImagePickerHelper()
+                        .show(coverSource)
+            }
 
+            override fun onSetupCanceled() {
+                mListener?.onSetupCanceled()
+            }
+
+            override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
+                mListener?.onSetupCompletedWithData(dataStore)
+            }
+        })
         fragmentInstance.show(childFragmentManager)
     }
 }

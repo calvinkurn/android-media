@@ -59,7 +59,7 @@ class PlayCoverSetupViewModel @Inject constructor(
             }
         }
 
-    private val source: CoverSource
+    val source: CoverSource
         get() {
             return when (val currentCropState = observableCropState.value) {
                 is CoverSetupState.Cropped -> currentCropState.coverSource

@@ -67,15 +67,15 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private var mListener: Listener? = null
 
-    private val isTitleEditable: Boolean
-        get() = arguments?.getBoolean(EXTRA_TITLE_EDITABLE, true) ?: true
+    private val isEditCoverMode: Boolean
+        get() = arguments?.getBoolean(EXTRA_IS_EDIT_COVER_MODE, false) ?: false
 
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
         val state = viewModel.cropState
         return if (state is CoverSetupState.Cropping) {
-            onCancelCropImage(state.coverSource)
+            onChangeCoverFromCropping(state.coverSource)
             true
         } else false
     }
@@ -209,14 +209,14 @@ class PlayCoverSetupFragment @Inject constructor(
                         }
 
                         viewModel.setCroppedCover(croppedUri)
-                        if (!isTitleEditable) finishSetup()
+                        if (isEditCoverMode) finishSetup()
                     }
                 } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
             }
 
             override fun onChangeButtonClicked(view: CoverCropPartialView) {
-                onCancelCropImage(CoverSource.None)
+                onChangeCoverFromCropping(viewModel.source)
             }
         })
     }
@@ -247,22 +247,22 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun showInitCoverLayout(coverImageUri: Uri?) {
-        if (isTitleEditable) {
-            coverSetupView.show()
-            coverCropView.hide()
+        coverSetupView.show()
+        coverCropView.hide()
 
-            coverSetupView.setImage(coverImageUri)
-        }
+        coverSetupView.setImage(coverImageUri)
     }
 
     private fun removeCover() {
         viewModel.removeCover()
     }
 
-    private fun onCancelCropImage(source: CoverSource) {
-        onBackFromCropping(source)
-        showInitCoverLayout(null)
-        removeCover()
+    private fun onChangeCoverFromCropping(source: CoverSource) {
+        if (mListener?.onCancelCropping(source) == false) {
+            onBackFromCropping(source)
+            showInitCoverLayout(null)
+            removeCover()
+        }
     }
 
     private fun getImagePickerHelper(): CoverImagePickerHelper {
@@ -457,7 +457,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     companion object {
-        const val EXTRA_TITLE_EDITABLE = "title_editable"
+        const val EXTRA_IS_EDIT_COVER_MODE = "is_edit_cover_mode"
 
         private const val REQUEST_CODE_PERMISSION_COVER_CHOOSER = 9090
         private const val REQUEST_CODE_PERMISSION_CROP_COVER = 9191
@@ -468,6 +468,11 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     interface Listener {
+
+        /**
+         * @return true means cancel has been handled by the listener
+         */
+        fun onCancelCropping(coverSource: CoverSource): Boolean = false
         fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore)
     }
 }
