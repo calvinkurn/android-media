@@ -46,10 +46,10 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
     override fun bind(element: ShopInvoice?) {
         element?.let {
             if(element.shopName.isNullOrBlank()){
-                tvShopName.visibility=View.GONE
+                tvShopName.gone()
 
             }else{
-                tvShopName.visibility=View.VISIBLE
+                tvShopName.visible()
                 tvShopName.text = element.shopName
 
             }
