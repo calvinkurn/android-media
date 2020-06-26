@@ -64,5 +64,4 @@ class AddMediaUseCase @Inject constructor(
                 PARAMS_TYPE to type
         )
     }
-
 }

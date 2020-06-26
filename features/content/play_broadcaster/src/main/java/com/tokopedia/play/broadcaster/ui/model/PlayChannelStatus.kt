@@ -11,7 +11,7 @@ enum class PlayChannelStatus(val value: String) {
     Live("2"),
     Pause("3"),
     Stop("4"),
-    Unknown("");
+    Unknown("-2");
 
     companion object {
 

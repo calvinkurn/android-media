@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.broadcaster.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.CreateChannelBroadcastResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -15,7 +16,7 @@ import javax.inject.Inject
  */
 class CreateChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<CreateChannelBroadcastResponse.GetChannelId>() {
+) : UseCase<ChannelId>() {
 
     private val query = """
            mutation createChannel(${'$'}title: String, ${'$'}authorId: String!, ${'$'}authorType: Int!, ${'$'}status: Int!){
@@ -33,13 +34,13 @@ class CreateChannelUseCase @Inject constructor(
 
     var params: Map<String, Any> = emptyMap()
 
-    override suspend fun executeOnBackground(): CreateChannelBroadcastResponse.GetChannelId {
+    override suspend fun executeOnBackground(): ChannelId {
         val gqlRequest = GraphqlRequest(query, CreateChannelBroadcastResponse.CreateChannelBroadcastData::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<CreateChannelBroadcastResponse.CreateChannelBroadcastData>(CreateChannelBroadcastResponse.CreateChannelBroadcastData::class.java)
         response?.data?.getChannelId?.let { return it }
-        throw MessageErrorException("Terjadi kesalahan pada server") // TODO("replace with default error message")
+        throw MessageErrorException("Ada sedikit kendala pada sistem.")
     }
 
     companion object {
