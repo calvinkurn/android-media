@@ -24,7 +24,7 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "dimension40": "/searchproduct - topads productlist",
           "dimension83": "{{bebas ongkir|none / other}}"
         }
@@ -44,7 +44,7 @@
           "item_category": "{{.*}}",
           "item_variant": "{{.*}}",
           "userId": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "shopId": "{{.*}}",
           "dimension40": "{{/searchproduct - .* - product}}",
           "dimension61": "{{.*}}",
@@ -69,7 +69,7 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "dimension40": "{{.*}}",
           "dimension83": "{{bebas ongkir|none / other}}"
         }
@@ -90,7 +90,7 @@
           "item_category": "{{.*}}",
           "item_variant": "{{.*}}",
           "userId": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "shopId": "{{.*}}",
           "dimension40": "{{/searchproduct - .* - product}}",
           "dimension61": "{{.*}}",

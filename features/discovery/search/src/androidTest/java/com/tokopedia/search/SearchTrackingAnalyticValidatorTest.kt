@@ -38,12 +38,6 @@ internal class SearchTrackingAnalyticValidatorTest {
     @get:Rule
     var activityRule = ActivityTestRule(SearchActivity::class.java, false, false)
 
-    private fun createIntent(query: String): Intent {
-        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, SearchActivity::class.java).also {
-            it.data = Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=" + query)
-        }
-    }
-
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
@@ -52,20 +46,31 @@ internal class SearchTrackingAnalyticValidatorTest {
 
     @Before
     fun setUp() {
-        val firebase = FirebaseRemoteConfigImpl(context)
-        firebase.setString(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, "true")
-        firebase.setString(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, "false")
-        firebase.setString(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, "true")
-        firebase.setString(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, "true")
+        editFirebaseRemoteConfig()
 
-        activityRule.launchActivity(createIntent("samsung"))
+        gtmLogDBSource.deleteAll().subscribe()
 
+        activityRule.launchActivity(createIntent())
         recyclerView = activityRule.activity.findViewById(recyclerViewId)
         recyclerViewIdlingResource = RecyclerViewIdlingResource(recyclerView)
 
         IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
+    }
 
-        gtmLogDBSource.deleteAll().subscribe()
+    private fun editFirebaseRemoteConfig() {
+        val firebase = FirebaseRemoteConfigImpl(context)
+
+        firebase.setString(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true.toString())
+        firebase.setString(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false.toString())
+        firebase.setString(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true.toString())
+        firebase.setString(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true.toString())
+        firebase.setString(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true.toString())
+    }
+
+    private fun createIntent(): Intent {
+        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, SearchActivity::class.java).also {
+            it.data = Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=samsung")
+        }
     }
 
     @After
