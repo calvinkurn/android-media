@@ -61,49 +61,53 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         adapter.notifyDataSetChanged()
-        recyclerView.layoutManager?.run {
-            if (selectedProductPos > 0) {
-                this.scrollToPosition(selectedProductPos)
-            }
-        }
-        getVisibleProductItemsToUsersTracking(productList)
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    getVisibleProductItemsToUsersTracking(productList)
-                }
-            }
-        })
+
+
+// TODO: restructure the UI & fix impression product list
+//  scroll to selected product not work because of recyclerView.isNestedScrollingEnabled = false
+//        recyclerView.layoutManager?.run {
+//            if (selectedProductPos > 0) {
+//                this.scrollToPosition(selectedProductPos)
+//            }
+//        }
+//        getVisibleProductItemsToUsersTracking(productList)
+//        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                    getVisibleProductItemsToUsersTracking(productList)
+//                }
+//            }
+//        })
     }
 
-    fun getVisibleProductItemsToUsersTracking(productList: List<TelcoProduct>) {
-        var firstPos = 0
-        var lastPos = 0
-        if (recyclerView.layoutManager is LinearLayoutManager) {
-            firstPos = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-            lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-        } else if (recyclerView.layoutManager is GridLayoutManager) {
-            firstPos = (recyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
-            lastPos = (recyclerView.layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
-        }
-
-
-        val digitalTrackProductTelcoList = mutableListOf<DigitalTrackProductTelco>()
-        for (i in firstPos..lastPos) {
-            if (firstPos >= 0 && lastPos <= productList.size - 1) {
-                digitalTrackProductTelcoList.add(DigitalTrackProductTelco(productList[i], i))
-            }
-        }
-        if (digitalTrackProductTelcoList.size > 0 &&
-                digitalTrackProductTelcoList.size != digitalTrackTelcoPrev.size &&
-                digitalTrackProductTelcoList != digitalTrackTelcoPrev) {
-            listener.onTrackImpressionProductsList(digitalTrackProductTelcoList)
-
-            digitalTrackTelcoPrev.clear()
-            digitalTrackTelcoPrev.addAll(digitalTrackProductTelcoList)
-        }
-    }
+//    fun getVisibleProductItemsToUsersTracking(productList: List<TelcoProduct>) {
+//        var firstPos = 0
+//        var lastPos = 0
+//        if (recyclerView.layoutManager is LinearLayoutManager) {
+//            firstPos = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+//            lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+//        } else if (recyclerView.layoutManager is GridLayoutManager) {
+//            firstPos = (recyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
+//            lastPos = (recyclerView.layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
+//        }
+//
+//
+//        val digitalTrackProductTelcoList = mutableListOf<DigitalTrackProductTelco>()
+//        for (i in firstPos..lastPos) {
+//            if (firstPos >= 0 && lastPos <= productList.size - 1) {
+//                digitalTrackProductTelcoList.add(DigitalTrackProductTelco(productList[i], i))
+//            }
+//        }
+//        if (digitalTrackProductTelcoList.size > 0 &&
+//                digitalTrackProductTelcoList.size != digitalTrackTelcoPrev.size &&
+//                digitalTrackProductTelcoList != digitalTrackTelcoPrev) {
+//            listener.onTrackImpressionProductsList(digitalTrackProductTelcoList)
+//
+//            digitalTrackTelcoPrev.clear()
+//            digitalTrackTelcoPrev.addAll(digitalTrackProductTelcoList)
+//        }
+//    }
 
     fun selectProductItem(itemProduct: TelcoProduct) {
         adapter.selectItemProduct(itemProduct)
