@@ -44,7 +44,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     }
 
     private fun `Given new quick filter is enabled`() {
-        every { remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true) } answers { true }
+        every { remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP) } returns true
     }
 
     private fun `Given isBottomSheetFilterRevampABTestEnabled return true`() {

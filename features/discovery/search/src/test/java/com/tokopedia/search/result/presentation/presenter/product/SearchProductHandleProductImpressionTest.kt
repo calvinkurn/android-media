@@ -111,7 +111,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
     }
 
     private fun `Given tracking by view port is disabled`() {
-        every { remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { false }
+        every { remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT) } returns false
     }
 
     private fun `When handle product impressed for disabled tracking view port`(productItemViewModel: ProductItemViewModel?) {
