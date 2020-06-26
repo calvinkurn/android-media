@@ -109,6 +109,7 @@ class FlexBoxChatLayout : FrameLayout {
         val statusLayout = status?.layoutParams as LayoutParams
         val infoLayout = info?.layoutParams as LayoutParams
 
+        val maxWidth = totalWidth
         val availableWidth = totalWidth - paddingLeft - paddingRight
 
         measureChildWithMargins(message, widthMeasureSpec, 0, heightMeasureSpec, 0)
@@ -138,7 +139,7 @@ class FlexBoxChatLayout : FrameLayout {
         totalWidth = paddingLeft + paddingRight + messageWidth
         totalHeight = paddingTop + paddingBottom + messageHeight
 
-        if (totalWidth + statusWidth <= availableWidth) {
+        if (messageWidth + statusWidth <= availableWidth) {
             totalWidth += statusWidth
         } else if (lastLineWidth + statusWidth > availableWidth) {
             totalHeight += statusHeight
@@ -152,8 +153,8 @@ class FlexBoxChatLayout : FrameLayout {
             totalHeight += infoHeight
         }
 
-        if (totalWidth > availableWidth) {
-            totalWidth = availableWidth
+        if (totalWidth > maxWidth) {
+            totalWidth = maxWidth
         }
 
         setMeasuredDimension(totalWidth, totalHeight)
