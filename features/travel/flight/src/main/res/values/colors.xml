@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="widget_card_with_action_separator">#cfcfcf</color>
-
     <color name="flight_chips_danger_text">#ea212d</color>
     <color name="flight_chips_info_text">#009bff</color>
 
