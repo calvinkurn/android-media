@@ -193,7 +193,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     }
 
     override fun onProductItemClicked(data: ItemSellerSearchUiModel, position: Int) {
-        viewModel.insertSearchSeller(searchKeyword, data.id.orEmpty(), data.title.orEmpty(), position)
+        viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
         SellerSearchTracking.clickOnSearchResultProductEvent(userId)
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         dropKeyBoard()
