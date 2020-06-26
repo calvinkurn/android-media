@@ -32,12 +32,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.showcase.ShowCaseBuilder
-import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.RechargePrefix
+import com.tokopedia.topupbills.telco.data.TelcoAttributesProduct
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
@@ -81,7 +81,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             sharedModelPrepaid = viewModelProvider.get(SharedTelcoPrepaidViewModel::class.java)
-            sharedModelPrepaid.setShowTotalPrice(false)
         }
     }
 
@@ -170,6 +169,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_PREPAID)
     }
 
+    //region Promo and Recommendation
     override fun renderPromoAndRecommendation() {
         if (listMenu.size > 0 && !showProducts) {
             viewPager.adapter = null
@@ -205,6 +205,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             })
         }
     }
+    // endregion Promo and Recommendation
 
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
@@ -313,6 +314,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
+                productId = 0
                 telcoClientNumberWidget.clearFocusAutoComplete()
                 startActivityForResult(activity?.let {
                     DigitalSearchNumberActivity.newInstance(it,
@@ -368,6 +370,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onPageSelected(pos: Int) {
                 if (showProducts) {
+                    categoryId = getIdCategoryCurrentItem()
                     topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
                     sharedModelPrepaid.setShowTotalPrice(false)
                     sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
@@ -386,7 +389,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         viewPager.setCurrentItem(itemId, true)
     }
 
-    private fun getCategoryCurrentViewPager(): Int {
+    private fun getLabelActiveCategory(): String {
+        return when (getIdCategoryCurrentItem()) {
+            TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA
+            TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA
+            TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING
+            else -> ""
+        }
+    }
+
+    private fun getIdCategoryCurrentItem(): Int {
         return when (viewPager.currentItem) {
             0 -> TelcoCategoryType.CATEGORY_PULSA
             1 -> TelcoCategoryType.CATEGORY_PAKET_DATA
@@ -401,26 +413,46 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    // region Favorite Numbers
+    override fun setFavNumbers(data: TopupBillsFavNumber) {
+        performanceMonitoringStopTrace()
+        val favNumbers = data.favNumberList
+        favNumberList.addAll(favNumbers)
+        if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
+            telcoClientNumberWidget.setInputNumber(favNumbers[0].clientNumber)
+        }
+    }
+
+    override fun errorSetFavNumbers() {
+        performanceMonitoringStopTrace()
+    }
+
+    private fun performanceMonitoringStopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace()
+            traceStop = true
+        }
+    }
+
     override fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
-
-        var categoryProductSelected = 0
-        if (orderClientNumber.productId.isNotEmpty() && orderClientNumber.categoryId.isNotEmpty()) {
-            productId = getEmptyProduct().id.toInt()
-            categoryProductSelected = orderClientNumber.categoryId.toIntOrNull() ?: 0
-        }
-
-        if (categoryProductSelected == getCategoryCurrentViewPager()) {
+        productId = 0
+        if (orderClientNumber.productId.isNotEmpty() &&
+                orderClientNumber.categoryId.toIntOrNull() ?: 0 == getIdCategoryCurrentItem()) {
             productId = orderClientNumber.productId.toIntOrNull() ?: 0
         }
+
         telcoClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
         telcoClientNumberWidget.clearFocusAutoComplete()
+        sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
     }
 
     override fun handleCallbackSearchNumberCancel() {
         telcoClientNumberWidget.clearFocusAutoComplete()
     }
+    // endregion Favorite Numbers
 
+    //region Recent Numbers
     override fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
         if (operatorName.isNotEmpty()) {
@@ -441,27 +473,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             navigateToLoginPage()
         }
     }
-
-    override fun setFavNumbers(data: TopupBillsFavNumber) {
-        performanceMonitoringStopTrace()
-        val favNumbers = data.favNumberList
-        favNumberList.addAll(favNumbers)
-        if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
-            telcoClientNumberWidget.setInputNumber(favNumbers[0].clientNumber)
-            setTabFromProductSelected()
-        }
-    }
-
-    override fun errorSetFavNumbers() {
-        performanceMonitoringStopTrace()
-    }
-
-    private fun performanceMonitoringStopTrace() {
-        if (!traceStop) {
-            performanceMonitoring.stopTrace()
-            traceStop = true
-        }
-    }
+    //endregion Recent Numbers
 
     override fun setupCheckoutData() {
         val inputs = mutableMapOf<String, String>()
@@ -478,7 +490,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 return
             }
 
-            val showCaseDialog = generateShowcaseDialog()
+            val showCaseDialog = ShowCaseBuilder()
+                    .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                    .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
+                    .textColorRes(com.tokopedia.design.R.color.grey_400)
+                    .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
+                    .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                    .finishStringRes(R.string.telco_showcase_finish)
+                    .clickable(true)
+                    .useArrow(true)
+                    .build()
             val showCaseList = ArrayList<ShowCaseObject>()
             showCaseList.add(ShowCaseObject(telcoClientNumberWidget, getString(R.string.Telco_title_showcase_client_number),
                     getString(R.string.telco_label_showcase_client_number)))
@@ -486,19 +507,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     getString(R.string.telco_label_showcase_promo)))
             showCaseDialog.show(activity, showcaseTag, showCaseList)
         }
-    }
-
-    private fun generateShowcaseDialog(): ShowCaseDialog {
-        return ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
-                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
-                .textColorRes(com.tokopedia.design.R.color.grey_400)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
-                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                .finishStringRes(R.string.telco_showcase_finish)
-                .clickable(true)
-                .useArrow(true)
-                .build()
     }
 
     private fun generateCheckoutPassData(inputNumber: String, promoStatus: String,
