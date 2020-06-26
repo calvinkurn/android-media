@@ -59,7 +59,7 @@ class ChatItemListViewHolder(
     }
 
     private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
-        if (element.attributes?.isReplyByTopbot == true && listener.isTabSeller()) {
+        if (element.isReplyTopBot() && element.isRead() && listener.isTabSeller()) {
             smartReplyIndicator?.show()
             unreadCounter.hide()
         } else {
