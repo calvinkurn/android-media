@@ -343,6 +343,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
                     attributes?.readStatus = readStatus
                     attributes?.lastReplyTimeStr = newChat.time
+                    attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
                 }
             }
         }
