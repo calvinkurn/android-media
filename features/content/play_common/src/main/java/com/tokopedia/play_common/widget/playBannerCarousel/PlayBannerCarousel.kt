@@ -2,6 +2,7 @@ package com.tokopedia.play_common.widget.playBannerCarousel
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -23,7 +24,9 @@ import com.tokopedia.play_common.widget.playBannerCarousel.extension.showOrHideV
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.PlayBannerCarouselTypeImpl
 import com.tokopedia.play_common.widget.playBannerCarousel.widget.PlayBannerRecyclerView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
@@ -44,6 +47,8 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private val adapterTypeFactory = PlayBannerCarouselTypeImpl()
     private var listener: PlayBannerCarouselViewEventListener? = null
     private var playBannerCarouselDataModel: PlayBannerCarouselDataModel? = null
+
+    private var timer: CountDownTimer? = null
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -80,6 +85,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     fun onDestroy(){
         recyclerView.releasePlayer()
+        stopTimer()
     }
 
     fun setItem(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
@@ -122,22 +128,24 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         seeAllButton.setOnClickListener { listener?.onSeeMoreClick(playBannerCarouselDataModel) }
     }
 
-    private fun autoScrollLauncher(interval: Long) = launch(coroutineContext) {
-        delay(interval)
-        intervalAutoRefreshCoroutine()
-    }
+    private fun configureAutoRefresh(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
+        if(playBannerCarouselDataModel.isAutoRefresh){
+            timer = object : CountDownTimer(playBannerCarouselDataModel.isAutoRefreshTimer.toLong(), 1000) {
+                override fun onFinish() {
+                    playBannerCarouselDataModel?.let {
+                        recyclerView.resetVideoPlayer()
+                        listener?.onRefreshView(it)
+                    }
+                }
 
-    private suspend fun intervalAutoRefreshCoroutine() = withContext(Dispatchers.Main){
-        playBannerCarouselDataModel?.let {
-            recyclerView.resetVideoPlayer()
-            listener?.onRefreshView(it)
+                override fun onTick(millisUntilFinished: Long) {}
+            }
         }
     }
 
-    private fun configureAutoRefresh(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        if(playBannerCarouselDataModel.isAutoRefresh){
-            masterJob.cancelChildren()
-            autoScrollLauncher(playBannerCarouselDataModel.isAutoRefreshTimer.toLong())
+    private fun stopTimer(){
+        if(timer != null){
+            timer?.cancel()
         }
     }
 
