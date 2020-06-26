@@ -1,12 +1,17 @@
 package com.tokopedia.play.broadcaster.util
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.EditText
+import androidx.annotation.ColorRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
-import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -99,3 +104,18 @@ internal fun View.showToaster(
         type = type,
         actionText = actionLabel,
         clickListener = actionListener)
+
+internal fun EditText.setTextFieldColor(@ColorRes color: Int) {
+    val drawable: Drawable = background
+    drawable.setColorFilter(
+            MethodChecker.getColor(
+                    context,
+                    color
+            ), PorterDuff.Mode.SRC_ATOP)
+
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+        background = drawable
+    } else {
+        setBackgroundDrawable(drawable)
+    }
+}

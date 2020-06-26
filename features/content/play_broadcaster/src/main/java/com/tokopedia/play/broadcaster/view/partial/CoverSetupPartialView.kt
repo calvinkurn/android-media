@@ -14,9 +14,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.util.setTextFieldColor
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -121,15 +125,28 @@ class CoverSetupPartialView(
         )
     }
 
-    private fun setupTitleCounter() {
+    private fun updateTitleCounter(text: String) {
         tvCoverTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                coverTitle.length, mMaxTitleChars)
+                text.length, mMaxTitleChars)
+
+        tvCoverTitleCounter.setTextColor(
+                MethodChecker.getColor(
+                        tvCoverTitleCounter.context,
+                        if (text.isEmpty() && etCoverTitle.hasFocus()) R.color.Red_R500 else R.color.Neutral_N0
+                )
+        )
     }
 
     private fun setupTitleLabel(currentTitle: CharSequence) {
         val currentLabel = tvCoverTitleLabel.text.toString()
         val newText = getCoverTitleLabelText(currentLabel, currentTitle.toString())
         if (currentLabel != newText.toString()) tvCoverTitleLabel.text = newText
+    }
+
+    private fun updateTextField(text: String) {
+        etCoverTitle.setTextFieldColor(
+                if (text.isEmpty() && etCoverTitle.hasFocus()) R.color.Red_R500 else R.color.Neutral_N0
+        )
     }
 
     private fun setupTitleTextField() {
@@ -143,13 +160,19 @@ class CoverSetupPartialView(
 
             override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
                 setupTitleLabel(text)
-                setupTitleCounter()
+                updateTitleCounter(text.toString())
+                updateTextField(text.toString())
                 updateButtonState()
             }
         })
         etCoverTitle.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) v.clearFocus()
             false
+        }
+        etCoverTitle.setOnFocusChangeListener { _, hasFocus ->
+            updateTitleCounter(coverTitle)
+            updateTextField(coverTitle)
+            if (hasFocus) tvCoverTitleCounter.visible() else tvCoverTitleCounter.invisible()
         }
         etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(mMaxTitleChars))
     }
