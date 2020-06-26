@@ -249,6 +249,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TimberWrapper.init(ConsumerMainApplication.this);
         DevMonitoringUtils.initCrashMonitoring();
         DevMonitoringUtils.initANRWatcher();
+        DevMonitoringUtils.initTooLargeTool(ConsumerMainApplication.this);
         DevMonitoringUtils.initBlockCanary(context);
 
         initializeAbTestVariant();
