@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
@@ -99,28 +100,30 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         ivShareLink.setOnClickListener{ doCopyShareLink() }
         ivProductTag.setOnClickListener { doShowProductInfo() }
+    }
 
+    private fun setupContent() {
+        arguments?.getString(KEY_INGEST_URL)?.run {
+            if (this.isNotEmpty()) startCountDown(this)
+        }
+    }
+
+    private fun startCountDown(ingestUrl: String) {
         val animationProperty = PlayTimerCountDown.AnimationProperty.Builder()
                 .setFullRotationInterval(3000)
                 .setTextCountDownInterval(2000)
                 .setTotalCount(3)
                 .build()
 
+        countdownTimer.visible()
         countdownTimer.startCountDown(animationProperty, object : PlayTimerCountDown.Listener {
-            override fun onTick(milisUntilFinished: Long) {
-            }
+            override fun onTick(milisUntilFinished: Long) {}
 
             override fun onFinish() {
                 countdownTimer.gone()
-//                setupContent()
+                startLiveStreaming(ingestUrl)
             }
         })
-    }
-
-    private fun setupContent() {
-        arguments?.getString(KEY_INGEST_URL)?.run {
-            if (this.isNotEmpty()) startLiveStreaming(this)
-        }
     }
 
     override fun onResume() {

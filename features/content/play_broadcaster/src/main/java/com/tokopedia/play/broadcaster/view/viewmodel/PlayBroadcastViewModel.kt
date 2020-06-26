@@ -182,7 +182,6 @@ class PlayBroadcastViewModel @Inject constructor(
                     authorId = userSession.shopId
             )
         }.executeOnBackground()
-
         _observableCreateChannel.value = NetworkResult.Success(channelId.id)
     }
 
@@ -192,7 +191,6 @@ class PlayBroadcastViewModel @Inject constructor(
                     channelId = channelId
             )
         }.executeOnBackground()
-
         _observableChannelInfo.value = PlayBroadcastUiMapper.mapChannelInfo(channel)
         _observableProductList.value = PlayBroadcastUiMapper.mapProductList(channel.productTags)
         _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
