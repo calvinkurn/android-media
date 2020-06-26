@@ -8,15 +8,15 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics;
 import com.tokopedia.editshipping.data.network.ShippingNetworkParam;
-import com.tokopedia.editshipping.interactor.EditShippingInteractorImpl;
-import com.tokopedia.editshipping.interactor.EditShippingRetrofitInteractor;
+import com.tokopedia.editshipping.data.interactor.EditShippingInteractorImpl;
+import com.tokopedia.editshipping.data.interactor.EditShippingRetrofitInteractor;
 import com.tokopedia.editshipping.model.editshipping.Courier;
 import com.tokopedia.editshipping.model.editshipping.EditShippingCouriers;
 import com.tokopedia.editshipping.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.editshipping.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.editshipping.ui.EditShippingFragment;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
-import com.tokopedia.editshipping.ui.FragmentEditShipping;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -638,17 +638,17 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public void setSavedInstance(Bundle savedInstanceState) {
         if (savedInstanceState != null
-                && savedInstanceState.containsKey(FragmentEditShipping.CURRENT_COURIER_MODEL)) {
+                && savedInstanceState.containsKey(EditShippingFragment.CURRENT_COURIER_MODEL)) {
             setShopModelFromSavedInstance((EditShippingCouriers) savedInstanceState
-                    .getParcelable(FragmentEditShipping.CURRENT_COURIER_MODEL));
+                    .getParcelable(EditShippingFragment.CURRENT_COURIER_MODEL));
         } else if (savedInstanceState != null
-                && savedInstanceState.containsKey(FragmentEditShipping.CURRENT_OPEN_SHOP_MODEL)) {
+                && savedInstanceState.containsKey(EditShippingFragment.CURRENT_OPEN_SHOP_MODEL)) {
             setOpenShopModelFromSavedInstance((OpenShopData) savedInstanceState
-                    .getParcelable(FragmentEditShipping.CURRENT_OPEN_SHOP_MODEL));
+                    .getParcelable(EditShippingFragment.CURRENT_OPEN_SHOP_MODEL));
         } else if (savedInstanceState != null
-                && savedInstanceState.containsKey(FragmentEditShipping.RESUME_OPEN_SHOP_DATA_KEY)) {
+                && savedInstanceState.containsKey(EditShippingFragment.RESUME_OPEN_SHOP_DATA_KEY)) {
             setOpenShopModelFromSavedInstance((OpenShopData) savedInstanceState
-                    .getParcelable(FragmentEditShipping.RESUME_OPEN_SHOP_DATA_KEY));
+                    .getParcelable(EditShippingFragment.RESUME_OPEN_SHOP_DATA_KEY));
         }
     }
 

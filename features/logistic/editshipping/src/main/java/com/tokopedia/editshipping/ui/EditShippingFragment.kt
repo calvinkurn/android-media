@@ -2,7 +2,6 @@ package com.tokopedia.editshipping.ui
 
 import android.app.Activity
 import android.app.Fragment
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -18,16 +17,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.editshipping.R
-import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics
-import com.tokopedia.editshipping.customview.CourierView
-import com.tokopedia.editshipping.customview.ShippingAddressLayout
-import com.tokopedia.editshipping.customview.ShippingHeaderLayout
-import com.tokopedia.editshipping.customview.ShippingInfoBottomSheet
 import com.tokopedia.editshipping.model.editshipping.Courier
 import com.tokopedia.editshipping.model.editshipping.ShopShipping
 import com.tokopedia.editshipping.model.openshopshipping.OpenShopData
@@ -45,6 +35,18 @@ import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.OPEN_MAP
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.OPEN_SHOP_EDIT_SHIPPING_REQUEST_CODE
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.RESUME_OPEN_SHOP_DATA_KEY
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.SETTING_PAGE
+import com.tokopedia.editshipping.ui.customview.CourierView
+import com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
+import com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
+import com.tokopedia.editshipping.ui.customview.ShippingInfoBottomSheet
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity
+import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity
+import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
+import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.shopsettings.shipping.data.EditShippingUrl
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -56,13 +58,12 @@ import timber.log.Timber
  * Created by Kris on 2/19/2016.
  * TOKOPEDIA
  */
-class FragmentEditShipping : Fragment(), EditShippingViewListener {
+class EditShippingFragment : Fragment(), EditShippingViewListener {
     private val RESULT_INTENT_DISTRICT_RECOMMENDATION = "district_recommendation_address"
     var fragmentShipingMainLayout: LinearLayout? = null
     var fragmentShippingHeader: ShippingHeaderLayout? = null
     var addressLayout: ShippingAddressLayout? = null
     var submitButtonCreateShop: TextView? = null
-    var logisticRouter: LogisticRouter? = null
     private var chargeBoTicker: Ticker? = null
     private var editShippingPresenter: EditShippingPresenter? = null
     private var mainProgressDialog: TkpdProgressDialog? = null
@@ -71,19 +72,15 @@ class FragmentEditShipping : Fragment(), EditShippingViewListener {
     private var userSession: UserSessionInterface? = null
     private var mapMode = 0
 
-    override fun onCreate(savedInstanceState: Bundle) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedInstanceState: Bundle): View? {
-        val mainView: View = inflater.inflate(R.layout.fragment_shop_shipping, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val mainView = inflater.inflate(R.layout.fragment_shop_shipping, container, false)
         initiateVariables(mainView)
         hideAllView()
         setHasOptionsMenu(isEditShipping)
         return mainView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fragmentShippingHeader?.setViewListener(this)
         addressLayout?.setViewListener(this)
@@ -93,9 +90,6 @@ class FragmentEditShipping : Fragment(), EditShippingViewListener {
             editShippingPresenter?.setSavedInstance(arguments)
         } else {
             editShippingPresenter?.setSavedInstance(savedInstanceState)
-        }
-        if (activity.applicationContext is LogisticRouter) {
-            logisticRouter = activity.applicationContext as LogisticRouter
         }
     }
 
@@ -136,8 +130,8 @@ class FragmentEditShipping : Fragment(), EditShippingViewListener {
         userSession = UserSession(activity)
         chargeBoTicker = mainView.findViewById(R.id.ticker_charge_bo)
         fragmentShipingMainLayout = mainView.findViewById<View>(R.id.fragment_shipping_main_layout) as LinearLayout
-        fragmentShippingHeader = mainView.findViewById<View>(R.id.fragment_shipping_header) as ShippingHeaderLayout
-        addressLayout = mainView.findViewById<View>(R.id.shipping_address_layout) as ShippingAddressLayout
+        fragmentShippingHeader = mainView.findViewById<View>(R.id.fragment_shipping_header) as  com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
+        addressLayout = mainView.findViewById<View>(R.id.shipping_address_layout) as com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
         submitButtonCreateShop = mainView.findViewById<View>(R.id.submit_button_create_shop) as TextView
         submitButtonCreateShop?.setOnClickListener { submitButtonOnClickListener() }
     }
@@ -242,7 +236,7 @@ class FragmentEditShipping : Fragment(), EditShippingViewListener {
         val dialog: EditShippingWebViewDialog = EditShippingWebViewDialog
                 .openAdditionalOptionDialog(webResources, courierIndex)
         if (fragmentManager.findFragmentByTag("web_view_dialog") == null) {
-            dialog.setTargetFragment(this@FragmentEditShipping, ADDITIONAL_OPTION_REQUEST_CODE)
+            dialog.setTargetFragment(this@EditShippingFragment, ADDITIONAL_OPTION_REQUEST_CODE)
             dialog.show(fm, "web_view_dialog")
         }
     }
@@ -297,7 +291,7 @@ class FragmentEditShipping : Fragment(), EditShippingViewListener {
     }
 
     override fun editAddress() {
-        val intent: Intent = logisticRouter.getDistrictRecommendationIntent(activity, editShippingPresenter?.getToken())
+        val intent = editShippingPresenter?.token?.let { getDistrictRecommendationIntent(activity, it) }
         startActivityForResult(intent, GET_DISTRICT_RECCOMENDATION_REQUEST_CODE)
     }
 
@@ -417,7 +411,7 @@ class FragmentEditShipping : Fragment(), EditShippingViewListener {
                 locationPass.districtName = editShippingPresenter?.shopInformation?.getDistrictName()
                 locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
             }
-            val intent: Intent = logisticRouter.getGeoLocationActivityIntent(activity, locationPass)
+            val intent = getGeoLocationActivityIntent(activity, locationPass)
             startActivityForResult(intent, OPEN_MAP_CODE)
         } else {
             Timber.d("Google play services unavailable")
@@ -442,14 +436,14 @@ class FragmentEditShipping : Fragment(), EditShippingViewListener {
         
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         if (arguments.getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
             editShippingPresenter?.saveOpenShopModel()
-            outState.putParcelable(CURRENT_OPEN_SHOP_MODEL,
+            outState?.putParcelable(CURRENT_OPEN_SHOP_MODEL,
                     editShippingPresenter?.openShopModel)
         } else {
-            outState.putParcelable(CURRENT_COURIER_MODEL,
+            outState?.putParcelable(CURRENT_COURIER_MODEL,
                     editShippingPresenter?.shopModel)
         }
     }
@@ -480,26 +474,34 @@ class FragmentEditShipping : Fragment(), EditShippingViewListener {
         }
     }
 
+    private fun getDistrictRecommendationIntent(activity: Activity, token: Token): Intent? {
+        return DiscomActivity.newInstance(activity, token)
+    }
+
+    private fun getGeoLocationActivityIntent(context: Context, locationPass: LocationPass): Intent? {
+        return GeolocationActivity.createInstance(context, locationPass, false)
+    }
+
     companion object {
         private const val GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100
-        fun createInstance(): FragmentEditShipping {
-            val fragment = FragmentEditShipping()
+        fun newInstance(): EditShippingFragment {
+            val fragment = EditShippingFragment()
             val bundle = Bundle()
             bundle.putInt(MAP_MODE, SETTING_PAGE)
             fragment.arguments = bundle
             return fragment
         }
 
-        fun createShopInstance(): FragmentEditShipping {
-            val fragment = FragmentEditShipping()
+        fun createShopInstance(): EditShippingFragment {
+            val fragment = EditShippingFragment()
             val bundle = Bundle()
             bundle.putInt(MAP_MODE, CREATE_SHOP_PAGE)
             fragment.arguments = bundle
             return fragment
         }
 
-        fun resumeShopInstance(previousOpenShopState: Parcelable?): FragmentEditShipping {
-            val fragment = FragmentEditShipping()
+        fun resumeShopInstance(previousOpenShopState: Parcelable?): EditShippingFragment {
+            val fragment = EditShippingFragment()
             val bundle = Bundle()
             bundle.putParcelable(RESUME_OPEN_SHOP_DATA_KEY, previousOpenShopState)
             fragment.arguments = bundle

@@ -45,13 +45,13 @@
                 app:layout_constraintTop_toBottomOf="@id/ticker_charge_bo"
                 android:orientation="vertical">
 
-                <com.tokopedia.editshipping.customview.ShippingHeaderLayout
+                <com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
                     android:id="@+id/fragment_shipping_header"
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <com.tokopedia.editshipping.customview.ShippingAddressLayout
+                <com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
                     android:id="@+id/shipping_address_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

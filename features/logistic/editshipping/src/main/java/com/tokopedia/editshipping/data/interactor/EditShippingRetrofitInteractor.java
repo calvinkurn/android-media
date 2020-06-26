@@ -1,4 +1,4 @@
-package com.tokopedia.editshipping.interactor;
+package com.tokopedia.editshipping.data.interactor;
 
 import android.content.Context;
 

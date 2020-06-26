@@ -1,4 +1,4 @@
-package com.tokopedia.editshipping.customview;
+package com.tokopedia.editshipping.ui.customview;
 
 import android.content.Context;
 import android.content.Intent;
@@ -110,8 +110,8 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     public void setGoogleMapData(Intent data){
         LocationPass locationPass = data.getParcelableExtra(EXTRA_EXISTING_LOCATION);
         if(locationPass != null && locationPass.getLatitude() != null) {
-            presenter.getShopInformation().setShopLatitude(locationPass.getLatitude());
-            presenter.getShopInformation().setShopLongitude(locationPass.getLongitude());
+            presenter.shopInformation.setShopLatitude(locationPass.getLatitude());
+            presenter.shopInformation.setShopLongitude(locationPass.getLongitude());
             chooseLocation.setText(getReverseGeocode(locationPass));
         }
     }

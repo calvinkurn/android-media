@@ -7,9 +7,9 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.editshipping.data.interactor.EditShippingInteractorImpl;
+import com.tokopedia.editshipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.seller.shopsettings.shipping.interactor.EditShippingInteractorImpl;
-import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
 import retrofit2.Response;
 import rx.Observable;

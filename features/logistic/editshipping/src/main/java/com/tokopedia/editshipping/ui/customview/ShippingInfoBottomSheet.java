@@ -1,4 +1,4 @@
-package com.tokopedia.editshipping.customview;
+package com.tokopedia.editshipping.ui.customview;
 
 import android.content.Context;
 import android.widget.TextView;
