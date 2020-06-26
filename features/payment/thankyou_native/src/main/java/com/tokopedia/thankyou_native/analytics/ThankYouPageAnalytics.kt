@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.analytics
 
+import android.os.Bundle
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
 import com.google.gson.Gson
@@ -80,7 +81,7 @@ class ThankYouPageAnalytics @Inject constructor(
         }
     }
 
-    private fun getBundleFromMap(dataMap: Map<String, Any> ): Bundle{
+    private fun getBundleFromMap(dataMap: Map<String, Any> ): Bundle {
         var bundle = Bundle()
         for (entry in dataMap.entries) {
             bundle.putString(entry.key, entry.value?.toString())
