@@ -27,6 +27,7 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
@@ -52,6 +53,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 }
     }
 
+    private var performanceMonitoringShop: PerformanceMonitoring? = null
     private var performanceMonitoringShopHeader: PerformanceMonitoring? = null
     private var performanceMonitoringShopProductTab: PerformanceMonitoring? = null
     private var performanceMonitoringShopHomeTab: PerformanceMonitoring? = null
@@ -88,6 +90,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     fun stopShopProductTabPerformanceMonitoring() {
         performanceMonitoringShopProductTab?.stopTrace()
+        performanceMonitoringShop?.stopTrace()
     }
 
     fun stopShopHomeTabPerformanceMonitoring() {
@@ -99,6 +102,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun initPerformanceMonitoring() {
+        performanceMonitoringShop = PerformanceMonitoring.start(SHOP_TRACE)
         performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
         performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
         performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)

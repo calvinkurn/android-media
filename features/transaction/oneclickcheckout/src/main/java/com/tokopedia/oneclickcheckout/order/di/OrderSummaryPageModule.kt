@@ -3,6 +3,8 @@ package com.tokopedia.oneclickcheckout.order.di
 import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -28,10 +30,10 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 
 @OrderSummaryPageScope
-@Module(includes = [PeopleAddressNetworkModule::class, PurchasePlatformNetworkModule::class]
-)
+@Module(includes = [PeopleAddressNetworkModule::class, PurchasePlatformNetworkModule::class])
 class OrderSummaryPageModule(private val activity: Activity) {
 
     @OrderSummaryPageScope
@@ -101,7 +103,14 @@ class OrderSummaryPageModule(private val activity: Activity) {
     @OrderSummaryPageScope
     @Provides
     fun provideGetRatesUseCase(context: Context, converter: ShippingDurationConverter,
-                                             graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, schedulerProvider: SchedulerProvider): GetRatesUseCase {
+                               graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, schedulerProvider: SchedulerProvider): GetRatesUseCase {
         return GetRatesUseCase(context, converter, graphqlUseCase, schedulerProvider)
+    }
+
+    @OrderSummaryPageScope
+    @Provides
+    @Named(AtcConstant.MUTATION_ATC_OCC_EXTERNAL)
+    fun provideAtcOccExternalMutation(context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout_external)
     }
 }
