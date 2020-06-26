@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.constant
 
 object ShopPagePerformanceConstant {
+    const val SHOP_TRACE = "mp_shop"
     const val SHOP_HEADER_TRACE = "mp_shop_header"
     const val SHOP_PRODUCT_TAB_TRACE = "mp_shop_product"
     const val SHOP_HOME_TAB_TRACE = "mp_shop_home"

@@ -94,6 +94,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+ext.lintchecks = [
+        'SetColourUsageError',
+        'CoreResourcesUsageError',
+        'VectorDrawableCompat'
+] as String[]
 
 
 android {
@@ -136,7 +141,11 @@ android {
 
     lintOptions {
         checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
         abortOnError false
+        check lintchecks
     }
 
     signingConfigs {
@@ -279,9 +288,7 @@ dependencies {
     implementation project(rootProject.ext.features.eventPDP)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.commonElectronicMoney)
-    implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flightOrderList)
     implementation project(rootProject.ext.features.travelCountryCode)
@@ -309,11 +316,8 @@ dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.features.discovery2)
-    implementation project(rootProject.ext.features.purchase_platform)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.cart)
-    implementation project(rootProject.ext.features.checkout)
-    implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticaddaddress)
@@ -352,7 +356,6 @@ dependencies {
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.brandlist)
     implementation project(rootProject.ext.features.playCommon)
-    implementation project(rootProject.ext.features.favorite)
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation project(rootProject.ext.libraries.iris)
@@ -400,9 +403,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.commonTradein)
-    implementation project(rootProject.ext.features.kategori)
     implementation project(rootProject.ext.features.categoryLevels)
     implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.libraries.inappupdate)
@@ -604,6 +605,7 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    lintChecks project(rootProject.ext.libraries.lint)
 }
 
 

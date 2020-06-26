@@ -52,7 +52,7 @@ class CategoryWidgetViewHolder(val view: View, val categoryListener: HomeCategor
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        CategoryWidgetTracking.sendCategoryWidgetSeeAllClick(categoryListener.userId)
+        CategoryWidgetTracking.sendCategoryWidgetSeeAllClick(channel, categoryListener.userId)
     }
 
     class CategoryWidgetItemAdapter(

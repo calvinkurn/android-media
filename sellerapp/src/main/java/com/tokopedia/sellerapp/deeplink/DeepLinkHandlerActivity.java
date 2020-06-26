@@ -12,8 +12,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.SessionApplinkModule;
-import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
@@ -71,7 +69,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         InboxDeeplinkModule.class,
         TrackingAppLinkModule.class,
         TopChatAppLinkModule.class,
-        SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
@@ -100,7 +97,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new InboxDeeplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
-                new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),

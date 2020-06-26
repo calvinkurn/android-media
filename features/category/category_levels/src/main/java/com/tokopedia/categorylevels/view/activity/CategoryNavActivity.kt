@@ -335,7 +335,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun markDefaultFilterState(uri: Uri) {
-        val map = URLParser(uri.toString()).paramKeyValueMap
+        val map = URLParser(uri.encodedQuery?:uri.toString()).paramKeyValueMap
         map.remove(EXTRA_CATEGORY_NAME)
         if (map.size > 0) {
             searchNavContainer?.onFilterSelected(true)

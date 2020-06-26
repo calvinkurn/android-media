@@ -73,18 +73,18 @@ import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.activity.RequestCancelActivity;
 import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
+import com.tokopedia.buyerorder.detail.view.adapter.ProductItemAdapter;
 import com.tokopedia.buyerorder.detail.view.adapter.RecommendationMPAdapter;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
-import com.tokopedia.buyerorder.detail.view.adapter.ProductItemAdapter;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.url.TokopediaUrl;
 
 import java.util.List;
 
@@ -740,9 +740,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                 if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
                                     presenter.finishOrder(getArguments().getString(KEY_ORDER_ID), actionButton.getUri());
                                     dialog.dismiss();
-                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain")) {
-                                    Intent newIntent = InboxRouter.getCreateResCenterActivityIntent(getContext(),
-                                            getArguments().getString(KEY_ORDER_ID));
+                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments()!=null) {
+                                    Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
                                     startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
                                 } else {
