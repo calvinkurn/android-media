@@ -22,35 +22,35 @@ import java.io.File
 @RunWith(JUnit4::class)
 @ExperimentalCoroutinesApi
 class HomeRemoteDataSourceTest {
-    val graphqlRepository = mockk<GraphqlRepository>()
-    val userSessionInterface = mockk<UserSessionInterface>()
-    val homeQuery = ""
-    private lateinit var homeRemoteDataSource: HomeRemoteDataSource
-
-    @Before
-    fun init(){
-        homeRemoteDataSource = HomeRemoteDataSource(graphqlRepository, TestDispatcherProvider())
-        every { userSessionInterface.isLoggedIn } returns true
-        every { userSessionInterface.userId } returns "-1"
-    }
-
-    @Test
-    fun `get home data`() {
-        val homeData = Gson().fromJson<HomeData>(getJson("home.json"), HomeData::class.java)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
-                HomeData::class.java to homeData
-        ), mapOf(), false)
-        runBlocking {
-            val graphqlResponse = homeRemoteDataSource.getHomeData()
-            val result = graphqlResponse.getData<HomeData>(HomeData::class.java)
-            Assert.assertEquals(null, graphqlResponse.getError(HomeData::class.java))
-            Assert.assertEquals("16206", result.dynamicHomeChannel?.channels?.first()?.id)
-        }
-    }
-
-    private fun getJson(path : String) : String {
-        val uri = this.javaClass.classLoader.getResource(path)
-        val file = File(uri.path)
-        return String(file.readBytes())
-    }
+//    val graphqlRepository = mockk<GraphqlRepository>()
+//    val userSessionInterface = mockk<UserSessionInterface>()
+//    val homeQuery = ""
+//    private lateinit var homeRemoteDataSource: HomeRemoteDataSource
+//
+//    @Before
+//    fun init(){
+//        homeRemoteDataSource = HomeRemoteDataSource(graphqlRepository, TestDispatcherProvider())
+//        every { userSessionInterface.isLoggedIn } returns true
+//        every { userSessionInterface.userId } returns "-1"
+//    }
+//
+//    @Test
+//    fun `get home data`() {
+//        val homeData = Gson().fromJson<HomeData>(getJson("home.json"), HomeData::class.java)
+//        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+//                HomeData::class.java to homeData
+//        ), mapOf(), false)
+//        runBlocking {
+//            val graphqlResponse = homeRemoteDataSource.getHomeData()
+//            val result = graphqlResponse.getData<HomeData>(HomeData::class.java)
+//            Assert.assertEquals(null, graphqlResponse.getError(HomeData::class.java))
+//            Assert.assertEquals("16206", result.dynamicHomeChannel?.channels?.first()?.id)
+//        }
+//    }
+//
+//    private fun getJson(path : String) : String {
+//        val uri = this.javaClass.classLoader.getResource(path)
+//        val file = File(uri.path)
+//        return String(file.readBytes())
+//    }
 }
