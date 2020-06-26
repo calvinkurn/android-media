@@ -62,7 +62,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         listener?.showSearchBar()
         updateTouchListener(view)
-        if (savedInstanceState == null && !alreadyLoaded) {
+        if (!alreadyLoaded) {
             super.onViewCreated(view, savedInstanceState)
             showRecentSearch()
             setupRecyclerView()
