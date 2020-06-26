@@ -2,9 +2,9 @@ package com.tokopedia.logisticorder.view.shipping_confirmation.network.mapper;
 
 import com.tokopedia.logisticdata.data.entity.courierlist.CourierResponse;
 import com.tokopedia.logisticdata.data.entity.courierlist.Shipment;
-import com.tokopedia.transaction.common.data.order.CourierServiceModel;
-import com.tokopedia.transaction.common.data.order.CourierViewModel;
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierServiceModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

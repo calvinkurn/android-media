@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory;
-import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultModel;
 
 /**
  * @author by furqan on 15/10/18.
  */
 
-public class FlightSearchSeeAllViewHolder extends AbstractViewHolder<FlightSearchSeeAllResultViewModel> {
+public class FlightSearchSeeAllViewHolder extends AbstractViewHolder<FlightSearchSeeAllResultModel> {
 
     public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_search_selengkapnya;
 
@@ -34,7 +34,7 @@ public class FlightSearchSeeAllViewHolder extends AbstractViewHolder<FlightSearc
     }
 
     @Override
-    public void bind(FlightSearchSeeAllResultViewModel element) {
+    public void bind(FlightSearchSeeAllResultModel element) {
         tvFlightSearchDesc.setText(Html.fromHtml(getString(
                 com.tokopedia.flight.R.string.flight_search_selengkapnya_desc, element.getNewPrice()))
         );

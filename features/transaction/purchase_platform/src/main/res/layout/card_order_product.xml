@@ -46,9 +46,9 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:ellipsize="end"
         android:maxWidth="@dimen/dp_120"
         android:maxLines="2"
-        android:ellipsize="end"
         android:visibility="gone"
         app:labelType="general_dark_red"
         app:layout_constraintEnd_toEndOf="parent"
@@ -212,53 +212,18 @@
         tools:text="Maksimal 2 broh hjadjf askjbfk kjabfdk ashfb aksbfkabsf "
         tools:visibility="visible" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_note_label"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tf_note"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:text="@string/label_note_for_seller"
-        android:textColor="@color/Neutral_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_error_form_validation"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/et_note"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:imeOptions="actionDone"
-        android:maxLines="3"
-        android:overScrollMode="always"
-        android:paddingBottom="@dimen/dp_16"
-        android:scrollbarStyle="insideInset"
-        android:scrollbars="vertical"
-        android:textColor="@color/black_70"
-        android:textColorHighlight="@color/tkpd_main_green"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="normal"
-        app:backgroundTint="@color/tkpd_main_green"
-        app:layout_constraintEnd_toEndOf="@+id/tv_note_label"
-        app:layout_constraintStart_toStartOf="@+id/tv_note_label"
-        app:layout_constraintTop_toBottomOf="@+id/tv_note_label"
-        tools:ignore="TextFields"
-        tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_note_char_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        app:layout_constraintEnd_toEndOf="@+id/et_note"
-        app:layout_constraintTop_toBottomOf="@+id/et_note"
-        app:typographyType="small"
-        tools:text="60/140"
-        tools:visibility="visible" />
+        app:text_field_counter="144"
+        app:text_field_input_type="text"
+        app:text_field_label="@string/label_note_for_seller" />
 
 </merge>

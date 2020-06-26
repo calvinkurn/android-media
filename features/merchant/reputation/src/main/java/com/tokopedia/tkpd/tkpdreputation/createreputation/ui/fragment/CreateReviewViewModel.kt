@@ -3,10 +3,8 @@ package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.BaseImageReviewViewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageReviewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.*
+import com.tokopedia.tkpd.tkpdreputation.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.tkpd.tkpdreputation.createreputation.usecase.GetProductReputationForm
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.*
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase
@@ -30,6 +28,7 @@ import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 class CreateReviewViewModel @Inject constructor(@Named("Main")
                                                 val dispatcher: CoroutineDispatcher,
                                                 private val getProductReputationForm: GetProductReputationForm,
+                                                private val getProductIncentiveOvo: GetProductIncentiveOvo,
                                                 private val sendReviewWithoutImage: SendReviewValidateUseCase,
                                                 private val sendReviewWithImage: SendReviewUseCase) : BaseViewModel(dispatcher) {
 
@@ -40,6 +39,9 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
 
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm = reputationDataForm
+
+    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvo>>()
+    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvo>> = _incentiveOvo
 
     private var submitReviewResponse = MutableLiveData<LoadingDataState<SendReviewValidateDomain>>()
     val getSubmitReviewResponse: LiveData<LoadingDataState<SendReviewValidateDomain>> = submitReviewResponse
@@ -92,6 +94,15 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
         }) {
             reputationDataForm.value = CoroutineFail(it)
 
+        }
+    }
+
+    fun getProductIncentiveOvo() {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO) { getProductIncentiveOvo.getIncentiveOvo() }
+            _incentiveOvo.value = CoroutineSuccess(data)
+        }) {
+            _incentiveOvo.value = CoroutineFail(it)
         }
     }
 

@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_36"
+    android:background="@color/white"
+    android:orientation="horizontal"
     android:layout_marginTop="@dimen/dp_10"
-    android:layout_marginBottom="@dimen/dp_8"
-    android:background="@color/clr_f3f4f5">
+    android:layout_marginBottom="@dimen/dp_8">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_brand_group_header"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_groups_chip"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_15"
-        android:layout_marginLeft="@dimen/dp_15"
-        android:lineSpacingExtra="@dimen/sp_6"
-        android:textColor="@color/clr_f531353b"
-        android:textSize="@dimen/sp_18"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="A" />
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_gravity="center" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

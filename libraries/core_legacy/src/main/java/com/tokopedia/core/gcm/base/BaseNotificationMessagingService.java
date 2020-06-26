@@ -119,13 +119,14 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
             if (!localToken.equals(token)) {
                 SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getApplicationContext()).legacySessionHandler();
-                if (sessionHandler.isV4Login()) {
+                UserSessionInterface userSession = new UserSession(this);
+                if (userSession.isLoggedIn()) {
                     IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(getBaseContext());
                     FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
                     tokenUpdate.setOldToken(localToken);
                     tokenUpdate.setNewToken(token);
                     tokenUpdate.setOsType(String.valueOf(1));
-                    tokenUpdate.setAccessToken(sessionHandler.getAccessToken());
+                    tokenUpdate.setAccessToken(userSession.getAccessToken());
                     tokenUpdate.setUserId(sessionHandler.getLoginID());
                     fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
                 } else {

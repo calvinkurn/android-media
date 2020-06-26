@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatsearch.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -37,7 +38,7 @@ class ItemSearchChatViewHolder(itemView: View?, private val listener: Listener)
     }
 
     private fun bindUserName(element: SearchResult) {
-        itemView.user_name?.text = element.userName
+        itemView.user_name?.text = MethodChecker.fromHtml(element.userName)
         itemView.user_name?.setWeight(Typography.REGULAR)
     }
 

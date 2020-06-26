@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -34,6 +33,7 @@ import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPr
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 
@@ -253,7 +253,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             }
         } else {
             activity?.let {
-                ToasterError.showClose(it, ErrorHandler.getErrorMessage(it, e))
+                Toaster.make(view!!, ErrorHandler.getErrorMessage(it, e), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             }
         }
     }

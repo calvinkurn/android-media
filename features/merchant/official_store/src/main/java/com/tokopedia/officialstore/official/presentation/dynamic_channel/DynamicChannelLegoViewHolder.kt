@@ -36,7 +36,6 @@ class DynamicChannelLegoViewHolder(
 
     private fun setupHeader(header: Header?) {
         if (header != null && header.name.isNotEmpty()) {
-            mainContainer.setMargin(0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_20), 0, 0)
             headerContainer.visibility = View.VISIBLE
             headerTitle.text = header.name
             headerCountDown.visibility = View.GONE
@@ -47,7 +46,6 @@ class DynamicChannelLegoViewHolder(
                     setOnClickListener(dcEventHandler.onClickLegoHeaderActionText(header.applink))
                 }
             } else {
-                mainContainer.setMargin(0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_6), 0, 0)
                 headerActionText.visibility = View.GONE
             }
         } else {

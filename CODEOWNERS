@@ -9,6 +9,7 @@
 /features/content/profile/              				@tokopedia/minion-dave
 /features/content/feed_component/       				@tokopedia/minion-darth
 /features/category/       				                @tokopedia/minion-darth
+/features/discovery2/       				            @tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeper-analytic
 /features/discovery/home/                           	@tokopedia/minion-dave
@@ -65,6 +66,7 @@
 /features/merchant/report/                              @tokopedia/minion-stuart
 /features/merchant/reputation/                          @tokopedia/minion-stuart
 /features/merchant/reputation_common/                   @tokopedia/minion-stuart
+/features/merchant/seller_migration_common/             @tokopedia/minion-stuart
 /features/merchant/seller_active_common/                @tokopedia/minion-stuart
 /features/merchant/shop_common/                         @tokopedia/minion-stuart
 /features/merchant/shop_etalase_picker/                 @tokopedia/minion-stuart
@@ -83,6 +85,7 @@
 /features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
 
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
+/features/merchant/talk/                            	@tokopedia/minion-stuart
 /features/merchant/variant_common/                      @tokopedia/minion-stuart
 
 /features/merchant/seller_home/                         @tokopedia/minion-stuart
@@ -111,6 +114,9 @@
 
 /features/entertainment/event                 			@tokopedia/minion-mark
 /features/entertainment/digital_deals         			@tokopedia/minion-mark
+/features/entertainment/event_home                 		@tokopedia/minion-mark
+/features/entertainment/event_search        			@tokopedia/minion-mark
+/features/entertainment/event_pdp         			    @tokopedia/minion-mark
 
 /features/travel/flight_orderlist                       @tokopedia/minion-mark
 /features/travel/flight/                                @tokopedia/minion-mark
@@ -125,16 +131,18 @@
 /features/recharge/recharge_slice                       @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
-/features/payment/payment_setting/              		@tokopedia/minion-bob
+/features/payment/payment_setting/              		@tokopedia/minion-yoda
 /features/payment/pms/                          		@tokopedia/minion-bob
 /features/transaction/atc_common/               		@tokopedia/minion-bob
 /features/transaction/opportunity/               		@tokopedia/minion-bob
 /features/transaction/sellerorder/                      @tokopedia/minion-bob
+/features/transaction/buyerorder/                       @tokopedia/minion-bob
 /features/transaction/purchase_platform/        		@tokopedia/minion-bob
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          		@tokopedia/minion-bob
 /features/logistic/logisticorder/                    	@tokopedia/minion-bob
+/features/logistic/dropoff/                    	        @tokopedia/minion-bob
 /features/promo/promo_checkout/                 		@tokopedia/minion-bob
 /features/promo/promo_checkout_common/          		@tokopedia/minion-bob
 /features/logistic/logisticcart/                		@tokopedia/minion-bob
@@ -156,7 +164,6 @@
 /features/user/loginphone/                      		@tokopedia/minion-kevin
 /features/user/notifcenter/                     		@tokopedia/minion-kevin
 /features/user/attachproduct/                   		@tokopedia/minion-kevin
-/features/user/talk/                            		@tokopedia/minion-kevin
 /features/user/changephonenumber                		@tokopedia/minion-kevin
 /features/user/onboarding                       		@tokopedia/minion-kevin
 /features/user/phoneverification                		@tokopedia/minion-kevin
@@ -201,9 +208,11 @@
 /features/payment/common_payment                        @tokopedia/minion-yoda
 /features/digital/instant_debit_bca                     @tokopedia/minion-yoda
 /features/fintech/wallet                				@tokopedia/minion-yoda
+/features/payment/thankyou_native                		@tokopedia/minion-yoda
 
 
 /libraries/adapter_delegate/							@tokopedia/core-team
+/libraries/akamai_bot_lib/							    @tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team
 /libraries/analytics_debugger/							@tokopedia/core-team
 /libraries/analytics_debugger_noop/					    @tokopedia/core-team
@@ -229,6 +238,7 @@
 /libraries/encryption/							        @tokopedia/core-team
 /libraries/fingerprint/									@tokopedia/core-team
 /libraries/graph_view/									@tokopedia/core-team
+/libraries/graphql/									    @tokopedia/core-team
 /libraries/image_picker/								@tokopedia/core-team
 /libraries/image_preview/								@tokopedia/core-team
 /libraries/imageuploader/								@tokopedia/core-team
@@ -268,8 +278,6 @@
 /tkpdsession/                                       	@tokopedia/core-team
 /tkpddigital/                                       	@tokopedia/core-team
 /tkpdinbox/                                         	@tokopedia/core-team
-/tkpdtransaction/                                   	@tokopedia/core-team
-/tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
 /tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code

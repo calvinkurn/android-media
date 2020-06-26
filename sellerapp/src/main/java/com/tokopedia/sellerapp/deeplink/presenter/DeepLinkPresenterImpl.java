@@ -5,26 +5,31 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
+import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity;
 import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 
 /**
@@ -87,7 +92,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
 
     private void openInvoice(List<String> linkSegment, Uri uriData) {
-        AppUtils.InvoiceDialogDeeplink(context, uriData.toString(), uriData.getQueryParameter("pdf"));
+        Intent intent = new Intent(context, SomSeeInvoiceActivity.class);
+        intent.putExtra(KEY_URL, uriData.toString());
+        intent.putExtra(KEY_TITLE, "Invoice");
+        context.startActivity(intent);
+        context.finish();
     }
 
     private void prepareOpenWebView(Uri uriData) {
@@ -169,10 +178,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openTopAds(Uri uriData) {
-
+        UserSessionInterface userSession = new UserSession(context);
         String type = uriData.getQueryParameter("type");
         Intent intentToLaunch = null;
-        if (!SessionHandler.isUserHasShop(context)) {
+        if (!userSession.hasShop()) {
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
             intentToLaunch.setData(uriData);
         } else if (TextUtils.isEmpty(type)) {
@@ -195,7 +204,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openPeluangPage(List<String> linkSegment, Uri uriData) {
         String query = uriData.getQueryParameter("q");
-        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

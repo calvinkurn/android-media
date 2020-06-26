@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addemail.view.fragment
 
-//import com.tokopedia.unifycomponents.Toaster
 import android.app.Activity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider

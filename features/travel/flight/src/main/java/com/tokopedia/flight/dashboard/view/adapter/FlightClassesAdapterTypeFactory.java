@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHolder;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 
 /**
  * @author by alvarisi on 12/18/17.
@@ -18,7 +18,7 @@ public class FlightClassesAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.listenerCheckedClass = listenerCheckedClass;
     }
 
-    public int type(FlightClassViewModel viewModel) {
+    public int type(FlightClassModel viewModel) {
         return FlightClassViewHolder.LAYOUT;
     }
 

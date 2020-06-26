@@ -249,21 +249,6 @@ public class TkpdResponse {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> List<T> convertDataList(Class<T[]> clazz) {
-        if (objData == null) {
-            try {
-                this.objData = Arrays.asList((T[]) (this.objData = gson.fromJson(stringData, clazz)));
-                return (List<T>) objData;
-            } catch (ClassCastException | JsonSyntaxException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return (List<T>) objData;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     public <T> T convertToObj(Class<T> clazz) {
         try {
             return gson.fromJson(stringData, clazz);

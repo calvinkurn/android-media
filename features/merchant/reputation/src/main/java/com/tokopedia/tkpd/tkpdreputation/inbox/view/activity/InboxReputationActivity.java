@@ -28,6 +28,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.SectionsPagerAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
@@ -57,6 +58,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
+    public static String tickerTitle;
 
     private ViewPager viewPager;
     private TabsUnify indicator;
@@ -103,6 +105,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
                 reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+                if(tickerTitle != null) {
+                    reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, ReputationTrackingConstant.WAITING_REVIEWED);
+                }
             }
         });
 
@@ -206,6 +211,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
             RouteManager.route(this, ApplinkConst.HOME);
             finish();
         }
+        tickerTitle = null;
         super.onBackPressed();
     }
 

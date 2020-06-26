@@ -44,7 +44,15 @@ data class SearchDestination(
 
         @SerializedName("hotelCount")
         @Expose
-        val hotelCount: Int = 0
+        val hotelCount: Int = 0,
+
+        @SerializedName("searchType")
+        @Expose
+        val searchType: String = "",
+
+        @SerializedName("searchID")
+        @Expose
+        val searchId: String = ""
 ): Visitable<SearchDestinationTypeFactory> {
     override fun type(typeFactory: SearchDestinationTypeFactory) = typeFactory.type(this)
 }

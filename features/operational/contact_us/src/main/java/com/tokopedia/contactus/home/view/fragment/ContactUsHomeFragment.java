@@ -4,8 +4,6 @@ package com.tokopedia.contactus.home.view.fragment;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import androidx.viewpager.widget.ViewPager;
-import androidx.cardview.widget.CardView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,15 +14,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.common.analytics.ContactUsEventTracking;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.api.ContactUsURL;
 import com.tokopedia.contactus.common.customview.ShadowTransformer;
@@ -38,13 +37,13 @@ import com.tokopedia.contactus.home.view.customview.ArticleTextView;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.ApplinkConst.*;
+
 import javax.inject.Inject;
 
 
@@ -179,7 +178,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
         orderList.setVisibility(View.VISIBLE);
-        if (!SessionHandler.isUserHasShop(getContext()) && buyerPurchaseLists.size() <= MIN_BUYER_LIST_SIZE) {
+        UserSessionInterface userSession = new UserSession(getContext());
+        if (!userSession.hasShop() && buyerPurchaseLists.size() <= MIN_BUYER_LIST_SIZE) {
             btnFullPurchaseList.setVisibility(View.GONE);
             cardAdapter.addData(buyerPurchaseLists);
         } else {
@@ -231,7 +231,6 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
             encodedUrl = ContactUsURL.NAVIGATE_NEXT_URL;
         }
         startActivity(RouteManager.getIntent(getContext(), encodedUrl));
-//        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), encodedUrl, "Hubungi Kami"));
     }
 
     public void onBtnChatClicked() {
