@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -26,6 +27,7 @@ import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.NumberFormat
 import java.util.*
@@ -40,7 +42,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     lateinit var iklakanButton: Button
     lateinit var priceEditText: EditText
     lateinit var budgetViewModel: DailyBudgetViewModel
-    lateinit var progressBar: ProgressBar
+    lateinit var progressBar: LoaderUnify
     lateinit var errorText: TextView
     lateinit var rangeStart: TextView
     lateinit var rangeEnd: TextView
@@ -84,11 +86,12 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         showLoading()
         budgetViewModel.getTopAdsDeposit(userSession.shopId.toInt())
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)
 
-        budgetViewModel.topAdsDeposit.observe(this, Observer {
+        budgetViewModel.topAdsDeposit.observe(viewLifecycleOwner, Observer {
             topAdsDeposit = it
         })
         budgetViewModel.autoAdsData.observe(this, Observer {
@@ -152,13 +155,12 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
-        hideLoading()
-
     }
 
     fun onSuccessPotentialEstimation(data: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) {
         lowClickDivider = data.lowClickDivider
         priceRange.text = convertToCurrencyString(replace(getPotentialReach().toString()).toLong())
+        hideLoading()
     }
 
     private fun getPotentialReach(): CharSequence? {
@@ -177,7 +179,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         iklakanButton = view.findViewById(R.id.btn_submit)
         priceEditText = view.findViewById(R.id.budgetEditText)
         seekBar = view.findViewById(R.id.seekbar)
-        progressBar = view.findViewById(com.tokopedia.seller.R.id.loading)
+        progressBar = view.findViewById(R.id.loading)
         errorText = view.findViewById(R.id.error_text)
         btnSubmit = view.findViewById(R.id.btn_submit)
         rangeStart = view.findViewById(R.id.range_start)
@@ -227,6 +229,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         val KEY_DAILY_BUDGET = "BUDGET"
         val KEY_AUTOADS_STATUS = "AUTOADS_STATUS"
         val TOGGLE_ON = "toggle_on"
+        val TOGGLE_OFF = "toggle_off"
         val CHANNEL = "topchat"
         val SOURCE = "sellerapp_autoads_creation"
     }

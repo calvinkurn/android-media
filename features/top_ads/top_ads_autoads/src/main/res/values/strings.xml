@@ -79,11 +79,12 @@
 
     <!-- Auto ads status widget-->
     <string name="autoads_inprogress_desc">Tunggu ya, proses pembuatan iklanmu membutuhkan waktu.</string>
-    <string name="autoads_outofstock_desc">Iklan tidak tampil karena stok barang habis. Tambah Stok</string>
-    <string name="autoads_outofcredit_desc">Iklan tidak tampil karena kredit kurang. TopUp Sekarang</string>
-    <string name="autoads_merchant_closed_desc">Iklan tidak tampil karena toko sedang tutup. Cek Status</string>
-
-    <string name="autoads_outofbudget_desc">Anggaran Harian Habis. Naikan anggaran untuk mulai tampil lagi.</string>
+    <string name="autoads_outofstock_desc">Iklan tidak tampil karena stok barang habis.</string>
+    <string name="autoads_outofcredit_desc">Iklan tidak tampil karena kredit kurang.</string>
+    <string name="autoads_merchant_closed_desc">Iklan tidak tampil karena toko sedang tutup.</string>
+    <string name="autoads_outofcredit_desc_edit">Iklan tidak tampil kredit tidak mencukupi.</string>
+    <string name="autoads_outofbudget_desc_edit">Anggaran Harian Habis. Naikan anggaran untuk mulai tampil lagi.</string>
+    <string name="autoads_outofbudget_desc">Iklan tidak tampil karena anggaran harian habis.</string>
     <string name="autoads_lottie_title1">Semakin mudah beriklan</string>
     <string name="autoads_lottie_desc1">Cukup atur anggaran harian, Iklan Otomatis akan pilih produk dan bid terbaik untuk optimalkan iklanmu.</string>
     <string name="autoads_lottie_title2">Iklankan produk terbaik</string>

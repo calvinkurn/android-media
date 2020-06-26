@@ -101,7 +101,7 @@ class MovetoGroupSheetList {
         return groupId.toString()
     }
 
-    fun setButtonDisable(){
+    fun setButtonDisable() {
         dialog?.submit_butt?.isEnabled = false
     }
 

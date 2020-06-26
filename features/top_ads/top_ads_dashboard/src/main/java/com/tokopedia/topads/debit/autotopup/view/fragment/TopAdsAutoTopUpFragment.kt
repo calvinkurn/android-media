@@ -1,15 +1,15 @@
 package com.tokopedia.topads.debit.autotopup.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -20,7 +20,10 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.debit.autotopup.data.extensions.selectedPrice
-import com.tokopedia.topads.debit.autotopup.data.model.*
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpItem
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.debit.autotopup.data.model.Loading
+import com.tokopedia.topads.debit.autotopup.data.model.ResponseSaving
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsAutoTopUpPriceTypeFactory
 import com.tokopedia.topads.debit.autotopup.view.adapter.viewholder.TopAdsAutoTopUpPriceViewHolder
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel

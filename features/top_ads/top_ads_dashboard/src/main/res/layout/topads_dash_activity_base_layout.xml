@@ -31,7 +31,6 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 app:layout_scrollFlags="scroll|enterAlways">
 
                 <com.google.android.material.tabs.TabLayout
@@ -41,6 +40,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@color/white"
                     app:elevation="4dp"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layout_scrollFlags="scroll|enterAlways"
                     app:tabIndicatorColor="@color/topads_common_tab_green"
                     app:tabMode="fixed"
@@ -75,7 +75,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-
                     android:text="@string/button_submit_beranda"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -43,4 +43,5 @@ object ParamObject {
     const val PRICE_DAILY = "priceDaily"
     const val TOGGLE ="toggle"
     const val DATA = "data"
+    const val IDS = "ids"
  }

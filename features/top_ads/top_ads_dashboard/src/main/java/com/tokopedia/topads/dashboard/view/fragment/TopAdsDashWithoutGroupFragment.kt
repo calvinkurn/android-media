@@ -1,12 +1,15 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.dashboard.R
@@ -17,20 +20,20 @@ import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.adapter.non_group_item.NonGroupItemsListAdapter
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupViewModel
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.NonGroupItemsAdapterTypeFactoryImpl
+import com.tokopedia.topads.dashboard.view.adapter.non_group_item.NonGroupItemsListAdapter
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsEmptyViewModel
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -78,7 +81,8 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = NonGroupItemsListAdapter(NonGroupItemsAdapterTypeFactoryImpl(::setSelectMode, ::singleItemDelete, ::statusChange))
+        adapter = NonGroupItemsListAdapter(NonGroupItemsAdapterTypeFactoryImpl(::setSelectMode, ::singleItemDelete,
+                ::statusChange, ::onEditProduct))
     }
 
     private fun setSelectMode(select: Boolean) {
@@ -88,6 +92,21 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         } else {
             adapter.setSelectMode(false)
             actionbar.visibility = View.GONE
+        }
+    }
+
+    private fun onEditProduct(groupId: Int, adPriceBid: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
+            putExtra(TopAdsDashboardConstant.GROUPID, groupId)
+            putExtra(TopAdsDashboardConstant.PRICEBID, adPriceBid)
+        }
+        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_WITHOUT_GROUP_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == TopAdsDashboardConstant.EDIT_WITHOUT_GROUP_REQUEST_CODE) {
+            fetchData()
         }
     }
 
@@ -140,7 +159,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         delete.setOnClickListener {
             showConfirmationDialog(context!!)
         }
-        Utils.setSearchListener(view, ::fetchData)
+        Utils.setSearchListener(context, view, ::fetchData)
     }
 
     fun fetchgroupList(search: String) {
@@ -229,6 +248,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessResult(data: List<WithoutGroupDataItem>) {
+        loader.visibility = View.GONE
         adapter.items.clear()
         data.forEach {
             adapter.items.add(NonGroupItemsItemViewModel(it))
@@ -247,8 +267,13 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
-        topAdsDashboardPresenter.getGroupProductData(resources, PRODUCTS_WITHOUT_GROUP, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(), ::onSuccessResult, ::onEmptyResult)
+        val startDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
+        val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
+        topAdsDashboardPresenter.getGroupProductData(resources, PRODUCTS_WITHOUT_GROUP,
+                searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onSuccessResult, ::onEmptyResult)
     }
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.topads.dashboard.data.model
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
 
 data class GroupActionResponse(

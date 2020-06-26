@@ -1,10 +1,9 @@
 package com.tokopedia.topads.dashboard.view.adapter.viewholder
 
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
-
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import kotlinx.android.synthetic.main.item_tab_layout.view.*
 

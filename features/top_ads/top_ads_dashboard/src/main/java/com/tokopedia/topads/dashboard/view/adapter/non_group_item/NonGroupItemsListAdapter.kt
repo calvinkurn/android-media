@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder.NonGroupItemsViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsViewModel

@@ -1,11 +1,16 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
@@ -14,12 +19,16 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPTY_SEARCH_VIEW
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.groupitem.DataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
+import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.dashboard.view.adapter.group_item.GroupItemsAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.group_item.GroupItemsListAdapter
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsEmptyViewModel
@@ -45,11 +54,12 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private lateinit var adapter: GroupItemsListAdapter
     private val CUREENTY_ACTIVATED = 1
     private var SingleDelGroupId = ""
-
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
     private var deleteCancel = false
-
+    private lateinit var recyclerView:RecyclerView
 
     override fun getScreenName(): String {
         return TopAdsDashGroupFragment::class.java.name
@@ -66,18 +76,58 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_group_list), container, false)
+        val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_group_list), container, false)
+        recyclerView = view.findViewById(R.id.group_list)
+        initAdapter()
+        return view
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = GroupItemsListAdapter(GroupItemsAdapterTypeFactoryImpl(::startSelectMode, ::singleItemDelete, ::statusChange))
+        adapter = GroupItemsListAdapter(GroupItemsAdapterTypeFactoryImpl(::startSelectMode,
+                ::singleItemDelete, ::statusChange, ::editGroup, ::onGroupClicked))
+    }
+
+    private fun editGroup(groupId: Int, groupName: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+            putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+            putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
+        }
+        startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
+    }
+
+    private fun onGroupClicked(id: Int, priceSpent: String) {
+        val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
+        intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
+        intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
+        startActivityForResult(intent, GROUP_UPDATED)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EDIT_GROUP_REQUEST_CODE || requestCode == GROUP_UPDATED) {
+            fetchData()
+        }
     }
 
     private fun initAdapter() {
-        group_list.isNestedScrollingEnabled = false
-        group_list.adapter = adapter
-        group_list.layoutManager = LinearLayoutManager(context)
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewScrollListener = onRecyclerViewListener()
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                fetchData()
+            }
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+            }
+        }
     }
 
     private fun statusChange(pos: Int, status: Int) {
@@ -107,25 +157,20 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         performAction(TopAdsDashboardConstant.ACTION_DELETE)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        fetchData()
-    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAdapter()
+        fetchData()
         btnFilter.setOnClickListener {
             groupFilterSheet.show()
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
-
         close_butt.setOnClickListener {
             startSelectMode(false)
         }
         activate.setOnClickListener {
             performAction(ACTION_ACTIVATE)
-
         }
         deactivate.setOnClickListener {
             performAction(ACTION_DEACTIVATE)
@@ -137,9 +182,8 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         btnAddItem.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
         }
-        Utils.setSearchListener(view, ::fetchData)
+        Utils.setSearchListener(context, view, ::fetchData)
     }
-
 
     private fun showConfirmationDialog() {
         val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
@@ -168,15 +212,16 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessResult(data: List<DataItem>) {
+        loader.visibility = View.GONE
         data.forEach {
             if (it.groupType == PRODUCT)
                 adapter.items.add(GroupItemsItemViewModel(it))
         }
+        (parentFragment as TopAdsProductIklanFragment).setGroupCount(adapter.itemCount)
         if (adapter.items.size.isZero()) {
             onEmptyResult()
         }
         adapter.notifyDataSetChanged()
-        (parentFragment as TopAdsProductIklanFragment).setGroupCount(adapter.itemCount)
         setFilterCount()
     }
 
@@ -189,9 +234,15 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
-        topAdsDashboardPresenter.getGroupData(resources, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(), this::onSuccessResult)
+        val startDate = format.format((parentFragment as TopAdsProductIklanFragment).startDate)
+        val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
+        topAdsDashboardPresenter.getGroupData(resources, searchBar?.searchBarTextField?.text.toString(),
+                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
+                startDate, endDate,
+                this::onSuccessResult)
     }
 
     private fun performAction(actionActivate: String) {

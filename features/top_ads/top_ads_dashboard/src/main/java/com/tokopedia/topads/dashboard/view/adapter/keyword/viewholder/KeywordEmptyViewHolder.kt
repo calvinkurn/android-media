@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 /**
  * Created by Pika on 7/6/20.
  */
-class KeywordEmptyViewHolder(val view: View) : KeywordViewHolder<KeywordEmptyViewModel>(view) {
+class KeywordEmptyViewHolder(val view: View, private val addKeywords: (() -> Unit)) : KeywordViewHolder<KeywordEmptyViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -31,6 +31,9 @@ class KeywordEmptyViewHolder(val view: View) : KeywordViewHolder<KeywordEmptyVie
                 view.text_title.text = view.context.getString(R.string.topads_no_search_keyword_title)
                 view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
                 view.btn_submit.visibility = View.GONE
+            }
+            view.btn_submit.setOnClickListener {
+                addKeywords.invoke()
             }
         }
     }

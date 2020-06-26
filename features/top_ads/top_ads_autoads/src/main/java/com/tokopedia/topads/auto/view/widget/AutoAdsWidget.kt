@@ -5,19 +5,23 @@ import android.content.Intent
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
@@ -29,7 +33,6 @@ import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.auto.view.sheet.ManualAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
-import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,11 +56,18 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
 
     val requestType = "auto_ads"
     val source = "update_auto_ads"
+    private val TOPUP_LINK = " TopUp Sekarang"
+    private val MANAGE_PRODUCT = " Tambah Stok"
+    private val MERCHANT_SETTING = " Cek Status"
+    private val EDIT_ADS = " Tambah Anggaran"
+    private val MANAGE_PRODUCT_LINK = "tokopedia://seller/product/manage"
+    private val MERCHANT_SETTING_LINK = "tokopedia-android-internal://marketplace/shop-settings-info"
+    private val outOfDailyBudget = 0
+    private val outOfCredit = 1
+    private val merchantClosed = 2
+    private val outOfStock = 3
+    private val AUTO_ADS_DISABLED = 111
 
-    private val budgetViewModel by lazy {
-        ViewModelProviders.of(context as BaseActivity, factory).get(DailyBudgetViewModel::class.java)
-
-    }
     private val widgetViewModel by lazy {
         ViewModelProviders.of(context as BaseActivity, factory).get(AutoAdsWidgetViewModel::class.java)
     }
@@ -79,6 +89,10 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
             if (it.status == 2)
                 setUi(it.statusDetail)
         })
+        widgetViewModel.autoAdsStatus.observe(context as BaseActivity, Observer {
+            (context as BaseActivity).setResult(AUTO_ADS_DISABLED)
+            (context as BaseActivity).finish()
+        })
     }
 
     private fun setUiComponent(status: Int, dailyUsage: Int) {
@@ -92,10 +106,10 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
 
     private fun setUi(statusDetail: String) {
         when (statusDetail) {
-            NonDeliveryReason.no_balance.name -> setNoBalanceView()
-            NonDeliveryReason.out_of_stock.name -> setOutOfStockView()
-            NonDeliveryReason.run_out_budget.name -> setOutOfBudgetView()
-            NonDeliveryReason.shop_inactive.name -> setShopInactiveView()
+            NonDeliveryReason.NO_BALANCE -> setNoBalanceView()
+            NonDeliveryReason.OUT_OF_STOCK -> setOutOfStockView()
+            NonDeliveryReason.OUT_OF_BUDGET -> setOutOfBudgetView()
+            NonDeliveryReason.SHOP_INACTIVE -> setShopInactiveView()
         }
     }
 
@@ -105,14 +119,9 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 this,
                 false
         )
+        baseLayout?.removeAllViews()
         baseLayout?.addView(view)
-        val MORE_INFO = " Cek Status"
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(view: View) {
-                RouteManager.route(context, context.getString(R.string.more_info))
-            }
-        }
-        setSpannable(MORE_INFO, view, clickableSpan)
+        setSpannable(MERCHANT_SETTING, view, merchantClosed)
         setSwitchAction(view)
     }
 
@@ -122,7 +131,15 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 this,
                 false
         )
+        baseLayout?.removeAllViews()
         baseLayout?.addView(view)
+        val desc = view.findViewById<TextView>(R.id.status_desc)
+        if (fromEdit == 1) {
+            desc.text = resources.getString(R.string.autoads_outofbudget_desc_edit)
+        } else {
+            desc.text = resources.getString(R.string.autoads_outofbudget_desc)
+            setSpannable(EDIT_ADS, view, outOfDailyBudget)
+        }
         setSwitchAction(view)
     }
 
@@ -132,24 +149,34 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 this,
                 false
         )
+        baseLayout?.removeAllViews()
         baseLayout?.addView(view)
-        val MORE_INFO = " Tambah Stok"
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(view: View) {
-                RouteManager.route(context, context.getString(R.string.more_info))
-
-            }
-        }
-        setSpannable(MORE_INFO, view, clickableSpan)
+        setSpannable(MANAGE_PRODUCT, view, outOfStock)
         setSwitchAction(view)
     }
 
-    private fun setSpannable(moreInfo: String, view: View, clickableSpan: ClickableSpan) {
+    private fun setSpannable(moreInfo: String, view: View, status: Int) {
         val desc = view.findViewById<TextView>(R.id.status_desc)
         val spannableText = SpannableString(moreInfo)
         val startIndex = 0
         val endIndex = spannableText.length
-        spannableText.setSpan(resources.getColor(com.tokopedia.design.R.color.tkpd_light_green), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.Green_G500)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                when (status) {
+                    outOfCredit -> RouteManager.route(context, TOPADS_BUY_CREDIT)
+                    outOfStock -> RouteManager.route(context, MANAGE_PRODUCT_LINK)
+                    outOfDailyBudget -> startEditActivity()
+                    merchantClosed -> RouteManager.route(context, MERCHANT_SETTING_LINK)
+                }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = ContextCompat.getColor(context, R.color.Green_G500)
+            }
+        }
         spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         desc.movementMethod = LinkMovementMethod.getInstance()
         desc.append(spannableText)
@@ -181,15 +208,16 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 this,
                 false
         )
+        baseLayout?.removeAllViews()
         baseLayout?.addView(view)
-        val MORE_INFO = " TopUp Sekarang"
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(view: View) {
-                RouteManager.route(context, context.getString(R.string.more_info))
-
-            }
+        val desc = view.findViewById<TextView>(R.id.status_desc)
+        view.let {
+            if (fromEdit == 1)
+                desc.text = resources.getString(R.string.autoads_outofcredit_desc_edit)
+            else
+                desc.text = resources.getString(R.string.autoads_outofcredit_desc)
         }
-        setSpannable(MORE_INFO, view, clickableSpan)
+        setSpannable(TOPUP_LINK, view, outOfCredit)
         setSwitchAction(view)
     }
 
@@ -225,7 +253,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 it.btn_switch.setOnClickListener {
                     val man = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
                     man.show()
-                    man.dismissed = { it.btn_switch.isChecked = true}
+                    man.dismissed = { it.btn_switch.isChecked = true }
                 }
             } else {
                 it.btn_switch.visibility = View.INVISIBLE
@@ -237,12 +265,13 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
     }
 
     private fun startEditActivity() {
-        context.startActivity(Intent(context, EditBudgetAutoAdsActivity::class.java))
+        val intent = Intent(context, EditBudgetAutoAdsActivity::class.java)
+        (context as BaseActivity).startActivityForResult(intent, AUTO_ADS_DISABLED)
     }
 
     private fun switchToManual() {
-        budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-                AutoAdsBaseBudgetFragment.TOGGLE_ON,
+        widgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
+                AutoAdsBaseBudgetFragment.TOGGLE_OFF,
                 AutoAdsBaseBudgetFragment.CHANNEL,
                 currentBudget,
                 userSession.shopId.toInt(),
@@ -263,5 +292,4 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
 
     private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
-
 }

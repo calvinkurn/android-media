@@ -13,7 +13,8 @@ import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonG
 
 class NonGroupItemsAdapterTypeFactoryImpl(var selectMode: ((select: Boolean) -> Unit),
                                           var actionDelete: ((pos: Int) -> Unit),
-                                          var actionStatusChange: ((pos:Int,status: Int) -> Unit)) : NonGroupItemsAdapterTypeFactory {
+                                          var actionStatusChange: ((pos: Int, status: Int) -> Unit),
+                                          var onEditGroup: ((groupId: Int, priceBid: Int) -> Unit)) : NonGroupItemsAdapterTypeFactory {
 
     override fun type(model: NonGroupItemsEmptyViewModel): Int = NonGroupItemsEmptyViewHolder.LAYOUT
 
@@ -21,7 +22,8 @@ class NonGroupItemsAdapterTypeFactoryImpl(var selectMode: ((select: Boolean) -> 
 
     override fun holder(type: Int, view: View): NonGroupItemsViewHolder<*> {
         return when (type) {
-            NonGroupItemsItemViewHolder.LAYOUT -> NonGroupItemsItemViewHolder(view, selectMode, actionDelete, actionStatusChange)
+            NonGroupItemsItemViewHolder.LAYOUT -> NonGroupItemsItemViewHolder(view, selectMode, actionDelete,
+                    actionStatusChange, onEditGroup)
             NonGroupItemsEmptyViewHolder.LAYOUT -> NonGroupItemsEmptyViewHolder(view)
             else -> throw RuntimeException("Illegal view type")
         }

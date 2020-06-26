@@ -1,14 +1,14 @@
 package com.tokopedia.topads.credit.history.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
@@ -19,13 +19,13 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topads.common.view.TopAdsDatePickerViewModel
-import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
-import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
-import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.credit.history.view.adapter.TopAdsCreditHistoryTypeFactory
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
+import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
+import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity
 import com.tokopedia.usecase.coroutines.Fail

@@ -3,8 +3,6 @@ package com.tokopedia.topads.dashboard.view.adapter.product
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
-import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapterTypeFactory
 import com.tokopedia.topads.dashboard.view.adapter.product.viewholder.ProductViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductViewModel

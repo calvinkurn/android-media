@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywo
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.loader
 import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
@@ -69,7 +71,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = NegKeywordAdapter(NegKeywordAdapterTypeFactoryImpl(::setSelectMode))
+        adapter = NegKeywordAdapter(NegKeywordAdapterTypeFactoryImpl(::setSelectMode, ::startEditActivity))
     }
 
     private fun onSuccessAction() {
@@ -104,15 +106,19 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
             showConfirmationDialog(context!!)
         }
         btnAddItem.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString(TopAdsDashboardConstant.groupId, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
-            bundle.putString(TopAdsDashboardConstant.groupName, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
-            bundle.putString(TopAdsDashboardConstant.groupStatus, arguments?.getString(TopAdsDashboardConstant.GROUP_STATUS))
-            RouteManager.route(context, bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)
+            startEditActivity()
         }
-        Utils.setSearchListener(view, ::fetchData)
+        Utils.setSearchListener(context, view, ::fetchData)
         neg_key_list?.adapter = adapter
         neg_key_list?.layoutManager = LinearLayoutManager(context)
+    }
+
+    private fun startEditActivity() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
+            putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
+        }
+        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
     }
 
     private fun setSearchBar() {
@@ -134,8 +140,10 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
-                if (!deleteCancel)
+                if (!deleteCancel) {
                     viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+                    activity?.setResult(TopAdsDashboardConstant.GROUP_UPDATED)
+                }
                 deleteCancel = false
                 setSelectMode(false)
             }
@@ -145,6 +153,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
         viewModel.getGroupKeywordData(resources, 0, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
@@ -167,6 +176,13 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         dialog.show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE) {
+            fetchData()
+        }
+    }
+
     private fun getAdIds(): MutableList<String> {
         val ads: MutableList<String> = mutableListOf()
         adapter.getSelectedItems().forEach {
@@ -186,6 +202,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessKeyword(data: List<KeywordsResponse.GetTopadsDashboardKeywords.DataItem>) {
+        loader.visibility = View.GONE
         data.forEach { result ->
             adapter.items.add(NegKeywordItemViewModel(result))
         }

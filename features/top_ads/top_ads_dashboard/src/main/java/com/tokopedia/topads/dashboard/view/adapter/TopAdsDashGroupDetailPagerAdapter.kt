@@ -31,9 +31,7 @@ class TopAdsDashGroupDetailPagerAdapter(fm: FragmentManager, behavior: Int) : Fr
             itemTabList.clear()
             itemTabList.addAll(item)
             notifyDataSetChanged()
-
         }
-
     }
 
     fun setTitleProduct(title: String) {
@@ -48,7 +46,4 @@ class TopAdsDashGroupDetailPagerAdapter(fm: FragmentManager, behavior: Int) : Fr
         this.title[2] = title
         notifyDataSetChanged()
     }
-
-
-
 }

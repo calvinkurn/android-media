@@ -1,11 +1,10 @@
 package com.tokopedia.topads.dashboard.view.adapter
 
 import android.content.Context
-import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.Summary

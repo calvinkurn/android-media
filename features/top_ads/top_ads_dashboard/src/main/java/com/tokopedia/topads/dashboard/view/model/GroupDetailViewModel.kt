@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.view.model
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -37,23 +36,11 @@ class GroupDetailViewModel @Inject constructor(
         private val groupInfoUseCase: GroupInfoUseCase,
         private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
-    val endDate: Date
-        get() {
-            val endCalendar = Calendar.getInstance()
-            return endCalendar.time
-        }
-
-    val startDate: Date
-        get() {
-            val startCalendar = Calendar.getInstance()
-            startCalendar.add(Calendar.DAY_OF_YEAR, -DatePickerConstant.DIFF_ONE_WEEK)
-            return startCalendar.time
-        }
-
-    fun getGroupProductData(resources: Resources, groupId: Int, search: String, sort: String, status: Int?, onSuccess: ((List<WithoutGroupDataItem>) -> Unit), onEmpty: (() -> Unit)) {
+    fun getGroupProductData(resources: Resources, groupId: Int, search: String, sort: String, status: Int?,
+                            startDate:String, endDate:String,onSuccess: ((List<WithoutGroupDataItem>) -> Unit), onEmpty: (() -> Unit)) {
         topAdsGetGroupProductDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.query_get_group_products_dashboard))
-        topAdsGetGroupProductDataUseCase.setParams(groupId, search, sort, status)
+        topAdsGetGroupProductDataUseCase.setParams(groupId, search, sort, status,startDate,endDate)
         topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
                 {
                     if (it.topadsDashboardGroupProducts.data.isEmpty()) {
@@ -127,13 +114,13 @@ class GroupDetailViewModel @Inject constructor(
 
     }
 
-    fun setProductAction(onSuccess: ((action: String) -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
+    fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
         topAdsProductActionUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_product_action))
         topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
         topAdsProductActionUseCase.executeQuerySafeMode(
                 {
-                    onSuccess(action)
+                    onSuccess()
                 },
                 {
                     it.printStackTrace()

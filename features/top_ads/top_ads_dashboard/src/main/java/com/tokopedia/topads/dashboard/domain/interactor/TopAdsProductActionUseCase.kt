@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AD_ID
 import com.tokopedia.topads.dashboard.data.model.EditBulkProduct

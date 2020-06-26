@@ -168,7 +168,7 @@
     <string name="topads_dash_non_group_no_search_result_title">Iklan produk tidak ditemukan</string>
     <string name="topads_no_search_keyword_title">Kata kunci tidak ditemukan</string>
     <string name="topads_empty_on_neg_keywords_title">Kata kunci negatif tidak ditemukan.</string>
-    <string name="topads_dash_perclick">per click</string>
+    <string name="topads_dash_perclick">per klik</string>
     <string name="topads_dash_choose_date">Pilih Tanggal</string>
 
     <string name="topads_dash_status">Status</string>
@@ -184,7 +184,6 @@
     <string name="topads_dash_pengeluaran_tertinggi">Pengeluaran tertinggi</string>
     <string name="topads_dash_terapkan"> Terapkan</string>
 
-    <string name="topads_dash_select_action_title">Celana Jeans Pria</string>
     <string name="topads_dash_aktifan">Aktifkan</string>
     <string name="topads_dash_ubah_iklan">Ubah iklan</string>
     <string name="topads_dash_hapus_iklan">Hapus iklan</string>
@@ -192,7 +191,7 @@
     <string name="topads_dash_movetogroup">Pindah Grup</string>
 
 
-    <string name="topads_dash_group_del_confirm">Yakin hapus iklan “Celana jeans pria”?</string>
+    <string name="topads_dash_group_del_confirm">Yakin hapus iklan “%s”?</string>
     <string name="topads_dash_ya_hapus">Ya, Hapus</string>
     <string name="topads_dash_with_grup_delete_toast">Grup iklan berhasil dihapus.</string>
     <string name="topads_dash_without_grup_delete_toast">Iklan produk berhasil dihapus.</string>

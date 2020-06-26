@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.view.adapter.keyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewholder.KeywordViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordViewModel

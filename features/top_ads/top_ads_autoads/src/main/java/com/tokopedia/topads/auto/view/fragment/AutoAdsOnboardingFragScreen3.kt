@@ -34,7 +34,7 @@ class AutoAdsOnboardingFragScreen3 : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val lottieFileZipStream = ZipInputStream(context?.assets?.open("animation_lottie3.zip"))
+        val lottieFileZipStream = ZipInputStream(context?.assets?.open(ANIMATION_JSON))
         val task = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
         addLottieAnimationToView(task)
 
@@ -49,5 +49,8 @@ class AutoAdsOnboardingFragScreen3 : BaseDaggerFragment() {
                 lottie_animation_view.playAnimation()
             }
         }
+    }
+    companion object {
+        private const val ANIMATION_JSON = "animation_lottie3.zip"
     }
 }

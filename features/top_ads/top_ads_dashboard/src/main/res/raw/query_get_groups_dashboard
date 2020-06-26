@@ -1,6 +1,15 @@
 query GetTopadsDashboardGroups($queryInput: GetTopadsDashboardGroupsInputType!) {
   GetTopadsDashboardGroups(queryInput: $queryInput) {
     separate_statistic
+       meta {
+          page {
+            min
+            per_page
+            max
+            current
+            total
+          }
+        }
     data {
       group_id
       total_item

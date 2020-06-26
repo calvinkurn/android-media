@@ -24,12 +24,12 @@ import kotlin.collections.ArrayList
 
 class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, SaveButtonStateCallBack {
 
-   @Inject
+    @Inject
     lateinit var viewModel: EditFormDefaultViewModel
     private lateinit var adapter: TopAdsEditPagerAdapter
     var list: ArrayList<Fragment> = ArrayList()
 
-    private val EDIT_GROUP_REUEST_CODE = 47
+    private val EDIT_GROUP_REQUEST_CODE = 47
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,9 +63,13 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
             }
         }
 
-        viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup)
+        viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup,
+                ::onSuccessGroupEdited, ::finish)
+    }
+
+    private fun onSuccessGroupEdited() {
         val returnIntent = Intent()
-        setResult(EDIT_GROUP_REUEST_CODE, returnIntent)
+        setResult(EDIT_GROUP_REQUEST_CODE, returnIntent)
         finish()
     }
 

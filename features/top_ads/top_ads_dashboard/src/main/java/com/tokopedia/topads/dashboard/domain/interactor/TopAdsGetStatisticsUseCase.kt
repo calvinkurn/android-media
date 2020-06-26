@@ -7,14 +7,10 @@ import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
-import javax.inject.Inject
-
 import rx.Observable
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by hadi.putra on 25/04/18.

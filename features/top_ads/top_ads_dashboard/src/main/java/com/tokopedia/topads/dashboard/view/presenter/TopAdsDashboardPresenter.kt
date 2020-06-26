@@ -4,7 +4,6 @@ import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.CacheType
@@ -14,7 +13,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor
@@ -34,7 +32,6 @@ import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggi
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -59,18 +56,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
     var expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
     val HIDDEN_TRIAL_FEATURE = 21
-    val endDate: Date
-        get() {
-            val endCalendar = Calendar.getInstance()
-            return topAdsDatePickerInteractor.getEndDate(endCalendar.time)
-        }
-
-    val startDate: Date
-        get() {
-            val startCalendar = Calendar.getInstance()
-            startCalendar.add(Calendar.DAY_OF_YEAR, -DatePickerConstant.DIFF_ONE_WEEK)
-            return startCalendar.time
-        }
 
     fun getShopDeposit(onSuccess: ((dataDeposit: DataDeposit) -> Unit)) {
         topAdsGetShopDepositUseCase.execute(TopAdsGetShopDepositUseCase.createParams(userSession.shopId),
@@ -109,10 +94,10 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         topAdsGetGroupProductDataUseCase.cancelJobs()
     }
 
-    fun getGroupData(resources: Resources, search: String, sort: String, status: Int?, onSuccess: ((List<DataItem>) -> Unit)) {
+    fun getGroupData(resources: Resources, search: String, sort: String, status: Int?,startDate:String,endDate:String, onSuccess: ((List<DataItem>) -> Unit)) {
         topAdsGetGroupDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.query_get_groups_dashboard))
-        topAdsGetGroupDataUseCase.setParams(search, sort, status)
+        topAdsGetGroupDataUseCase.setParams(search, sort, status,startDate,endDate)
         topAdsGetGroupDataUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.getTopadsDashboardGroups.data)
@@ -165,10 +150,10 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
     }
 
 
-    fun getGroupProductData(resources: Resources, groupId: Int?, search: String, sort: String, status: Int?, onSuccess: ((List<WithoutGroupDataItem>) -> Unit), onEmpty: (() -> Unit)) {
+    fun getGroupProductData(resources: Resources, groupId: Int?, search: String, sort: String, status: Int?,startDate:String,endDate:String, onSuccess: ((List<WithoutGroupDataItem>) -> Unit), onEmpty: (() -> Unit)) {
         topAdsGetGroupProductDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.query_get_group_products_dashboard))
-        topAdsGetGroupProductDataUseCase.setParams(groupId, search, sort, status)
+        topAdsGetGroupProductDataUseCase.setParams(groupId, search, sort, status,startDate,endDate)
         topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
                 {
                     if (it.topadsDashboardGroupProducts.data.isEmpty()) {

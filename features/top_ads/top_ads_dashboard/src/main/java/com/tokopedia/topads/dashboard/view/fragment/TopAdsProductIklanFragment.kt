@@ -77,6 +77,10 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private var groupPagerAdapter: GroupNonGroupPagerAdapter? = null
     private lateinit var autoAdsAdapter: AutoAdsItemsListAdapter
 
+    private var collapseStateCallBack: AppBarAction? = null
+    private val SEVEN_DAYS_RANGE_INDEX = 2
+
+
     val autoAdsWidget: AutoAdsWidget?
         get() = autoads_edit_widget
 
@@ -157,8 +161,9 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             else
                 openDashboard()
         }
-        startDate = topAdsDashboardPresenter.startDate
-        endDate = topAdsDashboardPresenter.endDate
+        setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
+        startDate = Utils.getStartDate()
+        endDate = Utils.getEndDate()
         loadData()
         hari_ini?.setOnClickListener {
             showBottomSheet()
@@ -195,7 +200,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
                 }
             }
         })
-        Utils.setSearchListener(view,::fetchData)
+        Utils.setSearchListener(context, view, ::fetchData)
     }
 
     private fun renderViewPager() {
@@ -290,7 +295,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private fun fetchData() {
         autoAdsAdapter.items.clear()
         autoAdsAdapter.notifyDataSetChanged()
-        topAdsDashboardPresenter.getGroupProductData(resources, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(), null, this::onSuccessResult, this::onEmptyResult)
+        topAdsDashboardPresenter.getGroupProductData(resources, null, searchBar?.searchBarTextField?.text.toString(),
+                groupFilterSheet.getSelectedSortId(), null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
     }
 
     private fun manualAds() {
@@ -413,7 +419,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         startDate = Date(date1)
         endDate = Date(date2)
         setDateRangeText(position)
-        loadStatisticsData()
+        loadData()
     }
 
     private fun trackingDateTopAds(lastSelection: Int, selectionType: Int) {
@@ -567,7 +573,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             commit()
         }
         setDateRangeText(CUSTOM_DATE)
-        loadStatisticsData()
+        loadData()
     }
 
     private fun setDateRangeText(position: Int) {
@@ -582,7 +588,24 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is AppBarAction) {
+            collapseStateCallBack = context
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        collapseStateCallBack = null
+    }
+
     private fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
+        collapseStateCallBack?.setAppBarState(state)
         swipe_refresh_layout.isEnabled = state == State.EXPANDED
+    }
+
+    interface AppBarAction {
+        fun setAppBarState(state: State?)
     }
 }

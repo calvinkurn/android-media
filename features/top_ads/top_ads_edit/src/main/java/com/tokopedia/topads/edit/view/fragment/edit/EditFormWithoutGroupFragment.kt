@@ -49,6 +49,8 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
     private var validation1 = true
     private var validation2 = true
     private var currentBudget = 0
+    val EDIT_WITHOUT_GROUP_REQUEST_CODE = 49
+
 
     companion object {
         fun newInstance(bundle: Bundle?): EditFormWithoutGroupFragment {
@@ -134,6 +136,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
         save_butt.setOnClickListener {
             viewModel.editSingleAd(adId.toString(), replace(budget.textFieldInput.text.toString()).toFloat(),
                     replace(daily_budget.textFieldInput.text.toString()).toFloat())
+            activity?.setResult(EDIT_WITHOUT_GROUP_REQUEST_CODE)
             activity?.finish()
         }
     }

@@ -51,7 +51,7 @@
             app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/biaya_pencarian_value"
+            android:id="@+id/budgetPerClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
@@ -72,7 +72,7 @@
             android:gravity="bottom"
             android:text="@string/topads_dash_perclick"
             android:textColor="@color/topads_light_shadow"
-            app:layout_constraintStart_toEndOf="@id/biaya_pencarian_value"
+            app:layout_constraintStart_toEndOf="@id/budgetPerClick"
             app:layout_constraintTop_toBottomOf="@id/biaya_pencarian"
             app:typographyType="small" />
 
@@ -94,7 +94,6 @@
             android:layout_marginLeft="@dimen/dp_40"
             android:layout_marginTop="@dimen/dp_4"
             android:includeFontPadding="false"
-            android:text="@string/topads_dash_group_item_progress_status"
             app:layout_constraintStart_toEndOf="@id/per_click"
             app:layout_constraintTop_toBottomOf="@id/anggaran_harian"
             app:typographyType="heading_5"
@@ -108,7 +107,6 @@
             android:layout_marginLeft="@dimen/dp_2"
             android:layout_marginTop="@dimen/dp_4"
             android:gravity="bottom"
-            android:text="@string/topads_dash_group_item_progress_status"
             android:textColor="@color/topads_light_shadow"
             app:layout_constraintStart_toEndOf="@id/progress_status1"
             app:layout_constraintTop_toBottomOf="@id/anggaran_harian"

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
+import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -26,15 +27,15 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_DETAIL
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_NAME
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_STATUS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_TOTAL
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NOT_VALID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.data.utils.Utils.outputFormat
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
@@ -49,11 +50,6 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.app_bar_layout_2
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.hari_ini
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.swipe_refresh_layout
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.tab_layout
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.view_pager_frag
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import java.util.*
 import javax.inject.Inject
@@ -63,7 +59,7 @@ import kotlin.math.abs
  * Created by Pika on 1/6/20.
  */
 
-class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, CustomDatePicker.ActionListener {
+class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, CustomDatePicker.ActionListener, CompoundButton.OnCheckedChangeListener, ProductTabFragment.FetchDate {
 
     internal var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
@@ -71,15 +67,17 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     @TopAdsStatisticsType
 
     private var groupId: Int? = 0
+    private var priceSpent: String? = ""
     private var groupStatus: String? = ""
     private var groupName: String? = ""
     private var datePickerSheet: DatePickerSheet? = null
     internal var startDate: Date? = null
     internal var endDate: Date? = null
-    private val EDIT_GROUP_REUEST_CODE = 47
     private var priceDaily = 0
     private var groupTotal = 0
-
+    private val ACTIVE = "1"
+    private val TIDAK_TAMPIL = "2"
+    private val SEVEN_DAYS_RANGE_INDEX = 2
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
 
     @Inject
@@ -130,7 +128,6 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         val list: MutableList<Fragment> = mutableListOf()
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
-        bundle.putString(GROUP_STATUS, groupStatus)
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
         list.add(ProductTabFragment.createInstance(bundle))
@@ -147,7 +144,10 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         setContentView(R.layout.topads_dash_fragment_group_detail_view_layout)
         getBundleArguments()
+        setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
         initStatisticComponent()
+        startDate = Utils.getStartDate()
+        endDate = Utils.getEndDate()
         loadData()
         swipe_refresh_layout.setOnRefreshListener {
             loadData()
@@ -158,21 +158,14 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }
-        btn_switch.setOnCheckedChangeListener { buttonView, isChecked ->
-            when {
-                isChecked -> viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId.toString()), resources)
-                else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId.toString()), resources)
-            }
-        }
 
         header_toolbar.addRightIcon(R.drawable.topads_edit_pen_icon).setOnClickListener {
 
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                putExtra(TopAdsDashboardConstant.groupId, groupId.toString())
-                putExtra(TopAdsDashboardConstant.groupName, groupName)
-                putExtra(TopAdsDashboardConstant.groupStatus, groupStatus)
+                putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+                putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
             }
-            startActivityForResult(intent, EDIT_GROUP_REUEST_CODE)
+            startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
         }
         app_bar_layout_2.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, offset ->
             when {
@@ -200,7 +193,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
     private fun loadData() {
         viewModel.getGroupInfo(resources, groupId.toString(), ::onSuccessGroupInfo)
-        viewModel.getTopAdsStatistic(viewModel.startDate, viewModel.endDate, selectedStatisticType, ::onSuccesGetStatisticsInfo)
+        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
@@ -208,11 +201,27 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         groupName = data.groupName
         groupTotal = data.groupTotal.toInt()
         priceDaily = data.priceDaily
-        biaya_pencarian_value.text = "Rp $priceDaily"
+        budgetPerClick.text = "Rp " + data.priceBid
         group_name.text = groupName
-        btn_switch.isChecked = data.status == "1"
+        btn_switch.setOnCheckedChangeListener(null)
+        btn_switch.isChecked = data.status == ACTIVE || data.status == TIDAK_TAMPIL
+        btn_switch.setOnCheckedChangeListener(this)
+        if (priceDaily == 0) {
+            progress_status1.text = TopAdsDashboardConstant.TIDAK_DIBATASI
+            progress_status2.visibility = View.GONE
+            progress_bar.visibility = View.GONE
+        } else {
+            progress_status2.visibility = View.VISIBLE
+            progress_status2.text = String.format(resources.getString(R.string.topads_dash_group_item_progress_status), priceDaily)
+            progress_status1.text = priceSpent
+            progress_bar.visibility = View.VISIBLE
+            priceSpent?.replace("Rp", "")?.trim()?.toInt().let {
+                progress_bar.setValue(it ?: 0, false)
+            }
+        }
         renderTabAndViewPager()
     }
+
     private fun onStateChanged(appBarLayout: AppBarLayout?, state: TopAdsProductIklanFragment.State?) {
         swipe_refresh_layout.isEnabled = state == TopAdsProductIklanFragment.State.EXPANDED
 
@@ -220,28 +229,14 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EDIT_GROUP_REUEST_CODE) {
+        if (requestCode == EDIT_GROUP_REQUEST_CODE) {
             loadData()
         }
     }
 
     private fun getBundleArguments() {
         groupId = intent?.extras?.getInt(GROUP_ID)
-        val priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
-        if (priceSpent == NOT_VALID) {
-            progress_status1.text = TopAdsDashboardConstant.TIDAK_DIBATASI
-            progress_status2.visibility = View.GONE
-            progress_bar.visibility = View.GONE
-        } else {
-            progress_status2.visibility = View.VISIBLE
-            progress_status2.text = String.format(resources.getString(R.string.topads_dash_group_item_progress_status), priceDaily
-                    ?: 0)
-            progress_status1.text = priceSpent
-            progress_bar.visibility = View.VISIBLE
-            priceSpent?.replace("Rp", "")?.trim()?.toInt().let {
-                progress_bar.setValue(it ?: 0, false)
-            }
-        }
+        priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
     }
 
     private fun initStatisticComponent() {
@@ -255,7 +250,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         recyclerview_tabLayout.adapter = topAdsTabAdapter
         val smoothScroller = object : LinearSmoothScroller(this) {
             override fun getHorizontalSnapPreference(): Int {
-                return LinearSmoothScroller.SNAP_TO_START
+                return SNAP_TO_START
             }
 
             override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
@@ -400,6 +395,30 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
     fun setNegKeywordCount(size: Int) {
         detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size))
+    }
+
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        when {
+            isChecked -> viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId.toString()), resources)
+            else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId.toString()), resources)
+        }
+    }
+
+    override fun getStartDate(): String {
+        return format.format(startDate)
+    }
+
+    override fun getEndDate(): String {
+        return format.format(endDate)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            clear()
+            commit()
+        }
     }
 }
 

@@ -30,7 +30,10 @@
             android:id="@+id/group_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
             app:layout_constraintEnd_toStartOf="@id/img_menu"
             app:layout_constraintStart_toEndOf="@id/img"
             app:layout_constraintTop_toTopOf="@id/img"
@@ -57,8 +60,8 @@
             android:layout_marginTop="@dimen/dp_14"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
-            android:visibility="gone"
             android:clickable="false"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

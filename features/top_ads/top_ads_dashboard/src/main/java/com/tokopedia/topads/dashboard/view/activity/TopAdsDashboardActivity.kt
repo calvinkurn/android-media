@@ -18,6 +18,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AUTO_ADS_DISABLED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPIRE
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
@@ -32,7 +33,7 @@ import javax.inject.Inject
 /**
  * Created by hadi.putra on 23/04/2018.
  */
-class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent> {
+class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent> , TopAdsProductIklanFragment.AppBarAction {
 
     private var tracker: TopAdsDashboardTracking? = null
 
@@ -42,13 +43,14 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
-
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
         setContentView(R.layout.topads_dash_activity_base_layout)
         renderTabAndViewPager()
         header_toolbar?.actionTextView?.setOnClickListener {
-            if (GlobalConfig.isSellerApp())
-                RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+            if (GlobalConfig.isSellerApp()) {
+                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+                startActivityForResult(intent,AUTO_ADS_DISABLED)
+            }
             else {
                 openDashboard()
             }
@@ -72,7 +74,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         })
         createAd.setOnClickListener {
             if (GlobalConfig.isSellerApp()) {
-                RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+                startActivityForResult(intent,AUTO_ADS_DISABLED)
             } else {
                 openDashboard()
             }
@@ -99,6 +102,13 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == AUTO_ADS_DISABLED){
+            renderTabAndViewPager()
+        }
     }
 
     private fun renderTabAndViewPager() {
@@ -164,6 +174,15 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
         } else {
             RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
+        }
+    }
+
+    override fun setAppBarState(state: TopAdsProductIklanFragment.State?) {
+        if(state == TopAdsProductIklanFragment.State.COLLAPSED){
+            app_bar_layout.setExpanded(false)
+        }
+        else if (state == TopAdsProductIklanFragment.State.EXPANDED){
+            app_bar_layout.setExpanded(true)
         }
     }
 }

@@ -24,7 +24,7 @@ class AutoAdsItemsItemViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoAd
             view.product_name.text = it.data.productName
             view.img_menu.visibility = View.GONE
             view.check_box.visibility = View.GONE
-            view.label.visibility = View.GONE
+            view.label.visibility = View.INVISIBLE
             view.btn_switch.visibility = View.GONE
             view.progress_layout.visibility = View.GONE
             view.product_name.text = it.data.productName
