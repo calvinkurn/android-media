@@ -11,10 +11,11 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder.Ba
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder.BankSettingButtonViewHolder
 
 class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
-                         private val listener: BankAdapterListener)
+                         private val listener: BankAdapterListener,
+                         private val isRpLogoVisible: Boolean)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var needToShowRPCoachMark : Boolean = false
+    private var needToShowRPCoachMark: Boolean = false
 
     private val bankAccountList: ArrayList<BankAccount> = arrayListOf()
     private var checkEligible: CheckEligible? = null
@@ -59,7 +60,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val bankAccount = bankAccountList[position]
         if (holder is BankAccountViewHolder)
-            holder.bindData(bankAccount, ::onBankAccountSelected ,listener)
+            holder.bindData(bankAccount, ::onBankAccountSelected, listener, isRpLogoVisible)
         else
             (holder as BankSettingButtonViewHolder).bindData(
                     bankAccountList.size - 1,
@@ -68,7 +69,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
     }
 
     fun updateBankList(newBankList: ArrayList<BankAccount>, checkEligible: CheckEligible,
-                       needToShowRPCoachMark : Boolean) {
+                       needToShowRPCoachMark: Boolean) {
         this.needToShowRPCoachMark = needToShowRPCoachMark;
         this.checkEligible = checkEligible
         bankAccountList.clear()
@@ -109,6 +110,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
 
     private fun openBankAccountSetting() {
         listener.openBankAccountSetting()
+        withdrawAnalytics.onClickManageAccount()
     }
 
     fun getSelectedBankAccount(): BankAccount? {
@@ -129,7 +131,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
 
         fun showPremiumAccountDialog()
 
-        fun onDisabledBankClick()
+        fun onDisabledBankClick(bankAccount: BankAccount)
     }
 
 }

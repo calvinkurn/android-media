@@ -29,7 +29,8 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val tvSpecialOffer: TextView = view.tvSpecialOffer
 
     fun bindData(bankAccount: BankAccount, onBankAccountSelected: (BankAccount) -> Unit,
-                 listener: BankAccountAdapter.BankAdapterListener) {
+                 listener: BankAccountAdapter.BankAdapterListener,
+                 isRpLogoVisible: Boolean) {
         val context = itemView.context
 
         bankName.text = bankAccount.bankName
@@ -58,7 +59,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
         ivButtonRadio.setImageDrawable(drawable)
 
-        if (bankAccount.haveRPProgram) {
+        if (bankAccount.haveRPProgram && isRpLogoVisible) {
             ivPremiumAccount.visible()
         } else {
             ivPremiumAccount.gone()
@@ -77,8 +78,8 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             bankAdminFee.setTextColor(disabledColor)
             ivPremiumAccount.alpha = ALPHA_DISABLED
             tvSpecialOffer.alpha = ALPHA_DISABLED
-            itemView.setOnClickListener { listener.onDisabledBankClick() }
-            ivPremiumAccount.setOnClickListener { listener.onDisabledBankClick() }
+            itemView.setOnClickListener { listener.onDisabledBankClick(bankAccount) }
+            ivPremiumAccount.setOnClickListener { listener.onDisabledBankClick(bankAccount) }
         } else {
             ivPremiumAccount.alpha = ALPHA_ENABLED
             tvSpecialOffer.alpha = ALPHA_ENABLED

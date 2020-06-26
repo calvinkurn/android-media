@@ -24,7 +24,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.withdraw.R
+import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.di.component.DaggerWithdrawComponent
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.JoinRekeningPremium
 import com.tokopedia.withdraw.saldowithdrawal.helper.BulletPointSpan
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
@@ -37,11 +39,15 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
 
     var callback: WithdrawalJoinRPCallback? = null
     private lateinit var tncTemplateStr: String
+    private lateinit var bankAccount: BankAccount
 
     private lateinit var childView: View
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
 
     private val joinRekeningTermsConditionViewModel: JoinRekeningTermsConditionViewModel
             by lazy(LazyThreadSafetyMode.NONE) {
@@ -56,15 +62,20 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_JOIN_REKENING_PREMIUM)) {
+                initInjector()
+                bankAccount = it.getParcelable(ARG_BANK_ACCOUNT)
+                joinRekeningPremium = it.getParcelable(ARG_JOIN_REKENING_PREMIUM)
                 childView = LayoutInflater.from(context).inflate(childLayoutRes,
                         null, false)
                 setChild(childView)
-                joinRekeningPremium = it.getParcelable(ARG_JOIN_REKENING_PREMIUM)
             } else
                 dismiss()
         }
-        initInjector()
         addDataToUI()
+        setCloseClickListener {
+            dismiss()
+            analytics.get().onBackFromWithdrawalJoinRPBottomSheet(bankAccount.bankName)
+        }
     }
 
     private fun addDataToUI() {
@@ -78,12 +89,16 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
         childView.findViewById<View>(R.id.btnJoinRPAndWithdrawal).setOnClickListener {
             dismiss()
             callback?.onWithdrawalAndJoinRekening(true)
+            analytics.get().onClickWithdrawalBalanceAndJoin(bankAccount.bankName)
         }
 
         childView.findViewById<View>(R.id.btnWithdrawalOnly).setOnClickListener {
             dismiss()
             callback?.onWithdrawalAndJoinRekening(false)
+            analytics.get().onClickOnlyWithdrawalSaldo(bankAccount.bankName)
         }
+
+        analytics.get().onWithdrawalByJoiningOfferOpen(bankAccount.bankName)
     }
 
     private fun initInjector() {
@@ -95,6 +110,7 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
             dismiss()
         }
     }
+
 
     private fun getDescription(context: Context, container: LinearLayout) {
         if (!joinRekeningPremium.descriptionStringArray.isNullOrEmpty()) {
@@ -195,12 +211,14 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val ARG_JOIN_REKENING_PREMIUM = "arg_join_rekening_premium"
+        const val ARG_BANK_ACCOUNT = "arg_bank_account"
 
-        fun getJoinRPOnWithdrawalBottomSheetInstance(joinRekeningPremium: JoinRekeningPremium)
+        fun getJoinRPOnWithdrawalBottomSheetInstance(bankAccount: BankAccount, joinRekeningPremium: JoinRekeningPremium)
                 : JoinRPOnWithdrawalBottomSheet {
             return JoinRPOnWithdrawalBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putParcelable(ARG_JOIN_REKENING_PREMIUM, joinRekeningPremium)
+                bundle.putParcelable(ARG_BANK_ACCOUNT, bankAccount)
                 arguments = bundle
             }
         }

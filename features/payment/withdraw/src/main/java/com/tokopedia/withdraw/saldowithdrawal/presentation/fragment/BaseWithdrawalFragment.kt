@@ -35,10 +35,7 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.DisabledAccoun
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.RekPremBankAccountInfoBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
-import com.tokopedia.withdraw.saldowithdrawal.util.BuyerSaldoWithdrawal
-import com.tokopedia.withdraw.saldowithdrawal.util.SaldoWithdrawal
-import com.tokopedia.withdraw.saldowithdrawal.util.SellerSaldoWithdrawal
-import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
+import com.tokopedia.withdraw.saldowithdrawal.util.*
 import kotlinx.android.synthetic.main.swd_fragment_base_withdrawal.*
 import javax.inject.Inject
 
@@ -47,10 +44,13 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     private lateinit var checkEligible: CheckEligible
 
     @Inject
-    lateinit var userSession: UserSession
+    lateinit var userSession: dagger.Lazy<UserSession>
 
     @Inject
-    lateinit var analytics: WithdrawAnalytics
+    lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
+
+    @Inject
+    lateinit var remoteConfig: dagger.Lazy<SaldoWithdrawalRemoteConfig>
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -188,8 +188,15 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                     return false
                 }
             }
-            bankAccountAdapter = BankAccountAdapter(analytics, this)
+            bankAccountAdapter = BankAccountAdapter(analytics.get(), this, isRekPremLogoVisible())
             recyclerBankList.adapter = bankAccountAdapter
+        }
+    }
+
+    private fun isRekPremLogoVisible(): Boolean {
+        return when (accountBalanceType) {
+            is SellerSaldoWithdrawal -> true
+            is BuyerSaldoWithdrawal -> remoteConfig.get().isRekeningPremiumLogoVisibleToAll()
         }
     }
 
@@ -224,7 +231,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     private fun copyAllBalanceToWithdrawalAmount() {
         tfWithdrawal.textFieldInput.setText(balance.toString())
         tfWithdrawal.textFieldInput.setSelection(tfWithdrawal.textFieldInput.length())
-        analytics.eventClickWithdrawalAll();
+        analytics.get().eventClickWithdrawalAll();
     }
 
     private fun createTermsAndConditionSpannable(context: Context): SpannableStringBuilder? {
@@ -238,7 +245,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 openTermsAndConditionBottomSheet()
-                analytics.eventClickTANDC()
+                analytics.get().eventClickTANDC()
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -257,7 +264,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc,
                     null, true)
             val webView: TkpdWebView = view.findViewById(R.id.swd_tnc_webview)
-            webView.loadAuthUrl(WithdrawConstant.WEB_TNC_URL, userSession)
+            webView.loadAuthUrl(WithdrawConstant.WEB_TNC_URL, userSession.get())
             bottomSheetUnify.setChild(view)
             bottomSheetUnify.show(it.supportFragmentManager, "")
         }
@@ -316,13 +323,19 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         }
     }
 
-    override fun onDisabledBankClick() {
+    override fun onDisabledBankClick(bankAccount: BankAccount) {
         if (checkEligible.data.isIsPowerWD)
             activity?.let {
                 val disabledAccountBottomSheet = DisabledAccountBottomSheet()
                 disabledAccountBottomSheet.isFullpage = false
                 disabledAccountBottomSheet.show(it.supportFragmentManager, "")
+                disabledAccountBottomSheet.setCloseClickListener {
+                    disabledAccountBottomSheet.dismiss()
+                    analytics.get().onDisableAccountInfoSheetClose(bankAccount.bankName)
+                }
+                analytics.get().onDisableAccountInfoSheetOpen(bankAccount.bankName)
             }
+        analytics.get().onDisableAccountClick(bankAccount.bankName)
     }
 
     override fun showPremiumAccountDialog() {
@@ -330,11 +343,12 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             val premiumAccountBottomSheet = RekPremBankAccountInfoBottomSheet.getInstance(checkEligible)
             premiumAccountBottomSheet.isFullpage = false
             premiumAccountBottomSheet.show(it.supportFragmentManager, "")
+            analytics.get().onRekeningPremiumLogoClick()
         }
     }
 
     private fun initiateWithdrawal() {
-        analytics.eventClickTarikSaldo()
+        analytics.get().eventClickTarikSaldo()
         bankAccountAdapter.getSelectedBankAccount()?.let { bankAccount ->
             val withdrawalAmount = StringUtils
                     .convertToNumeric(tfWithdrawal.textFieldInput.text.toString(),
@@ -369,7 +383,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     companion object {
-        const val KEY_CAN_SHOW_RP_COACH_MARK = "com.tokopedia.withdraw.saldowithdrawal.key_can_show_rp_coach_mark"
+        const val KEY_CAN_SHOW_RP_COACH_MARK = "com.tokopedia.withdraw.saldowithdrawal.rekprem_logo_coach_mark"
     }
 }
 

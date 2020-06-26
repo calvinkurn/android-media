@@ -29,7 +29,7 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
 
 
     @Inject
-    lateinit var analytics: WithdrawAnalytics
+    lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
 
     override fun getLayoutRes() = R.layout.activity_saldo_withdraw
 
@@ -64,16 +64,23 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
     }
 
     override fun onBackPressed() {
-        setResultIfSuccessFragment()
-        analytics.eventClickBackArrow()
+        val isSuccess = setResultIfSuccessFragment()
+        if(!isSuccess){
+            analytics.get().onBackPressFromWithdrawalPage()
+        }
         super.onBackPressed()
     }
 
-    private fun setResultIfSuccessFragment() {
+    private fun setResultIfSuccessFragment() : Boolean{
         if (supportFragmentManager.findFragmentByTag(TAG_SUCCESS_FRAGMENT) != null) {
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)
+            if (fragment is SuccessFragmentWithdrawal) {
+                (fragment as SuccessFragmentWithdrawal).onCloseButtonClick()
+            }
+            return true
         }
+        return false
     }
 
     override fun openSuccessFragment(withdrawalRequest: WithdrawalRequest,

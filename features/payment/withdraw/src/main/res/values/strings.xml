@@ -85,6 +85,8 @@
     <string name="swd_tnc">syarat dan ketentuan</string>
 
     <string name="swd_ticker_description_html">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
+    <string name="swd_label_cek_rp_from_disable_bank_sheet">%s - ticker : hanya bisa tarik saldo ke rekprem</string>
+    <string name="swd_label_no_ticker">%s -  ticker : tidak ada ticker rekening premium</string>
 
 
 

@@ -9,13 +9,17 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.withdraw.R
+import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
+import com.tokopedia.withdraw.saldowithdrawal.di.component.DaggerWithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
 import com.tokopedia.withdraw.saldowithdrawal.helper.BulletPointSpan
 import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
+import javax.inject.Inject
 
 class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
 
@@ -27,17 +31,31 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
 
     private lateinit var checkEligible: CheckEligible
 
+    @Inject
+    lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_CHECK_ELIGIBLE_DATA)) {
                 checkEligible = it.getParcelable(ARG_CHECK_ELIGIBLE_DATA)
+                initInjector()
                 addChildView()
             } else {
                 this.dismiss()
             }
         } ?: run {
             this.dismiss()
+        }
+    }
+
+    private fun initInjector() {
+        activity?.let {
+            DaggerWithdrawComponent.builder()
+                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                    .build().inject(this)
+        } ?: run {
+            dismiss()
         }
     }
 
@@ -57,6 +75,7 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
                 childView.findViewById<View>(R.id.btnJoinPremiumAccount).setOnClickListener {
                     dismiss()
                     WithdrawConstant.openRekeningAccountInfoPage(context)
+                    analytics.get().onClickJoinRekeningProgram()
                 }
             } else
                 childView.findViewById<View>(R.id.btnJoinPremiumAccount).gone()
@@ -64,9 +83,17 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
             childView.findViewById<View>(R.id.tvMoreInfo).setOnClickListener {
                 dismiss()
                 WithdrawConstant.openRekeningAccountInfoPage(context)
+                analytics.get().onRekeningPremiumAccountMoreInfo()
             }
         }
+
+        setCloseClickListener {
+            analytics.get().onRekeningPremiumAccountInfoClosed()
+            dismiss()
+        }
+
     }
+
 
     private fun addBulletToTextView(context: Context,
                                     @StringRes stringID: Int, textView: TextView) {

@@ -57,10 +57,10 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     }
 
     @Inject
-    lateinit var userSession: UserSession
+    lateinit var userSession: dagger.Lazy<UserSession>
 
     @Inject
-    lateinit var analytics: WithdrawAnalytics
+    lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
 
     private lateinit var withdrawalRequest: WithdrawalRequest
 
@@ -154,7 +154,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         saldoWithdrawalViewModel.bankListResponseMutableData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (!userSession.isMsisdnVerified) {
+                    if (!userSession.get().isMsisdnVerified) {
                         showMustVerify()
                     }
                 }
@@ -206,7 +206,13 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     }
 
     private fun onCarouselItemClick(bannerData: BannerData) {
+
         WithdrawConstant.openSessionBaseURL(context, bannerData.cta)
+        if(bannerData.status == BANNER_WITH_CONTENT){
+            analytics.get().onRekeningBannerClick()
+        }else{
+            analytics.get().onBannerItemClick()
+        }
     }
 
     private fun carouselItemListener(view: View, data: Any) {
@@ -222,7 +228,9 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             tvBannerDescriptionOne.text = bannerData.text1
             tvBannerDescriptionTwo.text = bannerData.text2
             img.setImageUrl(bannerData.bgURL)
+            analytics.get().onViewRekeningPointWidget(bannerData.text1)
         } else {
+            analytics.get().onBannerItemView()
             bannerTextGroup.gone()
             img.setImageUrl(bannerData.imgURL)
         }
@@ -244,7 +252,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     private fun redirectToSuccessFragment(submitWithdrawalResponse: SubmitWithdrawalResponse) {
         loadingLayout.gone()
         (activity as WithdrawActivity).openSuccessFragment(withdrawalRequest, submitWithdrawalResponse)
-        analytics.eventClickWithdrawalConfirm(getString(R.string.swd_label_analytics_success_withdraw))
     }
 
     private fun showUIComponent() {
@@ -252,7 +259,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         showSellerBlockedTicker()
         initializeViewPager()
     }
-
 
     private fun handleGlobalError(throwable: Throwable, retry: () -> Unit) {
         loadingLayout.gone()
@@ -376,7 +382,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     fun initiateBuyerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
         loadingLayout.visible()
         withdrawalRequest = WithdrawalRequest(
-                userId = userSession.userId, email = userSession.email,
+                userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = false, programName = getProgramName(), isJoinRekeningPremium = false)
         validatePopUpViewModel.checkForValidatePopup(selectedBankAccount)
@@ -385,7 +391,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     fun initiateSellerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
         loadingLayout.visible()
         withdrawalRequest = WithdrawalRequest(
-                userId = userSession.userId, email = userSession.email,
+                userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = true, programName = getProgramName(), isJoinRekeningPremium = false)
         validatePopUpViewModel.checkForValidatePopup(selectedBankAccount)
@@ -396,7 +402,8 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             validatePopUpWithdrawal.joinData.isJoinPrompt -> {
                 activity?.let {
                     JoinRPOnWithdrawalBottomSheet
-                            .getJoinRPOnWithdrawalBottomSheetInstance(validatePopUpWithdrawal.joinData)
+                            .getJoinRPOnWithdrawalBottomSheetInstance(withdrawalRequest.bankAccount,
+                                    validatePopUpWithdrawal.joinData)
                             .show(it.supportFragmentManager, "")
                 }
             }
@@ -427,7 +434,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             setPrimaryCTAText(getString(R.string.swd_continue_pull))
             setSecondaryCTAText(getString(R.string.swd_back))
             setPrimaryCTAClickListener {
-                analytics.eventClickContinueBtn()
+                analytics.get().eventClickContinueBtn()
                 validatePopUpAlertDialog.cancel()
                 openUserVerificationScreen()
             }
@@ -442,14 +449,14 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         val OTP_TYPE_ADD_BANK_ACCOUNT = 120
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
         val bundle = Bundle()
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.get().email)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.get().phoneNumber)
         bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_BANK_ACCOUNT)
         bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
         intent.putExtras(bundle)
         startActivityForResult(intent, VERIFICATION_REQUEST_CODE)
-        analytics.eventClickWithdrawal()
+        analytics.get().eventClickWithdrawal()
     }
 
     private fun onVerificationCompleted(data: Intent) {

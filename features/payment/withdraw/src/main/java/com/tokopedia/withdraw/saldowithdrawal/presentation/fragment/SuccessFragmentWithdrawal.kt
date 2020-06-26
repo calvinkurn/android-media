@@ -13,8 +13,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -105,24 +103,36 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
                         .text = getJoinRPProgramSpannableDescription(context)
                 withdrawalSuccessTicker.gone()
                 cardUnifyJoinRekeningProgram.visible()
+                analytics.get().onShowJoinRekeningPremiumWidgetOnSuccessPage(
+                        withdrawalRequest.bankAccount.bankName)
             }
             else -> {
                 withdrawalSuccessTicker.gone()
                 cardUnifyJoinRekeningProgram.gone()
+                analytics.get().onNoTickerDisplayedOnSuccessPage(
+                        getString(R.string.swd_label_no_ticker
+                                , withdrawalRequest.bankAccount.bankName ?: ""))
             }
         }
     }
 
     private fun showJoinRekeningRequestTicker(joinPromptMessageResponse: JoinPromptMessageResponse) {
-        if (joinPromptMessageResponse.isSuccess)
-            withdrawalSuccessTicker.tickerType = Ticker.TYPE_ANNOUNCEMENT
-        else
-            withdrawalSuccessTicker.tickerType = Ticker.TYPE_WARNING
         withdrawalSuccessTicker.tickerTitle = joinPromptMessageResponse.title
         withdrawalSuccessTicker
                 .setHtmlDescription(getString(R.string.swd_ticker_description_html,
                         joinPromptMessageResponse.description, joinPromptMessageResponse.actionText))
         withdrawalSuccessTicker.setDescriptionClickEvent(this)
+        if (joinPromptMessageResponse.isSuccess) {
+            withdrawalSuccessTicker.tickerType = Ticker.TYPE_ANNOUNCEMENT
+            analytics.get().onViewRekeningPremiumApplicationIsINProgress(
+                    withdrawalRequest.bankAccount.bankName)
+        } else {
+            withdrawalSuccessTicker.tickerType = Ticker.TYPE_WARNING
+            analytics.get().onViewRekeningPremiumApplicationFailed(
+                    String.format(LABEL_FORMAT_REASON,
+                            withdrawalRequest.bankAccount.bankName,
+                            joinPromptMessageResponse.description))
+        }
     }
 
 
@@ -137,7 +147,9 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 WithdrawConstant.openRekeningAccountInfoPage(context)
-
+                val label = String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
+                        getString(R.string.swd_come_on_join_rp))
+                analytics.get().onSuccessPageRekeningPremiumLinkClick(label)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -151,15 +163,66 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
 
 
     private fun onGoToSaldoDetail() {
+        val eventLabel = when {
+            withdrawalRequest.isJoinRekeningPremium -> {
+                String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
+                        withdrawalResponse.joinPromptMessageResponse.title,
+                        withdrawalResponse.joinPromptMessageResponse.description)
+            }
+            withdrawalRequest.showJoinRekeningWidget -> {
+                String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
+                        getString(R.string.swd_come_on_join_rp),
+                        getString(R.string.swd_come_on_join_rp_description))
+            }
+            else -> String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName, "", "")
+        }
         activity?.let { activity ->
             val resultIntent = Intent()
             activity.setResult(Activity.RESULT_OK, resultIntent)
-            analytics.get().eventClickBackToSaldoPage()
+            analytics.get().eventClickBackToSaldoPage(eventLabel)
             activity.finish()
         }
     }
 
+
+    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+        val joinPromptMessageResponse = withdrawalResponse.joinPromptMessageResponse
+        WithdrawConstant.openSessionBaseURL(context,
+                joinPromptMessageResponse.actionLink)
+        if (joinPromptMessageResponse.isSuccess) {
+            analytics.get().onSuccessPageRekeningPremiumLinkClick(
+                    String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
+                            joinPromptMessageResponse.title)
+            )
+        } else {
+            analytics.get().onClickUpgradeToPowerMerchant(
+                    String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
+                            joinPromptMessageResponse.title)
+            )
+        }
+    }
+
+    override fun onDismiss() {
+        //no required as ticker don't have close button
+    }
+
+    fun onCloseButtonClick() {
+        val label = when {
+            withdrawalRequest.isJoinRekeningPremium -> {
+                String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
+                        withdrawalResponse.joinPromptMessageResponse.title,
+                        withdrawalResponse.joinPromptMessageResponse.description)
+            }
+            else -> String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName, "", "")
+        }
+
+        analytics.get().onClickCloseOnSuccessScreen(label)
+    }
+
     companion object {
+        private const val LABEL_FORMAT_TICKER_REASON = "%s - ticker : %s  - reason : %s"
+        private const val LABEL_FORMAT_TICKER = "%s - ticker : %s"
+        private const val LABEL_FORMAT_REASON = "%s - reason : %s"
         private const val ARG_WITHDRAWAL_REQUEST = "arg_withdrawal_request"
         private const val ARG_SUBMIT_WITHDRAWAL_RESPONSE = "arg_submit_withdrawal_response"
 
@@ -174,12 +237,4 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         }
     }
 
-    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-        WithdrawConstant.openSessionBaseURL(context,
-                withdrawalResponse.joinPromptMessageResponse.actionLink)
-    }
-
-    override fun onDismiss() {
-        //no required as ticker don't have close button
-    }
 }
