@@ -24,9 +24,9 @@
             android:layout_height="wrap_content"
             android:background="@color/transparent"
             android:minHeight="?attr/actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
+            app:contentInsetLeft="@dimen/layout_lvl0"
+            app:contentInsetStart="@dimen/layout_lvl0"
+            app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
             app:elevation="@dimen/dp_4"
             app:navigationIcon="@drawable/ic_action_back">
 
@@ -38,7 +38,7 @@
 
                 <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
                     android:id="@+id/digital_homepage_search_view"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingTop="@dimen/dp_10"

@@ -18,5 +18,6 @@
         android:id="@+id/rv_recharge_home_product_cards"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        android:layout_marginTop="@dimen/section_title_margin" />
 </LinearLayout>

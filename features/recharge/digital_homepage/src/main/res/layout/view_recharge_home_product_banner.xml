@@ -9,7 +9,7 @@
     <View
         android:id="@+id/view_recharge_home_product_banner_background"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/layout_lvl0"
         android:background="@android:color/holo_purple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,7 +19,7 @@
 
     <com.tokopedia.home_component.customview.DynamicChannelHeaderView
         android:id="@+id/view_recharge_home_product_banner_header"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -44,7 +44,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/product_banner_card_vertical_margin"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/product_banner_card_vertical_margin"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:foreground="?attr/selectableItemBackground"
         app:cardCornerRadius="@dimen/spacing_lvl3"
         app:cardElevation="@dimen/spacing_lvl2"
@@ -67,7 +67,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_recharge_home_product_banner_name"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -86,7 +86,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_recharge_home_product_banner_desc"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -119,7 +119,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_recharge_home_product_banner_slashed_price"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_lvl2"
                 android:layout_marginRight="@dimen/spacing_lvl3"
@@ -137,7 +137,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_recharge_home_product_banner_price"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -159,7 +159,7 @@
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_recharge_home_product_banner_buy"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:text="@string/recharge_home_product_banner_buy_button_label"
                 app:layout_constraintBottom_toBottomOf="parent"
