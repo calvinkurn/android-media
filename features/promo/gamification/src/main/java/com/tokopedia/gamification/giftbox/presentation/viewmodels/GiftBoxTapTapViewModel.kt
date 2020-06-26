@@ -55,7 +55,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
         })
     }
 
-    fun getCouponDetails(benfitItems: ArrayList<CrackBenefitEntity>) {
+    fun getCouponDetails(benfitItems: List<CrackBenefitEntity>) {
         launchCatchError(block = {
             val ids = benfitItems.filter { it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty() }
                     .map { it.referenceID }

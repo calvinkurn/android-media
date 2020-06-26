@@ -23,6 +23,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
+import com.tokopedia.gamification.data.entity.CrackButtonEntity
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.InactiveImageLoader
 import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
@@ -79,7 +80,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     var minuteCountDownTimer: CountDownTimer? = null
     var isTimeOut = false
     val rewardItems = arrayListOf<RewardSummaryItem>()
-    val benefitItems = arrayListOf<CrackBenefitEntity>()
+    val benefitItems = arrayListOf<Pair<CrackBenefitEntity, CrackButtonEntity?>>()
     var backButton: BackButton? = null
 
     @RewardContainer.RewardState
@@ -335,7 +336,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     val benefits = responseCrackResultEntity.crackResultEntity?.benefits
 
                                     if (responseCrackResultEntity.crackResultEntity != null) {
-                                        updateRewardStateAndRewards(benefits, responseCrackResultEntity.crackResultEntity.imageUrl)
+                                        updateRewardStateAndRewards(benefits, responseCrackResultEntity.crackResultEntity.imageUrl, responseCrackResultEntity.crackResultEntity.returnButton)
 
                                         if (!isTimeOut) {
                                             if (!getTapTapView().isBoxAlreadyOpened) {
@@ -402,11 +403,11 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (result.data?.couponMap != null) {
                         benefitItems.forEach {
-                            if (it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty()) {
-                                val couponDetail = result.data.couponMap["id_${it.referenceID}"]
-                                rewardItems.add(RewardSummaryItem(couponDetail, it))
-                            } else if (it.benefitType == OVO) {
-                                rewardItems.add(RewardSummaryItem(null, it))
+                            if (it.first.benefitType == BenefitType.COUPON && !it.first.referenceID.isNullOrEmpty()) {
+                                val couponDetail = result.data.couponMap["id_${it.first.referenceID}"]
+                                rewardItems.add(RewardSummaryItem(couponDetail, it.first, it.second))
+                            } else if (it.first.benefitType == OVO) {
+                                rewardItems.add(RewardSummaryItem(null, it.first))
                             }
                         }
                     }
@@ -462,9 +463,11 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         var imageFrontUrl = ""
         val bgImageUrl = tokenAsset?.backgroundImgURL
         val imageUrlList = tokenAsset?.imageV2URLs
+        val lidImages = arrayListOf<String>()
 
-        if (imageUrlList != null && imageUrlList.isNotEmpty()) {
+        if (imageUrlList != null && imageUrlList.size > 2) {
             imageFrontUrl = imageUrlList[0]
+            lidImages.addAll(imageUrlList.subList(2, imageUrlList.size))
         }
         if (!bgImageUrl.isNullOrEmpty() && imageFrontUrl.isNotEmpty()) {
             getTapTapView().loadFilesForTapTap(
@@ -472,10 +475,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     null,
                     imageFrontUrl,
                     bgImageUrl,
-                    imageCallback = { _ ->
-                        setPositionOfViewsAtBoxOpen()
-                        hideLoader()
-                        fadeInActiveStateViews()
+                    lidImages,
+                    imageCallback = { isLoaded ->
+                        if (isLoaded) {
+                            setPositionOfViewsAtBoxOpen()
+                            hideLoader()
+                            fadeInActiveStateViews()
+                        } else {
+                            onImageLoadingFailed(CRACK_UNLIMITED)
+                        }
                     }
             )
         }
@@ -505,12 +513,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val glowShadowImageUrl = tokenAsset?.glowShadowImgURL
 
         val imageUrlList = tokenAsset?.imageV2URLs
+        val lidImages = arrayListOf<String>()
         var imageFrontUrl = ""
         val bgImageUrl = tokenAsset?.backgroundImgURL
         if (!glowShadowImageUrl.isNullOrEmpty() && !bgImageUrl.isNullOrEmpty()) {
 
             if (imageUrlList != null && imageUrlList.isNotEmpty()) {
                 imageFrontUrl = imageUrlList[0]
+                lidImages.addAll(imageUrlList.subList(2, imageUrlList.size))
             }
 
             if (showTimer != null && showTimer && timeLeftHours != null && timeLeftSeconds != null) {
@@ -521,15 +531,32 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         glowShadowImageUrl,
                         imageFrontUrl,
                         bgImageUrl,
-                        imageCallback = { _ ->
-                            setPositionOfViewsAtBoxOpen()
-                            hideLoader()
-                            fadeInActiveStateViews()
-                            getTapTapView().startInitialAnimation()?.start()
+                        lidImages,
+                        imageCallback = { isLoaded ->
+                            if (isLoaded) {
+                                setPositionOfViewsAtBoxOpen()
+                                hideLoader()
+                                fadeInActiveStateViews()
+                                getTapTapView().startInitialAnimation()?.start()
+                            } else {
+                                onImageLoadingFailed(LOBBY)
+                            }
                         }
                 )
             }
         }
+    }
+
+    private fun onImageLoadingFailed(@TokenUserStateTapTap state: String) {
+        hideLoader()
+        renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
+        hourCountDownTimer?.cancel()
+        minuteCountDownTimer?.cancel()
+        stopBgSound()
+        tvTimer.alpha = 0f
+        progressBarTimer.alpha = 0f
+        tvProgressCount.alpha = 0f
+        getTapTapView().fmGiftBox.setOnClickListener(null)
     }
 
     private fun loadInactiveContainer() {
@@ -687,18 +714,18 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val notWaitingForApi = !viewModel.waitingForCrackResult
         if (notWaitingForApi) {
             giftBoxDailyView.postDelayed({
-                val item = benefitItems.find { it.isBigPrize }
+                val item = benefitItems.find { it.first.isBigPrize }
                 if (item != null) {
-                    viewModel.getCouponDetails(benefitItems)
+                    viewModel.getCouponDetails(benefitItems.map { it.first })
                 } else {
-                    rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it) })
+                    rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it.first) })
                     fadeOutWaktuHabisAndShowReward()
                 }
             }, 2000L)
         }
     }
 
-    fun dimBackground(){
+    fun dimBackground() {
         val colorAnimator = ObjectAnimator.ofObject(viewDim, "backgroundColor", ArgbEvaluator(), colorBlackTransParent, colorDim)
         colorAnimator.duration = 250L
         colorAnimator.start()
@@ -828,7 +855,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         return giftBoxDailyView as GiftBoxTapTapView
     }
 
-    fun updateRewardStateAndRewards(benefits: List<CrackBenefitEntity>?, imageUrl: String?) {
+    fun updateRewardStateAndRewards(benefits: List<CrackBenefitEntity>?, imageUrl: String?, button: CrackButtonEntity?) {
         var hasPoints = false
         var hasCoupons = false
 
@@ -854,7 +881,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     }
                     rewardContainer.couponList.add(CouponTapTap(imageUrl))
                 }
-                benefitItems.add(benefit)
+                benefitItems.add(Pair(benefit, button))
             }
         }
         rewardContainer.couponAdapter.notifyDataSetChanged()

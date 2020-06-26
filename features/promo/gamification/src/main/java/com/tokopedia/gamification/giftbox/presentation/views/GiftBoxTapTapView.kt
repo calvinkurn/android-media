@@ -2,6 +2,7 @@ package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.animation.*
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
@@ -13,6 +14,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.presentation.LidImagesDownloader
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 
@@ -30,10 +32,13 @@ class GiftBoxTapTapView : GiftBoxDailyView {
     var isTimeOut = false
 
     var disableConfettiAnimation = false
+    val lidImagesDownloader = LidImagesDownloader()
+    val lidImages = arrayListOf<Bitmap>()
 
     override var TOTAL_ASYNC_IMAGES = 5
     override var GIFT_BOX_START_DELAY = 0L
-    companion object{
+
+    companion object {
         const val REWARD_START_DELAY = 300L // added because GIFT_BOX_START_DELAY was 300L in base class
     }
 
@@ -138,6 +143,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                            glowImageShadowUrl: String?,
                            imageFrontUrl: String,
                            bgUrl: String,
+                           lidImageList: List<String>,
                            imageCallback: ((isLoaded: Boolean) -> Unit)) {
 
         if (glowImageUrl != null) {
@@ -188,27 +194,27 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
 //        var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_7
 //        if (state == TokenUserState.ACTIVE) {
-        var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_0
+//        var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_0
 //        }
 
-        Glide.with(this)
-                .load(drawableRedForLid)
-                .dontAnimate()
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        imageCallback.invoke(false)
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val count = imagesLoaded.incrementAndGet()
-                        if (count == TOTAL_ASYNC_IMAGES) {
-                            imageCallback.invoke(true)
-                        }
-                        return false
-                    }
-                })
-                .into(imageGiftBoxLid)
+//        Glide.with(this)
+//                .load(drawableRedForLid)
+//                .dontAnimate()
+//                .addListener(object : RequestListener<Drawable> {
+//                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+//                        imageCallback.invoke(false)
+//                        return false
+//                    }
+//
+//                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+//                        val count = imagesLoaded.incrementAndGet()
+//                        if (count == TOTAL_ASYNC_IMAGES) {
+//                            imageCallback.invoke(true)
+//                        }
+//                        return false
+//                    }
+//                })
+//                .into(imageGiftBoxLid)
 
         Glide.with(this)
                 .load(bgUrl)
@@ -247,7 +253,42 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                     }
                 })
                 .into(imageBoxFront)
+
+        //Download lid images
+
+        lidImagesDownloader.downloadImages(this.context, lidImageList) { images ->
+            if (images.isNullOrEmpty()) {
+                imageCallback.invoke(false)
+            } else {
+                lidImages.addAll(images)
+                Glide.with(this)
+                        .load(images[0])
+                        .dontAnimate()
+                        .addListener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                imageCallback.invoke(false)
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                val count = imagesLoaded.incrementAndGet()
+                                if (count == TOTAL_ASYNC_IMAGES) {
+                                    imageCallback.invoke(true)
+                                }
+                                return false
+                            }
+                        })
+                        .into(imageGiftBoxLid)
+            }
+        }
     }
 
-
+    override fun loadLidFrames(): Animator {
+        val valueAnimator = ValueAnimator.ofInt(lidImages.size - 1)
+        valueAnimator.addUpdateListener {
+            imageGiftBoxLid.setImageBitmap(lidImages[it.animatedValue as Int])
+        }
+        valueAnimator.duration = LID_ANIMATION_DURATION
+        return valueAnimator
+    }
 }

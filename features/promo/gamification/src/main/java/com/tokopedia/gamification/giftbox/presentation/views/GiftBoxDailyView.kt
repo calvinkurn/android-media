@@ -229,7 +229,7 @@ open class GiftBoxDailyView : FrameLayout {
     }
 
 
-    fun loadLidFrames(): Animator {
+    open fun loadLidFrames(): Animator {
 
         //todo Rahul Need to chang logic once images will come from backend
         //ImageHandler.loadImageWithSignature(imageGiftBoxLid, url, GLIDE_SIGNATURE)
