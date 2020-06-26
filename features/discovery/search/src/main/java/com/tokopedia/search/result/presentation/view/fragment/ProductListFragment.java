@@ -952,16 +952,11 @@ public class ProductListFragment
 
     @Override
     public void routeToProductDetail(ProductItemViewModel item, int adapterPosition) {
-        try {
-            Intent intent = getProductIntent(item.getProductID(), item.getWarehouseID());
+        Intent intent = getProductIntent(item.getProductID(), item.getWarehouseID());
 
-            if (intent != null) {
-                intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
-                startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
-            }
-        }
-        catch(Exception error) {
-
+        if (intent != null) {
+            intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
+            startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
         }
     }
 

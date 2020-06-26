@@ -1,5 +1,8 @@
 package com.tokopedia.search
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.app.Instrumentation.ActivityResult
 import android.content.Intent
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
@@ -9,10 +12,12 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.Utils
@@ -24,6 +29,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -31,12 +37,13 @@ import org.junit.Test
 import rx.Observable
 import rx.schedulers.Schedulers
 
+
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
 
 internal class SearchTrackingAnalyticValidatorTest {
 
     @get:Rule
-    var activityRule = ActivityTestRule(SearchActivity::class.java, false, false)
+    val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val recyclerViewId = R.id.recyclerview
@@ -51,10 +58,10 @@ internal class SearchTrackingAnalyticValidatorTest {
         gtmLogDBSource.deleteAll().subscribe()
 
         activityRule.launchActivity(createIntent())
-        recyclerView = activityRule.activity.findViewById(recyclerViewId)
-        recyclerViewIdlingResource = RecyclerViewIdlingResource(recyclerView)
 
-        IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
+        setupIdlingResource()
+
+        intending(isInternal()).respondWith(ActivityResult(Activity.RESULT_OK, null))
     }
 
     private fun editFirebaseRemoteConfig() {
@@ -71,6 +78,13 @@ internal class SearchTrackingAnalyticValidatorTest {
         return Intent(InstrumentationRegistry.getInstrumentation().targetContext, SearchActivity::class.java).also {
             it.data = Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=samsung")
         }
+    }
+
+    private fun setupIdlingResource() {
+        recyclerView = activityRule.activity.findViewById(recyclerViewId)
+        recyclerViewIdlingResource = RecyclerViewIdlingResource(recyclerView)
+
+        IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
     }
 
     @After
