@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
+import com.tokopedia.play.broadcaster.util.setTextFieldColor
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -105,6 +106,7 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
             if (actionId == EditorInfo.IME_ACTION_DONE) v.clearFocus()
             false
         }
+        etCoverTitle.setTextFieldColor(com.tokopedia.unifyprinciples.R.color.Neutral_N150)
 
         setupTitleCounter()
         btnSave.setOnClickListener {
