@@ -27,6 +27,8 @@ data class ComponentsItem(
         @SerializedName("properties")
         var properties: Properties? = null,
 
+        var topAdsTrackingStatus: Boolean = false,
+
         var shimmerHeight: Int = 0,
 
         var shimmerWidth: Int = 0,

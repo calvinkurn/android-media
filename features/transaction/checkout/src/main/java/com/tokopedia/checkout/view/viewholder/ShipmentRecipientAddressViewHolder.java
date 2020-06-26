@@ -209,16 +209,16 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             tvDropOffAddressTitle.setVisibility(View.GONE);
             tvDropOffAddressDescription.setVisibility(View.GONE);
             imgPinpoint.setVisibility(View.GONE);
-            tvChangeDropOff.setBackground(ContextCompat.getDrawable(tvChangeDropOff.getContext(), R.drawable.bg_green_button));
-            tvChangeDropOff.setTextColor(ContextCompat.getColor(tvChangeDropOff.getContext(), R.color.white));
+            tvChangeDropOff.setBackground(ContextCompat.getDrawable(tvChangeDropOff.getContext(), R.drawable.checkout_module_bg_green_button));
+            tvChangeDropOff.setTextColor(ContextCompat.getColor(tvChangeDropOff.getContext(), com.tokopedia.abstraction.R.color.white));
         } else {
             tvDropOffAddressTitle.setVisibility(View.VISIBLE);
             tvDropOffAddressDescription.setVisibility(View.VISIBLE);
             tvDropOffAddressTitle.setText(recipientAddress.getDropOffAddressName());
             tvDropOffAddressDescription.setText(recipientAddress.getDropOffAddressDetail());
             imgPinpoint.setVisibility(View.VISIBLE);
-            tvChangeDropOff.setBackground(ContextCompat.getDrawable(tvChangeDropOff.getContext(), R.drawable.bg_green_round_address));
-            tvChangeDropOff.setTextColor(ContextCompat.getColor(tvChangeDropOff.getContext(), R.color.address_green));
+            tvChangeDropOff.setBackground(ContextCompat.getDrawable(tvChangeDropOff.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_green_round_address));
+            tvChangeDropOff.setTextColor(ContextCompat.getColor(tvChangeDropOff.getContext(), com.tokopedia.purchase_platform.common.R.color.address_green));
         }
         tvTradeInInfo.setText(tvTradeInInfo.getContext().getString(R.string.message_trade_in_checkout_pickup_info));
     }
@@ -276,7 +276,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             public void updateDrawState(@NonNull TextPaint textPaint) {
                 super.updateDrawState(textPaint);
                 textPaint.setUnderlineText(false);
-                textPaint.setColor(ContextCompat.getColor(tvTradeInInfo.getContext(), R.color.tkpd_green_header));
+                textPaint.setColor(ContextCompat.getColor(tvTradeInInfo.getContext(), com.tokopedia.design.R.color.tkpd_green_header));
             }
         };
         formattedTrandeInInfoText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

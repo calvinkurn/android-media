@@ -21,4 +21,6 @@
     <color name="color_03AC0E">#03AC0E</color>
     <color name="color_AD31353B">#AD31353B</color>
     <color name="color_F531353B">#F531353B</color>
+
+    <color name="checkout_module_shadow">#B0000000</color>
 </resources>

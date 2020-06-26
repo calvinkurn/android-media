@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -120,7 +121,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
                         mHeaderContainer?.visibility = View.VISIBLE
                         refreshSticky = false
                     }
-                    if (firstVisiblePosition == stickyPosition) {
+                    if (firstVisiblePosition == _stickyPosition) {
                         adapter?.updateEtalaseListViewHolderData()
                     }
                 } else { // make the etalase label always gone
@@ -157,6 +158,9 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         initView()
-        super.onLayout(changed, left, top, right, bottom)
+        try {
+            super.onLayout(changed, left, top, right, bottom)
+        } catch (e: IndexOutOfBoundsException) {
+        }
     }
 }

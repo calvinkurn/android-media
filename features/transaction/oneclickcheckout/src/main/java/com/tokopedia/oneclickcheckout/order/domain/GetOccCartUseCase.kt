@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -20,7 +19,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import kotlin.math.min
 
-class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) : UseCase<OrderData>() {
+class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) : UseCase<OrderData>() {
 
     fun createRequestParams(source: String): RequestParams {
         return RequestParams.create().apply {
@@ -36,7 +35,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         graphqlUseCase.setRequestParams(useCaseRequestParams.parameters)
         val response = graphqlUseCase.executeOnBackground()
         if (response.response.status.equals(STATUS_OK, true)) {
-            if (response.response.data.cartList.isNotEmpty()) {
+            if (response.response.data.errors.isNotEmpty()) {
+                throw MessageErrorException(response.response.data.errors[0])
+            } else if (response.response.data.cartList.isNotEmpty()) {
                 val cart = response.response.data.cartList[0]
                 val orderCart = OrderCart().apply {
                     product = generateOrderProduct(cart.product)
@@ -48,8 +49,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 }
                 return OrderData(response.response.data.occMainOnboarding, orderCart, response.response.data.profileIndex, response.response.data.profileRecommendation,
                         response.response.data.profileResponse, LastApplyMapper.mapPromo(response.response.data.promo))
-            } else if (response.response.data.errors.isNotEmpty()) {
-                throw MessageErrorException(response.response.data.errors[0])
             } else {
                 throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
