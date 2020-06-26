@@ -22,23 +22,14 @@ class DigitalRecommendationAnalytics @Inject constructor(
 
     fun sendDigitalRecommendationItemDisplayed(trackingQueue: TrackingQueue, recommendationItem: RecommendationsItem,
                                                position: Int) {
-        CoroutineScope(mainDispatcher.get()).launchCatchError(
-                block = {
-                    withContext(backgroundDispatcher.get()) {
-                        val data: MutableMap<String, Any> = mutableMapOf(
-                                KEY_EVENT to EVENT_PRODUCT_VIEW,
-                                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
-                                KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
-                                KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
-                                KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
-                        analyticTracker.sendEnhanceEcommerceEvent(data)
+        val data: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to EVENT_PRODUCT_VIEW,
+                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
+                KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
+                KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
+                KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
 
-                        trackingQueue.putEETracking(data as HashMap<String, Any>)
-                    }
-                }, onError = {
-            it.printStackTrace()
-        }
-        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
 

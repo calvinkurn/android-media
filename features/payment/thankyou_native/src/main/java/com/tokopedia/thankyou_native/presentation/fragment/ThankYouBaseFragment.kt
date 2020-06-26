@@ -80,17 +80,18 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
             }
         }
-        trackingQueue = TrackingQueue(activity!!)
+        activity?.let { trackingQueue = TrackingQueue(it) }
+
     }
 
     override fun onPause() {
         super.onPause()
-        trackingQueue!!.sendAll()
+        trackingQueue?.sendAll()
     }
 
 
-    open fun getTrackingQueue(): TrackingQueue {
-        return trackingQueue!!
+    open fun getTrackingQueue(): TrackingQueue? {
+        return trackingQueue
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -123,7 +124,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             container.addView(view)
             view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
         }
-        iRecommendationView?.loadRecommendation(this, getTrackingQueue())
+        getTrackingQueue()?.let { iRecommendationView?.loadRecommendation(this, it) }
+
     }
     private fun addDigitalRecommendation(){
         val recomContainer = getRecommendationContainer()
@@ -132,7 +134,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             container.addView(view)
             view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
         }
-        iDigitalRecommendationView?.loadRecommendation(this, getTrackingQueue())
+        getTrackingQueue()?.let { iDigitalRecommendationView?.loadRecommendation(this, it) }
+
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {
