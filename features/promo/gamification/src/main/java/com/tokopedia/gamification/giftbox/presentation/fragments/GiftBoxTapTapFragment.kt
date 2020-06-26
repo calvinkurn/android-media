@@ -1,9 +1,6 @@
 package com.tokopedia.gamification.giftbox.presentation.fragments
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
+import android.animation.*
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -66,6 +63,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var tvProgressCount: Typography
     lateinit var rewardSummary: RewardSummaryView
     lateinit var lottieTimeUp: LottieAnimationView
+    lateinit var viewDim: View
     var fmCoupons: FrameLayout? = null
 
     //Inactive views
@@ -103,7 +101,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var viewModel: GiftBoxTapTapViewModel
 
 
-    override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_tap_tap
+    override fun getLayout() = R.layout.fragment_gift_tap_tap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -361,6 +359,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     minuteTimerState = FINISHED
                                     rewardSummary.visibility = View.VISIBLE
                                     toggleInActiveHint(false)
+                                    dimBackground()
                                     showRewardSummary()
                                     return@Observer
                                 }
@@ -380,6 +379,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     viewModel.waitingForCrackResult = false
 
                     if (isTimeOut) {
+                        dimBackground()
                         showRewardSummary()
                     }
                 }
@@ -387,6 +387,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     viewModel.waitingForCrackResult = false
 
                     if (isTimeOut) {
+                        dimBackground()
                         showRewardSummary()
                     } else {
                         getTapTapView().isGiftTapAble = true
@@ -609,6 +610,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             minuteTimerState = FINISHED
             rewardSummary.visibility = View.VISIBLE
             toggleInActiveHint(false)
+            dimBackground()
             showRewardSummary()
         } else {
             (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
@@ -640,6 +642,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         btnInactiveFirst = v.findViewById(R.id.btnInactiveFirst)
         imageInactiveBg = v.findViewById(R.id.imageInactiveBg)
         fmCoupons = v.findViewById(R.id.fmCoupons)
+        viewDim = v.findViewById(R.id.view_dim)
 
         rewardSummary.visibility = View.GONE
 
@@ -695,6 +698,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
+    fun dimBackground(){
+        val colorAnimator = ObjectAnimator.ofObject(viewDim, "backgroundColor", ArgbEvaluator(), colorBlackTransParent, colorDim)
+        colorAnimator.duration = 250L
+        colorAnimator.start()
+    }
+
     fun startOneMinuteCounter(totalSeconds: Long) {
 
         fun onTimeUp() {
@@ -703,6 +712,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             rewardSummary.visibility = View.VISIBLE
             lottieTimeUp.visible()
             lottieTimeUp.playAnimation()
+            dimBackground()
             playTimeOutSound()
             toggleInActiveHint(false)
             showRewardSummary()

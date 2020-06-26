@@ -3,7 +3,6 @@
     android:id="@+id/fmParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#80000000"
     android:paddingStart="@dimen/dp_24"
     android:paddingLeft="@dimen/dp_24"
     android:paddingEnd="@dimen/dp_24"

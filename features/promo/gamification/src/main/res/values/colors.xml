@@ -26,7 +26,7 @@
     <color name="gf_grad_btn_inner_start_green">#96c93d</color>
     <color name="gf_grad_btn_inner_end_green">#42b549</color>
     <color name="gf_green_settings">#03AC0E</color>
-    <color name="gf_dim">#50000000</color>
+    <color name="gf_dim">#80000000</color>
     <color name="gf_black_transparent">#00000000</color>
 
     <color name="gf_box_hint_color">#12883D</color>
