@@ -30,14 +30,14 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     private var categoryDetail = MutableLiveData<Result<Data>>()
     private var redirectionUrl = MutableLiveData<Result<String>>()
     private var adultProduct = MutableLiveData<Result<String>>()
-    private var catalogCount = MutableLiveData<Result<Int>>()
+    private var hasCatalog = MutableLiveData<Boolean>()
 
     fun fetchCategoryDetail(departmentId: String) {
         launchCatchError(block = {
             val graphqlResponse = categoryNavRepository.getCategoryDetailWithCatalogCount(departmentId)
             graphqlResponse?.let {
                 it.getData<CatalogListResponse>(CatalogListResponse::class.java).searchCatalog?.let { searchCatalog ->
-                    catalogCount.value = Success(searchCatalog.count)
+                    hasCatalog.value = searchCatalog.count != 0
                 }
                 it.getData<BannedCategoryResponse>(BannedCategoryResponse::class.java).categoryDetailQuery?.data?.let { data ->
                     handleCategoryResponse(data)
@@ -99,8 +99,8 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return adultProduct
     }
 
-    fun getCatalogCountLiveData(): MutableLiveData<Result<Int>> {
-        return catalogCount
+    fun getHasCatalogLiveData(): MutableLiveData<Boolean> {
+        return hasCatalog
     }
 }
 

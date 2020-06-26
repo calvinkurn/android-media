@@ -58,26 +58,26 @@ class CategoryNavRepository @Inject constructor() {
         catalogMap.putString(CategoryNavConstants.SOURCE, "directory")
         catalogMap.putString(CategoryNavConstants.ST, "catalog")
         catalogMap.putInt(CategoryNavConstants.ROWS, 10)
-        catalogMap.putInt("ob", 23)
+        catalogMap.putInt(CategoryNavConstants.OB, 23)
         val hashmap = HashMap<String, String>()
         var pmin = ""
         var pmax = ""
-        if (hashmap.containsKey("pmin")) {
-            pmin = hashmap["pmin"] ?: ""
+        if (hashmap.containsKey(CategoryNavConstants.PMIN)) {
+            pmin = hashmap[CategoryNavConstants.PMIN] ?: ""
         }
-        if (hashmap.containsKey("pmax")) {
-            pmax = hashmap["pmax"] ?: ""
+        if (hashmap.containsKey(CategoryNavConstants.PMAX)) {
+            pmax = hashmap[CategoryNavConstants.PMAX] ?: ""
         }
-        catalogMap.putObject("filter", AceFilterInput(pmin, pmax, departmentId))
+        catalogMap.putObject(CategoryNavConstants.FILTER, AceFilterInput(pmin, pmax, departmentId))
         return catalogMap
     }
 
     data class AceFilterInput(
-            @field:SerializedName("pmin")
+            @SerializedName(CategoryNavConstants.PMIN)
             var pmin: String,
-            @field:SerializedName("pmax")
+            @SerializedName(CategoryNavConstants.PMAX)
             var pmax: String,
-            @field:SerializedName("sc")
+            @SerializedName(CategoryNavConstants.SC)
             var sc: String)
 
     private fun getSubCategoryParam(departmentId: String): RequestParams {

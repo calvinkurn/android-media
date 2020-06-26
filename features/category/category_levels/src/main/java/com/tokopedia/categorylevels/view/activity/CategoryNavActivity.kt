@@ -242,13 +242,9 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             }
         })
 
-        categoryNavViewModel.getCatalogCountLiveData().observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data == 0) {
-                        removeCatalogTab()
-                    }
-                }
+        categoryNavViewModel.getHasCatalogLiveData().observe(this, Observer {
+            if (!it) {
+                removeCatalogTab()
             }
             container.show()
         })
