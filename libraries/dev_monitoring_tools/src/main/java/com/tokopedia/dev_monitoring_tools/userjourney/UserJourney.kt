@@ -14,13 +14,22 @@ object UserJourney {
         }
     }
 
-    fun getReadableJourneyActivity(maxPath: Int = 5) : String {
+    fun getReadableJourneyActivity(maxPath: Int = 5): String {
         val tempJourney = userJourney.takeLast(maxPath)
         var paths = ""
         for ((i, journey) in tempJourney.withIndex()) {
             paths += "${journey.activityName}[${bundleBreakdown(journey.bundle)}];"
         }
         return paths.dropLast(1)
+    }
+
+    fun getLastActivity(): String {
+        var lastActivity = ""
+        if (userJourney.size > 0) {
+            val lastJourney = userJourney.last()
+            lastActivity = lastJourney.activityName
+        }
+        return lastActivity
     }
 
     private fun bundleBreakdown(bundle: Bundle): String {

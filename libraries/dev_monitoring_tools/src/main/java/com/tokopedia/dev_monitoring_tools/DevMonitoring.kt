@@ -28,7 +28,7 @@ class DevMonitoring(private var context: Context) {
     fun initCrashMonitoring() {
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            Timber.w("P1#DEV_CRASH#'${UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize)}';error='${Log.getStackTraceString(throwable)}'")
+            Timber.w("P1#DEV_CRASH#${UserJourney.getLastActivity()};journey='${UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize)}';error='${Log.getStackTraceString(throwable)}'")
             exceptionHandler.uncaughtException(thread, throwable)
         }
     }
@@ -39,7 +39,7 @@ class DevMonitoring(private var context: Context) {
 
     fun initTooLargeTool(application: Application) {
         val minSizeLog = devMonitoringToolsConfig.tooLargeToolMinSizeLog
-        TooLargeTool.startLogging(application, TooLargeToolFormatter(minSizeLog), TooLargeToolLogger())
+        TooLargeTool.startLogging(application, TooLargeToolFormatter(minSizeLog, devMonitoringToolsConfig.userJourneySize), TooLargeToolLogger())
     }
 
     fun initBlockCanary() {

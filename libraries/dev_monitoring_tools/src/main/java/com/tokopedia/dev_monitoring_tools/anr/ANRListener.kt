@@ -12,7 +12,7 @@ class ANRListener(private val anrIgnoreList: List<String>, private val userJourn
         val error = Log.getStackTraceString(anrError)
         val match = anrIgnoreList.filter { error.contains(it, ignoreCase = true) }
         if (match.isEmpty()) {
-            Timber.w("P1#DEV_ANR#'${UserJourney.getReadableJourneyActivity(userJourneySize)}';anr='${Log.getStackTraceString(anrError)}'")
+            Timber.w("P1#DEV_ANR#${UserJourney.getLastActivity()};journey='${UserJourney.getReadableJourneyActivity(userJourneySize)}';anr='${Log.getStackTraceString(anrError)}'")
         }
     }
 }

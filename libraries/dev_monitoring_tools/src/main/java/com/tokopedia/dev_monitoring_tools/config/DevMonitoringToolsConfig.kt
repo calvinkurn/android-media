@@ -7,7 +7,7 @@ data class DevMonitoringToolsConfig(
 
     @SerializedName("too_large_tool_min_size_log")
     @Expose
-    val tooLargeToolMinSizeLog: Int = 20000,
+    val tooLargeToolMinSizeLog: Int = 200000,
     @SerializedName("user_journey_size")
     @Expose
     val userJourneySize: Int = 5,
