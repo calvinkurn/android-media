@@ -163,6 +163,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         initPltMonitoring()
         getIntentData()
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            sortId = it.getString(SAVED_SHOP_SORT_ID , "")
+            sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
+        }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
         shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
@@ -223,7 +227,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             if (!shopHomeAdapter.isLoading) {
                 sortId = it.first
                 sortName = it.second
-                shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                 shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
                 shopHomeAdapter.refreshSticky()
                 refreshProductList()
@@ -493,9 +496,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     if (shopHomeAdapter.isLoading) {
                         return
                     }
-                    shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                    shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                     shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
                     shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
                     shopHomeAdapter.refreshSticky()

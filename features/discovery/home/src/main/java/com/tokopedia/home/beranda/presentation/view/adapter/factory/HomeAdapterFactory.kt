@@ -95,10 +95,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return if(dynamicIconSectionDataModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
     }
 
-    override fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int {
-        return TopAdsDynamicChannelViewHolder.LAYOUT
-    }
-
     override fun type(sellDataModel: SellDataModel): Int {
         return SellViewHolder.LAYOUT
     }
@@ -111,10 +107,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int {
         return HomeRecommendationFeedViewHolder.LAYOUT
-    }
-
-    override fun type(topAdsDataModel: TopAdsDataModel): Int {
-        return TopAdsViewHolder.LAYOUT
     }
 
     override fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int {
@@ -273,8 +265,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             SellViewHolder.LAYOUT -> viewHolder = SellViewHolder(view, listener)
             OvoViewHolder.LAYOUT, OvoViewHolder.NON_LOGIN_LAYOUT -> viewHolder = OvoViewHolder(view, listener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
-            TopAdsViewHolder.LAYOUT -> viewHolder = TopAdsViewHolder(view)
-            TopAdsDynamicChannelViewHolder.LAYOUT -> viewHolder = TopAdsDynamicChannelViewHolder(view, inspirationListener)
             SprintSaleCarouselViewHolder.LAYOUT -> viewHolder = SprintSaleCarouselViewHolder(view, listener, countDownListener)
             SpotlightViewHolder.LAYOUT -> viewHolder = SpotlightViewHolder(view, listener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)

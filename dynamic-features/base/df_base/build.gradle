@@ -123,4 +123,6 @@ dependencies {
     implementation project(rootProject.ext.features.logisticorder)
     //Transaction
     implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.oneclickcheckout)
+    implementation project(rootProject.ext.features.promoCheckoutMarketplace)
 }

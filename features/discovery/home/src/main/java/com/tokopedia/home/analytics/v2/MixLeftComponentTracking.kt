@@ -134,11 +134,15 @@ object MixLeftComponentTracking: BaseTracking()  {
             )
     )
 
-    fun getMixLeftBannerView(channel: ChannelModel, position: Int) = getBasicPromotionView(
+    fun getMixLeftBannerView(channel: ChannelModel, position: Int, userId: String) = getBasicPromotionView(
             event = Event.PROMO_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = IMPRESSION_MIX_LEFT_BANNER,
             eventLabel = Label.NONE,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
+            userId = userId,
             promotions = listOf(
                     Promotion(
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryPersona),
@@ -149,7 +153,7 @@ object MixLeftComponentTracking: BaseTracking()  {
             )
     )
 
-    fun getMixLeftBannerClick(channel: ChannelModel, position: Int) = getBasicPromotionChannelClick(
+    fun getMixLeftBannerClick(channel: ChannelModel, position: Int, userId: String) = getBasicPromotionChannelClick(
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CLICK_MIX_LEFT_BANNER,
@@ -160,6 +164,10 @@ object MixLeftComponentTracking: BaseTracking()  {
             affinity = channel.trackingAttributionModel.persona,
             attribution = channel.trackingAttributionModel.galaxyAttribution,
             shopId = channel.trackingAttributionModel.brandId,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
+            userId = userId,
             promotions = listOf(
                     Promotion(
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.channelBanner.attribution, channel.trackingAttributionModel.categoryPersona),
@@ -182,8 +190,8 @@ object MixLeftComponentTracking: BaseTracking()  {
         getTracker().sendEnhanceEcommerceEvent(getMixLeftClickLoadMore(channel))
     }
 
-    fun sendMixLeftBannerClick(channel: ChannelModel, position: Int){
-        getTracker().sendEnhanceEcommerceEvent(getMixLeftBannerClick(channel, position))
+    fun sendMixLeftBannerClick(channel: ChannelModel, position: Int,  userId: String){
+        getTracker().sendEnhanceEcommerceEvent(getMixLeftBannerClick(channel, position, userId))
     }
 
 }

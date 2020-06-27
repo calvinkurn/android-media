@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.core.gcm.GCMHandler
+import com.tokopedia.find_native.R
 import com.tokopedia.find_native.di.scope.FindNavScope
 import com.tokopedia.find_native.util.FindNavConstants
-import com.tokopedia.find_native.R
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -43,12 +42,6 @@ class FindNavModule {
     @Provides
     fun provideResources(context: Context): Resources {
         return context.resources
-    }
-
-    @FindNavScope
-    @Provides
-    fun provideBaseRepo(): BaseRepository {
-        return BaseRepository()
     }
 
     @FindNavScope

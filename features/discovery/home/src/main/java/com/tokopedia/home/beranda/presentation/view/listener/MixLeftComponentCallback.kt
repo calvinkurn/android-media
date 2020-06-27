@@ -15,7 +15,7 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
     : MixLeftComponentListener {
 
     override fun onMixLeftImpressed(channel: ChannelModel, parentPos: Int) {
-        homeCategoryListener.putEEToTrackingQueue(MixLeftComponentTracking.getMixLeftBannerView(channel, parentPos) as java.util.HashMap<String, Any>)
+        homeCategoryListener.putEEToTrackingQueue(MixLeftComponentTracking.getMixLeftBannerView(channel, parentPos, homeCategoryListener.userId) as java.util.HashMap<String, Any>)
 
         //iris
         homeCategoryListener.putEEToIris(MixLeftComponentTracking.getMixLeftIrisProductView(channel)as java.util.HashMap<String, Any>)
@@ -43,7 +43,7 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
-        MixLeftComponentTracking.sendMixLeftBannerClick(channel, parentPos)
+        MixLeftComponentTracking.sendMixLeftBannerClick(channel, parentPos, homeCategoryListener.userId)
     }
 
     override fun onImageBannerImpressed(channelModel: ChannelModel, position: Int) {
@@ -51,7 +51,7 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
 
     override fun onImageBannerClicked(channelModel: ChannelModel, position: Int, applink: String) {
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
-        MixLeftComponentTracking.sendMixLeftBannerClick(channelModel, position)
+        MixLeftComponentTracking.sendMixLeftBannerClick(channelModel, position, homeCategoryListener.userId)
     }
 
     override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {

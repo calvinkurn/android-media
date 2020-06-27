@@ -18,16 +18,6 @@ public interface TopAdsDataSource {
 
     void setConfig(Config config);
 
-    TopAdsModel getTopAds(TKPDMapParam<String, String> params, int position);
-
     CpmModel getTopAdsBanner(TKPDMapParam<String, String> param);
-
-    PreferedCategory getPreferenceCategory();
-
-    MerlinRecomendation getMerlinRecomendation(String query);
-
-    String clickTopAdsUrl(String url);
-
-    TopAdsModel checkWishlist(TopAdsModel model);
 
 }

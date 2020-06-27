@@ -5,6 +5,7 @@ import android.os.Parcelable
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 
 class LevelTwoCategory() : Parcelable {
 
@@ -35,6 +36,15 @@ class LevelTwoCategory() : Parcelable {
     @SerializedName("child")
     @Expose
     var levelThreeCategoryList: List<LevelThreeCategory> = listOf()
+
+    fun asOption(): Option {
+        val uniqueId = OptionHelper.constructUniqueId(this.key, this.value, this.name)
+        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
+
+        option.isPopular = this.isPopular
+
+        return option
+    }
 
     override fun describeContents(): Int {
         return 0

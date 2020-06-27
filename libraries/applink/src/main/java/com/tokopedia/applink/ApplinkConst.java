@@ -249,7 +249,6 @@ public interface ApplinkConst {
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
-    String CREATE_PASSWORD = "tokopedia://createpassword";
     String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
@@ -304,6 +303,8 @@ public interface ApplinkConst {
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
 
     String DFFALLBACKURL_KEY = "dffallbackurl";
+
+    String OCC = "tokopedia://occ";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -509,5 +510,10 @@ public interface ApplinkConst {
         String EXTRA_TITLE = "title";
         String EXTRA_SUBTITLE = "subtitle";
         String EXTRA_BUTTON = "button";
+    }
+
+    interface ResCenter {
+        String MOBILE =  "/mobile";
+        String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
     }
 }

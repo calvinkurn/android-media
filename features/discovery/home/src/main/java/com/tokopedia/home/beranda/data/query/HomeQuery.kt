@@ -112,6 +112,8 @@ object HomeQuery{
                   type
                 }
                 has_buy_button
+                rating
+                count_review
               }
               banner {
                 id

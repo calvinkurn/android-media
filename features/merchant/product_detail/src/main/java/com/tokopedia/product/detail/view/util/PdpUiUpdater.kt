@@ -99,6 +99,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val tickerInfoMap: ProductTickerInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TICKER_INFO] as? ProductTickerInfoDataModel
 
+    val shopCredibility: ProductShopCredibilityDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY] as? ProductShopCredibilityDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -118,7 +121,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 data = it
             }
             snapShotMap?.run {
-               data = it
+                data = it
             }
             mediaMap?.run {
                 shouldRenderImageVariant = true
@@ -215,6 +218,13 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopInfo = it.shopInfo
             }
 
+            shopCredibility?.run {
+                shopInfo = it.shopInfo
+                shopSpeed = it.shopSpeed
+                shopChatSpeed = it.shopChatSpeed
+                shopRating = it.shopRating
+            }
+
             miniShopInfo?.run {
                 shopName = it.shopInfo?.shopCore?.name ?: ""
             }
@@ -251,7 +261,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         basicContentMap?.shouldShowCod = isCod
     }
 
-    fun updateFulfillmentData(context: Context?, isFullfillment:Boolean) {
+    fun updateFulfillmentData(context: Context?, isFullfillment: Boolean) {
         val fullFillmentText = if (!isFullfillment) {
             ""
         } else {
@@ -274,6 +284,10 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             shopInfoMap?.run {
                 shopFeature = it.shopFeature
                 shopBadge = it.shopBadge
+            }
+
+            shopCredibility?.run {
+                shopFeature = it.shopFeature
             }
 
             mediaMap?.run {
@@ -361,7 +375,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         mediaMap?.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it)
     }
 
-    fun updateVariantData(processedVariant:  List<VariantCategory>?) {
+    fun updateVariantData(processedVariant: List<VariantCategory>?) {
         productNewVariantDataModel?.listOfVariantCategory = processedVariant
     }
 
