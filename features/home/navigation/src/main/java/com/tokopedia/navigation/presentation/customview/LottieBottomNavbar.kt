@@ -70,7 +70,7 @@ class LottieBottomNavbar : LinearLayout {
             badgeText?.setPadding(
                     resources.getDimensionPixelOffset(R.dimen.dp_5),
                     resources.getDimensionPixelOffset(R.dimen.dp_1),
-                    resources.getDimensionPixelOffset(R.dimen.dp_5),
+                    resources.getDimensionPixelOffset(R.dimen.dp_3),
                     resources.getDimensionPixelOffset(R.dimen.dp_1)
             )
             badgeText?.text = ""
@@ -79,9 +79,9 @@ class LottieBottomNavbar : LinearLayout {
             badgeText?.layoutParams = badgeLayoutParam
             badgeText?.setPadding(
                     resources.getDimensionPixelOffset(R.dimen.dp_5),
-                    resources.getDimensionPixelOffset(R.dimen.dp_1),
+                    resources.getDimensionPixelOffset(R.dimen.dp_3),
                     resources.getDimensionPixelOffset(R.dimen.dp_5),
-                    resources.getDimensionPixelOffset(R.dimen.dp_1)
+                    0
             )
 
             badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circular)
