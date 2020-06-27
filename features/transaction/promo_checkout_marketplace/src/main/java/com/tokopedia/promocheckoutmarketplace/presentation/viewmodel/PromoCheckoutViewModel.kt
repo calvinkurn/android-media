@@ -62,7 +62,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         get() = _promoInputUiModel
 
     // Promo Section UI Model (Eligible / Ineligible based on API response)
-    private val _promoListUiModel = MutableLiveData<MutableList<Visitable<*>>>()
+    val _promoListUiModel = MutableLiveData<MutableList<Visitable<*>>>()
     val promoListUiModel: LiveData<MutableList<Visitable<*>>>
         get() = _promoListUiModel
 
@@ -144,6 +144,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             promoRequest.skipApply = 1
         }
 
+        // For refresh state, add current selected promo code to request param
         promoRequest.orders.forEach { order ->
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
@@ -157,7 +158,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                             promoRequest.codes.add(it.uiData.promoCode)
                         }
                     } else {
-                        // If coupon is unselected, remove from request param
+                        // If coupon is unselected and exist on current promo request, remove from request param
                         // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
                         if (it.uiData.uniqueId == order.uniqueId && order.codes.contains(it.uiData.promoCode)) {
                             order.codes.remove(it.uiData.promoCode)
