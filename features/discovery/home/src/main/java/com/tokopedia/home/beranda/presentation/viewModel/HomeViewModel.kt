@@ -1222,7 +1222,10 @@ open class HomeViewModel @Inject constructor(
                 cashBalance = walletBalanceModel.cashBalance,
                 rawCashBalance = walletBalanceModel.rawCashBalance,
                 walletType = walletBalanceModel.walletType,
-                isShowAnnouncement = walletBalanceModel.isShowAnnouncement
+                isShowAnnouncement = walletBalanceModel.isShowAnnouncement,
+                isShowTopup = walletBalanceModel.isShowTopup,
+                topupUrl = walletBalanceModel.topupUrl,
+                topupLimit = walletBalanceModel.topupLimit
         )
     }
 }
