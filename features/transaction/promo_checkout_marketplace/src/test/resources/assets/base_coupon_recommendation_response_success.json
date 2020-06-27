@@ -21,10 +21,9 @@
       "promo_recommendation": {
         "codes": [
           "KRDCICIL598GSNML0AM",
-          "BURS3AVDR2",
           "POMAH09JBL"
         ],
-        "message": "Kamu bisa hemat Rp525.000"
+        "message": "Kamu bisa hemat Rp168.100"
       },
       "coupon_sections": [
         {
@@ -45,44 +44,17 @@
               "tags": [],
               "coupons": [
                 {
-                  "code": "WAEG598GSB5WPP42104",
-                  "title": "Cashback Rp15.000",
+                  "code": "THIRX598GSA7MADK2X7",
+                  "title": "Cashback Rp42.930",
                   "message": "",
-                  "expiry_info": "Berakhir 3 jam lagi!",
-                  "expiry_count_down": 1593190799,
+                  "expiry_info": "Berakhir 1 hari lagi!",
+                  "expiry_count_down": 1593363599,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://ecs7.tokopedia.net/img/blog/promo/2020/04/OVO_logo-90x60.png"
-                  ],
-                  "benefit_amount": 15000,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": [
-                    {
-                      "code": "OKESHOP",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    }
-                  ]
-                },
-                {
-                  "code": "LXCL598GS2W322L4RNP",
-                  "title": "Cashback Rp60.000",
-                  "message": "",
-                  "expiry_info": "Berakhir 3 jam lagi!",
-                  "expiry_count_down": 1593190799,
-                  "coupon_url": "",
-                  "coupon_app_link": "",
-                  "unique_id": "",
-                  "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://ecs7.tokopedia.net/img/blog/promo/2020/04/OVO_logo-90x60.png"
-                  ],
-                  "benefit_amount": 60000,
+                  "tag_image_urls": [],
+                  "benefit_amount": 42930,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
@@ -91,9 +63,9 @@
                 },
                 {
                   "code": "KRDCICIL598GSNML0AM",
-                  "title": "Discount Rp300.000",
+                  "title": "Discount Rp143.100",
                   "message": "",
-                  "expiry_info": "Berakhir 4 hari lagi!",
+                  "expiry_info": "Berakhir 3 hari lagi!",
                   "expiry_count_down": 1593536399,
                   "coupon_url": "",
                   "coupon_app_link": "",
@@ -102,104 +74,7 @@
                   "tag_image_urls": [
                     "https://ecs7.tokopedia.net/img/blog/promo/2020/05/Kredivo-1.png"
                   ],
-                  "benefit_amount": 300000,
-                  "is_recommended": true,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": [
-                    {
-                      "code": "OKESHOP",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "BURSGA2UHZ",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "title": "OkeShopku Online",
-              "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-              "is_enabled": true,
-              "is_collapsed": false,
-              "tags": [],
-              "coupons": [
-                {
-                  "code": "OKESHOP",
-                  "title": "Cashback Rp200.000",
-                  "message": "",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593178262,
-                  "coupon_url": "HCKCSCP8421633-",
-                  "coupon_app_link": "HCKCSCP8421633-",
-                  "unique_id": "8421633-0-8599115",
-                  "shop_id": 8421633,
-                  "tag_image_urls": [],
-                  "benefit_amount": 200000,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": [
-                    {
-                      "code": "WAEG598GSB5WPP42104",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "KRDCICIL598GSNML0AM",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "title": "Bursa Kamera Profesional",
-              "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-              "is_enabled": true,
-              "is_collapsed": false,
-              "tags": [],
-              "coupons": [
-                {
-                  "code": "BURSGA2UHZ",
-                  "title": "Gratis Ongkir hingga Rp100.000",
-                  "message": "",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593178262,
-                  "coupon_url": "HCKCSCP994854-",
-                  "coupon_app_link": "HCKCSCP994854-",
-                  "unique_id": "994854-0-1193585",
-                  "shop_id": 994854,
-                  "tag_image_urls": [],
-                  "benefit_amount": 100000,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": [
-                    {
-                      "code": "KRDCICIL598GSNML0AM",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    }
-                  ]
-                },
-                {
-                  "code": "BURS3AVDR2",
-                  "title": "Cashback Rp200.000",
-                  "message": "",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593178262,
-                  "coupon_url": "HCKCSCP994854-",
-                  "coupon_app_link": "HCKCSCP994854-",
-                  "unique_id": "994854-0-1193585",
-                  "shop_id": 994854,
-                  "tag_image_urls": [],
-                  "benefit_amount": 200000,
+                  "benefit_amount": 143100,
                   "is_recommended": true,
                   "is_selected": false,
                   "is_attempted": false,
@@ -221,7 +96,7 @@
                   "title": "Cashback Rp25.000",
                   "message": "",
                   "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593178262,
+                  "expiry_count_down": 1593275350,
                   "coupon_url": "HCKCSCP239594-",
                   "coupon_app_link": "HCKCSCP239594-",
                   "unique_id": "239594-0-301643",
@@ -239,7 +114,7 @@
                   "title": "Cashback Rp15.000",
                   "message": "",
                   "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593178262,
+                  "expiry_count_down": 1593275350,
                   "coupon_url": "HCKCSCP239594-",
                   "coupon_app_link": "HCKCSCP239594-",
                   "unique_id": "239594-0-301643",
@@ -266,80 +141,6 @@
           "coupons": [],
           "sub_sections": [
             {
-              "title": "Kupon saya",
-              "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
-              "is_enabled": false,
-              "is_collapsed": false,
-              "tags": [],
-              "coupons": [
-                {
-                  "code": "COSTBH2598GSBUXXXE5",
-                  "title": "Kupon Cashback 100k",
-                  "message": "Promo ini hanya berlaku untuk Kategori Rumah Tangga.",
-                  "expiry_info": "Berakhir 3 jam lagi!",
-                  "expiry_count_down": 1593190799,
-                  "coupon_url": "",
-                  "coupon_app_link": "",
-                  "unique_id": "",
-                  "shop_id": 0,
-                  "tag_image_urls": [],
-                  "benefit_amount": 0,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": []
-                }
-              ]
-            },
-            {
-              "title": "FortKlass",
-              "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-              "is_enabled": false,
-              "is_collapsed": false,
-              "tags": [],
-              "coupons": [
-                {
-                  "code": "FORTNM4UAB",
-                  "title": "Promo Gratis Ongkir FORTNM4UAB",
-                  "message": "Tambah Rp221.700 untuk pakai promo",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593178262,
-                  "coupon_url": "HCKCSCP3996920-",
-                  "coupon_app_link": "HCKCSCP3996920-",
-                  "unique_id": "",
-                  "shop_id": 3996920,
-                  "tag_image_urls": [],
-                  "benefit_amount": 0,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": []
-                },
-                {
-                  "code": "FORTBSW9V4",
-                  "title": "Promo Cashback FORTBSW9V4",
-                  "message": "Tambah Rp21.700 untuk pakai promo",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593178262,
-                  "coupon_url": "HCKCSCP3996920-",
-                  "coupon_app_link": "HCKCSCP3996920-",
-                  "unique_id": "",
-                  "shop_id": 3996920,
-                  "tag_image_urls": [],
-                  "benefit_amount": 0,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": []
-                }
-              ]
-            },
-            {
               "title": "Red Pomade",
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
@@ -352,7 +153,7 @@
                   "title": "Promo Cashback REDPW73ON9",
                   "message": "Tambah Rp434.000 untuk pakai promo",
                   "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593178262,
+                  "expiry_count_down": 1593275350,
                   "coupon_url": "HCKCSCP915523-",
                   "coupon_app_link": "HCKCSCP915523-",
                   "unique_id": "",
@@ -370,7 +171,7 @@
                   "title": "Promo Cashback REDP1A5ZJR",
                   "message": "Tambah Rp184.000 untuk pakai promo",
                   "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593178262,
+                  "expiry_count_down": 1593275350,
                   "coupon_url": "HCKCSCP915523-",
                   "coupon_app_link": "HCKCSCP915523-",
                   "unique_id": "",
