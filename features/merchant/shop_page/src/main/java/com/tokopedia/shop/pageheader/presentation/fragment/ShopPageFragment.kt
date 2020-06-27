@@ -358,7 +358,8 @@ class ShopPageFragment :
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
         stickyLoginView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateStickyState()
+            updateViewPagerPadding()
+            updateFloatingChatButtonMargin()
         }
         stickyLoginView.setOnClickListener {
             if (stickyLoginView.isLoginReminder()) {
@@ -976,7 +977,9 @@ class ShopPageFragment :
         var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_SHOP, true)
         if (stickyLoginView.isLoginReminder() && isCanShowing) {
             stickyLoginView.showLoginReminder(StickyLoginConstant.Page.SHOP)
-            stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.SHOP)
+            if (stickyLoginView.isShowing()) {
+                stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.SHOP)
+            }
         } else {
             isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP, true)
             if (!isCanShowing) {

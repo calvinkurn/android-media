@@ -3,7 +3,6 @@ package com.tokopedia.stickylogin.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -16,11 +15,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.stickylogin.R
 import com.tokopedia.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.stickylogin.analytics.StickyLoginTracking
@@ -28,17 +28,15 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.utils.StripedUnderlineUtil
 import com.tokopedia.unifycomponents.setBodyText
-import com.tokopedia.utils.image.ImageUtils
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
-
 
 class StickyLoginView : FrameLayout, CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
-    private lateinit var layoutContainer: LinearLayout
+    private lateinit var layoutContainer: ConstraintLayout
     private lateinit var imageViewLeft: ImageView
     private lateinit var imageViewRight: ImageView
     private lateinit var textContent: TextView
@@ -82,7 +80,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
 
     private fun inflateLayout() {
         val layout: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = layout.inflate(R.layout.widget_sticky_login_text, this, true)
+        val view = layout.inflate(R.layout.layout_widget_sticky_login, this, true)
 
         layoutContainer = view.findViewById(R.id.layout_sticky_container)
         textContent = view.findViewById(R.id.layout_sticky_content)
@@ -130,10 +128,6 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         if (leftImage != null) {
             imageViewLeft.setImageDrawable(leftImage)
         }
-    }
-
-    override fun setBackgroundColor(color: Int) {
-        layoutContainer.setBackgroundColor(color)
     }
 
     override fun setOnClickListener(listener: OnClickListener?) {
@@ -239,13 +233,16 @@ class StickyLoginView : FrameLayout, CoroutineScope {
     @SuppressLint("SetTextI18n")
     fun showLoginReminder(page: StickyLoginConstant.Page) {
         val name = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_USER_NAME, "")
+        val names = name.split(" ")
         val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
 
-        textContent.text = TEXT_RE_LOGIN + name
+        textContent.text = TEXT_RE_LOGIN + names[1]
         textContent.setBodyText(isBold = true)
         textContent.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
 
-        ImageUtils.loadImage(imageView = imageViewLeft, url = profilePicture)
+        profilePicture?.let {
+            imageViewLeft.loadImageCircle(it)
+        }
         show(page)
     }
 

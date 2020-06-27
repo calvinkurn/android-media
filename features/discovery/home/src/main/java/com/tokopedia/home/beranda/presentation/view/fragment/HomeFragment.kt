@@ -533,7 +533,12 @@ open class HomeFragment : BaseDaggerFragment(),
                 floatingTextButton.resetState()
             }
         })
-        stickyLoginView?.addOnLayoutChangeListener { v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int -> updateStickyState() }
+        stickyLoginView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _  ->
+            val floatingEggButtonFragment = floatingEggButtonFragment
+            floatingEggButtonFragment?.let {
+                updateEggBottomMargin(it)
+            }
+        }
         stickyLoginView?.setOnClickListener { v: View? ->
             if (stickyLoginView.isLoginReminder()) {
                 stickyLoginView?.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.HOME)
@@ -1781,8 +1786,6 @@ open class HomeFragment : BaseDaggerFragment(),
                 stickyLoginView?.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
             }
         }
-        val floatingEggButtonFragment = floatingEggButtonFragment
-        floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
     }
 
     override fun onReviewClick(position: Int, clickReviewAt: Int, delay: Long, applink: String) {

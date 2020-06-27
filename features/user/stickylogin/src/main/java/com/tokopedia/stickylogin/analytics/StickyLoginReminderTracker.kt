@@ -55,11 +55,11 @@ class StickyLoginReminderTracker {
             const val VIEW_HOME_PAGE = "viewHomepageIris"
             const val CLICK_HOME_PAGE = "clickHomepage"
 
+            const val VIEW_PDP = "viewPDPIris"
             const val CLICK_PDP = "clickPDP"
-            const val VIEW_PDP = "viewPDP"
 
+            const val VIEW_SHOP = "viewShopPageIris"
             const val CLICK_SHOP = "clickShopPage"
-            const val VIEW_SHOP = "viewShopPage"
         }
 
         object CATEGORY {

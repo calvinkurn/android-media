@@ -69,7 +69,7 @@ class SlideAdapter : RecyclerView.Adapter<SlideAdapter.SlideViewHolder>() {
         private fun sendOpenSlideAnalytics() {
             val irisSession = IrisSession(itemView.context)
             val position = adapterPosition.plus(1)
-            SellerOnboardingAnalytic.sendEventOpenScreen(position, irisSession.getSessionId(), irisSession.getDeviceId())
+//            SellerOnboardingAnalytic.sendEventOpenScreen(position, irisSession.getSessionId(), irisSession.getDeviceId())
         }
     }
 }
