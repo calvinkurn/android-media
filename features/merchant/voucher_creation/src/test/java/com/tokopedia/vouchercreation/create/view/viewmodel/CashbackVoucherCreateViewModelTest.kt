@@ -12,6 +12,7 @@ import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.CashbackPercentageValidation
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.CashbackRupiahValidation
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackPercentageInfoUiModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -24,6 +25,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
 
 @ExperimentalCoroutinesApi
 class CashbackVoucherCreateViewModelTest {
@@ -34,6 +36,7 @@ class CashbackVoucherCreateViewModelTest {
         private const val DUMMY_MAX_VALUE = 10000
         private const val DUMMY_MIN_PURCHASE = 5000
         private const val DUMMY_ESTIMATION = DUMMY_QUOTA * DUMMY_MAX_VALUE
+        private const val DUMMY_ERROR_MESSAGE = "error"
     }
 
     @RelaxedMockK
@@ -45,6 +48,9 @@ class CashbackVoucherCreateViewModelTest {
     @RelaxedMockK
     lateinit var expenseEstimationObserver: Observer<in Int>
 
+    @RelaxedMockK
+    lateinit var cashbackPercentageInfoUiModelObserver: Observer<in CashbackPercentageInfoUiModel>
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -53,11 +59,14 @@ class CashbackVoucherCreateViewModelTest {
         MockKAnnotations.init(this)
 
         mViewModel.expenseEstimationLiveData.observeForever(expenseEstimationObserver)
+        mViewModel.cashbackPercentageInfoUiModelLiveData.observeForever(cashbackPercentageInfoUiModelObserver)
     }
 
     @After
     fun cleanup() {
         mViewModel.expenseEstimationLiveData.removeObserver(expenseEstimationObserver)
+        mViewModel.cashbackPercentageInfoUiModelLiveData.removeObserver(cashbackPercentageInfoUiModelObserver)
+
         testDispatcher.cleanupTestCoroutines()
     }
 
@@ -313,5 +322,62 @@ class CashbackVoucherCreateViewModelTest {
         }
     }
 
+    @Test
+    fun `changing cashback type will change value list live data`() {
+        with(mViewModel) {
+            changeCashbackType(CashbackType.Rupiah)
+
+            assert(rupiahValueList.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt())) ?: false)
+
+            changeCashbackType(CashbackType.Percentage)
+
+            assert(percentageValueList.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt(), anyInt())) ?: false)
+        }
+    }
+
+    @Test
+    fun `adding error pair will change error pair live data`() {
+        with(mViewModel) {
+            val dummyPair = Pair(true, DUMMY_ERROR_MESSAGE)
+            addErrorPair(dummyPair.first, dummyPair.second, PromotionType.Cashback.Rupiah.MaximumDiscount)
+            addErrorPair(dummyPair.first, dummyPair.second, PromotionType.Cashback.Rupiah.MinimumPurchase)
+            addErrorPair(dummyPair.first, dummyPair.second, PromotionType.Cashback.Rupiah.VoucherQuota)
+            addErrorPair(dummyPair.first, dummyPair.second, PromotionType.Cashback.Percentage.Amount)
+            addErrorPair(dummyPair.first, dummyPair.second, PromotionType.Cashback.Percentage.MaximumDiscount)
+            addErrorPair(dummyPair.first, dummyPair.second, PromotionType.Cashback.Percentage.MinimumPurchase)
+            addErrorPair(dummyPair.first, dummyPair.second, PromotionType.Cashback.Percentage.VoucherQuota)
+
+            changeCashbackType(CashbackType.Rupiah)
+
+            assert(rupiahErrorPairList.value?.contentEquals(arrayOf(dummyPair, dummyPair, dummyPair)) ?: false)
+
+            changeCashbackType(CashbackType.Percentage)
+
+            assert(percentageErrorPairList.value?.contentEquals(arrayOf(dummyPair, dummyPair, dummyPair, dummyPair)) ?: false)
+        }
+    }
+
+    @Test
+    fun `changing cashback type will change its live data`() {
+        with(mViewModel) {
+            changeCashbackType(CashbackType.Percentage)
+
+            assert(cashbackTypeData.value == CashbackType.Percentage)
+        }
+    }
+
+    @Test
+    fun `changing percentage maximum discount will change cashback percentage info ui model`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
+
+            assert(cashbackPercentageInfoUiModelLiveData.value == CashbackPercentageInfoUiModel(
+                    anyInt(),
+                    anyInt(),
+                    anyInt(),
+                    DUMMY_MAX_VALUE
+            ))
+        }
+    }
 
 }
