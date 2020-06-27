@@ -45,6 +45,7 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModified
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
+import com.tokopedia.talk.feature.write.presentation.activity.TalkWriteActivity
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -471,7 +472,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToWriteActivity() {
-        val intent = context?.let { AddTalkActivity.createIntent(it, productId, READING_SOURCE) }
+        val intent = context?.let { TalkWriteActivity.createIntent(it, productId.toIntOrZero()) }
         startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
     }
 

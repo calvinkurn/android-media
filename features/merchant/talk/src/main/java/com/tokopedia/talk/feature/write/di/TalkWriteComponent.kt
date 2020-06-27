@@ -4,7 +4,7 @@ import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.write.presentation.fragment.TalkWriteFragment
 import dagger.Component
 
-@Component(dependencies = [TalkComponent::class])
+@Component(modules = [TalkWriteViewModelModule::class], dependencies = [TalkComponent::class])
 @TalkWriteScope
 interface TalkWriteComponent {
     fun inject(talkWriteFragment: TalkWriteFragment)

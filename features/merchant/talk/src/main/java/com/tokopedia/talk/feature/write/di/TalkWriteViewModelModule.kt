@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.talk.feature.reply.di.TalkReplyScope
-import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
+import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -20,6 +19,6 @@ abstract class TalkWriteViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(TalkReplyViewModel::class)
-    internal abstract fun talkWriteViewModel(viewModel: TalkWriteViewModelModule): ViewModel
+    @ViewModelKey(TalkWriteViewModel::class)
+    internal abstract fun talkWriteViewModel(viewModel: TalkWriteViewModel): ViewModel
 }

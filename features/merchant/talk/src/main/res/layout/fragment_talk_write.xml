@@ -90,12 +90,12 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
-        android:id="@+id/pageLoading"
+        android:id="@+id/talkWriteLoading"
         layout="@layout/partial_talk_write_shimmering"
         android:visibility="gone"/>
 
     <include
-        android:id="@+id/pageError"
+        android:id="@+id/talkWriteError"
         layout="@layout/partial_talk_connection_error"
         android:visibility="gone" />
 

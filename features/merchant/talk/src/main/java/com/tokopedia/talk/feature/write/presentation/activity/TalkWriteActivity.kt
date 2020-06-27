@@ -15,19 +15,23 @@ import com.tokopedia.talk.feature.write.presentation.fragment.TalkWriteFragment
 class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     companion object {
-        fun createIntent(context: Context): Intent {
+        fun createIntent(context: Context, productId: Int): Intent {
             val intent = Intent(context, TalkWriteActivity::class.java)
+            intent.putExtra(TalkConstants.PARAM_PRODUCT_ID, productId)
             return intent
         }
     }
 
+    private var productId: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        productId = intent.getIntExtra(TalkConstants.PARAM_PRODUCT_ID, productId)
         setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkWriteFragment.createNewInstance()
+        return TalkWriteFragment.createNewInstance(productId)
     }
 
     override fun getComponent(): TalkComponent {
