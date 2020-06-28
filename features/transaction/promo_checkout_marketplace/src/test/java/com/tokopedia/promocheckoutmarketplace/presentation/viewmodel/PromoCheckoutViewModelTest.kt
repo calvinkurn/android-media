@@ -125,6 +125,44 @@ class PromoCheckoutViewModelTest {
     }
 
     @Test
+    fun `WHEN re apply global promo manual input THEN should clear previous manual input code on request param`() {
+        //given
+        val attemptedPromoCode = "PROMO_CODE"
+        val result = HashMap<Type, Any>()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        val request = provideBasePromoRequestData()
+        request.codes.add(attemptedPromoCode)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", request, attemptedPromoCode)
+
+        //then
+        assert(request.attemptedCodes[0] == attemptedPromoCode)
+        assert(!request.codes.contains(attemptedPromoCode))
+    }
+
+    @Test
+    fun `WHEN re apply merchant promo manual input THEN should clear previous manual input code on request param`() {
+        //given
+        val attemptedPromoCode = "PROMO_CODE"
+        val result = HashMap<Type, Any>()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        val request = provideBasePromoRequestData()
+        request.orders[0].codes.add(attemptedPromoCode)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", request, attemptedPromoCode)
+
+        //then
+        assert(request.attemptedCodes[0] == attemptedPromoCode)
+        assert(!request.orders[0].codes.contains(attemptedPromoCode))
+    }
+
+    @Test
     fun `WHEN apply manual input promo has param selected expanded global promo but already unselected THEN request param should not contain global promo code`() {
         //given
         val result = HashMap<Type, Any>()
