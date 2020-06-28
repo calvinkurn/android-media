@@ -9,10 +9,8 @@ import com.tokopedia.promocheckoutmarketplace.*
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import io.mockk.*
-import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertNotNull
@@ -27,37 +25,19 @@ class PromoCheckoutViewModelTest {
     private lateinit var gson: Gson
     private lateinit var dispatcher: CoroutineDispatcher
 
-    @MockK(relaxed = true)
-    private lateinit var graphqlRepository: GraphqlRepository
-    @MockK
-    private lateinit var uiModelMapper: PromoCheckoutUiModelMapper
-    @MockK
-    private lateinit var analytics: PromoCheckoutAnalytics
+    private var graphqlRepository: GraphqlRepository = mockk(relaxed = true)
+    private var uiModelMapper: PromoCheckoutUiModelMapper = spyk()
+    private var analytics: PromoCheckoutAnalytics = mockk()
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
         dispatcher = Dispatchers.Unconfined
         viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics)
         gson = Gson()
 
-        val fragmentUiModel = FragmentUiModel(FragmentUiModel.UiData(), FragmentUiModel.UiState())
-        val promoRecommendationUiModel = PromoRecommendationUiModel(PromoRecommendationUiModel.UiData(), PromoRecommendationUiModel.UiState())
-        val promoInputUiModel = PromoInputUiModel(PromoInputUiModel.UiData(), PromoInputUiModel.UiState())
-        val promoEligibilityHeaderUiModel = PromoEligibilityHeaderUiModel(PromoEligibilityHeaderUiModel.UiData(), PromoEligibilityHeaderUiModel.UiState())
-        val promoListHeaderUimodel = PromoListHeaderUiModel(PromoListHeaderUiModel.UiData(), PromoListHeaderUiModel.UiState())
-        val promoListItemUiModel = PromoListItemUiModel(PromoListItemUiModel.UiData(), PromoListItemUiModel.UiState())
-
-        every { viewModel.initFragmentUiModel(any()) } just Runs
-        every { uiModelMapper.mapFragmentUiModel(any()) } returns fragmentUiModel
-        every { uiModelMapper.mapPromoRecommendationUiModel(any()) } returns promoRecommendationUiModel
-        every { uiModelMapper.mapPromoInputUiModel() } returns promoInputUiModel
-        every { uiModelMapper.mapPromoEligibilityHeaderUiModel(any()) } returns promoEligibilityHeaderUiModel
-        every { uiModelMapper.mapPromoListHeaderUiModel(any(), any(), any()) } returns promoListHeaderUimodel
-        every { uiModelMapper.mapPromoListItemUiModel(any(), any(), any(), any()) } returns promoListItemUiModel
         every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
         every { analytics.eventViewAvailablePromoListIneligibleProduct(any(), any()) } just Runs
 
