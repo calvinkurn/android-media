@@ -236,7 +236,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         val names = name.split(" ")
         val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
 
-        textContent.text = TEXT_RE_LOGIN + names[1]
+        textContent.text = TEXT_RE_LOGIN + names[0]
         textContent.setBodyText(isBold = true)
         textContent.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
 
