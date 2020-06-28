@@ -58,21 +58,44 @@ class PromoCheckoutViewModelTest {
         every { uiModelMapper.mapPromoEligibilityHeaderUiModel(any()) } returns promoEligibilityHeaderUiModel
         every { uiModelMapper.mapPromoListHeaderUiModel(any(), any(), any()) } returns promoListHeaderUimodel
         every { uiModelMapper.mapPromoListItemUiModel(any(), any(), any(), any()) } returns promoListItemUiModel
+        every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
+        every { analytics.eventViewAvailablePromoListIneligibleProduct(any(), any()) } just Runs
 
         viewModel.initFragmentUiModel(PAGE_CART)
     }
 
     @Test
-    fun `WHEN get coupon recommendation and get complete data THEN ui model should not be null`() {
+    fun `WHEN get coupon recommendation and get complete expanded data THEN ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessData()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        val request = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", provideBasePromoRequestData(), "")
+        viewModel.loadData("", request, "")
+
+        //then
+        assertNotNull(viewModel.fragmentUiModel.value)
+        assertNotNull(viewModel.promoRecommendationUiModel.value)
+        assertNotNull(viewModel.promoInputUiModel.value)
+        assertNotNull(viewModel.promoListUiModel.value)
+    }
+
+    @Test
+    fun `WHEN get coupon recommendation and get complete collapsed data THEN ui model should not be null`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        val request = provideBasePromoRequestData()
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", request, "")
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
@@ -86,7 +109,6 @@ class PromoCheckoutViewModelTest {
         //given
         val attemptedPromoCode = "PROMO_CODE"
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessData()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         val request = provideBasePromoRequestData()
 
@@ -103,36 +125,36 @@ class PromoCheckoutViewModelTest {
     }
 
     @Test
-    fun `WHEN reload action has no selected global promo THEN request param should not contain global promo code`() {
+    fun `WHEN apply manual input promo has param selected expanded global promo but already unselected THEN request param should not contain global promo code`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessData()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideNoCurrentSelectedGlobalPromoData()
-        val promoRequest = providePromoRequestWithSelectedGlobalPromo()
+        viewModel._promoListUiModel.value = provideNoCurrentSelectedExpandedGlobalPromoData()
+        val promoRequest = providePromoRequestWithSelectedExpandedGlobalPromo()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "AAAA")
+        viewModel.loadData("", promoRequest, "GLOBAL PROMO")
 
         //then
         assert(promoRequest.codes.isEmpty())
     }
 
     @Test
-    fun `WHEN reload action has no selected merchant promo THEN request param should not contain merchant promo code`() {
+    fun `WHEN apply manual input promo has param selected expanded merchant promo but already unselected THEN request param should not contain merchant promo code`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessData()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideNoCurrentSelectedMerchantPromoData()
-        val promoRequest = provideBasePromoRequestData()
+        viewModel._promoListUiModel.value = provideNoCurrentSelectedExpandedMerchantPromoData()
+        val promoRequest = providePromoRequestWithSelectedExpandedMerchantPromo()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "")
+        viewModel.loadData("", promoRequest, "MERCHANT PROMO")
 
         //then
         assert(promoRequest.orders[0].codes.isEmpty())
@@ -141,12 +163,50 @@ class PromoCheckoutViewModelTest {
     }
 
     @Test
-    fun `WHEN reload action has selected global promo THEN should be added to request param`() {
+    fun `WHEN apply manual input promo has param selected collapsed global promo but already unselected THEN request param should not contain global promo code`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessData()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideCurrentSelectedGlobalPromoData()
+        viewModel._promoListUiModel.value = provideNoCurrentSelectedCollapsedGlobalPromoData()
+        val promoRequest = providePromoRequestWithSelectedCollapsedGlobalPromo()
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", promoRequest, "GLOBAL PROMO")
+
+        //then
+        assert(promoRequest.codes.isEmpty())
+    }
+
+    @Test
+    fun `WHEN apply manual input promo has param selected collapsed merchant promo but already unselected THEN request param should not contain merchant promo code`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel._promoListUiModel.value = provideNoCurrentSelectedCollapsedMerchantPromoData()
+        val promoRequest = providePromoRequestWithSelectedCollapsedMerchantPromo()
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", promoRequest, "MERCHANT PROMO")
+
+        //then
+        assert(promoRequest.orders[0].codes.isEmpty())
+        assert(promoRequest.orders[1].codes.isEmpty())
+        assert(promoRequest.orders[2].codes.isEmpty())
+    }
+
+    @Test
+    fun `WHEN reload action has selected expanded global promo THEN should be added to request param`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel._promoListUiModel.value = provideCurrentSelectedExpandedGlobalPromoData()
         val promoRequest = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -160,12 +220,54 @@ class PromoCheckoutViewModelTest {
     }
 
     @Test
-    fun `WHEN reload action has selected merchant promo THEN should be added to request param`() {
+    fun `WHEN reload action has selected expanded merchant promo THEN should be added to request param`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessData()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideCurrentSelectedMerchantPromoData()
+        viewModel._promoListUiModel.value = provideCurrentSelectedExpandedMerchantPromoData()
+        val promoRequest = provideBasePromoRequestData()
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", promoRequest, "")
+
+        //then
+        assert(promoRequest.orders[0].codes.isNotEmpty() ||
+                promoRequest.orders[1].codes.isNotEmpty() ||
+                promoRequest.orders[2].codes.isNotEmpty())
+        assert(promoRequest.orders[0].codes.size == 1 ||
+                promoRequest.orders[1].codes.size == 1 ||
+                promoRequest.orders[2].codes.size == 1)
+    }
+
+    @Test
+    fun `WHEN reload action has selected collapsed global promo THEN should be added to request param`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel._promoListUiModel.value = provideCurrentSelectedCollapsedGlobalPromoData()
+        val promoRequest = provideBasePromoRequestData()
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", promoRequest, "")
+
+        //then
+        assert(promoRequest.codes.isNotEmpty())
+        assert(promoRequest.codes.size == 1)
+    }
+
+    @Test
+    fun `WHEN reload action has selected collapsed merchant promo THEN should be added to request param`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel._promoListUiModel.value = provideCurrentSelectedCollapsedMerchantPromoData()
         val promoRequest = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse

@@ -178,7 +178,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                                 promoRequest.codes.add(it.uiData.promoCode)
                             }
                         } else {
-                            // If coupon is unselected, remove from request param
+                            // If coupon is unselected and exist on current promo request, remove from request param
                             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
                             if (it.uiData.uniqueId == order.uniqueId && order.codes.contains(it.uiData.promoCode)) {
                                 order.codes.remove(it.uiData.promoCode)
