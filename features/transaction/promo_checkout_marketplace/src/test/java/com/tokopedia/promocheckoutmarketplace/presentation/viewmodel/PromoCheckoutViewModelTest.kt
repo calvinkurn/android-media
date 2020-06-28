@@ -10,10 +10,12 @@ import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommenda
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import io.mockk.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,12 +52,11 @@ class PromoCheckoutViewModelTest {
         val result = HashMap<Type, Any>()
         result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        val request = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", request, "")
+        viewModel.loadData("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
@@ -70,12 +71,11 @@ class PromoCheckoutViewModelTest {
         val result = HashMap<Type, Any>()
         result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        val request = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", request, "")
+        viewModel.loadData("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
@@ -85,23 +85,73 @@ class PromoCheckoutViewModelTest {
     }
 
     @Test
-    fun `WHEN get promo recommendation and get selected promo THEN ui model should not be null`() {
+    fun `WHEN get promo recommendation and get no selected promo THEN fragment ui model state should be has no promo`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataWithPreSelectedPromo()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        val request = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", request, "")
+        viewModel.loadData("", PromoRequest(), "")
+
+        //then
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasAnyPromoSelected == false)
+    }
+
+    @Test
+    fun `WHEN get promo recommendation and get selected promo THEN fragment ui model state should be has promo`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataWithPreSelectedPromo()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", PromoRequest(), "")
+
+        //then
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasAnyPromoSelected == true)
+    }
+
+    @Test
+    fun `WHEN get promo recommendation and all eligible THEN ui model should not be null`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllEligible()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
-        assertNotNull(viewModel.promoRecommendationUiModel.value)
         assertNotNull(viewModel.promoInputUiModel.value)
         assertNotNull(viewModel.promoListUiModel.value)
+        assertNotNull(viewModel.promoRecommendationUiModel.value)
+    }
+
+    @Test
+    fun `WHEN get promo recommendation and all ineligible THEN ui model should not be null except promo recommendation`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllIneligible()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", PromoRequest(), "")
+
+        //then
+        assertNotNull(viewModel.fragmentUiModel.value)
+        assertNotNull(viewModel.promoInputUiModel.value)
+        assertNotNull(viewModel.promoListUiModel.value)
+        assertNull(viewModel.promoRecommendationUiModel.value)
     }
 
     @Test
@@ -110,18 +160,18 @@ class PromoCheckoutViewModelTest {
         val attemptedPromoCode = "PROMO_CODE"
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        val request = provideBasePromoRequestData()
+        val promoRequest = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", request, attemptedPromoCode)
+        viewModel.loadData("", promoRequest, attemptedPromoCode)
 
         //then
-        assert(request.skipApply == 0)
-        assert(request.attemptedCodes.isNotEmpty())
-        assert(request.attemptedCodes.size == 1)
-        assert(request.attemptedCodes[0] == attemptedPromoCode)
+        assert(promoRequest.skipApply == 0)
+        assert(promoRequest.attemptedCodes.isNotEmpty())
+        assert(promoRequest.attemptedCodes.size == 1)
+        assert(promoRequest.attemptedCodes[0] == attemptedPromoCode)
     }
 
     @Test
@@ -130,17 +180,17 @@ class PromoCheckoutViewModelTest {
         val attemptedPromoCode = "PROMO_CODE"
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        val request = provideBasePromoRequestData()
-        request.codes.add(attemptedPromoCode)
+        val promoRequest = provideBasePromoRequestData()
+        promoRequest.codes.add(attemptedPromoCode)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", request, attemptedPromoCode)
+        viewModel.loadData("", promoRequest, attemptedPromoCode)
 
         //then
-        assert(request.attemptedCodes[0] == attemptedPromoCode)
-        assert(!request.codes.contains(attemptedPromoCode))
+        assert(promoRequest.attemptedCodes[0] == attemptedPromoCode)
+        assert(!promoRequest.codes.contains(attemptedPromoCode))
     }
 
     @Test
@@ -149,24 +199,23 @@ class PromoCheckoutViewModelTest {
         val attemptedPromoCode = "PROMO_CODE"
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        val request = provideBasePromoRequestData()
-        request.orders[0].codes.add(attemptedPromoCode)
+        val promoRequest = provideBasePromoRequestData()
+        promoRequest.orders[0].codes.add(attemptedPromoCode)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", request, attemptedPromoCode)
+        viewModel.loadData("", promoRequest, attemptedPromoCode)
 
         //then
-        assert(request.attemptedCodes[0] == attemptedPromoCode)
-        assert(!request.orders[0].codes.contains(attemptedPromoCode))
+        assert(promoRequest.attemptedCodes[0] == attemptedPromoCode)
+        assert(!promoRequest.orders[0].codes.contains(attemptedPromoCode))
     }
 
     @Test
     fun `WHEN apply manual input promo has param selected expanded global promo but already unselected THEN request param should not contain global promo code`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel._promoListUiModel.value = provideNoCurrentSelectedExpandedGlobalPromoData()
         val promoRequest = providePromoRequestWithSelectedExpandedGlobalPromo()
@@ -184,7 +233,6 @@ class PromoCheckoutViewModelTest {
     fun `WHEN apply manual input promo has param selected expanded merchant promo but already unselected THEN request param should not contain merchant promo code`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel._promoListUiModel.value = provideNoCurrentSelectedExpandedMerchantPromoData()
         val promoRequest = providePromoRequestWithSelectedExpandedMerchantPromo()
@@ -204,7 +252,6 @@ class PromoCheckoutViewModelTest {
     fun `WHEN apply manual input promo has param selected collapsed global promo but already unselected THEN request param should not contain global promo code`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel._promoListUiModel.value = provideNoCurrentSelectedCollapsedGlobalPromoData()
         val promoRequest = providePromoRequestWithSelectedCollapsedGlobalPromo()
@@ -222,7 +269,6 @@ class PromoCheckoutViewModelTest {
     fun `WHEN apply manual input promo has param selected collapsed merchant promo but already unselected THEN request param should not contain merchant promo code`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel._promoListUiModel.value = provideNoCurrentSelectedCollapsedMerchantPromoData()
         val promoRequest = providePromoRequestWithSelectedCollapsedMerchantPromo()
@@ -239,10 +285,28 @@ class PromoCheckoutViewModelTest {
     }
 
     @Test
+    fun `WHEN re apply promo manual input THEN get coupon recommendation action state should be clear data`() {
+        //given
+        val attemptedPromoCode = "PROMO_CODE"
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        val promoRequest = provideBasePromoRequestData()
+        promoRequest.codes.add(attemptedPromoCode)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", PromoRequest(), attemptedPromoCode)
+
+        //then
+        assert(viewModel._getCouponRecommendationResponse.value?.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA)
+    }
+
+    @Test
     fun `WHEN reload action has selected expanded global promo THEN should be added to request param`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel._promoListUiModel.value = provideCurrentSelectedExpandedGlobalPromoData()
         val promoRequest = provideBasePromoRequestData()
@@ -261,7 +325,6 @@ class PromoCheckoutViewModelTest {
     fun `WHEN reload action has selected expanded merchant promo THEN should be added to request param`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel._promoListUiModel.value = provideCurrentSelectedExpandedMerchantPromoData()
         val promoRequest = provideBasePromoRequestData()
@@ -284,7 +347,6 @@ class PromoCheckoutViewModelTest {
     fun `WHEN reload action has selected collapsed global promo THEN should be added to request param`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel._promoListUiModel.value = provideCurrentSelectedCollapsedGlobalPromoData()
         val promoRequest = provideBasePromoRequestData()
@@ -303,7 +365,6 @@ class PromoCheckoutViewModelTest {
     fun `WHEN reload action has selected collapsed merchant promo THEN should be added to request param`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel._promoListUiModel.value = provideCurrentSelectedCollapsedMerchantPromoData()
         val promoRequest = provideBasePromoRequestData()

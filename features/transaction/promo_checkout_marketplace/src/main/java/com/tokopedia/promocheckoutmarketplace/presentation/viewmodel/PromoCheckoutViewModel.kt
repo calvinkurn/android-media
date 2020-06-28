@@ -94,7 +94,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         get() = _applyPromoResponse
 
     // Live data to notify UI state after hit get coupon recommendation API
-    private val _getCouponRecommendationResponse = MutableLiveData<GetCouponRecommendationAction>()
+    val _getCouponRecommendationResponse = MutableLiveData<GetCouponRecommendationAction>()
     val getCouponRecommendationResponse: LiveData<GetCouponRecommendationAction>
         get() = _getCouponRecommendationResponse
 
@@ -1365,6 +1365,8 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             if (it is PromoListItemUiModel) {
                 if (it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
                     if (it.uiState.isDisabled) {
+                        // Update : This logic is not valid for case load promo page.
+                        // Promo item might be disabled only if get red state after apply promo / validate use.
                         disabledPromotions.add(getPromotionMap())
                     } else {
                         enabledPromotions.add(getPromotionMap())
@@ -1376,6 +1378,8 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 it.uiData.tmpPromoItemList.forEach {
                     if (it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
                         if (it.uiState.isDisabled) {
+                            // Update : This logic is not valid for case load promo page.
+                            // Promo item might be disabled only if get red state after apply promo / validate use.
                             disabledPromotions.add(getPromotionMap())
                         } else {
                             enabledPromotions.add(getPromotionMap())
@@ -1386,6 +1390,8 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 }
             } else if (it is PromoEligibilityHeaderUiModel && !it.uiState.isEnabled && it.uiData.tmpPromo.isNotEmpty()) {
                 it.uiData.tmpPromo.forEach {
+                    // Update : This logic is not valid.
+                    // Goes here for promo disabled section so all promo item must be disabled.
                     if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
                         if (it.uiState.isDisabled) {
                             disabledPromotions.add(getPromotionMap())

@@ -26,6 +26,14 @@ fun provideBasePromoRequestData(): PromoRequest {
     return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_promo_recommendation_request.json"), PromoRequest::class.java)
 }
 
+fun provideBasePromoResponseSuccessDataAllEligible(): CouponListRecommendationResponse {
+    return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_promo_recommendation_response_success_all_eligible.json"), CouponListRecommendationResponse::class.java)
+}
+
+fun provideBasePromoResponseSuccessDataAllIneligible(): CouponListRecommendationResponse {
+    return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_promo_recommendation_response_success_all_ineligible.json"), CouponListRecommendationResponse::class.java)
+}
+
 fun provideNoCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
     val promoListUiModelList = ArrayList<Visitable<*>>()
     val selectedPromo = provideBasePromoResponseSuccessDataAllExpanded().couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
