@@ -92,6 +92,8 @@ class LineChartView : LinearLayout {
 
             animateXY(200, 200)
         }
+
+        setMarkerView()
     }
 
     fun setData(chartEntry: List<LineChartEntry>) {
@@ -138,6 +140,15 @@ class LineChartView : LinearLayout {
         lineChart.axisLeft.run {
             setLabelCount(labels.size, true)
             valueFormatter = YAxisLabelFormatter(labels)
+        }
+    }
+
+    private fun setMarkerView() {
+        graphConfig?.let {
+            if (it.isDrawMarkersEnabled) {
+                it.tooltip?.markerView?.chartView = lineChart
+                lineChart.marker = it.tooltip?.markerView
+            }
         }
     }
 

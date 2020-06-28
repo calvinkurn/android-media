@@ -20,19 +20,20 @@ class LineChartConfigBuilder {
         fun create(lambda: LineChartConfigBuilder.() -> Unit) = LineChartConfigBuilder().apply(lambda).build()
     }
 
-    private var isDrawMarkersEnabled: Boolean = true
+    private var isShowTooltipEnabled: Boolean = true
     private var isScaleXEnabled: Boolean = false
     private var isPitchZoomEnabled: Boolean = false
     private var isDescriptionEnabled: Boolean = false
     private var xAnimationDuration: Int = 0
     private var yAnimationDuration: Int = 0
-    private var xAxisConfig: XAxisConfig = XAxisConfig()
+    private var xAxis: XAxisConfig = XAxisConfig()
     private var leftAxisConfig: LeftAxisConfig = LeftAxisConfig()
     private var rightAxisConfig: RightAxisConfig = RightAxisConfig()
     private var legendConfig: LegendConfig = LegendConfig()
+    private var tooltip: LineChartTooltip? = null
 
-    fun drawMarkersEnabled(lambda: () -> Boolean) {
-        isDrawMarkersEnabled = lambda()
+    fun showTooltipEnabled(lambda: () -> Boolean) {
+        isShowTooltipEnabled = lambda()
     }
 
     fun scaleEnabled(lambda: () -> Boolean) {
@@ -55,8 +56,12 @@ class LineChartConfigBuilder {
         yAnimationDuration = lambda()
     }
 
+    fun setXAxis(xAxis: XAxisConfig) {
+        this.xAxis = xAxis
+    }
+
     fun xAxis(lambda: XAxisBuilder.() -> Unit) {
-        xAxisConfig = XAxisBuilder().apply(lambda).build()
+        xAxis = XAxisBuilder().apply(lambda).build()
     }
 
     fun leftAxis(lambda: LeftAxisBuilder.() -> Unit) {
@@ -71,18 +76,23 @@ class LineChartConfigBuilder {
         legendConfig = LegendBuilder().apply(lambda).build()
     }
 
+    fun setTooltip(tooltip: LineChartTooltip) {
+        this.tooltip = tooltip
+    }
+
     fun build(): LineChartConfig {
         return LineChartConfig(
-                isDrawMarkersEnabled = isDrawMarkersEnabled,
+                isDrawMarkersEnabled = isShowTooltipEnabled,
                 isScaleXEnabled = isScaleXEnabled,
                 isPitchZoomEnabled = isPitchZoomEnabled,
                 isDescriptionEnabled = isDescriptionEnabled,
                 xAnimationDuration = xAnimationDuration,
                 yAnimationDuration = yAnimationDuration,
-                xAxisConfig = xAxisConfig,
+                xAxisConfig = xAxis,
                 leftAxisConfig = leftAxisConfig,
                 rightAxisConfig = rightAxisConfig,
-                legendConfig = legendConfig
+                legendConfig = legendConfig,
+                tooltip = tooltip
         )
     }
 }
