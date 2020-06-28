@@ -149,19 +149,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragment?.let {
             return when (it) {
                 is LoaderFragment -> true
-//                is DeferredPaymentFragment -> {
-//                    it.onBackPressed()
-//                }
-//                is ProcessingPaymentFragment -> {
-//                    it.onBackPressed()
-//                }
-//                else -> {
-//                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
-//                        override fun onCompleted() {
-//                            gotoHomePage()
-//                        }
-//                    })
-//                }
                 else -> false
             }
 
