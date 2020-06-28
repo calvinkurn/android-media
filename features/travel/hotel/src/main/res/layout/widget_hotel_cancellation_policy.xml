@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="@dimen/hotel_20dp"
+    android:paddingBottom="@dimen/layout_lvl1"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/layout_lvl2"
+    android:orientation="vertical"
+    >
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_policy_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Ketentuan Pembatalan"
+        app:typographyType="heading_4"
+        android:textColor="@color/Neutral_N700_96"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/hotel_cancellation_policy_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"/>
+
+</LinearLayout>

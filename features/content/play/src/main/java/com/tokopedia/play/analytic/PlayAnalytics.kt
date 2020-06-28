@@ -169,7 +169,7 @@ object PlayAnalytics {
                               channelId: String,
                               listOfProducts: List<ProductLineUiModel>,
                               channelType: PlayChannelType) {
-        if (listOfProducts.isNotEmpty())
+        if (listOfProducts.isNotEmpty()) {
             trackingQueue.putEETracking(
                     EventModel(
                             "productView",
@@ -184,11 +184,13 @@ object PlayAnalytics {
                             )
                     )
             )
+        }
     }
 
     fun clickProduct(trackingQueue: TrackingQueue,
                      channelId: String,
                      product: ProductLineUiModel,
+                     position: Int,
                      channelType: PlayChannelType) {
         trackingQueue.putEETracking(
                 EventModel(
@@ -201,7 +203,7 @@ object PlayAnalytics {
                         "ecommerce" to hashMapOf(
                                 "click" to hashMapOf(
                                         "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                                        "products" to convertProductsToListOfObject(listOf(product))
+                                        "products" to  listOf(convertProductToHashMapWithList(product, position))
                                 )
                         )
                 )

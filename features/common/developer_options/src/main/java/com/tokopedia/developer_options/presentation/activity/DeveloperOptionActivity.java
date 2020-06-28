@@ -44,6 +44,7 @@ import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
@@ -112,6 +113,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private EditText editTextChangeVersionCode;
     private View changeVersionButton;
 
+    private TextView vGoToScreenRecorder;
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
@@ -204,6 +206,8 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         resetOnBoarding = findViewById(R.id.reset_onboarding);
         testOnBoarding = findViewById(R.id.test_onboarding);
+
+        vGoToScreenRecorder = findViewById(R.id.goto_screen_recorder);
 
         vGoTochuck = findViewById(R.id.goto_chuck);
         toggleChuck = findViewById(R.id.toggle_chuck);
@@ -416,6 +420,13 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleChuck.setOnCheckedChangeListener((compoundButton, state) -> {
             cache.edit().putBoolean(IS_CHUCK_ENABLED, state).apply();
+        });
+
+        vGoToScreenRecorder.setOnClickListener(new OneOnClick() {
+            @Override
+            public void oneOnClick(View view) {
+                RouteManager.route(DeveloperOptionActivity.this, ApplinkConstInternalGlobal.SCREEN_RECORDER);
+            }
         });
 
         vGoTochuck.setOnClickListener(new OneOnClick() {
