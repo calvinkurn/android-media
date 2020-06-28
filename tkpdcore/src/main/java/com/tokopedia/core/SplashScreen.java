@@ -194,7 +194,6 @@ public class SplashScreen extends AppCompatActivity {
                                 linkerDefferedDeeplinkData.getPromoCode() : "");
                         String deeplink = linkerDefferedDeeplinkData.getDeeplink();
                         if (!TextUtils.isEmpty(deeplink)) {
-                            Timber.w("P2#LINKER#splash_screen;deeplink='%s'", deeplink);
                             // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
                             // because we need tracking UTM for those notification applink
                             String tokopediaDeeplink;
@@ -211,6 +210,7 @@ public class SplashScreen extends AppCompatActivity {
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }
+                            Timber.w("P2#LINKER#splash_screen;deeplink='%s'", tokopediaDeeplink);
                             intent.setData(Uri.parse(tokopediaDeeplink));
                             startActivity(intent);
                             finish();

@@ -28,7 +28,6 @@ import timber.log.Timber;
  * TimberWrapper.init(application);
  */
 public class TimberWrapper {
-    private static final String APP_TYPE = "customerApp";
     private static final int PRIORITY_LENGTH = 2;
 
     private static final String[] LOGENTRIES_TOKEN = new String[]{
@@ -115,6 +114,6 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-main-app-p%s", priority);
         String parser = String.format("android-main-app-p%s-parser", priority);
-        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, APP_TYPE, GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
     }
 }
