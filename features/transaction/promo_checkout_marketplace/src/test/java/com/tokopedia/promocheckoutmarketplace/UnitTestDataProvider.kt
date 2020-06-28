@@ -11,15 +11,19 @@ val gson = Gson()
 val uiModelmapper = PromoCheckoutUiModelMapper()
 
 fun provideBasePromoResponseSuccessDataAllExpanded(): CouponListRecommendationResponse {
-    return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_coupon_recommendation_response_success_all_expanded.json"), CouponListRecommendationResponse::class.java)
+    return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_promo_recommendation_response_success_all_expanded.json"), CouponListRecommendationResponse::class.java)
 }
 
 fun provideBasePromoResponseSuccessDataAllCollapsed(): CouponListRecommendationResponse {
-    return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_coupon_recommendation_response_success_all_collapsed.json"), CouponListRecommendationResponse::class.java)
+    return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_promo_recommendation_response_success_all_collapsed.json"), CouponListRecommendationResponse::class.java)
+}
+
+fun provideBasePromoResponseSuccessDataWithPreSelectedPromo(): CouponListRecommendationResponse {
+    return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_promo_recommendation_response_success_with_pre_selected_promo.json"), CouponListRecommendationResponse::class.java)
 }
 
 fun provideBasePromoRequestData(): PromoRequest {
-    return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_coupon_recommendation_request.json"), PromoRequest::class.java)
+    return gson.fromJson(UnitTestFileUtils().getJsonFromAsset("assets/base_promo_recommendation_request.json"), PromoRequest::class.java)
 }
 
 fun provideNoCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {

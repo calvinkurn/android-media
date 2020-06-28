@@ -45,7 +45,7 @@ class PromoCheckoutViewModelTest {
     }
 
     @Test
-    fun `WHEN get coupon recommendation and get complete expanded data THEN ui model should not be null`() {
+    fun `WHEN get promo recommendation and get complete expanded data THEN ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
         result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
@@ -65,10 +65,30 @@ class PromoCheckoutViewModelTest {
     }
 
     @Test
-    fun `WHEN get coupon recommendation and get complete collapsed data THEN ui model should not be null`() {
+    fun `WHEN get promo recommendation and get complete collapsed data THEN ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
         result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        val request = provideBasePromoRequestData()
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.loadData("", request, "")
+
+        //then
+        assertNotNull(viewModel.fragmentUiModel.value)
+        assertNotNull(viewModel.promoRecommendationUiModel.value)
+        assertNotNull(viewModel.promoInputUiModel.value)
+        assertNotNull(viewModel.promoListUiModel.value)
+    }
+
+    @Test
+    fun `WHEN get promo recommendation and get selected promo THEN ui model should not be null`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataWithPreSelectedPromo()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         val request = provideBasePromoRequestData()
 
