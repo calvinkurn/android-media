@@ -149,7 +149,13 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragment?.let {
             return when (it) {
                 is LoaderFragment -> true
-                else -> false
+                else -> {
+                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
+                        override fun onCompleted() {
+                            gotoHomePage()
+                        }
+                    })
+                }
             }
 
         }
