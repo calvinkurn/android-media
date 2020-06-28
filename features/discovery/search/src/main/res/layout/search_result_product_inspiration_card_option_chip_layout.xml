@@ -6,7 +6,4 @@
     android:layout_height="wrap_content"
     app:chipText="@string/search_inspiration_card_title"
     app:chipSize="small"
-    app:chipType="selected"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginLeft="@dimen/dp_8"
-    android:layout_marginStart="@dimen/dp_8"/>
+    app:chipType="selected"/>

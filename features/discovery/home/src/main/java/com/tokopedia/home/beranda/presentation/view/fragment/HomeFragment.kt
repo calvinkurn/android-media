@@ -99,7 +99,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.RechargeRecommendationViewHolder.RechargeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
@@ -167,8 +166,7 @@ open class HomeFragment : BaseDaggerFragment(),
         HomeFeedsListener,
         HomeReviewListener,
         PopularKeywordListener,
-        FramePerformanceIndexInterface,
-        RechargeRecommendationListener {
+        FramePerformanceIndexInterface{
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -650,6 +648,8 @@ open class HomeFragment : BaseDaggerFragment(),
         observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
+        observeSalamWidget()
+        observeRechargeRecommendation()
         observeViewModelInitialized();
         observeHomeRequestNetwork();
     }
@@ -816,6 +816,22 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeSalamWidget(){
+        context?.let{
+            getHomeViewModel().salamWidgetLiveData.observe(this, Observer {
+                getHomeViewModel().insertSalamWidget(it.peekContent())
+            })
+        }
+    }
+
+    private fun observeRechargeRecommendation(){
+        context?.let {
+            getHomeViewModel().rechargeRecommendationLiveData.observe(this, Observer {
+                getHomeViewModel().insertRechargeRecommendation(it.peekContent())
+            })
+        }
+    }
+
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
@@ -930,12 +946,13 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
-                this,
                 HomeComponentCallback(getHomeViewModel()),
                 DynamicLegoBannerComponentCallback(context, this),
                 RecommendationListCarouselComponentCallback(getHomeViewModel(), this),
                 MixLeftComponentCallback(this),
-                MixTopComponentCallback(this))
+                MixTopComponentCallback(this),
+                HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
+                        SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1941,14 +1958,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun getFramePerformanceIndexData(): FragmentFramePerformanceIndexMonitoring {
         return fragmentFramePerformanceIndexMonitoring
-    }
-
-    override fun onContentClickListener(applink: String) {
-        RouteManager.route(context, applink)
-    }
-
-    override fun onDeclineClickListener(requestParams: Map<String, String>) {
-        getHomeViewModel().declineRechargeRecommendationItem(requestParams)
     }
 
     override fun onDetach() {
