@@ -93,7 +93,7 @@ class LineChartView : LinearLayout {
             animateXY(200, 200)
         }
 
-        setMarkerView()
+        setChartTooltip()
     }
 
     fun setData(chartEntry: List<LineChartEntry>) {
@@ -143,7 +143,7 @@ class LineChartView : LinearLayout {
         }
     }
 
-    private fun setMarkerView() {
+    private fun setChartTooltip() {
         graphConfig?.let {
             if (it.isDrawMarkersEnabled) {
                 it.tooltip?.markerView?.chartView = lineChart

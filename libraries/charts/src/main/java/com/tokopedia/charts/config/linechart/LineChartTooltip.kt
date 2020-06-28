@@ -17,13 +17,13 @@ open class LineChartTooltip(
 ) {
 
     val markerView: MarkerView
-    private var refreshContent: ((view: View, x: Float, y: Float) -> Unit)? = null
+    private var refreshContent: ((view: View, data: Any, x: Float, y: Float) -> Unit)? = null
 
     init {
         markerView = object : MarkerView(context, layoutResource) {
             override fun refreshContent(e: Entry?, highlight: Highlight?) {
                 e?.let {
-                    refreshContent?.invoke(this, it.x, it.y)
+                    refreshContent?.invoke(this, it.data, it.x, it.y)
                 }
                 super.refreshContent(e, highlight)
             }
@@ -34,7 +34,7 @@ open class LineChartTooltip(
         }
     }
 
-    fun setOnDisplayContent(callback: (view: View, x: Float, y: Float) -> Unit): LineChartTooltip {
+    fun setOnDisplayContent(callback: (view: View, data: Any, x: Float, y: Float) -> Unit): LineChartTooltip {
         this.refreshContent = callback
         return this
     }
