@@ -3,22 +3,26 @@ package com.tokopedia.shop_showcase.shop_showcase_management.domain
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop_showcase.common.GQLQueryConstant
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteShopShowcaseResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-class DeleteShopShowcaseUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_DELETE_SINGLE_SHOP_SHOWCASE) val queryDeleteShowcase: String
-): UseCase<DeleteShopShowcaseResponse>() {
+class DeleteShopShowcaseUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<DeleteShopShowcaseResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     companion object {
         private const val SHOWCASE_ID = "id"
+        private const val MUTATION = "mutation deleteShopShowcase(\$id: String!) {\n" +
+                "  deleteShopShowcase(input: {\n" +
+                "    id: \$id\n" +
+                "  }) {\n" +
+                "    success\n" +
+                "    message\n" +
+                "  }\n" +
+                "}"
 
         fun createRequestParam(showcaseId: String): RequestParams = RequestParams.create().apply {
             putString(SHOWCASE_ID, showcaseId)
@@ -26,7 +30,7 @@ class DeleteShopShowcaseUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): DeleteShopShowcaseResponse {
-        val deleteShowcase = GraphqlRequest(queryDeleteShowcase, DeleteShopShowcaseResponse::class.java, params.parameters)
+        val deleteShowcase = GraphqlRequest(MUTATION, DeleteShopShowcaseResponse::class.java, params.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(deleteShowcase)
         val graphqlResponse = graphqlUseCase.executeOnBackground()

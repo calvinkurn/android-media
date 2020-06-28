@@ -910,11 +910,6 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onViewComplaint(OrderDetailData data) {
-        if (MainApplication.getAppContext() instanceof TransactionRouter) {
-            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
-                    .getDetailResChatIntentBuyer(this, data.getResoId(), data.getShopName());
-            startActivity(intent);
-        }
     }
 
     @Override
