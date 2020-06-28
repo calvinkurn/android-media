@@ -305,6 +305,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void setBoughtDate(String boughtDate) {
+
+    }
+
+    @Override
     public void showReplacementView(List<String> reasons) {
 
     }
