@@ -33,7 +33,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     fun getHeader(): HeaderUnify = thank_header
 
     override fun getScreenName(): String {
-       sendScreenNameToIrisForMoenage()
+        sendScreenNameToIrisForMoenage()
         return SCREEN_NAME
     }
 
@@ -137,11 +137,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
+        gotoHomePage()
         thankYouPageAnalytics.get().sendBackPressedEvent()
-        if (!isOnBackPressOverride()) {
-            gotoHomePage()
-            finish()
-        }
+        finish()
     }
 
     private fun isOnBackPressOverride(): Boolean {
@@ -156,7 +154,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                     it.onBackPressed()
                 }
                 else -> {
-                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
+                    InAppReviewHelper.launchInAppReview(this, object : InAppReviewHelper.Callback {
                         override fun onCompleted() {
                             gotoHomePage()
                         }
@@ -173,9 +171,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         finish()
     }
 
-    private fun sendScreenNameToIrisForMoenage(){
+    private fun sendScreenNameToIrisForMoenage() {
         val values = HashMap<String, Any>()
-        values["screenName"]= IRIS_SCREEN_NAME_MO
+        values["screenName"] = IRIS_SCREEN_NAME_MO
         IrisAnalytics.getInstance(this).saveEvent(values)
     }
 
