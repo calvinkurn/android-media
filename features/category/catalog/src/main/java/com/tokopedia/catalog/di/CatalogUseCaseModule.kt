@@ -43,13 +43,13 @@ class CatalogUseCaseModule {
     @CatalogScope
     @Provides
     fun provideCategoryProductUseCase(context: Context, graphqlUseCase: GraphqlUseCase): CategoryProductUseCase {
-        return CategoryProductUseCase(context, graphqlUseCase)
+        return CategoryProductUseCase(graphqlUseCase)
     }
 
     @CatalogScope
     @Provides
     fun provideQuickFilterUseCase(context: Context): QuickFilterUseCase {
-        return QuickFilterUseCase(context)
+        return QuickFilterUseCase()
     }
 
     @CatalogScope
@@ -64,7 +64,7 @@ class CatalogUseCaseModule {
     @CatalogScope
     @Provides
     fun provideDynamicFilterUseCase(context: Context): DynamicFilterUseCase {
-        return DynamicFilterUseCase(context)
+        return DynamicFilterUseCase()
     }
 
     @CatalogScope
