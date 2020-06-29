@@ -167,7 +167,7 @@ class PlayBroadcastViewModel @Inject constructor(
 //            }
 //            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
             // TODO("remove mock")
-            delay(3000)
+            delay(1500)
             val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel()
 
             if (configUiModel.channelStatus == PlayChannelStatus.Unknown) createChannel()

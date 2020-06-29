@@ -67,12 +67,6 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
                 .map { Unit }
         if (uploadResult is NetworkResult.Success) validateCover()
         return uploadResult
-
-        //TODO("Remove Mock Code")
-//        delay(1000)
-//        val uploadResult = NetworkResult.Success(Unit)
-//        if (uploadResult is NetworkResult.Success) validateCover()
-//        return uploadResult
     }
 
     override fun setSelectedProducts(selectedProducts: List<ProductData>) {
