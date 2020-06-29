@@ -10,7 +10,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:elevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -60,7 +59,7 @@
 
             <com.tokopedia.globalerror.GlobalError
                 android:id="@+id/globalErrorStc"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:visibility="gone"
