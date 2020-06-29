@@ -148,6 +148,9 @@ class VariantDetailFieldsViewHolder(itemView: View?,
             if (variantDetailInputLayoutModel.isSkuFieldVisible) skuField?.show()
             else skuField?.hide()
 
+            // enable / disable priceField
+            priceField?.textFieldInput?.isEnabled = variantDetailInputLayoutModel.priceEditEnabled
+
             // flag to prevent exception from
             isRendered = true
         }

@@ -118,6 +118,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         observeSelectedVariantSize()
         observeInputStatus()
+        observeHasWholesale()
     }
 
     override fun onHeaderClicked(adapterPosition: Int) {
@@ -175,6 +176,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 val selectedUnitValues = selectedVariant?.options
                 selectedUnitValues?.run { setupVariantDetailFields(selectedUnitValues) }
             }
+        })
+    }
+
+    private fun observeHasWholesale() {
+        viewModel.hasWholesale.observe(this, Observer {
+            variantDetailFieldsAdapter?.updatePriceEditingStatus(viewModel.getAvailableFields(), !it)
         })
     }
 

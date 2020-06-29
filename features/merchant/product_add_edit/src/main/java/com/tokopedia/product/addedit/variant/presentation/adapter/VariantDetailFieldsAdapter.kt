@@ -51,6 +51,14 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         }
     }
 
+    fun updatePriceEditingStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isEnabled: Boolean) {
+        variantDetailFieldMapLayout.forEach { (adapterPosition, variantDetailInputModel) ->
+            variantDetailInputModel.priceEditEnabled = isEnabled
+            val variantDetailFieldsViewModel = VariantDetailFieldsViewModel(variantDetailInputModel)
+            notifyElement(adapterPosition, variantDetailFieldsViewModel)
+        }
+    }
+
     private fun notifyElement(adapterPosition: Int, element: Visitable<*>) {
         visitables[adapterPosition] = element
         notifyItemChanged(adapterPosition)

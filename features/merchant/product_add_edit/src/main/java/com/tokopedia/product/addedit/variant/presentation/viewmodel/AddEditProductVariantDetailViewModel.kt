@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -31,6 +32,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 value = this.variantInputModel.selections.size
             }
         }
+    }
+
+    val hasWholesale = Transformations.map(productInputModel) {
+        it.detailInputModel.wholesaleList.isNotEmpty()
     }
 
     private val mErrorCounter = MutableLiveData(0)
