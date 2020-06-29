@@ -1,13 +1,13 @@
-package com.tokopedia.talk.feature.reply.data.model.createcomment
+package com.tokopedia.talk.common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class TalkCreateNewCommentResultData(
+data class TalkMutationData(
         @SerializedName("isSuccess")
         @Expose
         val isSuccess: Int = 0,
-        @SerializedName("commentId")
+        @SerializedName("talkID")
         @Expose
-        val commentId: Int = 0
+        val talkId: Int = 0
 )

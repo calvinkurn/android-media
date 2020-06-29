@@ -1,20 +1,20 @@
-package com.tokopedia.talk.feature.reply.data.model.delete.talk
+package com.tokopedia.talk.feature.write.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.talk.common.data.TalkMutationData
 
-data class TalkDeleteTalk(
+data class TalkCreateNewTalk(
         @SerializedName("status")
         @Expose
         val status: String = "",
         @SerializedName("messageError")
         @Expose
-        val messageError: List<String> = listOf(),
+        val messageError: List<String> = emptyList(),
         @SerializedName("data")
         @Expose
-        val data: TalkMutationData = TalkMutationData(),
+        val talkMutationData: TalkMutationData = TalkMutationData(),
         @SerializedName("messageErrorOriginal")
         @Expose
-        val originalErrorMessage: List<String> = listOf()
+        val messageErrorOriginal: List<String> = emptyList()
 )

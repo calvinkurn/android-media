@@ -6,6 +6,9 @@ import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDa
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.data.model.TalkGoToWrite
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
+import com.tokopedia.talk.util.verifyErrorEquals
+import com.tokopedia.talk.util.verifySuccessEquals
+import com.tokopedia.talk.util.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

@@ -317,12 +317,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showPageError() {
         pageError.visibility = View.VISIBLE
-        pageError.readingConnectionErrorRetryButton.setOnClickListener {
+        pageError.talkConnectionErrorRetryButton.setOnClickListener {
             showPageLoading()
             hidePageError()
             getDiscussionData()
         }
-        pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
+        pageError.talkConnectionErrorGoToSettingsButton.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
         }
     }

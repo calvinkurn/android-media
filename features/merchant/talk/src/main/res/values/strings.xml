@@ -142,5 +142,6 @@
     <string name="write_category_title">Pilih kategori</string>
     <string name="write_question_title">Tulis pertanyaan</string>
     <string name="write_question_placeholder">Pertanyaan</string>
+    <string name="write_question_error_message">Oops, sudah melebihi maks. karakter.</string>
 
 </resources>

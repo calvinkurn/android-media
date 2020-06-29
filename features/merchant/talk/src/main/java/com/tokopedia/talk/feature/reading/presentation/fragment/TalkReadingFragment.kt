@@ -30,7 +30,6 @@ import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
-import com.tokopedia.talk.common.constants.TalkConstants.READING_SOURCE
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.*
@@ -47,7 +46,6 @@ import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBot
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk.feature.write.presentation.activity.TalkWriteActivity
 import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -292,10 +290,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun showPageError() {
         addFloatingActionButton.hide()
         pageError.show()
-        pageError.readingConnectionErrorRetryButton.setOnClickListener {
+        pageError.talkConnectionErrorRetryButton.setOnClickListener {
             getHeaderData()
         }
-        pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
+        pageError.talkConnectionErrorGoToSettingsButton.setOnClickListener {
             RouteManager.route(context, GENERAL_SETTING)
         }
     }
