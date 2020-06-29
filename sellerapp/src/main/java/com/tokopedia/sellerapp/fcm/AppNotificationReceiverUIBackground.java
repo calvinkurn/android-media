@@ -43,7 +43,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         super(application);
         remoteConfig = new FirebaseRemoteConfigImpl(application);
         //Hack reflection error don't remove it if reflection is already delete
-        receiver = new AppNotificationReceiver();
+        receiver = new AppNotificationReceiver(new UserSession(application));
     }
 
     public void prepareAndExecuteDedicatedNotification(Bundle data) {
