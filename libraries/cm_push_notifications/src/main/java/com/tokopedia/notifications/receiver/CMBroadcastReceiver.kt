@@ -274,7 +274,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         intent.getParcelableExtra<ActionButton?>(ACTION_BUTTON_EXTRA)?.apply {
             pdActions?.let {
                 if (it.type == ATC || it.type == OCC) {
-                    RouteManager.route(context, it.genericLink)
+                    RouteManager.route(context, this.appLink)
                 } else {
                     handleShareActionButtonClick(context, it, notificationData)
                 }
