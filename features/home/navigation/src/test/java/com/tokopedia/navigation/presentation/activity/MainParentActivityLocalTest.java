@@ -10,7 +10,6 @@ import com.tokopedia.DeepLinkActivity;
 import com.tokopedia.ShadowBottomNavigationView;
 import com.tokopedia.ShadowLocalBroadcastManager;
 import com.tokopedia.ShadowTaskStackBuilder;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.home.HomeApp;
@@ -144,7 +143,6 @@ public class MainParentActivityLocalTest {
         // tap all navigation view
         MenuItem menuItem = mock(MenuItem.class);
         doReturn(R.id.menu_feed).when(menuItem).getItemId();
-        mActivityController.get().onNavigationItemSelected(menuItem);
 
         BottomNavigation bottomNavigation = mActivityController.get().findViewById(R.id.bottomnav);
         MenuItem selectedMenuItem = ((ShadowBottomNavigationView) shadowOf(bottomNavigation)).getSelectedMenuItem();
