@@ -36,15 +36,17 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
+import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
@@ -156,10 +158,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         PersistentCacheManager.init(this);
 
-        LogManager.init(this);
-        if (LogManager.instance != null) {
-            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
-        }
         TimberWrapper.init(this);
         super.onCreate();
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
@@ -170,6 +168,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initializeAbTestVariant();
 
         initAppNotificationReceiver();
+        registerActivityLifecycleCallbacks();
         initBlockCanary();
     }
 
@@ -200,6 +199,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     public void initBlockCanary(){
         BlockCanary.install(context, new BlockCanaryContext()).start();
+    }
+
+    private void registerActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
     }
 
     @Override
@@ -259,9 +264,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return DeepLinkActivity.class;
     }
 
-
-    @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return null;
-    }
 }

@@ -239,4 +239,9 @@ public class AutoCompleteActivity extends BaseActivity
     public void setSearchQuery(@NotNull String keyword) {
         searchBarView.setQuery(keyword, false, true);
     }
+
+    @Override
+    public void setIsTyping(boolean isTyping) {
+        suggestionFragment.setIsTyping(isTyping);
+    }
 }

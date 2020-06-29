@@ -1,10 +1,12 @@
 package com.tokopedia.hotel.booking.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.di.DaggerHotelBookingComponent
@@ -34,14 +36,15 @@ class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingCompo
     override fun shouldShowOptionMenu(): Boolean = false
 
     override fun onBackPressed() {
-        val dialog = Dialog(this, Dialog.Type.PROMINANCE)
+        val dialog = DialogUnify(this as AppCompatActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.hotel_booking_back_dialog_title))
-        dialog.setDesc(getString(R.string.hotel_booking_back_dialog_desc))
-        dialog.setBtnCancel(getString(R.string.hotel_booking_back_dialog_no))
-        dialog.setBtnOk(getString(R.string.hotel_booking_back_dialog_yes))
-
-        dialog.setOnOkClickListener { dialog.dismiss() }
-        dialog.setOnCancelClickListener {
+        dialog.setDescription(getString(R.string.hotel_booking_back_dialog_desc))
+        dialog.setPrimaryCTAText(getString(R.string.hotel_booking_back_dialog_yes))
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog.setSecondaryCTAText(getString(R.string.hotel_booking_back_dialog_no))
+        dialog.setSecondaryCTAClickListener {
             dialog.dismiss()
             super.onBackPressed()
         }

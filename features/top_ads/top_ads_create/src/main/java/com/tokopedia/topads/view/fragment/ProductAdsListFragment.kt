@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.ResponseEtalase
@@ -33,6 +34,9 @@ import javax.inject.Inject
 /**
  * Author errysuprayogi on 29,October,2019
  */
+
+private const val CLICK_TIPS_PRODUCT_IKLAN = "click-tips memilih produk"
+private const val CLICK_PRODUCT_IKLAN = "click-pilih produk"
 class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var sortProductList: ProductSortSheetList
@@ -70,6 +74,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun gotoNextPage() {
         stepperListener?.goToNextPage(stepperModel)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PRODUCT_IKLAN, getSelectedProduct().joinToString(","))
     }
 
     private fun getSelectedProduct(): MutableList<Int> {
@@ -112,6 +117,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         tip_btn.setOnClickListener {
             InfoSheetProductList.newInstance(it.context).show()
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN, "")
         }
         btn_sort.setOnClickListener {
             sortProductList.show()

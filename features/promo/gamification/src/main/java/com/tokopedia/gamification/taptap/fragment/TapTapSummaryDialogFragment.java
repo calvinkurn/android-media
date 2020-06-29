@@ -50,7 +50,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TapTapCustomDialog);
+        setStyle(DialogFragment.STYLE_NO_TITLE, com.tokopedia.gamification.R.style.TapTapCustomDialog);
     }
 
     @Nullable
@@ -59,7 +59,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
         if (getDialog() != null && getDialog().getWindow() != null)
             getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        View view = inflater.inflate(R.layout.gf_popup_summary_page, container, false);
+        View view = inflater.inflate(com.tokopedia.gamification.R.layout.gf_popup_summary_page, container, false);
         widgetSummaryTapTap = view.findViewById(R.id.widget_summary_tap_tap);
         widgetSummaryTapTap.setInteractionListener(this);
         gamificationDatabaseWrapper = new GamificationDatabaseWrapper(getContext().getApplicationContext());

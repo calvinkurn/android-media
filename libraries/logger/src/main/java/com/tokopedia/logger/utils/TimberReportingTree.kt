@@ -14,6 +14,7 @@ import java.util.*
 class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
 
     var userId: String = ""
+    var partDeviceId: String = ""
     var versionName: String = ""
     var versionCode: Int = 0
     var tagMaps: HashMap<String, Tag> = hashMapOf()
@@ -37,6 +38,12 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         }
     }
 
+    fun setQueryLimits(queryLimit: List<Int>?) {
+        if (queryLimit != null) {
+            LogManager.queryLimits = queryLimit
+        }
+    }
+
     override fun log(logPriority: Int, tag: String?, message: String, t: Throwable?) {
         val timeStamp = System.currentTimeMillis()
         if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
@@ -45,18 +52,16 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         if (!message.startsWith(PREFIX) || tags.isEmpty()) {
             return
         }
-        val messageSplit = message.split("#".toRegex()).dropLastWhile { it.isEmpty() }
+        val messageSplit = message.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
         if (messageSplit.size < SIZE_MESSAGE) {
             return
         }
-        val messageKey = StringBuilder().append(messageSplit[0])
-            .append("#")
-            .append(messageSplit[1])
-            .toString()
+        val messageKey = messageSplit[0].plus(DELIMITER).plus(messageSplit[1])
+        val messageToBeSend = message.substringAfter(messageKey.plus(DELIMITER))
         tagMaps[messageKey]?.let {
             val priority = it.postPriority
             val classLine = tag ?: ""
-            val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageSplit[2]))
+            val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageToBeSend))
             LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
         }
     }
@@ -78,31 +83,34 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         val stringBuilder = StringBuilder()
         stringBuilder.append("tag=")
             .append(tag)
-            .append("#")
+            .append(DELIMITER)
         stringBuilder.append("timestamp=")
             .append(timeStamp)
-            .append("#")
+            .append(DELIMITER)
         stringBuilder.append("time=")
             .append("'${getReadableTimeStamp(timeStamp)}'")
-            .append("#")
+            .append(DELIMITER)
+        stringBuilder.append("did=")
+            .append(partDeviceId)
+            .append(DELIMITER)
         stringBuilder.append("uid=")
             .append(userId)
-            .append("#")
+            .append(DELIMITER)
         stringBuilder.append("vernm=")
             .append(versionName)
-            .append("#")
+            .append(DELIMITER)
         stringBuilder.append("vercd=")
             .append(versionCode)
-            .append("#")
+            .append(DELIMITER)
         stringBuilder.append("os=")
             .append(Build.VERSION.RELEASE)
-            .append("#")
+            .append(DELIMITER)
         stringBuilder.append("device=")
             .append("'${Build.MODEL}'")
-            .append("#")
+            .append(DELIMITER)
         stringBuilder.append("cls=")
             .append("'${classLine}'")
-            .append("#")
+            .append(DELIMITER)
         stringBuilder.append("msg=")
             .append(message)
         return stringBuilder.toString()
@@ -116,7 +124,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     private fun replaceNewline(message: String): String {
-        return message.replace("\n", " ")
+        return message.trim().replace("\\s+".toRegex(), " ")
     }
 
     private fun populateTagMaps(tags: List<String>?) {
@@ -124,7 +132,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             return
         }
         for (tag in tags) {
-            val tagSplit = tag.split("#".toRegex()).dropLastWhile { it.isEmpty() }
+            val tagSplit = tag.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
             if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {
                 continue
             }
@@ -133,7 +141,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
                 if (randomNumber <= it) {
                     val tagKey = StringBuilder()
                         .append(tagSplit[0])
-                        .append("#")
+                        .append(DELIMITER)
                         .append(tagSplit[1])
                         .toString()
                     tagMaps[tagKey] = Tag(getPriority(tagSplit[3]))
@@ -143,6 +151,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     companion object {
+        const val DELIMITER = "#"
         const val MAX_RANDOM_NUMBER = 100
 
         const val SIZE_MESSAGE = 3

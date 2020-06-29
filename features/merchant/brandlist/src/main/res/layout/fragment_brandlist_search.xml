@@ -50,13 +50,19 @@
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_brandlist_search"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintTop_toBottomOf="@id/appbarLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@color/white" />
+            <com.tokopedia.brandlist.common.widget.StickySingleHeaderView
+                android:id="@+id/stickySingleHeaderView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/appbarLayout">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_brandlist_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
+
+            </com.tokopedia.brandlist.common.widget.StickySingleHeaderView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

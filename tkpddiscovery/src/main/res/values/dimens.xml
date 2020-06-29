@@ -3,7 +3,6 @@
     <dimen name="search_parent_item_card_margin">8dp</dimen>
     <dimen name="search_icon_padding">16dp</dimen>
     <dimen name="search_view_text_padding">25dp</dimen>
-    <dimen name="toolbar_height">48dp</dimen>
     <dimen name="dynamic_filter_item_padding">16dp</dimen>
     <dimen name="dynamic_filter_item_separator_height">16dp</dimen>
     <dimen name="color_item_icon_size">40dp</dimen>

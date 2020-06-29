@@ -1,13 +1,14 @@
 package com.tokopedia.notifications.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import android.os.Parcel
-import android.os.Parcelable
-import com.tokopedia.notifications.database.convertors.NotificationModeConverter
-import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
+import com.tokopedia.notifications.data.converters.NotificationModeConverter
+import com.tokopedia.notifications.data.converters.NotificationStatusConverter
+import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import org.json.JSONObject
 
 /**
@@ -135,9 +136,17 @@ data class BaseNotificationModel(
         var shopId: String? = null,
 
         @ColumnInfo(name = "notifcenterBlastId")
-        var blastId: String? = null
+        var blastId: String? = null,
+
+        @ColumnInfo(name = "webhook_params")
+        var webHookParam: String? = null
 
 ) : Parcelable {
+
+    fun webHookParamData(): String? {
+        return webHookToJson(this.webHookParam)
+    }
+
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readLong(),
@@ -173,6 +182,7 @@ data class BaseNotificationModel(
             parcel.readLong(),
             NotificationModeConverter.instances.toMode(parcel.readInt()),
             parcel.readByte() != 0.toByte(),
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -218,6 +228,7 @@ data class BaseNotificationModel(
         parcel.writeString(userId)
         parcel.writeString(shopId)
         parcel.writeString(blastId)
+        parcel.writeString(webHookParam)
     }
 
     override fun describeContents(): Int {

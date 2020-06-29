@@ -6,6 +6,7 @@ package com.tokopedia.analyticsdebugger.debugger
 interface AnalyticsLogger {
 
     val isNotificationEnabled: Boolean
+
     fun save(name: String, data: Map<String, Any>)
 
     fun saveError(errorData: String)
@@ -13,7 +14,10 @@ interface AnalyticsLogger {
     fun wipe()
 
     fun openActivity()
+
     fun openErrorActivity()
+
+    fun navigateToValidator()
 
     fun enableNotification(status: Boolean)
 }

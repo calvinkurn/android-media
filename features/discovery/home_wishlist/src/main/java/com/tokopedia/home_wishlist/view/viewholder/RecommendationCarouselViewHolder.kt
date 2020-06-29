@@ -23,7 +23,6 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recommendationCarouselProductCardView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.recommendationCarouselProductCardView) }
     private val disabledView: View by lazy { view.findViewById<View>(R.id.disabled_view) }
-
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener) {
         title.text = element.title
         disabledView.visibility = if(element.isOnBulkRemoveProgress) View.VISIBLE else View.GONE
@@ -42,7 +41,7 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
                         val element = dataModel.list.getOrNull(carouselProductCardPosition) ?: return
 
                         if(element.recommendationItem.isTopAds){
-                            ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
+                            ImpresionTask(className).execute(element.recommendationItem.trackerImageUrl)
                         }
 
                         (listener as WishlistListener).onProductImpression(element, carouselProductCardPosition)
@@ -58,7 +57,7 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
 
                         (listener as WishlistListener).onProductClick(element, element.parentPosition, carouselProductCardPosition)
                         if (element.recommendationItem.isTopAds) {
-                            ImpresionTask().execute(element.recommendationItem.clickUrl)
+                            ImpresionTask(className).execute(element.recommendationItem.clickUrl)
                         }
                     }
                 }
@@ -107,5 +106,6 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
 
     companion object{
         val LAYOUT = R.layout.layout_recommendation_carousel
+        private const val className: String = "com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselItemViewHolder"
     }
 }

@@ -60,7 +60,6 @@
     <string name="press_to_see_similar">Tekan dan tahan produk pilihan Anda untuk melihat produk serupa.</string>
     <string name="similar_product_not_found">Hasil produk serupa tidak dapat ditemukan. Silahkan pilih produk lain.</string>
     <string name="title_product_not_found">Produk serupa tidak ditemukan</string>
-    <string name="empty_state_selected_filter_price_name">Filter Harga</string>
     <string name="related_search_title">Mungkin maksud Anda :</string>
     <string name="label_following_shop">Following</string>
     <string name="label_follow_shop">Follow</string>
@@ -77,25 +76,12 @@
     <string name="description_page_title">Deskripsi Produk</string>
     <string name="search_cancel_text">Cancel</string>
 
-    <string name="category_nav_catalog_count">%s Katalog</string>
-
-    <string name="category_nav_product_no_data_title">Oops, Produk Nggak Ditemukan</string>
-    <string name="category_nav_product_no_data_description">Coba kurangi salah satu filter yang kamu gunakan :</string>
-    <string name="category_nav_catalog_no_data_title">Oops, Katalog Nggak Ditemukan</string>
-    <string name="category_nav_catalog_no_data_description">Tapi kamu mungkin bisa coba rekomendasi di bawah ini</string>
 
 
     <string name="catalog_marketprice">Harga Pasar</string>
     <string name="catalog_complete_specifications">Spesifikasi lengkap</string>
     <string name="bullet_string">• %1$s</string>
     <string name="catalog_description">Deskripsi</string>
-    <string name="banned_fragment_buka_browser">Buka Browser</string>
-    <string name="category_server_error_header">There is some error on server</string>
-    <string name="category_try_again">try again</string>
-    <string name="find_nav_banned_product">Produk dibatasi di Android</string>
-    <string name="find_nav_read_more">Baca Selengkapnya</string>
-    <string name="find_related_search">Pencarian Terkait</string>
-    <string name="title_tokopedia">Tokopedia</string>
-    <string name="find_data_updated_text">Data diperbaharui pada %s</string>
-    <string name="find_price_header_text">Daftar harga %s terbaru %s</string>
+    <string name="tkpd_discovery_message_share_catalog">Klik link ini untuk menemukan catalog dari Tokopedia. </string>
+    <string name="tkpd_discovery_share_text_content">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia, Klik </string>
 </resources>

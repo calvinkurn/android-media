@@ -3,7 +3,7 @@ package com.tokopedia.flight.dashboard.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClassViewModelMapper;
+import com.tokopedia.flight.dashboard.view.fragment.model.mapper.FlightClassModelMapper;
 
 import java.util.List;
 
@@ -18,11 +18,11 @@ import rx.Subscriber;
 public class FlightClassesPresenter extends BaseDaggerPresenter<FlightClassesContract.View> implements FlightClassesContract.Presenter {
 
     private GetFlightClassesUseCase getFlightClassesUseCase;
-    private FlightClassViewModelMapper flightClassViewModelMapper;
+    private FlightClassModelMapper flightClassViewModelMapper;
 
     @Inject
     public FlightClassesPresenter(GetFlightClassesUseCase getFlightClassesUseCase,
-                                  FlightClassViewModelMapper flightClassViewModelMapper) {
+                                  FlightClassModelMapper flightClassViewModelMapper) {
         this.getFlightClassesUseCase = getFlightClassesUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
     }

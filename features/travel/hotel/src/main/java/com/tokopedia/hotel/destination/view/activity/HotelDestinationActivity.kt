@@ -5,13 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.destination.di.DaggerHotelDestinationComponent
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
+import com.tokopedia.hotel.destination.view.widget.HotelSearchInputView
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
 import kotlinx.coroutines.*
 
@@ -19,8 +19,7 @@ import kotlinx.coroutines.*
  * @author by jessica on 25/03/19
  */
 
-class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
-        SearchInputView.ResetListener {
+class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, HotelSearchInputView.ActionListener {
 
     var isSearching: Boolean = false
 
@@ -54,10 +53,8 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     }
 
     private fun initEditText() {
-        search_input_view.searchImageView.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_search_grayscale_24))
-        search_input_view.closeImageButton.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16))
-        search_input_view.setListener(this)
-        search_input_view.setResetListener(this)
+        search_input_view.actionListener = this
+        search_input_view.buildView()
     }
 
     fun initInjector() {
@@ -71,10 +68,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     private fun backToHotelRecommendation() {
         if (supportFragmentManager.backStackEntryCount > 0) supportFragmentManager.popBackStack()
-    }
-
-    override fun onSearchSubmitted(text: String?) {
-        //ViewModel search Hotel based on Query
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -108,10 +101,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
             (supportFragmentManager.findFragmentById(R.id.parent_view) as HotelSearchDestinationFragment).onSearchQueryChange(text)
     }
 
-    override fun onSearchReset() {
-        //delete search query
-    }
-
     override fun onBackPressed() {
         finish()
         overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay,
@@ -123,8 +112,8 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         const val DEFAULT_DELAY_MS = 500
         const val DEFAULT_MIN_CHARACTER = 2
 
-        const val HOTEL_DESTINATION_ID = "destinationID"
         const val HOTEL_DESTINATION_NAME = "name"
+        const val HOTEL_DESTINATION_ID = "id"
         const val HOTEL_DESTINATION_TYPE = "type"
         const val HOTEL_CURRENT_LOCATION_LANG = "lang"
         const val HOTEL_CURRENT_LOCATION_LAT = "lat"

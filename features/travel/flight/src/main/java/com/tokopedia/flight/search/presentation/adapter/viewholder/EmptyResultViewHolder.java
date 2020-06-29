@@ -8,13 +8,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.search.presentation.model.EmptyResultViewModel;
+import com.tokopedia.flight.search.presentation.model.EmptyResultModel;
 
 /**
  * @author kulomady on 1/24/17.
  */
 
-public class EmptyResultViewHolder extends AbstractViewHolder<EmptyResultViewModel> {
+public class EmptyResultViewHolder extends AbstractViewHolder<EmptyResultModel> {
 
     @LayoutRes
     public static final int LAYOUT = com.tokopedia.baselist.R.layout.item_empty_list;
@@ -45,7 +45,7 @@ public class EmptyResultViewHolder extends AbstractViewHolder<EmptyResultViewMod
     }
 
     @Override
-    public void bind(EmptyResultViewModel element) {
+    public void bind(EmptyResultModel element) {
         if (element.getIconRes() != 0) {
             emptyIconImageView.setImageResource(element.getIconRes());
         }

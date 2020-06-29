@@ -17,8 +17,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.uri.DeeplinkUtils.getDataUri
+import com.tokopedia.utils.uri.DeeplinkUtils.getExtraReferrer
+import com.tokopedia.utils.uri.DeeplinkUtils.getReferrerCompatible
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
+import timber.log.Timber
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -91,12 +95,26 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        if (::url.isInitialized) {
+            return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        } else {
+            this.finish()
+            return Fragment()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        if (PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1) {
+        reloadWebViewIfNeeded()
+    }
+
+    private fun reloadWebViewIfNeeded(){
+        val needReload = try {
+            PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1
+        } catch (e:Exception) {
+            false
+        }
+        if (needReload) {
             PersistentCacheManager.instance.put(KEY_CACHE_RELOAD_WEBVIEW, 0)
             val f: Fragment? = fragment
             if (f is BaseSessionWebViewFragment) {

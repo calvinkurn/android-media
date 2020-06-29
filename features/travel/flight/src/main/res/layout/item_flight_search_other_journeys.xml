@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl1"
+    android:background="@drawable/bg_flight_search_blue_gradient"
+    android:padding="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightSearchSeeAllJourneyTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/flight_search_see_other_journey_title"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        tools:text="Mau cek penerbangan pulang lainnya?" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightSearchSeeAllJourneyDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center"
+        android:text="@string/flight_search_see_other_journey_description"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightSearchSeeAllJourneyTitle"
+        app:typographyType="body_2"
+        tools:text="Kalau pilih penerbangan di luar paket Best Pairing, harga tiket berangkatmu akan berubah jadi Rp6.000.000." />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnFlightSearchSeeAllJourney"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="@string/flight_search_see_other_journey_button"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightSearchSeeAllJourneyDescription"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

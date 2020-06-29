@@ -12,7 +12,7 @@ import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReviewFragment;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 
 import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReviewFragment.EXTRA_CANCEL_JOURNEY;
@@ -21,7 +21,7 @@ import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellation
 public class FlightCancellationReviewActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
 
     public static Intent createIntent(Context context, String invoiceId,
-                                      FlightCancellationWrapperViewModel flightCancellationPassData) {
+                                      FlightCancellationWrapperModel flightCancellationPassData) {
         Intent intent = new Intent(context, FlightCancellationReviewActivity.class);
         intent.putExtra(EXTRA_INVOICE_ID, invoiceId);
         intent.putExtra(EXTRA_CANCEL_JOURNEY, flightCancellationPassData);
@@ -54,7 +54,7 @@ public class FlightCancellationReviewActivity extends BaseFlightActivity impleme
 
     @Override
     protected Fragment getNewFragment() {
-        FlightCancellationWrapperViewModel flightCancellationJourneyList = getIntent().getExtras()
+        FlightCancellationWrapperModel flightCancellationJourneyList = getIntent().getExtras()
                 .getParcelable(EXTRA_CANCEL_JOURNEY);
         return FlightCancellationReviewFragment.createInstance(
                 getIntent().getExtras().getString(EXTRA_INVOICE_ID),

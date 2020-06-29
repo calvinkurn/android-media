@@ -54,7 +54,7 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                 listener,
                 listener.eggListener,
                 this,
-                listener.childFragmentManager,
+                listener.childsFragmentManager,
                 recommendationTabDataModelList,
                 listener.parentPool)
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_apps"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -45,6 +45,7 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/flight_search_list_background"
                 android:clipToPadding="false"
                 android:fitsSystemWindows="true" />
         </LinearLayout>

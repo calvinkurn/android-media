@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_event_pdp_facilities"
+    android:orientation="horizontal"
+    android:padding="@dimen/spacing_lvl3"
+    android:layout_marginRight="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_event_pdp_facilities"
+        android:layout_width="@dimen/spacing_lvl4"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:src="@drawable/ic_add_photo" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_event_pdp_facilitites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="AC" />
+
+</LinearLayout>

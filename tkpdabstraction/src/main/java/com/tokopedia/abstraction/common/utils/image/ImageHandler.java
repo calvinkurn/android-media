@@ -460,19 +460,6 @@ public class ImageHandler {
                 .into(imageView);
     }
 
-    public static void loadImageFitTransformation(Context context, ImageView imageView, String url,
-                                                  BitmapTransformation transformation) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .centerCrop()
-                .transform(transformation)
-                .into(imageView);
-    }
-
     public static void loadImageFitCenter(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)
@@ -580,28 +567,6 @@ public class ImageHandler {
                 .load(url)
                 .placeholder(drawable)
                 .into(imageView);
-    }
-
-    public static void loadRoundedImage(
-            ImageView imageView,
-            String imageUrl,
-            float cornerRadius,
-            int imgPlaceHolderRes,
-            int errorImageRes
-    ) {
-        RequestBuilder<Bitmap> glideBuilder = Glide.with(imageView.getContext())
-                .asBitmap()
-                .load(imageUrl)
-                .dontAnimate()
-                .error(errorImageRes < 0 ? R.drawable.error_drawable : errorImageRes)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.DATA);
-
-        if (imgPlaceHolderRes >= 0) {
-            glideBuilder = glideBuilder.placeholder(imgPlaceHolderRes);
-        }
-
-        glideBuilder.into(getRoundedImageViewTarget(imageView, cornerRadius));
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {

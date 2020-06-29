@@ -21,7 +21,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
 
     fun eventOpenScreen(isLoginStatus: Boolean, categoryName: String, categoryId: String) {
         val stringScreenName = StringBuilder(RECHARGE_SCREEN_NAME)
-        stringScreenName.append(categoryName)
+        stringScreenName.append(categoryName.toLowerCase())
 
         val mapOpenScreen = HashMap<String, String>()
         mapOpenScreen[EVENT_NAME] = OPEN_SCREEN_EVENT

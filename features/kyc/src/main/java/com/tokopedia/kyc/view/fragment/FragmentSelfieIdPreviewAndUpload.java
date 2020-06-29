@@ -2,9 +2,6 @@ package com.tokopedia.kyc.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +9,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
@@ -26,6 +26,8 @@ import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
 import com.tokopedia.kyc.view.presenter.DocumentUploadPresenter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,21 +80,23 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
         KycUtil.createKYCIdCameraFragment(getContext(),
                 activityListener, getSefieIdImageAction(),
                 Constants.Keys.KYC_SELFIEID_CAMERA, false);
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_OK_STP3);
     }
 
     private void executeUseImg(){
         makeSelfieUploadRequest();
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_GNKN_STP3);
     }
 
@@ -101,22 +105,24 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
                 activityListener,
                 getSefieIdImageAction(),
                 Constants.Keys.KYC_SELFIEID_CAMERA, false);
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_OK_ULN_STP3);
     }
 
     private void executeBtnOk(){
         makeSelfieUploadRequest();
         if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_OK_STP3);
     }
 
@@ -196,11 +202,12 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
                     }
                 }
                 KycUtil.setCameraCapturedImage(imagePath, flipSelfieIdImg, selfieidImg);
+                UserSessionInterface userSession = new UserSession(getContext());
                 AnalyticsUtil.sendEvent(getContext(),
                         AnalyticsUtil.EventName.CLICK_OVO,
                         AnalyticsUtil.EventCategory.OVO_KYC,
                         "",
-                        ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                        userSession.getUserId(),
                         AnalyticsUtil.EventAction.CLK_CPTR_PIC_STP3);
             }
 
