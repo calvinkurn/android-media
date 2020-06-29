@@ -20,7 +20,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.Utils
 import com.tokopedia.analyticsdebugger.validator.core.*
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
@@ -31,8 +30,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Observable
-import rx.schedulers.Schedulers
 
 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
@@ -47,7 +44,7 @@ internal class SearchProductTrackingTest {
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
-    private val gtmLogDBSource: GtmLogDBSource by lazy { GtmLogDBSource(context) }
+    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setUp() {
@@ -83,7 +80,10 @@ internal class SearchProductTrackingTest {
     @Test
     fun testTracking() {
         performUserJourney()
-        assertTracking()
+
+        assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME) {
+            it.assertEvent()
+        }
     }
 
     private fun performUserJourney() {
@@ -116,35 +116,6 @@ internal class SearchProductTrackingTest {
 
     private fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
         return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
-    }
-
-    private fun assertTracking() {
-        val testCases = getTestCases()
-        val engine = ValidatorEngine(gtmLogDBSource)
-
-        engine.compute(testCases).test {
-            it.assertEvent()
-        }
-    }
-
-    private fun getTestCases(): List<Validator> {
-        val searchProductAnalyticValidator =
-                Utils.getJsonDataFromAsset(context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
-                        ?: throw AssertionError("Validator Query not found")
-
-        return searchProductAnalyticValidator.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
-    }
-
-    private fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
-        return this["query"] as List<Map<String, Any>>
-    }
-
-    private fun <T> Observable<T>.test(onNext: (T) -> Unit) {
-        this.observeOn(Schedulers.immediate()).subscribeOn(Schedulers.immediate()).subscribe(onNext)
-    }
-
-    private fun List<Validator>.assertEvent() {
-        forEach { it.assertEvent() }
     }
 
     private fun Validator.assertEvent() {

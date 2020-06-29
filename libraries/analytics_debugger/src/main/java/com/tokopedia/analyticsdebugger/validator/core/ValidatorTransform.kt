@@ -6,20 +6,20 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.validator.Utils
 
-typealias JsonMap = Map<String, Any>
+internal typealias JsonMap = Map<String, Any>
 
-fun JsonMap.toDefaultValidator() = Validator(
+internal fun JsonMap.toDefaultValidator() = Validator(
         Utils.getAnalyticsName(this),
         this
 )
 
-fun JsonMap.toJson(): String =
+internal fun JsonMap.toJson(): String =
         GsonBuilder()
                 .setPrettyPrinting()
                 .create()
                 .toJson(this)
 
-fun String.toJsonMap(): JsonMap {
+internal fun String.toJsonMap(): JsonMap {
     val jsonType = object : TypeToken<Map<String, Any>>() {}.type
     return Gson().fromJson(this, jsonType)
 }
