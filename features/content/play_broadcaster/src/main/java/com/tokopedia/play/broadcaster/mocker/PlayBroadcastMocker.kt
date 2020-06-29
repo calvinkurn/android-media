@@ -146,9 +146,10 @@ object PlayBroadcastMocker {
             id = "1234",
             title = "Klarififikasi Bisa Tebak Siapa?",
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
-            slug = "Share",
             imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-            redirectUrl = "https://www.tokopedia.com/play/channels/1234"
+            redirectUrl = "https://www.tokopedia.com/play/channels/1234",
+            textContent = "\"test meyta staging status 0\"\nYuk, nonton siaran dari  di Tokopedia PLAY! Bakal seru banget lho!\n${'$'}{url}",
+            shortenUrl = true
     )
 
     fun getMetricSummary(): List<TrafficMetricUiModel> = listOf(

@@ -30,7 +30,9 @@ data class GetChannelResponse(
             @SerializedName("quickReplies")
             val quickReplies: List<QuickReply> = listOf(),
             @SerializedName("publicVouchers")
-            val publicVouchers: List<PublicVoucher> = listOf()
+            val publicVouchers: List<PublicVoucher> = listOf(),
+            @SerializedName("share")
+            val share: Share = Share()
     )
 
     data class ChannelBasic(
@@ -187,5 +189,18 @@ data class GetChannelResponse(
             val usedQuota: Int = 0,
             @SerializedName("TnC")
             val tnC: String = ""
+    )
+
+    data class Share(
+            @SerializedName("text")
+            val text: String = "",
+            @SerializedName("redirectURL")
+            val redirectURL: String = "",
+            @SerializedName("useShortURL")
+            val useShortURL: Boolean = false,
+            @SerializedName("metaTitle")
+            val metaTitle: String = "",
+            @SerializedName("metaDescription")
+            val metaDescription: String = ""
     )
 }

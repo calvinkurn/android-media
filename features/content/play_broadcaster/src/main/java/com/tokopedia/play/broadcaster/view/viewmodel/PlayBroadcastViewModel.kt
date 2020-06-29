@@ -84,7 +84,6 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
-    private val _observableCreateChannel = MutableLiveData<NetworkResult<String>>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
@@ -95,12 +94,9 @@ class PlayBroadcastViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-    private val _observableChannelId: LiveData<String> = MediatorLiveData<String>().apply {
+    private val _observableChannelId: MutableLiveData<String> = MediatorLiveData<String>().apply {
         addSource(_observableConfigInfo) {
             if (it is NetworkResult.Success) value = it.data.channelId
-        }
-        addSource(_observableCreateChannel) {
-            if (it is NetworkResult.Success) value = it.data
         }
         addSource(_observableChannelInfo) {
             if (it is NetworkResult.Success) value = it.data.channelId
@@ -142,7 +138,6 @@ class PlayBroadcastViewModel @Inject constructor(
 
         mockChatList()
         mockMetrics()
-        mockShareData()
     }
 
     override fun onCleared() {
@@ -167,7 +162,7 @@ class PlayBroadcastViewModel @Inject constructor(
 //            }
 //            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
             // TODO("remove mock")
-            delay(1500)
+            delay(1000)
             val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel()
 
             if (configUiModel.channelStatus == PlayChannelStatus.Unknown) createChannel()
@@ -178,7 +173,7 @@ class PlayBroadcastViewModel @Inject constructor(
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
 
         }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { getConfiguration() }
+            _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
         }
     }
 
@@ -195,7 +190,7 @@ class PlayBroadcastViewModel @Inject constructor(
             )
             return@withContext createChannelUseCase.executeOnBackground()
         }
-        _observableCreateChannel.value = NetworkResult.Success(channelId.id)
+        _observableChannelId.value = channelId.id
     }
 
     private suspend fun getChannel(channelId: String) {
@@ -206,7 +201,8 @@ class PlayBroadcastViewModel @Inject constructor(
                 return@withContext getChannelUseCase.executeOnBackground()
             }
             _observableChannelInfo.value = NetworkResult.Success(PlayBroadcastUiMapper.mapChannelInfo(channel))
-            _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
+//            _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
+            _observableShareInfo.value = PlayBroadcastMocker.getMockShare()
 
             //TODO("If channel data is not mocked from backend, uncomment this")
 //            setSelectedProduct(PlayBroadcastUiMapper.mapProductListToData(channel.productTags))
@@ -249,21 +245,24 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun startPushStream(ingestUrl: String) {
-        scope.launch {
-            if (ingestUrl.isNotEmpty() && allPermissionGranted()) {
-                startWebSocket()
-                updateChannelStatus(PlayChannelStatus.Live)
-                playPusher.startPush(ingestUrl)
-            }
+        if (ingestUrl.isEmpty() || !allPermissionGranted()) return
+        scope.launchCatchError(block = {
+            startWebSocket()
+            updateChannelStatus(PlayChannelStatus.Live)
+            playPusher.startPush(ingestUrl)
+
+        }) {
+
         }
     }
 
     fun resumePushStream() {
-        scope.launch {
-            if (!playPusher.isPushing() && allPermissionGranted()) {
-                updateChannelStatus(PlayChannelStatus.Live)
-                playPusher.resume()
-            }
+        if (playPusher.isPushing() || !allPermissionGranted()) return
+        scope.launchCatchError(block = {
+            updateChannelStatus(PlayChannelStatus.Live)
+            playPusher.resume()
+        }) {
+
         }
     }
 
@@ -351,13 +350,6 @@ class PlayBroadcastViewModel @Inject constructor(
                     PlayBroadcastMocker.getMockMetric()
                 )
             }
-        }
-    }
-
-    private fun mockShareData() {
-        scope.launch(dispatcher.io) {
-            delay(3000)
-            _observableShareInfo.postValue(PlayBroadcastMocker.getMockShare())
         }
     }
 }

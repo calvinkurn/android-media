@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastEditTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
@@ -156,7 +157,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                     btnStartLive.setLoading(false)
                 }
                 is NetworkResult.Fail -> {
-                    showToaster(it.error.localizedMessage, Toaster.TYPE_ERROR)
+                    requireView().showToaster(it.error.localizedMessage, Toaster.TYPE_ERROR)
                     btnStartLive.setLoading(false)
                 }
             }
@@ -198,18 +199,10 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun doCopyShareLink() {
         parentViewModel.shareInfo?.let { shareInfo ->
             PlayShareWrapper.doCopyShareLink(requireContext(), shareInfo) {
-                showToaster(message = getString(R.string.play_live_broadcast_share_link_copied),
-                        toasterType = Toaster.TYPE_NORMAL,
+                requireView().showToaster(message = getString(R.string.play_live_broadcast_share_link_copied),
                         actionLabel = getString(R.string.play_ok))
             }
         }
-    }
-
-    private fun showToaster(message: String, toasterType: Int, actionLabel: String = "") {
-        Toaster.make(requireView(),
-                text = message,
-                type = toasterType,
-                actionText = actionLabel)
     }
 
     private fun startStreaming() {

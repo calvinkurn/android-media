@@ -20,41 +20,46 @@ import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
 object PlayShareWrapper {
 
     fun doCopyShareLink(context: Context, shareData: ShareUiModel, onUrlCopied: () -> Unit) {
-        // TODO("try catch for testing only, because testapp does not init LinkerManager")
-        try {
-            LinkerManager.getInstance().executeShareRequest(LinkerShareRequest(0,
-                    DataMapper.getLinkerShareData(generateShareData(shareData)), object : ShareCallback {
-                override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareContents = linkerShareData?.shareContents?:
-                    generateShareContents(shareData.description, shareData.redirectUrl)
-                    doCopyToClipboard(context, shareContents, onUrlCopied)
-                }
-
-                override fun onError(linkerError: LinkerError?) {
-                    doCopyToClipboard(
-                            context,
-                            generateShareContents(shareData.description, shareData.redirectUrl),
-                            onUrlCopied
-                    )
-                }
-            }))
-        } catch (e: Exception) {
-            doCopyToClipboard(
-                    context,
-                    generateShareContents(shareData.description, shareData.redirectUrl),
-                    onUrlCopied
-            )
+        if (shareData.shortenUrl) generateShortUrl(shareData) { shortenUrl ->
+            val shareContents = generateSharedContent(shareData.textContent, shortenUrl)?:
+            defaultSharedContent(shareData.description, shareData.redirectUrl)
+            doCopyToClipboard(context, shareContents, onUrlCopied)
+        } else {
+            val shareContents = generateSharedContent(shareData.textContent, shareData.redirectUrl)?:
+            defaultSharedContent(shareData.description, shareData.redirectUrl)
+            doCopyToClipboard(context, shareContents, onUrlCopied)
         }
     }
 
     private fun doCopyToClipboard(context: Context, shareContents: String, onUrlCopied: () -> Unit) {
         val clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("Tokopedia", shareContents)
+        val clip = ClipData.newPlainText("play-broadcaster", shareContents)
         clipboard.primaryClip = clip
         onUrlCopied()
     }
 
-    private fun generateShareContents(shareContents: String, shareLink: String): String = String.format("%s\n\n%s", shareContents, shareLink)
+    private fun generateShortUrl(shareData: ShareUiModel, onUrlCreated: (String) -> Unit) {
+        try {
+            LinkerManager.getInstance().executeShareRequest(LinkerShareRequest(0,
+                    DataMapper.getLinkerShareData(generateShareData(shareData)), object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                   onUrlCreated(linkerShareData?.url?:shareData.redirectUrl)
+                }
+
+                override fun onError(linkerError: LinkerError?) {
+                    onUrlCreated(shareData.redirectUrl)
+                }
+            }))
+        } catch (e: Exception) {
+            onUrlCreated(shareData.redirectUrl)
+        }
+    }
+
+    private fun generateSharedContent(text: String, url: String): String? = try {
+        text.replace("${'$'}{url}", url)
+    } catch (e: Exception) { null }
+
+    private fun defaultSharedContent(shareContents: String, shareLink: String): String = String.format("%s\n\n%s", shareContents, shareLink)
 
     private fun generateShareData(shareData: ShareUiModel): LinkerData = LinkerData.Builder.getLinkerBuilder()
             .setId(shareData.id)

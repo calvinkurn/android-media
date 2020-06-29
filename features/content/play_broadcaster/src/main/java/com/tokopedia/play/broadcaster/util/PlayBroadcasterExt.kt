@@ -98,12 +98,15 @@ internal fun View.showToaster(
         duration: Int = Toaster.LENGTH_LONG,
         actionLabel: String = "",
         actionListener: View.OnClickListener = View.OnClickListener { }
-) = Toaster.make(this,
-        text = message,
-        duration = duration,
-        type = type,
-        actionText = actionLabel,
-        clickListener = actionListener)
+) {
+    if (actionLabel.isNotEmpty()) Toaster.toasterCustomCtaWidth = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+    Toaster.make(this,
+            text = message,
+            duration = duration,
+            type = type,
+            actionText = actionLabel,
+            clickListener = actionListener)
+}
 
 internal fun EditText.setTextFieldColor(@ColorRes color: Int) {
     val drawable: Drawable = background

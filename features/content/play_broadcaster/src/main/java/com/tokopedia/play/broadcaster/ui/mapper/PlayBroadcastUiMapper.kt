@@ -195,10 +195,11 @@ object PlayBroadcastUiMapper {
 
     fun mapShareInfo(channel: GetChannelResponse.Channel) = ShareUiModel(
             id = channel.basic.channelId,
-            title = channel.basic.title,
-            description = channel.basic.description,
-            slug = channel.basic.slug,
+            title = channel.share.metaTitle,
+            description = channel.share.metaDescription,
             imageUrl = channel.medias.firstOrNull()?.coverUrl.orEmpty(),
-            redirectUrl = "" // TODO("ask for redirect url, atau apakah sama dengan slug?")
+            textContent = channel.share.text,
+            redirectUrl = channel.share.redirectURL,
+            shortenUrl = channel.share.useShortURL
     )
 }
