@@ -50,7 +50,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_crop_action"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/play_crop_bottom_action_height"
         android:paddingStart="@dimen/spacing_lvl4"
         android:paddingEnd="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
