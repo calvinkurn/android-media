@@ -9,5 +9,5 @@ data class DiscussionGetWritingForm(
         val maxChar: Int = 0,
         @SerializedName("categories")
         @Expose
-        val categories: List<Any> = emptyList()
+        val categories: List<DiscussionGetWritingFormCategory> = emptyList()
 )

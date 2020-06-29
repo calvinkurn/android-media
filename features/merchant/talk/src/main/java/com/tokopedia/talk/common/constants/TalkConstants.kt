@@ -7,8 +7,11 @@ object TalkConstants {
     const val COMMENT_ID = "comment_id"
     const val PARAM_SHOP_ID = "shop_id"
     const val IS_FROM_INBOX = "is_from_inbox"
+    const val IS_FROM_WRITING = "is_from_writing"
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_SOURCE = "source"
     const val READING_SOURCE = "reading"
+    const val WRITING_SOURCE = "writing"
+    const val SOURCE_INBOX = "inbox"
     const val APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY = "android_mainapp_disable_new_talk"
 }

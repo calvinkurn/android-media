@@ -27,9 +27,6 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.common.constants.TalkConstants
-import com.tokopedia.talk.common.constants.TalkConstants.IS_FROM_INBOX
-import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
-import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
@@ -75,14 +72,17 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val MINIMUM_TEXT_LENGTH = 5
 
         @JvmStatic
-        fun createNewInstance(questionId: String, shopId: String, productId: String, isFromInbox: Boolean): TalkReplyFragment =
+        fun createNewInstance(questionId: String, shopId: String, productId: String, isFromInbox: Boolean, isFromWriting: Boolean): TalkReplyFragment =
                 TalkReplyFragment().apply {
                     arguments = Bundle()
                     arguments?.apply {
-                        putString(QUESTION_ID, questionId)
-                        putString(PARAM_SHOP_ID, shopId)
-                        putString(PARAM_PRODUCT_ID, productId)
-                        putBoolean(IS_FROM_INBOX, isFromInbox)
+                        with(TalkConstants) {
+                            putString(QUESTION_ID, questionId)
+                            putString(PARAM_SHOP_ID, shopId)
+                            putString(PARAM_PRODUCT_ID, productId)
+                            putBoolean(IS_FROM_INBOX, isFromInbox)
+                            putBoolean(IS_FROM_WRITING, isFromInbox)
+                        }
                     }
                 }
     }
@@ -94,6 +94,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var shopId = ""
     private var productId = ""
     private var isFromInbox = false
+    private var isFromWriting = false
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
@@ -491,6 +492,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         hidePageError()
                         hidePageLoading()
                         replySwipeRefresh.isRefreshing = false
+                        if(isFromWriting) {
+                            showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
+                        }
                     }
                 }
                 else -> {
@@ -664,10 +668,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun getDataFromArguments() {
         arguments?.let {
-            questionId = it.getString(QUESTION_ID, "")
-            shopId = it.getString(PARAM_SHOP_ID, "")
-            productId = it.getString(PARAM_PRODUCT_ID, "")
-            isFromInbox = it.getBoolean(IS_FROM_INBOX)
+            with(TalkConstants) {
+                questionId = it.getString(QUESTION_ID, "")
+                shopId = it.getString(PARAM_SHOP_ID, "")
+                productId = it.getString(PARAM_PRODUCT_ID, "")
+                isFromInbox = it.getBoolean(IS_FROM_INBOX)
+                isFromWriting = it.getBoolean(IS_FROM_WRITING)
+            }
         }
         viewModel.setIsMyShop(shopId)
     }

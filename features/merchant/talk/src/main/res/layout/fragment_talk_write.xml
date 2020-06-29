@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:fillViewport="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,6 +37,14 @@
             android:layout_marginTop="@dimen/dp_12"
             app:layout_constraintTop_toBottomOf="@id/write_category_header"/>
 
+        <com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryDetails
+            android:id="@+id/writeCategoryDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/writeCategoryChips"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/write_question_header"
             android:layout_width="@dimen/layout_lvl0"
@@ -46,12 +55,13 @@
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
             app:typographyWeight="bold"
             app:typographyType="heading_4"
-            app:layout_constraintTop_toBottomOf="@id/writeCategoryChips" />
+            app:layout_constraintTop_toBottomOf="@id/writeCategoryDetails" />
 
         <com.tokopedia.unifycomponents.TextAreaUnify
             android:id="@+id/writeQuestionTextArea"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
             app:layout_constraintStart_toStartOf="@id/write_category_header"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
             app:text_area_clearable="false"
@@ -68,6 +78,7 @@
             android:paddingEnd="@dimen/layout_lvl2"
             android:text="@string/reply_header_tnc"
             app:typographyType="small"
+            app:layout_constraintTop_toBottomOf="@id/writeQuestionTextArea"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
             app:layout_constraintStart_toStartOf="@id/write_category_header"
             app:layout_constraintBottom_toTopOf="@id/send_button_layout" />
@@ -76,7 +87,6 @@
             android:id="@+id/send_button_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.tokopedia.unifycomponents.UnifyButton

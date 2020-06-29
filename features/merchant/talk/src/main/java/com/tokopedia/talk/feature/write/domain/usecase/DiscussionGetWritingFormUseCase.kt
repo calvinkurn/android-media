@@ -2,8 +2,7 @@ package com.tokopedia.talk.feature.write.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper
-import com.tokopedia.talk.feature.write.data.DiscussionGetWritingFormResponseWrapper
+import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingFormResponseWrapper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -14,7 +13,15 @@ class DiscussionGetWritingFormUseCase @Inject constructor(graphqlRepository: Gra
 
         private val query by lazy {
             """
-                
+                query discussionGetWritingForm(${'$'}productID: String!) {
+                  discussionGetWritingForm(productID:${'$'}productID) {
+                    maxChar
+                    categories {
+                        name
+                        message
+                    }
+                  }
+                }
             """.trimIndent()
         }
     }
@@ -26,7 +33,7 @@ class DiscussionGetWritingFormUseCase @Inject constructor(graphqlRepository: Gra
 
     fun setParams(productId: Int) {
         setRequestParams(RequestParams.create().apply {
-            putInt(PARAM_PRODUCT_ID, productId)
+            putString(PARAM_PRODUCT_ID, productId.toString())
         }.parameters)
     }
 }

@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
-import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategoryChips
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.ChipsUnify
 
@@ -27,8 +26,8 @@ class TalkWriteCategoryChipsWidget(private val listener: ChipClickListener) : Re
         holder.bind(categories[position])
     }
 
-    fun setData(talkWriteCategoryChips: TalkWriteCategoryChips) {
-        this.categories = talkWriteCategoryChips.categories
+    fun setData(talkWriteCategoryChips: List<TalkWriteCategory>) {
+        this.categories = talkWriteCategoryChips
         notifyDataSetChanged()
     }
 

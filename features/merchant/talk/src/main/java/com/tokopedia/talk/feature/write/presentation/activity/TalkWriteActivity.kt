@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
@@ -25,8 +26,11 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     private var productId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         productId = intent.getIntExtra(TalkConstants.PARAM_PRODUCT_ID, productId)
+        if(productId == 0) {
+            getDataFromApplink()
+        }
+        super.onCreate(savedInstanceState)
         setUpToolBar()
     }
 
@@ -41,5 +45,13 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     private fun setUpToolBar() {
         supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
+    }
+
+    private fun getDataFromApplink() {
+        val uri = intent.data ?: return
+        val productIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
+        if (productIdString.isNotEmpty()) {
+            this.productId = productIdString.toIntOrZero()
+        }
     }
 }

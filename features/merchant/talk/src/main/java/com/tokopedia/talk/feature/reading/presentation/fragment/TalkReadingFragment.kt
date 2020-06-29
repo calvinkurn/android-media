@@ -66,7 +66,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val DEFAULT_INITIAL_PAGE = 0
         const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
-        const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
         const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
 
@@ -208,9 +207,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 data?.let {
                     onSuccessDeleteQuestion(it.getStringExtra(QUESTION_ID) ?: "")
                 }
-            }
-            TALK_WRITE_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                onSuccessCreateQuestion()
             }
             LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK && viewModel.isUserLoggedIn) {
                 when (viewModel.talkLastAction) {
@@ -426,11 +422,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.getDiscussionAggregate(productId, shopId)
     }
 
-    private fun onSuccessCreateQuestion() {
-        showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
-        viewModel.updateSelectedSort(SortOption.SortByTime())
-    }
-
     private fun onSuccessDeleteQuestion(questionID: String) {
         if(questionID.isNotEmpty()) {
             (adapter as? TalkReadingAdapter)?.removeQuestion(questionID)
@@ -471,7 +462,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun goToWriteActivity() {
         val intent = context?.let { TalkWriteActivity.createIntent(it, productId.toIntOrZero()) }
-        startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
+        startActivity(intent)
     }
 
     private fun goToReplyActivity(questionID: String) {

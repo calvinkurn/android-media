@@ -72,6 +72,7 @@
             android:label="@string/title_write_page"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan"
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 

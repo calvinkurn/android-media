@@ -1,48 +1,62 @@
 package com.tokopedia.talk.feature.write.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.talk.feature.write.data.mapper.TalkWriteMapper
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingForm
-import com.tokopedia.talk.feature.write.data.TalkCreateNewTalk
 import com.tokopedia.talk.feature.write.domain.usecase.DiscussionGetWritingFormUseCase
-import com.tokopedia.talk.feature.write.domain.usecase.TalkCreateNewTalkUseCase
+import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteButtonState
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineDispatchers,
                                              private val discussionGetWritingFormUseCase: DiscussionGetWritingFormUseCase,
-                                             private val talkCreateNewTalkUseCase: TalkCreateNewTalkUseCase
+                                             userSession: UserSessionInterface
 ): BaseViewModel(dispatchers.io) {
 
-    private val productId = MutableLiveData<Int>()
+    val userId = userSession.userId ?: ""
 
+    private val productId = MutableLiveData<Int>()
     val writeFormData: LiveData<Result<DiscussionGetWritingForm>> = Transformations.switchMap(productId) {
         getWriteFormData(it)
     }
 
-    val categoryChips: LiveData<List<TalkWriteCategory>> = Transformations.map(writeFormData) {
+    private val _buttonState = MediatorLiveData<TalkWriteButtonState>()
+    val buttonState: LiveData<TalkWriteButtonState>
+        get() = _buttonState
+
+    private val isTextNotEmpty = MutableLiveData<Boolean>()
+
+    private val _categoryChips: MutableLiveData<List<TalkWriteCategory>> = Transformations.map(writeFormData) {
         when(it) {
-            is Success -> {
-                it.data.categories
-                emptyList()
-            }
-            is Fail -> {
-                emptyList()
-            }
+            is Success -> TalkWriteMapper.mapDiscussionCategoryToTalkCategory(it.data.categories)
+            is Fail -> emptyList()
+        }
+    } as MutableLiveData<List<TalkWriteCategory>>
+    val categoryChips: LiveData<List<TalkWriteCategory>>
+        get() = _categoryChips
+
+    private var selectedCategory: TalkWriteCategory? = null
+
+    init {
+        _buttonState.value = TalkWriteButtonState()
+        _buttonState.addSource(categoryChips) {
+            updateButtonFromCategories(it.any { category -> category.isSelected })
+        }
+        _buttonState.addSource(isTextNotEmpty) {
+            updateButtonFromText(it)
         }
     }
-
-    private val _talkCreateNewTalkResponse = MutableLiveData<Result<TalkCreateNewTalk>>()
-    val talkCreateNewTalkResponse: LiveData<Result<TalkCreateNewTalk>>
-        get() = _talkCreateNewTalkResponse
 
     private fun getWriteFormData(productId: Int) : LiveData<Result<DiscussionGetWritingForm>> {
         val result = MutableLiveData<Result<DiscussionGetWritingForm>>()
@@ -58,23 +72,45 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         return result
     }
 
-    fun submitWriteForm(text: String) {
-        launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                productId.value?.let { talkCreateNewTalkUseCase.setParams(it, text) }
-                talkCreateNewTalkUseCase.executeOnBackground()
-            }
-            if(response.talkCreateNewTalk.talkMutationData.isSuccess == 1) {
-                _talkCreateNewTalkResponse.postValue(Success(response.talkCreateNewTalk))
-            } else {
-                _talkCreateNewTalkResponse.postValue(Fail(Throwable(response.talkCreateNewTalk.messageError.firstOrNull())))
-            }
-        }) {
-            _talkCreateNewTalkResponse.postValue(Fail(it))
+    fun toggleCategory(category: TalkWriteCategory) {
+        selectedCategory = if(selectedCategory == category) {
+            null
+        } else {
+            category
         }
+        _categoryChips.value?.forEach {
+            if(it.categoryName == selectedCategory?.categoryName) {
+                it.isSelected = !it.isSelected
+            } else {
+                it.isSelected = false
+            }
+        }
+        _categoryChips.notifyObserver()
+    }
+
+    private fun updateButtonFromCategories(isAnyCategorySelected: Boolean) {
+        _buttonState.value = _buttonState.value?.copy(isAnyCategorySelected = isAnyCategorySelected)
+        _buttonState.notifyObserver()
+    }
+
+    private fun updateButtonFromText(isTextNotEmpty: Boolean) {
+        _buttonState.value = _buttonState.value?.copy(isNotTextEmpty = isTextNotEmpty)
+        _buttonState.notifyObserver()
+    }
+
+    fun updateIsTextEmpty(isTextNotEmptyData: Boolean) {
+        isTextNotEmpty.value = isTextNotEmptyData
     }
 
     fun setProductId(productId: Int) {
         this.productId.value = productId
+    }
+
+    fun getProductId(): Int?{
+        return productId.value
+    }
+
+    private fun <T> MutableLiveData<T>.notifyObserver() {
+        this.value = this.value
     }
 }
