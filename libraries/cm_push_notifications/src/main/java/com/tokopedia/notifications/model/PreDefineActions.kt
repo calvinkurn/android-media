@@ -21,10 +21,10 @@ data class PreDefineActions(
         @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
         var element_id: String? = "",
 
-        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+        @SerializedName(CMConstant.PayloadKeys.GENERIC_LINK)
         var genericLink: String? = "",
 
-        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+        @SerializedName(CMConstant.PayloadKeys.PRODUCT_ID)
         var productId: Int? = 0
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
