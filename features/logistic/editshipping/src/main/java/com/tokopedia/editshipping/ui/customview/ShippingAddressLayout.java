@@ -110,8 +110,8 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     public void setGoogleMapData(Intent data){
         LocationPass locationPass = data.getParcelableExtra(EXTRA_EXISTING_LOCATION);
         if(locationPass != null && locationPass.getLatitude() != null) {
-            presenter.shopInformation.setShopLatitude(locationPass.getLatitude());
-            presenter.shopInformation.setShopLongitude(locationPass.getLongitude());
+            presenter.getShopInformation().setShopLatitude(locationPass.getLatitude());
+            presenter.getShopInformation().setShopLongitude(locationPass.getLongitude());
             chooseLocation.setText(getReverseGeocode(locationPass));
         }
     }
