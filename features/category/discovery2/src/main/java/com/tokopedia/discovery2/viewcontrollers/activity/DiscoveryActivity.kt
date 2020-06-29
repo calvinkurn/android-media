@@ -112,4 +112,8 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             if (!GlobalConfig.DEBUG) Crashlytics.log(className + " " + intent?.data?.lastPathSegment)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 }

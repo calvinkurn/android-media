@@ -68,7 +68,9 @@ data class ThanksPageData(
         @SerializedName("new_user")
         val isNewUser: Boolean,
         @SerializedName("is_mub")
-        val isMonthlyNewUser: Boolean
+        val isMonthlyNewUser: Boolean,
+        @SerializedName("custom_data")
+        val thanksCustomization: ThanksCustomization
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -99,7 +101,9 @@ data class ThanksPageData(
             parcel.readByte() != 0.toByte(),
             parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte())
+            parcel.readByte() != 0.toByte(),
+            parcel.readParcelable(ThanksCustomization::class.java.classLoader)
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(paymentID)
@@ -131,6 +135,7 @@ data class ThanksPageData(
         parcel.writeString(merchantCode)
         parcel.writeByte(if (isNewUser) 1 else 0)
         parcel.writeByte(if (isMonthlyNewUser) 1 else 0)
+        parcel.writeParcelable(thanksCustomization, flags)
     }
 
     override fun describeContents(): Int {
@@ -493,6 +498,55 @@ data class PaymentItem(
         }
 
         override fun newArray(size: Int): Array<PaymentItem?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+data class ThanksCustomization(
+        @SerializedName("tracking_data")
+        val trackingData: String,
+        @SerializedName("custom_order_url_app")
+        val customOrderUrlApp: String,
+        @SerializedName("custom_home_url_app")
+        val customHomeUrlApp: String,
+        @SerializedName("custom_title")
+        val customTitle: String,
+        @SerializedName("custom_subtitle")
+        val customSubtitle: String,
+        @SerializedName("custom_title_order_button")
+        val customTitleOrderButton: String,
+        @SerializedName("custom_wtv_text")
+        val customWtvText: String) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString(),
+            parcel.readString())
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(trackingData)
+        parcel.writeString(customOrderUrlApp)
+        parcel.writeString(customHomeUrlApp)
+        parcel.writeString(customTitle)
+        parcel.writeString(customSubtitle)
+        parcel.writeString(customTitleOrderButton)
+        parcel.writeString(customWtvText)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ThanksCustomization> {
+        override fun createFromParcel(parcel: Parcel): ThanksCustomization {
+            return ThanksCustomization(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ThanksCustomization?> {
             return arrayOfNulls(size)
         }
     }

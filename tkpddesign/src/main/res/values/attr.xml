@@ -100,17 +100,6 @@
         <attr name="ttil_prefixString" format="string|reference" />
     </declare-styleable>
 
-    <declare-styleable name="TitleCardView">
-        <attr name="tcv_title" format="string" />
-        <attr name="tcv_title_text_size" format="dimension" />
-        <attr name="tcv_icon" format="reference" />
-        <attr name="tcv_loading_layout" format="reference" />
-        <attr name="tcv_empty_layout" format="reference" />
-        <attr name="tcv_error_layout" format="reference" />
-        <attr name="tcv_use_gradient_title" format="boolean" />
-        <attr name="tcv_title_height" format="dimension" />
-    </declare-styleable>
-
     <declare-styleable name="TitleGroupView">
         <attr name="tgv_title" format="string" />
         <attr name="tgv_icon" format="reference" />
@@ -122,14 +111,6 @@
         <attr name="lsv_error_layout" format="reference" />
         <attr name="lsv_state" format="integer" />
         <attr name="lsv_full_screen" format="boolean" />
-    </declare-styleable>
-
-    <declare-styleable name="EmptyCardContentView">
-        <attr name="eccv_icon" format="reference" />
-        <attr name="eccv_title_text" format="string" />
-        <attr name="eccv_desc_text" format="string" />
-        <attr name="eccv_content_text" format="string" />
-        <attr name="eccv_action_text" format="string" />
     </declare-styleable>
 
     <declare-styleable name="TickerView">
