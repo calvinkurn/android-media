@@ -143,20 +143,20 @@ class MixLeftComponentViewHolder (itemView: View,
         listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
-        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty())
-            listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
 
-        adapter = MixLeftAdapter(listData,typeFactoryImpl)
-        recyclerView.adapter = adapter
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
-                parentRecycledViewPool.let {recyclerView.setRecycledViewPool(it) }
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
             }
         }
+
+        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty())
+            listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
+        adapter = MixLeftAdapter(listData,typeFactoryImpl)
+        recyclerView.adapter = adapter
         recyclerView.addOnScrollListener(getParallaxEffect())
     }
 
