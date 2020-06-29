@@ -73,6 +73,8 @@ class CoverCropPartialView(
             llImageContainer.addView(ivPlayCoverCropImage)
 
             btnCropAdd.setOnClickListener {
+                if (btnCropAdd.isLoading) return@setOnClickListener
+
                 ivPlayCoverCropImage.viewBitmap?.let { bitmap ->
                     listener.onAddButtonClicked(
                             this,

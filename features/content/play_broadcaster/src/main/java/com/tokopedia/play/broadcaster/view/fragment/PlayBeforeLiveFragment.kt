@@ -85,8 +85,9 @@ class PlayBeforeLiveFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeFollowers()
-        observeSetupChannel()
         observeCreateChannel()
+        observeProductList()
+        observeCover()
     }
 
     override fun onBackPressed(): Boolean {
@@ -118,8 +119,6 @@ class PlayBeforeLiveFragment @Inject constructor(
         ivShareLink.setOnClickListener { doCopyShareLink() }
     }
 
-
-
     //region observe
     /**
      * Observe
@@ -130,16 +129,21 @@ class PlayBeforeLiveFragment @Inject constructor(
         })
     }
 
-    private fun observeSetupChannel() {
-        prepareViewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
-            tvSelectedProduct.text = getString(R.string.play_before_live_selected_product, it.selectedProductList.size)
-            when (val croppedCover = it.cover.croppedCover) {
+    private fun observeProductList() {
+        parentViewModel.observableProductList.observe(viewLifecycleOwner, Observer {
+            tvSelectedProduct.text = getString(R.string.play_before_live_selected_product, it.size)
+        })
+    }
+
+    private fun observeCover() {
+        parentViewModel.observableCover.observe(viewLifecycleOwner, Observer {
+            when (val croppedCover = it.croppedCover) {
                 is CoverSetupState.Cropped -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
                 is CoverSetupState.Cropping.Image -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
                 else -> ivImagePreview.setImageDrawable(null)
             }
 
-            tvCoverTitle.text = it.cover.title
+            tvCoverTitle.text = it.title
         })
     }
 

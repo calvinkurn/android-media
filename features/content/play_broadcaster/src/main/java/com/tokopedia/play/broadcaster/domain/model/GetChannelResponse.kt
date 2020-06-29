@@ -36,6 +36,8 @@ data class GetChannelResponse(
     data class ChannelBasic(
             @SerializedName("channelID")
             val channelId: String = "",
+            @SerializedName("coverURL")
+            val coverUrl: String = "",
             @SerializedName("title")
             val title: String = "",
             @SerializedName("slug")

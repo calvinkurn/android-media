@@ -11,6 +11,8 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -81,7 +83,12 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     }
 
     private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer(this::setChannelInfo))
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer{
+            when (it) {
+                is NetworkResult.Success -> setChannelInfo(it.data)
+                is NetworkResult.Fail -> requireView().showToaster(it.error.localizedMessage)
+            }
+        })
     }
 
     private fun observeLiveTrafficMetrics() {

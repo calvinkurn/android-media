@@ -54,6 +54,8 @@ class CoverSetupPartialView(
         ivCoverImage.setOnClickListener { listener.onImageAreaClicked(this) }
         btnNext.setOnClickListener {
             etCoverTitle.clearFocus()
+
+            if (btnNext.isLoading) return@setOnClickListener
             listener.onNextButtonClicked(this, coverTitle)
         }
 

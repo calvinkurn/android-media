@@ -216,10 +216,12 @@ class PlayEtalaseDetailFragment @Inject constructor(
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
             bottomSheetHeader.setHeader(getString(R.string.play_etalase_detail_header, it.currentValue.name, it.currentValue.totalProduct), isRoot = false)
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
+            val flattenValues = it.currentValue.productMap.values.flatten()
             when (it.state) {
                 is PageResultState.Success -> {
-                    showProductEmptyError(it.currentValue.productMap.values.isEmpty())
-                    selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
+
+                    showProductEmptyError(flattenValues.isEmpty())
+                    selectableProductAdapter.setItemsAndAnimateChanges(flattenValues)
 
                     startPostponedTransition()
 
@@ -228,17 +230,17 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 }
                 PageResultState.Loading -> {
                     showProductEmptyError(false)
-                    selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten() + ProductLoadingUiModel)
+                    selectableProductAdapter.setItemsAndAnimateChanges(flattenValues + ProductLoadingUiModel)
                 }
                 is PageResultState.Fail -> {
-                    selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
+                    selectableProductAdapter.setItemsAndAnimateChanges(flattenValues)
 
                     startPostponedTransition()
 
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(false)
 
-                    showProductEmptyError(it.currentValue.productMap.values.isEmpty())
+                    showProductEmptyError(flattenValues.isEmpty())
                 }
             }
         })
