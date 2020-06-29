@@ -118,9 +118,9 @@ class GetChannelUseCase @Inject constructor(
         val gqlRequest = GraphqlRequest(query, GetChannelResponse::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-//        val response = gqlResponse.getData<GetChannelResponse>(GetChannelResponse::class.java)
-//        try { response?.broadcasterGetChannels?.channels?.let { return it.first() } }
-//        catch (e: Exception) { }
+        val response = gqlResponse.getData<GetChannelResponse>(GetChannelResponse::class.java)
+        try { response?.broadcasterGetChannels?.channels?.let { return it.first() } }
+        catch (e: Exception) { }
         throw DefaultErrorThrowable()
     }
 
