@@ -1,6 +1,5 @@
 package com.tokopedia.charts.config.linechart.model
 
-import android.graphics.Color
 import android.graphics.Typeface
 import com.github.mikephil.charting.components.YAxis
 
@@ -9,10 +8,8 @@ import com.github.mikephil.charting.components.YAxis
  */
 
 data class LeftAxisConfig(
-        val textColor: Int = Color.BLACK,
         val typeface: Typeface? = null,
-        val position: Int = OUTSIDE_CHART,
-        val isDrawGridLines: Boolean = true
+        val position: Int = OUTSIDE_CHART
 ) {
     companion object {
         const val OUTSIDE_CHART = 0

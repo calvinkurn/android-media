@@ -1,26 +1,25 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
-import android.graphics.Color
 import android.view.View
-import com.db.williamchart.Tools
-import com.db.williamchart.base.BaseWilliamChartConfig
-import com.db.williamchart.base.BaseWilliamChartModel
-import com.db.williamchart.renderer.StringFormatRenderer
-import com.db.williamchart.tooltip.Tooltip
-import com.db.williamchart.util.GMStatisticUtil
-import com.db.williamchart.util.KMNumbers
-import com.db.williamchart.util.TooltipConfiguration
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.charts.config.linechart.LineChartConfigBuilder
+import com.tokopedia.charts.config.linechart.LineChartTooltip
+import com.tokopedia.charts.config.linechart.model.LineChartConfig
+import com.tokopedia.charts.model.LineChartEntry
+import com.tokopedia.charts.model.YAxisLabel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.view.linegraphconfig.LineGraphConfig
-import com.tokopedia.sellerhomecommon.presentation.view.linegraphconfig.LineGraphDataSetConfig
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
+import kotlinx.android.synthetic.main.shc_partial_line_graph_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_line_graph_widget_loading.view.*
 
 /**
@@ -33,11 +32,14 @@ class LineGraphViewHolder(
 ) : AbstractViewHolder<LineGraphWidgetUiModel>(view) {
 
     companion object {
+        @LayoutRes
         val RES_LAYOUT: Int = R.layout.shc_line_graph_widget
+
+        @LayoutRes
+        private val TOOLTIP_RES_LAYOUT = R.layout.shc_partial_line_graph_tooltip
     }
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
-        setIsRecyclable(false)
         observeState(element)
 
         val data = element.data
@@ -45,9 +47,6 @@ class LineGraphViewHolder(
         tvLineGraphTitle.text = element.title
         tvLineGraphValue.text = data?.header.orEmpty()
         tvLineGraphSubValue.text = data?.description.orEmpty().parseAsHtml()
-
-        val colors = intArrayOf(context.getResColor(R.color.shc_green_light), Color.TRANSPARENT)
-        lineGraphView.setGradientFillColors(colors)
 
         if (null != data)
             setupTooltip(element)
@@ -120,7 +119,7 @@ class LineGraphViewHolder(
         tvLineGraphSubValue.visibility = componentVisibility
         btnLineGraphMore.visibility = componentVisibility
         btnLineGraphNext.visibility = componentVisibility
-        linearLineGraphView.visibility = componentVisibility
+        lineGraphView.visibility = componentVisibility
 
         val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
@@ -146,55 +145,37 @@ class LineGraphViewHolder(
     }
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
-        val yValue: List<Int> = element.data?.list.orEmpty().map { it.yVal }
-        val xLabel: List<String> = element.data?.list.orEmpty().map { it.xLabel }
-        val customValues: List<String> = element.data?.list.orEmpty().map { it.yLabel }
-        val lineGraphModel: BaseWilliamChartModel = GMStatisticUtil.getChartModel(xLabel, yValue, customValues)
+        val dataSet: List<LineChartEntry> = element.data?.list?.map {
+            LineChartEntry(it.yVal.toFloat(), it.yLabel, it.xLabel)
+        }.orEmpty()
 
-        val lineGraphConfig: BaseWilliamChartConfig = getLineGraphConfig(lineGraphModel)
-        with(lineGraphConfig) {
-            setDotDrawable(itemView.context.getResDrawable(R.drawable.shc_oval_chart_dot))
-            setDotsStrokeColor(itemView.context.getResColor(R.color.Green_G400))
-            buildChart(itemView.lineGraphView)
+        with(itemView.lineGraphView) {
+            init(getLineChartConfig())
+            setCustomYAxisLabel(getCustomYAxisLabel(element))
+            setData(dataSet)
+            invalidateChart()
         }
     }
 
-    private fun getLineGraphConfig(graphModel: BaseWilliamChartModel): BaseWilliamChartConfig {
-        val chartMarginTop = (itemView.lineGraphView.layoutParams.height / 3) - 20
-        val lineGraphConfig = LineGraphConfig().apply {
-            setMarginRight(15)
-            setMarginTop(chartMarginTop)
+    private fun getLineChartConfig(): LineChartConfig {
+        return LineChartConfigBuilder.create {
+            showTooltipEnabled { true }
+            setTooltip(getLineGraphTooltip())
         }
-        return Tools.getCommonWilliamChartConfig(itemView.lineGraphView, graphModel,
-                LineGraphDataSetConfig(), getTooltip(), CustomTooltipConfiguration(), lineGraphConfig)
     }
 
-    private fun getTooltip(): Tooltip {
-        return Tooltip(
-                itemView.context,
-                R.layout.shc_partial_line_graph_tooltip,
-                R.id.tvTitle,
-                R.id.tvValue,
-                StringFormatRenderer { s ->
-                    return@StringFormatRenderer try {
-                        KMNumbers.formatSuffixNumbers(s.toFloat())
-                    } catch (e: NumberFormatException) {
-                        s
+    private fun getLineGraphTooltip(): LineChartTooltip {
+        return LineChartTooltip(itemView.context, TOOLTIP_RES_LAYOUT)
+                .setOnDisplayContent { view, data, x, y ->
+                    (data as? LineChartEntry)?.let {
+                        view.tvTitle.text = it.xLabel
+                        view.tvValue.text = it.yLabel
                     }
                 }
-        )
     }
 
-    class CustomTooltipConfiguration : TooltipConfiguration {
-
-        companion object {
-            private const val DEFAULT_WIDTH = 68F
-            private const val DEFAULT_HEIGHT = 30F
-        }
-
-        override fun width(): Int = Tools.fromDpToPx(DEFAULT_WIDTH).toInt()
-
-        override fun height(): Int = Tools.fromDpToPx(DEFAULT_HEIGHT).toInt()
+    private fun getCustomYAxisLabel(element: LineGraphWidgetUiModel): List<YAxisLabel> {
+        return element.data?.yLabels?.map { YAxisLabel(it.yVal.toFloat(), it.yLabel) }.orEmpty()
     }
 
     interface Listener : BaseViewHolderListener {

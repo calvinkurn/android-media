@@ -1,6 +1,5 @@
 package com.tokopedia.charts.config.linechart
 
-import android.graphics.Color
 import android.graphics.Typeface
 import com.tokopedia.charts.config.linechart.annotation.LineChartDsl
 import com.tokopedia.charts.config.linechart.model.*
@@ -26,6 +25,7 @@ class LineChartConfigBuilder {
     private var isDescriptionEnabled: Boolean = false
     private var xAnimationDuration: Int = 0
     private var yAnimationDuration: Int = 0
+
     private var xAxis: XAxisConfig = XAxisConfig()
     private var leftAxisConfig: LeftAxisConfig = LeftAxisConfig()
     private var rightAxisConfig: RightAxisConfig = RightAxisConfig()
@@ -100,56 +100,36 @@ class LineChartConfigBuilder {
 @LineChartDsl
 class XAxisBuilder {
     private var typeface: Typeface? = null
-    private var textColor: Int = Color.BLACK
     private var position: Int = XAxisConfig.BOTTOM
-    private var isDrawGridLines: Boolean = true
 
     fun typeface(lambda: () -> Typeface) {
         typeface = lambda()
-    }
-
-    fun textColor(lambda: () -> Int) {
-        textColor = lambda()
     }
 
     fun position(lambda: () -> Int) {
         position = lambda()
     }
 
-    fun drawGridLines(lambda: () -> Boolean) {
-        isDrawGridLines = lambda()
-    }
-
     fun build(): XAxisConfig {
-        return XAxisConfig(typeface, textColor, position, isDrawGridLines)
+        return XAxisConfig(typeface, position)
     }
 }
 
 @LineChartDsl
 class LeftAxisBuilder {
-    private var textColor: Int = Color.BLACK
     private var typeface: Typeface? = null
     private var position: Int = LeftAxisConfig.OUTSIDE_CHART
-    private var isDrawGridLines: Boolean = true
 
     fun typeface(lambda: () -> Typeface) {
         typeface = lambda()
-    }
-
-    fun textColor(lambda: () -> Int) {
-        textColor = lambda()
     }
 
     fun position(lambda: () -> Int) {
         position = lambda()
     }
 
-    fun drawGridLines(lambda: () -> Boolean) {
-        isDrawGridLines = lambda()
-    }
-
     fun build(): LeftAxisConfig {
-        return LeftAxisConfig(textColor, typeface, position, isDrawGridLines)
+        return LeftAxisConfig(typeface, position)
     }
 }
 
@@ -172,5 +152,5 @@ class LegendBuilder {
         isEnabled = lambda()
     }
 
-    fun build() = LegendConfig()
+    fun build() = LegendConfig(isEnabled)
 }

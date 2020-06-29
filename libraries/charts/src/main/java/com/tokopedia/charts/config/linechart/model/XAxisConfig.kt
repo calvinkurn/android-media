@@ -1,6 +1,5 @@
 package com.tokopedia.charts.config.linechart.model
 
-import android.graphics.Color
 import android.graphics.Typeface
 import com.github.mikephil.charting.components.XAxis
 import com.tokopedia.charts.config.linechart.XAxisBuilder
@@ -11,9 +10,7 @@ import com.tokopedia.charts.config.linechart.XAxisBuilder
 
 data class XAxisConfig(
         val typeface: Typeface? = null,
-        val textColor: Int = Color.BLACK,
-        val position: Int = BOTTOM,
-        val isDrawGridLines: Boolean = true
+        val position: Int = BOTTOM
 ) {
     companion object {
         const val BOTTOM = 0
