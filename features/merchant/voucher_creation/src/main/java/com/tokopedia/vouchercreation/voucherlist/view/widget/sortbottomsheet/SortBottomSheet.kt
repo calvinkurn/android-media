@@ -80,7 +80,9 @@ class SortBottomSheet(
         if (sort.isSelected) return
         sortAdapter.sortItems.forEach { it.isSelected = false }
         sort.isSelected = true
-        sortAdapter.notifyDataSetChanged()
+        view?.rvMcvSort?.post {
+            sortAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun List<SortUiModel>.copy(): List<SortUiModel> {

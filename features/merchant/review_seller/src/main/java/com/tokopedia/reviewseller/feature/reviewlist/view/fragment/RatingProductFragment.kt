@@ -393,11 +393,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
         reviewSellerAdapter.hideLoading()
         swipeToRefreshReviewSeller?.isRefreshing = false
-        if (reviewProductList.isEmpty() && isEmptyFilter) {
+        if ((reviewProductList.isEmpty() && reviewSellerAdapter.itemCount.isZero()) && isEmptyFilter) {
             showEmptyState()
             tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_filter)
             isEmptyFilter = false
-        } else if (reviewProductList.isEmpty() && !isEmptyFilter) {
+        } else if ((reviewProductList.isEmpty() && reviewSellerAdapter.itemCount.isZero()) && !isEmptyFilter) {
             showEmptyState()
             tvContentNoReviewsYet?.text = getString(R.string.content_no_reviews_yet)
         } else {
