@@ -1,19 +1,18 @@
 package com.tokopedia.charts.view
 
 import android.content.Context
-import android.graphics.Typeface
-import android.os.Build
+import android.content.res.TypedArray
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import androidx.annotation.ColorRes
-import androidx.annotation.RequiresApi
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.utils.Utils
 import com.tokopedia.charts.R
 import com.tokopedia.charts.config.linechart.model.LeftAxisConfig
 import com.tokopedia.charts.config.linechart.model.LegendConfig
@@ -23,59 +22,67 @@ import com.tokopedia.charts.model.LineChartEntry
 import com.tokopedia.charts.model.YAxisLabel
 import com.tokopedia.charts.utils.XAxisLabelFormatter
 import com.tokopedia.charts.utils.YAxisLabelFormatter
-import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import kotlinx.android.synthetic.main.view_line_chart.view.*
 
 /**
  * Created By @ilhamsuaib on 24/06/20
  */
 
-class LineChartView : LinearLayout {
+class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
-    constructor(context: Context?) : super(context)
+    companion object {
+        private const val UNDEFINED = -1
+        private const val LINE_MODE_LINEAR = 0
+        private const val LINE_MODE_CONTINUE = 1
+    }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    private var chartConfig: LineChartConfig? = null
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    private var chartLineWidth: Float = 1f
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    private var chartLineColor: Int = Color.BLACK
+    private var chartLineMode: Int = LINE_MODE_LINEAR
+    private var chartFillColor: Int = Color.TRANSPARENT
+    private var xAxisTextColor: Int = Color.BLACK
+    private var yAxisTextColor: Int = Color.BLACK
+    private var chartDotColor: Int = Color.BLACK
+    private var fillDrawable: Int = UNDEFINED
 
-    private var graphConfig: LineChartConfig? = null
-
-    var typeface: Typeface? = null
-        set(value) {
-            field = value
-            lineChart.xAxis.typeface = value
-            lineChart.axisLeft.typeface = value
-        }
-
-    @ColorRes
-    var xAxisTextColor: Int
-        set(value) {
-            field = value
-            lineChart.xAxis.textColor = value
-        }
-
-    @ColorRes
-    var yAxisTextColor: Int
-        set(value) {
-            field = value
-            lineChart.axisLeft.textColor = value
-        }
+    private var drawCircleHole: Boolean = false
+    private var showChartDot: Boolean = false
+    private var chartFillEnabled: Boolean = true
+    private var showChartValue: Boolean = false
+    private var showVerticalGrid: Boolean = true
+    private var showHorizontalGrid: Boolean = true
 
     init {
         View.inflate(context, R.layout.view_line_chart, this)
 
-        xAxisTextColor = context.getResColor(R.color.Neutral_N700_96)
-        yAxisTextColor = context.getResColor(R.color.Neutral_N700_96)
+        val typedArray: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.LineChartView)
+        typedArray.let {
+            chartLineWidth = it.getDimension(R.styleable.LineChartView_chartLineWidth, chartLineWidth)
+
+            chartLineColor = it.getColor(R.styleable.LineChartView_chartLineColor, chartLineColor)
+            chartLineMode = it.getColor(R.styleable.LineChartView_chartLineMode, chartLineMode)
+            chartFillColor = it.getColor(R.styleable.LineChartView_chartFillColor, chartFillColor)
+            xAxisTextColor = it.getColor(R.styleable.LineChartView_xAxisTextColor, xAxisTextColor)
+            yAxisTextColor = it.getColor(R.styleable.LineChartView_yAxisTextColor, yAxisTextColor)
+            chartDotColor = it.getColor(R.styleable.LineChartView_chartDotColor, chartDotColor)
+            fillDrawable = it.getResourceId(R.styleable.LineChartView_fillDrawable, fillDrawable)
+
+            drawCircleHole = it.getBoolean(R.styleable.LineChartView_drawCircleHole, drawCircleHole)
+            showChartDot = it.getBoolean(R.styleable.LineChartView_showChartDot, showChartDot)
+            chartFillEnabled = it.getBoolean(R.styleable.LineChartView_chartFillEnabled, chartFillEnabled)
+            showChartValue = it.getBoolean(R.styleable.LineChartView_showChartValue, showChartValue)
+            showVerticalGrid = it.getBoolean(R.styleable.LineChartView_showVerticalGrid, showVerticalGrid)
+            showHorizontalGrid = it.getBoolean(R.styleable.LineChartView_showHorizontalGrid, showHorizontalGrid)
+        }
+        typedArray.recycle()
     }
 
     fun init(config: LineChartConfig) {
-        this.graphConfig = config
-        if (typeface == null) {
-            typeface = Typeface.createFromAsset(context.assets, "SFProText-Regular.ttf")
-        }
+        this.chartConfig = config
 
         with(lineChart) {
             axisRight.isEnabled = config.rightAxisConfig.isEnabled
@@ -90,7 +97,7 @@ class LineChartView : LinearLayout {
             setScaleEnabled(config.isScaleXEnabled)
             setPinchZoom(config.isPitchZoomEnabled)
 
-            animateXY(200, 200)
+            setChartAnimation()
         }
 
         setChartTooltip()
@@ -112,17 +119,33 @@ class LineChartView : LinearLayout {
         }
 
         with(dataSet) {
-            mode = LineDataSet.Mode.LINEAR
+            mode = when (chartLineMode) {
+                LINE_MODE_LINEAR -> LineDataSet.Mode.LINEAR
+                else -> LineDataSet.Mode.CUBIC_BEZIER
+            }
             setDrawCircles(false)
-            setDrawFilled(true)
+
             setDrawHorizontalHighlightIndicator(false)
             setDrawVerticalHighlightIndicator(false)
+
             //setup chart line
-            lineWidth = 1.8f
-            color = context.getResColor(R.color.line_chart_line_color_4fba68)
-            //setup fill
-            fillColor = context.getResColor(R.color.line_chart_fill_color_35d6ffde)
-            setDrawValues(false)
+            lineWidth = chartLineWidth
+            color = chartLineColor
+
+            //setup chart fill color
+            setDrawFilled(chartFillEnabled)
+            if (this@LineChartView.fillDrawable != UNDEFINED && Utils.getSDKInt() >= 18) {
+                fillDrawable = context.getResDrawable(this@LineChartView.fillDrawable)
+            } else {
+                fillColor = chartFillColor
+            }
+
+            setDrawValues(showChartValue)
+
+            //chart dot
+            setDrawCircles(showChartDot)
+            setCircleColor(chartDotColor)
+            setDrawCircleHole(drawCircleHole)
         }
 
         lineChart.data = LineData(dataSet)
@@ -143,8 +166,26 @@ class LineChartView : LinearLayout {
         }
     }
 
+    private fun setChartAnimation() {
+        chartConfig?.let { config ->
+            with(lineChart) {
+                when {
+                    (config.xAnimationDuration > 0 && config.yAnimationDuration > 0) -> {
+                        animateXY(config.xAnimationDuration, config.yAnimationDuration)
+                    }
+                    config.xAnimationDuration > 0 -> {
+                        animateX(config.xAnimationDuration)
+                    }
+                    config.yAnimationDuration > 0 -> {
+                        animateX(config.yAnimationDuration)
+                    }
+                }
+            }
+        }
+    }
+
     private fun setChartTooltip() {
-        graphConfig?.let {
+        chartConfig?.let {
             if (it.isDrawMarkersEnabled) {
                 it.tooltip?.markerView?.chartView = lineChart
                 lineChart.marker = it.tooltip?.markerView
@@ -160,7 +201,7 @@ class LineChartView : LinearLayout {
             lineChart.isScaleXEnabled = true
         } else {
             lineChart.xAxis.setLabelCount(labelsStr.size, true)
-            lineChart.isScaleXEnabled = graphConfig?.isScaleXEnabled ?: false
+            lineChart.isScaleXEnabled = chartConfig?.isScaleXEnabled ?: false
         }
 
         lineChart.xAxis.axisMinimum = 0f
@@ -183,24 +224,18 @@ class LineChartView : LinearLayout {
     private fun setupXAxis(axis: XAxis, config: XAxisConfig) = with(axis) {
         if (config.typeface != null) {
             typeface = config.typeface
-        } else if (typeface != null) {
-            typeface = this@LineChartView.typeface
         }
-
-        textColor = config.textColor
         position = config.getPosition()
-        setDrawGridLines(config.isDrawGridLines)
+        setDrawGridLines(showVerticalGrid)
+        textColor = xAxisTextColor
     }
 
     private fun setupYAxis(axis: YAxis, config: LeftAxisConfig) = with(axis) {
         if (config.typeface != null) {
             typeface = config.typeface
-        } else if (typeface != null) {
-            typeface = this@LineChartView.typeface
         }
-
-        textColor = config.textColor
+        textColor = yAxisTextColor
         setPosition(config.getPosition())
-        setDrawGridLines(config.isDrawGridLines)
+        setDrawGridLines(showHorizontalGrid)
     }
 }
