@@ -123,6 +123,11 @@ public interface CMConstant {
         String NOTIFCENTER_NOTIFICATION_TYPE = "nc_type_of_notif";
     }
 
+    interface PreDefineActionType {
+        String ATC = "atc";
+        String OCC = "occ";
+    }
+
     interface ReceiverExtraData {
         String ACTION_BUTTON_APP_LINK = "action_button_app_link";
         String ACTION_BUTTON_EXTRA = "ACTION_BUTTON_EXTRA";
