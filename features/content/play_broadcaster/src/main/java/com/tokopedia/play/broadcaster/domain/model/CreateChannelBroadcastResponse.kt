@@ -9,10 +9,4 @@ import com.google.gson.annotations.SerializedName
 data class CreateChannelBroadcastResponse(
         @SerializedName("broadcasterCreateChannel")
         val getChannelId: ChannelId
-) {
-    data class CreateChannelBroadcastData(
-
-            @SerializedName("data")
-            val data: CreateChannelBroadcastResponse
-    )
-}
+)

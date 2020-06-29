@@ -10,10 +10,6 @@ data class GetChannelResponse(
     @SerializedName("broadcasterGetChannels")
     val broadcasterGetChannels: GetChannels = GetChannels()
 ) {
-    data class GetChannelData(
-            @SerializedName("data")
-            val data: GetChannelResponse = GetChannelResponse()
-    )
 
     data class GetChannels(
             @SerializedName("channels")
