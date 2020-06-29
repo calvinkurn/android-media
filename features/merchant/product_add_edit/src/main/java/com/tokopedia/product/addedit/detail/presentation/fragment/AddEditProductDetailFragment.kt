@@ -191,7 +191,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set detail and variant input model
         cacheManagerId?.run {
             viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
-            viewModel.hasVariants = viewModel.productInputModel.variantInputModel.products.isNotEmpty()
             var pictureIndex = 0
             viewModel.productPhotoPaths = viewModel.productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
                 if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
@@ -437,12 +436,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
 
             if (isChecked) {
-                val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-                wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
-                val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
-                if (!wholesalePriceExist) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
-                if (viewModel.isAdding && viewModel.hasVariants) {
-                    showVariantWholesalePriceToast()
+                if (viewModel.hasVariants) {
+                    showVariantWholesalePriceDialog()
+                } else {
+                    enableWholesale()
                 }
             }
         }
@@ -1045,10 +1042,35 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showVariantWholesalePriceToast() {
-        view?.let {
-            Toaster.make(it, getString(R.string.message_variant_price_wholesale))
+    private fun showVariantWholesalePriceDialog() {
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.apply {
+            setTitle(getString(R.string.message_variant_price_wholesale_title))
+            setDescription(getString(R.string.message_variant_price_wholesale))
+            setPrimaryCTAText(getString(R.string.action_variant_price_wholesale_negative))
+            setPrimaryCTAClickListener {
+                dialog.dismiss()
+                disableWholesale()
+            }
+            setSecondaryCTAText(getString(R.string.action_variant_price_wholesale_positive))
+            setSecondaryCTAClickListener {
+                dialog.dismiss()
+                enableWholesale()
+            }
         }
+        dialog.show()
+    }
+
+    private fun enableWholesale() {
+        val productPriceInput = productPriceField?.textFieldInput?.editableText
+                .toString().replace(".", "")
+        wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
+        val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
+        if (!wholesalePriceExist) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
+    }
+
+    private fun disableWholesale() {
+        productWholeSaleSwitch?.isChecked = false
     }
 
     @SuppressLint("WrongConstant")
