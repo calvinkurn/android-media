@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
@@ -16,10 +17,11 @@ import rx.Subscriber
 internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
     private val requestParamsSlot = slot<RequestParams>()
+    private val visitableListSlot = slot<List<Visitable<*>>>()
 
     @Test
     fun `Load Data Success`() {
-        val searchProductModel = searchProductCommonResponseJSON.jsonToObject<SearchProductModel>()
+        val searchProductModel = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
         val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
             it[SearchApiConst.Q] = "samsung"
             it[SearchApiConst.START] = "0"
@@ -35,6 +37,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `Then verify view interaction when load data success`(searchProductModel)
         `Then verify get dynamic filter use case is executed`()
         `Then verify start from is incremented`()
+        `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -59,7 +62,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
             verifyShowLoading(productListView)
 
-            verifyProcessingData(productListView, searchProductModel)
+            verifyProcessingData(productListView, searchProductModel, visitableListSlot)
 
             productListView.showBottomNavigation()
             productListView.updateScrollListener()
@@ -132,7 +135,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Load Data Success Is First Time Load`() {
-        val searchProductModel = searchProductCommonResponseJSON.jsonToObject<SearchProductModel>()
+        val searchProductModel = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given View is first active tab`()
         `Given View reload data immediately calls load data`()
@@ -143,6 +146,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `Then verify view interaction when created`(searchProductModel)
         `Then verify get dynamic filter use case is executed`()
         `Then verify start from is incremented`()
+        `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
     }
 
     private fun `Given View is first active tab`() {
@@ -175,7 +179,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
             verifyShowLoading(productListView)
 
-            verifyProcessingData(productListView, searchProductModel)
+            verifyProcessingData(productListView, searchProductModel, visitableListSlot)
 
             productListView.showBottomNavigation()
             productListView.updateScrollListener()
