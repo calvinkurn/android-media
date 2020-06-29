@@ -33,4 +33,5 @@
     <color name="tp_textcolor_dynamic_action">#A7A9AC</color>
     <color name="tp_catalog_code_error_textclr">#A8A9AC</color>
     <color name="tp_section_category_sub_color">#B9BABC</color>
+    <color name="tp_green_token">#afd564</color>
 </resources>

@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -121,8 +122,9 @@ class AddToCartDoneViewModel @Inject constructor(
 
     fun isLoggedIn(): Boolean = userSessionInterface.isLoggedIn
 
-    fun addToCart(recommendationItem: RecommendationItem) {
+    fun addToCart(dataModel: AddToCartDoneRecommendationItemDataModel) {
         launchCatchError(Dispatchers.IO, block = {
+            val recommendationItem = dataModel.recommendationItem
             val requestParams = RequestParams.create()
             val addToCartRequestParams = AddToCartRequestParams().apply {
                 productId = recommendationItem.productId.toLong()
@@ -136,6 +138,7 @@ class AddToCartDoneViewModel @Inject constructor(
                 _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull()
                         ?: "").asFail())
             } else {
+                dataModel.isAddedToCart = true
                 _addToCartLiveData.postValue(result.asSuccess())
             }
         }) {

@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ALL_ETALASE
-import com.tokopedia.shop.product.view.viewholder.ShopProductEtalaseListViewHolder
+import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
@@ -28,19 +28,15 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         shopProductAdapterTypeFactory.attachAdapter(this)
     }
 
-    companion object{
-        const val ETALASE_ID_SOLD = "sold"
-    }
-
     val shopProductViewModelList: MutableList<ShopProductViewModel> = mutableListOf()
-    val shopProductEtalaseListViewModel: ShopProductEtalaseListViewModel?
-        get() = mapOfDataModel[KEY_ETALASE_DATA_MODEL] as? ShopProductEtalaseListViewModel
+    val shopProductSortFilterUiViewModel: ShopProductSortFilterUiModel?
+        get() = mapOfDataModel[KEY_SORT_FILTER_DATA_MODEL] as? ShopProductSortFilterUiModel
     val shopProductEtalaseTitlePosition: Int
         get() = shopProductEtalaseTitleViewModel?.let {
             visitables.indexOf(it)
         } ?: 0
-    val shopProductEtalaseListPosition: Int
-        get() = shopProductEtalaseListViewModel?.let {
+    val shopProductSortFilterPosition: Int
+        get() = shopProductSortFilterUiViewModel?.let {
             visitables.indexOf(it)
         } ?: 0
     val shopProductFirstViewModelPosition: Int
@@ -92,7 +88,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     override fun getStickyHeaderPosition(): Int {
-        return visitables.indexOf(shopProductEtalaseListViewModel)
+        return visitables.indexOf(shopProductSortFilterUiViewModel)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
@@ -112,16 +108,16 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     override fun bindSticky(viewHolder: RecyclerView.ViewHolder) {
-        if (viewHolder is ShopProductEtalaseListViewHolder) {
-            (mapOfDataModel[KEY_ETALASE_DATA_MODEL] as? ShopProductEtalaseListViewModel)?.let {
+        if (viewHolder is ShopProductSortFilterViewHolder) {
+            (mapOfDataModel[KEY_SORT_FILTER_DATA_MODEL] as? ShopProductSortFilterUiModel)?.let {
                 viewHolder.bind(it)
             }
         }
     }
 
-    override fun updateEtalaseListViewHolderData() {
+    override fun onStickyHide() {
         Handler().post {
-            notifyItemChanged(shopProductEtalaseListPosition)
+            notifyItemChanged(shopProductSortFilterPosition)
         }
     }
 
@@ -203,24 +199,20 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         } ?: return ALL_ETALASE
     }
 
-    fun changeSelectedEtalaseId(shopProductEtalaseChipItemViewModel: ShopProductEtalaseChipItemViewModel) {
-        shopProductEtalaseListViewModel?.apply {
-            selectedEtalaseId = shopProductEtalaseChipItemViewModel.etalaseId
-            selectedEtalaseName = shopProductEtalaseChipItemViewModel.etalaseName
-            selectedEtalaseBadge = shopProductEtalaseChipItemViewModel.etalaseBadge
+    fun changeSelectedSortFilter(sortId: String, sortName: String) {
+        shopProductSortFilterUiViewModel?.apply {
+            selectedSortId = sortId
+            selectedSortName = sortName
         }
-        notifyItemChanged(visitables.indexOf(shopProductEtalaseListViewModel))
-        updateShopEtalaseTitle()
+        notifyItemChanged(visitables.indexOf(shopProductSortFilterUiViewModel))
     }
 
-    fun isEtalaseInChip(etalaseId: String): Boolean {
-        val shopEtalaseViewModelList = shopProductEtalaseListViewModel?.etalaseModelList ?: listOf()
-        shopEtalaseViewModelList.filterIsInstance(ShopProductEtalaseChipItemViewModel::class.java).map {
-            if (it.etalaseId.equals(etalaseId, ignoreCase = true)) {
-                return true
-            }
+    fun changeSelectedEtalaseFilter(etalaseId: String, etalaseName: String) {
+        shopProductSortFilterUiViewModel?.apply {
+            selectedEtalaseId = etalaseId
+            selectedEtalaseName = etalaseName
         }
-        return false
+        notifyItemChanged(visitables.indexOf(shopProductSortFilterUiViewModel))
     }
 
     fun clearProductList() {
@@ -241,16 +233,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 mapDataModel()
             }
         }
-    }
-
-    fun replaceProductList(shopProductViewModelArrayList: List<ShopProductViewModel>) {
-        if (this.shopProductViewModelList === shopProductViewModelArrayList) {
-            return
-        }
-        if (this.shopProductViewModelList.size > 0) {
-            clearProductList()
-        }
-        addProductList(shopProductViewModelArrayList)
     }
 
     fun clearMerchantVoucherData() {
@@ -304,12 +286,13 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         }
     }
 
-    fun setEtalaseDataModel(data: ShopProductEtalaseListViewModel) {
-        if (!mapOfDataModel.containsKey(KEY_ETALASE_DATA_MODEL)) {
+    fun setSortFilterData(data: ShopProductSortFilterUiModel) {
+        if (!mapOfDataModel.containsKey(KEY_SORT_FILTER_DATA_MODEL)) {
             visitables.add(data)
         } else {
-            val indexObject = visitables.indexOf(mapOfDataModel[KEY_ETALASE_DATA_MODEL])
+            val indexObject = visitables.indexOf(mapOfDataModel[KEY_SORT_FILTER_DATA_MODEL])
             visitables[indexObject] = data
+            notifyItemChanged(indexObject)
         }
         mapDataModel()
     }
@@ -396,28 +379,12 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    private fun updateShopEtalaseTitle() {
-        shopProductEtalaseTitleViewModel?.apply {
-            shopProductEtalaseListViewModel?.let {
-                etalaseName = it.selectedEtalaseName
-                etalaseBadge = it.selectedEtalaseBadge
-            }
-            notifyItemChanged(visitables.indexOf(shopProductEtalaseTitleViewModel))
-        }
-    }
-
-    private fun addProductList(shopProductViewModelArrayList: List<ShopProductViewModel>) {
-        this.shopProductViewModelList.addAll(shopProductViewModelArrayList)
-        visitables.addAll(shopProductViewModelArrayList)
-        mapDataModel()
-    }
-
     private fun mapDataModel() {
         val mutableMapDataModelPosition = mutableMapOf<String, Visitable<*>>()
         for (data in visitables) {
             when (data) {
-                is ShopProductEtalaseListViewModel -> {
-                    mutableMapDataModelPosition[KEY_ETALASE_DATA_MODEL] = data
+                is ShopProductSortFilterUiModel -> {
+                    mutableMapDataModelPosition[KEY_SORT_FILTER_DATA_MODEL] = data
                 }
                 is MembershipStampProgressViewModel -> {
                     mutableMapDataModelPosition[KEY_MEMBERSHIP_DATA_MODEL] = data
@@ -457,13 +424,4 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         this.mapOfDataModel = mutableMapDataModelPosition
     }
 
-    fun isEtalaseHighlightSoldProduct(passedShopProductViewModel: ShopProductViewModel): Boolean {
-        return shopProductEtalaseHighlightViewModel?.let {
-            it.etalaseHighlightCarouselViewModelList.any {  etalaseHighlightCarouselViewModelList ->
-                etalaseHighlightCarouselViewModelList.shopProductViewModelList.any {shopProductViewModel ->
-                    etalaseHighlightCarouselViewModelList.shopEtalaseViewModel.etalaseId == ETALASE_ID_SOLD && shopProductViewModel.id == passedShopProductViewModel.id
-                }
-            }
-        } ?: false
-    }
 }

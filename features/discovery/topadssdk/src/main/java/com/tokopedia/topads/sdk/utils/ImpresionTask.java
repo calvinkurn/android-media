@@ -2,7 +2,6 @@ package com.tokopedia.topads.sdk.utils;
 
 import android.os.AsyncTask;
 
-import com.tokopedia.entertainment.home.alert.ImpressionTaskAlert;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
@@ -17,7 +16,7 @@ import java.io.IOException;
  */
 public class ImpresionTask extends AsyncTask<String, Void, String> {
 
-    private static final String KEY_SESSION_ID ="Tkpd-SessionID";
+    private static final String KEY_SESSION_ID = "Tkpd-SessionID";
 
     private ImpressionListener impressionListener;
     private ImpressionTaskAlert taskAlert;
@@ -32,25 +31,28 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
         taskAlert = ImpressionTaskAlert.getInstance(className);
     }
 
-    public ImpresionTask(UserSessionInterface userSession) {
+    public ImpresionTask(String className, UserSessionInterface userSession) {
         this.userSession = userSession;
+        taskAlert = ImpressionTaskAlert.getInstance(className);
     }
 
     @Override
     protected String doInBackground(String... params) {
         String url = params[0];
-        if(url!=null) {
-            HttpRequest request = new HttpRequest.HttpRequestBuilder()
-                    .setBaseUrl(url)
-                    .addHeader(KEY_SESSION_ID, (userSession != null) ? userSession.getDeviceId() :"")
-                    .setMethod(HttpMethod.GET)
-                    .build();
+        if (url != null) {
             try {
+                if (taskAlert != null) {
+                    taskAlert.track(url);
+                }
+                HttpRequest request = new HttpRequest.HttpRequestBuilder()
+                        .setBaseUrl(url)
+                        .addHeader(KEY_SESSION_ID, (userSession != null) ? userSession.getDeviceId() : "")
+                        .setMethod(HttpMethod.GET)
+                        .build();
                 return RawHttpRequestExecutor.newInstance(request).executeAsGetRequest();
             } catch (IOException | RuntimeException e) {
                 e.printStackTrace();
             }
-            taskAlert.track(url);
         }
         return null;
     }

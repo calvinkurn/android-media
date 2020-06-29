@@ -15,7 +15,7 @@ buildscript {
     }
 }
 dependencies {
-    implementation project(rootProject.ext.features.commonCategory)
+    api project(rootProject.ext.features.commonCategory)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.buyerorder)
@@ -54,5 +54,7 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 
 

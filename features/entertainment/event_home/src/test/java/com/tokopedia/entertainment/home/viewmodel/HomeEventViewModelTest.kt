@@ -8,6 +8,7 @@ import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.Answer
@@ -25,6 +26,7 @@ import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.io.File
+import java.lang.reflect.Type
 
 /**
  * Author errysuprayogi on 24,February,2020
@@ -59,9 +61,12 @@ class HomeEventViewModelTest {
         assertNotNull(graphqlRepository)
         assertNotNull(homeEventViewModel)
         val data = Gson().fromJson<EventHomeDataResponse.Data>(getJson("home_response_mock.json"), EventHomeDataResponse.Data::class.java)
-        val mockKAdditionalAnswerScope = coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
-                EventHomeDataResponse.Data::class.java to data
-        ), mapOf(), false)
+
+        val result = HashMap<Type, Any>()
+        result[EventHomeDataResponse.Data::class.java] = EventHomeDataResponse(data)
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         fun result(mutableList: MutableList<HomeEventItem<*>>) {
             assertNotNull(mutableList)

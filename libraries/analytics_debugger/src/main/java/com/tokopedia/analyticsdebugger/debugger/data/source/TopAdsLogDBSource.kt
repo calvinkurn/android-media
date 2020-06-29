@@ -4,6 +4,7 @@ import android.content.Context
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tokopedia.analyticsdebugger.database.STATUS_DATA_NOT_FOUND
 import com.tokopedia.analyticsdebugger.database.STATUS_PENDING
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.database.TopAdsLogDB
@@ -45,8 +46,15 @@ constructor(context: Context) {
             topAdsLogDB.url = data.url
             topAdsLogDB.eventType = data.eventType
             topAdsLogDB.sourceName = data.sourceName
+            topAdsLogDB.productId = data.productId
+            topAdsLogDB.productName = data.productName
+            topAdsLogDB.imageUrl = data.imageUrl
             topAdsLogDB.timestamp = Date().time
-            topAdsLogDB.eventStatus = STATUS_PENDING
+            if (data.url.isNotBlank()) {
+                topAdsLogDB.eventStatus = STATUS_PENDING
+            } else {
+                topAdsLogDB.eventStatus = STATUS_DATA_NOT_FOUND
+            }
             topAdsLogDao.insertAll(topAdsLogDB)
             true
         }
@@ -68,8 +76,13 @@ constructor(context: Context) {
                 search = "%$keyword%"
             }
 
-            val offset = 20 * page
-            topAdsLogDao.getData(search, offset)
+            if (params1.containsKey(AnalyticsDebuggerConst.ENVIRONMENT) &&
+                    params1.get(AnalyticsDebuggerConst.ENVIRONMENT) == AnalyticsDebuggerConst.ENVIRONMENT_TEST) {
+                topAdsLogDao.getAllData(search)
+            } else {
+                val offset = 20 * page
+                topAdsLogDao.getData(search, offset)
+            }
         }
     }
 }

@@ -6,10 +6,11 @@ import com.google.gson.Gson
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_TELCO
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUCHER
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_POSTPAID_TELCO
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -26,7 +27,6 @@ object DeeplinkMapperDigital {
     var whiteList: Whitelist? = null
 
     const val TEMPLATE_PARAM = "template"
-    const val MENU_ID_PARAM = "menu_id"
 
     private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
         if (whiteList == null) {
@@ -47,14 +47,19 @@ object DeeplinkMapperDigital {
 
     fun getRegisteredNavigationDigital(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
-        if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
-            if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) return getDigitalTemplateNavigation(context, deeplink)
-            return if (!uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty()) getDigitalMenuNavigation(context, deeplink)
-            else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
-        } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)) {
-            return getDigitalSmartcardNavigation(deeplink)
+        return when {
+            deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
+                if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
+                else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+            }
+            deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD) -> {
+                getDigitalSmartcardNavigation(deeplink)
+            }
+            deeplink.startsWith(ApplinkConst.DIGITAL_SMARTBILLS) -> {
+                ApplinkConsInternalDigital.SMART_BILLS
+            }
+            else -> deeplink
         }
-        return deeplink
     }
 
     fun getDigitalTemplateNavigation(context: Context, deeplink: String): String {
@@ -72,19 +77,11 @@ object DeeplinkMapperDigital {
                 TEMPLATE_ID_CC -> {
                     ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE
                 }
-                else -> deeplink
-            }
-        } ?: deeplink
-    }
-
-    fun getDigitalMenuNavigation(context: Context, deeplink: String): String {
-        val uri = Uri.parse(deeplink)
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        return uri.getQueryParameter(MENU_ID_PARAM)?.toIntOrNull()?.let {
-            when (it) {
-                in MENU_ID_TELCO -> {
-                    if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_TELCO_PDP))
-                        ApplinkConsInternalDigital.TELCO_DIGITAL else deeplink
+                TEMPLATE_PREPAID_TELCO -> {
+                    ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL
+                }
+                TEMPLATE_POSTPAID_TELCO -> {
+                    ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
                 }
                 else -> deeplink
             }

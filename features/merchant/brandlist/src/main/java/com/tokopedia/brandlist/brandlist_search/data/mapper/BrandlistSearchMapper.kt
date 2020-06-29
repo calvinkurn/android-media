@@ -2,8 +2,8 @@ package com.tokopedia.brandlist.brandlist_search.data.mapper
 
 import com.tokopedia.brandlist.brandlist_page.data.model.Brand
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationViewModel
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationUiModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultUiModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 
 class BrandlistSearchMapper {
@@ -12,11 +12,13 @@ class BrandlistSearchMapper {
 
         fun mapSearchRecommendationResponseToVisitable(
                 shops: List<Shop>,
-                listener: BrandlistSearchTrackingListener): List<BrandlistSearchRecommendationViewModel> {
-            val visitables = mutableListOf<BrandlistSearchRecommendationViewModel>()
+                listener: BrandlistSearchTrackingListener
+        ): List<BrandlistSearchRecommendationUiModel> {
+            val visitables = mutableListOf<BrandlistSearchRecommendationUiModel>()
+
             shops.forEachIndexed { index, shop ->
                 visitables.add(
-                        BrandlistSearchRecommendationViewModel(
+                        BrandlistSearchRecommendationUiModel(
                                 shop.name,
                                 shop.logoUrl,
                                 shop.exclusiveLogoUrl,
@@ -31,22 +33,21 @@ class BrandlistSearchMapper {
         }
 
         fun mapSearchResultResponseToVisitable(
-                brands: List<Brand>, searchQuery: String,
-                listener: BrandlistSearchTrackingListener): List<BrandlistSearchResultViewModel> {
-            val visitables = mutableListOf<BrandlistSearchResultViewModel>()
-            for (brand in brands) {
+                brands: List<Brand>,
+                searchQuery: String,
+                listener: BrandlistSearchTrackingListener
+        ): List<BrandlistSearchResultUiModel> {
+            val visitables = mutableListOf<BrandlistSearchResultUiModel>()
+
+            brands.forEachIndexed { index, brand ->
                 visitables.add(
-                        BrandlistSearchResultViewModel(
-                                brand.name,
-                                brand.logoUrl,
-                                brand.exclusiveLogoURL,
-                                searchQuery,
-                                brand.appsUrl,
-                                brand.id,
-                                listener
+                        BrandlistSearchResultUiModel(
+                                brand.name, brand.logoUrl, brand.exclusiveLogoURL,
+                                searchQuery, brand.appsUrl, brand.id, listener
                         )
                 )
             }
+
             return visitables
         }
     }
