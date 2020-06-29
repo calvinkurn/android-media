@@ -230,7 +230,6 @@ class PlayBroadcastViewModel @Inject constructor(
             startWebSocket()
             updateChannelStatus(PlayChannelStatus.Live)
             playPusher.startPush(ingestUrl)
-
         }) {
 
         }
