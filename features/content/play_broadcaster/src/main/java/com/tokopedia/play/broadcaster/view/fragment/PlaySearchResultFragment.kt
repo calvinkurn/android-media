@@ -74,6 +74,7 @@ class PlaySearchResultFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        startPostponedTransition()
         initView(view)
         setupView(view)
     }
@@ -177,6 +178,10 @@ class PlaySearchResultFragment @Inject constructor(
         exitTransition = Slide(Gravity.BOTTOM)
                 .setStartDelay(150)
                 .setDuration(300)
+    }
+
+    private fun startPostponedTransition() {
+        etalaseSetupCoordinator.startPostponedEnterTransition()
     }
 
     companion object {

@@ -44,7 +44,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_action"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/play_button_medium_height"
         android:layout_marginStart="@dimen/play_dp_26"
         android:layout_marginLeft="@dimen/play_dp_26"
         android:layout_marginTop="@dimen/spacing_lvl3"
