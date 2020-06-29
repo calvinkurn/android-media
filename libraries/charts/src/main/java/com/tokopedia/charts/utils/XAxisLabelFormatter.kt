@@ -12,7 +12,7 @@ class XAxisLabelFormatter(private val xLabels: List<String>) : ValueFormatter() 
         return try {
             xLabels[value.toInt()]
         } catch (e: IndexOutOfBoundsException) {
-            ""
+            value.toInt().toString()
         }
     }
 }

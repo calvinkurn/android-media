@@ -161,6 +161,8 @@ class LineGraphViewHolder(
         return LineChartConfigBuilder.create {
             showTooltipEnabled { true }
             setTooltip(getLineGraphTooltip())
+            xAnimationDuration { 200 }
+            yAnimationDuration { 200 }
         }
     }
 

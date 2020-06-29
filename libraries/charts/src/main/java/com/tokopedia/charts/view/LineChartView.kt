@@ -3,6 +3,7 @@ package com.tokopedia.charts.view
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
@@ -96,10 +97,9 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             setDrawMarkers(config.isDrawMarkersEnabled)
             setScaleEnabled(config.isScaleXEnabled)
             setPinchZoom(config.isPitchZoomEnabled)
-
-            setChartAnimation()
         }
 
+        setChartAnimation()
         setChartTooltip()
     }
 
@@ -134,7 +134,7 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
 
             //setup chart fill color
             setDrawFilled(chartFillEnabled)
-            if (this@LineChartView.fillDrawable != UNDEFINED && Utils.getSDKInt() >= 18) {
+            if (this@LineChartView.fillDrawable != UNDEFINED && Utils.getSDKInt() >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 fillDrawable = context.getResDrawable(this@LineChartView.fillDrawable)
             } else {
                 fillColor = chartFillColor
@@ -164,6 +164,10 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             setLabelCount(labels.size, true)
             valueFormatter = YAxisLabelFormatter(labels)
         }
+    }
+
+    fun invalidateChart() {
+        lineChart.invalidate()
     }
 
     private fun setChartAnimation() {
@@ -215,10 +219,6 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
 
     private fun setupLegend(legend: Legend, config: LegendConfig) = with(legend) {
         isEnabled = config.isEnabled
-    }
-
-    fun invalidateChart() {
-        lineChart.invalidate()
     }
 
     private fun setupXAxis(axis: XAxis, config: XAxisConfig) = with(axis) {

@@ -9,7 +9,7 @@ import com.github.mikephil.charting.components.YAxis
 
 data class LeftAxisConfig(
         val typeface: Typeface? = null,
-        val position: Int = OUTSIDE_CHART
+        private val position: Int = OUTSIDE_CHART
 ) {
     companion object {
         const val OUTSIDE_CHART = 0

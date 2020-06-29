@@ -10,7 +10,7 @@ import com.tokopedia.charts.config.linechart.XAxisBuilder
 
 data class XAxisConfig(
         val typeface: Typeface? = null,
-        val position: Int = BOTTOM
+        private val position: Int = BOTTOM
 ) {
     companion object {
         const val BOTTOM = 0
