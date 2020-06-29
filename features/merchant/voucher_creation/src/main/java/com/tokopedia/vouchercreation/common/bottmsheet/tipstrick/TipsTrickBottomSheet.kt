@@ -219,7 +219,7 @@ class TipsTrickBottomSheet(
             setupCarouselImage(this)
         }
         btnMvcTipsTrickDownload?.addOnImpressionListener(downloadImpressHolder) {
-            VoucherCreationTracking.sendVoucherDetailImpressionTracking(
+            VoucherCreationTracking.sendVoucherDetailClickTracking(
                     status = VoucherStatusConst.ONGOING,
                     action = VoucherCreationAnalyticConstant.EventAction.Impression.DOWNLOAD_VOUCHER,
                     userId = userSession.userId

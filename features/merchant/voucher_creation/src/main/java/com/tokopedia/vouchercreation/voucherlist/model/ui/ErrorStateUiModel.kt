@@ -1,15 +1,12 @@
 package com.tokopedia.vouchercreation.voucherlist.model.ui
 
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactory
 
 /**
  * Created By @ilhamsuaib on 24/04/20
  */
 
-class ErrorStateUiModel(
-        val impressHolder: ImpressHolder = ImpressHolder()
-) : BaseVoucherListUiModel {
+class ErrorStateUiModel : BaseVoucherListUiModel {
 
     companion object {
         const val DATA_KEY = "error_state"
