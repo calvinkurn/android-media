@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
@@ -18,6 +20,7 @@ import com.tokopedia.play.broadcaster.view.partial.SummaryInfoPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
@@ -31,6 +34,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     private lateinit var summaryInfoView: SummaryInfoPartialView
     private lateinit var btnFinish: UnifyButton
+    private lateinit var loaderView: LoaderUnify
 
     override fun getScreenName(): String = "Play Summary Page"
 
@@ -54,12 +58,14 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        setupContent()
     }
 
     private fun initView(view: View) {
         with(view) {
             summaryInfoView = SummaryInfoPartialView(this as ViewGroup)
             btnFinish = findViewById(R.id.btn_finish)
+            loaderView = findViewById(R.id.loader_summary)
         }
     }
 
@@ -67,6 +73,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         broadcastCoordinator.showActionBar(false)
         btnFinish.setOnClickListener { activity?.finish() }
         summaryInfoView.entranceAnimation(view as ViewGroup)
+    }
+
+    private fun setupContent() {
+        viewModel.fetchLiveTraffic(parentViewModel.channelId)
     }
 
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
@@ -92,7 +102,23 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     }
 
     private fun observeLiveTrafficMetrics() {
-        viewModel.observableTrafficMetrics.observe(viewLifecycleOwner, Observer(this::setSummaryInfo))
+        viewModel.observableTrafficMetrics.observe(viewLifecycleOwner, Observer{
+            when(it) {
+                is NetworkResult.Loading -> {
+                    loaderView.visible()
+                    summaryInfoView.hideError()
+                }
+                is NetworkResult.Success -> {
+                    loaderView.gone()
+                    summaryInfoView.hideError()
+                    setSummaryInfo(it.data)
+                }
+                is NetworkResult.Fail -> {
+                    loaderView.gone()
+                    summaryInfoView.showError { it.onRetry() }
+                }
+            }
+        })
     }
 
     private fun observeLiveDuration() {

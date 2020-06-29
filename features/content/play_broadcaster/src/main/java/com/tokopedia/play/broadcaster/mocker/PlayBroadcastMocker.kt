@@ -15,7 +15,7 @@ import kotlin.random.Random
  */
 object PlayBroadcastMocker {
 
-    private const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
+    const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
 
     /**
      * Follower

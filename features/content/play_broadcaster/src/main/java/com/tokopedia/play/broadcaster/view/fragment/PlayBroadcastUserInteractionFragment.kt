@@ -297,7 +297,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (channelInfo.status) {
             PlayChannelStatus.Active, PlayChannelStatus.Live -> startLiveStreaming(channelInfo.ingestUrl)
             PlayChannelStatus.Pause -> showDialogContinueLiveStreaming(channelInfo.channelId)
-            PlayChannelStatus.Stop -> navigateToSummary()
+            PlayChannelStatus.Stop -> doEndStreaming()
         }
     }
 

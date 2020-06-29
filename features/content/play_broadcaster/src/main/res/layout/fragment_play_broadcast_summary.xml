@@ -17,14 +17,26 @@
         android:textColor="@color/Neutral_N0"
         app:typographyType="heading_4" />
 
-    <include layout="@layout/layout_play_summary_info"
-        android:id="@+id/layout_summary_info"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
+        android:id="@+id/layout_summary_info"
         android:layout_height="@dimen/layout_lvl0"
         android:fillViewport="true"
         android:overScrollMode="never"
         app:layout_constraintBottom_toTopOf="@+id/fl_button_sticky"
-        app:layout_constraintTop_toBottomOf="@+id/tv_page_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_page_title">
+
+        <include
+            layout="@layout/layout_play_summary_info"
+            android:id="@+id/layout_summary_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toTopOf="@+id/fl_button_sticky"
+            app:layout_constraintTop_toBottomOf="@+id/tv_page_title" />
+
+    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:id="@+id/fl_button_sticky"
