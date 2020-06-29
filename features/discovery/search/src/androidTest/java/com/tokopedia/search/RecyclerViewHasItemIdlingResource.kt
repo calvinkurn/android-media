@@ -3,7 +3,7 @@ package com.tokopedia.search
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
 
-private const val NAME = "Recycler view idling resource"
+private const val NAME = "Recycler view has item idling resource"
 
 internal class RecyclerViewHasItemIdlingResource(
         private val recyclerView: RecyclerView?,
