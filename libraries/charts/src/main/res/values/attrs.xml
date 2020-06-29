@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LineChartView">
+        <attr name="chartFillEnabled" format="boolean" />
+        <attr name="chartFillColor" format="color" />
+
+        <!--chart line-->
+        <attr name="fillDrawable" format="reference" />
+        <attr name="chartLineWidth" format="dimension" />
+        <attr name="chartLineColor" format="color" />
+        <attr name="chartLineMode" format="enum">
+            <enum name="LINEAR" value="0"/>
+            <enum name="CONTINUES" value="1"/>
+        </attr>
+
+        <!--chart dot-->
+        <attr name="showChartDot" format="boolean" />
+        <attr name="chartDotColor" format="color" />
+        <attr name="drawCircleHole" format="boolean" />
+
+        <attr name="showChartValue" format="boolean" />
+
+        <!--chart grid-->
+        <attr name="showVerticalGrid" format="boolean" />
+        <attr name="showHorizontalGrid" format="boolean" />
+
+        <!--chart axis-->
+        <attr name="xAxisTextColor" format="color" />
+        <attr name="yAxisTextColor" format="color" />
+    </declare-styleable>
+</resources>
