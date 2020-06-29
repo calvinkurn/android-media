@@ -51,8 +51,8 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
 
     private Context mContext;
 
-    public AppNotificationReceiver(UserSession session) {
-        userSession = session;
+    public AppNotificationReceiver() {
+
     }
 
     public void init(Application application){
@@ -62,6 +62,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
         cacheManager = new FCMCacheManager(application.getBaseContext());
 
         mContext = application.getApplicationContext();
+        userSession = new UserSession(mContext);
     }
 
     public void onNotificationReceived(String from, Bundle data){
