@@ -356,7 +356,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     private fun toggleAllItems(value: Boolean) {
-        smartBillsAnalytics.clickAllBills()
+        smartBillsAnalytics.clickAllBills(value)
         adapter.toggleAllItems(value)
 
         totalPrice = if (value) maximumPrice else 0

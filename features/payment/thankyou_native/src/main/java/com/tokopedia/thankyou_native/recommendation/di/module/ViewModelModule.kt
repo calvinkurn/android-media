@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.thankyou_native.recommendation.di.scope.RecommendationScope
 import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
 import dagger.Binds
 import dagger.Module
@@ -20,5 +19,5 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(MarketPlaceRecommendationViewModel::class)
-    internal abstract fun provideRecommendationViewModel(viewModelMarketPlace: MarketPlaceRecommendationViewModel): ViewModel
+    internal abstract fun provideRecommendationViewModel(viewModelDigital: MarketPlaceRecommendationViewModel): ViewModel
 }
