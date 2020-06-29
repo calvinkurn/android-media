@@ -144,17 +144,23 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
 
             if (gqlResponse.getError(ProductShopChatSpeed::class.java)?.isNotEmpty() != true) {
                 val shopChatSpeed = gqlResponse.getData<ProductShopChatSpeed>(ProductShopChatSpeed::class.java)
-                p2Shop.shopChatSpeed = shopChatSpeed.response.messageResponseTime
+                shopChatSpeed?.let {
+                    p2Shop.shopChatSpeed = it.response.messageResponseTime
+                }
             }
 
             if (gqlResponse.getError(ProductShopSpeed::class.java)?.isNotEmpty() != true) {
                 val shopSpeed = gqlResponse.getData<ProductShopSpeed>(ProductShopSpeed::class.java)
-                p2Shop.shopSpeed = shopSpeed.response.hour
+                shopSpeed?.let {
+                    p2Shop.shopSpeed = it.response.hour
+                }
             }
 
             if (gqlResponse.getError(ShopRatingStats.Response::class.java)?.isNotEmpty() != true) {
                 val shopRating = gqlResponse.getData<ShopRatingStats.Response>(ShopRatingStats.Response::class.java)
-                p2Shop.shopRating = shopRating.shopRatingStats.ratingScore
+                shopRating?.let {
+                    p2Shop.shopRating = it.shopRatingStats.ratingScore
+                }
             }
 
         } catch (t: Throwable) {

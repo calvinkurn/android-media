@@ -478,15 +478,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
                 if (data != null) {
-                    val isFavorite = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
+                    val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val favorite = pdpUiUpdater?.getShopInfo?.shopInfo?.favoriteData?.alreadyFavorited == 1
+                    val wasFavorite = pdpUiUpdater?.getShopInfo?.isFavorite
 
                     if (isUserLoginFromShopPage) {
                         updateStickyState()
                         updateActionButtonShadow()
                     }
-                    if (isFavorite != favorite) onSuccessFavoriteShop(true)
+                    if (isFavoriteFromShopPage != wasFavorite) onSuccessFavoriteShop(true)
                 }
             }
             else ->
@@ -1240,7 +1240,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeP2Login() {
         viewLifecycleOwner.observe(viewModel.p2Login) {
             topAdsGetProductManage = it.topAdsGetProductManage
-            if(it.pdpAffiliate == null) {
+            if (it.pdpAffiliate == null) {
                 dynamicAdapter.removeComponentSection(pdpUiUpdater?.productByMeMap)
             } else {
                 pdpUiUpdater?.updateByMeData(context)
@@ -1380,7 +1380,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         DynamicProductDetailTracking.Click.eventEcommerceBuy(viewModel.buttonActionType,
                 viewModel.buttonActionText,
                 viewModel.userId,
-                viewModel.shopInfo?.goldOS?.shopTypeString ?: "",
                 viewModel.shopInfo?.shopCore?.name ?: "",
                 cartId,
                 trackerAttributionPdp ?: "",
@@ -1474,7 +1473,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.sendScreen(
                         irisSessionId,
                         shopInfo.shopCore.shopID,
-                        shopInfo.goldOS.shopTypeString,
+                        p1.shopTypeString,
                         p1.basic.productID)
             }
         }
@@ -2053,7 +2052,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onAffiliateClick() {
         activity?.let {
             doActionOrLogin({
-                viewModel.p2Login.value?.pdpAffiliate?.let{ pdpAffiliate ->
+                viewModel.p2Login.value?.pdpAffiliate?.let { pdpAffiliate ->
                     RouteManager.getIntent(it,
                             ApplinkConst.AFFILIATE_CREATE_POST,
                             pdpAffiliate.productId.toString(),
@@ -2094,7 +2093,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             bundleData.putString(FtPDPInstallmentBottomSheet.KEY_PDP_FINANCING_DATA, cacheManager.id!!)
             bundleData.putFloat(FtPDPInstallmentBottomSheet.KEY_PDP_PRODUCT_PRICE, productInfo?.data?.price?.value?.toFloat()
                     ?: 0f)
-            bundleData.putBoolean(FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
+            bundleData.putBoolean(FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL, productInfo?.data?.isOS ?: false)
 
             pdpInstallmentBottomSheet.arguments = bundleData
             pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
@@ -2346,8 +2345,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun doLoginWhenUserClickButton() {
-        DynamicProductDetailTracking.Click.eventClickButtonNonLogin(viewModel.buttonActionType, viewModel.getDynamicProductInfoP1, viewModel.userId, viewModel.shopInfo?.goldOS?.shopTypeString
-                ?: "", viewModel.buttonActionText)
+        DynamicProductDetailTracking.Click.eventClickButtonNonLogin(viewModel.buttonActionType,
+                viewModel.getDynamicProductInfoP1, viewModel.userId,
+                viewModel.getDynamicProductInfoP1?.shopTypeString ?: "",
+                viewModel.buttonActionText)
         goToLogin()
     }
 
@@ -2485,36 +2486,27 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val shop = viewModel.shopInfo ?: return
         doActionOrLogin({
             trackToggleFavoriteShop(componentTrackDataModel)
-            pdpUiUpdater?.getShopInfo?.toogleFavorite = false
+            pdpUiUpdater?.getShopInfo?.enableButtonFavorite = false
             dynamicAdapter.notifyShopInfo(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
             viewModel.toggleFavorite(shop.shopCore.shopID)
         })
     }
 
     private fun trackToggleFavoriteShop(componentTrackDataModel: ComponentTrackDataModel?) {
-        val favorite = pdpUiUpdater?.getShopInfo?.shopInfo?.favoriteData ?: return
-        val shopName = pdpUiUpdater?.getShopInfo?.shopInfo?.shopCore?.name ?: ""
+        val isFavorite = pdpUiUpdater?.getShopInfo?.isFavorite ?: return
+        val shopName = pdpUiUpdater?.getShopInfo?.shopName ?: ""
 
-        if (favorite.alreadyFavorited == 1)
-            DynamicProductDetailTracking.Click.eventUnfollowShop(viewModel.getDynamicProductInfoP1, componentTrackDataModel,
-                    shopName)
+        if (isFavorite)
+            DynamicProductDetailTracking.Click.eventUnfollowShop(viewModel.getDynamicProductInfoP1, componentTrackDataModel, shopName)
         else
-            DynamicProductDetailTracking.Click.eventFollowShop(viewModel.getDynamicProductInfoP1, componentTrackDataModel,
-                    shopName)
+            DynamicProductDetailTracking.Click.eventFollowShop(viewModel.getDynamicProductInfoP1, componentTrackDataModel, shopName)
     }
 
     private fun onSuccessFavoriteShop(isSuccess: Boolean) {
-        val favorite = pdpUiUpdater?.getShopInfo?.shopInfo?.favoriteData ?: return
+        val isFavorite = pdpUiUpdater?.getShopInfo?.isFavorite ?: return
         if (isSuccess) {
-            val newFavorite =
-                    // If was favorited then change to un-favorited
-                    if (favorite.alreadyFavorited == 1)
-                        ShopInfo.FavoriteData(0, favorite.totalFavorite - 1)
-                    else
-                        ShopInfo.FavoriteData(1, favorite.totalFavorite + 1)
-            pdpUiUpdater?.getShopInfo?.shopInfo = pdpUiUpdater?.getShopInfo?.shopInfo?.copy(favoriteData = newFavorite)
-            pdpUiUpdater?.getShopInfo?.isFavorite = favorite.alreadyFavorited != 1
-            pdpUiUpdater?.getShopInfo?.toogleFavorite = true
+            pdpUiUpdater?.getShopInfo?.isFavorite = !isFavorite
+            pdpUiUpdater?.getShopInfo?.enableButtonFavorite = true
             dynamicAdapter.notifyShopInfo(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
         }
     }
@@ -2525,7 +2517,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 onShopFavoriteClick()
             })
         }
-        pdpUiUpdater?.getShopInfo?.toogleFavorite = true
+        pdpUiUpdater?.getShopInfo?.enableButtonFavorite = true
         dynamicAdapter.notifyShopInfo(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
     }
 

@@ -195,12 +195,13 @@ object DynamicProductDetailTracking {
         }
 
         fun eventEcommerceBuy(actionButton: Int, buttonText: String, userId: String,
-                              shopType: String, shopName: String, cartId: String, trackerAttribution: String, multiOrigin: Boolean, variantString: String,
+                              shopName: String, cartId: String, trackerAttribution: String, multiOrigin: Boolean, variantString: String,
                               productInfo: DynamicProductInfoP1?) {
             val productId = productInfo?.basic?.productID ?: ""
             val shopId = productInfo?.basic?.shopID ?: ""
             val productName = productInfo?.data?.name ?: ""
             val productPrice = productInfo?.finalPrice.toString()
+            val shopType = productInfo?.shopTypeString ?: ""
 
             val quantity = productInfo?.basic?.minOrder ?: 0
             val isFreeOngkir = productInfo?.data?.isFreeOngkir?.isActive ?: false
@@ -793,21 +794,21 @@ object DynamicProductDetailTracking {
             )
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = DataLayer.mapOf(
-                ProductTrackingConstant.Action.CLICK, DataLayer.mapOf(
+                    ProductTrackingConstant.Action.CLICK, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.ACTION_FIELD, DataLayer.mapOf(ProductTrackingConstant.Tracking.LIST, listValue),
-                    ProductTrackingConstant.Tracking.PRODUCTS,  DataLayer.listOf(
-                            DataLayer.mapOf(
-                                    ProductTrackingConstant.Tracking.PROMO_NAME, product.name,
-                                    ProductTrackingConstant.Tracking.ID, product.productId.toString(),
-                                    ProductTrackingConstant.Tracking.PRICE, removeCurrencyPrice(product.price),
-                                    ProductTrackingConstant.Tracking.BRAND, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
-                                    ProductTrackingConstant.Tracking.CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
-                                    ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
-                                    ProductTrackingConstant.Tracking.PROMO_POSITION, position,
-                                    ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (product.isFreeOngkirActive) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
-                            )
+                    ProductTrackingConstant.Tracking.PRODUCTS, DataLayer.listOf(
+                    DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.PROMO_NAME, product.name,
+                            ProductTrackingConstant.Tracking.ID, product.productId.toString(),
+                            ProductTrackingConstant.Tracking.PRICE, removeCurrencyPrice(product.price),
+                            ProductTrackingConstant.Tracking.BRAND, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                            ProductTrackingConstant.Tracking.CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
+                            ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                            ProductTrackingConstant.Tracking.PROMO_POSITION, position,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (product.isFreeOngkirActive) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
                     )
-                )
+            )
+            )
             )
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
@@ -1141,7 +1142,7 @@ object DynamicProductDetailTracking {
                     dimension55,
                     TrackingUtil.getMultiOriginAttribution(multiOrigin),
                     dimension83 ?: "",
-                    shopInfo?.goldOS?.shopTypeString ?: "",
+                    productInfo?.shopTypeString ?: "",
                     1
             ))
         }
@@ -1155,9 +1156,6 @@ object DynamicProductDetailTracking {
                     )
         }
 
-        //TODO milhamj
-//        ProductTrackingConstant.Tracking.KEY_DIMENSION_98, if (isStockAvailable == "0") "not available" else "available"
-
         val generateProductViewBundle = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
                                           shopInfo: ShopInfo?, trackerAttribution: String?,
                                           isTradeIn: Boolean, isDiagnosed: Boolean,
@@ -1165,6 +1163,8 @@ object DynamicProductDetailTracking {
 
             val subCategoryId = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val subCategoryName = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
+            val isPmInt = if (productInfo?.data?.isPowerMerchant == true) 1 else 0
+            val isOsInt = if (productInfo?.data?.isOS == true) 1 else 0
 
             val productImageUrl = productInfo?.data?.media?.filter {
                 it.type == "image"
@@ -1186,16 +1186,16 @@ object DynamicProductDetailTracking {
                             productInfo?.basic?.shopID,
                             shopInfo?.shopCore?.domain,
                             shopInfo?.location,
-                            shopInfo?.goldOS?.isGoldBadge.toString(),
+                            isPmInt.toString(),
                             productInfo?.basic?.category?.id,
-                            TrackingUtil.getEnhanceShopType(shopInfo?.goldOS),
+                            productInfo?.shopTypeString ?: "",
                             "/productpage",
                             subCategoryName,
                             subCategoryId,
                             productInfo?.basic?.url,
                             deeplinkUrl,
                             productImageUrl,
-                            shopInfo?.goldOS?.isOfficial ?: 0,
+                            isOsInt,
                             TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value ?: 0),
                             productInfo?.basic?.productID ?: "",
                             "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}",
@@ -1229,7 +1229,8 @@ object DynamicProductDetailTracking {
             }
 
             val subCategoryIdLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.id ?: ""
-            val subCategoryNameLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.name ?: ""
+            val subCategoryNameLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.name
+                    ?: ""
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1246,13 +1247,13 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_EVENT, "viewProduct",
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, "product page",
                     ProductTrackingConstant.Tracking.KEY_ACTION, "view product page",
-                    ProductTrackingConstant.Tracking.KEY_LABEL, TrackingUtil.getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.data?.name,
+                    ProductTrackingConstant.Tracking.KEY_LABEL, productInfo?.shopTypeString ?: "" + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.data?.name,
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.getProductId(),
-                    ProductTrackingConstant.Tracking.KEY_PRODUCT_PRICE , (productInfo?.finalPrice.orZero().toString()),
-                    ProductTrackingConstant.Tracking.KEY_PRODUCT_NAME , productInfo?.getProductName,
-                    ProductTrackingConstant.Tracking.KEY_GROUP_NAME , categoryNameLevel3,
-                    ProductTrackingConstant.Tracking.KEY_GROUP_ID , categoryIdLevel3,
-                    ProductTrackingConstant.Tracking.CATEGORY , categoryNameLevel1,
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_PRICE, (productInfo?.finalPrice.orZero().toString()),
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_NAME, productInfo?.getProductName,
+                    ProductTrackingConstant.Tracking.KEY_GROUP_NAME, categoryNameLevel3,
+                    ProductTrackingConstant.Tracking.KEY_GROUP_ID, categoryIdLevel3,
+                    ProductTrackingConstant.Tracking.CATEGORY, categoryNameLevel1,
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
                     ProductTrackingConstant.Tracking.KEY_DETAIl, DataLayer.mapOf(
@@ -1269,7 +1270,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_55, dimension55,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_54, TrackingUtil.getMultiOriginAttribution(multiOrigin),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_83, dimension83,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopInfo?.goldOS?.shopTypeString,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_81, productInfo?.shopTypeString ?: "",
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_98, if (isStockAvailable == "0") "not available" else "available"
 
                     ))).apply {
@@ -1282,16 +1283,16 @@ object DynamicProductDetailTracking {
                     "shopId", productInfo?.basic?.shopID,
                     "shopDomain", shopInfo?.shopCore?.domain,
                     "shopLocation", shopInfo?.location,
-                    "shopIsGold", shopInfo?.goldOS?.isGoldBadge.toString(),
+                    "shopIsGold", (if (productInfo?.data?.isPowerMerchant == true) 1 else 0).toString(),
                     "categoryId", categoryIdLevel1,
-                    "shopType", TrackingUtil.getEnhanceShopType(shopInfo?.goldOS),
+                    "shopType", productInfo?.shopTypeString,
                     "pageType", "/productpage",
                     "subcategory", subCategoryNameLevel2,
                     "subcategoryId", subCategoryIdLevel2,
                     "productUrl", productInfo?.basic?.url,
                     "productDeeplinkUrl", deeplinkUrl,
                     "productImageUrl", productImageUrl,
-                    "isOfficialStore", (shopInfo?.goldOS?.isOfficial == 1).toString(),
+                    "isOfficialStore", productInfo?.data?.isOS,
                     "productPriceFormatted", TrackingUtil.getFormattedPrice(productInfo?.finalPrice.orZero()),
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID
                     ?: "",

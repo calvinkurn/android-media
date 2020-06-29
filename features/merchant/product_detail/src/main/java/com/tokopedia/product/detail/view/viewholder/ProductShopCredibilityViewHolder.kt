@@ -34,7 +34,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
                 shop_name.text = it.shopCore.name
                 shop_location_online.text = context.getString(R.string.location_dot_builder, it.location)
                 setupLastActive(element.shopInfo?.shopLastActive.orEmpty())
-                setupBadgeAndImage(it)
+                setupBadgeAndImage(it, element.isOs, element.isPm)
                 setupGoApotik(element.shopFeature)
                 setupInfoRegion(element)
                 hideShopLoading()
@@ -100,10 +100,10 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun setupBadgeAndImage(shopData: ShopInfo) = with(view) {
-        val drawable = if (shopData.goldOS.isOfficial == TRUE_VALUE) {
+    private fun setupBadgeAndImage(shopData: ShopInfo, isOs: Boolean, isPm: Boolean) = with(view) {
+        val drawable = if (isOs) {
             MethodChecker.getDrawable(context, R.drawable.ic_official_store_product)
-        } else if (shopData.goldOS.isGold == TRUE_VALUE && shopData.goldOS.isGoldBadge == TRUE_VALUE) {
+        } else if (isOs && isPm) {
             MethodChecker.getDrawable(context, R.drawable.ic_power_merchant)
         } else {
             shop_ava.hide()

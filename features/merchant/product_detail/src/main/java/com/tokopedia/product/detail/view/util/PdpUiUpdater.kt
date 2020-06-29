@@ -142,6 +142,16 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 isGoldMerchant = it.data.isPowerMerchant
             }
 
+            shopCredibility?.run {
+                isOs = it.data.isOS
+                isPm = it.data.isPowerMerchant
+            }
+
+            shopInfoMap?.run {
+                isOs = it.data.isOS
+                isPm = it.data.isPowerMerchant
+            }
+
             valuePropositionDataModel?.run {
                 isOfficialStore = it.data.isOS
             }
@@ -215,7 +225,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         dataP2?.let {
             val multiOriginNearestWarehouse = it.variantMultiOrigin
             shopInfoMap?.run {
-                shopInfo = it.shopInfo
+                shopName = it.shopInfo?.shopCore?.name ?: ""
+                shopLocation = it.shopInfo?.location ?: ""
+                shopLastActive = it.shopInfo?.shopLastActive ?: ""
+                isFavorite = it.shopInfo?.favoriteData?.alreadyFavorited == 1
+                shopAvatar = it.shopInfo?.shopAssets?.avatar ?: ""
+                isAllowManage = it.shopInfo?.isAllowManage ?: 0
             }
 
             shopCredibility?.run {

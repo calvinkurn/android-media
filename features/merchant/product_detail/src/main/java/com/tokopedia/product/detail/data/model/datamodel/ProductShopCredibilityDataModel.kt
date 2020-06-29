@@ -24,6 +24,8 @@ class ProductShopCredibilityDataModel(
         val type: String = "",
 
         var shopInfo: ShopInfo? = null,
+        var isOs: Boolean = false,
+        var isPm: Boolean = false,
         var shopSpeed: Int = 0,
         var shopChatSpeed: Int = 0,
         var shopRating: Float = 0F,
