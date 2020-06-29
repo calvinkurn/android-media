@@ -31,7 +31,7 @@ class HomeViewModelListCarouselUnitTest : Spek({
 
         Scenario("Get dynamic channel data success with single data and try express checkout") {
             val dataModel = DynamicChannelDataModel()
-            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = listOf(DynamicHomeChannel.Grid()))
+            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = arrayOf(DynamicHomeChannel.Grid()))
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
 
@@ -45,7 +45,8 @@ class HomeViewModelListCarouselUnitTest : Spek({
             }
 
             Given("Success Express Checkout"){
-                every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+                every{ getAtcUseCase.createObservable(any()) } returns
+                        Observable.just(mockk())
             }
 
             Given("home viewModel") {
@@ -77,15 +78,17 @@ class HomeViewModelListCarouselUnitTest : Spek({
             }
 
             Then("Event express checkout should be triggered"){
+                Thread.sleep(100)
                 verifyOrder {
-                    observerExpressCheckout.onChanged(match { it.peekContent() is Map<*,*> })
+                    observerExpressCheckout.onChanged(match { it != null })
                 }
+                confirmVerified(observerExpressCheckout)
             }
         }
 
         Scenario("Get dynamic channel data success with single data and fail express checkout") {
             val dataModel = DynamicChannelDataModel()
-            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = listOf(DynamicHomeChannel.Grid()))
+            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = arrayOf(DynamicHomeChannel.Grid()))
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
 
@@ -130,9 +133,11 @@ class HomeViewModelListCarouselUnitTest : Spek({
             }
 
             Then("Event express checkout should be triggered"){
+                Thread.sleep(100)
                 verifyOrder {
-                    observerExpressCheckout.onChanged(match { it.peekContent() is Throwable })
+                    observerExpressCheckout.onChanged(match { it != null })
                 }
+                confirmVerified(observerExpressCheckout)
             }
         }
     }

@@ -20,45 +20,6 @@ import java.io.File;
 
 public class MethodChecker {
 
-
-    public static void setBackground(View view, Drawable drawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            view.setBackground(drawable);
-        } else {
-            view.setBackgroundDrawable(drawable);
-        }
-    }
-
-    public static int getColor(Context context, int id) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return ContextCompat.getColor(context, id);
-        } else {
-            return context.getResources().getColor(id);
-        }
-    }
-
-    public static Uri getUri(Context context, File outputMediaFile) {
-        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return FileProvider.getUriForFile(context,
-                    context.getApplicationContext().getPackageName() + ".provider", outputMediaFile);
-        } else {
-            return Uri.fromFile(outputMediaFile);
-        }
-    }
-
-    public static Spanned fromHtml(String text) {
-        if (text == null) {
-            text = "";
-        }
-        Spanned result;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            result = Html.fromHtml(text);
-        }
-        return result;
-    }
-
     public static Drawable getDrawable(Context context, int resId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
             return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());

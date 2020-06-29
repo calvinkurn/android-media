@@ -14,8 +14,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.button.BottomActionView
@@ -49,10 +47,8 @@ import com.tokopedia.notifcenter.presentation.viewmodel.NotificationUpdateViewMo
 import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.util.viewModelProvider
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
-import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper.map as stockHandlerMapper
 
 open class NotificationUpdateFragment : BaseNotificationFragment(),
         NotificationUpdateContract.View,
@@ -137,7 +133,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
 
     private fun initObservable() {
         viewModel.productStockHandler.observe(viewLifecycleOwner, Observer {
-            showNotificationDetail(BottomSheetType.StockHandler, stockHandlerMapper(it))
+            showNotificationDetail(BottomSheetType.StockHandler, it)
         })
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             showToastMessageError(it)
@@ -273,9 +269,14 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         super.onSwipeRefresh()
     }
 
+    override fun showToastMessageError(e: Throwable?) {
+        showMessageError(e)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        viewModel.cleared()
     }
 
     private fun onSuccessGetTotalUnreadCounter(): (NotificationUpdateTotalUnread) -> Unit {
@@ -285,38 +286,11 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
+    override fun addProductToCart(
+            product: ProductData,
+            onSuccessAddToCart: (DataModel) -> Unit
+    ) {
         presenter.addProductToCart(product, onSuccessAddToCart)
-    }
-
-    override fun onTrackerAddToCart(product: ProductData, atc: DataModel) {
-        analytics.trackAtcOnClick(product, atc)
-    }
-
-    override fun showToastMessageError(e: Throwable?) {
-        view?.let {
-            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
-            showToastMessageError(errorMessage)
-        }
-    }
-
-    override fun showMessageAtcSuccess(message: String) {
-        view?.let {
-            Toaster.make(
-                    it,
-                    message,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.notifcenter_title_view),
-                    onClickSeeButtonOnAtcSuccessToaster()
-            )
-        }
-    }
-
-    private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
-        return View.OnClickListener {
-            RouteManager.route(it.context, ApplinkConstInternalMarketplace.CART)
-        }
     }
 
     override fun trackOnClickCtaButton(templateKey: String) {

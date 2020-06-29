@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/layout_lvl1"
+    android:paddingRight="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/layout_lvl1">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_hotel_widget_global_search_pref"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ellipsize="end"
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_change"
-        android:textColor="@color/g_500"
+        android:textColor="@color/Green_G500"
         app:typographyType="body_3" />
 
 </LinearLayout>

@@ -3,52 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16">
+    android:orientation="vertical">
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_hotel_menu_order_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
-        android:text="@string/hotel_bottom_menu_transaction_list"
-        app:fontSize="small"
-        app:textViewTheme="lightPrimary"
-        app:weight="medium" />
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl3"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:textColor="@color/Neutral_N700_96"
+        android:text="@string/hotel_bottom_menu_transaction_list"/>
 
     <View
         android:id="@+id/v_first_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bg_line_separator" />
+        android:layout_height="@dimen/hotel_1dp"
+        android:background="@drawable/bg_hotel_line_seperator" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_hotel_menu_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingTop="@dimen/layout_lvl3"
+        android:paddingBottom="@dimen/layout_lvl3"
         android:text="@string/hotel_bottom_menu_promo"
-        app:fontSize="small"
-        app:textViewTheme="lightPrimary"
-        app:weight="medium" />
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyWeight="bold"/>
 
     <View
         android:id="@+id/v_second_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bg_line_separator" />
+        android:layout_height="@dimen/hotel_1dp"
+        android:background="@drawable/bg_hotel_line_seperator" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_hotel_menu_help"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingTop="@dimen/layout_lvl3"
+        android:paddingBottom="@dimen/layout_lvl3"
         android:text="@string/hotel_bottom_menu_help"
-        app:textViewTheme="lightPrimary"
-        app:fontSize="small"
-        app:weight="medium" />
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"/>
 
 </LinearLayout>

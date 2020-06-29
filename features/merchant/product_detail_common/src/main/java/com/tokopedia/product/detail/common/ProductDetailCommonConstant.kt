@@ -79,4 +79,7 @@ object ProductDetailCommonConstant{
     const val VALUE_TEASER_TRACKING_REGISTER = "on"
     const val VALUE_TEASER_TRACKING_UNREGISTER = "off"
     const val VALUE_TEASER_SOURCE = "pdp"
+
+    const val PARAM_APPLINK_SHOP_ID = "shop_id"
+    const val PARAM_APPLINK_PRODUCT_ID = "product_id"
 }

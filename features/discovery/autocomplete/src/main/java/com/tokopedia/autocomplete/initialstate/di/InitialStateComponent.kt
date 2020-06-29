@@ -15,7 +15,8 @@ import dagger.Component
     InitialStateNetModule::class,
     InitialStateUserSessionInterfaceModule::class,
     InitialStateDataMapperModule::class,
-    InitialStateContextModule::class
+    InitialStateContextModule::class,
+    InitialStateIrisAnalyticsModule::class
 ], dependencies = [BaseAppComponent::class])
 interface InitialStateComponent {
     fun inject(fragment: InitialStateFragment)

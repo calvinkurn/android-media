@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.create.view.viewmodel
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -15,17 +14,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class PromotionBudgetAndTypeViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher,
         private val basicShopInfoUseCase: BasicShopInfoUseCase,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher){
-
-    private val mBannerBitmapLiveData = MutableLiveData<Bitmap>()
-    val bannerBitmapLiveData : LiveData<Bitmap>
-        get() = mBannerBitmapLiveData
 
     private val mBasicShopInfoLiveData = MutableLiveData<Result<ShopInfo>>()
     val basicShopInfoLiveData : LiveData<Result<ShopInfo>>

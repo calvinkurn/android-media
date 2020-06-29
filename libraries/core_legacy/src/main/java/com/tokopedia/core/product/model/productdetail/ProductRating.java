@@ -14,7 +14,6 @@ import java.util.List;
  */
 @Deprecated
 public class ProductRating implements Parcelable{
-    private static final String TAG = ProductRating.class.getSimpleName();
 
     @SerializedName("product_rating_point")
     @Expose
@@ -68,128 +67,64 @@ public class ProductRating implements Parcelable{
     public ProductRating() {
     }
 
-    public String getProductRatingPoint() {
-        return productRatingPoint;
-    }
-
     public void setProductRatingPoint(String productRatingPoint) {
         this.productRatingPoint = productRatingPoint;
-    }
-
-    public String getProductRateAccuracyPoint() {
-        return productRateAccuracyPoint;
     }
 
     public void setProductRateAccuracyPoint(String productRateAccuracyPoint) {
         this.productRateAccuracyPoint = productRateAccuracyPoint;
     }
 
-    public String getProductPositiveReviewRating() {
-        return productPositiveReviewRating;
-    }
-
     public void setProductPositiveReviewRating(String productPositiveReviewRating) {
         this.productPositiveReviewRating = productPositiveReviewRating;
-    }
-
-    public String getProductNetralReviewRating() {
-        return productNetralReviewRating;
     }
 
     public void setProductNetralReviewRating(String productNetralReviewRating) {
         this.productNetralReviewRating = productNetralReviewRating;
     }
 
-    public Integer getProductRatingStarPoint() {
-        return productRatingStarPoint;
-    }
-
     public void setProductRatingStarPoint(Integer productRatingStarPoint) {
         this.productRatingStarPoint = productRatingStarPoint;
-    }
-
-    public String getProductRatingStarDesc() {
-        return productRatingStarDesc;
     }
 
     public void setProductRatingStarDesc(String productRatingStarDesc) {
         this.productRatingStarDesc = productRatingStarDesc;
     }
 
-    public String getProductNegativeReviewRating() {
-        return productNegativeReviewRating;
-    }
-
     public void setProductNegativeReviewRating(String productNegativeReviewRating) {
         this.productNegativeReviewRating = productNegativeReviewRating;
-    }
-
-    public Integer getProductReview() {
-        return productReview;
     }
 
     public void setProductReview(Integer productReview) {
         this.productReview = productReview;
     }
 
-    public Double getProductRateAccuracy() {
-        return productRateAccuracy;
-    }
-
     public void setProductRateAccuracy(Double productRateAccuracy) {
         this.productRateAccuracy = productRateAccuracy;
-    }
-
-    public String getProductAccuracyStarDesc() {
-        return productAccuracyStarDesc;
     }
 
     public void setProductAccuracyStarDesc(String productAccuracyStarDesc) {
         this.productAccuracyStarDesc = productAccuracyStarDesc;
     }
 
-    public Double getProductRating() {
-        return productRating;
-    }
-
     public void setProductRating(Double productRating) {
         this.productRating = productRating;
-    }
-
-    public String getProductNetralReviewRateAccuracy() {
-        return productNetralReviewRateAccuracy;
     }
 
     public void setProductNetralReviewRateAccuracy(String productNetralReviewRateAccuracy) {
         this.productNetralReviewRateAccuracy = productNetralReviewRateAccuracy;
     }
 
-    public Integer getProductAccuracyStarRate() {
-        return productAccuracyStarRate;
-    }
-
     public void setProductAccuracyStarRate(Integer productAccuracyStarRate) {
         this.productAccuracyStarRate = productAccuracyStarRate;
-    }
-
-    public String getProductPositiveReviewRateAccuracy() {
-        return productPositiveReviewRateAccuracy;
     }
 
     public void setProductPositiveReviewRateAccuracy(String productPositiveReviewRateAccuracy) {
         this.productPositiveReviewRateAccuracy = productPositiveReviewRateAccuracy;
     }
 
-    public List<ProductRatingList> getProductRatingList() {
-        return productRatingList;
-    }
-
     public void setProductRatingList(List<ProductRatingList> productRatingList) {
         this.productRatingList = productRatingList;
-    }
-
-    public String getProductNegativeReviewRateAccuracy() {
-        return productNegativeReviewRateAccuracy;
     }
 
     public void setProductNegativeReviewRateAccuracy(String productNegativeReviewRateAccuracy) {

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/flight_departure_trip_label_background"
+    android:padding="@dimen/spacing_lvl3">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/flightDepartureIcon"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:layout_constraintBottom_toBottomOf="@+id/tvJourneyDate"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvJourneyAirports"
+        app:srcCompat="@drawable/ic_flight_round" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvJourneyAirports"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintLeft_toRightOf="@+id/flightDepartureIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="CGK - BTJ " />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvJourneyAirline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toRightOf="@+id/tvJourneyAirports"
+        app:layout_constraintTop_toTopOf="@+id/tvJourneyAirports"
+        app:typographyType="body_3"
+        tools:text="| Garuda Indonesia" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvJourneyDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintLeft_toRightOf="@+id/flightDepartureIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvJourneyAirports"
+        app:typographyType="body_3"
+        tools:text="10 Des 2020 " />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvJourneyTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toRightOf="@+id/tvJourneyDate"
+        app:layout_constraintTop_toTopOf="@+id/tvJourneyDate"
+        app:typographyType="body_3"
+        tools:text="| 10:00 - 19:05" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvJourneyPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_3"
+        app:layout_constraintRight_toLeftOf="@+id/tvJourneyPassengerLabel"
+        app:layout_constraintBottom_toBottomOf="@+id/tvJourneyPassengerLabel"
+        app:typographyWeight="bold"
+        tools:text="Rp620.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvJourneyPassengerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/flight_search_people_label" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

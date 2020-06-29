@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="dp_orderhistory_12">12dp</dimen>
+    <dimen name="dp_orderhistory_96">96dp</dimen>
+    <dimen name="dp_orderhistory_20">20dp</dimen>
+</resources>

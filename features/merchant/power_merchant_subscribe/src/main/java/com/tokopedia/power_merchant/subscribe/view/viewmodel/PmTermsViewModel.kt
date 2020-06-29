@@ -6,6 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.domain.interactor.ActivatePowerMerchantUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.power_merchant.subscribe.common.coroutine.CoroutineDispatchers
+import com.tokopedia.power_merchant.subscribe.domain.interactor.ValidatePowerMerchantUseCase
+import com.tokopedia.power_merchant.subscribe.domain.model.ValidatePowerMerchantResponse
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult.*
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.ShowLoading
@@ -19,29 +23,30 @@ import javax.inject.Inject
 
 class PmTermsViewModel @Inject constructor(
     private val activatePowerMerchantUseCase: ActivatePowerMerchantUseCase,
+    private val validatePowerMerchantUseCase: ValidatePowerMerchantUseCase,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
     val viewState: LiveData<ViewState>
         get() = _viewState
-    val activatePmResult: LiveData<Result<Boolean>>
+    val activatePmResult: LiveData<Result<PowerMerchantActivationResult>>
         get() = _activatePmResult
 
     private val _viewState = MutableLiveData<ViewState>()
-    private val _activatePmResult = MutableLiveData<Result<Boolean>>()
+    private val _activatePmResult = MutableLiveData<Result<PowerMerchantActivationResult>>()
 
     fun activatePowerMerchant() {
         showLoading()
 
         launchCatchError(block = {
-            val isSuccess = withContext(dispatchers.io) {
-                activatePowerMerchantUseCase.getData(RequestParams.EMPTY)
+            val pmValidation = withContext(dispatchers.io) {
+                validatePowerMerchantUseCase.execute().response
             }
 
-            if (isSuccess) {
-                _activatePmResult.value = Success(isSuccess)
+            if(pmValidation.isValid()) {
+                executePmActivation()
             } else {
-                throw RuntimeException()
+                onActivationInvalid(pmValidation)
             }
 
             hideLoading()
@@ -54,6 +59,29 @@ class PmTermsViewModel @Inject constructor(
 
     fun detachView() {
         activatePowerMerchantUseCase.unsubscribe()
+    }
+
+    private suspend fun executePmActivation() {
+        val isSuccess = withContext(dispatchers.io) {
+            activatePowerMerchantUseCase.getData(RequestParams.EMPTY)
+        }
+
+        return if (isSuccess) {
+            val result = ActivationSuccess
+            _activatePmResult.value = Success(result)
+        } else {
+            throw RuntimeException()
+        }
+    }
+
+    private fun onActivationInvalid(response: ValidatePowerMerchantResponse) {
+        val result = when {
+            response.kycNotVerified() -> KycNotVerified
+            response.shopScoreNotEligible() -> ShopScoreNotEligible
+            else -> GeneralError(response.getMessage())
+        }
+
+        _activatePmResult.value = Success(result)
     }
 
     private fun showLoading() {

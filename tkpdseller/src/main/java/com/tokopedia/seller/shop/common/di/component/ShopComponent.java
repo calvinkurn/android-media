@@ -45,8 +45,6 @@ public interface ShopComponent {
 
     Retrofit.Builder getRetrofitBuilder();
 
-    BearerInterceptor bearerInterceptor();
-
     @DefaultAuthWithErrorHandler
     OkHttpClient okHttpClient();
 

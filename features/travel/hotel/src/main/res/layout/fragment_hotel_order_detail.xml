@@ -21,13 +21,13 @@
                 layout="@layout/layout_order_detail_hotel_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8" />
+                android:layout_marginTop="@dimen/layout_lvl1" />
 
             <com.tokopedia.common.travel.widget.TravelCrossSellWidget
                 android:id="@+id/cross_sell_widget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/layout_lvl1"
                 android:visibility="gone"
                 tools:visibility="visible"/>
 
@@ -35,24 +35,24 @@
                 layout="@layout/layout_order_detail_payment_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8" />
+                android:layout_marginTop="@dimen/layout_lvl1" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                app:cardElevation="@dimen/dp_2">
+                android:layout_marginTop="@dimen/layout_lvl1"
+                app:cardElevation="@dimen/spacing_lvl1">
 
                 <LinearLayout
                     android:id="@+id/order_detail_footer_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="@dimen/dp_16"
-                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingStart="@dimen/layout_lvl2"
+                    android:paddingLeft="@dimen/layout_lvl2"
                     android:paddingTop="@dimen/dp_25"
-                    android:paddingEnd="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
+                    android:paddingEnd="@dimen/layout_lvl2"
+                    android:paddingRight="@dimen/layout_lvl2"
                     android:paddingBottom="@dimen/dp_25" />
             </androidx.cardview.widget.CardView>
 
@@ -64,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        android:background="@color/white">
+        android:background="@color/Neutral_N0">
 
         <ProgressBar
             android:layout_width="@dimen/dp_50"

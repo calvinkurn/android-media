@@ -3,7 +3,6 @@ package com.tokopedia.opportunity.presenter;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.opportunity.domain.interactor.GetOpportunityFilterUseCase;
 import com.tokopedia.opportunity.domain.interactor.GetOpportunityFirstTimeUseCase;
 import com.tokopedia.opportunity.domain.interactor.GetOpportunityUseCase;
@@ -12,7 +11,6 @@ import com.tokopedia.opportunity.presenter.subscriber.GetOpportunitySubscriber;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by nisie on 3/2/17.
@@ -58,7 +56,7 @@ public class OpportunityListPresenterImpl extends OpportunityListPresenter {
 
     @Override
     public void initOpportunityForFirstTime(@Nullable String query,
-                                            @Nullable ArrayList<FilterPass> listFilter) {
+                                            @Nullable ArrayList<FilterPass> listFilter, String shopId) {
         getView().showLoadingList();
         getView().disableView();
         getOpportunityFirstTimeUseCase.execute(
@@ -66,20 +64,7 @@ public class OpportunityListPresenterImpl extends OpportunityListPresenter {
                         PAGE_ONE,
                         query,
                         listFilter,
-                        sessionHandler.getShopID()),
+                        shopId),
                 new GetOpportunityFirstTimeSubscriber(getView()));
-    }
-
-    public HashMap<String, String> getCustomDimension(String query,
-                                                      ArrayList<FilterPass> listFilter) {
-        HashMap<String, String> customDimension = new HashMap<>();
-        if (query != null)
-            customDimension.put(OpportunityTrackingEventLabel.CustomDimension.SEARCH, query);
-        if (listFilter != null)
-            for (FilterPass filterPass : listFilter) {
-                customDimension.put(filterPass.getKey(), filterPass.getValue() + " - " +
-                        filterPass.getName());
-            }
-        return customDimension;
     }
 }

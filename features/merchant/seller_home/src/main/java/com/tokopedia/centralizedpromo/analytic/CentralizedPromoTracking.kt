@@ -2,11 +2,11 @@ package com.tokopedia.centralizedpromo.analytic
 
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_IMPRESSION
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_CLICK
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_CLICK_CLOSE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_CLICK_CREATE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_IMPRESSION
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_CLICK
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_PROMO_CREATION_CLICK
@@ -23,8 +23,8 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NA
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_PM_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_PM_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.KEY_SHOP_TYPE
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.KEY_USER_ID
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.iris.util.KEY_USER_ID
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.TrackingConstant.ADS_PROMOTION
 import com.tokopedia.sellerhome.analytic.TrackingConstant.BUSINESS_UNIT
@@ -133,7 +133,7 @@ object CentralizedPromoTracking {
         val data = mapOf(
                 EVENT to OPEN_SCREEN,
                 SCREEN_NAME to ADS_PROMOTION,
-                IS_LOGGED_IN_STATUS to isLoggedIn,
+                IS_LOGGED_IN_STATUS to isLoggedIn.toString(),
                 CURRENT_SITE to TOKOPEDIA_SELLER,
                 USER_ID to userId,
                 BUSINESS_UNIT to PHYSICAL_GOODS
