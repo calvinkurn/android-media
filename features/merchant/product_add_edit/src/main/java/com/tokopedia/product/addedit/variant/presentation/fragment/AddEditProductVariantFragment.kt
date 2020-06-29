@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -126,6 +127,7 @@ class AddEditProductVariantFragment :
         return inflater.inflate(R.layout.fragment_add_edit_product_variant, container, false)
     }
 
+    private var tvDeleteAll: AppCompatTextView? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -158,6 +160,7 @@ class AddEditProductVariantFragment :
         observeProductInputModel()
         observeInputStatus()
         observeSizechartVisibility()
+        observeIsEditMode()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -183,6 +186,11 @@ class AddEditProductVariantFragment :
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
             viewModel.updateVariantInputModel(variantDetails, variantPhotos)
             startAddEditProductVariantDetailActivity()
+        }
+
+        tvDeleteAll = activity?.findViewById(R.id.tv_delete_all)
+        tvDeleteAll?.setOnClickListener {
+            showRemoveVariantDialog()
         }
     }
 
@@ -487,8 +495,7 @@ class AddEditProductVariantFragment :
     private fun submitVariantInput() {
         val productInputModel = viewModel.productInputModel.value
         productInputModel?.apply {
-            val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
-                    ?: ""
+            val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
             SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
             val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
@@ -623,7 +630,7 @@ class AddEditProductVariantFragment :
 
                     // set product variant images
                     viewModel.productInputModel.value?.run {
-                        val variantPhotos = viewModel.getProductVariantPhotoImageUrlOrPathList(this)
+                        val variantPhotos = viewModel.getProductVariantPhotos(this)
                         variantPhotoAdapter?.setData(variantPhotos)
                     }
 
@@ -640,14 +647,6 @@ class AddEditProductVariantFragment :
                 }
             }
         })
-    }
-
-    private fun setSelectedVariantTypes(variantTypeView: RecyclerView, selectedAdapterPositions: List<Int>) {
-        selectedAdapterPositions.forEach { adapterPosition ->
-            val itemView = variantTypeView.layoutManager?.findViewByPosition(adapterPosition)
-            val variantTypeChip: ChipsUnify? = itemView?.findViewById(R.id.chipsVariantTypeName)
-            variantTypeChip?.chipType = ChipsUnify.TYPE_SELECTED
-        }
     }
 
     private fun observeProductInputModel() {
@@ -692,10 +691,48 @@ class AddEditProductVariantFragment :
         })
     }
 
+    private fun observeIsEditMode() {
+        viewModel.isEditMode.observe(this, Observer {
+            tvDeleteAll?.visibility = if (it) View.VISIBLE else View.GONE
+        })
+    }
+
     private fun observeSizechartVisibility() {
         viewModel.isVariantSizechartVisible.observe(this, Observer {
             layoutSizechart.visibility = if (it) View.VISIBLE else View.GONE
         })
+    }
+
+    private fun showRemoveVariantDialog() {
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.apply {
+            setTitle(getString(R.string.label_variant_delete_all_title))
+            setDescription(getString(R.string.label_variant_delete_all_description))
+            setPrimaryCTAText(getString(R.string.action_variant_delete_all_negative))
+            setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            setSecondaryCTAText(getString(R.string.action_variant_delete_all_positive))
+            setSecondaryCTAClickListener {
+                dialog.dismiss()
+                removeVariant()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun removeVariant() {
+        val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
+        categoryId?.let { viewModel.getCategoryVariantCombination(it) }
+        variantTypeAdapter?.setData(emptyList())
+        variantValueAdapterLevel1?.setData(emptyList())
+        variantValueAdapterLevel2?.setData(emptyList())
+        variantValueLevel1Layout.hide()
+        variantValueLevel2Layout.hide()
+        variantPhotoAdapter?.setData(emptyList())
+        viewModel.removeVariant()
+        removeSizechart()
+        layoutSizechart.hide()
     }
 
     private fun removeSizechart() {

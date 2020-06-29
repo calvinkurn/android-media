@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
+import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
@@ -168,11 +170,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             val hasVariantCombination = viewModel.hasVariantCombination(size)
             // with collapsible header
             if (hasVariantCombination) {
-                val variantInputModels = viewModel.productInputModel.value?.variantInputModel?.products
-                        ?: listOf()
                 val selectedVariantList = viewModel.productInputModel.value?.variantInputModel?.selections
-                        ?: listOf()
-                setupVariantDetailCombinationFields(selectedVariantList, variantInputModels)
+                selectedVariantList?.run { setupVariantDetailCombinationFields(selectedVariantList) }
             } else {
                 val selectedVariant = viewModel.productInputModel.value?.variantInputModel?.selections?.firstOrNull()
                 val selectedUnitValues = selectedVariant?.options
@@ -190,15 +189,26 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun setupVariantDetailFields(selectedUnitValues: List<OptionInputModel>) {
         // without variant unit values combination
-        selectedUnitValues.forEach { unitValue ->
-            val variantDetailInputModel = VariantDetailInputLayoutModel(unitValueLabel = unitValue.value)
+        val productVariants = viewModel.productInputModel.value?.variantInputModel?.products.orEmpty()
+        selectedUnitValues.forEachIndexed { productVariantIndex, unitValue ->
+            val productVariant = productVariants
+                    .getOrElse(productVariantIndex) { ProductVariantInputModel() }
+            val priceString = productVariant.price.toString()
+            val variantDetailInputModel = VariantDetailInputLayoutModel(
+                    price = formatProductPriceInput(priceString),
+                    isActive = productVariant.status == STATUS_ACTIVE_STRING,
+                    sku = productVariant.sku,
+                    stock = productVariant.stock.toString(),
+                    unitValueLabel = unitValue.value)
             val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
             fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
         }
     }
 
-    private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>,
-                                                    variantInputModels: List<ProductVariantInputModel>) {
+    private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>) {
+        //increment for indexing product variant
+        var productVariantIndex = 0
+        val productVariants = viewModel.productInputModel.value?.variantInputModel?.products.orEmpty()
         // variant level 1 properties
         val selectedVariantLevel1 = selectedVariants[VARIANT_VALUE_LEVEL_ONE_POSITION]
         val unitValueLevel1 = selectedVariantLevel1.options
@@ -213,11 +223,19 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             viewModel.updateVariantDetailHeaderMap(headerPosition, false)
             // render variant unit value fields
             unitValueLevel2.forEach { level2Value ->
+                val productVariant = productVariants
+                        .getOrElse(productVariantIndex) { ProductVariantInputModel() }
+                val priceString = productVariant.price.toString()
                 val variantDetailInputModel = VariantDetailInputLayoutModel(
+                        price = formatProductPriceInput(priceString),
+                        isActive = productVariant.status == STATUS_ACTIVE_STRING,
+                        sku = productVariant.sku,
+                        stock = productVariant.stock.toString(),
                         headerPosition = headerPosition,
                         unitValueLabel = level2Value.value)
                 val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
                 fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
+                productVariantIndex++
             }
         }
         // set input field size
@@ -240,8 +258,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitVariantInput() {
-        val productInputModel = viewModel.productInputModel.value
-        productInputModel?.apply {
+        viewModel.updateProductInputModel()
+        viewModel.productInputModel.value?.apply {
             val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
             SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
@@ -250,5 +268,4 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             activity?.finish()
         }
     }
-
 }
