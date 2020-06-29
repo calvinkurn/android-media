@@ -6,10 +6,12 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
-import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.Metric
-import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.UpdateChannelUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
@@ -132,8 +134,13 @@ class PlayBroadcastViewModel @Inject constructor(
         override fun onChanged(t: Unit?) {}
     }
 
+    private val channelIdObserver = object : Observer<String> {
+        override fun onChanged(t: String?) {}
+    }
+
     init {
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
+        _observableChannelId.observeForever(channelIdObserver)
 
         mockChatList()
         mockMetrics()
@@ -144,6 +151,7 @@ class PlayBroadcastViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         socketResponseHandler.removeObserver(socketResponseHandlerObserver)
+        _observableChannelId.removeObserver(channelIdObserver)
         playSocket.destroy()
         scope.cancel()
     }
