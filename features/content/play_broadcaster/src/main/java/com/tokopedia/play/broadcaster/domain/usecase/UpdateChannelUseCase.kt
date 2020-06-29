@@ -37,11 +37,11 @@ class UpdateChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): ChannelId {
-        val gqlRequest = GraphqlRequest(query, UpdateChannelResponse.UpdateChannelData::class.java, params)
+        val gqlRequest = GraphqlRequest(query, UpdateChannelResponse::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<UpdateChannelResponse.UpdateChannelData>(UpdateChannelResponse.UpdateChannelData::class.java)
-        response?.data?.updateChannel?.let {
+        val response = gqlResponse.getData<UpdateChannelResponse>(UpdateChannelResponse::class.java)
+        response?.updateChannel?.let {
             return it
         }
         throw MessageErrorException("Ada sedikit kendala pada sistem.")

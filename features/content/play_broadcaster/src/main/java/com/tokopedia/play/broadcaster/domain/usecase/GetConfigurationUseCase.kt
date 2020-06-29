@@ -33,11 +33,11 @@ class GetConfigurationUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): Config {
-        val gqlRequest = GraphqlRequest(query, GetBroadcasterShopConfigResponse.GetBroadcasterShopConfigData::class.java, params)
+        val gqlRequest = GraphqlRequest(query, GetBroadcasterShopConfigResponse::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<GetBroadcasterShopConfigResponse.GetBroadcasterShopConfigData>(GetBroadcasterShopConfigResponse.GetBroadcasterShopConfigData::class.java)
-        response?.data?.config?.let { shopConfig -> return mapConfiguration(shopConfig) }
+        val response = gqlResponse.getData<GetBroadcasterShopConfigResponse>(GetBroadcasterShopConfigResponse::class.java)
+        response?.config?.let { shopConfig -> return mapConfiguration(shopConfig) }
         throw MessageErrorException("Ada sedikit kendala pada sistem.")
     }
 

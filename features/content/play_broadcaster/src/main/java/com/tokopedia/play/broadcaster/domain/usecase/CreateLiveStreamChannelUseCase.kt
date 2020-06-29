@@ -35,11 +35,11 @@ class CreateLiveStreamChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): CreateLiveStreamChannelResponse.GetMedia {
-        val gqlRequest = GraphqlRequest(query, CreateLiveStreamChannelResponse.CreateLiveStreamChannelData::class.java, params)
+        val gqlRequest = GraphqlRequest(query, CreateLiveStreamChannelResponse::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<CreateLiveStreamChannelResponse.CreateLiveStreamChannelData>(CreateLiveStreamChannelResponse.CreateLiveStreamChannelData::class.java)
-        response?.data?.media?.let {
+        val response = gqlResponse.getData<CreateLiveStreamChannelResponse>(CreateLiveStreamChannelResponse::class.java)
+        response?.media?.let {
             return it
         }
         throw MessageErrorException("Terjadi kesalahan pada server") // TODO("replace with default error message")

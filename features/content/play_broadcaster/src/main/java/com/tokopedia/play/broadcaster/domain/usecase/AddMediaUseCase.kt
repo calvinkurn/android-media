@@ -33,11 +33,11 @@ class AddMediaUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): AddMediaChannelResponse.GetMediaId {
-        val gqlRequest = GraphqlRequest(query, AddMediaChannelResponse.AddMediaChannelData::class.java, params)
+        val gqlRequest = GraphqlRequest(query, AddMediaChannelResponse::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<AddMediaChannelResponse.AddMediaChannelData>(AddMediaChannelResponse.AddMediaChannelData::class.java)
-        response?.data?.mediaId?.let {
+        val response = gqlResponse.getData<AddMediaChannelResponse>(AddMediaChannelResponse::class.java)
+        response?.mediaId?.let {
             return it
         }
         throw MessageErrorException("Terjadi kesalahan pada server") // TODO("replace with default error message")
