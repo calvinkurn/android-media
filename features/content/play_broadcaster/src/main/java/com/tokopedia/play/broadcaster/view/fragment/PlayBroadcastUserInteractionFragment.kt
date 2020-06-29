@@ -258,7 +258,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
         view?.let{ view ->
-            if (actionLabel.isNotEmpty()) Toaster.toasterCustomCtaWidth = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
             Toaster.toasterCustomBottomHeight =  ivShareLink.height + resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
             view.showToaster(
                     message = message,
