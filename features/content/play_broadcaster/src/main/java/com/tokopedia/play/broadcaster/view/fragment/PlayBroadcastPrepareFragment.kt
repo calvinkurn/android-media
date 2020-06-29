@@ -16,10 +16,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -39,6 +42,8 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var tvTermsCondition: TextView
 
+    private lateinit var loadingFragment: LoadingDialogFragment
+
     private val setupListener = object : SetupResultListener {
         override fun onSetupCanceled() {
 
@@ -46,7 +51,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
 
         override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
             viewModel.setDataFromSetupDataStore(dataStore)
-            openFinalPreparationPage()
+            parentViewModel.fetchChannelData()
         }
     }
 
@@ -72,6 +77,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeFollowers()
+        observeChannelInfo()
     }
 
     private fun initView(view: View) {
@@ -138,6 +144,20 @@ class PlayBroadcastPrepareFragment @Inject constructor(
 
     }
 
+    private fun getLoadingFragment(): LoadingDialogFragment {
+        if (!::loadingFragment.isInitialized) {
+            val setupClass = LoadingDialogFragment::class.java
+            val fragmentFactory = childFragmentManager.fragmentFactory
+            loadingFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as LoadingDialogFragment
+        }
+        return loadingFragment
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) getLoadingFragment().show(childFragmentManager)
+        else getLoadingFragment().dismiss()
+    }
+
     //region observe
     /**
      * Observe
@@ -145,6 +165,16 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private fun observeFollowers() {
         viewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
             followerView.setFollowersModel(it)
+        })
+    }
+
+    private fun observeChannelInfo() {
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is NetworkResult.Success -> openFinalPreparationPage()
+                NetworkResult.Loading -> showLoading(true)
+                is NetworkResult.Fail -> requireView().showToaster(it.error.localizedMessage)
+            }
         })
     }
     //endregion

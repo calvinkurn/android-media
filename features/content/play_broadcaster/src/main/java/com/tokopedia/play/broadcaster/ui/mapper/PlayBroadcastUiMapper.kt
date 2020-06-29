@@ -1,15 +1,19 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
+import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 /**
@@ -160,6 +164,32 @@ object PlayBroadcastUiMapper {
                 stock = it.quantity,
                 isSelectedHandler = { false },
                 isSelectable = { NotSelectable(Throwable("should not be selectable")) }
+        )
+    }
+
+    fun mapProductListToData(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
+        ProductData(
+                id = it.id.toLongOrZero(),
+                name = it.productName,
+                imageUrl = "", // TODO("ask BE to return image url")
+                originalImageUrl = "", // TODO("ask BE to return image url")
+                stock = it.quantity
+        )
+    }
+
+    fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
+        val prevSource = when (val prevCover = setupCover?.croppedCover) {
+            is CoverSetupState.Cropped -> prevCover.coverSource
+            else -> null
+        }
+
+        return PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped(
+                        coverImage = Uri.parse(coverUrl),
+                        coverSource = prevSource ?: CoverSource.None
+                ),
+                state = SetupDataState.Uploaded,
+                title = coverTitle
         )
     }
 
