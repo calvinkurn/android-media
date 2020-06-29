@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ll_meta"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
@@ -27,23 +27,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:tickerShapeType="loose"
             tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_cover"
-            android:layout_width="@dimen/play_summary_cover_width"
-            android:layout_height="@dimen/play_summary_cover_height"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:background="@drawable/bg_play_dark_gray_rounded_corner" />
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginBottom="@dimen/play_dp_12"
+            android:background="@drawable/bg_play_dark_gray_rounded_corner"
+            android:minWidth="@dimen/play_summary_cover_weight"
+            android:minHeight="@dimen/play_summary_cover_weight"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toTopOf="@+id/tv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/play_dp_12"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             android:gravity="center"
             android:textColor="@color/Neutral_N0"
+            app:layout_constraintBottom_toTopOf="@+id/tv_duration"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:typographyType="heading_5"
             tools:text="Sneakers Hypebeast with Cashback 10%" />
 
@@ -51,21 +64,22 @@
             android:id="@+id/tv_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/play_dp_12"
             android:background="@drawable/bg_play_dark_gray_rounded_corner"
             android:drawablePadding="@dimen/spacing_lvl2"
             android:paddingStart="@dimen/play_dp_6"
-            android:paddingLeft="@dimen/play_dp_6"
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingEnd="@dimen/play_dp_6"
-            android:paddingRight="@dimen/play_dp_6"
             android:paddingBottom="@dimen/spacing_lvl1"
             android:textColor="@color/Neutral_N0"
             app:drawableLeftCompat="@drawable/ic_play_duration_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:typographyType="body_3"
             tools:text="28:42" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/overflow"

@@ -209,6 +209,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                     findViewById<View>(android.R.id.content).showToaster(
                             message = result.error.localizedMessage,
                             duration = Toaster.LENGTH_INDEFINITE,
+                            type = Toaster.TYPE_ERROR,
                             actionLabel = getString(R.string.play_broadcast_try_again),
                             actionListener = View.OnClickListener { result.onRetry() }
                     )

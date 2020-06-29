@@ -30,7 +30,7 @@ class SummaryInfoPartialView(
     val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
 
     private val flInfo = findViewById<FrameLayout>(R.id.fl_info)
-    private val llMeta = findViewById<LinearLayout>(R.id.ll_meta)
+    private val llMeta = findViewById<ConstraintLayout>(R.id.ll_meta)
     private val overflow = findViewById<View>(R.id.overflow)
     private val tvTitle = findViewById<Typography>(R.id.tv_title)
     private val ivCover = findViewById<AppCompatImageView>(R.id.iv_cover)
