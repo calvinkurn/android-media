@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/brand_recom_iv"
-        android:layout_width="@dimen/dp_55"
-        android:layout_height="@dimen/dp_55"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
         tools:src="@drawable/empty_photo" />
 </androidx.cardview.widget.CardView>
