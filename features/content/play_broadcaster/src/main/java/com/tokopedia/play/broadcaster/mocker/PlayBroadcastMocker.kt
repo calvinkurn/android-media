@@ -82,7 +82,7 @@ object PlayBroadcastMocker {
     fun getMockConfigurationDraftChannel() = ConfigurationUiModel(
             streamAllowed = true,
             channelStatus = PlayChannelStatus.Draft,
-            channelId = "10012",
+            channelId = "10012", // 10008 prod, 10012 stag
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
                     pauseDuration = (1 * 60 * 1000),

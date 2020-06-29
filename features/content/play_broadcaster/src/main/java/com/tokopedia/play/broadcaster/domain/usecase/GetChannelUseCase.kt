@@ -115,11 +115,11 @@ class GetChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): GetChannelResponse.Channel {
-        val gqlRequest = GraphqlRequest(query, GetChannelResponse.GetChannelData::class.java, params)
+        val gqlRequest = GraphqlRequest(query, GetChannelResponse::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<GetChannelResponse.GetChannelData>(GetChannelResponse.GetChannelData::class.java)
-        try { response?.data?.broadcasterGetChannels?.channels?.let { return it.first() } }
+        val response = gqlResponse.getData<GetChannelResponse>(GetChannelResponse::class.java)
+        try { response?.broadcasterGetChannels?.channels?.let { return it.first() } }
         catch (e: Exception) { }
         throw MessageErrorException("Ada sedikit kendala pada sistem.")
     }
