@@ -513,6 +513,13 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                         userId = userSession.userId
                 )
             }
+            EmptyStateUiModel.DATA_KEY -> {
+                VoucherCreationTracking.sendVoucherListImpressionTracking(
+                        action = Impression.NO_RESULT,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
+            }
             else -> {}
         }
     }
@@ -748,12 +755,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun setupSearchBar() {
         searchBarMvc?.run {
-            setOnClickListener {
-                VoucherCreationTracking.sendVoucherListClickTracking(
-                        action = Click.SEARCH_BAR,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
-                )
+            searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    VoucherCreationTracking.sendVoucherListClickTracking(
+                            action = Click.SEARCH_BAR,
+                            isActive = isActiveVoucher,
+                            userId = userSession.userId
+                    )
+                }
             }
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {

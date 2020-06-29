@@ -148,10 +148,6 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
         }
         observeLiveData()
         initiateVoucherPreview()
-        VoucherCreationTracking.sendOpenScreenTracking(
-                VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.TYPE_BUDGET,
-                userSession.isLoggedIn,
-                userSession.userId)
         val fragmentTransaction = childFragmentManager.beginTransaction().apply {
             cashbackVoucherCreateFragment?.let {
                 if (childFragmentManager.findFragmentByTag(CashbackVoucherCreateFragment::javaClass.name) == null) {
