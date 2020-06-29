@@ -27,9 +27,7 @@ class LidImagesDownloader : CoroutineScope {
                             .submit()
                             .get()
                     drawableList.add(drawable)
-                    if(true) throw RuntimeException("Hello")
                 }
-
 
                 withContext(Dispatchers.Main) {
                     if (urlList.size == drawableList.size) {

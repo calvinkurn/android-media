@@ -82,7 +82,7 @@
         android:layout_width="223dp"
         android:layout_height="193dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/dp_3"
+        android:layout_marginTop="@dimen/gami_box_glow_top_margin"
         android:alpha="0"
         app:srcCompat="@color/white"
         tools:alpha="0" />
@@ -92,7 +92,7 @@
         android:layout_width="170dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/dp_3"
+        android:layout_marginTop="@dimen/gami_box_glow_top_margin"
         android:scaleType="fitCenter"
         app:srcCompat="@color/white"
         tools:alpha="0" />

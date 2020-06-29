@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
@@ -33,7 +34,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
     var disableConfettiAnimation = false
     val lidImagesDownloader = LidImagesDownloader()
-    val lidImages = arrayListOf<Bitmap>()
+    private val lidImages = arrayListOf<Bitmap>()
 
     override var TOTAL_ASYNC_IMAGES = 5
     override var GIFT_BOX_START_DELAY = 0L
@@ -258,37 +259,52 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
         lidImagesDownloader.downloadImages(this.context, lidImageList) { images ->
             if (images.isNullOrEmpty()) {
-                imageCallback.invoke(false)
+                loadOriginalImages(null, imageCallback)
             } else {
                 lidImages.addAll(images)
-                Glide.with(this)
-                        .load(images[0])
-                        .dontAnimate()
-                        .addListener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                imageCallback.invoke(false)
-                                return false
-                            }
+                loadOriginalImages(images[0], imageCallback)
 
-                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                val count = imagesLoaded.incrementAndGet()
-                                if (count == TOTAL_ASYNC_IMAGES) {
-                                    imageCallback.invoke(true)
-                                }
-                                return false
-                            }
-                        })
-                        .into(imageGiftBoxLid)
             }
         }
     }
 
     override fun loadLidFrames(): Animator {
-        val valueAnimator = ValueAnimator.ofInt(lidImages.size - 1)
-        valueAnimator.addUpdateListener {
-            imageGiftBoxLid.setImageBitmap(lidImages[it.animatedValue as Int])
+        return if (lidImages.isEmpty()) {
+            super.loadLidFrames()
+        } else {
+            val valueAnimator = ValueAnimator.ofInt(lidImages.size - 1)
+            valueAnimator.addUpdateListener {
+                imageGiftBoxLid.setImageBitmap(lidImages[it.animatedValue as Int])
+            }
+            valueAnimator.duration = LID_ANIMATION_DURATION
+            valueAnimator
         }
-        valueAnimator.duration = LID_ANIMATION_DURATION
-        return valueAnimator
+    }
+
+    private fun loadOriginalImages(bmp: Bitmap?, imageCallback: ((isLoaded: Boolean) -> Unit), @DrawableRes resId: Int = R.drawable.gf_ic_lid_0) {
+        val rp = if (bmp != null) {
+            Glide.with(this)
+                    .load(bmp)
+
+        } else {
+            Glide.with(this)
+                    .load(resId)
+        }
+        rp.dontAnimate()
+                .addListener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        imageCallback.invoke(false)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        val count = imagesLoaded.incrementAndGet()
+                        if (count == TOTAL_ASYNC_IMAGES) {
+                            imageCallback.invoke(true)
+                        }
+                        return false
+                    }
+                })
+                .into(imageGiftBoxLid)
     }
 }

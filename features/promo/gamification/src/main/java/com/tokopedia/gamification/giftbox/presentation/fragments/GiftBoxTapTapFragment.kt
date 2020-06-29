@@ -477,13 +477,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     bgImageUrl,
                     lidImages,
                     imageCallback = { isLoaded ->
-                        if (isLoaded) {
-                            setPositionOfViewsAtBoxOpen()
-                            hideLoader()
-                            fadeInActiveStateViews()
-                        } else {
-                            onImageLoadingFailed(CRACK_UNLIMITED)
-                        }
+                        setPositionOfViewsAtBoxOpen()
+                        hideLoader()
+                        fadeInActiveStateViews()
                     }
             )
         }
@@ -533,14 +529,11 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         bgImageUrl,
                         lidImages,
                         imageCallback = { isLoaded ->
-                            if (isLoaded) {
-                                setPositionOfViewsAtBoxOpen()
-                                hideLoader()
-                                fadeInActiveStateViews()
-                                getTapTapView().startInitialAnimation()?.start()
-                            } else {
-                                onImageLoadingFailed(LOBBY)
-                            }
+
+                            setPositionOfViewsAtBoxOpen()
+                            hideLoader()
+                            fadeInActiveStateViews()
+                            getTapTapView().startInitialAnimation()?.start()
                         }
                 )
             }
@@ -548,15 +541,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun onImageLoadingFailed(@TokenUserStateTapTap state: String) {
-        hideLoader()
-        renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
-        hourCountDownTimer?.cancel()
-        minuteCountDownTimer?.cancel()
-        stopBgSound()
-        tvTimer.alpha = 0f
-        progressBarTimer.alpha = 0f
-        tvProgressCount.alpha = 0f
-        getTapTapView().fmGiftBox.setOnClickListener(null)
+//        hideLoader()
+//        renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
+//        hourCountDownTimer?.cancel()
+//        minuteCountDownTimer?.cancel()
+//        stopBgSound()
+//        tvTimer.alpha = 0f
+//        progressBarTimer.alpha = 0f
+//        tvProgressCount.alpha = 0f
+//        getTapTapView().fmGiftBox.setOnClickListener(null)
     }
 
     private fun loadInactiveContainer() {
