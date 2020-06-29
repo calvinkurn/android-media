@@ -153,6 +153,7 @@
 /features/logistic/logisticorder/                    	@tokopedia/minion-bob
 /features/logistic/dropoff/                    	        @tokopedia/minion-bob
 /features/logistic/logisticcart/                		@tokopedia/minion-bob
+/features/logistic/editshipping/                        @tokopedia/minion-bob
 
 /features/user/chatbot/                         		@tokopedia/minion-darth
 /features/user/chatbot_no_op/                   		@tokopedia/minion-kevin
