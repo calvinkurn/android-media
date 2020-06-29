@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +17,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.gone
@@ -125,6 +127,7 @@ class AddEditProductVariantFragment :
         return inflater.inflate(R.layout.fragment_add_edit_product_variant, container, false)
     }
 
+    private var tvDeleteAll: AppCompatTextView? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -147,6 +150,7 @@ class AddEditProductVariantFragment :
         observeProductInputModel()
         observeInputStatus()
         observeSizechartVisibility()
+        observeIsEditMode()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -169,6 +173,11 @@ class AddEditProductVariantFragment :
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
             viewModel.updateVariantInputModel(variantDetails, variantPhotos)
             startAddEditProductVariantDetailActivity()
+        }
+
+        tvDeleteAll = activity?.findViewById(R.id.tv_delete_all)
+        tvDeleteAll?.setOnClickListener {
+            showRemoveVariantDialog()
         }
     }
 
@@ -579,10 +588,48 @@ class AddEditProductVariantFragment :
         })
     }
 
+    private fun observeIsEditMode() {
+        viewModel.isEditMode.observe(this, Observer {
+            tvDeleteAll?.visibility = if (it) View.VISIBLE else View.GONE
+        })
+    }
+
     private fun observeSizechartVisibility() {
         viewModel.isVariantSizechartVisible.observe(this, Observer {
             layoutSizechart.visibility = if (it) View.VISIBLE else View.GONE
         })
+    }
+
+    private fun showRemoveVariantDialog() {
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.apply {
+            setTitle(getString(R.string.label_variant_delete_all_title))
+            setDescription(getString(R.string.label_variant_delete_all_description))
+            setPrimaryCTAText(getString(R.string.action_variant_delete_all_negative))
+            setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            setSecondaryCTAText(getString(R.string.action_variant_delete_all_positive))
+            setSecondaryCTAClickListener {
+                dialog.dismiss()
+                removeVariant()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun removeVariant() {
+        val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
+        categoryId?.let { viewModel.getCategoryVariantCombination(it) }
+        variantTypeAdapter?.setData(emptyList())
+        variantValueAdapterLevel1?.setData(emptyList())
+        variantValueAdapterLevel2?.setData(emptyList())
+        variantValueLevel1Layout.hide()
+        variantValueLevel2Layout.hide()
+        variantPhotoAdapter?.setData(emptyList())
+        viewModel.removeVariant()
+        removeSizechart()
+        layoutSizechart.hide()
     }
 
     private fun removeSizechart() {

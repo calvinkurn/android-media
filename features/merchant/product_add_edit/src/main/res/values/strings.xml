@@ -213,6 +213,7 @@
     <string name="action_variant_next">Lanjut</string>
     <string name="action_variant_save">Simpan</string>
     <string name="action_variant_add">Tambah</string>
+    <string name="action_variant_delete">Hapus</string>
     <string name="action_clear_sizechart">Hapus</string>
     <string name="action_replace_sizechart">Ubah Foto</string>
     <string name="action_edit_sizechart">Edit Foto</string>
@@ -242,5 +243,9 @@
     <string name="label_variant_multiple_select_bottom_sheet_title">Pilih variant yang ingin diatur</string>
     <string name="label_variant_multiple_input_bottom_sheet_title">Atur sekaligus di sini</string>
     <string name="label_variant_main_select_bottom_sheet_title">Pilih satu varian utama</string>
+    <string name="label_variant_delete_all_title">Hapus semua varian?</string>
+    <string name="label_variant_delete_all_description">Dengan hapus semua varian, data yang kamu sudah isi akan hilang.</string>
+    <string name="action_variant_delete_all_negative">Batal</string>
+    <string name="action_variant_delete_all_positive">Ya, Hapus</string>
 
 </resources>
