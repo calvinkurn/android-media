@@ -136,7 +136,7 @@ interface TopChatContract {
         fun getAtcPageIntent(
                 context: Context?,
                 element: ProductAttachmentViewModel,
-                sourcePage: String = ""
+                sourcePage: String
         ): Intent
 
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
@@ -146,7 +146,7 @@ interface TopChatContract {
         fun getBuyPageIntent(
                 context: Context?,
                 element: ProductAttachmentViewModel,
-                sourcePage: String = ""
+                sourcePage: String
         ): Intent
 
         fun initVoucherPreview(extras: Bundle?)

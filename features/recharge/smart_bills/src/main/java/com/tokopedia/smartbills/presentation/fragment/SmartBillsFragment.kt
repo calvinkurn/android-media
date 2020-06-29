@@ -398,8 +398,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
                 val coachMark = CoachMarkBuilder().build()
                 coachMark.enableSkip = true
-                //Coachmark downgraded to 1.2.3 to fix crash
-//                coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
+                coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
                 coachMark.show(activity, "SmartBillsOnboardingCoachMark", coachMarks)
             }
         }

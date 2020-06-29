@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
 import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
@@ -34,6 +35,8 @@ import javax.inject.Inject;
  */
 
 public class TopChatAnalytics {
+
+    private String sourcePage = "";
 
     @Inject
     public TopChatAnalytics() {
@@ -130,6 +133,10 @@ public class TopChatAnalytics {
         public static final String FOLLOW_SHOP = "follow shop";
         public static final String UNFOLLOW_SHOP = "unfollow shop";
         String BUYER = "buyer";
+    }
+
+    public void setSourcePage(String sourcePage) {
+        this.sourcePage = sourcePage;
     }
 
     public void eventClickInboxChannel() {
@@ -290,13 +297,13 @@ public class TopChatAnalytics {
                 null,
                 product.getPriceInt(),
                 null,
-                "/chat",
+                getItemDimension40(product),
                 PRODUCT_INDEX
         );
         products.add(topChatProduct);
 
         Bundle bundle = ProductListClickBundler.getBundle(
-                getField(String.valueOf(product.getBlastId())),
+                getItemList(product),
                 products,
                 Category.CHAT_DETAIL,
                 Action.CLICK_PRODUCT_IMAGE,
@@ -317,7 +324,6 @@ public class TopChatAnalytics {
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
     ) {
-
         ArrayList<ProductListImpressionProduct> products = new ArrayList<>();
         ProductListImpressionProduct product1 = new ProductListImpressionProduct(
                 product.getIdString(),
@@ -328,8 +334,8 @@ public class TopChatAnalytics {
                 product.getPriceInt() + 0.0,
                 null,
                 PRODUCT_INDEX,
-                getField(String.valueOf(product.getBlastId())),
-                getField(String.valueOf(product.getBlastId()))
+                getItemList(product),
+                getItemDimension40(product)
         );
         products.add(product1);
 
@@ -347,34 +353,25 @@ public class TopChatAnalytics {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle
         );
-
-        //TODO milhamj
-//        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-//                DataLayer.mapOf(
-//                        EVENT_NAME, Name.EVENT_NAME_PRODUCT_PREVIEW,
-//                        EVENT_CATEGORY, Category.CHAT_DETAIL,
-//                        EVENT_ACTION, Action.VIEW_PRODUCT_PREVIEW,
-//                        EVENT_LABEL, String.format("%s - %s", getField(product.getStringBlastId()), product.getStringBlastId()),
-//                        USER_ID, user.getUserId(),
-//                        ECOMMERCE, DataLayer.mapOf(
-//                                "currencyCode", "IDR",
-//                                "impressions", DataLayer.listOf(
-//                                        DataLayer.mapOf(
-//                                                "name", product.getProductName(),
-//                                                "id", product.getProductId(),
-//                                                "price", product.getProductPrice(),
-//                                                "brand", "none",
-//                                                "category", product.getCategory(),
-//                                                "variant", product.getVariants().toString(),
-//                                                "list", getField(String.valueOf(product.getBlastId())),
-//                                                "position", 0
-//                                        )
-//                                )
-//                        )
-//                )
-//        );
     }
 
+    private String getItemList(ProductAttachmentViewModel product) {
+        String blastId = product.getStringBlastId();
+        if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
+            return "/chat - search chat";
+        } else {
+            return getField(blastId);
+        }
+    }
+
+    private String getItemDimension40(ProductAttachmentViewModel product) {
+        String blastId = product.getStringBlastId();
+        if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
+            return "/chat - search chat";
+        } else {
+            return getField(blastId);
+        }
+    }
 
     public void trackProductAttachmentClicked() {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(

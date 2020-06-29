@@ -163,6 +163,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         initPltMonitoring()
         getIntentData()
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            sortId = it.getString(SAVED_SHOP_SORT_ID , "")
+            sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
+        }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
         shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)

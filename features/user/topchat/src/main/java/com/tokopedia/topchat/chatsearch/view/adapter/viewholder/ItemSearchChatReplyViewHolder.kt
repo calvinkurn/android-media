@@ -81,6 +81,7 @@ class ItemSearchChatReplyViewHolder(
     private fun bindClick(element: ChatReplyUiModel) {
         itemView.setOnClickListener {
             val chatRoomIntent = RouteManager.getIntent(it.context, ApplinkConst.TOPCHAT, element.msgId.toString())
+            chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
             it.context.startActivity(chatRoomIntent)
         }
     }
