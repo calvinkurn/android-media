@@ -122,6 +122,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var indexFromInbox = -1
     private var isMoveItemInboxToTop = false
     private var remoteConfig: RemoteConfig? = null
+    private var sourcePage: String = ""
 
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -141,6 +142,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initFireBase()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
@@ -158,18 +164,18 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         chatMenu?.setStickerListener(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initFireBase()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupPresenter(savedInstanceState)
         setupArguments(savedInstanceState)
         setupAttachmentsPreview(savedInstanceState)
         setupAlertDialog()
+        setupAnalytic()
         loadInitialData()
+    }
+
+    private fun setupAnalytic() {
+        analytics.setSourcePage(sourcePage)
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -238,6 +244,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun setupArguments(savedInstanceState: Bundle?) {
         customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
+        sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
     }
 
@@ -749,13 +756,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        val buyPageIntent = presenter.getBuyPageIntent(context, element)
+        val buyPageIntent = presenter.getBuyPageIntent(context, element, sourcePage)
         startActivity(buyPageIntent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        val atcPageIntent = presenter.getAtcPageIntent(context, element)
+        val atcPageIntent = presenter.getAtcPageIntent(context, element, sourcePage)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
