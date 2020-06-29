@@ -546,9 +546,6 @@ class FlightSearchViewModelTest {
         flightSearchViewModel.fetchSortAndFilter()
 
         // then
-        verify {
-            flightAnalytics.eventSearchView(flightSearchViewModel.flightSearchPassData, true)
-        }
         flightSearchViewModel.journeyList.value is Success<List<FlightJourneyModel>>
         val journeyList = (flightSearchViewModel.journeyList.value as Success<List<FlightJourneyModel>>).data
 
