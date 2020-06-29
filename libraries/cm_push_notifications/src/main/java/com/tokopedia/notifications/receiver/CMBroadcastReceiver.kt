@@ -274,10 +274,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         intent.getParcelableExtra<ActionButton?>(ACTION_BUTTON_EXTRA)?.apply {
             pdActions?.let {
                 if (it.type == ATC || it.type == OCC) {
-                    startActivity(context, RouteManager.getIntent(
-                            context.applicationContext,
-                            this.appLink
-                    ))
+                    handleProductPurchaseClick(context, notificationData, this)
                 } else {
                     handleShareActionButtonClick(context, it, notificationData)
                 }
@@ -300,15 +297,44 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 startActivity(context, appLinkIntent)
                 sendElementClickPushEvent(
                         context,
-                        IrisAnalyticsEvents.PUSH_CLICKED,
                         notificationData,
-                        CMConstant.NotificationType.GENERAL,
                         it.element_id
                 )
             }
         }
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+    }
+
+    private fun handleProductPurchaseClick(
+            context: Context,
+            notificationData: BaseNotificationModel,
+            actionButton: ActionButton
+    ) {
+        actionButton.let {
+            val intent = RouteManager.getIntent(context.applicationContext, it.appLink)
+            startActivity(context, intent)
+
+            sendElementClickPushEvent(
+                    context,
+                    notificationData,
+                    it.pdActions?.element_id
+            )
+        }
+    }
+
+    private fun sendElementClickPushEvent(
+            context: Context,
+            notificationData: BaseNotificationModel,
+            elementId: String?
+    ) {
+        sendElementClickPushEvent(
+                context,
+                IrisAnalyticsEvents.PUSH_CLICKED,
+                notificationData,
+                CMConstant.NotificationType.GENERAL,
+                elementId
+        )
     }
 
     private fun handleAddToCartProduct(data: BaseNotificationModel?, addToCart: AddToCart?) {
