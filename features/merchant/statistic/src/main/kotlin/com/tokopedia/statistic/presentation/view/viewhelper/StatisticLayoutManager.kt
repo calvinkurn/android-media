@@ -17,6 +17,10 @@ class StatisticLayoutManager(context: Context?, spanCount: Int) : GridLayoutMana
         return super.scrollVerticallyBy(dy, recycler, state)
     }
 
+    override fun canScrollHorizontally(): Boolean {
+        return false
+    }
+
     fun setOnScrollVertically(callback: () -> Unit) {
         this.scrollVerticallyCallback = callback
     }
