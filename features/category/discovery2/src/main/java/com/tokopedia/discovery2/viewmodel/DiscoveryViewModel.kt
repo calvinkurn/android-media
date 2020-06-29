@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
+import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.REACT_NATIVE
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -37,12 +38,15 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryUIConfig = MutableLiveData<Result<String>>()
+    private val phoneVerificationLiveData = MutableLiveData<Boolean>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
+    @Inject
+    lateinit var quickCouponUseCase: QuickCouponUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -136,7 +140,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     }
                 },
                 onError = {
-
+                    it.printStackTrace()
                 }
         )
     }

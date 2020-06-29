@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.analytics
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -411,4 +412,62 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    fun trackQuickCouponImpression(clickCouponData: ClickCouponData) {
+        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+                eventAction = if (clickCouponData.couponApplied == true) IMPRESSION_MINI_COUPON_CANCEL else IMPRESSION_MINI_COUPON_USE,
+                eventLabel = "${clickCouponData.codePromo} - ${clickCouponData.realCode}")
+        val list = ArrayList<Map<String, Any>>()
+        list.add(mapOf(
+                KEY_ID to clickCouponData.componentID,
+                KEY_NAME to "/tokopoints/penukaran points - ${clickCouponData.componentPosition} - promo list - mini coupon",
+                KEY_CREATIVE to (clickCouponData.componentName ?: EMPTY_STRING),
+                KEY_POSITION to clickCouponData.componentPosition
+        ))
+
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_VIEW to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    fun trackQuickCouponClick(clickCouponData: ClickCouponData) {
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
+                eventAction = CLICK_MINI_COUPON_DETAIL,
+                eventLabel = "${clickCouponData.codePromo ?: EMPTY_STRING} - ${clickCouponData.realCode ?: EMPTY_STRING}")
+        val list = ArrayList<Map<String, Any>>()
+        list.add(mapOf(
+                KEY_ID to clickCouponData.componentID,
+                KEY_NAME to "/tokopoints/penukaran points - ${clickCouponData.componentPosition} - promo list - mini coupon",
+                KEY_CREATIVE to (clickCouponData.componentName ?: EMPTY_STRING),
+                KEY_POSITION to clickCouponData.componentPosition
+        ))
+
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    fun trackQuickCouponApply(clickCouponData: ClickCouponData) {
+        val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
+                eventAction = CLICK_ON_MINI_COUPON_USE,
+                eventLabel = "${clickCouponData.codePromo} - ${clickCouponData.realCode}")
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun trackQuickCouponPhoneVerified() {
+        val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
+                eventAction = CLICK_PHONE_VERIFIED,
+                eventLabel = EMPTY_STRING)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun trackQuickCouponPhoneVerifyCancel() {
+        val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
+                eventAction = CLICK_PHONE_CLOSED,
+                eventLabel = EMPTY_STRING)
+        getTracker().sendGeneralEvent(map)
+    }
 }

@@ -19,6 +19,7 @@ include "libraries:core_legacy"
 include "libraries:core_network"
 include 'libraries:date_picker_range'
 include 'libraries:device_info'
+include 'libraries:dev_monitoring_tools'
 include 'libraries:dynamic_features'
 include 'libraries:encryption'
 include "libraries:fingerprint"
@@ -35,7 +36,6 @@ include "libraries:logger"
 include "libraries:instrumentation_test"
 include 'libraries:iris'
 include 'libraries:iris_session'
-//include 'libraries:iris_no_op'
 include "libraries:mediauploader"
 include "libraries:oms"
 include "libraries:push_notification"

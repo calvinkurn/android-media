@@ -47,7 +47,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var shimmeringListLayout: LinearLayout
 
     private var titleProduct: String = ""
-    private var selectedProductId: Int = 0
+    private var selectedProduct: Int = 0
     private var hasTitle = false
     private var productType = TelcoProductType.PRODUCT_LIST
 
@@ -100,7 +100,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         arguments?.let {
             titleProduct = it.getString(TITLE_PAGE)
             productType = it.getInt(PRODUCT_TYPE)
-            selectedProductId = it.getInt(SELECTED_PRODUCT_ID)
+            selectedProduct = it.getInt(SELECTED_PRODUCT)
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
             showShimmering()
@@ -173,11 +173,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
                     //set true on selected product datacollection list
                     var position = -1
-                    if (selectedProductId > 0) {
+                    val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
+                    if (activeCategory == titleProduct && selectedProduct > 0) {
                         for (i in dataCollections.indices) {
-                            if (dataCollections[i].id == selectedProductId.toString()) {
+                            if (dataCollections[i].id.toInt() == selectedProduct) {
                                 dataCollections[i].attributes.selected = true
                                 position = i
+                                break
                             }
                         }
                     }
@@ -246,7 +248,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         const val PRODUCT_TYPE = "product_type"
         const val TITLE_PAGE = "title_page"
-        const val SELECTED_PRODUCT_ID = "selected_product_id"
+        const val SELECTED_PRODUCT = "selected_product"
         const val OPERATOR_NAME = "operator_name"
 
         const val MARGIN_18 = 18
@@ -254,12 +256,12 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         const val MARGIN_0 = 0
 
         fun newInstance(titlePage: String, operatorName: String, productType: Int,
-                        selectedProductId: Int): Fragment {
+                        selectedProduct: Int): Fragment {
             val fragment = DigitalTelcoProductFragment()
             val bundle = Bundle()
             bundle.putString(TITLE_PAGE, titlePage)
             bundle.putInt(PRODUCT_TYPE, productType)
-            bundle.putInt(SELECTED_PRODUCT_ID, selectedProductId)
+            bundle.putInt(SELECTED_PRODUCT, selectedProduct)
             bundle.putString(OPERATOR_NAME, operatorName)
             fragment.arguments = bundle
             return fragment
