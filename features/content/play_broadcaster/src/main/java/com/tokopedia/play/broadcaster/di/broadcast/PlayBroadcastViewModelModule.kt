@@ -35,11 +35,6 @@ abstract class PlayBroadcastViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PlayBroadcastSetupViewModel::class)
-    abstract fun getPlayBroadcastSetupViewModel(viewModel: PlayBroadcastSetupViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(PlayEtalasePickerViewModel::class)
     abstract fun getPlayEtalasePickerViewModel(viewModel: PlayEtalasePickerViewModel): ViewModel
 

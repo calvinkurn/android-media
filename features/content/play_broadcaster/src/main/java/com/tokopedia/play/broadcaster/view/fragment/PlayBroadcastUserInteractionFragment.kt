@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.showToaster
@@ -351,7 +352,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      * Observe
      */
     private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer(::handleChannelInfo))
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is NetworkResult.Success -> handleChannelInfo(it.data)
+                is NetworkResult.Fail -> requireView().showToaster(it.error.localizedMessage)
+            }
+        })
     }
 
     private fun observeLiveInfo() {

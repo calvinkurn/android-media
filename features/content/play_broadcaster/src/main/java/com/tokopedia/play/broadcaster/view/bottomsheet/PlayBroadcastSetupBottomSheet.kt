@@ -29,7 +29,6 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import java.util.*
 import javax.inject.Inject
@@ -51,7 +50,6 @@ class PlayBroadcastSetupBottomSheet(
     lateinit var fragmentFactory: FragmentFactory
 
     private lateinit var broadcastViewModel: PlayBroadcastViewModel
-    private lateinit var viewModel: PlayBroadcastSetupViewModel
 
     private lateinit var flFragment: FrameLayout
     private lateinit var flOverlay: FrameLayout
@@ -92,7 +90,6 @@ class PlayBroadcastSetupBottomSheet(
         super.onCreate(savedInstanceState)
 //        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         broadcastViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

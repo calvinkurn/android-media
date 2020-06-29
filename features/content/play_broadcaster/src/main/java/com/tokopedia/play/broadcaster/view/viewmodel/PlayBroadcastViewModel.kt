@@ -5,11 +5,14 @@ import androidx.lifecycle.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
-import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.Metric
-import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.UpdateChannelUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
@@ -53,7 +56,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
-    val observableChannelInfo: LiveData<ChannelInfoUiModel>
+    val observableChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
         get() = _observableChannelInfo
     val observableTotalView: LiveData<TotalViewUiModel>
         get() = _observableTotalView
@@ -71,23 +74,20 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableNewChat
     val observableNewMetric: LiveData<Event<PlayMetricUiModel>>
         get() = _observableNewMetric
-    val observableProductList: LiveData<List<ProductContentUiModel>>
-        get() = _observableProductList
+    val observableProductList = Transformations.map(getCurrentSetupDataStore().getObservableSelectedProducts()) { dataList ->
+        dataList.map { ProductContentUiModel.createFromData(it) }
+    }
+    val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
 
     val shareInfo: ShareUiModel?
         get() = _observableShareInfo.value
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
-    private val _observableChannelInfo = MutableLiveData<ChannelInfoUiModel>()
+    private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
-    private val _observableProductList = MediatorLiveData<List<ProductContentUiModel>>().apply {
-        addSource(mDataStore.getSetupDataStore().getObservableSelectedProducts()) { dataList ->
-            value = dataList.map { ProductContentUiModel.createFromData(it) }
-        }
-    }
     private val _observableShareInfo = MutableLiveData<ShareUiModel>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
@@ -96,10 +96,10 @@ class PlayBroadcastViewModel @Inject constructor(
     }
     private val _observableChannelId: MutableLiveData<String> = MediatorLiveData<String>().apply {
         addSource(_observableConfigInfo) {
-            value = if (it is NetworkResult.Success) it.data.channelId else ""
+            if (it is NetworkResult.Success) value = it.data.channelId
         }
         addSource(_observableChannelInfo) {
-            value = it.channelId
+            if (it is NetworkResult.Success) value = it.data.channelId
         }
     }
 
@@ -128,17 +128,22 @@ class PlayBroadcastViewModel @Inject constructor(
         override fun onChanged(t: Unit?) {}
     }
 
+    private val channelIdObserver = object : Observer<String> {
+        override fun onChanged(t: String?) {}
+    }
+
     init {
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
+        _observableChannelId.observeForever(channelIdObserver)
 
         mockChatList()
         mockMetrics()
-        mockProductList()
     }
 
     override fun onCleared() {
         super.onCleared()
         socketResponseHandler.removeObserver(socketResponseHandlerObserver)
+        _observableChannelId.removeObserver(channelIdObserver)
         playSocket.destroy()
         scope.cancel()
     }
@@ -172,6 +177,12 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    fun fetchChannelData() {
+        scope.launch {
+            getChannel(channelId)
+        }
+    }
+
     private suspend fun createChannel() {
         val channelId = withContext(dispatcher.io) {
             createChannelUseCase.params = CreateChannelUseCase.createParams(
@@ -183,14 +194,23 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private suspend fun getChannel(channelId: String) {
-        val channel =  withContext(dispatcher.io) {
-            getChannelUseCase.params = GetChannelUseCase.createParams(channelId)
-            return@withContext getChannelUseCase.executeOnBackground()
+        _observableChannelInfo.value = NetworkResult.Loading
+        try {
+            val channel =  withContext(dispatcher.io) {
+                getChannelUseCase.params = GetChannelUseCase.createParams(channelId)
+                return@withContext getChannelUseCase.executeOnBackground()
+            }
+            _observableChannelInfo.value = NetworkResult.Success(PlayBroadcastUiMapper.mapChannelInfo(channel))
+//            _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
+            _observableShareInfo.value = PlayBroadcastMocker.getMockShare()
+
+            //TODO("If channel data is not mocked from backend, uncomment this")
+//            setSelectedProduct(PlayBroadcastUiMapper.mapProductListToData(channel.productTags))
+//            setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
+
+        } catch (e: Throwable) {
+            _observableChannelInfo.value = NetworkResult.Fail(e)
         }
-        _observableChannelInfo.value = PlayBroadcastUiMapper.mapChannelInfo(channel)
-        _observableProductList.value = PlayBroadcastUiMapper.mapProductList(channel.productTags)
-//        _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel) // TODO("masih ada di staging")
-        _observableShareInfo.value = PlayBroadcastMocker.getMockShare()
     }
 
     private suspend fun updateChannelStatus(status: PlayChannelStatus)  = withContext(dispatcher.io) {
@@ -277,6 +297,14 @@ class PlayBroadcastViewModel @Inject constructor(
         })
     }
 
+    private fun setSelectedProduct(products: List<ProductData>) {
+        getCurrentSetupDataStore().setSelectedProducts(products)
+    }
+
+    private fun setSelectedCover(cover: PlayCoverUiModel) {
+        getCurrentSetupDataStore().setFullCover(cover)
+    }
+
     /**
      * UI
      */
@@ -322,15 +350,6 @@ class PlayBroadcastViewModel @Inject constructor(
                     PlayBroadcastMocker.getMockMetric()
                 )
             }
-        }
-    }
-
-    private fun mockProductList() {
-        scope.launch(dispatcher.io) {
-            delay(3000)
-            _observableProductList.postValue(
-                    PlayBroadcastMocker.getMockProductList(5)
-            )
         }
     }
 }

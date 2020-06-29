@@ -11,11 +11,12 @@ import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseC
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveFollowersDataUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.FollowerDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -37,7 +38,7 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private val scope = CoroutineScope(job + dispatcher.main)
 
     var title: String
-        get() = observableSetupChannel.value?.cover?.title ?: throw IllegalStateException("Cover / Cover Title is null")
+        get() = mDataStore.getSetupDataStore().getSelectedCover()?.title ?: throw IllegalStateException("Cover / Cover Title is null")
         set(value) {
             val currentDataStore = mDataStore.getSetupDataStore()
             currentDataStore.updateCoverTitle(value)
@@ -47,10 +48,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     val observableFollowers: LiveData<FollowerDataUiModel>
         get() = _observableFollowers
     private val _observableFollowers = MutableLiveData<FollowerDataUiModel>()
-
-    val observableSetupChannel: LiveData<ChannelSetupUiModel>
-        get() = _observableSetupChannel
-    private val _observableSetupChannel = MutableLiveData<ChannelSetupUiModel>()
 
     val observableCreateLiveStream: LiveData<NetworkResult<LiveStreamInfoUiModel>>
         get() = _observableCreateLiveStream
@@ -65,17 +62,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
 
     fun setDataFromSetupDataStore(setupDataStore: PlayBroadcastSetupDataStore) {
         mDataStore.setFromSetupStore(setupDataStore)
-        val cover = setupDataStore.getSelectedCover()
-        val productList = setupDataStore.getSelectedProducts()
-        requireNotNull(cover)
-        _observableSetupChannel.value = ChannelSetupUiModel(
-                cover = PlayCoverUiModel(
-                        croppedCover = cover.croppedCover,
-                        title = cover.title,
-                        state = SetupDataState.Uploaded
-                ),
-                selectedProductList = productList.map { ProductContentUiModel.createFromData(it) }
-        )
     }
 
     fun createLiveStream() {

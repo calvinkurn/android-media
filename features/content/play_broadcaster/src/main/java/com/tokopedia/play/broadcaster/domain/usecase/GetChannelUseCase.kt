@@ -17,6 +17,7 @@ class GetChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : UseCase<GetChannelResponse.Channel>() {
 
+    //TODO("Add coverURL field in basic")
     private val query = """
             query GetChannel(${'$'}channelId: String){
               broadcasterGetChannels(
