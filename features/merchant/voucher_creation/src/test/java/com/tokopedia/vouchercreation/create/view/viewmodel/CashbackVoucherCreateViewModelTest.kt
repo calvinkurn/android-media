@@ -211,6 +211,8 @@ class CashbackVoucherCreateViewModelTest {
 
             validateCashbackRupiahValues()
 
+            coroutineContext[Job]?.children?.forEach { it.join() }
+
             coVerify {
                 cashbackRupiahValidationUseCase.executeOnBackground()
             }

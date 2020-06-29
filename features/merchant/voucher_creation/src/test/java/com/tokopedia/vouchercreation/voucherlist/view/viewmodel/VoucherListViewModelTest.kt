@@ -311,6 +311,8 @@ class VoucherListViewModelTest {
 
             cancelVoucher(anyInt(), false)
 
+            coroutineContext[Job]?.children?.forEach { it.join() }
+
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()
             }
@@ -329,6 +331,8 @@ class VoucherListViewModelTest {
             } returns dummySuccessCancelVoucher
 
             cancelVoucher(anyInt(), true)
+
+            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()
@@ -349,6 +353,8 @@ class VoucherListViewModelTest {
 
             cancelVoucher(anyInt(), true)
 
+            coroutineContext[Job]?.children?.forEach { it.join() }
+
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()
             }
@@ -365,6 +371,8 @@ class VoucherListViewModelTest {
             } returns voucherUiModel
 
             getSuccessCreatedVoucher(anyInt())
+
+            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 voucherDetailUseCase.executeOnBackground()
@@ -384,6 +392,8 @@ class VoucherListViewModelTest {
             } throws dummyThrowable
 
             getSuccessCreatedVoucher(anyInt())
+
+            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 voucherDetailUseCase.executeOnBackground()

@@ -94,6 +94,8 @@ class SetVoucherPeriodViewModelTest {
 
             validateVoucherPeriod()
 
+            coroutineContext[Job]?.children?.forEach { it.join() }
+
             coVerify {
                 periodValidationUseCase.executeOnBackground()
             }
