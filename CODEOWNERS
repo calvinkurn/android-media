@@ -13,6 +13,7 @@
 /features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeper-analytic
 /features/discovery/home/                           	@tokopedia/minion-dave
+/features/discovery/home_component/                    	@tokopedia/minion-dave
 /features/discovery/home_recom/                     	@tokopedia/minion-dave
 /features/discovery/home_wishlist/                     	@tokopedia/minion-dave
 /features/discovery/recentview/                     	@tokopedia/minion-dave
