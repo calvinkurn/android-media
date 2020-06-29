@@ -11,9 +11,9 @@ import com.tokopedia.navigation.applink.HomeNavigationApplinkModuleLoader;
 public class DeepLinkActivity extends Activity {
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
-        new HomeNavigationApplinkModuleLoader());
-    deepLinkDelegate.dispatchFrom(this);
+//    DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
+//        new HomeNavigationApplinkModuleLoader());
+//    deepLinkDelegate.dispatchFrom(this);
     finish();
   }
 }
