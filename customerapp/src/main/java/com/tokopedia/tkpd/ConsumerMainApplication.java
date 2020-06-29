@@ -22,13 +22,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
-import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
-import com.github.anrwatchdog.ANRError;
-import com.github.anrwatchdog.ANRWatchDog;
-import com.github.moduth.blockcanary.BlockCanary;
-import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -49,6 +44,7 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -65,12 +61,12 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
-import com.tokopedia.tkpd.utils.BetaSignActivityLifecycleCallbacks;
+import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
-import com.tokopedia.tkpd.utils.SessionActivityLifecycleCallbacks;
+import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
@@ -159,6 +155,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void createAndCallPreSeq(){
+        PersistentCacheManager.init(ConsumerMainApplication.this);
         //don't convert to lambda does not work in kit kat
         WeaveInterface preWeave = new WeaveInterface() {
             @NotNull
@@ -206,7 +203,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private Boolean executePreCreateSequence(){
         initReact();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
-        PersistentCacheManager.init(ConsumerMainApplication.this);
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;
@@ -250,23 +246,17 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         createCustomSoundNotificationChannel();
         PushManager.getInstance().setMessageListener(new CustomPushListener());
 
-
-        if (!com.tokopedia.config.GlobalConfig.DEBUG) {
-            // do not replace with method reference "Crashlytics::logException", will not work in dynamic feature
-            new ANRWatchDog().setANRListener(new ANRWatchDog.ANRListener() {
-                @Override
-                public void onAppNotResponding(ANRError anrError) {
-                    Crashlytics.logException(anrError);
-                }
-            }).start();
-        }
-
         TimberWrapper.init(ConsumerMainApplication.this);
+        DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
+        devMonitoring.initCrashMonitoring();
+        devMonitoring.initANRWatcher();
+        devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
+        devMonitoring.initBlockCanary();
+
         initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         getAmplificationPushData();
-        initBlockCanary();
         return true;
     }
 
@@ -325,9 +315,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         CoreLegacyDbFlowDatabase.reset();
     }
 
-    public void initBlockCanary(){
-        BlockCanary.install(context, new BlockCanaryContext()).start();
-    }
+
 
     private void createCustomSoundNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

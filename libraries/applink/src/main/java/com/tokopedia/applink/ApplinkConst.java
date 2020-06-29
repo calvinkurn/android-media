@@ -426,6 +426,10 @@ public interface ApplinkConst {
         String PATH_ASK_BUYER = "askbuyer";
 
         String SOURCE_ASK_SELLER = "tx_ask_seller";
+        String SOURCE_PAGE = "source_page";
+
+        // chat source page
+        String SOURCE_CHAT_SEARCH = "chat_search";
     }
 
     interface AttachInvoice {
@@ -489,6 +493,7 @@ public interface ApplinkConst {
         String EXTRA_IS_LEASING = "is_leasing";
         String EXTRA_CUSTOM_EVENT_LABEL = "custom_event_label";
         String EXTRA_CUSTOM_EVENT_ACTION = "custom_event_action";
+        String EXTRA_CUSTOM_DIMENSION40 = "custom_dimension40";
         String EXTRA_LAYOUT_NAME = "layout_name";
         String EXTRA_ATC_EXTERNAL_SOURCE = "atc_external_source";
 

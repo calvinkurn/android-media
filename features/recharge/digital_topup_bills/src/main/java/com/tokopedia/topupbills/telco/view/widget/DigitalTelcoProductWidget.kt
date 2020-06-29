@@ -61,11 +61,10 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         adapter.notifyDataSetChanged()
-        recyclerView.layoutManager?.run {
-            if (selectedProductPos > 0) {
-                this.scrollToPosition(selectedProductPos)
-            }
-        }
+
+
+// TODO: restructure the UI & fix impression product list
+//  scroll to selected product not work because of recyclerView.isNestedScrollingEnabled = false
         getVisibleProductItemsToUsersTracking(productList)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
