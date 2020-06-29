@@ -12,6 +12,7 @@ const val GQL_NAV_CATEGORY_DETAIL_V3: String = "query CategoryDetailQueryV3(\$id
         "      name\n" +
         "      tree\n" +
         "      parent\n" +
+        "      rootId\n" +
         "      url\n" +
         "      redirectionURL\n" +
         "      appRedirectionURL\n" +
@@ -23,7 +24,7 @@ const val GQL_NAV_CATEGORY_DETAIL_V3: String = "query CategoryDetailQueryV3(\$id
         "      view\n" +
         "      intermediary\n" +
         "      isAdult\n" +
-        " \t  isBanned\n" +
+        "      isBanned\n" +
         "      bannedMsg\n" +
         "      bannedMsgHeader\n" +
         "      appRedirection\n" +
