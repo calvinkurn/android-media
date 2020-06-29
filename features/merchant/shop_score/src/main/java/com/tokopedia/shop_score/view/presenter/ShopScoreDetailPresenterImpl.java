@@ -1,7 +1,8 @@
 package com.tokopedia.shop_score.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+//import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop_score.domain.interactor.GetShopScoreDetailUseCase;
 import com.tokopedia.shop_score.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.shop_score.view.fragment.ShopScoreDetailView;
@@ -35,21 +36,6 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
         );
     }
 
-    private void renderSummary(ShopScoreDetailDomainModel domainModels) {
-        ShopScoreDetailSummaryViewModel viewModel = ShopScoreDetailSummaryViewModelMapper.map(domainModels);
-        getView().renderShopScoreSummary(viewModel);
-    }
-
-    private void renderItemsDetail(ShopScoreDetailDomainModel domainModels) {
-        List<ShopScoreDetailItemViewModel> viewModel = ShopScoreDetailItemsViewModelMapper.map(domainModels);
-        getView().renderShopScoreDetail(viewModel);
-    }
-
-    private void renderState(ShopScoreDetailDomainModel domainModels) {
-        ShopScoreDetailStateEnum shopScoreDetailStateEnum = ShopScoreDetailStateMapper.map(domainModels);
-        getView().renderShopScoreState(shopScoreDetailStateEnum);
-    }
-
     public void unsubscribe() {
         getShopScoreDetailUseCase.unsubscribe();
     }
@@ -73,5 +59,20 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
             renderSummary(domainModels);
             renderState(domainModels);
         }
+    }
+
+    private void renderState(ShopScoreDetailDomainModel domainModels) {
+        ShopScoreDetailStateEnum shopScoreDetailStateEnum = ShopScoreDetailStateMapper.map(domainModels);
+        getView().renderShopScoreState(shopScoreDetailStateEnum);
+    }
+
+    private void renderSummary(ShopScoreDetailDomainModel domainModels) {
+        ShopScoreDetailSummaryViewModel viewModel = ShopScoreDetailSummaryViewModelMapper.map(domainModels);
+        getView().renderShopScoreSummary(viewModel);
+    }
+
+    private void renderItemsDetail(ShopScoreDetailDomainModel domainModels) {
+        List<ShopScoreDetailItemViewModel> viewModel = ShopScoreDetailItemsViewModelMapper.map(domainModels);
+        getView().renderShopScoreDetail(viewModel);
     }
 }

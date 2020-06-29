@@ -31,7 +31,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
-    implementation project(rootProject.ext.features.tkpdcore)
+//    implementation project(rootProject.ext.features.tkpdcore)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.global_error
@@ -42,6 +42,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 }
 
 project.ext {

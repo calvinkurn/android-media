@@ -1,7 +1,8 @@
 package com.tokopedia.shop_score.data.source;
 
-import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
+//import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.shop_score.data.mapper.ShopScoreDetailMapper;
+import com.tokopedia.shop_score.data.model.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.shop_score.data.source.cloud.ShopScoreCloud;
 import com.tokopedia.shop_score.data.source.disk.ShopScoreCache;
 import com.tokopedia.shop_score.domain.model.ShopScoreDetailDomainModel;

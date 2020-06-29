@@ -1,8 +1,11 @@
 package com.tokopedia.shop_score.data.mapper;
 
-import com.tokopedia.core.product.model.shopscore.summary.Data;
-import com.tokopedia.core.product.model.shopscore.summary.DetailData;
-import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServiceModel;
+//import com.tokopedia.core.product.model.shopscore.summary.Data;
+//import com.tokopedia.core.product.model.shopscore.summary.DetailData;
+//import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServiceModel;
+import com.tokopedia.shop_score.data.model.summary.Data;
+import com.tokopedia.shop_score.data.model.summary.DetailData;
+import com.tokopedia.shop_score.data.model.summary.ShopScoreSummaryServiceModel;
 import com.tokopedia.shop_score.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.shop_score.domain.model.ShopScoreSummaryDomainModelData;
 

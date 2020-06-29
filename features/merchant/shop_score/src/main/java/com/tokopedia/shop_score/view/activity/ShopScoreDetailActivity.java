@@ -4,15 +4,19 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.network.NetworkErrorHelper;
+//import com.tokopedia.core.app.BasePresenterActivity;
+//import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.shop_score.R;
 import com.tokopedia.shop_score.view.fragment.ShopScoreDetailFragment;
 import com.tokopedia.shop_score.view.fragment.ShopScoreDetailFragmentCallback;
@@ -20,72 +24,15 @@ import com.tokopedia.shop_score.view.fragment.ShopScoreDetailFragmentCallback;
 /**
  * @author sebastianuskh on 2/24/17.
  */
-public class ShopScoreDetailActivity extends BasePresenterActivity implements ShopScoreDetailFragmentCallback {
+public class ShopScoreDetailActivity extends BaseSimpleActivity implements ShopScoreDetailFragmentCallback {
     private static final String SELLER_CENTER_LINK = "https://seller.tokopedia.com/edu/skor-toko";
     private static final String SHOP_SCORE_INFORMATION = "https://help.tokopedia.com/hc/en-us/articles/115000854466-Performa-Toko";
-    private FragmentManager fragmentManager;
+//    private FragmentManager fragmentManager;
 
 
     @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_SELLER_SHOP_SCORE;
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
+    protected int getLayoutRes() {
         return R.layout.activity_shop_score_detail;
-    }
-
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-        fragmentManager = getSupportFragmentManager();
-    }
-
-    @Override
-    protected void setActionVar() {
-        Fragment fragment =
-                (fragmentManager.findFragmentByTag(ShopScoreDetailFragment.TAG));
-        if (fragment == null) {
-            fragment = ShopScoreDetailFragment.createFragment();
-        }
-        inflateFragment(
-                fragment,
-                false,
-                ShopScoreDetailFragment.TAG);
-    }
-
-    private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.main_container, fragment, tag);
-        if (isAddToBackStack) {
-            ft.addToBackStack(null);
-        }
-        ft.commit();
     }
 
     @Override
@@ -96,6 +43,32 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
     @Override
     public void goToCompleteInformation() {
         openUrl(Uri.parse(SHOP_SCORE_INFORMATION));
+    }
+
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(getLayoutRes());
+//        getNewFragment();
+//    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        Fragment fragment = (getSupportFragmentManager().findFragmentByTag(ShopScoreDetailFragment.TAG));
+        if (fragment == null) {
+            fragment = ShopScoreDetailFragment.createFragment();
+        }
+        inflateFragment(fragment, false, ShopScoreDetailFragment.TAG);
+        return null;
+    }
+
+    private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.main_container, fragment, tag);
+        if (isAddToBackStack) {
+            ft.addToBackStack(null);
+        }
+        ft.commit();
     }
 
     private void openUrl(Uri parse) {
@@ -111,4 +84,88 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
         String webViewApplink = ApplinkConst.WEBVIEW + "?url=" + urlString;
         RouteManager.route(this, webViewApplink);
     }
+
+
+//    @Override
+//    public String getScreenName() {
+//        return AppScreen.SCREEN_SELLER_SHOP_SCORE;
+//    }
+//
+//    @Override
+//    protected void setupURIPass(Uri data) {
+//
+//    }
+//
+//    @Override
+//    protected void setupBundlePass(Bundle extras) {
+//
+//    }
+//
+//    @Override
+//    protected void initialPresenter() {
+//
+//    }
+//
+//    @Override
+//    protected int getLayoutId() {
+//        return R.layout.activity_shop_score_detail;
+//    }
+//
+//    @Override
+//    protected void initView() {
+//
+//    }
+//
+//    @Override
+//    protected void setViewListener() {
+//
+//    }
+//
+//    @Override
+//    protected void initVar() {
+//        fragmentManager = getSupportFragmentManager();
+//    }
+//
+//    @Override
+//    protected void setActionVar() {
+//        Fragment fragment =
+//                (fragmentManager.findFragmentByTag(ShopScoreDetailFragment.TAG));
+//        if (fragment == null) {
+//            fragment = ShopScoreDetailFragment.createFragment();
+//        }
+//        inflateFragment(fragment, false, ShopScoreDetailFragment.TAG);
+//    }
+//
+////    private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
+////        FragmentTransaction ft = fragmentManager.beginTransaction();
+//        ft.replace(R.id.main_container, fragment, tag);
+//        if (isAddToBackStack) {
+//            ft.addToBackStack(null);
+//        }
+//        ft.commit();
+//    }
+//
+//    @Override
+//    public void goToSellerCenter() {
+//        openUrlWebView(SELLER_CENTER_LINK);
+//    }
+//
+//    @Override
+//    public void goToCompleteInformation() {
+//        openUrl(Uri.parse(SHOP_SCORE_INFORMATION));
+//    }
+//
+//    private void openUrl(Uri parse) {
+//        try {
+//            Intent myIntent = new Intent(Intent.ACTION_VIEW, parse);
+//            startActivity(myIntent);
+//        } catch (ActivityNotFoundException e) {
+//            NetworkErrorHelper.showSnackbar(this, getString(R.string.error_no_browser));
+//        }
+//    }
+//
+//    private void openUrlWebView(String urlString) {
+//        String webViewApplink = ApplinkConst.WEBVIEW + "?url=" + urlString;
+//        RouteManager.route(this, webViewApplink);
+//    }
 }

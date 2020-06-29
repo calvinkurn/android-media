@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+//import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.shop_score.R;
 import com.tokopedia.shop_score.view.model.ShopScoreDetailItemViewModel;
 
@@ -15,14 +15,14 @@ import java.util.List;
 /**
  * @author sebastianuskh on 2/24/17.
  */
-public class ShopScoreDetailAdapter extends BaseLinearRecyclerViewAdapter {
+public class ShopScoreDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int SHOP_SCORE_DETAIL = 500;
     private List<ShopScoreDetailItemViewModel> data = new ArrayList<>();
 
     @Override
     public int getItemCount() {
-        return data.size() + super.getItemCount();
+        return data.size();     //+ super.getItemCount();
     }
 
     @Override
@@ -34,7 +34,8 @@ public class ShopScoreDetailAdapter extends BaseLinearRecyclerViewAdapter {
                         .inflate(R.layout.item_shop_score_detail, parent, false);
                 return new ShopScoreDetailViewHolder(view);
             default:
-                return super.onCreateViewHolder(parent, viewType);
+                return null;
+//                return super.onCreateViewHolder(parent, viewType);
         }
     }
 
@@ -44,14 +45,15 @@ public class ShopScoreDetailAdapter extends BaseLinearRecyclerViewAdapter {
             case SHOP_SCORE_DETAIL:
                 bindView((ShopScoreDetailViewHolder) viewHolder, data.get(position));
                 break;
-            default:
-                super.onBindViewHolder(viewHolder, position);
+//            default:
+//                super.onBindViewHolder(viewHolder, position);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (data.isEmpty() || isLoading() || isRetry()) {
+//        if (data.isEmpty() || isLoading() || isRetry()) {
+        if (data.isEmpty()) {
             return super.getItemViewType(position);
         } else {
             return SHOP_SCORE_DETAIL;

@@ -3,12 +3,15 @@ package com.tokopedia.shop_score.data.mapper;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
-import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailItemServiceModel;
-import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
-import com.tokopedia.core.util.SessionHandler;
+//import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailItemServiceModel;
+//import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
+//import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.shop_score.data.model.detail.ShopScoreDetailItemServiceModel;
+import com.tokopedia.shop_score.data.model.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.shop_score.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.shop_score.domain.model.ShopScoreDetailItemDomainModel;
 import com.tokopedia.shop_score.domain.model.ShopScoreDetailSummaryDomainModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +25,18 @@ import rx.functions.Func1;
  */
 public class ShopScoreDetailMapper
         implements Func1<ShopScoreDetailServiceModel, ShopScoreDetailDomainModel> {
+
     private final Context context;
+    private final UserSessionInterface sessionHandler;
 
     @Inject
-    public ShopScoreDetailMapper(Context context) {
+    public ShopScoreDetailMapper(Context context, UserSessionInterface sessionHandler) {
         this.context = context;
+        this.sessionHandler = sessionHandler;
     }
+
+//    @Inject
+//    UserSessionInterface userSession;
 
     @Override
     public ShopScoreDetailDomainModel call(ShopScoreDetailServiceModel serviceModel) {
@@ -48,7 +57,7 @@ public class ShopScoreDetailMapper
     }
 
     private int mapShopScoreDetailStateDomainModels(ShopScoreDetailServiceModel serviceModel) {
-        if (SessionHandler.isGoldMerchant(context)) {
+        if (sessionHandler.isGoldMerchant()) {
             if (isScoreHigherThanLimit(serviceModel)) {
                 return ShopScoreDetailDomainModel.GOLD_MERCHANT_QUALIFIED_BADGE;
             } else {
