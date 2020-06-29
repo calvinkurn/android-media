@@ -4,10 +4,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.CreateChannelBroadcastResponse
 import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
+import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -39,7 +39,7 @@ class CreateChannelUseCase @Inject constructor(
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<CreateChannelBroadcastResponse>(CreateChannelBroadcastResponse::class.java)
         response?.getChannelId?.let { return it }
-        throw MessageErrorException("Ada sedikit kendala pada sistem.")
+        throw DefaultErrorThrowable()
     }
 
     companion object {

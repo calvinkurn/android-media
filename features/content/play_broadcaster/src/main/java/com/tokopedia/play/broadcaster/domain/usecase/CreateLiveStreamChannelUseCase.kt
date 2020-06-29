@@ -4,8 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
+import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ class CreateLiveStreamChannelUseCase @Inject constructor(
         response?.media?.let {
             return it
         }
-        throw MessageErrorException("Terjadi kesalahan pada server") // TODO("replace with default error message")
+        throw DefaultErrorThrowable()
     }
 
     companion object {

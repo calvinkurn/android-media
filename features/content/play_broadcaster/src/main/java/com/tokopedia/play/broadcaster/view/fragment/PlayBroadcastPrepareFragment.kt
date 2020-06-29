@@ -85,7 +85,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private fun setupView(view: View) {
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
-             openBroadcastSetupPage()
+            openBroadcastSetupPage()
         }
 
         setupTermsCondition()

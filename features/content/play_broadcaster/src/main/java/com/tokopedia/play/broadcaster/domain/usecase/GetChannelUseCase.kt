@@ -4,8 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
+import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -121,7 +121,7 @@ class GetChannelUseCase @Inject constructor(
         val response = gqlResponse.getData<GetChannelResponse>(GetChannelResponse::class.java)
         try { response?.broadcasterGetChannels?.channels?.let { return it.first() } }
         catch (e: Exception) { }
-        throw MessageErrorException("Ada sedikit kendala pada sistem.")
+        throw DefaultErrorThrowable()
     }
 
     companion object {

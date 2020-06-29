@@ -207,10 +207,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 is NetworkResult.Fail -> {
                     loaderView.hide()
                     findViewById<View>(android.R.id.content).showToaster(
-                            message = getString(R.string.play_broadcast_global_error),
+                            message = result.error.localizedMessage,
                             duration = Toaster.LENGTH_INDEFINITE,
                             actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = View.OnClickListener { result.onRetry }
+                            actionListener = View.OnClickListener { result.onRetry() }
                     )
                 }
             }
