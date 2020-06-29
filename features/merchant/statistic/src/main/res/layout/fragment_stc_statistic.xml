@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:id="@+id/actionBarStc"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:elevation="0dp"
@@ -30,9 +30,10 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshStc"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/actionBarStc">
 
@@ -44,10 +45,10 @@
                 android:id="@+id/rvStcWidgets"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginLeft="@dimen/layout_lvl1"
-                android:layout_marginEnd="@dimen/layout_lvl1"
-                android:layout_marginRight="@dimen/layout_lvl1"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:layout_marginRight="@dimen/spacing_lvl2"
                 android:background="@android:color/transparent"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -84,7 +85,7 @@
 
     <LinearLayout
         android:id="@+id/appBarStc"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
