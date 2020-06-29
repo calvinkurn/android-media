@@ -84,7 +84,11 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
-    private val _observableProductList = MutableLiveData<List<ProductContentUiModel>>()
+    private val _observableProductList = MediatorLiveData<List<ProductContentUiModel>>().apply {
+        addSource(mDataStore.getSetupDataStore().getObservableSelectedProducts()) { dataList ->
+            value = dataList.map { ProductContentUiModel.createFromData(it) }
+        }
+    }
     private val _observableShareInfo = MutableLiveData<ShareUiModel>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->

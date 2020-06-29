@@ -135,7 +135,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_next"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/play_button_medium_height"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
