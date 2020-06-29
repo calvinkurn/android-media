@@ -75,6 +75,7 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
         if (supportFragmentManager.findFragmentByTag(TAG_SUCCESS_FRAGMENT) != null) {
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)
+            val fragment = supportFragmentManager.findFragmentByTag(TAG_SUCCESS_FRAGMENT)
             if (fragment is SuccessFragmentWithdrawal) {
                 (fragment as SuccessFragmentWithdrawal).onCloseButtonClick()
             }

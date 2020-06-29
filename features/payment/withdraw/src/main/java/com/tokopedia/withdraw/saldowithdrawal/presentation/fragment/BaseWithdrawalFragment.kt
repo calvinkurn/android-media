@@ -326,7 +326,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     override fun onDisabledBankClick(bankAccount: BankAccount) {
         if (checkEligible.data.isIsPowerWD)
             activity?.let {
-                val disabledAccountBottomSheet = DisabledAccountBottomSheet()
+                val disabledAccountBottomSheet = DisabledAccountBottomSheet.getInstance(bankAccount)
                 disabledAccountBottomSheet.isFullpage = false
                 disabledAccountBottomSheet.show(it.supportFragmentManager, "")
                 disabledAccountBottomSheet.setCloseClickListener {
