@@ -11,6 +11,8 @@ import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
 import com.tokopedia.notifications.common.CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA
 import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
@@ -271,7 +273,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     ) {
         intent.getParcelableExtra<ActionButton?>(ACTION_BUTTON_EXTRA)?.apply {
             pdActions?.let {
-                handleShareActionButtonClick(context, it, notificationData)
+                if (it.type == ATC || it.type == OCC) {
+                    RouteManager.route(context, it.genericLink)
+                } else {
+                    handleShareActionButtonClick(context, it, notificationData)
+                }
             }?: let {
                 // validate if the action button is ATC
                 it.type?.let { type ->
