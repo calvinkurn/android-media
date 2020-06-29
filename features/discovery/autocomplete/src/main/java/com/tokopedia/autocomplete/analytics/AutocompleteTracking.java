@@ -1,6 +1,7 @@
 package com.tokopedia.autocomplete.analytics;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch;
@@ -72,6 +73,8 @@ public class AutocompleteTracking {
     public static final String EVENT_ACTION_IMPRESSED_RECENT_VIEW = "impression - recent view product";
     public static final String EVENT_ACTION_IMPRESSED_RECENT_SEARCH = "impression - recent search";
     public static final String EVENT_ACTION_IMPRESSED_POPULAR_SEARCH = "impression - popular search";
+    public static final String EVENT_ACTION_TOP_SHOP = "click - shop - carousel";
+    public static final String EVENT_ACTION_TOP_SHOP_SEE_MORE = "click - lihat toko lainnya - carousel";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -280,5 +283,27 @@ public class AutocompleteTracking {
                 )
         );
         iris.saveEvent(map);
+    }
+
+    public static void eventClickTopShop(String label) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_TOP_NAV,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
+                        EVENT_ACTION, EVENT_ACTION_TOP_SHOP,
+                        EVENT_LABEL, label
+                )
+        );
+    }
+
+    public static void eventClickTopShopSeeMore(String label) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_TOP_NAV,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
+                        EVENT_ACTION, EVENT_ACTION_TOP_SHOP_SEE_MORE,
+                        EVENT_LABEL, label
+                )
+        );
     }
 }
