@@ -23,7 +23,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Given filter remamp is enabled from firebase`() {
-        every { remoteConfig.getBoolean(ENABLE_BOTTOM_SHEET_FILTER_REVAMP) } returns true
+        every { remoteConfig.getBoolean(ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true) } answers { true }
     }
 
     private fun `Given AB Test Remote Config returns new filter variant`() {

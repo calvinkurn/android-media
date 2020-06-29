@@ -5,7 +5,7 @@ import androidx.test.espresso.IdlingResource
 
 private const val NAME = "Recycler view idling resource"
 
-internal class RecyclerViewIdlingResource(
+internal class RecyclerViewHasItemIdlingResource(
         private val recyclerView: RecyclerView?,
         private val name: String? = NAME
 ): IdlingResource {

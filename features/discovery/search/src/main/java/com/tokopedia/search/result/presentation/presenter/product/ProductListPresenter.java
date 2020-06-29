@@ -167,11 +167,11 @@ final class ProductListPresenter
         this.getProductCountUseCase = getProductCountUseCase;
         this.searchLocalCacheHandler = searchLocalCacheHandler;
 
-        this.enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET);
-        this.changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW);
-        this.isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER);
-        this.enableTrackingViewPort = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT);
-        this.enableBottomSheetFilterRevampFirebase = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP);
+        this.enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
+        this.changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
+        this.isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+        this.enableTrackingViewPort = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true);
+        this.enableBottomSheetFilterRevampFirebase = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true);
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation.ActivityResult
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -22,8 +23,6 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.Utils
 import com.tokopedia.analyticsdebugger.validator.core.*
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
@@ -37,8 +36,9 @@ import rx.schedulers.Schedulers
 
 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
+private const val TAG = "SearchProductTest"
 
-internal class SearchTrackingAnalyticValidatorTest {
+internal class SearchProductTrackingTest {
 
     @get:Rule
     val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
@@ -51,8 +51,6 @@ internal class SearchTrackingAnalyticValidatorTest {
 
     @Before
     fun setUp() {
-        editFirebaseRemoteConfig()
-
         gtmLogDBSource.deleteAll().subscribe()
 
         activityRule.launchActivity(createIntent())
@@ -60,16 +58,6 @@ internal class SearchTrackingAnalyticValidatorTest {
         setupIdlingResource()
 
         intending(isInternal()).respondWith(ActivityResult(Activity.RESULT_OK, null))
-    }
-
-    private fun editFirebaseRemoteConfig() {
-        val firebase = FirebaseRemoteConfigImpl(context)
-
-        firebase.setString(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true.toString())
-        firebase.setString(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false.toString())
-        firebase.setString(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true.toString())
-        firebase.setString(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true.toString())
-        firebase.setString(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true.toString())
     }
 
     private fun createIntent(): Intent {
@@ -80,7 +68,7 @@ internal class SearchTrackingAnalyticValidatorTest {
 
     private fun setupIdlingResource() {
         recyclerView = activityRule.activity.findViewById(recyclerViewId)
-        recyclerViewIdlingResource = RecyclerViewIdlingResource(recyclerView)
+        recyclerViewIdlingResource = RecyclerViewHasItemIdlingResource(recyclerView)
 
         IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
     }
@@ -135,7 +123,7 @@ internal class SearchTrackingAnalyticValidatorTest {
         val engine = ValidatorEngine(gtmLogDBSource)
 
         engine.compute(testCases).test {
-            it.assertSuccessEvent()
+            it.assertEvent()
         }
     }
 
@@ -155,23 +143,24 @@ internal class SearchTrackingAnalyticValidatorTest {
         this.observeOn(Schedulers.immediate()).subscribeOn(Schedulers.immediate()).subscribe(onNext)
     }
 
-    private fun List<Validator>.assertSuccessEvent() {
-        forEach { it.assertSuccessEvent() }
+    private fun List<Validator>.assertEvent() {
+        forEach { it.assertEvent() }
     }
 
-    private fun Validator.assertSuccessEvent() {
-        if (status != Status.SUCCESS) {
-            when (name) {
-                "clickSearch" -> {
-                    throw AssertionError("General search event failed. Status = $status")
-                }
-                "view_item_list" -> {
-                    throw AssertionError("Impression event failed. eventCategory: ${data["eventAction"]}. Status = $status")
-                }
-                "select_content" -> {
-                    throw AssertionError("Click event failed. eventCategory: ${data["eventAction"]}. Status = $status")
-                }
-            }
+    private fun Validator.assertEvent() {
+        when (name) {
+            "clickSearch" -> assertStatus()
+            "view_item_list" -> assertStatus()
+            "select_content" -> assertStatus()
         }
+    }
+
+    private fun Validator.assertStatus() {
+        val eventAction = data["eventAction"]
+
+        if (status != Status.SUCCESS)
+            throw AssertionError("\"$eventAction\" event status = $status.")
+        else
+            Log.d(TAG, "\"$eventAction\" event success. Total hits: ${matches.size}.")
     }
 }
