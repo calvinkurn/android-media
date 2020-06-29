@@ -210,12 +210,13 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 val currentProductList = etalase.productMap[1]
                 if (currentProductList != null) {
                     val newProductList = mutableListOf<ProductContentUiModel>()
-                    for (index in 0 until min(currentProductList.size, MAX_PRODUCT_IMAGE_COUNT)) {
+                    val size = min(currentProductList.size, MAX_PRODUCT_IMAGE_COUNT)
+                    for (index in 0 until size) {
                         newProductList.add(
                                 if (index % 2 == 0) {
                                     currentProductList[(index + 1) / 2]
                                 } else {
-                                    currentProductList[index + (MAX_PRODUCT_IMAGE_COUNT - index) / 2]
+                                    currentProductList[index + (size - index) / 2]
                                 }
                         )
                     }
