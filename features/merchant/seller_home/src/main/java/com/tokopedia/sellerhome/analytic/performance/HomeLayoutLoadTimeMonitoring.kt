@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.view.util
+package com.tokopedia.sellerhome.analytic.performance
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 
