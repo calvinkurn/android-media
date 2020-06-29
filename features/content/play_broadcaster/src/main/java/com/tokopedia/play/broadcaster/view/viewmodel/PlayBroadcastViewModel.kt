@@ -161,17 +161,16 @@ class PlayBroadcastViewModel @Inject constructor(
 //                return@withContext getConfigurationUseCase.executeOnBackground()
 //            }
 //            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
+            // TODO("remove mock")
             delay(3000)
             val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel()
 
-            launch {
-                if (configUiModel.channelStatus == PlayChannelStatus.Unknown) createChannel()
-                else getChannel(configUiModel.channelId)
-            }
+            if (configUiModel.channelStatus == PlayChannelStatus.Unknown) createChannel()
+            else getChannel(configUiModel.channelId)
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-            // configure maximum pause duration
-            playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration)
+
+            playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
 
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getConfiguration() }

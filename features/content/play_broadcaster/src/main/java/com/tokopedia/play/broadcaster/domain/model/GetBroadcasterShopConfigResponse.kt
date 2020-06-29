@@ -10,11 +10,6 @@ data class GetBroadcasterShopConfigResponse(
         @SerializedName("broadcasterGetShopConfig")
         val config: GetBroadcasterShopConfig
 ) {
-        data class GetBroadcasterShopConfigData(
-                @SerializedName("data")
-                val data: GetBroadcasterShopConfigResponse
-        )
-
         data class GetBroadcasterShopConfig(
                 @SerializedName("streamAllowed")
                 val streamAllowed: Boolean = false,

@@ -9,9 +9,4 @@ import com.google.gson.annotations.SerializedName
 data class UpdateChannelResponse(
         @SerializedName("broadcasterUpdateChannel")
         val updateChannel: ChannelId = ChannelId()
-)  {
-    data class UpdateChannelData(
-            @SerializedName("data")
-            val data: UpdateChannelResponse = UpdateChannelResponse()
-    )
-}
+)

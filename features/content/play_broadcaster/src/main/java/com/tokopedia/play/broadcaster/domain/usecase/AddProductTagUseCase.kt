@@ -31,11 +31,11 @@ class AddProductTagUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): AddProductTagChannelResponse.GetProductId {
-        val gqlRequest = GraphqlRequest(query, AddProductTagChannelResponse.AddProductTagChannelData::class.java, params)
+        val gqlRequest = GraphqlRequest(query, AddProductTagChannelResponse::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<AddProductTagChannelResponse.AddProductTagChannelData>(AddProductTagChannelResponse.AddProductTagChannelData::class.java)
-        response?.data?.productId?.let {
+        val response = gqlResponse.getData<AddProductTagChannelResponse>(AddProductTagChannelResponse::class.java)
+        response?.productId?.let {
             return it
         }
         throw MessageErrorException("Terjadi kesalahan pada server") // TODO("replace with default error message")

@@ -10,11 +10,6 @@ data class AddMediaChannelResponse(
         @SerializedName("broadcasterAddMedias")
         val mediaId: GetMediaId
 ) {
-    data class AddMediaChannelData(
-
-            @SerializedName("data")
-            val data: AddMediaChannelResponse
-    )
     data class GetMediaId(
             @SerializedName("mediaIDs")
             val mediaIds: List<String>
