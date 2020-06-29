@@ -60,7 +60,9 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
-        addDataList(dataList as List<ComponentsItem>)
+        dataList?.let { componentItemsList ->
+            addDataList(componentItemsList as List<ComponentsItem>)
+        }
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {

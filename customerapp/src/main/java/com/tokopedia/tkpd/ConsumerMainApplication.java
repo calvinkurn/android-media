@@ -155,6 +155,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void createAndCallPreSeq(){
+        PersistentCacheManager.init(ConsumerMainApplication.this);
         //don't convert to lambda does not work in kit kat
         WeaveInterface preWeave = new WeaveInterface() {
             @NotNull
@@ -202,7 +203,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private Boolean executePreCreateSequence(){
         initReact();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
-        PersistentCacheManager.init(ConsumerMainApplication.this);
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;
