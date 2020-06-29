@@ -30,6 +30,10 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
         holder.bindData(variantPhoto)
     }
 
+    fun getData(): List<VariantPhoto> {
+        return items
+    }
+
     fun setData(items: List<VariantPhoto>) {
         this.items = items.toMutableList()
         notifyDataSetChanged()

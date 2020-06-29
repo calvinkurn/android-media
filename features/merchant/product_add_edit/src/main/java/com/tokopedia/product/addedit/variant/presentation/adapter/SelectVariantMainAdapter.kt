@@ -9,7 +9,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantIn
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.viewholder.SelectVariantMainViewHolder
 
-class SelectVariantMainTypeAdapter: RecyclerView.Adapter<SelectVariantMainViewHolder>(),
+class SelectVariantMainAdapter: RecyclerView.Adapter<SelectVariantMainViewHolder>(),
         SelectVariantMainViewHolder.OnFieldClickListener {
 
     private var variantInputModel: VariantInputModel = VariantInputModel()
@@ -30,10 +30,18 @@ class SelectVariantMainTypeAdapter: RecyclerView.Adapter<SelectVariantMainViewHo
     }
 
     override fun onFieldClicked(level1Position: Int, level2Position: Int, value: Boolean) {
-        selectionIndices = initializeSelectedIndex(variantInputModel.products)
-        selectionIndices[level1Position][level2Position] = value
+        setSelectedIndex(level1Position, level2Position, value)
         updateSelectedCombination(level1Position, level2Position)
         notifyDataSetChanged()
+    }
+
+    private fun setSelectedIndex(level1Position: Int, level2Position: Int, value: Boolean) {
+        selectionIndices.forEachIndexed { level1Index, level2Indices ->
+            level2Indices.forEachIndexed { level2Index, _ ->
+                selectionIndices[level1Index][level2Index] = false
+            }
+        }
+        selectionIndices[level1Position][level2Position] = value
     }
 
     fun setData(variantInputModel: VariantInputModel) {
@@ -51,8 +59,8 @@ class SelectVariantMainTypeAdapter: RecyclerView.Adapter<SelectVariantMainViewHo
     ): MutableList<MutableList<Boolean>> {
         val groups = productVariants.groupBy{ it.combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION) }
         return groups.map {
-            it.value.map {
-                false
+            it.value.map { productVariant ->
+                productVariant.isPrimary
             }.toMutableList()
         }.toMutableList()
     }

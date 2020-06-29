@@ -11,8 +11,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
-import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -37,7 +35,6 @@ import javax.inject.Inject
 class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductUseCase: GetProductUseCase,
         private val getProductMapper: GetProductMapper,
-        private val getProductVariantUseCase: GetProductVariantUseCase,
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
@@ -80,15 +77,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
     val imageUrlOrPathList: LiveData<MutableList<String>> get() = mImageUrlOrPathList
 
-    private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
-    val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
-    val productVariantListData: List<ProductVariantByCatModel>? get() = mProductVariantList.value.let {
-        when(it) {
-            is Success -> it.data
-            else -> null
-        }
-    }
-
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
 
@@ -129,14 +117,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         // reassign wholesale information with the actual wholesale values
                         productInputModel.detailInputModel.wholesaleList = actualWholeSaleList
 
-                        getVariantList(productInputModel.detailInputModel.categoryId)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
                 }
             }
             addSource(detailInputModel) {
-                getVariantList(it.categoryId)
                 productInputModel.value?.let { productInputModel ->
                     productInputModel.detailInputModel = it
                     this@AddEditProductPreviewViewModel.productInputModel.value = productInputModel
@@ -146,7 +132,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 productInputModel.value = when(it) {
                     is Success -> {
                         val productInputModel = mapDraftToProductInputModel(it.data)
-                        getVariantList(productInputModel.detailInputModel.categoryId)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -219,20 +204,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
             mIsLoading.value = false
         }, onError = {
             mGetProductResult.value = Fail(it)
-        })
-    }
-
-    fun getVariantList(categoryId: String) {
-        mIsLoading.value = true
-        launchCatchError(block = {
-            mProductVariantList.value = Success(withContext(Dispatchers.IO) {
-                getProductVariantUseCase.params =
-                        GetProductVariantUseCase.createRequestParams(categoryId)
-                getProductVariantUseCase.executeOnBackground()
-            })
-            mIsLoading.value = false
-        }, onError = {
-            mProductVariantList.value = Fail(it)
         })
     }
 

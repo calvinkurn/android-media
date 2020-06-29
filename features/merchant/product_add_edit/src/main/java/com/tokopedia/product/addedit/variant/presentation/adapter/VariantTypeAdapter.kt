@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 
 class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     : RecyclerView.Adapter<VariantTypeViewHolder>(), VariantTypeViewHolder.OnVariantTypeViewHolderClickListener {
@@ -88,6 +89,20 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         else enableUnselectedItems()
     }
 
+    fun setSelectedItems(selectedVariantDetails: List<VariantDetail>) {
+        items.forEachIndexed { position, variantDetail ->
+            val isVariantIdExist = selectedVariantDetails.any {
+                it.variantID == variantDetail.variantID
+            }
+            if (isVariantIdExist) {
+                items.getOrNull(position)?.let {
+                    selectedItems[position] = VariantTypeViewHolder.ViewHolderState.SELECTED
+                }
+            }
+        }
+        manageUnselectedItems(getSelectedCount())
+    }
+
     private fun getSelectedCount(): Int {
         return selectedItems.count { it == VariantTypeViewHolder.ViewHolderState.SELECTED }
     }
@@ -100,6 +115,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         }
         notifyDataSetChanged()
     }
+
 
     private fun enableUnselectedItems() {
         selectedItems.forEachIndexed { index, viewHolderState ->

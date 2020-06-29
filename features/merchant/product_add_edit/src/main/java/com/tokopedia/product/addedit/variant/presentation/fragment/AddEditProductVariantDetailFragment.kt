@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +29,6 @@ import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
 import javax.inject.Inject
-
 
 class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
@@ -109,6 +110,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             showSelectPrimaryBottomSheet()
         }
 
+        buttonSave.setOnClickListener {
+            submitVariantInput()
+        }
+
         observeSelectedVariantSize()
         observeInputStatus()
     }
@@ -150,7 +155,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {
-        println(combination)
+        viewModel.updatePrimaryVariant(combination)
     }
 
     fun onBackPressed() {
@@ -233,4 +238,17 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         bottomSheet.setData(variantInputModel)
         bottomSheet.show(fragmentManager)
     }
+
+    private fun submitVariantInput() {
+        val productInputModel = viewModel.productInputModel.value
+        productInputModel?.apply {
+            val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+
+            val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
+    }
+
 }
