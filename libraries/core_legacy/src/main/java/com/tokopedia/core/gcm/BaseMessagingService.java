@@ -70,38 +70,44 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
             appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
             logTokopediaNotification(remoteMessage);
         }
-        logOnMessageReceived(remoteMessage);
+        logOnMessageReceived(remoteMessage, data);
 
         if (com.tokopedia.config.GlobalConfig.isSellerApp()) {
             sendPushNotificationIntent();
         }
     }
 
-    private void logOnMessageReceived(RemoteMessage remoteMessage) {
+    private void logOnMessageReceived(RemoteMessage remoteMessage, Bundle data) {
         try {
-            UserSessionInterface userSession = new UserSession(this);
-            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
-            String userId = userSession.getUserId();
-            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
-                executeLogOnMessageReceived(remoteMessage);
+//            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
+            String userId = sessionHandler.getUserId();
+//            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
+            if (!userId.isEmpty()) {
+                executeLogOnMessageReceived(remoteMessage, data);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
 
-    private void executeLogOnMessageReceived(RemoteMessage remoteMessage) {
-        if (!BuildConfig.DEBUG) {
-            UserSessionInterface userSession = new UserSession(this);
-            String notificationCode = getNotificationCode(remoteMessage);
-            String errorMessage = "onMessageReceived FirebaseMessagingService, " +
-                    "userId: " + userSession.getUserId() + ", " +
-                    "userEmail: " + userSession.getEmail() + ", " +
-                    "deviceId: " + userSession.getDeviceId() + ", " +
-                    "notificationId: " + remoteMessage.getFrom() + ", " +
-                    "notificationCode: " + notificationCode;
-            Crashlytics.logException(new Exception(errorMessage));
-        }
+    private void executeLogOnMessageReceived(RemoteMessage remoteMessage, Bundle data) {
+//        if (!BuildConfig.DEBUG) {
+//            String notificationCode = getNotificationCode(remoteMessage);
+            StringBuilder logMessage = new StringBuilder("onMessageReceived FirebaseMessagingService \n");
+            for (String key : data.keySet()) {
+                logMessage.append(key);
+                logMessage.append(": ");
+                logMessage.append(data.get(key));
+                logMessage.append(", \n");
+            }
+//            String errorMessage = "onMessageReceived FirebaseMessagingService, " +
+//                    "userId: " + sessionHandler.getUserId() + ", " +
+//                    "userEmail: " + sessionHandler.getEmail() + ", " +
+//                    "deviceId: " + sessionHandler.getDeviceId() + ", " +
+//                    "notificationId: " + remoteMessage.getFrom() + ", " +
+//                    "notificationCode: " + notificationCode;
+            Crashlytics.logException(new Exception(logMessage.toString()));
+//        }
     }
 
     private String getNotificationCode(RemoteMessage remoteMessage) {

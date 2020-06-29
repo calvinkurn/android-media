@@ -7,15 +7,22 @@ import android.os.Bundle;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.moengage.push.PushManager;
 import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.core.BuildConfig;
+import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
@@ -39,10 +46,12 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     private FCMCacheManager cacheManager;
     private INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
     private ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
+    private SessionHandler sessionHandler;
 
     private Context mContext;
 
     public AppNotificationReceiver() {
+        sessionHandler = RouterUtils.getRouterFromContext(mContext).legacySessionHandler();
     }
 
     public void init(Application application){
@@ -57,14 +66,45 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     public void onNotificationReceived(String from, Bundle data){
         Timber.d("onNotificationReceived");
         if (isApplinkNotification(data)) {
+            logEvent(data, "isApplinkNotification(data) == true");
             if (!isInExcludedActivity(data)) {
+                logEvent(data, "!isInExcludedActivity(data) == true");
                 PushNotification.notify(mContext, data);
+            } else {
+                logEvent(data, "!isInExcludedActivity(data) == false");
             }
             extraAction(data);
         } else {
+            logEvent(data, "isApplinkNotification(data) == false");
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(data);
         }
         mNotificationAnalyticsReceiver.onNotificationReceived(Observable.just(data));
+    }
+
+    private void logEvent(Bundle data, String message) {
+        try {
+//            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
+            String userId = sessionHandler.getUserId();
+//            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
+            if (!userId.isEmpty()) {
+                executeCrashlyticLog(data,  message);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void executeCrashlyticLog(Bundle data, String message) {
+//        if (!BuildConfig.DEBUG) {
+            StringBuilder logMessage = new StringBuilder(message + "\n");
+            for (String key : data.keySet()) {
+                logMessage.append(key);
+                logMessage.append(": ");
+                logMessage.append(data.get(key));
+                logMessage.append(", \n");
+            }
+            Crashlytics.logException(new Exception(logMessage.toString()));
+//        }
     }
 
     private boolean isInExcludedActivity(Bundle data) {
