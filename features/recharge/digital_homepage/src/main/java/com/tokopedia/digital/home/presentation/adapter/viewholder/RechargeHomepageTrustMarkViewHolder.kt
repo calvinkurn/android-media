@@ -13,6 +13,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_digital_home_trustmark.view.*
 
+/**
+ * @author by resakemal on 09/06/20.
+ */
+
+
 class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemBindListener) :
         AbstractViewHolder<RechargeHomepageTrustMarkModel>(itemView) {
 

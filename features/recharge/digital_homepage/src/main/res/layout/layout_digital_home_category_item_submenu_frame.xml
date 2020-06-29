@@ -6,22 +6,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+    <include layout="@layout/view_recharge_home_card_image"
+        android:id="@+id/category_frame_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/dp_12"
-        app:cardCornerRadius="@dimen/dp_14"
-        app:cardElevation="@dimen/dp_2">
-
-        <com.tokopedia.design.image.SquareImageView
-            android:id="@+id/category_frame_image"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
-            android:layout_margin="@dimen/dp_12"
-            android:layout_gravity="center"/>
-
-    </androidx.cardview.widget.CardView>
+        android:layout_margin="@dimen/card_image_margin" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_frame_name"

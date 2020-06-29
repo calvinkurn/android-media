@@ -8,19 +8,31 @@ import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import kotlinx.android.synthetic.main.layout_digital_home_category.view.*
+
+/**
+ * @author by resakemal on 05/06/20.
+ */
 
 class RechargeHomepageCategoryViewHolder(itemView: View, val listener: OnItemBindListener) :
         AbstractViewHolder<RechargeHomepageCategoryModel>(itemView) {
 
     override fun bind(element: RechargeHomepageCategoryModel) {
         val section = element.section
-        with (itemView) {
-            val layoutManager = GridLayoutManager(itemView.context, CATEGORY_SPAN_COUNT)
-            rv_recharge_home_category.layoutManager = layoutManager
-            rv_recharge_home_category.adapter = RechargeItemCategoryAdapter(section.items, listener)
-            tv_recharge_home_category_title.text = section.title
-            listener.onRechargeSectionItemImpression(section.items, DYNAMIC_ICON_IMPRESSION)
+        with(itemView) {
+            if (section.items.isNotEmpty()) {
+                val layoutManager = GridLayoutManager(itemView.context, CATEGORY_SPAN_COUNT)
+                rv_recharge_home_category.layoutManager = layoutManager
+                rv_recharge_home_category.adapter = RechargeItemCategoryAdapter(section.items, listener)
+                tv_recharge_home_category_title.text = section.title
+                addOnImpressionListener(section) {
+                    listener.onRechargeSectionItemImpression(section.items, DYNAMIC_ICON_IMPRESSION)
+                }
+            } else {
+                view_recharge_home_category_container.hide()
+            }
         }
     }
 

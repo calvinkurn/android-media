@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/view_recharge_home_category_container"
+    android:id="@+id/view_recharge_home_product_cards_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -9,21 +9,15 @@
     android:paddingRight="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_recharge_home_category_title"
+        android:id="@+id/tv_recharge_home_product_cards_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="heading_3" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_recharge_home_category"
+        android:id="@+id/rv_recharge_home_product_cards"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="false" />
-
-    <include
-        android:id="@+id/categoryShimmering"
-        layout="@layout/content_digital_home_shimmering_category"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:clipToPadding="false"
+        android:layout_marginTop="@dimen/section_header_margin" />
 </LinearLayout>

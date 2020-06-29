@@ -1,14 +1,12 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
-import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -16,6 +14,8 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActio
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemBannerAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.kotlin.extensions.view.hide
+import kotlinx.android.synthetic.main.view_recharge_home_banner.view.*
 
 /**
  * @author by resakemal on 15/06/20.
@@ -27,42 +27,43 @@ class RechargeHomepageBannerViewHolder(itemView: View,
     : AbstractViewHolder<RechargeHomepageBannerModel>(itemView),
         CircularListener {
     private lateinit var slidesList: List<RechargeHomepageSections.Item>
-    private val circularViewPager: CircularViewPager = itemView.findViewById(R.id.circular_view_pager)
-    private val indicatorView: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
-    private val seeAllPromo: TextView = itemView.findViewById(R.id.see_all_promo)
     private val adapter = RechargeItemBannerAdapter(listOf(), this)
 
     override fun bind(element: RechargeHomepageBannerModel) {
-        if (!isEmpty) {
-            slidesList = element.section.items
+        slidesList = element.section.items
+        if (slidesList.isNotEmpty()) {
             initSeeAllPromo()
             initBanner(slidesList.map { CircularModel(it.id, it.mediaUrl) })
+        } else {
+            itemView.view_recharge_home_banner_container.hide()
         }
     }
 
     private fun initSeeAllPromo(){
-        seeAllPromo.setOnClickListener { onPromoAllClick() }
+        itemView.see_all_promo.setOnClickListener { onPromoAllClick() }
     }
 
     private fun initBanner(list: List<CircularModel>){
-        circularViewPager.setIndicatorPageChangeListener(object: CircularViewPager.IndicatorPageChangeListener{
-            override fun onIndicatorPageChange(newIndicatorPosition: Int) {
-                indicatorView.animatePageSelected(newIndicatorPosition)
-            }
-        })
+        with (itemView) {
+            circular_view_pager.setIndicatorPageChangeListener(object : CircularViewPager.IndicatorPageChangeListener {
+                override fun onIndicatorPageChange(newIndicatorPosition: Int) {
+                    indicator_banner.animatePageSelected(newIndicatorPosition)
+                }
+            })
 
-        circularViewPager.setPageChangeListener(object: CircularPageChangeListener {
-            override fun onPageScrolled(position: Int) {
-                onPromoScrolled(position)
-            }
+            circular_view_pager.setPageChangeListener(object : CircularPageChangeListener {
+                override fun onPageScrolled(position: Int) {
+                    onPromoScrolled(position)
+                }
 
-            override fun onPageScrollStateChanged(state: Int) {
+                override fun onPageScrollStateChanged(state: Int) {
 
-            }
-        })
-        circularViewPager.setAdapter(adapter)
-        circularViewPager.setItemList(list)
-        indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+                }
+            })
+            circular_view_pager.setAdapter(adapter)
+            circular_view_pager.setItemList(list)
+            indicator_banner.createIndicators(circular_view_pager.indicatorCount, circular_view_pager.indicatorPosition)
+        }
     }
 
     override fun onClick(position: Int) {
@@ -84,8 +85,5 @@ class RechargeHomepageBannerViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_banner
-        // TODO: Add empty banner layout
-        @LayoutRes
-        val LAYOUT_EMPTY = R.layout.view_recharge_home_banner
     }
 }

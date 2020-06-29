@@ -12,6 +12,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
@@ -30,11 +32,13 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeHomeSectionDecorator
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_digital_home.*
@@ -66,7 +70,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
         }
 
-        searchBarTransitionRange = resources.getDimensionPixelSize(TOOLBAR_TRANSITION_RANGE)
+        searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(resources.displayMetrics)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,8 +80,11 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         digital_homepage_search_view.setFocusChangeListener(this)
         calculateToolbarView(0)
 
-        (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
-        getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        while (recycler_view.itemDecorationCount > 0) recycler_view.removeItemDecorationAt(0)
+        recycler_view.addItemDecoration(RechargeHomeSectionDecorator(
+                SECTION_SPACING_DP.dpToPx(resources.displayMetrics)
+        ))
+        recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
@@ -235,13 +242,22 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         // TODO: Set banner see all redirect
     }
 
+    override fun onRechargeProductBannerClose(element: RechargeHomepageSections.Item) {
+        // TODO: Trigger close product banner query
+    }
+
     override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
-        // TODO: Click tracking
+        // TODO: Add click tracking
+//        if (element.tracking.isNotEmpty()) {
+//            val trackingMap = Gson().fromJson<Any>(element.tracking[0].data, object : TypeToken<HashMap<String, Any>>() {}.type)
+//        }
+
         RouteManager.route(context, element.applink)
     }
 
     override fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String) {
-        // TODO: Impression tracking
+        // TODO: Add impression tracking
+//        val trackingMap = Gson().fromJson<Any>(stringJson, object : TypeToken<HashMap<String, Any>>() {}.type)
     }
 
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
@@ -300,7 +316,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
-        return DigitalHomePageTypeFactory(this, this)
+        return DigitalHomePageTypeFactory(this)
     }
 
     override fun onItemClicked(t: Visitable<*>) {
@@ -340,7 +356,8 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     companion object {
-        val TOOLBAR_TRANSITION_RANGE = com.tokopedia.design.R.dimen.dp_8
+        const val TOOLBAR_TRANSITION_RANGE_DP = 8
+        const val SECTION_SPACING_DP = 16
 
         fun getInstance() = DigitalHomePageFragment()
     }

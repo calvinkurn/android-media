@@ -5,10 +5,18 @@ query rechargeGetDynamicPage($enablePersonalize: Boolean) {
       title
       sub_title
       template
+      tracking {
+        action
+        data
+      }
       items {
         id
         title
         sub_title
+        tracking {
+          action
+          data
+        }
         content
         app_link
         web_link
