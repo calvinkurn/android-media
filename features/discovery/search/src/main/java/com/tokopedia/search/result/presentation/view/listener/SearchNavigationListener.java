@@ -17,4 +17,6 @@ public interface SearchNavigationListener {
         void onSortClick();
         void onChangeGridClick();
     }
+
+    void configureTabLayout(boolean isVisible);
 }

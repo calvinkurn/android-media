@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_8"
     tools:orientation="horizontal"
     tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
     tools:listitem="@layout/search_quick_filter_item"

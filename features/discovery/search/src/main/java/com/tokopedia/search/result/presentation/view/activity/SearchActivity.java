@@ -1,13 +1,17 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
@@ -110,6 +114,7 @@ public class SearchActivity extends BaseActivity
     private ImageView buttonChangeGrid;
     private ImageView buttonCart;
     private ImageView buttonHome;
+    private View topBarShadow;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -217,6 +222,7 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
+        topBarShadow = findViewById(R.id.search_top_bar_shadow);
     }
 
     protected void prepareView() {
@@ -323,6 +329,8 @@ public class SearchActivity extends BaseActivity
     }
 
     private void onPageSelected(int position) {
+        new Handler().postDelayed(() -> animateTab(true), 300);
+
         switch (position) {
             case TAB_FIRST_POSITION:
                 SearchTracking.eventSearchResultTabClick(this, productTabTitle);
@@ -870,5 +878,68 @@ public class SearchActivity extends BaseActivity
             return pageLoadTimePerformanceMonitoring.getPltPerformanceData();
         }
         return null;
+    }
+
+    @Override
+    public void configureTabLayout(boolean isVisible) {
+        Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
+        if (!(fragmentItem instanceof ProductListFragment)) return;
+
+        animateTab(isVisible);
+    }
+
+    private void animateTab(boolean isVisible) {
+        int targetHeight = isVisible ? getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40) : 0;
+
+        if (tabLayout == null || tabLayout.getLayoutParams().height == targetHeight) return;
+
+        ValueAnimator anim = ValueAnimator.ofInt(tabLayout.getMeasuredHeight(), targetHeight);
+        anim.addUpdateListener(this::changeTabHeightByAnimator);
+        anim.addListener(createTabAnimatorListener(isVisible));
+        anim.setDuration(200);
+        anim.start();
+    }
+
+    private void changeTabHeightByAnimator(ValueAnimator valueAnimator) {
+        int height = (Integer) valueAnimator.getAnimatedValue();
+
+        changeTabHeight(height);
+    }
+
+    private void changeTabHeight(int height) {
+        ViewGroup.LayoutParams layoutParams = tabLayout.getLayoutParams();
+        layoutParams.height = height;
+        tabLayout.setLayoutParams(layoutParams);
+    }
+
+    private Animator.AnimatorListener createTabAnimatorListener(boolean isVisible) {
+        return new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                onTabAnimationEnd(isVisible);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        };
+    }
+
+    private void onTabAnimationEnd(boolean isVisible) {
+        if (topBarShadow == null) return;
+
+        if (isVisible) topBarShadow.setVisibility(View.VISIBLE);
+        else topBarShadow.setVisibility(View.GONE);
     }
 }

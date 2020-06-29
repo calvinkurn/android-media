@@ -29,6 +29,7 @@ fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSect
     productListView.setDefaultLayoutType(searchProductModel.searchProduct.header.defaultView)
     productListView.removeLoading()
     productListView.setProductList(any())
+    productListView.backToTop()
     productListView.showFreeOngkirShowCase(false)
     productListView.initQuickFilter(any())
     productListView.addLoading()

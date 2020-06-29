@@ -36,6 +36,8 @@ abstract class BaseWidgetUiTest{
     open val getAtcUseCase = mockk<Lazy<AddToCartOccUseCase>>(relaxed = true)
     open val getRechargeRecommendationUseCase = mockk<Lazy<GetRechargeRecommendationUseCase>>(relaxed = true)
     open val declineRechargeRecommendationUseCase = mockk<Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)
+    open val getSalamWIdgetUseCase = mockk<Lazy<GetSalamWidgetUseCase>>(relaxed = true)
+    open val declineSalamWIdgetUseCase = mockk<Lazy<DeclineSalamWIdgetUseCase>>(relaxed = true)
     open val closeChannelUseCase = mockk<Lazy<CloseChannelUseCase>>(relaxed = true)
     open val injectCouponTimeBasedUseCase = mockk<Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
     open val remoteConfig = mockk<RemoteConfig>(relaxed = true)
@@ -63,6 +65,8 @@ abstract class BaseWidgetUiTest{
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            getSalamWidgetUseCase = getSalamWIdgetUseCase,
+            declineSalamWIdgetUseCase = declineSalamWIdgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
     )
 
