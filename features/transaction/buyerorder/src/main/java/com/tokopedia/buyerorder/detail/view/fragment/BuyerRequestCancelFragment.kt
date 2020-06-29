@@ -59,7 +59,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var cancelRequestedTitle = ""
     private var cancelRequestedBody = ""
     private var waitMessage = ""
-    private var shopId = ""
+    private var shopId = -1
     private var boughtDate = ""
     private var invoiceUrl = ""
     private var statusId = ""
@@ -88,7 +88,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, bundle.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED))
                     putString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, bundle.getString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED))
                     putString(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED, bundle.getString(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED))
-                    putString(BuyerConsts.PARAM_SHOP_ID, bundle.getString(BuyerConsts.PARAM_SHOP_ID))
+                    putInt(BuyerConsts.PARAM_SHOP_ID, bundle.getInt(BuyerConsts.PARAM_SHOP_ID))
                     putString(BuyerConsts.PARAM_BOUGHT_DATE, bundle.getString(BuyerConsts.PARAM_BOUGHT_DATE))
                     putString(BuyerConsts.PARAM_INVOICE_URL, bundle.getString(BuyerConsts.PARAM_INVOICE_URL))
                     putString(BuyerConsts.PARAM_STATUS_ID, bundle.getString(BuyerConsts.PARAM_STATUS_ID))
@@ -112,7 +112,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             isCancelAlreadyRequested = arguments?.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED) ?: false
             cancelRequestedTitle = arguments?.getString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED).toString()
             cancelRequestedBody = arguments?.getString(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED).toString()
-            shopId = arguments?.getString(BuyerConsts.PARAM_SHOP_ID).toString()
+            shopId = arguments?.getInt(BuyerConsts.PARAM_SHOP_ID) ?: -1
             boughtDate = arguments?.getString(BuyerConsts.PARAM_BOUGHT_DATE).toString()
             invoiceUrl = arguments?.getString(BuyerConsts.PARAM_INVOICE_URL).toString()
             statusId = arguments?.getString(BuyerConsts.PARAM_STATUS_ID).toString()
@@ -240,9 +240,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tv_cancel_wait_desc?.text = waitMessage
         }
         btn_req_cancel_wait?.visible()
-        btn_req_cancel_wait?.buttonVariant = UnifyButton.Variant.GHOST
-        btn_req_cancel_wait?.buttonType = UnifyButton.Type.ALTERNATE
-        btn_req_cancel_wait?.setTextColor(resources.getColor(R.color.gray_disable_button_text))
     }
 
     private fun setListenersCancelIsAvailable() {
@@ -417,7 +414,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun goToChatSeller() {
-        if (shopId.isNotEmpty()) {
+        if (shopId != -1) {
             val applink = "tokopedia://topchat/askseller/$shopId"
             val intent = RouteManager.getIntent(context, applink)
             intent.putExtra(ApplinkConst.Chat.INVOICE_ID, listProduct.first().invoiceId)
