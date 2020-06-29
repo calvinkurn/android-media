@@ -29,6 +29,7 @@ import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.sellerapp.SellerMainApplication;
 import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
@@ -46,12 +47,12 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     private FCMCacheManager cacheManager;
     private INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
     private ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
-    private SessionHandler sessionHandler;
+    private UserSession userSession;
 
     private Context mContext;
 
-    public AppNotificationReceiver() {
-        sessionHandler = RouterUtils.getRouterFromContext(mContext).legacySessionHandler();
+    public AppNotificationReceiver(UserSession session) {
+        userSession = session;
     }
 
     public void init(Application application){
@@ -84,7 +85,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     private void logEvent(Bundle data, String message) {
         try {
 //            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
-            String userId = sessionHandler.getUserId();
+            String userId = userSession.getUserId();
 //            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
             if (!userId.isEmpty()) {
                 executeCrashlyticLog(data,  message);
