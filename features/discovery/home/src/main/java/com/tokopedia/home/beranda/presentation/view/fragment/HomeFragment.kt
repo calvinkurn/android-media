@@ -74,11 +74,9 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRec
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
-import com.tokopedia.home.analytics.v2.MixLeftComponentTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
-import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapHomeChannelToComponent
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -103,7 +101,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.RechargeRecommendationViewHolder.RechargeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
@@ -128,7 +125,6 @@ import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEgg
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -172,8 +168,7 @@ open class HomeFragment : BaseDaggerFragment(),
         HomeFeedsListener,
         HomeReviewListener,
         PopularKeywordListener,
-        FramePerformanceIndexInterface,
-        RechargeRecommendationListener {
+        FramePerformanceIndexInterface{
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -642,6 +637,8 @@ open class HomeFragment : BaseDaggerFragment(),
         observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
+        observeSalamWidget()
+        observeRechargeRecommendation()
         observeViewModelInitialized();
         observeHomeRequestNetwork();
     }
@@ -808,6 +805,22 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeSalamWidget(){
+        context?.let{
+            getHomeViewModel().salamWidgetLiveData.observe(this, Observer {
+                getHomeViewModel().insertSalamWidget(it.peekContent())
+            })
+        }
+    }
+
+    private fun observeRechargeRecommendation(){
+        context?.let {
+            getHomeViewModel().rechargeRecommendationLiveData.observe(this, Observer {
+                getHomeViewModel().insertRechargeRecommendation(it.peekContent())
+            })
+        }
+    }
+
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
@@ -922,12 +935,13 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
-                this,
                 HomeComponentCallback(getHomeViewModel()),
                 DynamicLegoBannerComponentCallback(context, this),
                 RecommendationListCarouselComponentCallback(getHomeViewModel(), this),
                 MixLeftComponentCallback(this),
-                MixTopComponentCallback(this))
+                MixTopComponentCallback(this),
+                HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
+                        SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1932,14 +1946,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun getFramePerformanceIndexData(): FragmentFramePerformanceIndexMonitoring {
         return fragmentFramePerformanceIndexMonitoring
-    }
-
-    override fun onContentClickListener(applink: String) {
-        RouteManager.route(context, applink)
-    }
-
-    override fun onDeclineClickListener(requestParams: Map<String, String>) {
-        getHomeViewModel().declineRechargeRecommendationItem(requestParams)
     }
 
     override fun onDetach() {
