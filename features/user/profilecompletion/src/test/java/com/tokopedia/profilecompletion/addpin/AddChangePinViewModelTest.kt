@@ -336,6 +336,7 @@ class AddChangePinViewModelTest {
 
         /* Then */
         verify {
+            viewModel.loadingState.postValue(true)
             getStatusPinUseCase.setTypeClass(any())
             getStatusPinUseCase.setGraphqlQuery(any())
             getStatusPinUseCase.execute(any(), any())

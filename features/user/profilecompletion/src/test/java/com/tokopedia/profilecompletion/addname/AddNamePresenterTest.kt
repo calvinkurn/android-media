@@ -47,6 +47,7 @@ class AddNamePresenterTest {
         val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo)
 
         verify {
+            RegisterUseCase.generateParamRegisterPhone(name, phoneNo)
             view.showLoading()
             registerUseCase.execute(mockParam, any())
         }
