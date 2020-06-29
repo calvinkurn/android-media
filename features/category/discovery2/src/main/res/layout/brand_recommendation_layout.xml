@@ -27,6 +27,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/brand_recom_title"
+        android:paddingLeft="@dimen/dp_10"
         tools:listitem="@layout/brand_recommendation_layout_item"
         tools:itemCount="2"/>
 
