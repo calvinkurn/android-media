@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -116,6 +118,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productName.setTextAndCheckShow(dataItem.name)
             setSlashedPrice(dataItem.discountedPrice)
             textViewPrice.setTextAndCheckShow(dataItem.price)
+            if(productCardName == ComponentNames.ProductCardCarouselItem.componentName){
+                val displayMetrics = getDisplayMetric(context)
+                productCardView.layoutParams.width = (displayMetrics.widthPixels/2.3).toInt()
+            }
         } else {
             productName.setTextAndCheckShow(dataItem.title)
             setSlashedPrice(dataItem.price)
@@ -133,6 +139,12 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         showInterestedView(dataItem)
         showNotifyMe(dataItem)
         showStokHabis(dataItem.stock)
+    }
+
+    private fun getDisplayMetric(context: Context?): DisplayMetrics {
+        val displayMetrics = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics
     }
 
     private fun showStokHabis(productStok: String?) {
