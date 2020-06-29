@@ -272,11 +272,13 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     private fun mapVariantPhoto(variantPhoto: VariantPhoto?): List<PictureVariantInputModel> {
-        return variantPhoto?.let {
+        return if (variantPhoto != null && variantPhoto.imageUrlOrPath.isNotEmpty()) {
             val result = PictureVariantInputModel(
                     filePath = variantPhoto.imageUrlOrPath
             )
             listOf(result)
-        } ?: emptyList()
+        } else {
+            emptyList()
+        }
     }
 }
