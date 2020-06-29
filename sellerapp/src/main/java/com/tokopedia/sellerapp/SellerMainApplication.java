@@ -221,7 +221,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     //Please do not delete this function to keep AppNotificationReceiver
     private void initAppNotificationReceiver() {
-        AppNotificationReceiver appNotificationReceiver = new AppNotificationReceiver(getSession());
+        AppNotificationReceiver appNotificationReceiver = new AppNotificationReceiver();
         String tag = appNotificationReceiver.getClass().getSimpleName();
         Log.d("Init %s", tag);
     }
