@@ -36,10 +36,6 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
     val stepPositionLiveData : LiveData<Int>
         get() = mStepPositionLiveData
 
-    private val mVoucherPreviewBitmapLiveData = MutableLiveData<Bitmap>()
-    val voucherPreviewBitmapLiveData : LiveData<Bitmap>
-        get() = mVoucherPreviewBitmapLiveData
-
     private val mInitiateVoucherLiveData = MutableLiveData<Result<InitiateVoucherUiModel>>()
     val initiateVoucherLiveData: LiveData<Result<InitiateVoucherUiModel>>
         get() = mInitiateVoucherLiveData
@@ -82,10 +78,6 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
 
     fun setMaxPosition(@IntRange(from = 0) max: Int) {
         maxPosition = max
-    }
-
-    fun setVoucherPreviewBitmap(bitmap: Bitmap) {
-        mVoucherPreviewBitmapLiveData.value = bitmap
     }
 
     fun initiateVoucherPage() {

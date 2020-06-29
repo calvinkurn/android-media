@@ -24,88 +24,88 @@ class MerchantVoucherTargetViewModel @Inject constructor(
         private val voucherTargetValidationUseCase: VoucherTargetValidationUseCase
 ) : BaseViewModel(dispatcher) {
 
-    private val mVoucherTargetListData = MutableLiveData<List<VoucherTargetItemUiModel>>()
-    val voucherTargetListData : LiveData<List<VoucherTargetItemUiModel>>
-        get() = mVoucherTargetListData
+        private val mVoucherTargetListData = MutableLiveData<List<VoucherTargetItemUiModel>>()
+        val voucherTargetListData : LiveData<List<VoucherTargetItemUiModel>>
+            get() = mVoucherTargetListData
 
-    private val mPrivateVoucherPromoCode = MutableLiveData<String>()
-    val privateVoucherPromoCode : LiveData<String>
-        get() = mPrivateVoucherPromoCode
+        private val mPrivateVoucherPromoCode = MutableLiveData<String>()
+        val privateVoucherPromoCode : LiveData<String>
+            get() = mPrivateVoucherPromoCode
 
-    private val mShouldReturnToInitialValue = MutableLiveData<Boolean>()
-    val shouldReturnToInitialValue : LiveData<Boolean>
-        get() = mShouldReturnToInitialValue
+        private val mShouldReturnToInitialValue = MutableLiveData<Boolean>()
+        val shouldReturnToInitialValue : LiveData<Boolean>
+            get() = mShouldReturnToInitialValue
 
-    private val mVoucherTargetValidationLiveData = MutableLiveData<Result<VoucherTargetValidation>>()
-    val voucherTargetValidationLiveData : LiveData<Result<VoucherTargetValidation>>
-        get() = mVoucherTargetValidationLiveData
+        private val mVoucherTargetValidationLiveData = MutableLiveData<Result<VoucherTargetValidation>>()
+        val voucherTargetValidationLiveData : LiveData<Result<VoucherTargetValidation>>
+            get() = mVoucherTargetValidationLiveData
 
-    private val mVoucherTargetTypeLiveData = NonNullLiveData(VoucherTargetType.PUBLIC)
-    val voucherTargetTypeLiveData : LiveData<Int>
-        get() = mVoucherTargetTypeLiveData
+        private val mVoucherTargetTypeLiveData = NonNullLiveData(VoucherTargetType.PUBLIC)
+        val voucherTargetTypeLiveData : LiveData<Int>
+            get() = mVoucherTargetTypeLiveData
 
-    fun setDefaultVoucherTargetListData() {
-        mVoucherTargetListData.value = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList()
-    }
+        fun setDefaultVoucherTargetListData() {
+            mVoucherTargetListData.value = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList()
+        }
 
-    fun setPromoCode(promoCode: String, promoCodePrefix: String) {
-        mShouldReturnToInitialValue.value = false
-        mVoucherTargetListData.value = listOf(
-                VoucherTargetItemUiModel(
-                        voucherTargetType = VoucherTargetCardType.PUBLIC,
-                        isEnabled = false,
-                        isHavePromoCard = false),
-                VoucherTargetItemUiModel(
-                        voucherTargetType = VoucherTargetCardType.PRIVATE,
-                        isEnabled = true,
-                        isHavePromoCard = true,
-                        promoCode = promoCodePrefix + promoCode)
-        )
-        mPrivateVoucherPromoCode.value = promoCode
-    }
+        fun setPromoCode(promoCode: String, promoCodePrefix: String) {
+            mShouldReturnToInitialValue.value = false
+            mVoucherTargetListData.value = listOf(
+                    VoucherTargetItemUiModel(
+                            voucherTargetType = VoucherTargetCardType.PUBLIC,
+                            isEnabled = false,
+                            isHavePromoCard = false),
+                    VoucherTargetItemUiModel(
+                            voucherTargetType = VoucherTargetCardType.PRIVATE,
+                            isEnabled = true,
+                            isHavePromoCard = true,
+                            promoCode = promoCodePrefix + promoCode)
+            )
+            mPrivateVoucherPromoCode.value = promoCode
+        }
 
-    fun setActiveVoucherTargetType(@VoucherTargetType targetType: Int) {
-        mVoucherTargetTypeLiveData.value = targetType
-    }
+        fun setActiveVoucherTargetType(@VoucherTargetType targetType: Int) {
+            mVoucherTargetTypeLiveData.value = targetType
+        }
 
-    fun setReloadVoucherTargetData(@VoucherTargetType targetType: Int,
-                                   promoCode: String,
-                                   promoCodePrefix: String) {
-        mPrivateVoucherPromoCode.value = promoCode
-        mVoucherTargetTypeLiveData.value = targetType
-        mShouldReturnToInitialValue.value = targetType == VoucherTargetType.PRIVATE
-        mVoucherTargetListData.value = listOf(
-                VoucherTargetItemUiModel(
-                        voucherTargetType = VoucherTargetCardType.PUBLIC,
-                        isEnabled = targetType == VoucherTargetType.PUBLIC,
-                        isHavePromoCard = false),
-                VoucherTargetItemUiModel(
-                        voucherTargetType = VoucherTargetCardType.PRIVATE,
-                        isEnabled = targetType == VoucherTargetType.PRIVATE,
-                        isHavePromoCard = targetType == VoucherTargetType.PRIVATE && promoCode.isNotEmpty(),
-                        promoCode = promoCodePrefix + promoCode)
-        )
-    }
+        fun setReloadVoucherTargetData(@VoucherTargetType targetType: Int,
+                                       promoCode: String,
+                                       promoCodePrefix: String) {
+            mPrivateVoucherPromoCode.value = promoCode
+            mVoucherTargetTypeLiveData.value = targetType
+            mShouldReturnToInitialValue.value = targetType == VoucherTargetType.PRIVATE
+            mVoucherTargetListData.value = listOf(
+                    VoucherTargetItemUiModel(
+                            voucherTargetType = VoucherTargetCardType.PUBLIC,
+                            isEnabled = targetType == VoucherTargetType.PUBLIC,
+                            isHavePromoCard = false),
+                    VoucherTargetItemUiModel(
+                            voucherTargetType = VoucherTargetCardType.PRIVATE,
+                            isEnabled = targetType == VoucherTargetType.PRIVATE,
+                            isHavePromoCard = targetType == VoucherTargetType.PRIVATE && promoCode.isNotEmpty(),
+                            promoCode = promoCodePrefix + promoCode)
+            )
+        }
 
-    fun validateVoucherTarget(promoCode: String,
-                              couponName: String) {
-        launchCatchError(
-                block = {
-                    withContext(Dispatchers.IO) {
-                        val code =
-                                if (mVoucherTargetTypeLiveData.value == VoucherTargetType.PUBLIC) {
-                                    ""
-                                } else {
-                                    promoCode
-                                }
-                        voucherTargetValidationUseCase.params = VoucherTargetValidationUseCase.createRequestParam(mVoucherTargetTypeLiveData.value, code, couponName)
-                        mVoucherTargetValidationLiveData.postValue(Success(voucherTargetValidationUseCase.executeOnBackground()))
+        fun validateVoucherTarget(promoCode: String,
+                                  couponName: String) {
+            launchCatchError(
+                    block = {
+                        withContext(Dispatchers.IO) {
+                            val code =
+                                    if (mVoucherTargetTypeLiveData.value == VoucherTargetType.PUBLIC) {
+                                        ""
+                                    } else {
+                                        promoCode
+                                    }
+                            voucherTargetValidationUseCase.params = VoucherTargetValidationUseCase.createRequestParam(mVoucherTargetTypeLiveData.value, code, couponName)
+                            mVoucherTargetValidationLiveData.postValue(Success(voucherTargetValidationUseCase.executeOnBackground()))
+                        }
+                    },
+                    onError = {
+                        mVoucherTargetValidationLiveData.value = Fail(it)
                     }
-                },
-                onError = {
-                    mVoucherTargetValidationLiveData.value = Fail(it)
-                }
-        )
-    }
+            )
+        }
 
 }

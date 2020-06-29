@@ -1087,6 +1087,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                                 action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
                                                 userId = userSession.userId
                                         )
+                                        dismiss()
                                     }
                                 }
                                 .show(childFragmentManager)
