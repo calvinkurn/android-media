@@ -35,6 +35,7 @@ import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
+import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -80,6 +81,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private var statusBarCallback: StatusBarCallback? = null
     private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -124,6 +126,18 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
+    }
+
+    fun startHomeLayoutNetworkMonitoring() {
+        performanceMonitoringSellerHomeLayoutPlt?.startNetworkPerformanceMonitoring()
+    }
+
+    fun startHomeLayoutRenderMonitoring() {
+        performanceMonitoringSellerHomeLayoutPlt?.startRenderPerformanceMonitoring()
+    }
+
+    fun stopHomeLayoutRenderMonitoring() {
+        performanceMonitoringSellerHomeLayoutPlt?.stopRenderPerformanceMonitoring()
     }
 
     private fun setupDefaultPage() {
@@ -297,6 +311,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private fun initPerformanceMonitoring(){
         performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
+        performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
+        performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
     }
 
     fun stopPerformanceMonitoringSellerHomeLayout() {
