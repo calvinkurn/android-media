@@ -30,8 +30,7 @@
         android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_product">
+        app:layout_constraintStart_toStartOf="parent">
 
         <FrameLayout
             android:id="@+id/parallax_view"
@@ -57,23 +56,23 @@
 
         </FrameLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_8"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:itemCount="10"
+            tools:spanCount="3"
+            tools:orientation="horizontal"
+            tools:listitem="@layout/home_banner_item_flashsale_carousel"/>
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_product"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_12"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_8"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:itemCount="10"
-        tools:spanCount="3"
-        tools:orientation="horizontal"
-        tools:listitem="@layout/home_banner_item_flashsale_carousel"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
