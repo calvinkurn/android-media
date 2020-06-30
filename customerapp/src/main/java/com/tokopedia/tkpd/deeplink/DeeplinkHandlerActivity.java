@@ -18,8 +18,6 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.SessionApplinkModule;
-import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
@@ -33,10 +31,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
-import com.tokopedia.events.deeplink.EventsDeepLinkModule;
-import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
@@ -47,8 +41,6 @@ import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
@@ -109,15 +101,12 @@ import timber.log.Timber;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
-        InboxDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
-        SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         DigitalBrowseApplinkModule.class,
-        EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         CreatePostModule.class,
@@ -131,7 +120,6 @@ import timber.log.Timber;
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        RNDevOptionsApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
         WebViewApplinkModule.class,
@@ -141,21 +129,20 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private static ApplinkDelegate applinkDelegate;
     private Subscription clearNotifUseCase;
+    private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
+
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
                     new ConsumerDeeplinkModuleLoader(),
-                    new InboxDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
-                    new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
-                    new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new CreatePostModuleLoader(),
                     new KolApplinkModuleLoader(),
@@ -168,7 +155,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
-                    new RNDevOptionsApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader()
@@ -223,7 +209,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         finish();
     }
 
-    public static void createApplinkDelegateInBackground(){
+    public static void createApplinkDelegateInBackground(Context context){
         WeaveInterface appLinkDelegateWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -231,7 +217,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 return getAppLinkDelegate();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(appLinkDelegateWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appLinkDelegateWeave, ENABLE_ASYNC_APPLINK_DELEGATE_CREATION, context.getApplicationContext());
     }
 
     private static boolean getAppLinkDelegate(){

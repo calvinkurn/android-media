@@ -47,7 +47,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.design.bottomsheet.BottomSheetView
 import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
@@ -55,28 +54,27 @@ import com.tokopedia.design.countdown.CountDownView.CountDownListener
 import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.design.keyboard.KeyboardHelper.OnKeyboardVisibilityChangedListener
 import com.tokopedia.home.R
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
-import com.tokopedia.home.analytics.HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickReload
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
+import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
-import com.tokopedia.home.analytics.v2.MixLeftComponentTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
-import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapHomeChannelToComponent
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -101,7 +99,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.RechargeRecommendationViewHolder.RechargeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
@@ -126,7 +123,6 @@ import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEgg
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -153,8 +149,6 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -172,8 +166,7 @@ open class HomeFragment : BaseDaggerFragment(),
         HomeFeedsListener,
         HomeReviewListener,
         PopularKeywordListener,
-        FramePerformanceIndexInterface,
-        RechargeRecommendationListener {
+        FramePerformanceIndexInterface{
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -197,12 +190,15 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val PERFORMANCE_PAGE_NAME_HOME = "home"
         private var lock = Object()
+        private const val ENABLE_ASYNC_HOME_DAGGER = "android_async_home_dagger"
+
         var HIDE_TICKER = false
         private var HIDE_GEO = false
         private const val SOURCE_ACCOUNT = "account"
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
+
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
             val fragment = HomeFragment()
@@ -280,10 +276,25 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        initHomePageFlows()
+        createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         requestStatusBarDark()
+    }
+
+    private fun createDaggerComponent(){
+        val enableAsyncDaggerCompInit = getRemoteConfig().getBoolean(ENABLE_ASYNC_HOME_DAGGER, false)
+        if(enableAsyncDaggerCompInit) {
+            var homeDaggerWeave = object : WeaveInterface {
+                override fun execute(): Any {
+                    return initHomePageFlows()
+                }
+            }
+            Weaver.executeWeaveCoRoutineNow(homeDaggerWeave)
+        }
+        else{
+            initHomePageFlows()
+        }
     }
 
     private fun requestStatusBarDark() {
@@ -520,14 +531,27 @@ open class HomeFragment : BaseDaggerFragment(),
                 floatingTextButton.resetState()
             }
         })
-        stickyLoginView?.addOnLayoutChangeListener { v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int -> updateStickyState() }
+        stickyLoginView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _  ->
+            val floatingEggButtonFragment = floatingEggButtonFragment
+            floatingEggButtonFragment?.let {
+                updateEggBottomMargin(it)
+            }
+        }
         stickyLoginView?.setOnClickListener { v: View? ->
-            stickyLoginView?.tracker.clickOnLogin(StickyLoginConstant.Page.HOME)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView?.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.HOME)
+            } else {
+                stickyLoginView?.tracker.clickOnLogin(StickyLoginConstant.Page.HOME)
+            }
             onGoToLogin()
         }
         stickyLoginView?.setOnDismissListener(View.OnClickListener { v: View? ->
             stickyLoginView?.dismiss(StickyLoginConstant.Page.HOME)
-            stickyLoginView?.tracker.clickOnDismiss(StickyLoginConstant.Page.HOME)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView?.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.HOME)
+            } else {
+                stickyLoginView?.tracker.clickOnDismiss(StickyLoginConstant.Page.HOME)
+            }
             val floatingEggButtonFragment = floatingEggButtonFragment
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
@@ -624,6 +648,8 @@ open class HomeFragment : BaseDaggerFragment(),
         observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
+        observeSalamWidget()
+        observeRechargeRecommendation()
         observeViewModelInitialized();
         observeHomeRequestNetwork();
     }
@@ -712,6 +738,25 @@ open class HomeFragment : BaseDaggerFragment(),
                         (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        "0",
+                        viewModel.get().getUserId()
+                ) as HashMap<String, Any>)
+                RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        })
+
+        viewModel.get().oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
+            val data = event.peekContent()
+            if (data is Throwable) { // error
+                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+            } else {
+                val dataMap = data as Map<*, *>
+                sendEETracking(getAddToCartOnDynamicListCarouselHomeComponent(
+                        (dataMap[HomeViewModel.CHANNEL] as ChannelModel),
+                        (dataMap[HomeViewModel.GRID] as ChannelGrid),
+                        dataMap[HomeViewModel.POSITION] as Int,
+                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        "0",
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
@@ -767,6 +812,22 @@ open class HomeFragment : BaseDaggerFragment(),
                                 getHomeViewModel().clearPlayBanner()
                             }
                         })
+            })
+        }
+    }
+
+    private fun observeSalamWidget(){
+        context?.let{
+            getHomeViewModel().salamWidgetLiveData.observe(this, Observer {
+                getHomeViewModel().insertSalamWidget(it.peekContent())
+            })
+        }
+    }
+
+    private fun observeRechargeRecommendation(){
+        context?.let {
+            getHomeViewModel().rechargeRecommendationLiveData.observe(this, Observer {
+                getHomeViewModel().insertRechargeRecommendation(it.peekContent())
             })
         }
     }
@@ -885,12 +946,13 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
-                this,
                 HomeComponentCallback(getHomeViewModel()),
-                DynamicLegoBannerComponentCallback(context),
+                DynamicLegoBannerComponentCallback(context, this),
                 RecommendationListCarouselComponentCallback(getHomeViewModel(), this),
                 MixLeftComponentCallback(this),
-                MixTopComponentCallback(this))
+                MixTopComponentCallback(this),
+                HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
+                        SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1014,7 +1076,10 @@ open class HomeFragment : BaseDaggerFragment(),
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            TopAdsUrlHitter(className).hitClickUrl(getContext(), slidesModel.redirectUrl)
+            TopAdsUrlHitter(className).hitClickUrl(getContext(),
+                    slidesModel.redirectUrl, slidesModel.id.toString(),
+                    slidesModel.title + " : " + slidesModel.creativeName,
+                    slidesModel.imageUrl)
         }
     }
 
@@ -1064,13 +1129,6 @@ open class HomeFragment : BaseDaggerFragment(),
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
                     getHomeViewModel().onRemoveSuggestedReview()
-                }
-            }
-            REQUEST_CODE_LOGIN_TOKOPOINTS -> {
-                activity?.let {
-                    if (resultCode == Activity.RESULT_OK) {
-                        RouteManager.route(activity, ApplinkConstInternalPromo.TOKOPOINTS_HOME)
-                    }
                 }
             }
             REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) getHomeViewModel().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
@@ -1135,7 +1193,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
 
     private fun executeGetStickyContent():Boolean{
-        val isShowSticky = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
+        val isShowSticky = getRemoteConfig().getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_HOME, true)
         if (isShowSticky && !getUserSession().isLoggedIn) getHomeViewModel().getStickyContent()
         return true
     }
@@ -1450,7 +1508,10 @@ open class HomeFragment : BaseDaggerFragment(),
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else if (!bannerSlidesModel.isInvoke) {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
-                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
+                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl,
+                        bannerSlidesModel.id.toString(),
+                        bannerSlidesModel.title + " : " + bannerSlidesModel.creativeName,
+                        bannerSlidesModel.imageUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
             dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
@@ -1720,27 +1781,28 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun updateStickyState() {
-        if (tickerDetail == null) {
-            hideStickyLogin()
-            return
-        }
-        val isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
-        if (!isCanShowing) {
-            hideStickyLogin()
-            return
-        }
         if (isUserLoggedIn) {
             hideStickyLogin()
             return
         }
-        stickyLoginView?.setContent(tickerDetail!!)
-        stickyLoginView?.show(StickyLoginConstant.Page.HOME)
-        if (stickyLoginView?.isShowing()) {
-            positionSticky = stickyLoginView?.getLocation()
-            stickyLoginView?.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
+
+        var isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_HOME, true)
+        if (stickyLoginView.isLoginReminder() && isCanShowing) {
+            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.HOME)
+            stickyLoginView?.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.HOME)
+        } else {
+            isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_HOME, true)
+            if (!isCanShowing) {
+                hideStickyLogin()
+                return
+            }
+            stickyLoginView?.setContent(tickerDetail!!)
+            stickyLoginView?.show(StickyLoginConstant.Page.HOME)
+            if (stickyLoginView?.isShowing()) {
+                positionSticky = stickyLoginView?.getLocation()
+                stickyLoginView?.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
+            }
         }
-        val floatingEggButtonFragment = floatingEggButtonFragment
-        floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
     }
 
     override fun onReviewClick(position: Int, clickReviewAt: Int, delay: Long, applink: String) {
@@ -1794,10 +1856,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onTokopointCheckNowClicked(applink: String) {
         activity?.let {
-            if (::userSession.isInitialized && !userSession.isLoggedIn) {
-                startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN_TOKOPOINTS)
-                return
-            }
             if (!TextUtils.isEmpty(applink)) {
                 RouteManager.route(activity, applink)
             }
@@ -1861,21 +1919,6 @@ open class HomeFragment : BaseDaggerFragment(),
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                     getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
-            DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO -> putEEToIris(
-                    HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
-                            channel.id, channel.grids, channel.header.name, position
-                    )
-            )
-            DynamicChannelViewHolder.TYPE_THREE_GRID_LEGO -> putEEToIris(
-                    HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
-                            channel.id, channel.grids, channel.header.name, position
-                    )
-            )
-            DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO -> putEEToIris(
-                    getLegoBannerFourImageImpression(
-                            channel, position, true
-                    ) as HashMap<String, Any>
-            )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
             DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
@@ -1915,14 +1958,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun getFramePerformanceIndexData(): FragmentFramePerformanceIndexMonitoring {
         return fragmentFramePerformanceIndexMonitoring
-    }
-
-    override fun onContentClickListener(applink: String) {
-        RouteManager.route(context, applink)
-    }
-
-    override fun onDeclineClickListener(requestParams: Map<String, String>) {
-        getHomeViewModel().declineRechargeRecommendationItem(requestParams)
     }
 
     override fun onDetach() {

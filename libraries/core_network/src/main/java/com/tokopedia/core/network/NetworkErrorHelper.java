@@ -256,34 +256,6 @@ public class NetworkErrorHelper {
 
     }
 
-    public static void showDialogCustomMSG(Context context, final RetryClickedListener listener, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        LayoutInflater li = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        View promptsView = li.inflate(R.layout.error_network_dialog, null);
-        TextView msg = (TextView) promptsView.findViewById(R.id.msg);
-        msg.setText(message);
-        dialog.setView(promptsView);
-        if (listener != null) {
-            dialog.setPositiveButton(context.getString(R.string.title_try_again),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            listener.onRetryClicked();
-                            dialog.dismiss();
-                        }
-                    });
-        } else {
-            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        dialog.create().show();
-    }
-
     public interface RetryClickedListener {
         void onRetryClicked();
     }

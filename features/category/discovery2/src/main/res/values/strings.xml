@@ -26,5 +26,10 @@
     <string name="active_reminder_text">Pengingat Aktif</string>
     <string name="remind_me_text">Ingatkan Saya</string>
     <string name="product_card_error_msg">Terjadi kesalahan, coba lagi nanti.</string>
+    <string name="pakai">Pakai</string>
+    <string name="verify_text">Verifikasi Nomor HP</string>
+    <string name="verify_title">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
+    <string name="verify_header">Verifikasi Nomor HP</string>
+    <string name="quick_coupon_title">Kupon Cashback 80%</string>
 
 </resources>
