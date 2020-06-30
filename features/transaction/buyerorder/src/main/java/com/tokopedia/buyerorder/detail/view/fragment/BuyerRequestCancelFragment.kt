@@ -146,6 +146,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         observingCancelReasons()
         btn_req_cancel?.isEnabled = false
+        tf_choose_sub_reason?.textFieldInput?.isFocusable = false
+        tf_choose_sub_reason?.textFieldInput?.isClickable = false
+        tf_choose_sub_reason?.setOnClickListener {}
 
         reasonBottomSheetAdapter = GetCancelReasonBottomSheetAdapter(this)
         label_shop_name?.text = shopName
@@ -263,10 +266,21 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         btn_req_cancel?.setOnClickListener {
             if (reasonCancel.equals(BuyerConsts.LAINNYA, ignoreCase = true)) {
-                reasonCancel += " - ${tf_choose_sub_reason_editable.textFieldInput.text}"
+                val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text
+                if (subReasonLainnya.isNotEmpty()) {
+                    reasonCancel += " - $subReasonLainnya"
+                }
             }
             if (reasonCancel.isNotEmpty() && reasonCode != -1) {
-                submitResultReason()
+                if (reasonCancel.contains(BuyerConsts.LAINNYA)) {
+                    if (tf_choose_sub_reason_editable.textFieldInput.text.isEmpty()) {
+                        showToasterEmpty()
+                    } else {
+                        submitResultReason()
+                    }
+                } else {
+                    submitResultReason()
+                }
             }
         }
     }
@@ -373,6 +387,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     override fun onReasonClicked(reason: String) {
         bottomSheet.dismiss()
+        btn_req_cancel?.isEnabled = false
         tf_choose_reason?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
         tf_choose_reason?.textFieldInput?.setSingleLine(false)
         tf_choose_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
@@ -393,15 +408,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                     //On user changes the text
-                    if (s.toString().trim { it <= ' ' }.isEmpty()) {
-                        btn_req_cancel?.isEnabled = false
-                        val toasterSuccess = Toaster
-                        view?.let { v ->
-                            toasterSuccess.make(v, getString(R.string.toaster_lainnya_empty), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, BuyerConsts.ACTION_OK)
-                        }
-                    } else {
-                        btn_req_cancel?.isEnabled = true
-                    }
+                    btn_req_cancel?.isEnabled = s.toString().trim { it <= ' ' }.isNotEmpty()
                 }
 
                 override fun afterTextChanged(s: Editable) {
@@ -486,6 +493,13 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, listProduct.first().totalPrice)
             intent.putExtra(ApplinkConst.Chat.SOURCE, MarketPlaceDetailFragment.TX_ASK_SELLER)
             startActivity(intent)
+        }
+    }
+
+    private fun showToasterEmpty() {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.make(v, getString(R.string.toaster_lainnya_empty), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, BuyerConsts.ACTION_OK)
         }
     }
 }
