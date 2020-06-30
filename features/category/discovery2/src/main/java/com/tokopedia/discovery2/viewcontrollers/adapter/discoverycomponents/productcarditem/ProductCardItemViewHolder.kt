@@ -32,6 +32,9 @@ private const val GOLD_MERCHANT = 2
 private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
 private const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
 
+private const val SALE_PRODUCT_STOCK = 100
+private const val PRODUCT_STOCK = 0
+
 class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var productImage: ImageUnify = itemView.findViewById(R.id.imageProduct)
@@ -117,13 +120,13 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productName.setTextAndCheckShow(dataItem.name)
             setSlashedPrice(dataItem.discountedPrice)
             textViewPrice.setTextAndCheckShow(dataItem.price)
-            showProductsStockHabis(dataItem.stock)
+            showOutOfStockLabel(dataItem.stock, PRODUCT_STOCK)
         } else {
             productName.setTextAndCheckShow(dataItem.title)
             setSlashedPrice(dataItem.price)
             textViewPrice.setTextAndCheckShow(dataItem.discountedPrice)
             setStockProgress(dataItem.stockSoldPercentage)
-            showSaleProductStockHabis(dataItem.stockSoldPercentage)
+            showOutOfStockLabel(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
         }
         setLabelDiscount(dataItem.discountPercentage.toString())
         dataItem.rating?.let { setRating(it, dataItem.countReview) }
@@ -136,21 +139,17 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         showNotifyMe(dataItem)
     }
 
-    private fun showProductsStockHabis(productStock: String?) {
-        if (productStock.isNullOrEmpty()) {
-            hideStockText(productStock)
-        } else {
-            if (productStock.toIntOrZero() > 0) {
+    private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
+        when {
+            productStock.isNullOrEmpty() -> {
                 stockHabisLabel.hide()
-            } else {
+            }
+            productStock.toIntOrNull() == saleStockValidation -> {
                 stockHabisLabel.show()
             }
-        }
-    }
-
-    private fun hideStockText(stockData: String?) {
-        if (stockData.isNullOrEmpty()) {
-            stockHabisLabel.hide()
+            else -> {
+                stockHabisLabel.hide()
+            }
         }
     }
 
@@ -318,8 +317,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
                 textViewReviewCount.hide()
             }
         }
-
-
     }
 
     private fun handleUIClick(view: View, adapterPosition: Int) {
@@ -348,18 +345,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
         productCardItemViewModel.sendTopAdsView()
-    }
-
-    private fun showSaleProductStockHabis(productStock: String?) {
-        if (productStock.isNullOrEmpty()) {
-            hideStockText(productStock)
-        } else {
-            if (productStock.toIntOrZero() == 100) {
-                stockHabisLabel.show()
-            } else {
-                stockHabisLabel.hide()
-            }
-        }
     }
 }
 
