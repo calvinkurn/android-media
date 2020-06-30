@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_CUSTOM_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
@@ -143,7 +144,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         mSelectedVariantUnitValuesLevel2.value = selectedVariantUnitValues
     }
 
-    fun updateVariantInputModel(variantPhotos: List<VariantPhoto>) {
+    fun updateVariantInputModel(selectedVariantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>) {
         productInputModel.value?.variantInputModel?.apply {
             products = mapProducts(variantPhotos)
             selections = mapSelections(selectedVariantDetails)
@@ -232,9 +233,15 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit? {
         val unitValue = value.firstOrNull()
-        return variantDetail.units.firstOrNull { unit ->
-            unit.unitValues.any {
-                it.variantUnitValueID == unitValue?.variantUnitValueID
+        return if (unitValue?.variantUnitValueID == VARIANT_CUSTOM_UNIT_VALUE_ID) {
+            // condition for custom value (get first unit)
+            variantDetail.units.firstOrNull()
+        } else {
+            // condition for main value
+            variantDetail.units.firstOrNull { unit ->
+                unit.unitValues.any {
+                    it.variantUnitValueID == unitValue?.variantUnitValueID
+                }
             }
         }
     }

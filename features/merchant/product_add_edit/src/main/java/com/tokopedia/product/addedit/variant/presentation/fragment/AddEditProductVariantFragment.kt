@@ -56,7 +56,6 @@ import com.tokopedia.product.addedit.variant.presentation.widget.CustomVariantUn
 import com.tokopedia.product.addedit.variant.presentation.widget.VariantDetailValuesPicker
 import com.tokopedia.product.addedit.variant.presentation.widget.VariantUnitPicker
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
@@ -183,7 +182,8 @@ class AddEditProductVariantFragment :
         // button save on click listener
         buttonSave.setOnClickListener {
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
-            viewModel.updateVariantInputModel(variantPhotos)
+            val selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty()
+            viewModel.updateVariantInputModel(selectedVariantDetails, variantPhotos)
             startAddEditProductVariantDetailActivity()
         }
 
