@@ -41,7 +41,11 @@ interface ActionListener {
 
     fun onWishlistProductClicked(productId: String)
 
+    fun onWishlistImpression()
+
     fun onRecentViewProductClicked(productId: String)
+
+    fun onRecentViewImpression()
 
     fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String)
 

@@ -1122,6 +1122,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun onWishlistImpression() {
+        wishLists?.let {
+            sendAnalyticsOnViewProductWishlist(
+                    dPresenter.generateWishlistDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
+            )
+        }
+    }
+
     override fun onRecentViewProductClicked(productId: String) {
         var position = 0
 
@@ -1139,6 +1147,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         onProductClicked(productId)
+    }
+
+    override fun onRecentViewImpression() {
+        recentViewList?.let {
+            sendAnalyticsOnViewProductRecentView(
+                    dPresenter.generateRecentViewDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
+            )
+        }
     }
 
     override fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String) {
@@ -2554,10 +2570,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData)
         this.recentViewList = cartRecentViewItemHolderDataList
         shouldReloadRecentViewList = false
-
-        sendAnalyticsOnViewProductRecentView(
-                dPresenter.generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList, FLAG_IS_CART_EMPTY)
-        )
     }
 
     override fun renderWishlist(wishlists: List<Wishlist>?) {
@@ -2575,10 +2587,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecentViewHolderData.wishList = cartWishlistItemHolderDataList
         cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData)
         this.wishLists = cartWishlistItemHolderDataList
-
-        sendAnalyticsOnViewProductWishlist(
-                dPresenter.generateWishlistDataImpressionAnalytics(cartWishlistItemHolderDataList, FLAG_IS_CART_EMPTY)
-        )
     }
 
     override fun renderRecommendation(recommendationWidget: RecommendationWidget?) {
