@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.productEtalaseEmpty
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
@@ -62,6 +63,15 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private var mListener: ProductSetupListener? = null
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
+        private var isAlreadyBound = false
+
+        override fun onImageLoaded(position: Int, isSuccess: Boolean) {
+            if (!isAlreadyBound) {
+                startPostponedTransition()
+                isAlreadyBound = true
+            }
+        }
+
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
         }
@@ -219,11 +229,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
             val flattenValues = it.currentValue.productMap.values.flatten()
             when (it.state) {
                 is PageResultState.Success -> {
-
                     showProductEmptyError(flattenValues.isEmpty())
                     selectableProductAdapter.setItemsAndAnimateChanges(flattenValues)
-
-                    startPostponedTransition()
 
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(true)
@@ -259,7 +266,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 NetworkResult.Loading -> bottomActionView.setLoading(true)
                 is NetworkResult.Fail -> {
                     bottomActionView.setLoading(false)
-                    Toaster.make(requireView(), it.error.localizedMessage)
+                    it.error.localizedMessage?.let {
+                        errMessage -> requireView().showToaster(errMessage, type = Toaster.TYPE_ERROR)
+                    }
                 }
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
