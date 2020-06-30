@@ -1195,31 +1195,43 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val currentIndex = it.indexOf(recommendationItem)
             if (it.size >= 2) {
                 if (currentIndex == it.size - 1) {
-                    // edge case : send last single item impression if recommendation list contain odd item count
-                    val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
-                    cartRecommendationList.add(it[currentIndex])
-                    sendAnalyticsOnViewProductRecommendation(
-                            dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
-                    )
+                    if (currentIndex % 2 == 0) {
+                        // edge case : recommendation list size is odd number
+                        // send last single item impression
+                        sendImpressionOneRecommendationItem(it, currentIndex)
+                    } else {
+                        // edge case : recommendation list contains exactly 2 items
+                        // send 2 items impression
+                        sendImpressionTwoRecommendationItems(it, currentIndex)
+                    }
                 } else if (currentIndex > 0 && currentIndex % 2 == 1) {
                     // send analytics on impression recommendation item odd position
                     // send analytics every 2 item impression
-                    val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
-                    cartRecommendationList.add(it[currentIndex - 1])
-                    cartRecommendationList.add(it[currentIndex])
-                    sendAnalyticsOnViewProductRecommendation(
-                            dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
-                    )
+                    sendImpressionTwoRecommendationItems(it, currentIndex)
                 }
             } else {
+                // edge case : recommendation list contains exactly 1 item
                 // edge case : send single item impression if recommendation list only contain 1 item
-                val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
-                cartRecommendationList.add(it[currentIndex])
-                sendAnalyticsOnViewProductRecommendation(
-                        dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
-                )
+                sendImpressionOneRecommendationItem(it, currentIndex)
             }
         }
+    }
+
+    private fun sendImpressionOneRecommendationItem(it: List<CartRecommendationItemHolderData>, currentIndex: Int) {
+        val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+        cartRecommendationList.add(it[currentIndex])
+        sendAnalyticsOnViewProductRecommendation(
+                dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
+        )
+    }
+
+    private fun sendImpressionTwoRecommendationItems(it: List<CartRecommendationItemHolderData>, currentIndex: Int) {
+        val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+        cartRecommendationList.add(it[currentIndex - 1])
+        cartRecommendationList.add(it[currentIndex])
+        sendAnalyticsOnViewProductRecommendation(
+                dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
+        )
     }
 
     override fun onButtonAddToCartClicked(productModel: Any) {
