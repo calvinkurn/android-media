@@ -6,17 +6,24 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
+class VoucherListActivity : BaseActivity(),
+        VoucherListFragment.Listener, MvcPerformanceMonitoringListener {
 
     companion object {
         @JvmStatic
@@ -35,6 +42,9 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
         const val HISTORY = "history"
     }
 
+    @field:[Inject Named("list")]
+    lateinit var voucherListPerformanceMonitoring: MvcPerformanceMonitoringInterface
+
     private var isSuccessDialogAlreadyShowed = false
 
     private var isActiveVoucher = true
@@ -43,17 +53,18 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
     private val isUpdateVoucherSuccess by lazy { intent?.extras?.getBoolean(UPDATE_VOUCHER_KEY) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        voucherListPerformanceMonitoring.initMvcPerformanceMonitoring()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_list)
 
         setWhiteStatusBar()
 
         var isActive = true
-
         intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
             isActive = it
         }
-
         intent?.data?.lastPathSegment?.let { status ->
             if (status.isNotEmpty()) {
                 isActive =
@@ -73,11 +84,9 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
 
         var isActive = true
         val voucherId = intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY)
-
         intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
             isActive = it
         }
-
         intent?.data?.lastPathSegment?.let { status ->
             if (status.isNotEmpty()) {
                 isActive =
@@ -105,6 +114,25 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
         showFragment(getFragment(isActiveVoucher))
     }
 
+    override fun startNetworkPerformanceMonitoring() {
+        voucherListPerformanceMonitoring.startNetworkMvcPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        voucherListPerformanceMonitoring.startRenderMvcPerformanceMonitoring()
+    }
+
+    override fun finishMonitoring() {
+        voucherListPerformanceMonitoring.stopPerformanceMonitoring()
+    }
+
+    private fun initInjector() {
+        DaggerVoucherCreationComponent.builder()
+                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
+
     private fun showFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.parent_view, fragment)
@@ -120,7 +148,7 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
 
     private fun getFragment(isActiveVoucher: Boolean,
                             voucherId: Int? = successVoucherId): VoucherListFragment {
-        return VoucherListFragment.newInstance(isActiveVoucher).apply {
+        return VoucherListFragment.newInstance(isActiveVoucher, this).apply {
             setFragmentListener(this@VoucherListActivity)
             val willShowSuccessCreationDialog = !isSuccessDialogAlreadyShowed && isActiveVoucher && voucherId != 0
             if (willShowSuccessCreationDialog) {

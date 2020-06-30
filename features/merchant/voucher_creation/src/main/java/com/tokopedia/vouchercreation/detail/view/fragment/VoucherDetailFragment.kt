@@ -4,10 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -38,6 +35,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
@@ -55,6 +53,7 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
+import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.*
 import javax.inject.Inject
 
 /**
@@ -64,11 +63,13 @@ import javax.inject.Inject
 class VoucherDetailFragment : BaseDetailFragment() {
 
     companion object {
-        fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment().apply {
+        fun newInstance(voucherId: Int,
+                        mvcPerformanceMonitoringListener: MvcPerformanceMonitoringListener? = null): VoucherDetailFragment = VoucherDetailFragment().apply {
             val bundle = Bundle().apply {
                 putInt(VOUCHER_ID_KEY, voucherId)
             }
             arguments = bundle
+            performanceMonitoring = mvcPerformanceMonitoringListener
         }
 
         const val DOWNLOAD_REQUEST_CODE = 222
@@ -80,6 +81,8 @@ class VoucherDetailFragment : BaseDetailFragment() {
     }
 
     private var voucherUiModel: VoucherUiModel? = null
+
+    private var performanceMonitoring: MvcPerformanceMonitoringListener? = null
 
     private val voucherId by lazy {
         arguments?.getInt(VOUCHER_ID_KEY)
@@ -124,6 +127,12 @@ class VoucherDetailFragment : BaseDetailFragment() {
         setHasOptionsMenu(true)
 
         setupView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        performanceMonitoring?.finishMonitoring()
+        viewModel.flush()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -315,12 +324,14 @@ class VoucherDetailFragment : BaseDetailFragment() {
     private fun observeLiveData() {
         viewLifecycleOwner.run {
             observe(viewModel.merchantVoucherModelLiveData) { result ->
+                performanceMonitoring?.startRenderPerformanceMonitoring()
                 when(result) {
                     is Success -> {
                         adapter.clearAllElements()
                         voucherUiModel = result.data
                         sendOpenScreenTracking()
                         renderVoucherDetailInformation(result.data)
+                        rvMvcVoucherDetail?.setOnLayoutListenerReady()
                     }
                     is Fail -> {
                         clearAllData()
@@ -360,6 +371,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     private fun setupView() = view?.run {
         showLoadingState()
         voucherId?.run {
+            performanceMonitoring?.startNetworkPerformanceMonitoring()
             viewModel.getVoucherDetail(this)
         }
     }
@@ -649,6 +661,17 @@ class VoucherDetailFragment : BaseDetailFragment() {
             ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
             val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
             helper.downloadFile { true }
+        }
+    }
+
+    private fun View.setOnLayoutListenerReady() {
+        viewTreeObserver?.run {
+            addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    performanceMonitoring?.finishMonitoring()
+                    removeOnGlobalLayoutListener(this)
+                }
+            })
         }
     }
 }
