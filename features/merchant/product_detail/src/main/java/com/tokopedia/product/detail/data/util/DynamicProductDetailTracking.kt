@@ -1161,22 +1161,19 @@ object DynamicProductDetailTracking {
                                           shopInfo: ShopInfo?, trackerAttribution: String?,
                                           isTradeIn: Boolean, isDiagnosed: Boolean,
                                           multiOrigin: Boolean, deeplinkUrl: String
-                                          ,isStockAvailable: String ->
-
-            val subCategoryIdLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.id ?: ""
-            val subCategoryNameLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.name ?: ""
-
-            val subCategoryId = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
-            val subCategoryName = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
-
-            val isPmInt = if (productInfo?.data?.isPowerMerchant == true) 1 else 0
-            val isOsInt = if (productInfo?.data?.isOS == true) 1 else 0
+                                          , isStockAvailable: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
 
+            val subCategoryIdLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.id ?: ""
+            val subCategoryNameLevel2 = productInfo?.basic?.category?.detail?.getOrNull(1)?.name ?: ""
+
             val categoryIdLevel3 = productInfo?.basic?.category?.detail?.getOrNull(2)?.id ?: ""
             val categoryNameLevel3 = productInfo?.basic?.category?.detail?.getOrNull(2)?.name ?: ""
+
+            val isPmInt = if (productInfo?.data?.isPowerMerchant == true) 1 else 0
+            val isOsInt = if (productInfo?.data?.isOS == true) 1 else 0
 
             val productImageUrl = productInfo?.data?.media?.filter {
                 it.type == "image"
@@ -1209,7 +1206,7 @@ object DynamicProductDetailTracking {
                             productInfo?.basic?.url,
                             deeplinkUrl,
                             productImageUrl,
-                            isOsInt,
+                            isOsInt.toString(),
                             TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value ?: 0),
                             productInfo?.basic?.productID ?: "",
                             "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}",
