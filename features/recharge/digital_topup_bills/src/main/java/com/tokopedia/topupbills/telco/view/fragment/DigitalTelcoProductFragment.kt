@@ -194,7 +194,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private fun setMarginProductList(spaceTop: Int, view: View) {
         val params =  RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT)
-        params.setMargins(MARGIN_0, spaceTop, MARGIN_0, MARGIN_16)
+        params.setMargins(MARGIN_0, spaceTop, MARGIN_0, MARGIN_0)
         view.layoutParams = params
     }
 
