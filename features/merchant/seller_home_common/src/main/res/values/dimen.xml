@@ -3,7 +3,6 @@
     <dimen name="shc_large_widget_height">320dp</dimen>
     <dimen name="shc_medium_widget_height">180dp</dimen>
     <dimen name="sah_status_bar_height">24dp</dimen>
-    <dimen name="sah_line_chart_line_width">0.8dp</dimen>
     <dimen name="shc_minus_6dp">-6dp</dimen>
     <dimen name="shc_minus_4dp">-4dp</dimen>
     <dimen name="shc_dimen_1dp">1dp</dimen>

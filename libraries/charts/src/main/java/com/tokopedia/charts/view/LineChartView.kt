@@ -62,22 +62,22 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
 
         val typedArray: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.LineChartView)
         typedArray.let {
-            chartLineWidth = it.getDimension(R.styleable.LineChartView_chartLineWidth, chartLineWidth)
+            chartLineWidth = it.getFloat(R.styleable.LineChartView_lcvLineWidth, chartLineWidth)
 
-            chartLineColor = it.getColor(R.styleable.LineChartView_chartLineColor, chartLineColor)
-            chartLineMode = it.getColor(R.styleable.LineChartView_chartLineMode, chartLineMode)
-            chartFillColor = it.getColor(R.styleable.LineChartView_chartFillColor, chartFillColor)
-            xAxisTextColor = it.getColor(R.styleable.LineChartView_xAxisTextColor, xAxisTextColor)
-            yAxisTextColor = it.getColor(R.styleable.LineChartView_yAxisTextColor, yAxisTextColor)
-            chartDotColor = it.getColor(R.styleable.LineChartView_chartDotColor, chartDotColor)
-            fillDrawable = it.getResourceId(R.styleable.LineChartView_fillDrawable, fillDrawable)
+            chartLineColor = it.getColor(R.styleable.LineChartView_lcvLineColor, chartLineColor)
+            chartLineMode = it.getColor(R.styleable.LineChartView_lcvLineMode, chartLineMode)
+            chartFillColor = it.getColor(R.styleable.LineChartView_lcvFillColor, chartFillColor)
+            xAxisTextColor = it.getColor(R.styleable.LineChartView_lcvXAxisTextColor, xAxisTextColor)
+            yAxisTextColor = it.getColor(R.styleable.LineChartView_lcvYAxisTextColor, yAxisTextColor)
+            chartDotColor = it.getColor(R.styleable.LineChartView_lcvChartDotColor, chartDotColor)
+            fillDrawable = it.getResourceId(R.styleable.LineChartView_lcvFillDrawable, fillDrawable)
 
-            drawCircleHole = it.getBoolean(R.styleable.LineChartView_drawCircleHole, drawCircleHole)
-            showChartDot = it.getBoolean(R.styleable.LineChartView_showChartDot, showChartDot)
-            chartFillEnabled = it.getBoolean(R.styleable.LineChartView_chartFillEnabled, chartFillEnabled)
-            showChartValue = it.getBoolean(R.styleable.LineChartView_showChartValue, showChartValue)
-            showVerticalGrid = it.getBoolean(R.styleable.LineChartView_showVerticalGrid, showVerticalGrid)
-            showHorizontalGrid = it.getBoolean(R.styleable.LineChartView_showHorizontalGrid, showHorizontalGrid)
+            drawCircleHole = it.getBoolean(R.styleable.LineChartView_lcvDrawCircleHole, drawCircleHole)
+            showChartDot = it.getBoolean(R.styleable.LineChartView_lcvShowChartDot, showChartDot)
+            chartFillEnabled = it.getBoolean(R.styleable.LineChartView_lcvFillEnabled, chartFillEnabled)
+            showChartValue = it.getBoolean(R.styleable.LineChartView_lcvShowChartValue, showChartValue)
+            showVerticalGrid = it.getBoolean(R.styleable.LineChartView_lcvShowVerticalGrid, showVerticalGrid)
+            showHorizontalGrid = it.getBoolean(R.styleable.LineChartView_lcvShowHorizontalGrid, showHorizontalGrid)
         }
         typedArray.recycle()
     }
