@@ -338,7 +338,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cdText = view.findViewById(R.id.tv_count_down);
 
         progressDialogNormal = new AlertDialog.Builder(getActivity())
-                .setView(R.layout.purchase_platform_progress_dialog_view)
+                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
                 .setCancelable(false)
                 .create();
 
@@ -634,7 +634,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void showToastError(String message) {
         if (getView() != null && getActivity() != null) {
             if (TextUtils.isEmpty(message)) {
-                message = getActivity().getString(R.string.default_request_error_unknown);
+                message = getActivity().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown);
             }
             if (shipmentAdapter == null || shipmentAdapter.getItemCount() == 0) {
                 renderErrorPage(message);
@@ -1851,8 +1851,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     (serviceDataTracker.getIsPromo() == 1),
                     serviceDataTracker.getServiceName(),
                     (serviceDataTracker.getCodData().getIsCod() == 1),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMinPrice(), false),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMaxPrice(), false)
+                    Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMinPrice(), false)),
+                    Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMaxPrice(), false))
             );
         }
         if (flagNeedToSetPinpoint) {
@@ -1931,7 +1931,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
             tooltip.setDesc(message);
             tooltip.setTextButton(getActivity().getString(R.string.label_no_courier_bottomsheet_button));
-            tooltip.setIcon(R.drawable.ic_dropshipper);
+            tooltip.setIcon(R.drawable.checkout_module_ic_dropshipper);
             tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -2014,7 +2014,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void showShippingDurationBottomsheet(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, int cartPosition) {
         if (shipmentCartItemModel.getShopShipmentList() == null || shipmentCartItemModel.getShopShipmentList().size() == 0) {
-            onNoCourierAvailable(getString(R.string.label_no_courier_bottomsheet_message));
+            onNoCourierAvailable(getString(com.tokopedia.logisticcart.R.string.label_no_courier_bottomsheet_message));
         } else {
             ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                     recipientAddressModel);
@@ -2146,7 +2146,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCourierPromoCanceled(String shipperName, String promoCode) {
         if (shipmentAdapter.isCourierPromoStillExist()) {
-            showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
+            showToastError(String.format(getString(com.tokopedia.logisticcart.R.string.message_cannot_apply_courier_promo), shipperName));
         }
     }
 
@@ -2800,6 +2800,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void updateLogisticPromoData(PromoUiModel promoUiModel) {
         List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
+        if (shipmentCartItemModels == null) return;
         List<PromoCheckoutVoucherOrdersItemUiModel> voucherOrdersItemUiModels = promoUiModel.getVoucherOrderUiModels();
         for (PromoCheckoutVoucherOrdersItemUiModel promoCheckoutVoucherOrdersItemUiModel : voucherOrdersItemUiModels) {
             if (promoCheckoutVoucherOrdersItemUiModel.getType().equals("logistic")) {

@@ -9,6 +9,7 @@ import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -42,8 +43,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         productCarouselComponentData.value = components
-        components.getComponentsItem()?.let {
-            productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
+        getProductList()?.let {
+            productCarouselList.value = it
         }
         fetchProductCarouselData()
     }
@@ -53,13 +54,26 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
             if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
-                productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
-                syncData.value = true
+                getProductList()?.let {
+                    productCarouselList.value = it
+                    syncData.value = true
+                }
             }
         }, onError = {
             it.printStackTrace()
         })
     }
 
+    fun isUserLoggedIn(): Boolean {
+        return UserSession(application).isLoggedIn
+    }
+
+
+    private fun getProductList(): ArrayList<ComponentsItem>? {
+        components.getComponentsItem()?.let { productList ->
+            return productList as ArrayList<ComponentsItem>
+        }
+        return null
+    }
 
 }

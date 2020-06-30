@@ -90,7 +90,7 @@
             <ImageView
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
-                app:srcCompat="@drawable/ic_info_trade_in" />
+                app:srcCompat="@drawable/checkout_module_ic_info_trade_in" />
 
             <TextView
                 android:id="@+id/tv_trade_in_info"

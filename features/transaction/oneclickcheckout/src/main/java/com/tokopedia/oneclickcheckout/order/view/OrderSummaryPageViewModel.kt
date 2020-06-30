@@ -2,6 +2,8 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
@@ -53,6 +55,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_OFFICIAL_STORE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_POWER_MERCHANT
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -66,6 +69,7 @@ import kotlin.math.max
 
 class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                     private val executorSchedulers: ExecutorSchedulers,
+                                                    private val atcOccExternalUseCase: AddToCartOccExternalUseCase,
                                                     private val getOccCartUseCase: GetOccCartUseCase,
                                                     private val ratesUseCase: GetRatesUseCase,
                                                     val getPreferenceListUseCase: GetPreferenceListUseCase,
@@ -102,6 +106,32 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun getCurrentShipperId(): Int {
         return _orderPreference?.shipping?.shipperId ?: 0
+    }
+
+    fun atcOcc(productId: String) {
+        globalEvent.value = OccGlobalEvent.Loading
+        atcOccExternalUseCase.createObservable(
+                RequestParams().apply {
+                    putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
+                }
+        ).subscribeOn(executorSchedulers.io).observeOn(executorSchedulers.main)
+                .subscribe(object : Observer<AddToCartDataModel> {
+                    override fun onError(e: Throwable) {
+                        globalEvent.value = OccGlobalEvent.AtcError(e)
+                    }
+
+                    override fun onNext(result: AddToCartDataModel) {
+                        if (result.isDataError()) {
+                            globalEvent.value = OccGlobalEvent.AtcError(errorMessage = result.getAtcErrorMessage() ?: "")
+                        } else {
+                            globalEvent.value = OccGlobalEvent.AtcSuccess(result.data.message.firstOrNull() ?: "")
+                        }
+                    }
+
+                    override fun onCompleted() {
+                        // do nothing
+                    }
+                })
     }
 
     fun getOccCart(isFullRefresh: Boolean, source: String) {
@@ -1436,11 +1466,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
         if (minimumAmount > subtotal) {
             orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                    paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}). Silahkan pilih pembayaran lain.",
+                    paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     isButtonChoosePayment = true, buttonState = currentState)
         } else if (maximumAmount > 0 && maximumAmount < subtotal) {
             orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                    paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}). Silahkan pilih pembayaran lain.",
+                    paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     isButtonChoosePayment = true, buttonState = currentState)
         } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains(OVO_GATEWAY_CODE) == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
             orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,

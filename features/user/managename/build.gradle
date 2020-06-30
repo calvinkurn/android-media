@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply from: "../../../compile-unit-test.gradle"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -55,9 +54,14 @@ dependencies {
     // Test Dependencies
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.kotlinMockito2
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.powerMockito
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
+    testImplementation project(rootProject.ext.libraries.tkpddesign)
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 
     // Debug tools
     implementation rootProject.ext.debugToolsDependencies.chuck
