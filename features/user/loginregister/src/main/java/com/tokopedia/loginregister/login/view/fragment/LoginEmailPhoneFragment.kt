@@ -1339,17 +1339,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onSuccessCheckStatusFingerprint(data: StatusFingerprint) {
         dismissLoadingLogin()
-        if (!data.isValid && isFromAccountPage()) {
+        onSuccessLogin()
+        if (!data.isValid) {
             goToFingerprintRegisterPage()
-        } else {
-            onSuccessLogin()
         }
     }
 
     override fun goToFingerprintRegisterPage() {
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         RouteManager.route(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
-        activity?.finish()
     }
 
     private fun onErrorCheckStatusPin(): (Throwable) -> Unit {
