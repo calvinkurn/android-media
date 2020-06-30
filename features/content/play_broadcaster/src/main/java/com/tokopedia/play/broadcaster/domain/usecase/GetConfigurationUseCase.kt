@@ -10,8 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.usecase.coroutines.UseCase
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**

@@ -8,7 +8,6 @@ import com.tokopedia.play.broadcaster.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.UpdateChannelResponse
 import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
