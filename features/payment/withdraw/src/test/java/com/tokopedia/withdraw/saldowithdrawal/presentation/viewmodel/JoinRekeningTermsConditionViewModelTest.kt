@@ -7,6 +7,7 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.model.GqlRekPreTncResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.RekPreTncResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.TermTemplate
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.SaldoGQLUseCase
+import com.tokopedia.withdraw.util.observeOnce
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -24,9 +25,9 @@ class JoinRekeningTermsConditionViewModelTest {
 
     private val useCase = mockk<SaldoGQLUseCase<GqlRekPreTncResponse>>()
 
-
     @ExperimentalCoroutinesApi
-    private val joinRekeningTermsConditionViewModel = spyk(JoinRekeningTermsConditionViewModel("", useCase, TestCoroutineDispatcher()))
+    private val joinRekeningTermsConditionViewModel = spyk(JoinRekeningTermsConditionViewModel("",
+            useCase, TestCoroutineDispatcher()))
 
     @Before
     fun setUp() {
@@ -66,12 +67,13 @@ class JoinRekeningTermsConditionViewModelTest {
         assert(joinRekeningTermsConditionViewModel.tncResponseMutableData.value is Success)
 
     }
+
     @Test
     fun `check live data fail`() {
 
         val exception = Exception()
-
-        val result = Fail(exception)
+        val result = mockk<Fail>()
+        every { result.throwable } returns exception
         every { useCase.setRequestParams(any()) } just runs
         every { useCase.setGraphqlQuery(any()) } just runs
         every { useCase.setTypeClass(any()) } just runs
@@ -80,9 +82,10 @@ class JoinRekeningTermsConditionViewModelTest {
             useCase.executeUseCase()
         } returns result
 
-        joinRekeningTermsConditionViewModel.loadJoinRekeningTermsCondition(1)
-
-        assert(joinRekeningTermsConditionViewModel.tncResponseMutableData.value is Fail)
+        joinRekeningTermsConditionViewModel.loadJoinRekeningTermsCondition(-1)
+        joinRekeningTermsConditionViewModel.tncResponseMutableData.observeOnce {
+            assert(it is Fail)
+        }
 
     }
 

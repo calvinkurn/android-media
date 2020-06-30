@@ -65,19 +65,19 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
 
     override fun onBackPressed() {
         val isSuccess = setResultIfSuccessFragment()
-        if(!isSuccess){
+        if (!isSuccess) {
             analytics.get().onBackPressFromWithdrawalPage()
         }
         super.onBackPressed()
     }
 
-    private fun setResultIfSuccessFragment() : Boolean{
+    private fun setResultIfSuccessFragment(): Boolean {
         if (supportFragmentManager.findFragmentByTag(TAG_SUCCESS_FRAGMENT) != null) {
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)
             val fragment = supportFragmentManager.findFragmentByTag(TAG_SUCCESS_FRAGMENT)
             if (fragment is SuccessFragmentWithdrawal) {
-                (fragment as SuccessFragmentWithdrawal).onCloseButtonClick()
+                fragment.onCloseButtonClick()
             }
             return true
         }

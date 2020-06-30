@@ -8,7 +8,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class SaldoGQLUseCase<T : Any> @Inject constructor(
+open class SaldoGQLUseCase<T : Any> @Inject constructor(
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<T>(graphqlRepository) {
 
