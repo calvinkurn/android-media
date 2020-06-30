@@ -6,9 +6,9 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
@@ -31,6 +31,7 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         UserSession(this)
     }
     private var isNeedLocation = false
+    private var shouldShowExitDialog = true
     private var bundle: Bundle? = null
 
 
@@ -72,6 +73,7 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         } else if (page == PageNameConstant.FINISH_SPLASH_SCREEN_PAGE) {
             val fragmentFinishPage = ShopOpenRevampFinishFragment()
             navigateToOtherFragment(fragmentFinishPage, tag)
+            shouldShowExitDialog = false
         }
     }
 
@@ -80,7 +82,11 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
     }
 
     override fun showExitDialog() {
-        var exitDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        if (!shouldShowExitDialog) {
+            return
+        }
+
+        val exitDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         exitDialog.apply {
             setTitle(ExitDialog.TITLE)
             setDescription(ExitDialog.DESCRIPTION)
