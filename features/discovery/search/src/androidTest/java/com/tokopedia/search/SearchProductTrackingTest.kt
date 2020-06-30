@@ -46,7 +46,6 @@ internal class SearchProductTrackingTest {
     private var recyclerViewIdlingResource: IdlingResource? = null
     private val gtmLogDBSource = GtmLogDBSource(context)
 
-    @Before
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
 
