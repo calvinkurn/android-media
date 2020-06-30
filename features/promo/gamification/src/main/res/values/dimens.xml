@@ -52,5 +52,5 @@
     <dimen name="gami_reward_item_padding_small">8dp</dimen>
     <dimen name="gami_reward_item_padding_med">12dp</dimen>
     <dimen name="gami_reward_item_padding_large">24dp</dimen>
-    <dimen name="gami_box_glow_top_margin">12dp</dimen>
+    <dimen name="gami_box_glow_top_margin">14dp</dimen>
 </resources>
