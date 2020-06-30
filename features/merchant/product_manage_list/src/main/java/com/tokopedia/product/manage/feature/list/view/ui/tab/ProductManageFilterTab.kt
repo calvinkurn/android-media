@@ -51,7 +51,8 @@ class ProductManageFilterTab(
         updateTabs(tabs)
         val currentChipsCount = sortFilterTab.chipItems.count() - 1
         if(selectedTabIndex > currentChipsCount) {
-            //set chip to be the last of chips
+            //if selectedTab more than current chips
+            // set chip to be the last of chips
             selectedTabIndex = currentChipsCount
         }
 
