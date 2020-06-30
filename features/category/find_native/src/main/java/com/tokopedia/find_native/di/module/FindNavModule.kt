@@ -36,12 +36,6 @@ class FindNavModule {
 
     @FindNavScope
     @Provides
-    fun provideResources(context: Context): Resources {
-        return context.resources
-    }
-
-    @FindNavScope
-    @Provides
     fun getAddWishListUseCase(context: Context): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
