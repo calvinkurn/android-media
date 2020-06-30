@@ -53,7 +53,7 @@ class HomeRecommendationUITest{
         Log.d("testHomeRecom", "start test")
         val json = HomeRecommendationJson.successData
         val data = Gson().fromJson<HomeFeedContentGqlResponse>(json, HomeFeedContentGqlResponse::class.java)
-        val mockData = HomeRecommendationMapper().mapToHomeRecommendationDataModel(data, "")
+        val mockData = HomeRecommendationMapper().mapToHomeRecommendationDataModel(data, "", 1)
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
@@ -106,7 +106,7 @@ class HomeRecommendationUITest{
         var impressionUrl = ""
         val json = HomeRecommendationJson.successWithOneData
         val data = Gson().fromJson<HomeFeedContentGqlResponse>(json, HomeFeedContentGqlResponse::class.java)
-        val mockData = HomeRecommendationMapper().mapToHomeRecommendationDataModel(data, "")
+        val mockData = HomeRecommendationMapper().mapToHomeRecommendationDataModel(data, "", 1)
         var productsImpression = 0
 
         Log.d("testHomeRecom", mockData.toString())
@@ -129,7 +129,7 @@ class HomeRecommendationUITest{
         val capturingUrl = slot<String>()
         var clickUrl = ""
         val data = Gson().fromJson<HomeFeedContentGqlResponse>(json, HomeFeedContentGqlResponse::class.java)
-        val mockData = HomeRecommendationMapper().mapToHomeRecommendationDataModel(data, "")
+        val mockData = HomeRecommendationMapper().mapToHomeRecommendationDataModel(data, "", 1)
 
         var productsImpression = 0
 

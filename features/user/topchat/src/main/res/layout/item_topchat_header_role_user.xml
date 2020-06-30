@@ -26,16 +26,20 @@
         android:text="●"
         android:textColor="@color/Neutral_N700_96"
         android:textStyle="normal"
+        android:visibility="gone"
         app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/topchat_charcoal_grey_68"
+        android:visibility="gone"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Admin" />
+        tools:text="Admin"
+        tools:visibility="visible" />
 
 </merge>

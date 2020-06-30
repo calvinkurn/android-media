@@ -2800,6 +2800,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void updateLogisticPromoData(PromoUiModel promoUiModel) {
         List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
+        if (shipmentCartItemModels == null) return;
         List<PromoCheckoutVoucherOrdersItemUiModel> voucherOrdersItemUiModels = promoUiModel.getVoucherOrderUiModels();
         for (PromoCheckoutVoucherOrdersItemUiModel promoCheckoutVoucherOrdersItemUiModel : voucherOrdersItemUiModels) {
             if (promoCheckoutVoucherOrdersItemUiModel.getType().equals("logistic")) {

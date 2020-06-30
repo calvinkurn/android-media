@@ -12,6 +12,8 @@ class CategoryNavConstants {
         const val UNIQUE_ID = "unique_id"
         const val ROWS = "rows"
         const val KEY_SAFE_SEARCH = "safe_search"
+        const val PMIN = "pmin"
+        const val PMAX = "pmax"
         const val OB = "ob"
         const val Q = "q"
         const val KEY_PAGE = "page"

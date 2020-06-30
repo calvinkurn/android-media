@@ -210,6 +210,7 @@ public class SplashScreen extends AppCompatActivity {
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }
+                            Timber.w("P2#LINKER#splash_screen;deeplink='%s'", tokopediaDeeplink);
                             intent.setData(Uri.parse(tokopediaDeeplink));
                             startActivity(intent);
                             finish();

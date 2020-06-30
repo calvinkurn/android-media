@@ -12,4 +12,7 @@ object Constants {
     const val CATEGORY_PLT_PREPARE_METRICS = "category_plt_prepare_metrics"
     const val CATEGORY_PLT_NETWORK_METRICS = "category_plt_network_metrics"
     const val CATEGORY_PLT_RENDER_METRICS = "category_plt_render_metrics"
+
+    const val GQL_CATEGORY_LIST = "gql_category_list"
+
 }

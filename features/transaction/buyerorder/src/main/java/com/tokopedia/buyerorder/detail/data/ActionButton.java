@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ActionButton {
+import java.io.Serializable;
+
+public class ActionButton implements Serializable {
 
     @SerializedName("body")
     @Expose
