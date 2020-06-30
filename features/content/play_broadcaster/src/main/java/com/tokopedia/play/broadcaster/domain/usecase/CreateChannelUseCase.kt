@@ -17,7 +17,7 @@ import javax.inject.Inject
  */
 class CreateChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<ChannelId>() {
+) : BaseUseCase<ChannelId>() {
 
     private val query = """
            mutation createChannel(${'$'}authorId: String!, ${'$'}authorType: Int!, ${'$'}status: Int!){
@@ -35,7 +35,7 @@ class CreateChannelUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ChannelId {
         val gqlRequest = GraphqlRequest(query, CreateChannelBroadcastResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<CreateChannelBroadcastResponse>(CreateChannelBroadcastResponse::class.java)
         response?.getChannelId?.let { return it }

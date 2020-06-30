@@ -2,12 +2,12 @@ package com.tokopedia.play.broadcaster.util.error
 
 
 /**
- * Created by mzennis on 29/06/20.
+ * Created by mzennis on 30/06/20.
  */
-class DefaultErrorThrowable: Throwable() {
+class DefaultNetworkThrowable: Throwable() {
 
     override val message: String
-        get() = "Ada sedikit kendala pada sistem."
+        get() = "Koneksi internetmu terputus, nih."
 
     override fun getLocalizedMessage(): String {
         return message

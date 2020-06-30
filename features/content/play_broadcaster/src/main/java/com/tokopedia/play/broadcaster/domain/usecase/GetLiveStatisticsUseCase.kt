@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class GetLiveStatisticsUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<LiveStats>() {
+) : BaseUseCase<LiveStats>() {
 
     private val query = """
         query liveReport(${'$'}channelId: String!){
@@ -47,7 +47,7 @@ class GetLiveStatisticsUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): LiveStats {
         val gqlRequest = GraphqlRequest(query, LiveStats::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(GetLiveStatisticsResponse::class.java)
         return if (!errors.isNullOrEmpty()) {
