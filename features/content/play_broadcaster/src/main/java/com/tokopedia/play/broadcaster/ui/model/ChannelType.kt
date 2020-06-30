@@ -4,7 +4,7 @@ package com.tokopedia.play.broadcaster.ui.model
 /**
  * Created by mzennis on 24/05/20.
  */
-enum class PlayChanelType(val value: String) {
+enum class ChannelType(val value: String) {
     Draft("0"),
     Active("1"),
     Pause("3"),
@@ -12,11 +12,11 @@ enum class PlayChanelType(val value: String) {
 
     companion object {
 
-        fun getConfigType(
+        fun getChannelType(
                 activeLiveChannel: Int,
                 pausedChannel: Int,
                 draftChannel: Int
-        ): Pair<String, PlayChanelType> {
+        ): Pair<String, ChannelType> {
             var channelId = 0
             var playChannelStatus = Unknown
             when {

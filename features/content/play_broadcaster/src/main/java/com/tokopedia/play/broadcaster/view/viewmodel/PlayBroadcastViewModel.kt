@@ -160,7 +160,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 return@withContext getConfigurationUseCase.executeOnBackground()
             }
             val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
-            if (configUiModel.channelType == PlayChanelType.Unknown) createChannel() // create channel when there are no channel exist
+            if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
         }) {
