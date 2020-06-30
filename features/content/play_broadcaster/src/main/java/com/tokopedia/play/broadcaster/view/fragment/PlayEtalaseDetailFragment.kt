@@ -63,6 +63,15 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private var mListener: ProductSetupListener? = null
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
+        private var isAlreadyBound = false
+
+        override fun onImageLoaded(position: Int, isSuccess: Boolean) {
+            if (!isAlreadyBound) {
+                startPostponedTransition()
+                isAlreadyBound = true
+            }
+        }
+
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
         }
@@ -220,11 +229,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
             val flattenValues = it.currentValue.productMap.values.flatten()
             when (it.state) {
                 is PageResultState.Success -> {
-
                     showProductEmptyError(flattenValues.isEmpty())
                     selectableProductAdapter.setItemsAndAnimateChanges(flattenValues)
-
-                    startPostponedTransition()
 
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(true)

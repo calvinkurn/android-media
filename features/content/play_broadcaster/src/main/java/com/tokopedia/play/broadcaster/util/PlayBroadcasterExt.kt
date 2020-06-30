@@ -7,10 +7,13 @@ import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -121,4 +124,14 @@ internal fun EditText.setTextFieldColor(@ColorRes color: Int) {
     } else {
         setBackgroundDrawable(drawable)
     }
+}
+
+internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestListener<Drawable>) {
+    Glide.with(context)
+            .load(url)
+            .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+            .dontAnimate()
+            .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+            .addListener(requestListener)
+            .into(this)
 }
