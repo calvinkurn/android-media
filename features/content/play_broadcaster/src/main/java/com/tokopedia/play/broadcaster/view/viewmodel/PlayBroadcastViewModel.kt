@@ -9,10 +9,7 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.Metric
-import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.UpdateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
@@ -43,6 +40,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
         private val updateChannelUseCase: UpdateChannelUseCase,
+        private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val dispatcher: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
         private val playSocket: PlayBroadcastSocket
