@@ -15,7 +15,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
@@ -47,7 +46,7 @@ class RewardSummaryView : FrameLayout {
     lateinit var imageBox: AppCompatImageView
 
     lateinit var rvAdapter: RewardSummaryAdapter
-    lateinit var decoration:RewardItemDecoration
+    lateinit var decoration: RewardItemDecoration
     val dataList = arrayListOf<RewardSummaryItem>()
     val buttonsMap = HashMap<@RewardButtonType String, Typography>()
 
@@ -176,8 +175,8 @@ class RewardSummaryView : FrameLayout {
         list.removeAll(filteredItems)
         list.addAll(filteredItems)
 
-        if(filteredItems.isNotEmpty()){
-            decoration.indexTillBigPrize = filteredItems.size -1
+        if (filteredItems.isNotEmpty()) {
+            decoration.indexTillBigPrize = filteredItems.size - 1
         }
 
 

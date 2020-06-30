@@ -33,7 +33,7 @@ class RewardSummaryAdapter(val dataList: ArrayList<RewardSummaryItem>) : Recycle
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = dataList[position]
         when (holder) {
-            is CouponListResultVH -> item.couponDetail?.let { holder.setData(it, item.benfit) }
+            is CouponListResultVH -> item.couponDetail?.let { holder.setData(it, item.benfit, item.crackButtonEntity) }
             is RandomRewardViewHolder -> holder.bind(item.benfit)
         }
 
