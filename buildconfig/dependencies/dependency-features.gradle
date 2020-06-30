@@ -107,6 +107,7 @@ ext {
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
+            notifTroubleshooter             : ":features:home:notif-troubleshooter",
 
             logisticdata                    : ":features:logistic:logisticdata",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
