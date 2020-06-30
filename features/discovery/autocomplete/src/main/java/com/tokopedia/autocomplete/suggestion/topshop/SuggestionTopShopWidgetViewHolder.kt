@@ -63,9 +63,9 @@ class SuggestionTopShopWidgetViewHolder(
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return TopShopCardItemDecoration(
                 itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12) ?: 0,
                 itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4) ?: 0
         )
     }
 
