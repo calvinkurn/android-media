@@ -1,9 +1,6 @@
 package com.tokopedia.shop_score.domain.interactor;
 
-//import com.tokopedia.core.base.domain.RequestParams;
-//import com.tokopedia.core.base.domain.UseCase;
-//import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-//import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+
 import com.tokopedia.shop_score.domain.ShopScoreRepository;
 import com.tokopedia.shop_score.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.usecase.RequestParams;
@@ -24,11 +21,6 @@ public class GetShopScoreMainDataUseCase extends UseCase<ShopScoreMainDomainMode
         super();
         this.shopScoreRepository = shopScoreRepository;
     }
-
-//    @Override
-//    public Observable<ShopScoreMainDomainModel> createObservable(RequestParams requestParams) {
-//        return shopScoreRepository.getShopScoreSummary();
-//    }
 
     @Override
     public Observable<ShopScoreMainDomainModel> createObservable(RequestParams requestParams) {

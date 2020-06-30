@@ -18,9 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-//import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-//import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.shop_score.R;
@@ -49,7 +47,6 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     private ImageView imageViewGoldBadge;
     private FrameLayout mainFrame;
     private ProgressDialog progressDialog;
-//    private TkpdProgressDialog progressDialog;
 
     private View.OnClickListener goToSellerCenter = new View.OnClickListener() {
         @Override
@@ -86,8 +83,6 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         View parentView = inflater.inflate(R.layout.fragment_shop_score_detail, container, false);
 
         setupRecyclerView(parentView);
-
-//        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
         progressDialog = new ProgressDialog(getActivity());
 
         containerView = (LinearLayout) parentView.findViewById(R.id.container_view);
@@ -177,7 +172,6 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void showProgressDialog() {
-//        progressDialog.showDialog();
         progressDialog.show();
         containerView.setVisibility(View.GONE);
     }

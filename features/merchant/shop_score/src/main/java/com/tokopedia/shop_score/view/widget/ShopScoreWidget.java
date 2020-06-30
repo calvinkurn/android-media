@@ -13,7 +13,7 @@ import com.tokopedia.shop_score.view.model.ShopScoreViewModelData;
 /**
  * @author sebastianuskh on 2/23/17.
  */
-@Deprecated
+
 public class ShopScoreWidget extends FrameLayout {
     private ShopScoreMainDetailView shopScoreMainDetailView;
 

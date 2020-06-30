@@ -1,6 +1,5 @@
 package com.tokopedia.shop_score.view.presenter;
 
-//import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop_score.domain.interactor.GetShopScoreDetailUseCase;

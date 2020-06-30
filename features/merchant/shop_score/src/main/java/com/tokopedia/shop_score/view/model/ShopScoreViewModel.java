@@ -3,7 +3,7 @@ package com.tokopedia.shop_score.view.model;
 /**
  * @author sebastianuskh on 2/24/17.
  */
-@Deprecated
+
 public class ShopScoreViewModel {
     private int badgeScore;
     private ShopScoreViewModelData data;

@@ -3,9 +3,6 @@ package com.tokopedia.shop_score.data.mapper;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
-//import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailItemServiceModel;
-//import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
-//import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.shop_score.data.model.detail.ShopScoreDetailItemServiceModel;
 import com.tokopedia.shop_score.data.model.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.shop_score.domain.model.ShopScoreDetailDomainModel;
@@ -34,9 +31,6 @@ public class ShopScoreDetailMapper
         this.context = context;
         this.sessionHandler = sessionHandler;
     }
-
-//    @Inject
-//    UserSessionInterface userSession;
 
     @Override
     public ShopScoreDetailDomainModel call(ShopScoreDetailServiceModel serviceModel) {

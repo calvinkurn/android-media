@@ -1,9 +1,8 @@
 package com.tokopedia.shop_score.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-//import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.shop_score.domain.ShopScoreRepository;
 import com.tokopedia.shop_score.domain.model.ShopScoreDetailDomainModel;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
@@ -20,7 +19,7 @@ public class GetShopScoreDetailUseCase extends UseCase<ShopScoreDetailDomainMode
     }
 
     @Override
-    public Observable<ShopScoreDetailDomainModel> createObservable(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<ShopScoreDetailDomainModel> createObservable(RequestParams requestParams) {
         return shopScoreRepository.getShopScoreDetail();
     }
 }

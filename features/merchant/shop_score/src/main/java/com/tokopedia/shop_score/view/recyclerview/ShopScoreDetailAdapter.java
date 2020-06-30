@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-//import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.shop_score.R;
 import com.tokopedia.shop_score.view.model.ShopScoreDetailItemViewModel;
 

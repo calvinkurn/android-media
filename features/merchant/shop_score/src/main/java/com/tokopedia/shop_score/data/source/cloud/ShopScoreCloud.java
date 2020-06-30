@@ -1,14 +1,10 @@
 package com.tokopedia.shop_score.data.source.cloud;
 
-//import com.tokopedia.core.network.apiservices.goldmerchant.apis.GoldMerchantApi;
-//import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
-//import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServiceModel;
 import com.tokopedia.shop_score.data.common.GetData;
 import com.tokopedia.shop_score.data.model.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.shop_score.data.model.summary.ShopScoreSummaryServiceModel;
 import com.tokopedia.shop_score.domain.GoldMerchantApi;
 import com.tokopedia.user.session.UserSessionInterface;
-//import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -19,7 +15,6 @@ import rx.Observable;
  */
 public class ShopScoreCloud {
     private final GoldMerchantApi api;
-//    private final SessionHandler sessionHandler;
     private final UserSessionInterface sessionHandler;
 
     @Inject

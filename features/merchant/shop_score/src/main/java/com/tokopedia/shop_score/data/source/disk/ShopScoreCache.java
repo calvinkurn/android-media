@@ -3,14 +3,8 @@ package com.tokopedia.shop_score.data.source.disk;
 import androidx.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
-//import com.tokopedia.core.base.utils.ErrorCheck;
-//import com.tokopedia.core.database.CacheUtil;
-//import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-//import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
-//import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServiceModel;
-
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.shop_score.data.common.ErrorCheck;
 import com.tokopedia.shop_score.data.model.detail.ShopScoreDetailServiceModel;
@@ -52,10 +46,6 @@ public class ShopScoreCache {
 
     private void saveToCache(String key, String stringData) {
         cacheManager.put(key, stringData, 3600);
-//        cacheManager.setKey(key);
-//        cacheManager.setValue(stringData);
-//        cacheManager.setCacheDuration(3600);
-//        cacheManager.store();
     }
 
     public Observable<ShopScoreDetailServiceModel> getShopScoreDetail() {
@@ -74,11 +64,10 @@ public class ShopScoreCache {
                 .map(new Func1<Boolean, ShopScoreSummaryServiceModel>() {
                          @Override
                          public ShopScoreSummaryServiceModel call(Boolean aBoolean) {
-//                             return cacheManager.getConvertObjData(
-//                                     TkpdCache.Key.SHOP_SCORE_SUMMARY,
-//                                     ShopScoreSummaryServiceModel.class
-//                             );
-                             return cacheManager.get(TkpdCache.Key.SHOP_SCORE_SUMMARY, ShopScoreSummaryServiceModel.class);
+                             return cacheManager.get(
+                                     TkpdCache.Key.SHOP_SCORE_SUMMARY,
+                                     ShopScoreSummaryServiceModel.class
+                             );
                          }
                      }
                 );
@@ -90,11 +79,10 @@ public class ShopScoreCache {
                 .map(new Func1<Boolean, ShopScoreDetailServiceModel>() {
                          @Override
                          public ShopScoreDetailServiceModel call(Boolean aBoolean) {
-//                             return cacheManager.getConvertObjData(
-//                                     TkpdCache.Key.SHOP_SCORE_DETAIL,
-//                                     ShopScoreDetailServiceModel.class
-//                             );
-                             return cacheManager.get(TkpdCache.Key.SHOP_SCORE_DETAIL, ShopScoreDetailServiceModel.class);
+                             return cacheManager.get(
+                                     TkpdCache.Key.SHOP_SCORE_DETAIL,
+                                     ShopScoreDetailServiceModel.class
+                             );
                          }
                      }
                 );
