@@ -182,9 +182,8 @@ class AddEditProductVariantFragment :
 
         // button save on click listener
         buttonSave.setOnClickListener {
-            val variantDetails = variantTypeAdapter?.getItems().orEmpty()
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
-            viewModel.updateVariantInputModel(variantDetails, variantPhotos)
+            viewModel.updateVariantInputModel(variantPhotos)
             startAddEditProductVariantDetailActivity()
         }
 
@@ -638,6 +637,7 @@ class AddEditProductVariantFragment :
                     val sizechart = viewModel.productInputModel.value?.variantInputModel?.sizecharts
                             ?: PictureVariantInputModel()
                     viewModel.updateSizechart(sizechart)
+                    viewModel.updateSizechartFieldVisibility()
                 }
                 is Fail -> {
                     context?.let {

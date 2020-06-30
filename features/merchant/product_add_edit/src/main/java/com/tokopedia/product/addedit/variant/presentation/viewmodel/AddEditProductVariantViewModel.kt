@@ -143,16 +143,11 @@ class AddEditProductVariantViewModel @Inject constructor(
         mSelectedVariantUnitValuesLevel2.value = selectedVariantUnitValues
     }
 
-    fun updateVariantInputModel(variantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>) {
-        val variantInputModel = productInputModel.value?.variantInputModel
-        val variantTypesSelected = variantValuesLayoutMap.map { it.key }
-        val variantDetailsSelected =
-                variantDetails.filterIndexed { index, _ -> variantTypesSelected.contains(index) }
-
-        variantInputModel?.apply {
-            this.products = mapProducts(variantPhotos)
-            this.selections = mapSelections(variantDetailsSelected)
-            this.sizecharts = variantSizechart.value ?: PictureVariantInputModel()
+    fun updateVariantInputModel(variantPhotos: List<VariantPhoto>) {
+        productInputModel.value?.variantInputModel?.apply {
+            products = mapProducts(variantPhotos)
+            selections = mapSelections(selectedVariantDetails)
+            sizecharts = variantSizechart.value ?: PictureVariantInputModel()
         }
     }
 
@@ -169,6 +164,12 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
         if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
             mIsVariantSizechartVisible.value = isVisible
+        }
+    }
+
+    fun updateSizechartFieldVisibility() {
+        mIsVariantSizechartVisible.value = selectedVariantDetails.any {
+            it.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART
         }
     }
 
