@@ -122,6 +122,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.topadsClickUrl shouldBe topAdsProduct.productClickUrl
         productItem.topadsImpressionUrl shouldBe topAdsProduct.product.image.s_url
         productItem.topadsWishlistUrl shouldBe topAdsProduct.productWishlistUrl
+        productItem.position shouldBe position
     }
 
     private fun Visitable<*>.assertOrganicProduct(organicProduct: SearchProductModel.Product, position: Int) {
