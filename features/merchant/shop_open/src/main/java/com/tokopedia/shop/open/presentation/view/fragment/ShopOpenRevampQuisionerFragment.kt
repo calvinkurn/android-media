@@ -391,6 +391,7 @@ class ShopOpenRevampQuisionerFragment :
                 setDescription(ExitDialog.DESCRIPTION)
                 setPrimaryCTAText(getString(R.string.open_shop_cancel))
                 setPrimaryCTAClickListener {
+                    this.dismiss()
                     gotoPickLocation()
                 }
                 setSecondaryCTAText(getString(R.string.open_shop_logout_button))
