@@ -1,7 +1,5 @@
 package com.tokopedia.fcmcommon
 
-import java.lang.Exception
-
 interface FirebaseMessagingManager {
     fun onNewToken(newToken: String?)
     fun isNewToken(token: String): Boolean
