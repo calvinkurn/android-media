@@ -147,21 +147,26 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                            lidImageList: List<String>,
                            imageCallback: ((isLoaded: Boolean) -> Unit)) {
 
+        fun incrementAndSendCallback(){
+            val count = imagesLoaded.incrementAndGet()
+            if (count == TOTAL_ASYNC_IMAGES) {
+                imageCallback.invoke(true)
+            }
+        }
+
         if (glowImageUrl != null) {
             Glide.with(this)
                     .load(glowImageUrl)
                     .dontAnimate()
+                    .error(R.drawable.gf_gift_white_waktu)
                     .addListener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            imageCallback.invoke(false)
+                            incrementAndSendCallback()
                             return false
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            val count = imagesLoaded.incrementAndGet()
-                            if (count == TOTAL_ASYNC_IMAGES) {
-                                imageCallback.invoke(true)
-                            }
+                            incrementAndSendCallback()
                             return false
                         }
                     })
@@ -174,17 +179,15 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             Glide.with(this)
                     .load(glowImageShadowUrl)
                     .dontAnimate()
+                    .error(R.drawable.gf_gift_glow)
                     .addListener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            imageCallback.invoke(false)
+                            incrementAndSendCallback()
                             return false
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            val count = imagesLoaded.incrementAndGet()
-                            if (count == TOTAL_ASYNC_IMAGES) {
-                                imageCallback.invoke(true)
-                            }
+                            incrementAndSendCallback()
                             return false
                         }
                     })
@@ -196,17 +199,15 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         Glide.with(this)
                 .load(bgUrl)
                 .dontAnimate()
+                .error(R.drawable.gf_gift_bg)
                 .addListener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        imageCallback.invoke(false)
+                        incrementAndSendCallback()
                         return false
                     }
 
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val count = imagesLoaded.incrementAndGet()
-                        if (count == TOTAL_ASYNC_IMAGES) {
-                            imageCallback.invoke(true)
-                        }
+                        incrementAndSendCallback()
                         return false
                     }
                 })
@@ -215,17 +216,15 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         Glide.with(this)
                 .load(imageFrontUrl)
                 .dontAnimate()
+                .error(R.drawable.gf_gift_green_front)
                 .addListener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        imageCallback.invoke(false)
+                        incrementAndSendCallback()
                         return false
                     }
 
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val count = imagesLoaded.incrementAndGet()
-                        if (count == TOTAL_ASYNC_IMAGES) {
-                            imageCallback.invoke(true)
-                        }
+                        incrementAndSendCallback()
                         return false
                     }
                 })

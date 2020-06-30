@@ -102,7 +102,6 @@ open class GiftBoxDailyView : FrameLayout {
     fun loadFiles(@TokenUserState state: String,
                   imageFrontUrl: String?,
                   imageBgUrl: String,
-                  lidImages: ArrayList<String>,
                   imageCallback: ((isLoaded: Boolean) -> Unit)) {
 
         var drawableRedForLid = R.drawable.gf_ic_lid_7
@@ -233,10 +232,10 @@ open class GiftBoxDailyView : FrameLayout {
 
         val drawableArray = arrayOf(
                 R.drawable.gf_ic_lid_0,
-                R.drawable.gf_ic_lid_1,
-                R.drawable.gf_ic_lid_2,
+                R.drawable.gf_ic_lid_0,
+                R.drawable.gf_ic_lid_0,
                 R.drawable.gf_ic_lid_3,
-                R.drawable.gf_ic_lid_4,
+                R.drawable.gf_ic_lid_3,
                 R.drawable.gf_ic_lid_5,
                 R.drawable.gf_ic_lid_6,
                 R.drawable.gf_ic_lid_7
