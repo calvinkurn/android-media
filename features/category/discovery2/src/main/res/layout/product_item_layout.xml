@@ -274,59 +274,84 @@
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewRating"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_8"
+        <LinearLayout
+            android:id="@+id/linearLayoutImageRating"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_18"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_3"
-            android:adjustViewBounds="true"
-            android:gravity="center"
-            android:scaleType="centerCrop"
+            android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dp_3"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/shopBadgeLinerLayout"
             app:layout_goneMarginTop="@dimen/dp_4"
-            app:srcCompat="@drawable/product_card_ic_rating_active"
-            tools:visibility="visible" />
+            tools:visibility="visible">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewRatingCount"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_18"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:gravity="center_vertical"
-            android:textColor="@color/clr_ae31353b"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/imageViewRating"
-            app:layout_constraintTop_toBottomOf="@id/shopBadgeLinerLayout"
-            app:layout_goneMarginLeft="@dimen/dp_8"
-            app:layout_goneMarginStart="@dimen/dp_8"
-            app:layout_goneMarginTop="@dimen/dp_4"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="4.5"
-            tools:visibility="visible" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewRating1"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewRating2"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewRating3"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewRating4"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewRating5"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+    </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewReviewCount"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
-            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_3"
+            android:textColor="@color/product_card_review_count_text_color"
             android:gravity="center_vertical"
-            android:textColor="@color/clr_7031353b"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/textViewRatingCount"
+            app:layout_constraintStart_toEndOf="@id/linearLayoutImageRating"
             app:layout_constraintTop_toBottomOf="@id/shopBadgeLinerLayout"
-            app:layout_goneMarginLeft="@dimen/dp_8"
-            app:layout_goneMarginStart="@dimen/dp_8"
-            app:layout_goneMarginTop="@dimen/dp_4"
             app:typographyType="body_3"
-            tools:text="(3000)"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            app:layout_goneMarginTop="@dimen/dp_4"
+            tools:text="(3000)" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageFreeOngkirPromo"
@@ -340,7 +365,7 @@
             android:scaleType="fitStart"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/imageViewRating"
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
             app:layout_goneMarginTop="@dimen/dp_8"
             tools:srcCompat="@drawable/ic_product_view"
             tools:visibility="visible" />
