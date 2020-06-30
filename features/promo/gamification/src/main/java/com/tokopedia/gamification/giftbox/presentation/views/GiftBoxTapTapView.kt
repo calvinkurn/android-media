@@ -193,30 +193,6 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             TOTAL_ASYNC_IMAGES -= 1
         }
 
-//        var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_7
-//        if (state == TokenUserState.ACTIVE) {
-//        var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_0
-//        }
-
-//        Glide.with(this)
-//                .load(drawableRedForLid)
-//                .dontAnimate()
-//                .addListener(object : RequestListener<Drawable> {
-//                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-//                        imageCallback.invoke(false)
-//                        return false
-//                    }
-//
-//                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-//                        val count = imagesLoaded.incrementAndGet()
-//                        if (count == TOTAL_ASYNC_IMAGES) {
-//                            imageCallback.invoke(true)
-//                        }
-//                        return false
-//                    }
-//                })
-//                .into(imageGiftBoxLid)
-
         Glide.with(this)
                 .load(bgUrl)
                 .dontAnimate()

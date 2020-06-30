@@ -43,8 +43,8 @@ class RewardContainer : FrameLayout {
 
     val couponList = ArrayList<CouponType>()
     val FADE_OUT_REWARDS_DURATION = 1000L
-    val FADE_OUT_REWARD_DURATION_TAP_TAP = 600L
-    val FADE_IN_REWARD_DURATION_TAP_TAP = 400L
+    val FADE_OUT_REWARDS_DURATION_TAP_TAP = 600L
+    val FADE_IN_REWARDS_DURATION_TAP_TAP = 400L
     var userSession: UserSession? = null
 
     @RewardState
@@ -188,31 +188,18 @@ class RewardContainer : FrameLayout {
         return animatorSet
     }
 
-    fun showSingleLargeRewardAnimationFadeOut(): Animator {
-
-        val anim2 = largeImageRewardAnimation(imageCircleReward)
-
-        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
-        val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(imageCircleReward, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARDS_DURATION
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playSequentially(anim2, alphaAnim)
-        return animatorSet
-    }
-
     fun showSingleLargeRewardAnimationFadeOut(startDelay: Long): Pair<Animator, Long> {
 
-        val anim2 = largeImageRewardAnimation(imageCircleReward, FADE_IN_REWARD_DURATION_TAP_TAP)
+        val anim2 = largeImageRewardAnimation(imageCircleReward, FADE_IN_REWARDS_DURATION_TAP_TAP)
         anim2.startDelay = startDelay
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(imageCircleReward, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARD_DURATION_TAP_TAP
+        alphaAnim.duration = FADE_OUT_REWARDS_DURATION_TAP_TAP
 
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(anim2, alphaAnim)
-        return Pair(animatorSet, FADE_OUT_REWARD_DURATION_TAP_TAP + FADE_IN_REWARD_DURATION_TAP_TAP)
+        return Pair(animatorSet, FADE_OUT_REWARDS_DURATION_TAP_TAP + FADE_IN_REWARDS_DURATION_TAP_TAP)
     }
 
     fun showCouponAndRewardAnimation(giftBoxTop: Int): Animator {
@@ -235,23 +222,11 @@ class RewardContainer : FrameLayout {
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(rvCoupons, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARD_DURATION_TAP_TAP
+        alphaAnim.duration = FADE_OUT_REWARDS_DURATION_TAP_TAP
 
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(anim2, alphaAnim)
-        return Pair(animatorSet, FADE_IN_REWARD_DURATION_TAP_TAP + FADE_OUT_REWARD_DURATION_TAP_TAP)
-    }
-
-    fun showCouponAndRewardAnimationFadeOut(): Animator {
-        val anim2 = rvCouponsAnimations()
-
-        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
-        val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(rvCoupons, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARDS_DURATION
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playSequentially(anim2, alphaAnim)
-        return animatorSet
+        return Pair(animatorSet, FADE_IN_REWARDS_DURATION_TAP_TAP + FADE_OUT_REWARDS_DURATION_TAP_TAP)
     }
 
     private fun largeImageRewardAnimation(view: View, duration: Long = 800L): Animator {
@@ -287,16 +262,16 @@ class RewardContainer : FrameLayout {
         imageCircleReward.translationY = circleRewardY
     }
 
-    fun ovoPointsTextAnimation(): Animator {
-        return scaleAndAlphaAnimation(llRewardTextLayout)
+    fun ovoPointsTextAnimation(duration:Long = 800L): Animator {
+        return scaleAndAlphaAnimation(llRewardTextLayout, duration)
     }
 
     fun ovoPointsTextAnimationFadeOut(): Animator {
-        val anim1 = ovoPointsTextAnimation()
+        val anim1 = ovoPointsTextAnimation(FADE_IN_REWARDS_DURATION_TAP_TAP)
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardTextLayout, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARDS_DURATION
+        alphaAnim.duration = FADE_OUT_REWARDS_DURATION_TAP_TAP
 
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(anim1, alphaAnim)
@@ -304,7 +279,7 @@ class RewardContainer : FrameLayout {
     }
 
     private fun rvCouponsAnimations(): Animator {
-        return scaleAndAlphaAnimation(rvCoupons, FADE_IN_REWARD_DURATION_TAP_TAP)
+        return scaleAndAlphaAnimation(rvCoupons, FADE_IN_REWARDS_DURATION_TAP_TAP)
     }
 
     private fun concentricCircleAnimation(smallImage: View, largeImage: View, giftboxTop: Int, isInfinite: Boolean): Animator {

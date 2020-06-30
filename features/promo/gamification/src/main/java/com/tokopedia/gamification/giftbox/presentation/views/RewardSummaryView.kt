@@ -15,6 +15,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
@@ -141,7 +142,7 @@ class RewardSummaryView : FrameLayout {
 
     fun setRewardData(rewardSummaryItemList: List<RewardSummaryItem>) {
         if (!imageBoxUrl.isNullOrEmpty()) {
-            ImageUtils.loadImage(imageBox, imageBoxUrl!!)
+            ImageUtils.loadImageWithoutPlaceholderAndError(imageBox, imageBoxUrl!!)
         }
 
         if (rewardSummaryItemList.isEmpty()) {
