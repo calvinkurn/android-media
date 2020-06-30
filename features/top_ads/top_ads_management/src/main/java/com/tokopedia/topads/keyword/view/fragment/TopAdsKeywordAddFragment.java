@@ -1,9 +1,8 @@
 package com.tokopedia.topads.keyword.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,6 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -27,7 +29,6 @@ import com.tokopedia.topads.common.data.exception.ResponseErrorException;
 import com.tokopedia.topads.common.data.response.Error;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;
-import com.tokopedia.topads.common.view.widget.TkpdProgressDialog;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
@@ -74,7 +75,7 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
     private TextView textViewKeywordCurrentMax;
     private TextView textViewTotalKeyworGroup;
     private View buttonSave;
-    private TkpdProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     @Deprecated
     public static TopAdsKeywordAddFragment newInstance(String groupId,
@@ -295,10 +296,10 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
 
     private void showLoading() {
         if (progressDialog == null) {
-            progressDialog = new TkpdProgressDialog(getActivity(),
-                    TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setIndeterminate(true);
         }
-        progressDialog.showDialog();
+        progressDialog.show();
     }
 
     private void onButtonAddClicked() {

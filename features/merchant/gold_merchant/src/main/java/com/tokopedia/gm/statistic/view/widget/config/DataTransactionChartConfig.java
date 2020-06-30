@@ -1,8 +1,8 @@
 package com.tokopedia.gm.statistic.view.widget.config;
 
 import android.content.Context;
+import android.util.TypedValue;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.db.williamchart.config.GrossGraphChartConfig;
 import com.db.williamchart.renderer.AxisRenderer;
 import com.db.williamchart.renderer.StringFormatRenderer;
@@ -61,6 +61,10 @@ public class DataTransactionChartConfig extends GrossGraphChartConfig {
     @Override
     public int bottomMargin() {
         int bottomMargin = 5;
-        return (int) CommonUtils.DptoPx(context, bottomMargin);
+        return (int) DptoPx(context, bottomMargin);
+    }
+
+    public float DptoPx(Context context, int dp) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 }

@@ -6,13 +6,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_email"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        app:fontSize="small"
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_68"
         tools:text="tokopedia@tokopedia.com" />
 
     <androidx.appcompat.widget.AppCompatImageView

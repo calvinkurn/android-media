@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
-import com.tokopedia.core2.R;
+import com.tokopedia.inbox.R;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.rescenter.edit.customadapter.TroubleCategorySpinnerAdapter;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditResCenterListener;

@@ -71,6 +71,59 @@ class HomeViewModelPlayTest : Spek({
                 }
             }
         }
+        Scenario("Get play data success and image url valid and try update view") {
+            val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
+            val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+
+            Given("dynamic banner"){
+                getHomeUseCase.givenGetHomeDataReturn(
+                        HomeDataModel(
+                                list = listOf(playDataModel)
+                        )
+                )
+            }
+
+            Given("home viewmodel") {
+                homeViewModel = createHomeViewModel()
+            }
+
+
+            Given("play data returns success"){
+                getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                    channel = playCardHome
+                )
+            }
+
+            When("viewModel load play data"){
+                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
+            }
+
+            Then("Expect the event on live data available and check image"){
+                homeViewModel.requestImageTestLiveData.observeOnce {
+                    assert(it.peekContent().playCardHome != null && it.peekContent().playCardHome!!.coverUrl == playCardHome.coverUrl)
+                }
+            }
+
+            When("Image valid should submit the data on live data home"){
+                homeViewModel.setPlayBanner(playDataModel)
+            }
+
+            Then("Expect the event on live data available"){
+                homeViewModel.homeLiveData.observeOnce {
+                    assert(it.list.contains(playDataModel) && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome != null
+                            && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
+                    )
+                }
+            }
+
+            When("Update view triggered"){
+                homeViewModel.updateBannerTotalView("0")
+            }
+
+            Then("Expect the view updated"){
+                assert(true)
+            }
+        }
 
         Scenario("Get play data success and image url not valid") {
             val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())

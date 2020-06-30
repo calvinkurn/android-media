@@ -1,13 +1,8 @@
 package com.tokopedia.topads.dashboard.view.activity
 
-import androidx.fragment.app.Fragment
-
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsPaymentCreditFragment
 
-/**
- * Created by Nathaniel on 11/22/2016.
- */
 
 class TopAdsPaymentCreditActivity : BaseSimpleActivity() {
 

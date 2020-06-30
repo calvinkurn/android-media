@@ -1,21 +1,16 @@
 package com.tokopedia.tokopoints.view.pointhistory
 
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.PointHistoryBase
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity
-import com.tokopedia.tokopoints.view.model.TokoPointEntity
-import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rx.Subscriber
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 

@@ -14,8 +14,8 @@ interface NotificationActivityContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun clearNotifCounter()
-        fun getUpdateUnreadCounter(onSuccess: (NotificationUpdateUnread) -> Unit)
         fun getIsTabUpdate(context: Context)
-        fun sendNotif(onSuccessSendNotif: (NotifCenterSendNotifData) -> Unit, onErrorSendNotif: (Throwable) -> Unit)
+        fun getUpdateUnreadCounter(onSuccess: (NotificationUpdateUnread) -> Unit)
+        fun sendNotif(onSuccessSendNotif: () -> Unit, onErrorSendNotif: () -> Unit)
     }
 }

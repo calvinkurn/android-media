@@ -4,30 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_4"
-    android:paddingBottom="@dimen/dp_4">
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl2">
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:text="@string/hotel_order_detail_transaction_date"
-        android:textSize="@dimen/fontSize_lvl2"
+        app:typographyType="body_3"
+        android:textColor="@color/Neutral_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.5" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/fontSize_lvl2"
-        android:textColor="@color/light_primary"
-        app:textViewTheme="lightPrimary"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/title"
         app:layout_constraintTop_toTopOf="@+id/title"
-        app:weight="medium"
         tools:text="1 Sep 2017, 05:00 WIB"
         app:layout_constraintWidth_percent="0.5"/>
 

@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName;
  * Created by Angga.Prasetiyo on 18/12/2015.
  */
 public class NotificationData {
-    private static final String TAG = NotificationData.class.getSimpleName();
 
     @SerializedName("total_cart")
     @Expose
@@ -76,10 +75,6 @@ public class NotificationData {
         return incrNotif;
     }
 
-    public void setIncrNotif(int incrNotif) {
-        this.incrNotif = incrNotif;
-    }
-
     public Inbox getInbox() {
         return inbox;
     }
@@ -92,31 +87,12 @@ public class NotificationData {
         return totalNotif;
     }
 
-    public void setTotalNotif(int totalNotif) {
-        this.totalNotif = totalNotif;
-    }
-
     public Resolution getResolutionModel() {
         return resolutionModel;
-    }
-
-    public void setResolutionModel(Resolution resolutionModel) {
-        this.resolutionModel = resolutionModel;
     }
 
     public NotificationBuyerOrder getBuyerOrder() {
         return buyerOrder;
     }
 
-    public void setBuyerOrder(NotificationBuyerOrder buyerOrder) {
-        this.buyerOrder = buyerOrder;
-    }
-
-    public NotificationSellerOrder getSellerOrder() {
-        return sellerOrder;
-    }
-
-    public void setSellerOrder(NotificationSellerOrder sellerOrder) {
-        this.sellerOrder = sellerOrder;
-    }
 }

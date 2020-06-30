@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.bookingV2.presentation.adapter.FlightSimpleAdapter;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapter;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapterTypeFactory;
@@ -26,12 +24,14 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationRefundBo
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationRefundDetailMiddleAdapter;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationDetailContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationDetailPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
+import com.tokopedia.flight.detail.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
+import com.tokopedia.flight.detail.view.model.SimpleModel;
 import com.tokopedia.flight.orderlist.data.cloud.entity.KeyValueEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RefundDetailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
@@ -70,10 +70,10 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightCancellationDetailPassengerAdapter flightCancellationDetailPassengerAdapter;
 
-    private FlightCancellationListViewModel flightCancellationListViewModel;
+    private FlightCancellationListModel flightCancellationListViewModel;
     private boolean isPassengerInfoShowed = true;
 
-    public static FlightCancellationDetailFragment createInstance(FlightCancellationListViewModel flightCancellationListViewModel) {
+    public static FlightCancellationDetailFragment createInstance(FlightCancellationListModel flightCancellationListViewModel) {
         FlightCancellationDetailFragment fragment = new FlightCancellationDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CANCELLATION_DETAIL_PASS_DATA, flightCancellationListViewModel);
@@ -172,7 +172,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public FlightCancellationListViewModel getFlightCancellationList() {
+    public FlightCancellationListModel getFlightCancellationList() {
         return flightCancellationListViewModel;
     }
 
@@ -228,11 +228,11 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         }
     }
 
-    private List<SimpleViewModel> generateSimpleViewModel(List<KeyValueEntity> items) {
-        List<SimpleViewModel> datas = new ArrayList<>();
+    private List<SimpleModel> generateSimpleViewModel(List<KeyValueEntity> items) {
+        List<SimpleModel> datas = new ArrayList<>();
 
         for (KeyValueEntity item : items) {
-            datas.add(new SimpleViewModel(item.getKey(), item.getValue()));
+            datas.add(new SimpleModel(item.getKey(), item.getValue()));
         }
 
         return datas;

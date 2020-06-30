@@ -1,0 +1,8 @@
+<resources>
+    <string name="title_orderhistory">Daftar Produk</string>
+    <string name="title_orderhistory_buy_again">Beli lagi</string>
+    <string name="title_orderhistory_add_to_wishlist">Tambah ke Wishlist</string>
+    <string name="title_orderhistory_empty_stock">Stok habis</string>
+    <string name="title_orderhistory_success_atc">Produk berhasil dimasukkan ke Keranjang Belanja</string>
+    <string name="cta_orderhistory_success_atw">Lihat</string>
+</resources>

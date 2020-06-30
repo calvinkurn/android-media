@@ -13,6 +13,14 @@
         android:background="@android:color/white"
         app:elevation="0dp">
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/product_manage_seller_migration_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tickerType="announcement" />
+
         <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
             android:id="@+id/topads_free_claim_widget"
             android:layout_width="match_parent"

@@ -9,7 +9,6 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.animation.LinearInterpolator
 import android.widget.RelativeLayout
-import com.tokopedia.design.utils.InterpolatorUtils
 import com.tokopedia.topads.R
 import com.tokopedia.topads.widget.ExpandableView.ExpandableLayout.Companion.DEFAULT_DURATION
 import com.tokopedia.topads.widget.ExpandableView.ExpandableLayout.Companion.DEFAULT_EXPANDED

@@ -23,7 +23,8 @@ class AttributionUseCase @Inject constructor(
             userTransId: String?,
             recipientId: String?,
             shopId: String?,
-            blastId: String?
+            blastId: String?,
+            data: String?
     ): Map<String, Any> {
         return hashMapOf<String, Any>().apply {
             put(PARAM_TRANSACTION_ID, transactionId?: "")
@@ -32,6 +33,7 @@ class AttributionUseCase @Inject constructor(
             put(PARAM_STATUS, VALUE_STATUS)
             put(PARAM_SHOP_ID, shopId?: "")
             put(PARAM_BLAST_ID, blastId?: "")
+            put(PARAM_DATA, data?: "")
         }
     }
 
@@ -43,6 +45,7 @@ class AttributionUseCase @Inject constructor(
         private const val PARAM_STATUS = "status"
         private const val PARAM_SHOP_ID = "shop_id"
         private const val PARAM_BLAST_ID = "blast_id"
+        private const val PARAM_DATA = "data"
 
         //static value of param
         private const val VALUE_STATUS = "clicked"

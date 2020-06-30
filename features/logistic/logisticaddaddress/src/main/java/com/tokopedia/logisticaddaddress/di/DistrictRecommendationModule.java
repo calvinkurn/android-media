@@ -3,9 +3,8 @@ package com.tokopedia.logisticaddaddress.di;
 import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerCollector;
-import com.chuckerteam.chucker.api.RetentionManager;
-import com.google.gson.Gson;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;

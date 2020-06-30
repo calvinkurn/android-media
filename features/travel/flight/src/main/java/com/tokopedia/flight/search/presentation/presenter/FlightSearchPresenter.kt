@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
@@ -12,7 +12,7 @@ import com.tokopedia.flight.common.data.model.FlightException
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.search.domain.*
 import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
@@ -88,22 +88,22 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
     override fun isDoneLoadData(): Boolean = callCounter >= maxCall
 
-    override fun onSeeDetailItemClicked(journeyViewModel: FlightJourneyViewModel, adapterPosition: Int) {
-        flightAnalytics.eventSearchDetailClick(journeyViewModel, adapterPosition)
-        flightAnalytics.eventProductDetailImpression(journeyViewModel, adapterPosition)
+    override fun onSeeDetailItemClicked(journeyModel: FlightJourneyModel, adapterPosition: Int) {
+        flightAnalytics.eventSearchDetailClick(journeyModel, adapterPosition)
+        flightAnalytics.eventProductDetailImpression(journeyModel, adapterPosition)
     }
 
-    override fun onSearchItemClicked(journeyViewModel: FlightJourneyViewModel?, adapterPosition: Int, selectedId: String) {
+    override fun onSearchItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int, selectedId: String) {
         if (selectedId.isEmpty()) {
             if (adapterPosition == -1) {
-                flightAnalytics.eventSearchProductClickFromList(view.getSearchPassData(), journeyViewModel)
+                flightAnalytics.eventSearchProductClickFromList(view.getSearchPassData(), journeyModel)
             } else {
-                flightAnalytics.eventSearchProductClickFromList(view.getSearchPassData(), journeyViewModel, adapterPosition)
+                flightAnalytics.eventSearchProductClickFromList(view.getSearchPassData(), journeyModel, adapterPosition)
             }
-            deleteFlightReturnSearch(getDeleteFlightReturnSubscriber(journeyViewModel!!))
+            deleteFlightReturnSearch(getDeleteFlightReturnSubscriber(journeyModel!!))
         } else {
             flightSearchJourneyByIdUseCase.execute(flightSearchJourneyByIdUseCase.createRequestParams(selectedId),
-                    object : Subscriber<FlightJourneyViewModel>() {
+                    object : Subscriber<FlightJourneyModel>() {
                         override fun onCompleted() {
 
                         }
@@ -112,7 +112,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                             e?.printStackTrace()
                         }
 
-                        override fun onNext(t: FlightJourneyViewModel?) {
+                        override fun onNext(t: FlightJourneyModel?) {
                             flightAnalytics.eventSearchProductClickFromDetail(view.getSearchPassData(), t)
                             deleteFlightReturnSearch(getDeleteFlightReturnSubscriber(t!!))
                         }
@@ -153,44 +153,44 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
     override fun getDetailDepartureFlight(journeyId: String) {
         flightSearchJourneyByIdUseCase.execute(flightSearchJourneyByIdUseCase.createRequestParams(journeyId),
-                object : Subscriber<FlightJourneyViewModel>() {
+                object : Subscriber<FlightJourneyModel>() {
                     override fun onCompleted() {}
 
                     override fun onError(e: Throwable?) {
                         e?.printStackTrace()
                     }
 
-                    override fun onNext(journeyViewModel: FlightJourneyViewModel?) {
-                        view.onSuccessGetDetailFlightDeparture(journeyViewModel!!)
+                    override fun onNext(journeyModel: FlightJourneyModel?) {
+                        view.onSuccessGetDetailFlightDeparture(journeyModel!!)
                     }
                 })
     }
 
-    override fun fetchCombineData(passDataViewModel: FlightSearchPassDataViewModel) {
-        val flightPassengerViewModel = passDataViewModel.flightPassengerViewModel
+    override fun fetchCombineData(passDataModel: FlightSearchPassDataModel) {
+        val flightPassengerViewModel = passDataModel.flightPassengerViewModel
 
 
-        val departureAirport = if (passDataViewModel.departureAirport.airportCode != null &&
-                passDataViewModel.departureAirport.airportCode.isNotEmpty()) {
-            passDataViewModel.departureAirport.airportCode
+        val departureAirport = if (passDataModel.departureAirport.airportCode != null &&
+                passDataModel.departureAirport.airportCode.isNotEmpty()) {
+            passDataModel.departureAirport.airportCode
         } else {
-            passDataViewModel.departureAirport.cityCode
+            passDataModel.departureAirport.cityCode
         }
 
-        val arrivalAirport = if (passDataViewModel.arrivalAirport.airportCode != null &&
-                passDataViewModel.arrivalAirport.airportCode.isNotEmpty()) {
-            passDataViewModel.arrivalAirport.airportCode
+        val arrivalAirport = if (passDataModel.arrivalAirport.airportCode != null &&
+                passDataModel.arrivalAirport.airportCode.isNotEmpty()) {
+            passDataModel.arrivalAirport.airportCode
         } else {
-            passDataViewModel.arrivalAirport.cityCode
+            passDataModel.arrivalAirport.cityCode
         }
 
         val routes = arrayListOf(
-                FlightRouteModel(departureAirport, arrivalAirport, passDataViewModel.getDate(false)),
-                FlightRouteModel(arrivalAirport, departureAirport, passDataViewModel.getDate(true))
+                FlightRouteModel(departureAirport, arrivalAirport, passDataModel.getDate(false)),
+                FlightRouteModel(arrivalAirport, departureAirport, passDataModel.getDate(true))
         )
 
         val combineRequestModel = FlightSearchCombinedApiRequestModel(routes, flightPassengerViewModel.adult,
-                flightPassengerViewModel.children, flightPassengerViewModel.infant, passDataViewModel.flightClass.id)
+                flightPassengerViewModel.children, flightPassengerViewModel.infant, passDataModel.flightClass.id)
 
         flightSearchCombinedUseCase.execute(flightSearchCombinedUseCase.createRequestParam(combineRequestModel),
                 object : Subscriber<Boolean>() {
@@ -211,7 +211,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                 })
     }
 
-    override fun fetchSearchData(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModelList: FlightAirportCombineModelList) {
+    override fun fetchSearchData(passDataModel: FlightSearchPassDataModel, airportCombineModelList: FlightAirportCombineModelList) {
         if (isViewAttached) {
             view.removeToolbarElevation()
         }
@@ -222,12 +222,12 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
             val needLoadFromCloud = !(item.isHasLoad && !item.isNeedRefresh)
 
             if (needLoadFromCloud) {
-                fetchSearchDataCloud(passDataViewModel, item)
+                fetchSearchDataCloud(passDataModel, item)
             }
         }
     }
 
-    override fun fetchSearchDataCloud(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel, delayInSecond: Int) {
+    override fun fetchSearchDataCloud(passDataModel: FlightSearchPassDataModel, airportCombineModel: FlightAirportCombineModel, delayInSecond: Int) {
 
         // fetch data with delay
         if (delayInSecond != -1) {
@@ -238,7 +238,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(object : Subscriber<Long>() {
                         override fun onNext(t: Long?) {
-                            fetchSearchDataCloud(passDataViewModel, airportCombineModel)
+                            fetchSearchDataCloud(passDataModel, airportCombineModel)
                         }
 
                         override fun onCompleted() {}
@@ -251,13 +251,13 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         }
 
         // normal fetch
-        val date: String = passDataViewModel.getDate(view.isReturning())
-        val flightPassengerViewModel: FlightPassengerViewModel = passDataViewModel.flightPassengerViewModel
-        val adult = flightPassengerViewModel.adult
-        val child = flightPassengerViewModel.children
-        val infant = flightPassengerViewModel.infant
-        val classID = passDataViewModel.flightClass.id
-        val searchRequestId = passDataViewModel.searchRequestId
+        val date: String = passDataModel.getDate(view.isReturning())
+        val flightPassengerModel: FlightPassengerModel = passDataModel.flightPassengerViewModel
+        val adult = flightPassengerModel.adult
+        val child = flightPassengerModel.children
+        val infant = flightPassengerModel.infant
+        val classID = passDataModel.flightClass.id
+        val searchRequestId = passDataModel.searchRequestId
 
         val requestModel = FlightSearchApiRequestModel(
                 airportCombineModel.depAirport,
@@ -270,9 +270,9 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         flightSearchUseCase.execute(flightSearchUseCase.createRequestParams(
                 requestModel,
                 view.isReturning(),
-                !passDataViewModel.isOneWay,
+                !passDataModel.isOneWay,
                 view.getFilterModel().journeyId),
-                object : Subscriber<FlightSearchMetaViewModel>() {
+                object : Subscriber<FlightSearchMetaModel>() {
                     override fun onCompleted() {
 
                     }
@@ -290,17 +290,17 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                                 }
                             }
                             view.showGetSearchListError(e)
-                            flightAnalytics.eventSearchView(passDataViewModel, false)
+                            flightAnalytics.eventSearchView(passDataModel, false)
                         }
                     }
 
-                    override fun onNext(flightSearchMetaViewModel: FlightSearchMetaViewModel?) {
-                        if (flightSearchMetaViewModel != null) {
-                            if (!flightSearchMetaViewModel.isNeedRefresh || (airportCombineModel.noOfRetry + 1) > flightSearchMetaViewModel.maxRetry) {
+                    override fun onNext(flightSearchMetaModel: FlightSearchMetaModel?) {
+                        if (flightSearchMetaModel != null) {
+                            if (!flightSearchMetaModel.isNeedRefresh || (airportCombineModel.noOfRetry + 1) > flightSearchMetaModel.maxRetry) {
                                 callCounter++
                             }
 
-                            view.onGetSearchMeta(flightSearchMetaViewModel)
+                            view.onGetSearchMeta(flightSearchMetaModel)
                         }
                     }
                 }
@@ -310,7 +310,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     override fun fetchSortAndFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean, fromCombo: Boolean) {
         flightSortAndFilterUseCase.execute(
                 flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
-                object : Subscriber<List<FlightJourneyViewModel>>() {
+                object : Subscriber<List<FlightJourneyModel>>() {
                     override fun onCompleted() {
 
                     }
@@ -322,13 +322,13 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         }
                     }
 
-                    override fun onNext(flightJourneyViewModelList: List<FlightJourneyViewModel>) {
+                    override fun onNext(flightJourneyModelList: List<FlightJourneyModel>) {
                         flightAnalytics.eventSearchView(view.getSearchPassData(), true)
-                        if (!needRefresh || flightJourneyViewModelList.isNotEmpty()) {
+                        if (!needRefresh || flightJourneyModelList.isNotEmpty()) {
                             view.clearAdapterData()
                         }
 
-                        view.renderSearchList(flightJourneyViewModelList, needRefresh)
+                        view.renderSearchList(flightJourneyModelList, needRefresh)
                         view.stopTrace()
 
                         if (view.isDoneLoadData()) {
@@ -337,10 +337,10 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                             view.hideHorizontalProgress()
                         }
 
-                        if (lastPosition != flightJourneyViewModelList.size || fromCombo) onProductViewImpression(flightJourneyViewModelList)
-                        else if (lastPosition == 0 && !needRefresh) onProductViewImpression(flightJourneyViewModelList)
+                        if (lastPosition != flightJourneyModelList.size || fromCombo) onProductViewImpression(flightJourneyModelList)
+                        else if (lastPosition == 0 && !needRefresh) onProductViewImpression(flightJourneyModelList)
 
-                        lastPosition = flightJourneyViewModelList.size
+                        lastPosition = flightJourneyModelList.size
                     }
                 }
         )
@@ -349,7 +349,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     override fun fetchTickerData() {
         travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
                 TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.SEARCH),
-                object : Subscriber<TravelTickerViewModel>() {
+                object : Subscriber<TravelTickerModel>() {
                     override fun onCompleted() {
 
                     }
@@ -358,23 +358,23 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         e.printStackTrace()
                     }
 
-                    override fun onNext(travelTickerViewModel: TravelTickerViewModel) {
-                        if (travelTickerViewModel.message.isNotEmpty()) {
-                            view.renderTickerView(travelTickerViewModel)
+                    override fun onNext(travelTickerModel: TravelTickerModel) {
+                        if (travelTickerModel.message.isNotEmpty()) {
+                            view.renderTickerView(travelTickerModel)
                         }
                     }
                 })
     }
 
-    override fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel) {
+    override fun fireAndForgetReturnFlight(passDataModel: FlightSearchPassDataModel, airportCombineModel: FlightAirportCombineModel) {
         // normal fetch
-        val date: String = passDataViewModel.getDate(true)
-        val flightPassengerViewModel: FlightPassengerViewModel = passDataViewModel.flightPassengerViewModel
-        val adult = flightPassengerViewModel.adult
-        val child = flightPassengerViewModel.children
-        val infant = flightPassengerViewModel.infant
-        val classID = passDataViewModel.flightClass.id
-        val searchRequestId = passDataViewModel.searchRequestId
+        val date: String = passDataModel.getDate(true)
+        val flightPassengerModel: FlightPassengerModel = passDataModel.flightPassengerViewModel
+        val adult = flightPassengerModel.adult
+        val child = flightPassengerModel.children
+        val infant = flightPassengerModel.infant
+        val classID = passDataModel.flightClass.id
+        val searchRequestId = passDataModel.searchRequestId
 
         val requestModel = FlightSearchApiRequestModel(
                 airportCombineModel.arrAirport,
@@ -387,9 +387,9 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         flightSearchUseCase.execute(flightSearchUseCase.createRequestParams(
                 requestModel,
                 true,
-                !passDataViewModel.isOneWay,
+                !passDataModel.isOneWay,
                 view.getFilterModel().journeyId),
-                object : Subscriber<FlightSearchMetaViewModel>() {
+                object : Subscriber<FlightSearchMetaModel>() {
                     override fun onCompleted() {
 
                     }
@@ -398,16 +398,16 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         e?.printStackTrace()
                     }
 
-                    override fun onNext(flightSearchMetaViewModel: FlightSearchMetaViewModel?) {
+                    override fun onNext(flightSearchMetaModel: FlightSearchMetaModel?) {
                         // Do Nothing
                     }
                 }
         )
     }
 
-    private fun onProductViewImpression(listJourneyViewModel: List<FlightJourneyViewModel>) {
-        if (listJourneyViewModel.isEmpty()) flightAnalytics.eventProductViewNotFound(view.getSearchPassData())
-        else flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), listJourneyViewModel)
+    private fun onProductViewImpression(listJourneyModel: List<FlightJourneyModel>) {
+        if (listJourneyModel.isEmpty()) flightAnalytics.eventProductViewNotFound(view.getSearchPassData())
+        else flightAnalytics.eventProductViewEnchanceEcommerceOld(view.getSearchPassData(), listJourneyModel)
     }
 
     override fun unsubscribeAll() {
@@ -486,7 +486,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                 }
             }
 
-    private fun getDeleteFlightReturnSubscriber(journeyViewModel: FlightJourneyViewModel): Subscriber<Boolean> =
+    private fun getDeleteFlightReturnSubscriber(journeyModel: FlightJourneyModel): Subscriber<Boolean> =
             object : Subscriber<Boolean>() {
                 override fun onCompleted() {
 
@@ -499,15 +499,15 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                 }
 
                 override fun onNext(t: Boolean?) {
-                    val priceViewModel = FlightPriceViewModel()
-                    priceViewModel.departurePrice = buildFare(journeyViewModel.fare, !view.getSearchPassData().isOneWay)
-                    view.navigateToTheNextPage(journeyViewModel.id, journeyViewModel.term, priceViewModel, journeyViewModel.isBestPairing)
+                    val priceViewModel = FlightPriceModel()
+                    priceViewModel.departurePrice = buildFare(journeyModel.fare, !view.getSearchPassData().isOneWay)
+                    view.navigateToTheNextPage(journeyModel.id, journeyModel.term, priceViewModel, journeyModel.isBestPairing)
                 }
             }
 
-    private fun buildFare(journeyFare: FlightFareViewModel, isNeedCombo: Boolean): FlightFareViewModel =
+    private fun buildFare(journeyFare: FlightFareModel, isNeedCombo: Boolean): FlightFareModel =
             if (isNeedCombo) {
-                FlightFareViewModel(
+                FlightFareModel(
                         journeyFare.adult,
                         journeyFare.adultCombo,
                         journeyFare.child,
@@ -522,7 +522,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         journeyFare.infantNumericCombo
                 )
             } else {
-                FlightFareViewModel(
+                FlightFareModel(
                         journeyFare.adult,
                         "",
                         journeyFare.child,

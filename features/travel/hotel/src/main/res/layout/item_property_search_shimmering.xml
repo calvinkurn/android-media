@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_180"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_3"
+    app:cardCornerRadius="@dimen/layout_lvl1"
+    app:cardElevation="@dimen/hotel_3dp"
     app:cardPreventCornerOverlap="false"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/layout_lvl2"
+    android:layout_marginStart="@dimen/layout_lvl2"
+    android:layout_marginRight="@dimen/layout_lvl2"
+    android:layout_marginEnd="@dimen/layout_lvl2"
     app:cardBackgroundColor="@color/cardview_light_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +19,7 @@
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:id="@+id/image_shimmer"
             android:layout_width="@dimen/dp_88"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/layout_lvl0"
             app:use_gradient="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -29,13 +28,13 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/title_shimmer"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/hotel_12dp"
+            android:layout_marginLeft="@dimen/hotel_12dp"
+            android:layout_marginStart="@dimen/hotel_12dp"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
             android:textSize="@dimen/sp_14"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/image_shimmer"
@@ -48,9 +47,9 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/type_shimmer"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl1"
             android:textSize="@dimen/sp_10"
             app:use_gradient="true"
             app:layout_constraintLeft_toLeftOf="@+id/title_shimmer"
@@ -63,9 +62,9 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/location_shimmer"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl1"
             app:use_gradient="true"
             app:layout_constraintLeft_toLeftOf="@+id/title_shimmer"
             app:layout_constraintStart_toStartOf="@+id/title_shimmer"
@@ -78,8 +77,8 @@
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/price_shimmer"
             android:layout_width="@dimen/dp_120"
-            android:layout_height="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/layout_lvl1"
             app:use_gradient="true"
             app:layout_constraintRight_toRightOf="@+id/title_shimmer"
             app:layout_constraintEnd_toEndOf="@+id/title_shimmer"
@@ -93,9 +92,9 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/feature_shimmer"
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_width="@dimen/hotel_80dp"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/hotel_12dp"
             app:use_gradient="true"
             app:layout_constraintRight_toRightOf="@+id/title_shimmer"
             app:layout_constraintEnd_toEndOf="@+id/title_shimmer"

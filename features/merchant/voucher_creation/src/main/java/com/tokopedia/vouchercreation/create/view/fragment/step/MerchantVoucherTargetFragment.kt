@@ -52,11 +52,13 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
         fun createInstance(onNext: (Int, String, String) -> Unit,
                            getPromoCodePrefix: () -> String,
                            getVoucherReviewUiModel: () -> VoucherReviewUiModel,
-                           isCreateNew: Boolean) = MerchantVoucherTargetFragment().apply {
+                           isCreateNew: Boolean,
+                           isEdit: Boolean) = MerchantVoucherTargetFragment().apply {
             this.onNext = onNext
             this.getPromoCodePrefix = getPromoCodePrefix
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
             this.isCreateNew = isCreateNew
+            this.isEdit = isEdit
         }
     }
 
@@ -64,6 +66,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     private var getPromoCodePrefix: () -> String = {""}
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
     private var isCreateNew = true
+    private var isEdit = false
 
     private var bottomSheetViewArray: SparseArray<BottomSheetUnify> = SparseArray()
 
@@ -109,7 +112,8 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
             ::openBottomSheet,
             ::onSetActiveVoucherTargetType,
             onRadioButtonClicked = ::onRadioButtonClicked,
-            onChangePromoButtonClicked = ::onChangePromoCodeButtonClicked)
+            onChangePromoButtonClicked = ::onChangePromoCodeButtonClicked,
+            isEditVoucher = isEdit)
 
     private var shouldReturnToInitialValue = true
 
@@ -224,7 +228,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
         viewModel.run {
             voucherTargetListData.observe(viewLifecycleOwner, Observer { voucherTargetList ->
                 (childFragmentManager.findFragmentByTag(CreateVoucherBottomSheetType.CREATE_PROMO_CODE.tag) as? BottomSheetUnify)?.dismiss()
-                voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, ::onSetActiveVoucherTargetType, voucherTargetList, ::onRadioButtonClicked, ::onChangePromoCodeButtonClicked)
+                voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, ::onSetActiveVoucherTargetType, voucherTargetList, ::onRadioButtonClicked, ::onChangePromoCodeButtonClicked, isEdit)
                 refreshWidget()
             })
             privateVoucherPromoCode.observe(viewLifecycleOwner, Observer { promoCode ->
@@ -355,7 +359,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                     step = VoucherCreationStep.TARGET,
                     action =
                     when(lastClickedVoucherDisplayType) {
-                        VoucherTargetCardType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PUBLIC
+                        VoucherTargetCardType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PUBLIK
                         VoucherTargetCardType.PRIVATE -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PRIVATE
                     },
                     label = "",

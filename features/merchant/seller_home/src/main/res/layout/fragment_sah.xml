@@ -92,8 +92,6 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginBottom="@dimen/sah_dimen_12dp"
                 android:background="@android:color/transparent"
                 android:overScrollMode="never"
                 android:paddingStart="@dimen/spacing_lvl2"
