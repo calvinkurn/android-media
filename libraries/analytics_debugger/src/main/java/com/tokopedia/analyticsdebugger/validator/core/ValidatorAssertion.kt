@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.Utils
 import rx.Observable
+import rx.Subscriber
 import rx.schedulers.Schedulers
 
 fun assertAnalyticWithValidator(
@@ -33,5 +34,17 @@ private fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
 }
 
 private fun <T> Observable<T>.test(onNext: (T) -> Unit) {
-    this.observeOn(Schedulers.immediate()).subscribeOn(Schedulers.immediate()).subscribe(onNext)
+    this.observeOn(Schedulers.immediate()).subscribeOn(Schedulers.immediate()).subscribe(object: Subscriber<T>() {
+        override fun onNext(t: T) {
+            onNext(t)
+        }
+
+        override fun onCompleted() {
+            // no op
+        }
+
+        override fun onError(e: Throwable?) {
+            // no op
+        }
+    })
 }
