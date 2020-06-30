@@ -28,10 +28,6 @@ private fun getTestCases(context: Context, queryFileName: String): List<Validato
     return analyticValidatorJSON.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
 }
 
-private fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
-    return this["query"] as List<Map<String, Any>>
-}
-
 private fun <T> Observable<T>.test(onNext: (T) -> Unit) {
     this.observeOn(Schedulers.immediate()).subscribeOn(Schedulers.immediate()).subscribe(onNext)
 }

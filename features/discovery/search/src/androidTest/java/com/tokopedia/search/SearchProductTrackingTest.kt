@@ -82,7 +82,7 @@ internal class SearchProductTrackingTest {
         performUserJourney()
 
         assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME) {
-            it.assertEvent()
+            it.assertStatus()
         }
     }
 
@@ -116,14 +116,6 @@ internal class SearchProductTrackingTest {
 
     private fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
         return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
-    }
-
-    private fun Validator.assertEvent() {
-        when (name) {
-            "clickSearch" -> assertStatus()
-            "view_item_list" -> assertStatus()
-            "select_content" -> assertStatus()
-        }
     }
 
     private fun Validator.assertStatus() {
