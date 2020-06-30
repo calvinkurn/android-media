@@ -64,6 +64,7 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             app:layout_constraintStart_toStartOf="@id/write_category_header"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
+            app:text_area_label_static="true"
             app:text_area_clearable="false"
             app:text_area_label="@string/write_question_placeholder"
             app:text_area_placeholder="@string/write_question_placeholder"
@@ -76,9 +77,7 @@
             android:layout_marginBottom="@dimen/dp_12"
             android:paddingStart="@dimen/layout_lvl2"
             android:paddingEnd="@dimen/layout_lvl2"
-            android:text="@string/reply_header_tnc"
             app:typographyType="small"
-            app:layout_constraintTop_toBottomOf="@id/writeQuestionTextArea"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
             app:layout_constraintStart_toStartOf="@id/write_category_header"
             app:layout_constraintBottom_toTopOf="@id/send_button_layout" />

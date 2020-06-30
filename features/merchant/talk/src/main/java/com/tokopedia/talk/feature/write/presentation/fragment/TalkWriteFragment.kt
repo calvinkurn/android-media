@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.common.utils.setCustomMovementMethod
 import com.tokopedia.talk.feature.write.analytics.TalkWriteTracking
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingForm
 import com.tokopedia.talk.feature.write.di.DaggerTalkWriteComponent
@@ -31,11 +32,13 @@ import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewModel
 import com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryChipsWidget
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.fragment_talk_write.*
+import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
 import javax.inject.Inject
 
@@ -83,6 +86,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         initView()
         initRecycleView()
         initQuestionTextField()
+        initTnC()
         showLoading()
     }
 
@@ -146,6 +150,15 @@ class TalkWriteFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun initTnC() {
+        context?.let {
+            writeTNC.apply {
+                text = HtmlLinkHelper(it, getString(R.string.reply_header_tnc)).spannedString
+                setCustomMovementMethod { goToTermsAndConditionsPage() }
+            }
+        }
+    }
+
     private fun goToChat() {
 
     }
@@ -168,8 +181,8 @@ class TalkWriteFragment : BaseDaggerFragment(),
         RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
     }
 
-    private fun goToTermsAndConditionsPage() {
-        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.TERMS_AND_CONDITIONS_PAGE_URL}")
+    private fun goToTermsAndConditionsPage() : Boolean {
+        return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.TERMS_AND_CONDITIONS_PAGE_URL}")
     }
 
     private fun getDataFromArguments() {

@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.talk.common.utils.setCustomMovementMethod
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
@@ -37,35 +38,6 @@ class TalkReplyHeaderViewHolder(view: View,
                 replyHeaderDate.text = date
                 replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
                 replyHeaderTNC.setCustomMovementMethod { talkReplyHeaderListener.onTermsAndConditionsClicked() }
-            }
-        }
-    }
-
-    private fun Typography.setCustomMovementMethod(linkAction: (String) -> Boolean) {
-        this.movementMethod = object : LinkMovementMethod() {
-            override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
-                val action = event.action
-
-                if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
-                    var x = event.x
-                    var y = event.y.toInt()
-
-                    x -= widget.totalPaddingLeft
-                    y -= widget.totalPaddingTop
-
-                    x += widget.scrollX
-                    y += widget.scrollY
-
-                    val layout = widget.layout
-                    val line = layout.getLineForVertical(y)
-                    val off = layout.getOffsetForHorizontal(line, x)
-
-                    val link = buffer.getSpans(off, off, URLSpan::class.java)
-                    if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
-                        return linkAction.invoke(link.first().url.toString())
-                    }
-                }
-                return super.onTouchEvent(widget, buffer, event);
             }
         }
     }
