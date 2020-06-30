@@ -141,7 +141,10 @@ private fun View.renderTextReview(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
-    textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
+    if (productCardModel.willShowRatingAndReviewCount())
+        textViewIntegrity?.initLabelGroup(null)
+    else
+        textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
 }
 
 private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
@@ -151,7 +154,10 @@ private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextShipping(productCardModel: ProductCardModel) {
-    textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
+    if (productCardModel.isShowFreeOngkirBadge())
+        textViewShipping?.initLabelGroup(null)
+    else
+        textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
 }
 
 private fun View.renderStockPercentage(productCardModel: ProductCardModel) {

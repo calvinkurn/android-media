@@ -195,7 +195,7 @@ private fun ProductCardModel.getReviewCountHeight(context: Context): Int {
 private fun ProductCardModel.getLabelIntegrityHeight(context: Context): Int {
     val labelIntegrity = getLabelIntegrity()
 
-    return if (labelIntegrity != null && labelIntegrity.title.isNotEmpty()) {
+    return if (labelIntegrity != null && labelIntegrity.title.isNotEmpty() && !willShowRatingAndReviewCount()) {
         val labelCredibilityMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_integrity_margin_top)
         val labelCredibilityHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_integrity_height)
 
@@ -224,7 +224,7 @@ private fun ProductCardModel.getFreeOngkirBadgeHeight(context: Context): Int {
 private fun ProductCardModel.getLabelShippingHeight(context: Context): Int {
     val labelShipping = getLabelShipping()
 
-    return if (labelShipping != null && labelShipping.title.isNotEmpty()) {
+    return if (labelShipping != null && labelShipping.title.isNotEmpty() && !isShowFreeOngkirBadge()) {
         val labelShippingMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_shipping_margin_top)
         val labelShippingHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_shipping_height)
 
