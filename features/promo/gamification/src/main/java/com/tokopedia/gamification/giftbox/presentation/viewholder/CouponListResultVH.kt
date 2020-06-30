@@ -15,6 +15,7 @@ import com.tokopedia.gamification.giftbox.presentation.presenter.CouponListResul
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.image.ImageUtils
 import javax.inject.Inject
 
@@ -54,7 +55,9 @@ class CouponListResultVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
                         RouteManager.route(itemView.context, crackButtonEntity?.applink)
                     }
                     presenter.autoApply(crackBenefitEntity.dummyCode, crackBenefitEntity.autoApplyMsg)
-                    GtmGiftTapTap.clickUseCoupon(crackBenefitEntity.referenceID)
+
+                    val userSession = UserSession(it.context)
+                    GtmGiftTapTap.clickUseCoupon(crackBenefitEntity.referenceID, userSession.userId)
                 }
             }
         } else {

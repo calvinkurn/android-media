@@ -13,7 +13,7 @@ class GiftBoxTapTapActivity : BaseGiftBoxActivity() {
     }
 
     override fun onBackPressed() {
-        GtmGiftTapTap.clickMainBackButton()
+        GtmGiftTapTap.clickMainBackButton(userSession.userId)
         if (fragment != null) {
             val canGoBack = fragment!!.onBackPressed()
             if (canGoBack) {

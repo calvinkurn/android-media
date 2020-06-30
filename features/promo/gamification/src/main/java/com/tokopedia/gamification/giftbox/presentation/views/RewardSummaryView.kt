@@ -32,6 +32,7 @@ import com.tokopedia.gamification.taptap.data.entiity.RewardButton
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.gami_gift_result.view.*
 
@@ -102,6 +103,7 @@ class RewardSummaryView : FrameLayout {
     }
 
     fun setButtons(rewardButtons: List<RewardButton>?) {
+        val userSession = UserSession(context)
         if (!rewardButtons.isNullOrEmpty()) {
             rewardButtons.forEachIndexed { index, rb ->
                 if (rb.backgroundColor != null) {
@@ -116,12 +118,12 @@ class RewardSummaryView : FrameLayout {
                                 (it.context as? AppCompatActivity)?.finish()
 
                                 if (dataList.isEmpty()) {
-                                    GtmGiftTapTap.clickExitNoReward()
+                                    GtmGiftTapTap.clickExitNoReward(userSession.userId)
                                 } else {
-                                    GtmGiftTapTap.clickExitButtonReward()
+                                    GtmGiftTapTap.clickExitButtonReward(userSession.userId)
                                 }
                             } else {
-                                GtmGiftTapTap.clickCheckRewards()
+                                GtmGiftTapTap.clickCheckRewards(userSession.userId)
                             }
                             RouteManager.route(it.context, rb.applink)
 
@@ -144,12 +146,14 @@ class RewardSummaryView : FrameLayout {
             ImageUtils.loadImageWithoutPlaceholderAndError(imageBox, imageBoxUrl!!)
         }
 
+        val userSession = UserSession(context)
+
         if (rewardSummaryItemList.isEmpty()) {
             showEmpty()
-            GtmGiftTapTap.viewNoRewardsPage()
+            GtmGiftTapTap.viewNoRewardsPage(userSession.userId)
         } else {
             setRewardSummaryData(rewardSummaryItemList)
-            GtmGiftTapTap.viewRewardSummary()
+            GtmGiftTapTap.viewRewardSummary(userSession.userId)
         }
     }
 

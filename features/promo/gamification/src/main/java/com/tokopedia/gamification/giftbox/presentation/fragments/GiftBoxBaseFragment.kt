@@ -108,7 +108,6 @@ open class GiftBoxBaseFragment : Fragment() {
 
         imageToolbarIcon.setOnClickListener {
             when (this) {
-                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickMainBackButton()
                 is GiftBoxDailyFragment -> GtmEvents.clickBackButton(userSession?.userId)
             }
             activity?.onBackPressed()
@@ -202,7 +201,7 @@ open class GiftBoxBaseFragment : Fragment() {
             val shareIntent = Intent.createChooser(sendIntent, null)
             startActivity(shareIntent)
             when (this) {
-                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickShareButton()
+                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickShareButton(userSession?.userId)
                 is GiftBoxDailyFragment -> GtmEvents.clickShareButton(userSession?.userId)
             }
         } catch (ex: Exception) {
@@ -229,7 +228,7 @@ open class GiftBoxBaseFragment : Fragment() {
             dialog.closeAbleDialog.dismiss()
             method.invoke()
             when (this) {
-                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickTryAgain()
+                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickTryAgain(userSession?.userId)
                 is GiftBoxDailyFragment -> GtmEvents.clickTryAgainButton(userSession?.userId)
             }
 

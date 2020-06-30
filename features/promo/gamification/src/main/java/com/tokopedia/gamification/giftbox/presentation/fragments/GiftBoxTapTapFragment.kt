@@ -189,7 +189,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 ovoPointsTextAnim.start()
                 getTapTapView().postDelayed({
                     afterRewardAnimationEnds()
-                    GtmGiftTapTap.viewRewards(OVO)
+                    GtmGiftTapTap.viewRewards(OVO, userSession?.userId)
                 }, startDelay + pairAnim.second + NEGATIVE_DURATION)
             }
             RewardContainer.RewardState.COUPON_ONLY -> {
@@ -206,7 +206,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 animatorSet.start()
                 getTapTapView().postDelayed({
                     afterRewardAnimationEnds()
-                    GtmGiftTapTap.viewRewards(COUPON)
+                    GtmGiftTapTap.viewRewards(COUPON, userSession?.userId)
                 }, startDelay + pairAnim.second + NEGATIVE_DURATION)
             }
         }
@@ -251,12 +251,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     }
                                     LOBBY -> {
                                         setupLobbyUi(gamiTapEggHome)
-                                        GtmGiftTapTap.impressionGiftBox()
+                                        GtmGiftTapTap.impressionGiftBox(userSession?.userId)
 
                                     }
                                     CRACK_UNLIMITED -> {
                                         setupCrackUnlimitedUi(gamiTapEggHome)
-                                        GtmGiftTapTap.impressionGiftBox()
+                                        GtmGiftTapTap.impressionGiftBox(userSession?.userId)
                                     }
                                     else -> {
                                         activity?.finish()
@@ -311,11 +311,11 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     }
                                     LOBBY -> {
                                         setupLobbyUiSecondTime(it.data.gamiTapEggHome)
-                                        GtmGiftTapTap.impressionGiftBox()
+                                        GtmGiftTapTap.impressionGiftBox(userSession?.userId)
                                     }
                                     CRACK_UNLIMITED -> {
                                         setupCrackUnlimitedUiSecondTime(it.data.gamiTapEggHome)
-                                        GtmGiftTapTap.impressionGiftBox()
+                                        GtmGiftTapTap.impressionGiftBox(userSession?.userId)
                                     }
                                 }
                             }
@@ -458,10 +458,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 btnInactiveFirst.text = items[0].text
 
             btnInactiveFirst.setOnClickListener {
-                GtmGiftTapTap.clickHomePageButton()
+                GtmGiftTapTap.clickHomePageButton(userSession?.userId)
             }
         }
-        GtmGiftTapTap.campaignOver()
+        GtmGiftTapTap.campaignOver(userSession?.userId)
     }
 
     fun toggleInActiveHint(show: Boolean) {
@@ -485,7 +485,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     getTapTapView().isGiftTapAble = true
             }
             getTapTapView().incrementTapCount()
-            GtmGiftTapTap.clickGiftBox()
+            GtmGiftTapTap.clickGiftBox(userSession?.userId)
         }
     }
 
@@ -665,7 +665,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             } else {
                 showRedError(fmParent, message, actionText, ::handleGiftBoxTap)
             }
-            GtmGiftTapTap.viewError()
+            GtmGiftTapTap.viewError(userSession?.userId)
         }
     }
 
@@ -677,7 +677,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
             }
-            GtmGiftTapTap.viewError()
+            GtmGiftTapTap.viewError(userSession?.userId)
         }
     }
 
@@ -955,12 +955,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             dialog.setDescription(backButton.text)
             dialog.setPrimaryCTAText(backButton.yesText)
             dialog.setPrimaryCTAClickListener {
-                GtmGiftTapTap.clickContinueButton()
+                GtmGiftTapTap.clickContinueButton(userSession?.userId)
                 activity?.finish()
             }
             dialog.setSecondaryCTAText(backButton.cancelText)
             dialog.setSecondaryCTAClickListener {
-                GtmGiftTapTap.clickExitButton()
+                GtmGiftTapTap.clickExitButton(userSession?.userId)
                 dialog.cancel()
             }
             dialog.show()
