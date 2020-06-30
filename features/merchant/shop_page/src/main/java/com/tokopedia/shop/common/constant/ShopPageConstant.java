@@ -29,7 +29,7 @@ public class ShopPageConstant {
     public static final String GO_TO_MEMBERSHIP_DETAIL = "membership detail";
     public static final String GO_TO_MEMBERSHIP_REGISTER = "membership register";
     public static final String EMPTY_PRODUCT_SEARCH_IMAGE_URL =
-            "https://ecs7.tokopedia.net/img/android/others/product_search_not_found.png";
+            "https://ecs7.tokopedia.net/android/others/illustration_product_empty.png";
 
     public static final String KEY_MEMBERSHIP_DATA_MODEL = "KEY_MEMBERSHIP_DATA_MODEL_POSITION";
     public static final String KEY_MERCHANT_VOUCHER_DATA_MODEL = "KEY_MERCHANT_VOUCHER_DATA_MODEL_POSITION";
