@@ -88,7 +88,9 @@ object DynamicChannelComponentMapper {
                                         position = label.position,
                                         type = label.type
                                 )
-                            }
+                            },
+                            rating = it.rating,
+                            countReview = it.countReview
                     )
                 }
         )

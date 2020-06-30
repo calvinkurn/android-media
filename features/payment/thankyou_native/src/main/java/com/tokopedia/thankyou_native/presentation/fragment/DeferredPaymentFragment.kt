@@ -52,6 +52,13 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                 is SmsPayment -> inflateWaitingUI(getString(R.string.thank_phone_number), isCopyVisible = false, highlightAmountDigits = false)
             }
         }
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customWtvText.isNullOrBlank()) {
+            tvCheckPaymentStatusTitle.text = getString(R.string.thank_processing_payment_check_order)
+        } else {
+            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization.customWtvText
+        }
+
+
         initCheckPaymentWidgetData()
     }
 

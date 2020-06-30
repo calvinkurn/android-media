@@ -89,7 +89,9 @@ object DynamicChannelComponentMapper {
                                         type = label.type
                                 )
                             },
-                            hasBuyButton = it.hasBuyButton
+                            hasBuyButton = it.hasBuyButton,
+                            rating = it.rating,
+                            countReview = it.countReview
                     )
                 }
         )

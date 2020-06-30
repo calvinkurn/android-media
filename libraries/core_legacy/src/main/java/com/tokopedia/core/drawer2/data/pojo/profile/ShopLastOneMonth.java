@@ -15,28 +15,4 @@ public class ShopLastOneMonth {
     @SerializedName("count_score_neutral")
     @Expose
     private String countScoreNeutral;
-
-    public String getCountScoreGood() {
-        return countScoreGood;
-    }
-
-    public void setCountScoreGood(String countScoreGood) {
-        this.countScoreGood = countScoreGood;
-    }
-
-    public String getCountScoreBad() {
-        return countScoreBad;
-    }
-
-    public void setCountScoreBad(String countScoreBad) {
-        this.countScoreBad = countScoreBad;
-    }
-
-    public String getCountScoreNeutral() {
-        return countScoreNeutral;
-    }
-
-    public void setCountScoreNeutral(String countScoreNeutral) {
-        this.countScoreNeutral = countScoreNeutral;
-    }
 }
