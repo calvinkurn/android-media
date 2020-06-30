@@ -61,7 +61,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(com.tokopedia.seller.R.layout.fragment_shop_create_success, container, false);
-        loadingStateView = view.findViewById(com.tokopedia.design.R.id.loading_state_view);
+        loadingStateView = view.findViewById(com.tokopedia.seller.R.id.loading_state_view);
         shopIconImageView = view.findViewById(com.tokopedia.seller.R.id.image_view_shop_icon);
         tvShopName = view.findViewById(com.tokopedia.seller.R.id.text_view_shop_title);
         View buttonAddProduct = view.findViewById(com.tokopedia.seller.R.id.button_add_product);

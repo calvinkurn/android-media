@@ -638,7 +638,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void logApplinkErrorOpen(String url) {
         String referrer = getPreviousUri();
-        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s'",
+        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s';journey='-'",
                 getClass().getSimpleName(), referrer, url);
     }
 

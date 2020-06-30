@@ -143,11 +143,7 @@ class MixLeftComponentViewHolder (itemView: View,
         listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
-        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty())
-            listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
 
-        adapter = MixLeftAdapter(listData,typeFactoryImpl)
-        recyclerView.adapter = adapter
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
@@ -157,6 +153,11 @@ class MixLeftComponentViewHolder (itemView: View,
                 throwable.printStackTrace()
             }
         }
+
+        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty())
+            listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
+        adapter = MixLeftAdapter(listData,typeFactoryImpl)
+        recyclerView.adapter = adapter
         recyclerView.addOnScrollListener(getParallaxEffect())
     }
 
@@ -212,7 +213,9 @@ class MixLeftComponentViewHolder (itemView: View,
                                     element.isFreeOngkirActive,
                                     element.freeOngkirImageUrl
                             ),
-                            isOutOfStock = element.isOutOfStock
+                            isOutOfStock = element.isOutOfStock,
+                            ratingCount = element.rating,
+                            reviewCount = element.countReview
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

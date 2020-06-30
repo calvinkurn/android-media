@@ -890,12 +890,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun goToProfileCompletionPage() {
-        activity?.let {
-            (it.applicationContext as ApplinkRouter).goToApplinkActivity(activity, ApplinkConst.PROFILE_COMPLETION)
-        }
-    }
-
     override fun onActionPartialClick(id: String) {
         registerAnalytics.trackClickSignUpButton()
         registerInitialViewModel.registerCheck(id)
@@ -1117,19 +1111,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         ForbiddenActivity.startActivity(activity)
     }
 
-    fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit {
-        return { fullName: String, userId: String ->
-
-            activity?.let {
-                val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
-                intent.putExtra("name", fullName)
-                intent.putExtra("user_id", userId)
-                startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
-            }
-
-        }
-    }
-
     private fun getTickerType(hexColor: String): Int {
         return when (hexColor) {
             "#cde4c3" -> {
@@ -1193,12 +1174,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     partialRegisterInputView.setAdapterInputEmailPhone(
                             ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers)
                     ) { v, hasFocus ->
-                        activity?.isFinishing?.let { isFinishing ->
-                            if(!isFinishing) {
-                                if (hasFocus && this::emailPhoneEditText.isInitialized) {
-                                    emailPhoneEditText.showDropDown()
-                                } else {
-                                    emailPhoneEditText.dismissDropDown()
+                        if(v.windowVisibility == View.VISIBLE) {
+                            activity?.isFinishing?.let { isFinishing ->
+                                if (!isFinishing) {
+                                    if (hasFocus && this::emailPhoneEditText.isInitialized && emailPhoneEditText.hasFocus()) {
+                                        emailPhoneEditText.showDropDown()
+                                    } else {
+                                        emailPhoneEditText.dismissDropDown()
+                                    }
                                 }
                             }
                         }

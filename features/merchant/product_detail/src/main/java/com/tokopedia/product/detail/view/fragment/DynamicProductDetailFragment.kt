@@ -224,7 +224,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var shouldFireVariantTracker = true
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mapOf())
     private var enableCheckImeiRemoteConfig = false
-    private var shouldTrackStickyLogin = true
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -2189,17 +2188,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
-        stickyLoginView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateStickyState()
-        }
         updateActionButtonShadow()
         stickyLoginView.setOnClickListener {
             goToLogin()
-            stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.PDP)
+            } else {
+                stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
+            }
         }
         stickyLoginView.setOnDismissListener(View.OnClickListener {
             stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
-            stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            } else {
+                stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            }
             updateStickyState()
         })
 
@@ -2207,13 +2211,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun updateStickyState() {
-        if (this.tickerDetail == null) {
-            stickyLoginView.visibility = View.GONE
-            return
-        }
-
-        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
-        if (!isCanShowing) {
+        if (tickerDetail == null) {
             stickyLoginView.visibility = View.GONE
             return
         }
@@ -2223,11 +2221,24 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             return
         }
 
-        this.tickerDetail?.let { stickyLoginView.setContent(it) }
-        stickyLoginView.show(StickyLoginConstant.Page.PDP)
-        if (shouldTrackStickyLogin || stickyLoginView.isShowing()) {
-            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
-            shouldTrackStickyLogin = false
+        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true)
+        if (stickyLoginView.isLoginReminder() && isCanShowing) {
+            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isShowing()) {
+                stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.PDP)
+            }
+        } else {
+            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true)
+            if (!isCanShowing) {
+                stickyLoginView.visibility = View.GONE
+                return
+            }
+
+            this.tickerDetail?.let { stickyLoginView.setContent(it) }
+            stickyLoginView.show(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isShowing()) {
+                stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+            }
         }
     }
 
