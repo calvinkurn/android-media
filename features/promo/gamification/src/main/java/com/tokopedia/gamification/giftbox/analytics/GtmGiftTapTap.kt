@@ -52,7 +52,7 @@ object GtmGiftTapTap {
         GtmEvents.getTracker().sendGeneralEvent(map)
     }
 
-    //7 todo Add label
+    //7
     fun viewRewards(rewardName: String,userId:String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS

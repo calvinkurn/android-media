@@ -910,12 +910,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     if (!benefit.color.isNullOrEmpty()) {
                         rewardContainer.tvSmallReward.setTextColor(Color.parseColor(benefit.color))
                     }
-//                    GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
+                    GtmGiftTapTap.viewRewards(benefit.text, userSession?.userId)
 
                 } else if (benefit.benefitType == COUPON) {
                     hasCoupons = true
                     benefit.referenceID?.let { refId ->
-//                        GtmEvents.viewRewards(refId, userSession?.userId)
+                        GtmGiftTapTap.viewRewards(benefit.text, userSession?.userId)
                     }
                     rewardContainer.couponList.add(CouponTapTap(imageUrl))
                 }
