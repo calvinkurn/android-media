@@ -46,7 +46,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     // layout position - selected unit values map
     private var selectedVariantUnitValuesMap: HashMap<Int, MutableList<UnitValue>> = HashMap()
 
-    private var selectedVariantDetails = listOf<VariantDetail>()
+    private var selectedVariantDetails = mutableListOf<VariantDetail>()
     private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<List<UnitValue>>()
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<List<UnitValue>>()
 
@@ -340,7 +340,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun setSelectedVariantDetails(selectedVariantDetails: List<VariantDetail>) {
-        this.selectedVariantDetails = selectedVariantDetails
+        this.selectedVariantDetails = selectedVariantDetails.toMutableList()
     }
 
     fun getProductVariantPhotos(productInputModel: ProductInputModel): List<VariantPhoto> {
