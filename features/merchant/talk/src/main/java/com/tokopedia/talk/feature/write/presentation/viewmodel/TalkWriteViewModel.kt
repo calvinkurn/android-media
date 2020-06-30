@@ -110,6 +110,10 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         return productId.value
     }
 
+    fun refresh() {
+        productId.notifyObserver()
+    }
+
     private fun <T> MutableLiveData<T>.notifyObserver() {
         this.value = this.value
     }

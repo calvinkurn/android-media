@@ -113,7 +113,8 @@ class TalkWriteFragment : BaseDaggerFragment(),
             submitNewQuestion()
         }
         talkConnectionErrorRetryButton.setOnClickListener {
-
+            viewModel.refresh()
+            showLoading()
         }
         talkConnectionErrorGoToSettingsButton.setOnClickListener {
             goToSettingsPage()
