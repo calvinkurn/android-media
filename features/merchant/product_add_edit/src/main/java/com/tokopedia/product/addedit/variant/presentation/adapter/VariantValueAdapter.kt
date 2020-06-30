@@ -11,6 +11,10 @@ class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonC
         RecyclerView.Adapter<VariantValueViewHolder>(),
         VariantValueViewHolder.OnRemoveButtonClickListener {
 
+    companion object {
+        private const val INVALID_POSITION = -1
+    }
+
     interface OnRemoveButtonClickListener {
         fun onRemoveButtonClicked(position: Int, layoutPosition: Int)
     }
@@ -32,9 +36,12 @@ class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonC
     }
 
     override fun onRemoveButtonClicked(position: Int) {
-        items.removeAt(position)
-        notifyItemRemoved(position)
-        removeButtonClickListener.onRemoveButtonClicked(position, layoutPosition)
+        // rapid click will change the position to -1
+        if (position != INVALID_POSITION) {
+            items.removeAt(position)
+            notifyItemRemoved(position)
+            removeButtonClickListener.onRemoveButtonClicked(position, layoutPosition)
+        }
     }
 
     fun setData(items: List<UnitValue>) {

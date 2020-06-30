@@ -55,6 +55,10 @@
     <string name="detail_label_product_price">Harga produk</string>
     <string name="label_add_product_price_tips">Tentukan harga sesuai pasaran produkmu</string>
     <string name="label_prefix_rupiah">Rp </string>
+    <string name="label_change_price_dialog_title">Ganti harga utama \?</string>
+    <string name="label_change_price_dialog_message">Semua harga varian akan mengikuti harga utama jika harga diganti.</string>
+    <string name="action_change_price">Ya, Ganti</string>
+    <string name="action_cancel">Batal</string>
     <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100.</string>
     <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp100 juta</string>
@@ -217,6 +221,9 @@
     <string name="action_clear_sizechart">Hapus</string>
     <string name="action_replace_sizechart">Ubah Foto</string>
     <string name="action_edit_sizechart">Edit Foto</string>
+    <string name="action_pick_main_variant">Pilih Varian Utama</string>
+    <string name="action_confirm_cancellation">Ya, batalkan</string>
+    <string name="action_cancel_cancellation">Oh, jangan</string>
     <string name="label_variant_type">Tipe Varian</string>
     <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian.</string>
     <string name="label_variant_photo">Foto Varian</string>
@@ -230,7 +237,6 @@
     <string name="label_add_sku">Tambah SKU</string>
     <string name="label_optional">(Opsional)</string>
     <string name="label_variant_list">Daftar Varian</string>
-    <string name="action_pick_main_variant">Pilih Varian Utama</string>
     <string name="label_variant_price">Harga</string>
     <string name="label_variant_stock">Stok</string>
     <string name="label_variant_sku">SKU</string>
@@ -243,9 +249,14 @@
     <string name="label_variant_multiple_select_bottom_sheet_title">Pilih variant yang ingin diatur</string>
     <string name="label_variant_multiple_input_bottom_sheet_title">Atur sekaligus di sini</string>
     <string name="label_variant_main_select_bottom_sheet_title">Pilih satu varian utama</string>
+    <string name="label_question_mark">\?</string>
+    <string name="label_cancel">Batalkan</string>
+    <string name="label_data">Data</string>
+    <string name="label_variant_cancellation_message">akan hilang jika kamu tidak jadi pilih.</string>
     <string name="label_variant_delete_all_title">Hapus semua varian?</string>
     <string name="label_variant_delete_all_description">Dengan hapus semua varian, data yang kamu sudah isi akan hilang.</string>
     <string name="action_variant_delete_all_negative">Batal</string>
     <string name="action_variant_delete_all_positive">Ya, Hapus</string>
 
+>>>>>>> feature/stuart/add_variant_revamp
 </resources>

@@ -10,9 +10,8 @@ class VariantTypeViewHolder(itemView: View, clickListener: OnVariantTypeViewHold
     : RecyclerView.ViewHolder(itemView) {
 
     interface OnVariantTypeViewHolderClickListener {
-        fun onVariantTypeClicked(position: Int, state: ViewHolderState) {
-
-        }
+        fun onVariantTypeSelected(position: Int)
+        fun onVariantTypeDeselected(position: Int): Boolean
     }
 
     enum class ViewHolderState {
@@ -25,16 +24,20 @@ class VariantTypeViewHolder(itemView: View, clickListener: OnVariantTypeViewHold
 
     init {
         itemView.chipsVariantTypeName.setOnClickListener {
-            when(viewHolderState) {
+            when (viewHolderState) {
+                // from selected to normal state (deselection)
                 ViewHolderState.SELECTED -> {
-                    itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_NORMAL
-                    viewHolderState = ViewHolderState.NORMAL
-                    clickListener.onVariantTypeClicked(adapterPosition, viewHolderState)
+                    // change the chip state when the cancellation confirmed
+                    val isConfirmed = clickListener.onVariantTypeDeselected(adapterPosition)
+                    // save the state for further event handling
+                    if (isConfirmed) viewHolderState = ViewHolderState.NORMAL
                 }
+                // from normal to selected state (selection)
                 ViewHolderState.NORMAL -> {
-                    itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_SELECTED
+                    // change the chip state from adapter
+                    clickListener.onVariantTypeSelected(adapterPosition)
+                    // save the state for further event handling
                     viewHolderState = ViewHolderState.SELECTED
-                    clickListener.onVariantTypeClicked(adapterPosition, viewHolderState)
                 }
                 ViewHolderState.DISABLED ->
                     itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_DISABLE
@@ -45,7 +48,7 @@ class VariantTypeViewHolder(itemView: View, clickListener: OnVariantTypeViewHold
     fun bindData(variantDetail: VariantDetail, state: ViewHolderState) {
         itemView.chipsVariantTypeName.chip_text.text = variantDetail.name
         viewHolderState = state
-        when(state) {
+        when (state) {
             ViewHolderState.SELECTED ->
                 itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_SELECTED
             ViewHolderState.NORMAL ->

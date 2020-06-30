@@ -13,6 +13,7 @@ import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
@@ -36,14 +37,17 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     var isSingleVariantTypeIsSelected = false
 
+    // adapter - layout position map
     private var variantValuesLayoutMap: TreeMap<Int, Int> = TreeMap()
 
-    private var selectedVariantUnit: HashMap<Int, MutableList<Unit>> = HashMap()
+    // layout position - selected unit map
+    private var selectedVariantUnitMap: HashMap<Int, Unit> = HashMap()
 
+    // layout position - selected unit values map
     private var selectedVariantUnitValuesMap: HashMap<Int, MutableList<UnitValue>> = HashMap()
 
+    private var selectedVariantDetails = listOf<VariantDetail>()
     private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<List<UnitValue>>()
-
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<List<UnitValue>>()
 
     private val mGetCategoryVariantCombinationResult = MutableLiveData<Result<GetCategoryVariantCombinationResponse>>()
@@ -123,6 +127,10 @@ class AddEditProductVariantViewModel @Inject constructor(
         variantValuesLayoutMap[adapterPosition] = layoutPosition
     }
 
+    fun updateSelectedVariantUnitMap(layoutPosition: Int, unit: Unit) {
+        selectedVariantUnitMap[layoutPosition] = unit
+    }
+
     fun updateSelectedVariantUnitValuesMap(layoutPosition: Int, selectedVariantUnitValues: MutableList<UnitValue>) {
         selectedVariantUnitValuesMap[layoutPosition] = selectedVariantUnitValues
     }
@@ -164,12 +172,27 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedVariantUnit(layoutPosition: Int): Unit {
+        return if (selectedVariantUnitMap.containsKey(layoutPosition)) {
+            selectedVariantUnitMap[layoutPosition] ?: Unit()
+        } else Unit()
+    }
+
     fun getSelectedVariantUnitValues(layoutPosition: Int): MutableList<UnitValue> {
-        return selectedVariantUnitValuesMap[layoutPosition] ?: mutableListOf()
+        return if (selectedVariantUnitValuesMap.containsKey(layoutPosition)) {
+            selectedVariantUnitValuesMap[layoutPosition] ?: mutableListOf()
+        } else mutableListOf()
     }
 
     fun removeVariantValueLayoutMapEntry(adapterPosition: Int) {
         variantValuesLayoutMap.remove(adapterPosition)
+    }
+
+    fun isVariantUnitValuesEmpty(layoutPosition: Int): Boolean {
+        if (selectedVariantUnitValuesMap.containsKey(layoutPosition)) {
+            return selectedVariantUnitValuesMap[layoutPosition]?.isEmpty() ?: true
+        }
+        return true
     }
 
     fun removeSelectedVariantUnitValue(layoutPosition: Int, position: Int) {
@@ -227,7 +250,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         val selectedLevel1: MutableList<UnitValue> = selectedVariantUnitValuesMap
                 .getOrElse(VARIANT_VALUE_LEVEL_ONE_POSITION) { mutableListOf() }
         val selectedLevel2: MutableList<UnitValue> = selectedVariantUnitValuesMap
-                .getOrElse(VARIANT_VALUE_LEVEL_TWO_POSITION) { mutableListOf()}
+                .getOrElse(VARIANT_VALUE_LEVEL_TWO_POSITION) { mutableListOf() }
 
         selectedLevel1.forEachIndexed { optionIndexLevel1, _ ->
             val variantPicture = mapVariantPhoto(variantPhotos.getOrNull(optionIndexLevel1))
@@ -278,5 +301,68 @@ class AddEditProductVariantViewModel @Inject constructor(
             )
             listOf(result)
         } ?: emptyList()
+    }
+
+    fun extractSelectedVariantDetails(productInputModel: ProductInputModel): List<VariantDetail> {
+        // part of the product input model
+        val selectedVariantInputModels = productInputModel.variantInputModel.selections
+        // selected variant detail models
+        val selectedVariantDetails = mutableListOf<VariantDetail>()
+        selectedVariantInputModels.forEach { inputModel ->
+            // selected variant types
+            val id = inputModel.variantId.toIntOrNull() ?: 0
+            val identifier = inputModel.identifier
+            val name = inputModel.variantName
+            // selected variant unit values
+            val unitValues = mutableListOf<UnitValue>()
+            val optionInputModels = inputModel.options
+            optionInputModels.forEach {
+                val unitValueId = it.unitValueID.toIntOrNull() ?: 0
+                val unitValueName = it.value
+                val unitValue = UnitValue(variantUnitValueID = unitValueId, value = unitValueName)
+                unitValues.add(unitValue)
+            }
+            // selected variant unit
+            val unitId = inputModel.unitID.toIntOrNull() ?: 0
+            val unitName = inputModel.unitName
+            val unit = Unit(variantUnitID = unitId, unitName = unitName, unitValues = unitValues)
+            // selected variant detail
+            val selectedVariantDetail = VariantDetail(variantID = id, identifier = identifier, name = name, units = listOf(unit))
+            // fill selected variant details
+            selectedVariantDetails.add(selectedVariantDetail)
+        }
+        return selectedVariantDetails
+    }
+
+    fun getSelectedVariantDetails(): List<VariantDetail> {
+        return this.selectedVariantDetails
+    }
+
+    fun setSelectedVariantDetails(selectedVariantDetails: List<VariantDetail>) {
+        this.selectedVariantDetails = selectedVariantDetails
+    }
+
+    fun getProductVariantPhotos(productInputModel: ProductInputModel): List<VariantPhoto> {
+        val variantPhotos = mutableListOf<VariantPhoto>()
+        // get variant photo name
+        val colorVariant = productInputModel.variantInputModel.selections.firstOrNull {
+            it.variantId == COLOUR_VARIANT_TYPE_ID.toString()
+        } ?: SelectionInputModel()
+        // get variant image urls
+        val photoUrls = mutableListOf<String>()
+        productInputModel.variantInputModel.products.forEach {
+            if (it.pictures.isNotEmpty()) {
+                it.pictures.forEach { pictureInputModel ->
+                    photoUrls.add(pictureInputModel.urlOriginal)
+                }
+            }
+        }
+        // compile variant photos
+        colorVariant.options.forEachIndexed { index, optionInputModel ->
+            val variantUnitValueName = optionInputModel.value
+            val photoUrl = photoUrls.getOrNull(index) ?: ""
+            variantPhotos.add(VariantPhoto(variantUnitValueName, photoUrl))
+        }
+        return variantPhotos
     }
 }
