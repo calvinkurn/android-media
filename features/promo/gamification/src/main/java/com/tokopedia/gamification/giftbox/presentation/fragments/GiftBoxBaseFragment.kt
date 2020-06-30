@@ -107,7 +107,7 @@ open class GiftBoxBaseFragment : Fragment() {
                 is GiftBoxTapTapFragment -> GtmGiftTapTap.clickMainBackButton()
                 is GiftBoxDailyFragment -> GtmEvents.clickBackButton(userSession?.userId)
             }
-            activity?.finish()
+            activity?.onBackPressed()
         }
 
         imageSound.setOnClickListener {
