@@ -30,15 +30,18 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     @Volatile
     var campaignId: Long = 0
     var waitingForCrackResult = false
-    val CRACK_GIFT_TIME_OUT = 3000L
-    val GET_COUPON_DETAIL_TIME_OUT = 1000L
+    private val CRACK_GIFT_TIME_OUT = 3000L
+    private val GET_COUPON_DETAIL_TIME_OUT = 1000L
+    var canShowLoader = true
 
     val giftHomeLiveData: MutableLiveData<LiveDataResult<TapTapBaseEntity>> = MutableLiveData()
     val giftCrackLiveData: MutableLiveData<LiveDataResult<ResponseCrackResultEntity>> = MutableLiveData()
     val couponLiveData: MutableLiveData<LiveDataResult<CouponDetailResponse>> = MutableLiveData()
 
     fun getGiftBoxHome() {
-        giftHomeLiveData.postValue(LiveDataResult.loading())
+
+        if(canShowLoader)
+            giftHomeLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
             val response = homeUseCase.getResponse(HashMap())
             giftHomeLiveData.postValue(LiveDataResult.success(response))

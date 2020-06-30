@@ -1,13 +1,13 @@
 package com.tokopedia.gamification.giftbox.presentation.fragments
 
 import android.animation.*
-import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.annotation.IntDef
@@ -15,7 +15,6 @@ import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
-import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -38,6 +37,7 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerStat
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.NOT_STARTED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.STARTED
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.CRACK_UNLIMITED
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.DEFAULT
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.LOBBY
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
@@ -56,7 +56,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
-import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
@@ -93,17 +93,23 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     @MinuteTimerState
     var minuteTimerState: Int = NOT_STARTED
 
-    val CONTAINER_INACTIVE = 2
-    val SERVER_LIMIT_REACHED = "47004"
-    val STATUS_OK = "200"
-    var MAX_REWARD_LIMIT = -1
-    val CAPPING = 3
+    private val CONTAINER_INACTIVE = 2
+    private val SERVER_LIMIT_REACHED = "47004"
+    private val STATUS_OK = "200"
+    private var MAX_REWARD_LIMIT = -1
+    private val CAPPING = 3
     var clientLimitReached = MAX_REWARD_LIMIT == benefitItems.size
+    lateinit var endTime: String
+    lateinit var endTimeMinute: String
+    private val LOW_VOLUME = 0.3f
+    private val NORMAL_VOLUME = 1f
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: GiftBoxTapTapViewModel
 
+    @TokenUserStateTapTap
+    var oldTokenUserState = DEFAULT
 
     override fun getLayout() = R.layout.fragment_gift_tap_tap
 
@@ -226,6 +232,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
 
         viewModel.giftHomeLiveData.observe(viewLifecycleOwner, Observer {
+
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
                     showLoader()
@@ -233,85 +240,87 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (it.data != null) {
 
-                        backButton = it.data.gamiTapEggHome?.backButton
+                        fun renderUi(state: String?, gamiTapEggHome: GamiTapEggHome) {
+                            state?.let { tokenUserState ->
+                                oldTokenUserState = tokenUserState
+                                viewModel.canShowLoader = false
 
-                        //toolbar
-                        val toolbarTitle = it.data.gamiTapEggHome?.tokensUser?.title
-                        toolbarTitle?.let { title ->
-                            tvTapHint.text = title
-                        }
-                        val tokenUser = it.data.gamiTapEggHome?.tokensUser
-                        tokenUser?.apply {
-                            viewModel.campaignId = campaignID
-
-                            if (!tokenUserID.isNullOrEmpty())
-                                viewModel.tokenId = tokenUserID
-                        }
-
-                        rewardSummary.apply {
-                            setButtons(it.data.gamiTapEggHome?.rewardButton)
-                            imageBoxUrl = it.data.gamiTapEggHome?.tokenAsset?.rewardImgURL
-                        }
-
-                        //for empty state
-                        val state = it.data.gamiTapEggHome?.tokensUser?.state
-                        state?.let { tokenUserState ->
-                            when (tokenUserState) {
-                                EMPTY -> {
-                                    val title = it.data.gamiTapEggHome?.tokensUser?.text
-                                    val desc = it.data.gamiTapEggHome?.tokensUser?.desc
-
-                                    tvInactiveTitle.text = title
-                                    tvInactiveMessage.text = desc
-                                    val inactiveImageLoader = InactiveImageLoader()
-
-                                    val tokenAsset = it.data.gamiTapEggHome?.tokenAsset
-                                    if (tokenAsset != null) {
-                                        inactiveImageLoader.loadImages(imageInactive, imageInactiveBg, tokenAsset) {
-                                            loadInactiveContainer()
-                                        }
-                                    } else {
-                                        loadInactiveContainer()
+                                when (tokenUserState) {
+                                    EMPTY -> {
+                                        renderEmptyState(gamiTapEggHome)
                                     }
-
-
-                                    it.data.gamiTapEggHome?.actionButton?.let { items ->
-                                        if (!items.isNullOrEmpty())
-                                            btnInactiveFirst.text = items[0].text
-
-                                        btnInactiveFirst.setOnClickListener {
-                                            GtmGiftTapTap.clickHomePageButton()
-                                        }
-                                    }
-                                    GtmGiftTapTap.campaignOver()
-                                }
-                                LOBBY -> {
-                                    it.data.gamiTapEggHome?.let { gamiTapEggHome ->
+                                    LOBBY -> {
                                         setupLobbyUi(gamiTapEggHome)
                                         GtmGiftTapTap.impressionGiftBox()
-                                    }
 
-                                }
-                                CRACK_UNLIMITED -> {
-                                    it.data.gamiTapEggHome?.let { gamiTapEggHome ->
+                                    }
+                                    CRACK_UNLIMITED -> {
                                         setupCrackUnlimitedUi(gamiTapEggHome)
                                         GtmGiftTapTap.impressionGiftBox()
                                     }
-                                }
-                                else -> {
-                                    activity?.finish()
+                                    else -> {
+                                        activity?.finish()
+                                    }
                                 }
                             }
                         }
 
-                        getTapTapView().fmGiftBox.setOnClickListener {
-                            handleGiftBoxTap()
-                            if (fmCoupons != null) {
-                                fmParent.removeView(fmCoupons)
-                                fmCoupons = null
-                            }
-                        }
+                        if (oldTokenUserState == DEFAULT) {
+                            val gamiTapEggHome = it.data.gamiTapEggHome
 
+                            if (gamiTapEggHome != null) {
+                                backButton = gamiTapEggHome.backButton
+
+                                //toolbar
+                                val toolbarTitle = gamiTapEggHome.tokensUser?.title
+                                toolbarTitle?.let { title ->
+                                    tvTapHint.text = title
+                                }
+                                val tokenUser = gamiTapEggHome.tokensUser
+                                tokenUser?.apply {
+                                    viewModel.campaignId = campaignID
+
+                                    if (!tokenUserID.isNullOrEmpty())
+                                        viewModel.tokenId = tokenUserID
+                                }
+
+                                rewardSummary.apply {
+                                    setButtons(gamiTapEggHome.rewardButton)
+                                    imageBoxUrl = gamiTapEggHome.tokenAsset?.rewardImgURL
+                                }
+
+                                //for empty state
+                                val state = gamiTapEggHome.tokensUser?.state
+                                renderUi(state, gamiTapEggHome)
+                            }
+
+                            getTapTapView().fmGiftBox.setOnClickListener {
+                                handleGiftBoxTap()
+                                if (fmCoupons != null) {
+                                    fmParent.removeView(fmCoupons)
+                                    fmCoupons = null
+                                }
+                            }
+                        } else {
+                            //2nd time api call only check for state
+                            val state = it.data.gamiTapEggHome?.tokensUser?.state
+                            state?.let { tokenUserState ->
+                                when (tokenUserState) {
+                                    EMPTY -> {
+                                        renderEmptyState(it.data.gamiTapEggHome)
+                                    }
+                                    LOBBY -> {
+                                        setupLobbyUiSecondTime(it.data.gamiTapEggHome)
+                                        GtmGiftTapTap.impressionGiftBox()
+                                    }
+                                    CRACK_UNLIMITED -> {
+                                        setupCrackUnlimitedUiSecondTime(it.data.gamiTapEggHome)
+                                        GtmGiftTapTap.impressionGiftBox()
+                                    }
+                                }
+                            }
+
+                        }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
@@ -424,6 +433,37 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         })
     }
 
+    private fun renderEmptyState(gamiTapEggHome: GamiTapEggHome) {
+        hourCountDownTimer?.cancel()
+
+        val title = gamiTapEggHome.tokensUser?.text
+        val desc = gamiTapEggHome.tokensUser?.desc
+
+        tvInactiveTitle.text = title
+        tvInactiveMessage.text = desc
+        val inactiveImageLoader = InactiveImageLoader()
+
+        val tokenAsset = gamiTapEggHome.tokenAsset
+        if (tokenAsset != null) {
+            inactiveImageLoader.loadImages(imageInactive, imageInactiveBg, tokenAsset) {
+                loadInactiveContainer()
+            }
+        } else {
+            loadInactiveContainer()
+        }
+
+
+        gamiTapEggHome.actionButton?.let { items ->
+            if (!items.isNullOrEmpty())
+                btnInactiveFirst.text = items[0].text
+
+            btnInactiveFirst.setOnClickListener {
+                GtmGiftTapTap.clickHomePageButton()
+            }
+        }
+        GtmGiftTapTap.campaignOver()
+    }
+
     fun toggleInActiveHint(show: Boolean) {
         tvTapHint.animate().alpha(if (show) 1f else 0f).setDuration(300L).start()
     }
@@ -449,10 +489,24 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
-    private fun setupCrackUnlimitedUi(gamiTapEggHome: GamiTapEggHome) {
+    private fun setupCrackUnlimitedUiSecondTime(gamiTapEggHome: GamiTapEggHome) {
+
+        (giftBoxDailyView as GiftBoxTapTapView).glowingAnimator?.end()
+        val anim1 = (giftBoxDailyView as GiftBoxTapTapView).fadeOutGlowingAndFadeInGiftBoxAnimation()
+        anim1.addListener(onEnd = {
+            (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
+        })
+        anim1.start()
+        animateTvTimerAndProgressBar()
+
         val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
         val showTimer = gamiTapEggHome.timeRemaining?.isShow
+        if (showTimer != null && timeLeftSeconds != null) {
+            startOneMinuteCounter(timeLeftSeconds)
+        }
+    }
 
+    private fun setupCrackUnlimitedUi(gamiTapEggHome: GamiTapEggHome) {
 
         val tokenAsset = gamiTapEggHome.tokenAsset
         var imageFrontUrl = ""
@@ -472,13 +526,19 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     bgImageUrl,
                     lidImages,
                     imageCallback = { isLoaded ->
+                        giftBoxDailyView.imagesLoaded.lazySet(0)
                         setPositionOfViewsAtBoxOpen()
                         hideLoader()
                         fadeInActiveStateViews()
                     }
             )
         }
+        showMinuteTimer(gamiTapEggHome)
+    }
 
+    private fun showMinuteTimer(gamiTapEggHome: GamiTapEggHome) {
+        val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
+        val showTimer = gamiTapEggHome.timeRemaining?.isShow
 
         if (showTimer != null && timeLeftSeconds != null) {
             (giftBoxDailyView as GiftBoxTapTapView).apply {
@@ -489,6 +549,16 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             }
             animateTvTimerAndProgressBar()
             startOneMinuteCounter(timeLeftSeconds)
+        }
+    }
+
+    private fun setupLobbyUiSecondTime(gamiTapEggHome: GamiTapEggHome) {
+        val timeLeftHours = gamiTapEggHome.timeRemaining?.unixFetch
+        val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
+        val showTimer = gamiTapEggHome.timeRemaining?.isShow
+
+        if (showTimer != null && showTimer && timeLeftHours != null && timeLeftSeconds != null) {
+            renderBottomHourTimer(timeLeftSeconds)
         }
     }
 
@@ -517,6 +587,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             if (showTimer != null && showTimer && timeLeftHours != null && timeLeftSeconds != null) {
                 renderBottomHourTimer(timeLeftSeconds)
 
+                tvTimer.animate().setDuration(500L).alpha(1f).start()
+                playLoopSound()
+
                 getTapTapView().loadFilesForTapTap(
                         glowImageUrl,
                         glowShadowImageUrl,
@@ -524,7 +597,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         bgImageUrl,
                         lidImages,
                         imageCallback = { isLoaded ->
-
+                            giftBoxDailyView.imagesLoaded.lazySet(0)
                             setPositionOfViewsAtBoxOpen()
                             hideLoader()
                             fadeInActiveStateViews()
@@ -614,7 +687,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     override fun initialViewSetup() {
         super.initialViewSetup()
-
+        endTime = context?.getString(R.string.gami_end_time) ?: ""
         tvTimer.alpha = 0f
         progressBarTimer.alpha = 0f
         tvProgressCount.alpha = 0f
@@ -644,12 +717,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         setListeners()
     }
 
-    fun setDynamicSize() {
+    private fun setDynamicSize() {
         tvProgressCount.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40.toPx().toFloat())
         tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24.toPx().toFloat())
     }
 
-    fun setShadows() {
+    private fun setShadows() {
         context?.let {
             val shadowColor = ContextCompat.getColor(it, com.tokopedia.gamification.R.color.gf_box_text_shadow)
             val shadowRadius = tvProgressCount.dpToPx(5)
@@ -696,9 +769,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         colorAnimator.start()
     }
 
-    fun startOneMinuteCounter(totalSeconds: Long) {
-        val time = (5 + 1) * 1000L
-        MAX_REWARD_LIMIT = ceil(5.toInt() / CAPPING.toFloat()).toInt()
+    private fun startOneMinuteCounter(totalSeconds: Long) {
+
+        MAX_REWARD_LIMIT = (totalSeconds.toInt() / CAPPING.toFloat()).roundToInt()
 
         fun onTimeUp() {
             (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
@@ -711,23 +784,25 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             toggleInActiveHint(false)
             showRewardSummary()
 
-            bgSoundManager?.mPlayer?.setVolume(0.3f, 0.3f)
+            bgSoundManager?.mPlayer?.setVolume(LOW_VOLUME, LOW_VOLUME)
         }
-        //todo Rahul uncomment this
-//        val time = totalSeconds * 1000L
+
+        val time = totalSeconds * 1000L
 
         minuteCountDownTimer = object : CountDownTimer(time, 1000) {
-            override fun onFinish() {}
+            override fun onFinish() {
+                tvProgressCount.text = endTimeMinute
+                progressBarTimer.progress = 100
+                onTimeUp()
+            }
 
             override fun onTick(millisUntilFinished: Long) {
 
-                val seconds = (millisUntilFinished / 1000)
+                var seconds = (millisUntilFinished / 1000f).roundToInt()
                 tvProgressCount.text = "$seconds"
                 progressBarTimer.progress = 100 - (seconds / 60f * 100).toInt()
-                if (seconds == 3L) {
+                if (seconds == 3) {
                     playCountDownSound()
-                } else if (seconds == 0L) {
-                    onTimeUp()
                 }
             }
         }
@@ -741,23 +816,22 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun renderBottomHourTimer(timeLeftSeconds: Long) {
-        fun onTimeUp() {
-            (giftBoxDailyView as GiftBoxTapTapView).glowingAnimator?.end()
-            val anim1 = (giftBoxDailyView as GiftBoxTapTapView).fadeOutGlowingAndFadeInGiftBoxAnimation()
-            anim1.addListener(onEnd = {
-                (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
-            })
-            anim1.start()
-            animateTvTimerAndProgressBar()
-            startOneMinuteCounter(60)
+        hourCountDownTimer?.cancel()
+
+        fun callApiAgain() {
+            viewModel.getGiftBoxHome()
         }
 
-        val time = (timeLeftSeconds + 1) * 1000L
+        val time = (timeLeftSeconds) * 1000L
+
         hourCountDownTimer = object : CountDownTimer(time, 1000) {
-            override fun onFinish() {}
+            override fun onFinish() {
+                tvTimer.text = endTime
+                callApiAgain()
+            }
 
             override fun onTick(millisUntilFinished: Long) {
-                var seconds = millisUntilFinished / 1000
+                var seconds = (millisUntilFinished / 1000f).roundToInt()
                 var minutes = seconds / 60
                 val hour = minutes / 60
                 minutes %= 60
@@ -767,21 +841,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val minuteText = if (minutes < 10) "0$minutes" else minutes.toString()
                 val secondText = if (seconds < 10) "0$seconds" else seconds.toString()
                 tvTimer.text = "${hourText}:${minuteText}:${secondText}"
-
-                if (seconds == 0L) {
-                    onTimeUp()
-                }
             }
         }
-
         hourCountDownTimer?.start()
-
-        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
-        val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(tvTimer, alphaProp)
-        alphaAnim.duration = 500L
-        alphaAnim.start()
-
-        playLoopSound()
     }
 
     fun animateTvTimerAndProgressBar() {
@@ -789,7 +851,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         progressBarTimer.animate().alpha(1f).setStartDelay(300L).setDuration(600L).start()
         tvProgressCount.animate().alpha(1f).setStartDelay(300L).setDuration(600L).start()
     }
-
 
     fun fadeInActiveStateViews() {
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
@@ -814,7 +875,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         fadeOutAnim.addListener(onEnd = {
             lottieTimeUp.cancelAnimation()
             lottieTimeUp.gone()
-            bgSoundManager?.mPlayer?.setVolume(1f, 1f)
+            bgSoundManager?.mPlayer?.setVolume(NORMAL_VOLUME, NORMAL_VOLUME)
         })
         animatorSet.start()
     }
@@ -933,12 +994,13 @@ annotation class BenefitType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(EMPTY, CRACK_UNLIMITED, LOBBY)
+@StringDef(EMPTY, CRACK_UNLIMITED, LOBBY, DEFAULT)
 annotation class TokenUserStateTapTap {
     companion object {
         const val EMPTY = "empty"
         const val CRACK_UNLIMITED = "crackunlimited"
         const val LOBBY = "lobby"
+        const val DEFAULT = "default"
     }
 }
 
