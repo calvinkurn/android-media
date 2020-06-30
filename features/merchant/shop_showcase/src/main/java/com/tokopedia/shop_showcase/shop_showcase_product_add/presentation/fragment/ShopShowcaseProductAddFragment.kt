@@ -75,7 +75,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private var productListFilter = GetProductListFilter()
     private var isLoadNextPage: Boolean = false
-    private var showcaseId: String? = "0"
+    private var showcaseId: String? = ""
     private var showcaseProductListAdapter: ShowcaseProductListAdapter? = null
     private var isActionEdit: Boolean = false
 
@@ -185,6 +185,9 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         arguments?.let {
             isActionEdit = it.getBoolean(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT)
+            if(isActionEdit) {
+                showcaseId = activity?.intent?.getStringExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID)
+            }
         }
     }
 
@@ -349,7 +352,6 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     private fun getProductList(filter: GetProductListFilter) {
         isLoadNextPage = false
         searchBar?.clearFocus()
-        showcaseId = activity?.intent?.getStringExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID)
         productListFilter.fmenuExclude = showcaseId
         showcaseProductAddViewModel.getProductList(filter, false)
     }
