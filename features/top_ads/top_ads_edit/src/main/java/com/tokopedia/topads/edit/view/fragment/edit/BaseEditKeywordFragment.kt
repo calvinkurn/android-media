@@ -97,7 +97,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     fun sendData(): HashMap<String, Any?> {
         val dataMap = HashMap<String, Any?>()
-        val fragments = (view_pager?.adapter as KeywordEditPagerAdapter)?.list
+        val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
         var dataNegativeAdded: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var dataNegativeDeleted: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var deletedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
