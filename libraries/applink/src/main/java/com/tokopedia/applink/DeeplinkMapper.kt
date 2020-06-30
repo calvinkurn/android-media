@@ -64,6 +64,7 @@ import java.lang.Exception
 object DeeplinkMapper {
 
     val TOKOPOINTS = "tokopoints"
+    val LOCK = Any()
 
     /**
      * Get registered deeplink navigation in manifest
@@ -336,21 +337,23 @@ object DeeplinkMapper {
      */
     private fun getRegisteredNavigationFromTokopedia(context: Context, uri: Uri, deeplink: String): String {
         var trimDeeplink: String? = null // deeplink without query and /, needed for exact matching
-        deeplinkPatternTokopediaSchemeList.forEachIndexed { index, it ->
-            val isMatch: Boolean
-            if (it.needTrimBeforeLogicRun) {
-                if (trimDeeplink == null) {
-                    trimDeeplink = trimDeeplink(uri, deeplink)
+        synchronized(LOCK) {
+            deeplinkPatternTokopediaSchemeList.forEachIndexed { index, it ->
+                val isMatch: Boolean
+                if (it.needTrimBeforeLogicRun) {
+                    if (trimDeeplink == null) {
+                        trimDeeplink = trimDeeplink(uri, deeplink)
+                    }
+                    isMatch = it.logic(context, uri, trimDeeplink!!)
+                } else {
+                    isMatch = it.logic(context, uri, deeplink)
                 }
-                isMatch = it.logic(context, uri, trimDeeplink!!)
-            } else {
-                isMatch = it.logic(context, uri, deeplink)
-            }
-            if (isMatch) {
-                val target = it.targetDeeplink(context, uri, deeplink)
-                if (target.isNotEmpty()) {
-                    putToTop(index)
-                    return target
+                if (isMatch) {
+                    val target = it.targetDeeplink(context, uri, deeplink)
+                    if (target.isNotEmpty()) {
+                        putToTop(index)
+                        return target
+                    }
                 }
             }
         }
