@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.suggestion
+package com.tokopedia.autocomplete.suggestion.topshop
 
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
 

@@ -1,8 +1,8 @@
-package com.tokopedia.autocomplete.suggestion
+package com.tokopedia.autocomplete.suggestion.domain.usecase
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.autocomplete.suggestion.data.SuggestionUniverse
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocomplete.util.UrlParamHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse

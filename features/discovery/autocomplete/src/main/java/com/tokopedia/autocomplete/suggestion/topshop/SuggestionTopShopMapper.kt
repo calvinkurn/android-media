@@ -1,19 +1,19 @@
 package com.tokopedia.autocomplete.suggestion.topshop
 
-import com.tokopedia.autocomplete.suggestion.SuggestionItem
-import com.tokopedia.autocomplete.suggestion.SuggestionTopShop
-import com.tokopedia.autocomplete.suggestion.SuggestionTopShopProduct
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionTopShop
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionTopShopProduct
 
-fun SuggestionItem.convertSuggestionItemToTopShopWidgetVisitableList(position: Int, listTopShop: List<SuggestionTopShop>): SuggestionTopShopWidgetViewModel {
+fun SuggestionItem.convertToTopShopWidgetVisitableList(position: Int, listTopShop: List<SuggestionTopShop>): SuggestionTopShopWidgetViewModel {
     return SuggestionTopShopWidgetViewModel(
             template = template,
             title = title,
             position = position,
-            listSuggestionTopShopCard = listTopShop.convertSuggestionTopShopToTopShopCardViewModel()
+            listSuggestionTopShopCard = listTopShop.convertToTopShopCardViewModel()
     )
 }
 
-fun List<SuggestionTopShop>.convertSuggestionTopShopToTopShopCardViewModel(): List<SuggestionTopShopCardViewModel> {
+fun List<SuggestionTopShop>.convertToTopShopCardViewModel(): List<SuggestionTopShopCardViewModel> {
     val list = mutableListOf<SuggestionTopShopCardViewModel>()
     for (item in this) {
         val model = SuggestionTopShopCardViewModel(
@@ -27,14 +27,14 @@ fun List<SuggestionTopShop>.convertSuggestionTopShopToTopShopCardViewModel(): Li
             iconSubtitle = item.iconSubtitle,
             urlTracker = item.urlTracker,
             imageUrl = item.imageUrl,
-            products = item.topShopProducts.convertSuggestionTopShopProductToTopShopProductViewModel()
+            products = item.topShopProducts.convertToTopShopProductViewModel()
         )
         list.add(model)
     }
     return list
 }
 
-fun List<SuggestionTopShopProduct>.convertSuggestionTopShopProductToTopShopProductViewModel(): List<SuggestionTopShopCardViewModel.SuggestionTopShopProductViewModel> {
+fun List<SuggestionTopShopProduct>.convertToTopShopProductViewModel(): List<SuggestionTopShopCardViewModel.SuggestionTopShopProductViewModel> {
     val list = mutableListOf<SuggestionTopShopCardViewModel.SuggestionTopShopProductViewModel>()
     for (item in this) {
         val product = SuggestionTopShopCardViewModel.SuggestionTopShopProductViewModel(

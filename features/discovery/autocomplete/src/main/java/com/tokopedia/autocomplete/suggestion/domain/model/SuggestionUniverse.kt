@@ -1,8 +1,6 @@
-package com.tokopedia.autocomplete.suggestion.data
+package com.tokopedia.autocomplete.suggestion.domain.model
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.autocomplete.suggestion.SuggestionData
-import com.tokopedia.autocomplete.suggestion.SuggestionTopShop
 
 data class SuggestionUniverse(
         @SerializedName("data")

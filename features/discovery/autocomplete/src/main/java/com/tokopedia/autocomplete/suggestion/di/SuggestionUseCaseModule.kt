@@ -3,9 +3,9 @@ package com.tokopedia.autocomplete.suggestion.di
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.suggestion.SuggestionUseCase
-import com.tokopedia.autocomplete.suggestion.data.SuggestionResponse
-import com.tokopedia.autocomplete.suggestion.data.SuggestionUniverse
+import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionUseCase
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionResponse
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase

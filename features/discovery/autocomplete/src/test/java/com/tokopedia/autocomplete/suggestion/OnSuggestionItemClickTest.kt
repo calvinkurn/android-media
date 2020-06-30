@@ -1,16 +1,11 @@
 package com.tokopedia.autocomplete.suggestion
 
-import com.tokopedia.autocomplete.suggestion.data.SuggestionUniverse
-import com.tokopedia.autocomplete.suggestion.testinstance.suggestionTopShopResponse
+import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionTrackerUseCase
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import org.junit.Before
 import org.junit.Test
-import rx.Subscriber
 
 internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
@@ -27,7 +22,6 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
     private val position = 1
     private val title = "Samsung"
     private val campaignCode = "123"
-    private val keywordTopShop = "ps4"
 
     @Test
     fun `test click suggestion item`() {
@@ -56,12 +50,6 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         }
 
         confirmVerified(suggestionView)
-    }
-
-    private fun SuggestionContract.View.onClickSuggestion(applink: String) {
-        dropKeyBoard()
-        route(applink, suggestionPresenter.getSearchParameter())
-        finish()
     }
 
     private fun `then verify url tracker is hit`() {
@@ -251,71 +239,6 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         verify {
             suggestionView.trackEventClickRecentKeyword(expectedEventLabel)
             suggestionView.onClickSuggestion(item.applink)
-        }
-
-        confirmVerified(suggestionView)
-    }
-
-    @Test
-    fun `test click top shop card`() {
-        val searchParameter : Map<String, String> = mutableMapOf<String, String>().also {
-            it[SearchApiConst.Q] = "ps4"
-        }
-
-        val card = SuggestionTopShopCardViewModel(
-                type = "top_shop",
-                id = "428718",
-                applink = "tokopedia://shop/428718/etalase/all?keyword=ps4",
-                urlTracker = "https://ace-staging.tokopedia.com/tracker/v1?id=428718&user_id=0&device=&unique_id=d41d8cd98f00b204e9800998ecf8427e&type=shop"
-        )
-
-        `given search param keyword is ps4`(searchParameter as HashMap<String, String>)
-        `when suggestion top shop card clicked` (card)
-        `then verify view tracking click top shop card is correct`(card)
-    }
-
-    private fun `given search param keyword is ps4`(searchParameter: HashMap<String, String>) {
-        suggestionPresenter.setSearchParameter(searchParameter)
-    }
-
-    private fun `when suggestion top shop card clicked`(card: SuggestionTopShopCardViewModel) {
-        suggestionPresenter.onTopShopCardClicked(card)
-    }
-
-    private fun `then verify view tracking click top shop card is correct`(card: SuggestionTopShopCardViewModel) {
-        val expectedEventLabel = "${card.id} - keyword: $keywordTopShop"
-
-        verify {
-            suggestionView.trackEventClickTopShopCard(expectedEventLabel)
-            suggestionView.onClickSuggestion(card.applink)
-        }
-
-        confirmVerified(suggestionView)
-    }
-
-    @Test
-    fun `test click top shop see more`() {
-        val searchParameter : Map<String, String> = mutableMapOf<String, String>().also {
-            it[SearchApiConst.Q] = "ps4"
-        }
-
-        val card = SuggestionTopShopCardViewModel(
-                type = "top_shop_all",
-                applink = "tokopedia://search?q=ps4&st=shop"
-        )
-
-        `given search param keyword is ps4`(searchParameter as HashMap<String, String>)
-        `when suggestion top shop card clicked` (card)
-        `then verify url tracker is not hit`()
-        `then verify view tracking click top shop see more is correct`(card)
-    }
-
-    private fun `then verify view tracking click top shop see more is correct`(card: SuggestionTopShopCardViewModel) {
-        val expectedEventLabel = "keyword: $keywordTopShop"
-
-        verify {
-            suggestionView.trackEventClickTopShopSeeMore(expectedEventLabel)
-            suggestionView.onClickSuggestion(card.applink)
         }
 
         confirmVerified(suggestionView)

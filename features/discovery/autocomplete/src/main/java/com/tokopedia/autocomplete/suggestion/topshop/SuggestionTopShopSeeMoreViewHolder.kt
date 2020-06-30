@@ -3,7 +3,6 @@ package com.tokopedia.autocomplete.suggestion.topshop
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.suggestion.SuggestionTopShopListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.suggestion_top_shop_see_more_layout.view.*
 

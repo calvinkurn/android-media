@@ -1,7 +1,6 @@
 package com.tokopedia.autocomplete.analytics;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch;

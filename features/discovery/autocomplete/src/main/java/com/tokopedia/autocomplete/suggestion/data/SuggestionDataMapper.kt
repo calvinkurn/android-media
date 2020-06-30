@@ -1,5 +1,7 @@
 package com.tokopedia.autocomplete.suggestion.data
 
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionResponse
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.functions.Func1
 

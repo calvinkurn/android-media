@@ -9,6 +9,7 @@ import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineView
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewHolder
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewModel
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetViewHolder
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetViewModel
 

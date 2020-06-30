@@ -2,12 +2,16 @@ package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.autocomplete.suggestion.data.SuggestionUniverse
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionTopShop
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
+import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionTrackerUseCase
+import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionUseCase
 import com.tokopedia.autocomplete.suggestion.doubleline.convertSuggestionItemToDoubleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.singleline.convertSuggestionItemToSingleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
-import com.tokopedia.autocomplete.suggestion.topshop.convertSuggestionItemToTopShopWidgetVisitableList
+import com.tokopedia.autocomplete.suggestion.topshop.convertToTopShopWidgetVisitableList
 import com.tokopedia.autocomplete.util.getProfileIdFromApplink
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -128,7 +132,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         if (listTopShop.size > 1) {
             typePosition.incrementPosition(item.type)
             typePosition[item.type]?.let {
-                item.convertSuggestionItemToTopShopWidgetVisitableList(position = it, listTopShop = listTopShop)
+                item.convertToTopShopWidgetVisitableList(position = it, listTopShop = listTopShop)
             }?.let {
                 listVisitable.add(
                         it

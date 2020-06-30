@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.suggestion.SuggestionTopShopListener
 import com.tokopedia.autocomplete.util.getHorizontalShadowOffset
 import com.tokopedia.autocomplete.util.getVerticalShadowOffset
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction

@@ -1,10 +1,9 @@
 package com.tokopedia.autocomplete.suggestion
 
-import com.tokopedia.autocomplete.suggestion.data.SuggestionUniverse
+import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewModel
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
-import com.tokopedia.autocomplete.suggestion.testinstance.suggestionCommonResponse
-import com.tokopedia.autocomplete.suggestion.testinstance.suggestionTopShopResponse
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewModel
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetViewModel
 import io.mockk.confirmVerified
@@ -14,11 +13,15 @@ import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
 
+private const val suggestionCommonResponse = "autocomplete/suggestion/suggestion-common-response.json"
+private const val suggestionTopShopResponse = "autocomplete/suggestion/suggestion-top-shop-response.json"
+
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
     @Test
     fun `test get suggestion data`() {
-        `given suggestion use case capture request params`()
+        val suggestionUniverse = suggestionCommonResponse.jsonToObject<SuggestionUniverse>()
+        `given suggestion use case capture request params`(suggestionUniverse)
 
         `when presenter get suggestion data (search)`()
 
@@ -27,10 +30,10 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `then verify visitable list`()
     }
 
-    private fun `given suggestion use case capture request params`() {
+    private fun `given suggestion use case capture request params`(suggestionUniverse: SuggestionUniverse) {
         every { getSuggestionUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<SuggestionUniverse>>().onStart()
-            secondArg<Subscriber<SuggestionUniverse>>().onNext(suggestionCommonResponse)
+            secondArg<Subscriber<SuggestionUniverse>>().onNext(suggestionUniverse)
         }
     }
 
@@ -83,7 +86,8 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
     @Test
     fun `test get suggestion data with top shop`() {
-        `given suggestion use case capture request params with top shop`()
+        val suggestionUniverse = suggestionTopShopResponse.jsonToObject<SuggestionUniverse>()
+        `given suggestion use case capture request params with top shop`(suggestionUniverse)
 
         `when presenter get suggestion data (search)`()
 
@@ -92,10 +96,10 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `then verify visitable list with top shop`()
     }
 
-    private fun `given suggestion use case capture request params with top shop`() {
+    private fun `given suggestion use case capture request params with top shop`(suggestionUniverse: SuggestionUniverse) {
         every { getSuggestionUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<SuggestionUniverse>>().onStart()
-            secondArg<Subscriber<SuggestionUniverse>>().onNext(suggestionTopShopResponse)
+            secondArg<Subscriber<SuggestionUniverse>>().onNext(suggestionUniverse)
         }
     }
 

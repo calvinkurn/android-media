@@ -2,7 +2,7 @@ package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.initialstate.TestException
-import com.tokopedia.autocomplete.suggestion.data.SuggestionUniverse
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -32,5 +32,11 @@ internal open class SuggestionPresenterTestFixtures {
         suggestionPresenter.getSuggestionUseCase = getSuggestionUseCase
         suggestionPresenter.suggestionTrackerUseCase = suggestionTrackerUseCase
         suggestionPresenter.userSession = userSession
+    }
+
+    fun SuggestionContract.View.onClickSuggestion(applink: String) {
+        dropKeyBoard()
+        route(applink, suggestionPresenter.getSearchParameter())
+        finish()
     }
 }

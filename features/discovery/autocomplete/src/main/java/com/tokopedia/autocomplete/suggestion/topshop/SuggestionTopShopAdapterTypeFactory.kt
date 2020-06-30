@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocomplete.suggestion.SUGGESTION_TOP_SHOP
 import com.tokopedia.autocomplete.suggestion.SUGGESTION_TOP_SHOP_SEE_MORE
-import com.tokopedia.autocomplete.suggestion.SuggestionTopShopListener
 
 class SuggestionTopShopAdapterTypeFactory(
         private val suggestionTopShopListener: SuggestionTopShopListener

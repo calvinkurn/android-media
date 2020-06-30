@@ -19,6 +19,7 @@ import com.tokopedia.autocomplete.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionContextModule
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_suggestion.*
