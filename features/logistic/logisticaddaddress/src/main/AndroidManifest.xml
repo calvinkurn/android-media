@@ -25,11 +25,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".features.manage.ManagePeopleAddressActivity"
-            android:label="@string/title_activity_manage_people_address"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".features.addnewaddress.pinpoint.PinpointMapActivity"
             android:exported="true"
             android:screenOrientation="portrait"
@@ -89,9 +84,6 @@
         </activity>
 
 
-        <service
-            android:name=".service.ManagePeopleAddressService"
-            android:exported="false" />
     </application>
 
 </manifest>
