@@ -27,7 +27,7 @@ abstract class ProductItemViewHolder(
                 formattedPrice = price,
                 priceRange = priceRange ?: "",
                 shopBadgeList = badgesList.toProductCardModelShopBadges(),
-                shopLocation = if (shopCity.isNotEmpty()) shopCity else shopName,
+                shopLocation = shopCity,
                 ratingCount = rating.toRatingCount(isTopAds),
                 reviewCount = countReview,
                 freeOngkir = freeOngkirViewModel.toProductCardModelFreeOngkir(),
