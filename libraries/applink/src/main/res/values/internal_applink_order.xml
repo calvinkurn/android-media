@@ -22,6 +22,7 @@
     <string name="path_retur" translatable="false">/retur</string>
     <string name="path_complaint" translatable="false">/complaint</string>
     <string name="path_finished" translatable="false">/finished</string>
-
     <string name="path_invoice" translatable="false">/invoice</string>
+
+    <string name="path_order_unified" translatable="false">/order-unified</string>
 </resources>

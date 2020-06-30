@@ -453,4 +453,7 @@ Anda di sini.</string>
     <string name="tulis_alasan">Tulis alasan...</string>
     <string name="ask_2_lainnya">Kendala apa yang kamu alami?</string>
     <string name="icon_placeholder">Icon</string>
+
+    <string name="hint_cari_transaksi">Cari transaksi</string>
+    <string name="title_uoh_list">Daftar Transaksi</string>
 </resources>
