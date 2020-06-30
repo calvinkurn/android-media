@@ -9,9 +9,9 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingCo
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.SELLER_MIGRATION_PRODUCT_IMAGE_LINK
 import com.tokopedia.user.session.UserSession
 
-class SellerMigrationProductBottomSheet(titles: List<String>,
-                                        contents: List<String>,
-                                        images: ArrayList<String>)
+class SellerMigrationProductBottomSheet(titles: List<String> = emptyList(),
+                                        contents: List<String> = emptyList(),
+                                        images: ArrayList<String> = arrayListOf())
     : SellerMigrationBottomSheet(titles, contents, images) {
 
     companion object {
