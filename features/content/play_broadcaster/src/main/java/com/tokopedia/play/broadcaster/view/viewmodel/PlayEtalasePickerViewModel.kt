@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
+import com.tokopedia.play.broadcaster.error.EventException
 import com.tokopedia.play.broadcaster.error.SelectForbiddenException
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
@@ -15,6 +16,7 @@ import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
+import com.tokopedia.play.broadcaster.ui.model.result.map
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
@@ -111,9 +113,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
     fun uploadProduct(channelId: String) {
         _observableUploadProductEvent.value = NetworkResult.Loading
         scope.launch {
-            val result = setupDataStore.uploadSelectedProducts(channelId)
-                if (result is NetworkResult.Success) _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
-                else if (result is NetworkResult.Fail) _observableUploadProductEvent.value = result
+            val result = setupDataStore.uploadSelectedProducts(channelId).map { Event(Unit) }
+            _observableUploadProductEvent.value =
+                    if (result is NetworkResult.Fail) NetworkResult.Fail(EventException(result.error))
+                    else result
         }
     }
 

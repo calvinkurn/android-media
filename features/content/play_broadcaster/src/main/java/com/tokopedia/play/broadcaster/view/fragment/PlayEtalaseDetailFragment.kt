@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.productEtalaseEmpty
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
@@ -259,7 +260,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 NetworkResult.Loading -> bottomActionView.setLoading(true)
                 is NetworkResult.Fail -> {
                     bottomActionView.setLoading(false)
-                    Toaster.make(requireView(), it.error.localizedMessage)
+                    it.error.localizedMessage?.let {
+                        errMessage -> requireView().showToaster(errMessage, type = Toaster.TYPE_ERROR)
+                    }
                 }
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
