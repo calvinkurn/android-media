@@ -8,7 +8,6 @@ import android.text.style.StyleSpan
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -125,7 +124,7 @@ object PlayBroadcastUiMapper {
     }
 
     fun mapConfiguration(config: Config): ConfigurationUiModel {
-        val channelStatus = PlayChannelStatus.getChannelStatus(
+        val channelStatus = ChannelType.getChannelType(
                 config.activeLiveChannel,
                 config.pausedChannel,
                 config.draftChannel
@@ -133,7 +132,7 @@ object PlayBroadcastUiMapper {
         return ConfigurationUiModel(
                 streamAllowed = config.streamAllowed,
                 channelId = channelStatus.first,
-                channelStatus =  channelStatus.second,
+                channelType =  channelStatus.second,
                 durationConfig = DurationConfigUiModel(
                         duration = config.maxDuration,
                         pauseDuration = config.maxPauseDuration,

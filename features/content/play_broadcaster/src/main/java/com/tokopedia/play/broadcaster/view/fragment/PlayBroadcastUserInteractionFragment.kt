@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
@@ -48,6 +51,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var ivProductTag: AppCompatImageView
     private lateinit var pmvMetrics: PlayMetricsView
     private lateinit var countdownTimer: PlayTimerCountDown
+    private lateinit var loadingView: FrameLayout
 
     private lateinit var chatListView: ChatListPartialView
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
@@ -91,6 +95,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ivProductTag = view.findViewById(R.id.iv_product_tag)
         pmvMetrics = view.findViewById(R.id.pmv_metrics)
         countdownTimer = view.findViewById(R.id.countdown_timer)
+        loadingView = view.findViewById(R.id.loading_view)
 
         chatListView = ChatListPartialView(view as ViewGroup)
     }
@@ -104,8 +109,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupContent() {
-        arguments?.getString(KEY_INGEST_URL)?.run {
-            if (this.isNotEmpty()) startCountDown(this)
+        val ingestUrl = arguments?.getString(KEY_INGEST_URL)
+        if (ingestUrl != null && ingestUrl.isNotEmpty()) {
+            startCountDown(ingestUrl)
+        } else {
+            parentViewModel.fetchChannelData()
         }
     }
 
@@ -354,8 +362,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeChannelInfo() {
         parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is NetworkResult.Success -> handleChannelInfo(it.data)
-                is NetworkResult.Fail -> requireView().showToaster(it.error.localizedMessage)
+                is NetworkResult.Loading -> loadingView.show()
+                is NetworkResult.Success -> {
+                    loadingView.hide()
+                    handleChannelInfo(it.data)
+                }
+                is NetworkResult.Fail -> {
+                    loadingView.hide()
+                    requireView().showToaster(
+                            message = it.error.localizedMessage,
+                            type = Toaster.TYPE_ERROR,
+                            duration = Toaster.LENGTH_INDEFINITE
+                    )
+                }
             }
         })
     }
