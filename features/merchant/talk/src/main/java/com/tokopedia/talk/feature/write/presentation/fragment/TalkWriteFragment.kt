@@ -85,7 +85,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         initView()
         initRecycleView()
-        initQuestionTextField()
         initTnC()
         showLoading()
     }
@@ -130,24 +129,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
         }
-    }
-
-    private fun initQuestionTextField() {
-        writeQuestionTextArea.textAreaInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                s?.let {
-                    viewModel.updateIsTextEmpty(it.isNotEmpty())
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // No op
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // No op
-            }
-        })
     }
 
     private fun initTnC() {
@@ -236,7 +217,30 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     private fun setMaxCharsLimit(limit: Int) {
-        writeQuestionTextArea.textAreaCounter = limit
+        writeQuestionTextArea.apply {
+            textAreaCounter = limit
+            textAreaInput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    s?.let {
+                        viewModel.updateIsTextEmpty(it.isNotEmpty())
+                        isError = s.length == limit
+                        textAreaMessage = if(isError) {
+                            getString(R.string.write_question_error_message)
+                        } else {
+                            ""
+                        }
+                    }
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // No op
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // No op
+                }
+            })
+        }
     }
 
     private fun showErrorToaster() {
