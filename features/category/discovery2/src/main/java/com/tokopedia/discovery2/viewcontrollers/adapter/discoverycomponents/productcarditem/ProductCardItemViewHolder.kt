@@ -5,8 +5,8 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -53,7 +53,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
     private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
-    private var stokHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
+    private var stockHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
@@ -134,22 +134,23 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         setPDPView(dataItem)
         showInterestedView(dataItem)
         showNotifyMe(dataItem)
-
     }
 
     private fun showProductsStockHabis(productStock: String?) {
-        if (productStock.toIntOrZero() > 0) {
-            stokHabisLabel.hide()
+        if (productStock.isNullOrEmpty()) {
+            hideStockText(productStock)
         } else {
-            stokHabisLabel.show()
+            if (productStock.toIntOrZero() > 0) {
+                stockHabisLabel.hide()
+            } else {
+                stockHabisLabel.show()
+            }
         }
     }
 
-    private fun showSaleProductStockHabis(productStock: String?) {
-        if (productStock.toIntOrZero() == 100) {
-            stokHabisLabel.show()
-        } else {
-            stokHabisLabel.hide()
+    private fun hideStockText(stockData: String?) {
+        if (stockData.isNullOrEmpty()) {
+            stockHabisLabel.hide()
         }
     }
 
@@ -294,7 +295,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun setRating(rating : String, countReview : String?) {
+    private fun setRating(rating: String, countReview: String?) {
         val rating = rating.toIntOrZero()
         if (rating in 1..5) {
             for (r in 0 until rating) {
@@ -347,6 +348,18 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
         productCardItemViewModel.sendTopAdsView()
+    }
+
+    private fun showSaleProductStockHabis(productStock: String?) {
+        if (productStock.isNullOrEmpty()) {
+            hideStockText(productStock)
+        } else {
+            if (productStock.toIntOrZero() == 100) {
+                stockHabisLabel.show()
+            } else {
+                stockHabisLabel.hide()
+            }
+        }
     }
 }
 
