@@ -56,6 +56,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
+import kotlin.math.ceil
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
@@ -95,7 +96,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     val CONTAINER_INACTIVE = 2
     val SERVER_LIMIT_REACHED = "47004"
     val STATUS_OK = "200"
-    var clientLimitReached = false
+    var MAX_REWARD_LIMIT = -1
+    val CAPPING = 3
+    var clientLimitReached = MAX_REWARD_LIMIT == benefitItems.size
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -421,14 +424,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         })
     }
 
-    fun maxLimitReachedServer() {
-
-    }
-
-    fun maxLimitReachedClient() {
-
-    }
-
     fun toggleInActiveHint(show: Boolean) {
         tvTapHint.animate().alpha(if (show) 1f else 0f).setDuration(300L).start()
     }
@@ -540,18 +535,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
-    private fun onImageLoadingFailed(@TokenUserStateTapTap state: String) {
-//        hideLoader()
-//        renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
-//        hourCountDownTimer?.cancel()
-//        minuteCountDownTimer?.cancel()
-//        stopBgSound()
-//        tvTimer.alpha = 0f
-//        progressBarTimer.alpha = 0f
-//        tvProgressCount.alpha = 0f
-//        getTapTapView().fmGiftBox.setOnClickListener(null)
-    }
-
     private fun loadInactiveContainer() {
         viewFlipper.displayedChild = CONTAINER_INACTIVE
         loader.visibility = View.GONE
@@ -597,7 +580,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun crackGiftBox() {
-        viewModel.crackGiftBox()
+        if (!clientLimitReached)
+            viewModel.crackGiftBox()
     }
 
     private fun renderGiftBoxOpenError(message: String, actionText: String) {
@@ -624,17 +608,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun afterRewardAnimationEnds() {
-        if (clientLimitReached) {
-            minuteCountDownTimer?.cancel()
-            minuteTimerState = FINISHED
-            rewardSummary.visibility = View.VISIBLE
-            toggleInActiveHint(false)
-            dimBackground()
-            showRewardSummary()
-        } else {
-            (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
-        }
+    private fun afterRewardAnimationEnds() {
+        (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
     }
 
     override fun initialViewSetup() {
@@ -725,6 +700,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     fun startOneMinuteCounter(totalSeconds: Long) {
+        val time = (5 + 1) * 1000L
+        MAX_REWARD_LIMIT = ceil(5.toInt() / CAPPING.toFloat()).toInt()
 
         fun onTimeUp() {
             (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
@@ -741,7 +718,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
         //todo Rahul uncomment this
 //        val time = totalSeconds * 1000L
-        val time = (5 + 1) * 1000L
+
         minuteCountDownTimer = object : CountDownTimer(time, 1000) {
             override fun onFinish() {}
 
