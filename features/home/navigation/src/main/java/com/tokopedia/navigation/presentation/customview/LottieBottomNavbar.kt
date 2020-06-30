@@ -3,7 +3,6 @@ package com.tokopedia.navigation.presentation.customview
 import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Handler
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -16,8 +15,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieListener
 import com.tokopedia.navigation.R
 
 private const val DEFAULT_HEIGHT = 56f
@@ -25,6 +22,7 @@ private const val DEFAULT_ICON_PADDING = 2
 private const val DEFAULT_TEXT_SIZE = 10f
 
 class LottieBottomNavbar : LinearLayout {
+    private val badgeTextViewList: MutableList<TextView>? = mutableListOf()
     private var emptyBadgeLayoutParam: FrameLayout.LayoutParams? = null
     private var badgeLayoutParam: FrameLayout.LayoutParams? = null
     private var menu: MutableList<BottomMenu> = ArrayList()
@@ -90,6 +88,39 @@ class LottieBottomNavbar : LinearLayout {
 
         badgeText?.bringToFront()
         badgeText?.visibility = visibility
+    }
+
+    private fun adjustBadgePosition() {
+        val itemWidthSize = containerWidth/menu.size
+        val badgeRightMargin = itemWidthSize/4
+
+        badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+        badgeLayoutParam?.gravity = Gravity.END
+        badgeLayoutParam?.setMargins(
+                resources.getDimensionPixelOffset(R.dimen.dp_0),
+                resources.getDimensionPixelOffset(R.dimen.dp_1),
+                badgeRightMargin,
+                resources.getDimensionPixelOffset(R.dimen.dp_1)
+        )
+
+        emptyBadgeLayoutParam = FrameLayout.LayoutParams(
+                resources.getDimensionPixelOffset(R.dimen.dp_12),
+                resources.getDimensionPixelOffset(R.dimen.dp_12))
+        emptyBadgeLayoutParam?.gravity = Gravity.END
+        emptyBadgeLayoutParam?.setMargins(
+                resources.getDimensionPixelOffset(R.dimen.dp_0),
+                resources.getDimensionPixelOffset(R.dimen.dp_1),
+                badgeRightMargin,
+                resources.getDimensionPixelOffset(R.dimen.dp_1)
+        )
+
+        badgeTextViewList?.forEach {
+            if (it.text == "") {
+                it.layoutParams = emptyBadgeLayoutParam
+            } else {
+                it.layoutParams = badgeLayoutParam
+            }
+        }
     }
 
     private fun resizeContainer() {
@@ -257,6 +288,7 @@ class LottieBottomNavbar : LinearLayout {
                         .inflate(R.layout.badge_layout, imageContainer, false)
                 badge.layoutParams = badgeLayoutParam
                 val badgeTextView = badge.findViewById<TextView>(R.id.notification_badge)
+                badgeTextViewList?.add(badgeTextView)
                 badgeTextView.tag = context.getString(R.string.tag_badge_textview)+bottomMenu.id.toString()
                 badgeTextView.visibility = View.INVISIBLE
                 imageContainer.addView(badge)
