@@ -26,9 +26,13 @@ class OrderSearchViewHolder(private val view: View,
     override fun bind(element: SellerSearchUiModel) {
         with(view) {
             if(element.hasMore) {
-                tvMoreResultOrder?.show()
-                tvMoreResultOrder?.text = element.actionTitle.orEmpty()
-                orderSearchListener.onOrderMoreClicked(element, adapterPosition)
+                tvMoreResultOrder?.apply {
+                    show()
+                    text = element.actionTitle.orEmpty()
+                    setOnClickListener {
+                        orderSearchListener.onOrderMoreClicked(element, adapterPosition)
+                    }
+                }
             }
             tvTitleResultOrder?.text = element.title
             rvResultOrder?.apply {

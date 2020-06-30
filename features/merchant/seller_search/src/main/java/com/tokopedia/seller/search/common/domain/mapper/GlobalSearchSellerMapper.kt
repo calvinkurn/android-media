@@ -1,4 +1,4 @@
-package com.tokopedia.seller.search.common.util.mapper
+package com.tokopedia.seller.search.common.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.common.data.SellerSearchResponse
@@ -44,6 +44,7 @@ object GlobalSearchSellerMapper {
                         count = sellerSearch.data.count.orZero(),
                         actionTitle = it.action_title,
                         actionLink = it.action_link,
+                        appActionLink = it.app_action_link,
                         titleList = titleList,
                         sellerSearchList = searchSellerList
                 ))

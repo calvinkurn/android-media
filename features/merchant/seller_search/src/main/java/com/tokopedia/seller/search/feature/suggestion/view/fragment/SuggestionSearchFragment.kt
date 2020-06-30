@@ -168,7 +168,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     }
 
     override fun onOrderMoreClicked(element: SellerSearchUiModel, position: Int) {
-        startActivityFromAutoComplete(element.actionLink.orEmpty())
+        startActivityFromAutoComplete(element.appActionLink.orEmpty())
         SellerSearchTracking.clickOrderFilterEvent(userId)
         dropKeyBoard()
     }
@@ -181,7 +181,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     }
 
     override fun onProductMoreClicked(element: SellerSearchUiModel, position: Int) {
-        startActivityFromAutoComplete(element.actionLink.orEmpty())
+        startActivityFromAutoComplete(element.appActionLink.orEmpty())
         SellerSearchTracking.clickProductFilterEvent(userId)
         dropKeyBoard()
     }
@@ -200,7 +200,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     }
 
     override fun onFaqMoreClicked(element: SellerSearchUiModel, position: Int) {
-        startActivityFromAutoComplete(element.actionLink.orEmpty())
+        startActivityFromAutoComplete(element.appActionLink.orEmpty())
         dropKeyBoard()
     }
 

@@ -24,9 +24,13 @@ class FaqSearchViewHolder(private val view: View,
     override fun bind(element: SellerSearchUiModel) {
         with(view) {
             if(element.hasMore) {
-                tvMoreResultFaq?.show()
-                tvMoreResultFaq?.text = element.actionTitle.orEmpty()
-                faqSearchListener.onFaqMoreClicked(element, adapterPosition)
+                tvMoreResultFaq?.apply {
+                    show()
+                    text = element.actionTitle.orEmpty()
+                    setOnClickListener {
+                        faqSearchListener.onFaqMoreClicked(element, adapterPosition)
+                    }
+                }
             }
             tvTitleResultFaq?.text = element.title
             rvResultFaq?.apply {

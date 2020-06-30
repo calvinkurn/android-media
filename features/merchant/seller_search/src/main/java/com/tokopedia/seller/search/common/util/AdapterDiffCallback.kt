@@ -1,4 +1,4 @@
-package com.tokopedia.seller.search.common.util.mapper
+package com.tokopedia.seller.search.common.util
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.seller.search.R
-import com.tokopedia.seller.search.common.util.mapper.AdapterDiffCallback
+import com.tokopedia.seller.search.common.util.AdapterDiffCallback
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
 

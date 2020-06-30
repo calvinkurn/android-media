@@ -10,6 +10,7 @@ data class SellerSearchUiModel(
         val count: Int? = 0,
         val actionTitle: String? = "",
         val actionLink: String? = "",
+        val appActionLink: String? = "",
         val titleList: List<String> = listOf(),
         val sellerSearchList: List<ItemSellerSearchUiModel> = listOf()
 ): BaseSuggestionSearchSeller {

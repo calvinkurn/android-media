@@ -26,9 +26,13 @@ class ProductSearchViewHolder(private val view: View,
     override fun bind(element: SellerSearchUiModel) {
         with(view) {
             if(element.hasMore) {
-                tvMoreResultProduct?.show()
-                tvMoreResultProduct?.text = element.actionTitle.orEmpty()
-                productSearchListener.onProductMoreClicked(element, adapterPosition)
+                tvMoreResultProduct?.apply {
+                    show()
+                    text = element.actionTitle.orEmpty()
+                    setOnClickListener {
+                        productSearchListener.onProductMoreClicked(element, adapterPosition)
+                    }
+                }
             }
             tvTitleResultProduct?.text = element.title
             rvResultProduct?.apply {

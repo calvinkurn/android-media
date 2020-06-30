@@ -32,6 +32,9 @@ data class SellerSearchResponse(
                     @SerializedName("action_title")
                     val action_title: String? = "",
                     @Expose
+                    @SerializedName("app_action_link")
+                    val app_action_link: String? = "",
+                    @Expose
                     @SerializedName("has_more")
                     val has_more: Boolean? = false,
                     @Expose
