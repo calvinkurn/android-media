@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUCT
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.ProductSearchListener
@@ -23,22 +24,25 @@ class ProductSearchViewHolder(private val view: View,
     private val adapterProduct by lazy { ItemProductSearchAdapter(productSearchListener) }
 
     override fun bind(element: SellerSearchUiModel) {
-        view.apply {
+        with(view) {
+            if(element.hasMore) {
+                tvMoreResultProduct?.show()
+                tvMoreResultProduct?.text = element.actionTitle.orEmpty()
+                productSearchListener.onProductMoreClicked(element, adapterPosition)
+            }
             tvTitleResultProduct?.text = element.title
             rvResultProduct?.apply {
                 layoutManager = LinearLayoutManager(view.context)
                 adapter = adapterProduct
             }
-        }
-
-        if (adapterPosition == element.count.orZero() - 1) {
-            view.dividerProduct?.hide()
+            if (adapterPosition == element.count.orZero() - 1) {
+                dividerProduct?.hide()
+            }
         }
 
         if (element.sellerSearchList.isNotEmpty()) {
-            adapterProduct.clearAllData()
             element.takeIf { it.id == PRODUCT }?.sellerSearchList?.let {
-                adapterProduct.setItemProductList(it)
+                adapterProduct.submitList(it)
             }
         }
     }

@@ -19,12 +19,14 @@ class ItemProductSearchViewHolder(
 ) : RecyclerView.ViewHolder(itemViewProduct) {
 
     fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
-        itemViewProduct.ivSearchResultProduct?.setImageUrl(itemSellerSearchUiModel.imageUrl.orEmpty())
-        bindTitleText(itemSellerSearchUiModel)
-        itemViewProduct.tvSearchResultProductDesc?.text = itemSellerSearchUiModel.desc
+        with(itemViewProduct) {
+            ivSearchResultProduct?.setImageUrl(itemSellerSearchUiModel.imageUrl.orEmpty())
+            bindTitleText(itemSellerSearchUiModel)
+            tvSearchResultProductDesc?.text = itemSellerSearchUiModel.desc
 
-        itemViewProduct.setOnClickListener {
-            productSearchListener.onProductItemClicked(itemSellerSearchUiModel, adapterPosition)
+            setOnClickListener {
+                productSearchListener.onProductItemClicked(itemSellerSearchUiModel, adapterPosition)
+            }
         }
     }
 

@@ -9,23 +9,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
-import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ALL
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FITUR
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PESANAN
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUK
-import com.tokopedia.seller.search.common.util.FilterItemDecoration
 import com.tokopedia.seller.search.common.util.OnScrollListenerAutocomplete
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.*
-import com.tokopedia.seller.search.feature.suggestion.view.adapter.FilterSearchAdapter
 import com.tokopedia.seller.search.feature.suggestion.view.adapter.SuggestionSearchAdapter
 import com.tokopedia.seller.search.feature.suggestion.view.adapter.SuggestionSearchAdapterTypeFactory
-import com.tokopedia.seller.search.feature.suggestion.view.model.filter.FilterSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionSearchViewModel
@@ -36,7 +30,7 @@ import kotlinx.android.synthetic.main.suggestion_search_fragment.*
 import javax.inject.Inject
 
 class SuggestionSearchFragment: BaseDaggerFragment(),
-        FilterSearchListener, ProductSearchListener, OrderSearchListener, NavigationSearchListener {
+        ProductSearchListener, OrderSearchListener, NavigationSearchListener, FaqSearchListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -44,10 +38,8 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val filterAdapter by lazy { FilterSearchAdapter(this) }
-
     private val searchSellerAdapterTypeFactory by lazy {
-        SuggestionSearchAdapterTypeFactory(this, this, this)
+        SuggestionSearchAdapterTypeFactory(this, this, this, this)
     }
 
     private val suggestionSearchAdapter by lazy { SuggestionSearchAdapter(searchSellerAdapterTypeFactory) }
@@ -98,7 +90,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
         viewModel.getSellerSearch.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    setSuggestionSearch(it.data.first, it.data.second)
+                    setSuggestionSearch(it.data)
                 }
                 is Fail -> { }
             }
@@ -116,15 +108,12 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
         })
     }
 
-    private fun setSuggestionSearch(data: List<SellerSearchUiModel>, filterList: List<FilterSearchUiModel>) {
+    private fun setSuggestionSearch(data: List<SellerSearchUiModel>) {
         suggestionSearchAdapter.clearAllElements()
         if(data.isEmpty()) {
-            rvSearchFilter?.hide()
             suggestionSearchAdapter.addNoResultState()
             SellerSearchTracking.impressionEmptyResultEvent(userId)
         } else {
-            rvSearchFilter?.show()
-            filterAdapter.setFilterSearch(filterList)
             suggestionSearchAdapter.addAll(data)
         }
         suggestionViewUpdateListener?.showSuggestionView()
@@ -135,13 +124,6 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
             layoutManager = LinearLayoutManager(context)
             adapter = suggestionSearchAdapter
             addOnScrollListener(OnScrollListenerAutocomplete(view.context, view))
-        }
-        rvSearchFilter?.apply {
-            if(itemDecorationCount == 0) {
-                addItemDecoration(FilterItemDecoration())
-            }
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = filterAdapter
         }
     }
 
@@ -171,13 +153,6 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
         activity?.finish()
     }
 
-    override fun onFilterItemClicked(title: String, chipType: String, position: Int) {
-        sendTrackingSelectedFilter(title)
-        val section = if(title == ALL) "" else title
-        positionFilter = position
-        onFilterSearchSuggestion(title, section)
-    }
-
     override fun onNavigationItemClicked(data: ItemSellerSearchUiModel, position: Int) {
         viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
         SellerSearchTracking.clickOnSearchResultFeatureEvent(userId)
@@ -192,10 +167,22 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
         dropKeyBoard()
     }
 
+    override fun onOrderMoreClicked(element: SellerSearchUiModel, position: Int) {
+        startActivityFromAutoComplete(element.actionLink.orEmpty())
+        SellerSearchTracking.clickOrderFilterEvent(userId)
+        dropKeyBoard()
+    }
+
     override fun onProductItemClicked(data: ItemSellerSearchUiModel, position: Int) {
         viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
         SellerSearchTracking.clickOnSearchResultProductEvent(userId)
         startActivityFromAutoComplete(data.appUrl.orEmpty())
+        dropKeyBoard()
+    }
+
+    override fun onProductMoreClicked(element: SellerSearchUiModel, position: Int) {
+        startActivityFromAutoComplete(element.actionLink.orEmpty())
+        SellerSearchTracking.clickProductFilterEvent(userId)
         dropKeyBoard()
     }
 
@@ -208,14 +195,13 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun onFilterSearchSuggestion(title: String, section: String) {
-        suggestionSearchAdapter.apply {
-            rvSearchFilter?.hide()
-            clearAllElements()
-            addLoading()
-        }
-        val isFilter = title != ALL
-        viewModel.getSellerSearch(keyword = searchKeyword, section = section, shopId = shopId, isFilter = isFilter, title = title)
+    override fun onFaqItemClicked(data: ItemSellerSearchUiModel, position: Int) {
+
+    }
+
+    override fun onFaqMoreClicked(element: SellerSearchUiModel, position: Int) {
+        startActivityFromAutoComplete(element.actionLink.orEmpty())
+        dropKeyBoard()
     }
 
 }

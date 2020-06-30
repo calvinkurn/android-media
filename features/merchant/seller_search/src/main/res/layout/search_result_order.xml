@@ -29,7 +29,22 @@
         app:layout_constraintTop_toBottomOf="@id/tvTitleResultOrder"
         android:paddingBottom="@dimen/spacing_lvl3"
         android:clipToPadding="false"
+        tools:itemCount="5"
         tools:listitem="@layout/item_search_result_order" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMoreResultOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvResultOrder"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:textColor="@color/clr03AC0E"
+        tools:text="Lihat 3 lainnya di halaman produk"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerOrder"
@@ -37,6 +52,6 @@
         android:layout_height="1dp"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/rvResultOrder"/>
+        app:layout_constraintTop_toBottomOf="@id/tvMoreResultOrder"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

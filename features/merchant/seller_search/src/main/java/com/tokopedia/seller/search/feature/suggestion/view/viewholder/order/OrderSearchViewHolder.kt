@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ORDER
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
@@ -23,20 +24,25 @@ class OrderSearchViewHolder(private val view: View,
     private val adapterOrder by lazy { ItemOrderSearchAdapter(orderSearchListener) }
 
     override fun bind(element: SellerSearchUiModel) {
-        view.tvTitleResultOrder?.text = element.title
-        view.rvResultOrder?.apply {
-            layoutManager = LinearLayoutManager(view.context)
-            adapter = adapterOrder
-        }
-
-        if (adapterPosition == element.count.orZero() - 1) {
-            view.dividerOrder?.hide()
+        with(view) {
+            if(element.hasMore) {
+                tvMoreResultOrder?.show()
+                tvMoreResultOrder?.text = element.actionTitle.orEmpty()
+                orderSearchListener.onOrderMoreClicked(element, adapterPosition)
+            }
+            tvTitleResultOrder?.text = element.title
+            rvResultOrder?.apply {
+                layoutManager = LinearLayoutManager(view.context)
+                adapter = adapterOrder
+            }
+            if (adapterPosition == element.count.orZero() - 1) {
+                dividerOrder?.hide()
+            }
         }
 
         if (element.sellerSearchList.isNotEmpty()) {
-            adapterOrder.clearAllData()
             element.takeIf { it.id == ORDER }?.sellerSearchList?.let {
-                adapterOrder.setItemOrderList(it)
+                adapterOrder.submitList(it)
             }
         }
     }

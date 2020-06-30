@@ -23,20 +23,20 @@ class NavigationSearchViewHolder(private val view: View,
     private val adapterNavigation by lazy { ItemNavigationSearchAdapter(navigationSearchListener) }
 
     override fun bind(element: SellerSearchUiModel) {
-        view.tvTitleResultNavigation?.text = element.title
-        view.rvResultNavigation?.apply {
-            layoutManager = LinearLayoutManager(view.context)
-            adapter = adapterNavigation
-        }
-
-        if (adapterPosition == element.count.orZero() - 1) {
-            view.dividerNavigation?.hide()
+        with(view) {
+            tvTitleResultNavigation?.text = element.title
+            rvResultNavigation?.apply {
+                layoutManager = LinearLayoutManager(view.context)
+                adapter = adapterNavigation
+            }
+            if (adapterPosition == element.count.orZero() - 1) {
+                dividerNavigation?.hide()
+            }
         }
 
         if (element.sellerSearchList.isNotEmpty()) {
-            adapterNavigation.clearAllData()
             element.takeIf { it.id == NAVIGATION }?.sellerSearchList?.let {
-                adapterNavigation.setItemNavigationList(it)
+                adapterNavigation.submitList(it)
             }
         }
     }

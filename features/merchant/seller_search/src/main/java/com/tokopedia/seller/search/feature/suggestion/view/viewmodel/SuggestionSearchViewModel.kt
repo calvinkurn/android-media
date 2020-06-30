@@ -8,7 +8,6 @@ import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.util.CoroutineDispatcherProvider
 import com.tokopedia.seller.search.common.util.mapper.GlobalSearchSellerMapper
 import com.tokopedia.seller.search.feature.suggestion.domain.InsertSuccessSearchUseCase
-import com.tokopedia.seller.search.feature.suggestion.view.model.filter.FilterSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,23 +22,21 @@ class SuggestionSearchViewModel @Inject constructor(
         private val insertSellerSearchUseCase: InsertSuccessSearchUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
-    private val _getSearchSeller = MutableLiveData<Result<Pair<List<SellerSearchUiModel>, List<FilterSearchUiModel>>>>()
-    val getSellerSearch: LiveData<Result<Pair<List<SellerSearchUiModel>, List<FilterSearchUiModel>>>>
+    private val _getSearchSeller = MutableLiveData<Result<List<SellerSearchUiModel>>>()
+    val getSellerSearch: LiveData<Result<List<SellerSearchUiModel>>>
         get() = _getSearchSeller
 
     private val _insertSuccessSearch = MutableLiveData<Result<RegisterSearchUiModel>>()
     val insertSuccessSearch: LiveData<Result<RegisterSearchUiModel>>
         get() = _insertSuccessSearch
 
-    fun getSellerSearch(keyword: String, section: String = "", shopId: String, isFilter: Boolean = false, title: String = "") {
+    fun getSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
             val responseGetSellerSearch  = withContext(dispatcherProvider.io()) {
-                getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(
-                        keyword, shopId, section)
-                Pair(GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground(), keyword),
-                        GlobalSearchSellerMapper.mapTopItemFilterSearch(getSellerSearchUseCase.executeOnBackground(), isFilter, title))
+                getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(keyword, shopId, section)
+                GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground(), keyword)
             }
-            _getSearchSeller.postValue(Success(Pair(responseGetSellerSearch.first, responseGetSellerSearch.second)))
+            _getSearchSeller.postValue(Success(responseGetSellerSearch))
         }, onError = {
             _getSearchSeller.postValue(Fail(it))
         })

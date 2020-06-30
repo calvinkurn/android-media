@@ -2,25 +2,14 @@ package com.tokopedia.seller.search.feature.suggestion.view.viewholder.navigatio
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.util.mapper.AdapterDiffCallback
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.NavigationSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
 
 class ItemNavigationSearchAdapter(private val navigationSearchListener: NavigationSearchListener):
-        RecyclerView.Adapter<ItemNavigationSearchViewHolder>() {
-
-    private var itemNavigationList: MutableList<ItemSellerSearchUiModel> = mutableListOf()
-
-    fun setItemNavigationList(list: List<ItemSellerSearchUiModel>) {
-        this.itemNavigationList = list.toMutableList()
-        notifyDataSetChanged()
-    }
-
-    fun clearAllData() {
-        this.itemNavigationList.clear()
-        notifyDataSetChanged()
-    }
+        ListAdapter<ItemSellerSearchUiModel, ItemNavigationSearchViewHolder>(AdapterDiffCallback.ItemSearchDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemNavigationSearchViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -29,10 +18,6 @@ class ItemNavigationSearchAdapter(private val navigationSearchListener: Navigati
     }
 
     override fun onBindViewHolder(holderSearch: ItemNavigationSearchViewHolder, position: Int) {
-        holderSearch.bind(itemNavigationList[position])
-    }
-
-    override fun getItemCount(): Int {
-        return itemNavigationList.size
+        getItem(position)?.let { holderSearch.bind(it) }
     }
 }
