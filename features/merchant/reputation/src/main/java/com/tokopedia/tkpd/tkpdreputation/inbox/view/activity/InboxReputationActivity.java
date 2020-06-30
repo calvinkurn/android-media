@@ -133,18 +133,15 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
             if (sellerReputationFragment != null) {
                 indicator.addNewTab(getString(R.string.title_reputation_history));
             }
-            if (goToReputationHistory) {
-                viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
-            }
-        }
-
-        if (goToReputationHistory) {
-            viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
         }
 
         sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         viewPager.setAdapter(sectionAdapter);
+
+        if (goToReputationHistory) {
+            viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
+        }
 
         wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
     }
