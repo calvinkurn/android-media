@@ -79,7 +79,7 @@ private fun ProductCardModel.getPriceToRender(): String {
 
 private fun View.renderShopBadge(productCardModel: ProductCardModel) {
     val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
-    imageShopBadge?.shouldShowWithAction(shopBadge != null) {
+    imageShopBadge?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
         it.loadIcon(shopBadge?.imageUrl ?: "")
     }
 }
@@ -145,7 +145,7 @@ private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
-    imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.freeOngkir.isActive) {
+    imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.isShowFreeOngkirBadge()) {
         it.loadIcon(productCardModel.freeOngkir.imageUrl)
     }
 }

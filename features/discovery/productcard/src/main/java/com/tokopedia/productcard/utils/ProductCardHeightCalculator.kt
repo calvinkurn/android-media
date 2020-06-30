@@ -131,14 +131,12 @@ private fun ProductCardModel.getPriceSectionHeight(context: Context): Int {
 }
 
 private fun ProductCardModel.getShopInfoSectionHeight(context: Context): Int {
-    val shopBadge = shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
-
     var shopBadgeMarginTop = 0
     var shopBadgeSize = 0
     var shopLocationMarginTop = 0
     var shopLocationHeight = 0
 
-    if (shopBadge != null) {
+    if (isShowShopBadge()) {
         shopBadgeMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_shop_badge_margin_top)
         shopBadgeSize = context.resources.getDimensionPixelSize(R.dimen.product_card_shop_badge_size)
     }
@@ -214,7 +212,7 @@ private fun ProductCardModel.getShippingInfoSectionHeight(context: Context): Int
 }
 
 private fun ProductCardModel.getFreeOngkirBadgeHeight(context: Context): Int {
-    return if (freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()) {
+    return if (isShowFreeOngkirBadge()) {
         val freeOngkirBadgeMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_free_ongkir_badge_margin_top)
         val freeOngkirBadgeHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_free_ongkir_badge_height)
 
