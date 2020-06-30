@@ -737,22 +737,23 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             toggleInActiveHint(false)
             showRewardSummary()
 
-            bgSoundManager?.mPlayer?.setVolume(0.3f,0.3f)
+            bgSoundManager?.mPlayer?.setVolume(0.3f, 0.3f)
         }
         //todo Rahul uncomment this
 //        val time = totalSeconds * 1000L
-        val time = 30 * 1000L
+        val time = (5 + 1) * 1000L
         minuteCountDownTimer = object : CountDownTimer(time, 1000) {
-            override fun onFinish() {
-                onTimeUp()
-            }
+            override fun onFinish() {}
 
             override fun onTick(millisUntilFinished: Long) {
-                val seconds = millisUntilFinished / 1000
+
+                val seconds = (millisUntilFinished / 1000)
                 tvProgressCount.text = "$seconds"
                 progressBarTimer.progress = 100 - (seconds / 60f * 100).toInt()
                 if (seconds == 3L) {
                     playCountDownSound()
+                } else if (seconds == 0L) {
+                    onTimeUp()
                 }
             }
         }
@@ -766,18 +767,20 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun renderBottomHourTimer(timeLeftSeconds: Long) {
-        val time = timeLeftSeconds * 1000L
+        fun onTimeUp() {
+            (giftBoxDailyView as GiftBoxTapTapView).glowingAnimator?.end()
+            val anim1 = (giftBoxDailyView as GiftBoxTapTapView).fadeOutGlowingAndFadeInGiftBoxAnimation()
+            anim1.addListener(onEnd = {
+                (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
+            })
+            anim1.start()
+            animateTvTimerAndProgressBar()
+            startOneMinuteCounter(60)
+        }
+
+        val time = (timeLeftSeconds + 1) * 1000L
         hourCountDownTimer = object : CountDownTimer(time, 1000) {
-            override fun onFinish() {
-                (giftBoxDailyView as GiftBoxTapTapView).glowingAnimator?.end()
-                val anim1 = (giftBoxDailyView as GiftBoxTapTapView).fadeOutGlowingAndFadeInGiftBoxAnimation()
-                anim1.addListener(onEnd = {
-                    (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
-                })
-                anim1.start()
-                animateTvTimerAndProgressBar()
-                startOneMinuteCounter(60)
-            }
+            override fun onFinish() {}
 
             override fun onTick(millisUntilFinished: Long) {
                 var seconds = millisUntilFinished / 1000
@@ -790,6 +793,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val minuteText = if (minutes < 10) "0$minutes" else minutes.toString()
                 val secondText = if (seconds < 10) "0$seconds" else seconds.toString()
                 tvTimer.text = "${hourText}:${minuteText}:${secondText}"
+
+                if (seconds == 0L) {
+                    onTimeUp()
+                }
             }
         }
 
@@ -833,7 +840,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         fadeOutAnim.addListener(onEnd = {
             lottieTimeUp.cancelAnimation()
             lottieTimeUp.gone()
-            bgSoundManager?.mPlayer?.setVolume(1f,1f)
+            bgSoundManager?.mPlayer?.setVolume(1f, 1f)
         })
         animatorSet.start()
     }
