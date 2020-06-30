@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/charcoal_grey_96"
         android:text="@string/suggestion_top_shop_title"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         app:typographyType="heading_5"

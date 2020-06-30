@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:id="@+id/suggestionTopShopCard"
     android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/dp_8"
@@ -30,11 +30,11 @@
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:visibility="gone"
+            android:layout_marginTop="@dimen/dp_14"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             app:layout_constraintLeft_toRightOf="@id/suggestionTopShopCardImage"
-            app:layout_constraintTop_toTopOf="@id/suggestionTopShopCardImage"
-            app:layout_constraintBottom_toTopOf="@id/suggestionTopShopCardSubtitle"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/suggestionTopShopCardTitle"
@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/charcoal_grey_96"
             android:text="@string/suggestion_top_shop_card_title"
+            android:layout_marginTop="@dimen/dp_14"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_8"
@@ -50,8 +51,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:typographyType="heading_6"
-            app:layout_constraintTop_toTopOf="@id/suggestionTopShopCardImage"
-            app:layout_constraintBottom_toTopOf="@id/suggestionTopShopCardSubtitle"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/suggestionTopShopCardIconTitle"
             app:layout_constraintRight_toRightOf="parent"/>
 
@@ -59,8 +59,9 @@
             android:id="@+id/suggestionTopShopCardSubtitle"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Neutral_N700_68"
             android:text="@string/suggestion_top_shop_card_subtitle"
+            android:layout_marginTop="@dimen/dp_2"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
@@ -70,7 +71,6 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             app:layout_constraintTop_toBottomOf="@id/suggestionTopShopCardTitle"
-            app:layout_constraintBottom_toBottomOf="@id/suggestionTopShopCardImage"
             app:layout_constraintLeft_toRightOf="@id/suggestionTopShopCardImage"
             app:layout_constraintRight_toRightOf="parent"/>
 
