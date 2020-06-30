@@ -180,6 +180,7 @@ class LottieBottomNavbar : LinearLayout {
             icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
             bottomMenu.animName?.let {
                 icon.setAnimation(bottomMenu.animName)
+                icon.speed = bottomMenu.animSpeed
             }
             if (bottomMenu.animName == null) {
                 bottomMenu.imageName?.let {
@@ -219,6 +220,7 @@ class LottieBottomNavbar : LinearLayout {
                         }
                         bottomMenuSelected.animName?.let {
                             iconSelected.setAnimation(it)
+                            iconSelected.speed = bottomMenuSelected.animSpeed
                         }
                     } else {
                         val bottomMenuSelected = bottomMenu
@@ -229,6 +231,7 @@ class LottieBottomNavbar : LinearLayout {
                         }
                         bottomMenuSelected.animToEnabledName?.let {
                             iconSelected.setAnimation(it)
+                            iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
                         }
                     }
 
@@ -316,6 +319,7 @@ class LottieBottomNavbar : LinearLayout {
             pair.first.cancelAnimation()
             menu[selectedItem?:0].animToEnabledName?.let {
                 pair.first.setAnimation(it)
+                pair.first.speed = menu[selectedItem?:0].animToEnabledSpeed
             }
 
             iconList[selectedItem?:0] = Pair(pair.first, false)
@@ -380,7 +384,9 @@ data class BottomMenu(val id: Long,
                       val imageName: Int? = null,
                       val imageEnabledName: Int? = null,
                       val activeButtonColor: Int,
-                      val useBadge: Boolean = true)
+                      val useBadge: Boolean = true,
+                      val animSpeed: Float = 1f,
+                      val animToEnabledSpeed: Float = 1f)
 interface IBottomClickListener {
     fun menuClicked(position: Int, id: Long): Boolean
     fun menuReselected(position: Int, id: Long)
