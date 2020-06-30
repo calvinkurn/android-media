@@ -23,29 +23,5 @@ enum class PlayChannelStatus(val value: String) {
             }
             return Unknown
         }
-
-        fun getChannelStatus(
-                activeLiveChannel: Int,
-                pausedChannel: Int,
-                draftChannel: Int
-        ): Pair<String, PlayChannelStatus> {
-            var channelId = 0
-            var playChannelStatus = Unknown
-            when {
-                activeLiveChannel > 0 -> {
-                    channelId = activeLiveChannel
-                    playChannelStatus = Live
-                }
-                pausedChannel > 0 -> {
-                    channelId = pausedChannel
-                    playChannelStatus = Pause
-                }
-                draftChannel > 0 -> {
-                    channelId = draftChannel
-                    playChannelStatus = Draft
-                }
-            }
-            return Pair(channelId.toString(), playChannelStatus)
-        }
     }
 }

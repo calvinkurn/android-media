@@ -21,7 +21,7 @@ import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.PlayChanelType
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
@@ -231,10 +231,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun handleChannelConfiguration(config: ConfigurationUiModel) =
             if (config.streamAllowed) {
-                when(config.channelStatus) {
-                    PlayChannelStatus.Live -> showDialogWhenActiveOnOtherDevices()
-                    PlayChannelStatus.Pause -> openBroadcastActivePage()
-                    else -> openBroadcastSetupPage() /* TODO("handle when channel Deleted & Stop") */
+                when(config.channelType) {
+                    PlayChanelType.Active -> showDialogWhenActiveOnOtherDevices()
+                    PlayChanelType.Pause -> openBroadcastActivePage()
+                    PlayChanelType.Draft, PlayChanelType.Unknown -> openBroadcastSetupPage()
                 }
             } else { /* TODO("handle when stream not allowed") */ }
 
