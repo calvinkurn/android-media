@@ -59,6 +59,7 @@ class CoverSetupPartialView(
             listener.onNextButtonClicked(this, coverTitle)
         }
 
+        showHint(true)
         setupTitleTextField()
         tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), coverTitle)
 
@@ -174,6 +175,7 @@ class CoverSetupPartialView(
         etCoverTitle.setOnFocusChangeListener { _, hasFocus ->
             updateTitleCounter(coverTitle)
             updateTextField(coverTitle)
+            showHint(!hasFocus)
             if (hasFocus) tvCoverTitleCounter.visible() else tvCoverTitleCounter.invisible()
         }
         etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(mMaxTitleChars))
@@ -198,6 +200,12 @@ class CoverSetupPartialView(
         }
 
         return spanBuilder
+    }
+
+    private fun showHint(shouldShow: Boolean) {
+        etCoverTitle.hint =
+                if (shouldShow) getString(R.string.play_prepare_cover_title_default_title_placeholder)
+                else ""
     }
 
     interface Listener {

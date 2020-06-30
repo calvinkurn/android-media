@@ -101,7 +101,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl6"
             android:background="@drawable/unify_textfield_bg"
-            android:hint="@string/play_prepare_cover_title_default_title_placeholder"
             android:imeOptions="actionDone"
             android:inputType="textMultiLine"
             android:textColor="@color/Neutral_N0"
