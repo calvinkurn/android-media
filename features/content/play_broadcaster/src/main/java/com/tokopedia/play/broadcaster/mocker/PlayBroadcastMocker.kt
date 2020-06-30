@@ -15,7 +15,7 @@ import kotlin.random.Random
  */
 object PlayBroadcastMocker {
 
-    private const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
+    const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
 
     /**
      * Follower
@@ -82,7 +82,7 @@ object PlayBroadcastMocker {
     fun getMockConfigurationDraftChannel() = ConfigurationUiModel(
             streamAllowed = true,
             channelStatus = PlayChannelStatus.Draft,
-            channelId = "10008", // 10008 prod, 10012 stag
+            channelId = "10008", // 10008 prod, 10012 stag (status: draft)
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
                     pauseDuration = (1 * 60 * 1000),
