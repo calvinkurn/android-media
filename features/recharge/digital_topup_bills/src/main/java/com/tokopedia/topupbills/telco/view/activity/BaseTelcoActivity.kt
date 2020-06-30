@@ -16,8 +16,10 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.topupbills.telco.view.fragment.DigitalBaseTelcoFragment
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -62,18 +64,31 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
 
     private fun setAnimationAppBarLayout() {
         appBarLayout = findViewById(R.id.app_bar_layout_telco)
-        appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { p0, verticalOffSet ->
-            if (::menuTelco.isInitialized) {
-                if (abs(verticalOffSet) == appBarLayout.totalScrollRange) {
-                    //Collapsed
-                    (toolbar as HeaderUnify).transparentMode = false
-                    menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
-                            com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
-                } else {
-                    //Expanded
-                    (toolbar as HeaderUnify).transparentMode = true
-                    menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
-                            com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
+
+        appBarLayout.addOnOffsetChangedListener(object: AppBarLayout.OnOffsetChangedListener {
+            var lastOffset = -1
+            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
+                if (lastOffset == verticalOffSet) return
+
+                if (::menuTelco.isInitialized) {
+                    lastOffset = verticalOffSet
+                    if (abs(verticalOffSet) >= appBarLayout.totalScrollRange - toolbar.height) {
+                        //Collapsed
+                        (toolbar as HeaderUnify).transparentMode = false
+                        menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
+                                com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
+                        if (fragment != null) {
+                            (fragment as DigitalBaseTelcoFragment).onCollapseAppBar()
+                        }
+                    } else {
+                        //Expanded
+                        (toolbar as HeaderUnify).transparentMode = true
+                        menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
+                                com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
+                        if (fragment != null) {
+                            (fragment as DigitalBaseTelcoFragment).onExpandAppBar()
+                        }
+                    }
                 }
             }
         })

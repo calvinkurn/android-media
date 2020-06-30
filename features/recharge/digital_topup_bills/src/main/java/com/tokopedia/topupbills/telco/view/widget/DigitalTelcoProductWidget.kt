@@ -52,7 +52,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                 adapter.notifyItemChanged(position)
             }
         })
-        recyclerView.isNestedScrollingEnabled = false
+
         recyclerView.adapter = adapter
         if (productType == TelcoProductType.PRODUCT_GRID) {
             recyclerView.layoutManager = GridLayoutManager(context, 2)
@@ -62,9 +62,6 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }
         adapter.notifyDataSetChanged()
 
-
-// TODO: restructure the UI & fix impression product list
-//  scroll to selected product not work because of recyclerView.isNestedScrollingEnabled = false
         getVisibleProductItemsToUsersTracking(productList)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

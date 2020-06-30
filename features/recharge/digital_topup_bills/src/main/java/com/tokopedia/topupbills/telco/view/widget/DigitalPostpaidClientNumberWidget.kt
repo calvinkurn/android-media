@@ -35,7 +35,7 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
     }
 
     override fun getLayout(): Int {
-        return R.layout.view_digital_input_number_telco
+        return R.layout.view_digital_input_number_postpaid
     }
 
     fun initV() {

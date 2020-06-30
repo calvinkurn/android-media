@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -37,7 +38,6 @@ import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.RechargePrefix
-import com.tokopedia.topupbills.telco.data.TelcoAttributesProduct
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
@@ -46,6 +46,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
+import com.tokopedia.topupbills.telco.view.widget.TelcoNestedCoordinatorLayout
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
 import java.util.*
@@ -56,13 +57,14 @@ import java.util.*
 class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private lateinit var telcoClientNumberWidget: DigitalClientNumberWidget
+    private lateinit var mainContainer: TelcoNestedCoordinatorLayout
+    private lateinit var appBarLayout: AppBarLayout
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
     private lateinit var loadingShimmering: LinearLayout
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var separator: View
 
     override var menuId = TelcoComponentType.TELCO_PREPAID
     private var inputNumberActionType = InputNumberActionType.MANUAL
@@ -124,15 +126,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
-        mainContainer = view.findViewById(R.id.main_container)
         pageContainer = view.findViewById(R.id.page_container)
+        mainContainer = view.findViewById(R.id.main_container)
+        appBarLayout = view.findViewById(R.id.appbar_input_number_telco)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
         viewPager = view.findViewById(R.id.view_pager)
         tabLayout = view.findViewById(R.id.tab_layout)
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
         loadingShimmering = view.findViewById(R.id.loading_telco_shimmering)
-        separator = view.findViewById(R.id.separator)
         return view
     }
 
@@ -143,9 +145,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         getPrefixOperatorData()
         renderInputNumber()
-        handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+    }
+
+    override fun onCollapseAppBar() {
+        telcoClientNumberWidget.setVisibleResultNumber(true)
+    }
+
+    override fun onExpandAppBar() {
+        telcoClientNumberWidget.setVisibleResultNumber(false)
     }
 
     /**
@@ -181,13 +190,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             if (listMenu.size > 1) {
                 tabLayout.show()
-                separator.show()
                 tabLayout.setupWithViewPager(viewPager)
                 (viewPager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
                 (viewPager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
+
             } else {
                 tabLayout.hide()
-                separator.hide()
             }
 
             viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -355,7 +363,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         viewPager.offscreenPageLimit = listProductTab.size
 
         tabLayout.show()
-        separator.show()
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
 
