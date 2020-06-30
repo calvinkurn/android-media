@@ -736,6 +736,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             playTimeOutSound()
             toggleInActiveHint(false)
             showRewardSummary()
+
+            bgSoundManager?.mPlayer?.setVolume(0.3f,0.3f)
         }
         //todo Rahul uncomment this
 //        val time = totalSeconds * 1000L
@@ -831,6 +833,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         fadeOutAnim.addListener(onEnd = {
             lottieTimeUp.cancelAnimation()
             lottieTimeUp.gone()
+            bgSoundManager?.mPlayer?.setVolume(1f,1f)
         })
         animatorSet.start()
     }
