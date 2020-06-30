@@ -41,7 +41,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.item_discovery_fragment_view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -49,6 +48,7 @@ import javax.inject.Inject
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
+private const val SCROLL_TOP_DIRECTION = -1
 
 class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
@@ -121,23 +121,20 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         ivToTop = view.findViewById(R.id.toTopImg)
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
-
         ivToTop.setOnClickListener(this)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
-                    toTopImg.hide()
+                    ivToTop.hide()
                 } else if (dy < 0) {
-                    toTopImg.show()
+                    ivToTop.show()
                 }
             }
-
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    toTopImg.hide()
+                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    ivToTop.hide()
                 }
             }
         })
@@ -168,8 +165,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    it.data?.let {
-                        discoveryAdapter.addDataList(it)
+                    it.data.let { listComponent ->
+                        discoveryAdapter.addDataList(listComponent)
                     }
                     mProgressBar.hide()
                 }
@@ -368,9 +365,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun onClick(view: View?) {
         when (view) {
-            toTopImg -> {
+            ivToTop -> {
                 recyclerView.smoothScrollToPosition(0)
-                toTopImg.hide()
+                ivToTop.hide()
             }
         }
     }
