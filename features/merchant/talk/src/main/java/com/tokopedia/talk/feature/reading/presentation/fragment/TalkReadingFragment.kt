@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -51,6 +52,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
+import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
+import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
+import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_reading_empty.*
 import javax.inject.Inject
@@ -241,12 +245,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        talkReadingRecyclerView.post {
-            talkPerformanceMonitoringListener?.let {
-                it.stopRenderPerformanceMonitoring()
-                it.stopPerformanceMonitoring()
+        talkReadingRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                talkReadingRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
-        }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
@@ -320,6 +325,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     }
                 }
             }
+
         })
     }
 

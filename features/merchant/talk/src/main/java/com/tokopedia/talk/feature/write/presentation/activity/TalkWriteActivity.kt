@@ -7,15 +7,20 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.write.presentation.fragment.TalkWriteFragment
 
-class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
+class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
 
     companion object {
+        const val PARAM_PRODUCT_ID = "product_id"
         fun createIntent(context: Context, productId: Int): Intent {
             val intent = Intent(context, TalkWriteActivity::class.java)
             intent.putExtra(TalkConstants.PARAM_PRODUCT_ID, productId)
@@ -24,6 +29,7 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     }
 
     private var productId: Int = 0
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productId = intent.getIntExtra(TalkConstants.PARAM_PRODUCT_ID, productId)
@@ -31,6 +37,7 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
             getDataFromApplink()
         }
         super.onCreate(savedInstanceState)
+        startPerformanceMonitoring()
         setUpToolBar()
     }
 
@@ -43,13 +50,73 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
                 (application as BaseMainApplication).baseAppComponent).build()
     }
 
+    override fun startPerformanceMonitoring() {
+        with(TalkPerformanceMonitoringConstants) {
+            pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                    TALK_WRITE_PLT_PREPARE_METRICS,
+                    TALK_WRITE_PLT_NETWORK_METRICS,
+                    TALK_WRITE_PLT_RENDER_METRICS,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null
+            )
+            pageLoadTimePerformanceMonitoring?.startMonitoring(TALK_WRITE_TRACE)
+            pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopMonitoring()
+        }
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun startPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopRenderPerformanceMonitoring()
+        }
+    }
+
     private fun setUpToolBar() {
         supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
     }
 
     private fun getDataFromApplink() {
         val uri = intent.data ?: return
-        val productIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
+        val productIdString = uri.getQueryParameter(PARAM_PRODUCT_ID) ?: ""
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString.toIntOrZero()
         }

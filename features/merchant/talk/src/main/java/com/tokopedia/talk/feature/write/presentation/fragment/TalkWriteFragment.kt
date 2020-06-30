@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.write.presentation.fragment
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -7,8 +8,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,6 +20,8 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.utils.setCustomMovementMethod
@@ -36,15 +39,13 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.fragment_talk_write.*
-import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
 import javax.inject.Inject
 
 class TalkWriteFragment : BaseDaggerFragment(),
         HasComponent<TalkWriteComponent>, TalkWriteCategoryChipsWidget.ChipClickListener,
-        TalkWriteCategoryDetailsListener {
+        TalkWriteCategoryDetailsListener, TalkPerformanceMonitoringContract {
 
     companion object {
 
@@ -62,6 +63,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     lateinit var viewModel: TalkWriteViewModel
 
     private val adapter = TalkWriteCategoryChipsWidget(this)
+    private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +85,8 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        stopPreparePerfomancePageMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         initView()
         initRecycleView()
         initTnC()
@@ -103,6 +107,42 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     override fun onClickGoToChat() {
         goToChat()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        talkPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
+
+    override fun stopPreparePerfomancePageMonitoring() {
+        talkPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        talkPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        talkPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        writeCategoryChips.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                writeCategoryChips.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
+        return if(context is TalkPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
     }
 
     private fun initView() {
@@ -178,6 +218,8 @@ class TalkWriteFragment : BaseDaggerFragment(),
             hideLoading()
             when(it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     hideError()
                     onSuccessGetWriteData(it.data)
                 }
@@ -245,7 +287,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     private fun showErrorToaster() {
-        view?.let { Toaster.build(talkReadingContainer, getString(R.string.reading_connection_error_toaster_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show()}
+//        view?.let { Toaster.build(talkReadingContainer, getString(R.string.reading_connection_error_toaster_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show()}
     }
 
     private fun showError() {

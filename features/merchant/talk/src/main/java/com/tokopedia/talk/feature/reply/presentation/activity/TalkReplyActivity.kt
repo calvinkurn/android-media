@@ -95,7 +95,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         pageLoadTimePerformanceMonitoring?.let {
             it.stopMonitoring()
         }
-        pageLoadTimePerformanceMonitoring = null;
+        pageLoadTimePerformanceMonitoring = null
     }
 
     override fun startPreparePagePerformanceMonitoring() {
@@ -130,7 +130,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.let {
-            it.stopPreparePagePerformanceMonitoring()
+            it.stopRenderPerformanceMonitoring()
         }
     }
 }

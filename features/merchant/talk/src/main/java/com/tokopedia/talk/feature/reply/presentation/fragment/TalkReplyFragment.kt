@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
@@ -226,10 +227,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        talkReplyRecyclerView.post {
-            talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-            talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
-        }
+        talkReplyRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                talkReplyRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
@@ -242,7 +246,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        castContextToTalkPerformanceMonitoringListener(context)
+        talkPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
     }
 
     override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopdId: String) {
