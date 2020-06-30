@@ -15,10 +15,7 @@ import java.net.UnknownHostException
 /**
  * Created by mzennis on 30/06/20.
  */
-abstract class BaseUseCase<out T : Any>(
-        defaultDispatchers: CoroutineDispatcher = Dispatchers.Default,
-        mainDispatchers: CoroutineDispatcher = Dispatchers.Main
-): UseCase<T>(defaultDispatchers, mainDispatchers) {
+abstract class BaseUseCase<out T : Any>: UseCase<T>() {
 
     suspend fun configureGqlResponse(
             gqlRepository: GraphqlRepository,
