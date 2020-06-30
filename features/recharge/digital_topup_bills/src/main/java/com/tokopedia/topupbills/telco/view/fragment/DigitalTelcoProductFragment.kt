@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
@@ -176,7 +177,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
                     if (activeCategory == titleProduct && selectedProduct > 0) {
                         for (i in dataCollections.indices) {
-                            if (dataCollections[i].id.toInt() == selectedProduct) {
+                            if (dataCollections[i].id.toIntOrZero() == selectedProduct) {
                                 dataCollections[i].attributes.selected = true
                                 position = i
                                 break
