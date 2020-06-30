@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -42,21 +43,29 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         val editButton = itemView.findViewById<Typography>(R.id.action_edit)
         val lainnyaButton = itemView.findViewById<ImageView>(R.id.label_lainnya)
 
+        @SuppressLint("SetTextI18n")
         fun bindData(data: AddressModel) {
             with(itemView) {
+                val addressStreet = data.addressStreet
+                val postalCode = data.postalCode
+                val tokopediaNote = "[" + addressStreet.substringAfterLast("[")
                 setVisibility(data)
                 setPrimary(data)
                 address_name.text = data.addressName
                 receiver_name.text = data.receiverName
                 receiver_phone.text = data.receiverPhone
-                address_detail.text = data.addressStreet + ", " + data.districtName + ", " + data.cityName + ", " + data.postalCode
+                if(addressStreet.contains("Tokopedia Note")) {
+                    val newAddress = addressStreet.replace(tokopediaNote, "")
+                    tokopedia_note.visible()
+                    tokopedia_note.text = tokopediaNote
+                    if(addressStreet.contains(postalCode)) address_detail.text = newAddress
+                    else address_detail.text = newAddress + "," + data.postalCode
+                } else {
+                    address_detail.text = data.addressStreet + ", " + data.postalCode
+                }
                 setListener(data)
 
             }
-        }
-
-        fun bindToken(data: Token) {
-            token = data
         }
 
         private fun setPrimary(peopleAddress: AddressModel) {

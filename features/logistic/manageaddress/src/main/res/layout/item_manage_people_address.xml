@@ -22,7 +22,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_18"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/address_detail"
+            app:layout_constraintTop_toBottomOf="@+id/tokopedia_note"
             app:srcCompat="@drawable/ic_pinpoint_green"
             tools:ignore="ContentDescription" />
 
@@ -116,6 +116,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/receiver_phone"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokopedia_note"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:text="@string/tokopedia_note"
+            android:visibility="gone"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/address_detail"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
