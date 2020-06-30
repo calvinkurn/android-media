@@ -9,9 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.EditText
 import androidx.lifecycle.Observer
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -36,7 +36,6 @@ import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewMode
 import com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryChipsWidget
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_write.*
@@ -283,6 +282,20 @@ class TalkWriteFragment : BaseDaggerFragment(),
                     // No op
                 }
             })
+            textAreaInput.setOnFocusChangeListener { v, hasFocus ->
+                if(!hasFocus) {
+                    val editText = v as? EditText
+                    editText?.let {
+                        if(it.text.isNotEmpty() && it.text.length < 5) {
+                            isError = true
+                            textAreaMessage = getString(R.string.write_question_length_minimum_error)
+                        }
+                    }
+                } else {
+                    isError = false
+                    textAreaMessage = ""
+                }
+            }
         }
     }
 
