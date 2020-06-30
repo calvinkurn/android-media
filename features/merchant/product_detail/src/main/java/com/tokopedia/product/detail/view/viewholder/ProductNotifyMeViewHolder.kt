@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -16,7 +17,7 @@ import kotlinx.android.synthetic.main.partial_product_notify_me.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
+class ProductNotifyMeViewHolder(val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.partial_product_notify_me
@@ -90,6 +91,8 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
 
     private fun bindButton(data: ProductNotifyMeDataModel, isShopOwner: Boolean) = with(itemView) {
         btn_notify_me?.showWithCondition(!isShopOwner)
+        view.btn_notify_me?.maxLines = 1
+        view.btn_notify_me?.ellipsize = TextUtils.TruncateAt.END
 
         when (data.notifyMe) {
             true -> {
