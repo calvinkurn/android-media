@@ -9,12 +9,12 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.*
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.visitable.*
 
-class DigitalHomePageTypeFactory(val listener: OnItemBindListener)
+class DigitalHomePageTypeFactory(
+        val listener: OnItemBindListener,
+        private val transactionListener: DigitalHomePageTransactionViewHolder.TransactionListener,
+        private val isDynamicPage: Boolean = false)
     : BaseAdapterTypeFactory(), HomeComponentTypeFactory {
 
     fun type(digitalHomePageBannerModel: DigitalHomePageBannerModel): Int {
@@ -101,6 +101,10 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener)
         return 0
     }
 
+    override fun type(reminderWidgetModel: ReminderWidgetModel): Int {
+        return 0
+    }
+
     override fun type(mixLeftDataModel: MixLeftDataModel): Int {
         return 0
     }
@@ -110,20 +114,35 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener)
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when (type) {
-            // TODO: Finish the rest of viewholders and add them to the list
-            RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, listener)
-            RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, listener)
-            RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, listener)
-            RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
-            RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(parent)
-            RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
-            RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(parent, listener)
-            RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(parent, listener)
-            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, listener, listener)
-            RechargeHomepageProductCardsViewHolder.LAYOUT -> RechargeHomepageProductCardsViewHolder(parent, listener)
-            RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(parent, listener)
-            else -> super.createViewHolder(parent, type)
+        return if (isDynamicPage) {
+            when (type) {
+                // TODO: Finish the rest of viewholders and add them to the list
+                RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, listener)
+                RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, listener)
+                RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, listener)
+                RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
+                RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(parent)
+                RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
+                RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(parent, listener)
+                RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(parent, listener)
+                DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, listener, listener)
+                RechargeHomepageProductCardsViewHolder.LAYOUT -> RechargeHomepageProductCardsViewHolder(parent, listener)
+                RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(parent, listener)
+                else -> super.createViewHolder(parent, type)
+            }
+        } else {
+            when (type) {
+                DigitalHomePageBannerViewHolder.LAYOUT -> DigitalHomePageBannerViewHolder(parent, listener)
+                DigitalHomePageCategoryViewHolder.LAYOUT -> DigitalHomePageCategoryViewHolder(parent, listener)
+                DigitalHomePageTransactionViewHolder.LAYOUT -> DigitalHomePageTransactionViewHolder(parent, transactionListener)
+                DigitalHomePageFavoriteViewHolder.LAYOUT -> DigitalHomePageFavoriteViewHolder(parent, listener)
+                DigitalHomePageTrustMarkViewHolder.LAYOUT -> DigitalHomePageTrustMarkViewHolder(parent, listener)
+                DigitalHomePageNewUserZoneViewHolder.LAYOUT -> DigitalHomePageNewUserZoneViewHolder(parent, listener)
+                DigitalHomePageSpotlightViewHolder.LAYOUT -> DigitalHomePageSpotlightViewHolder(parent, listener)
+                DigitalHomePageSubscriptionViewHolder.LAYOUT -> DigitalHomePageSubscriptionViewHolder(parent, listener)
+                DigitalHomePageRecommendationViewHolder.LAYOUT -> DigitalHomePageRecommendationViewHolder(parent, listener)
+                else -> super.createViewHolder(parent, type)
+            }
         }
     }
 

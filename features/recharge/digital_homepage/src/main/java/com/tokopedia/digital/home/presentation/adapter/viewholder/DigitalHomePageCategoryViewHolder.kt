@@ -15,15 +15,18 @@ class DigitalHomePageCategoryViewHolder(itemView: View?, val onItemBindListener:
         AbstractViewHolder<DigitalHomePageCategoryModel>(itemView) {
 
     override fun bind(element: DigitalHomePageCategoryModel?) {
-        val layoutManager = LinearLayoutManager(itemView.context)
-        itemView.rv_recharge_home_category.layoutManager = layoutManager
-        if (element?.isLoaded == true) {
-            itemView.categoryShimmering.hide()
-            itemView.rv_recharge_home_category.show()
-            itemView.rv_recharge_home_category.adapter = DigitalItemCategoryAdapter(element.listSubtitle, onItemBindListener)
-        } else {
-            itemView.categoryShimmering.show()
-            itemView.rv_recharge_home_category.hide()
+        with (itemView) {
+            val layoutManager = LinearLayoutManager(context)
+            rv_recharge_home_category.layoutManager = layoutManager
+            if (element?.isLoaded == true) {
+                categoryShimmering.hide()
+                tv_recharge_home_category_title.hide()
+                rv_recharge_home_category.show()
+                rv_recharge_home_category.adapter = DigitalItemCategoryAdapter(element.listSubtitle, onItemBindListener)
+            } else {
+                categoryShimmering.show()
+                rv_recharge_home_category.hide()
+            }
         }
     }
 

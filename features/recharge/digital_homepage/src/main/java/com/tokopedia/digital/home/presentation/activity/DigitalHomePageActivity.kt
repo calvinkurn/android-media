@@ -30,7 +30,11 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
         GraphqlClient.init(this)
     }
 
-    override fun getNewFragment(): Fragment = DigitalHomePageFragment.getInstance()
+    override fun getNewFragment(): Fragment {
+        val bundle = intent.extras
+        val platformId = bundle?.getString(PARAM_PLATFORM_ID)?.toIntOrNull() ?: 0
+        return DigitalHomePageFragment.newInstance(platformId)
+    }
 
     override fun getScreenName(): String {
         return DIGITAL_HOMEPAGE_SCREEN_NAME
@@ -49,6 +53,8 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     }
 
     companion object {
+        const val PARAM_PLATFORM_ID = "platform_id"
+
         const val DIGITAL_HOMEPAGE_SCREEN_NAME = "/digital/subhomepage/topup"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
 

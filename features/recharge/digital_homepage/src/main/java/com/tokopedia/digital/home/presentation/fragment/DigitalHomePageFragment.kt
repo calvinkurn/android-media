@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -27,7 +28,9 @@ import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
+import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.model.*
+import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataMapper
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
@@ -57,9 +60,10 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     lateinit var viewModel: DigitalHomePageViewModel
     private var searchBarTransitionRange = 0
 
+    private var platformId: Int = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.layout_digital_home, container, false)
-        return view
+        return inflater.inflate(R.layout.layout_digital_home, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +72,10 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
+        }
+
+        arguments?.let {
+            platformId = it.getInt(EXTRA_PLATFORM_ID, 0)
         }
 
         searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(resources.displayMetrics)
@@ -169,6 +177,23 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        viewModel.digitalHomePageList.observe(this, Observer {
+            clearAllData()
+            it?.run {
+                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_SECTION_ORDER])?.let { categoryData ->
+                    trackingUtil.eventCategoryImpression(categoryData)
+                }
+                val list = this.filter { item -> !item.isLoaded || item.isSuccess }
+                renderList(list)
+            }
+        })
+
+        viewModel.isAllError.observe(this, Observer {
+            it?.let { isAllError ->
+                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadInitialData() }
+            }
+        })
+
         viewModel.rechargeHomepageSections.observe(this, Observer {
             when (it) {
                 is Success -> {
@@ -182,11 +207,27 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     override fun loadData(page: Int) {
-        viewModel.getRechargeHomepageSections(
-                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
-                viewModel.createRechargeHomepageSectionsParams(false),
-                swipeToRefresh?.isRefreshing ?: false
-        )
+        // Load dynamic sub-homepage if platformId is provided; else load old sub-homepage
+        if (platformId > 0) {
+            viewModel.getRechargeHomepageSections(
+                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
+                    viewModel.createRechargeHomepageSectionsParams(platformId, false),
+                    swipeToRefresh?.isRefreshing ?: false
+            )
+        } else {
+            isLoadingInitialData = true
+            adapter.clearAllElements()
+            showLoading()
+
+            val queryList = mapOf(
+                    DigitalHomePageUseCase.QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
+                    DigitalHomePageUseCase.QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
+                    DigitalHomePageUseCase.QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
+                    DigitalHomePageUseCase.QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
+            )
+            viewModel.initialize(queryList)
+            viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
+        }
     }
 
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
@@ -316,7 +357,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
-        return DigitalHomePageTypeFactory(this)
+        return DigitalHomePageTypeFactory(this, this, platformId > 0)
     }
 
     override fun onItemClicked(t: Visitable<*>) {
@@ -356,9 +397,17 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     companion object {
+        const val EXTRA_PLATFORM_ID = "platform_id"
+
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
 
-        fun getInstance() = DigitalHomePageFragment()
+        fun newInstance(platformId: Int): DigitalHomePageFragment {
+            val fragment = DigitalHomePageFragment()
+            val bundle = Bundle()
+            bundle.putInt(EXTRA_PLATFORM_ID, platformId)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
