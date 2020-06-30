@@ -15,7 +15,7 @@ import javax.inject.Inject
  */
 class AddMediaUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<AddMediaChannelResponse.GetMediaId>() {
+) : BaseUseCase<AddMediaChannelResponse.GetMediaId>() {
 
     private val query = """
             mutation addMedias(${'$'}channelId: String!, ${'$'}coverUrl: String, ${'$'}source: String!, ${'$'}type: Int!) {
@@ -34,7 +34,7 @@ class AddMediaUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): AddMediaChannelResponse.GetMediaId {
         val gqlRequest = GraphqlRequest(query, AddMediaChannelResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<AddMediaChannelResponse>(AddMediaChannelResponse::class.java)
         response?.mediaId?.let {
