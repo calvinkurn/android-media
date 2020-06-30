@@ -214,8 +214,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
                     intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
                     startActivity(intent);
-//                    startActivity(router.getManageAddressIntent(getActivity()));
-                    //Todo:: clean this ivan
                     break;
                 case SettingConstant.SETTING_ACCOUNT_KYC_ID:
                     onKycMenuClicked();
