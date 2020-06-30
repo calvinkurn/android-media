@@ -62,6 +62,7 @@ class LivenessDetectionViewModelTest: Spek({
             Then("The variable isSuccessRegister should be true"){
                 val result = viewModel.livenessResponseLiveData.value
                 assertTrue { (result as Success).data.isSuccessRegister }
+                viewModel.livenessResponseLiveData.removeObserver(observerSuccess)
             }
         }
 
@@ -92,6 +93,7 @@ class LivenessDetectionViewModelTest: Spek({
             Then("The variable isSuccessRegister should be false"){
                 val result = viewModel.livenessResponseLiveData.value
                 assertFalse { (result as Success).data.isSuccessRegister }
+                viewModel.livenessResponseLiveData.removeObserver(observerSuccess)
             }
         }
 
