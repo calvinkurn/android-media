@@ -14,7 +14,7 @@ import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.taptap.data.entiity.TapTapBaseEntity
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
-import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -30,6 +30,8 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     @Volatile
     var campaignId: Long = 0
     var waitingForCrackResult = false
+    val CRACK_GIFT_TIME_OUT = 3000L
+    val GET_COUPON_DETAIL_TIME_OUT = 1000L
 
     val giftHomeLiveData: MutableLiveData<LiveDataResult<TapTapBaseEntity>> = MutableLiveData()
     val giftCrackLiveData: MutableLiveData<LiveDataResult<ResponseCrackResultEntity>> = MutableLiveData()
@@ -46,10 +48,18 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     }
 
     fun crackGiftBox() {
+
         waitingForCrackResult = true
         launchCatchError(block = {
-            val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
-            giftCrackLiveData.postValue(LiveDataResult.success(response))
+            var responseReceived = false
+            withTimeout(CRACK_GIFT_TIME_OUT) {
+                val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
+                responseReceived = true
+                giftCrackLiveData.postValue(LiveDataResult.success(response))
+            }
+            if (!responseReceived) {
+                giftCrackLiveData.postValue(LiveDataResult.error(RuntimeException("Timeout exception")))
+            }
         }, onError = {
             giftCrackLiveData.postValue(LiveDataResult.error(it))
         })
@@ -57,10 +67,18 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
 
     fun getCouponDetails(benfitItems: List<CrackBenefitEntity>) {
         launchCatchError(block = {
-            val ids = benfitItems.filter { it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty() }
-                    .map { it.referenceID }
-            val data = getCatalogDetail(ids)
-            couponLiveData.postValue(LiveDataResult.success(data))
+            var responseReceived = false
+            withTimeout(GET_COUPON_DETAIL_TIME_OUT) {
+                val ids = benfitItems.filter { it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty() }
+                        .map { it.referenceID }
+                val data = getCatalogDetail(ids)
+                responseReceived = true
+                couponLiveData.postValue(LiveDataResult.success(data))
+            }
+            if (!responseReceived) {
+                couponLiveData.postValue(LiveDataResult.error(RuntimeException("Timeout exception")))
+            }
+
         }, onError = {
             couponLiveData.postValue(LiveDataResult.error(it))
         })
