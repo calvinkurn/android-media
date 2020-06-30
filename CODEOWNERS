@@ -215,6 +215,7 @@
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
 /libraries/cameraview/									@tokopedia/core-team
+/libraries/charts/				    		            @tokopedia/core-team
 /libraries/circular_view_pager/				    		@tokopedia/core-team
 /libraries/cm_push_notifications/						@tokopedia/minion-yoda
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
