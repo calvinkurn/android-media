@@ -1,6 +1,7 @@
 package com.tokopedia.seller_migration_common.presentation.widget
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.KEY_SHOULD_DISMISS_AFTER_RESTORE
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,14 +24,37 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
-abstract class SellerMigrationBottomSheet(private val titles: List<String> = emptyList(),
-                                          private val contents: List<String> = emptyList(),
-                                          private val images: ArrayList<String> = arrayListOf(),
-                                          private val showWarningCard: Boolean = true) : BottomSheetUnify() {
+abstract class SellerMigrationBottomSheet(private var titles: ArrayList<String> = arrayListOf(),
+                                          private var contents: ArrayList<String> = arrayListOf(),
+                                          private var images: ArrayList<String> = arrayListOf(),
+                                          private var showWarningCard: Boolean = true,
+                                          private var shouldDismissAfterRestore: Boolean = true) : BottomSheetUnify() {
 
+    companion object {
+        const val KEY_TITLE = "title"
+        const val KEY_CONTENTS = "contents"
+        const val KEY_IMAGES = "images"
+        const val KEY_SHOW_WARNING_CARD = "show_warning_card"
+    }
+
+    abstract fun inflateChildView(context: Context)
     abstract fun trackGoToSellerApp()
     abstract fun trackGoToPlayStore()
     abstract fun trackLearnMore()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        savedInstanceState?.let {
+            titles = it.getStringArrayList(KEY_TITLE) ?: arrayListOf()
+            contents = it.getStringArrayList(KEY_CONTENTS) ?: arrayListOf()
+            images = it.getStringArrayList(KEY_IMAGES) ?: arrayListOf()
+            showWarningCard = it.getBoolean(KEY_SHOW_WARNING_CARD, true)
+            shouldDismissAfterRestore = it.getBoolean(KEY_SHOULD_DISMISS_AFTER_RESTORE, true)
+        }
+
+        context?.run { inflateChildView(this) }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,19 +65,25 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
         setupWarningCard()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList(KEY_TITLE, titles)
+        outState.putStringArrayList(KEY_CONTENTS, contents)
+        outState.putStringArrayList(KEY_IMAGES, images)
+        outState.putBoolean(KEY_SHOW_WARNING_CARD, showWarningCard)
+        outState.putBoolean(KEY_SHOULD_DISMISS_AFTER_RESTORE, shouldDismissAfterRestore)
+    }
+
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        if (titles.isEmpty() && contents.isEmpty() && images.isEmpty()) {
-            dismissIfExist()
+        if (savedInstanceState != null && shouldDismissAfterRestore) {
+            dismissOnRestore()
         }
     }
 
-    private fun dismissIfExist() {
-        val bottomSheet = parentFragment?.childFragmentManager?.findFragmentByTag(TAG_SELLER_MIGRATION_BOTTOM_SHEET)
-        if (bottomSheet is BottomSheetUnify) {
-            bottomSheet.dismiss()
-            parentFragment?.childFragmentManager?.beginTransaction()?.remove(this)?.commit()
-        }
+    private fun dismissOnRestore() {
+        dismiss()
+        parentFragment?.childFragmentManager?.beginTransaction()?.remove(this)?.commit()
     }
 
     private fun setupPadding() {
