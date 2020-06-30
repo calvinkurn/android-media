@@ -68,7 +68,7 @@
         android:layout_marginTop="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_32"
         android:layout_marginRight="@dimen/dp_32"
-        android:visibility="gone"
+        android:visibility="invisible"
         tools:background="@drawable/gf_bg_large_benefit"
         tools:layout_height="80dp"
         tools:visibility="visible" />

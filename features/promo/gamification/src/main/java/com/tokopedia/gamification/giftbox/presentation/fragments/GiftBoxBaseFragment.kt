@@ -3,6 +3,8 @@ package com.tokopedia.gamification.giftbox.presentation.fragments
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
@@ -12,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.device.info.DeviceConnectionInfo
@@ -129,8 +133,10 @@ open class GiftBoxBaseFragment : Fragment() {
         if (activity is AppCompatActivity) {
             (activity as AppCompatActivity).setSupportActionBar(toolbar)
             (activity as AppCompatActivity).supportActionBar?.title = ""
-            tvToolbarTitle.text = activity?.getString(com.tokopedia.gamification.R.string.gami_gift_box_toolbar_title)
+            tvToolbarTitle.text = activity?.getString(R.string.gami_gift_60_toolbar_title)
         }
+        ImageViewCompat.setImageTintList(imageToolbarIcon, ColorStateList.valueOf(ContextCompat.getColor(imageToolbarIcon.context, android.R.color.white)))
+        tvToolbarTitle.setTextColor(ContextCompat.getColor(tvToolbarTitle.context, android.R.color.white))
     }
 
     fun getScreenDimens() {
@@ -159,6 +165,11 @@ open class GiftBoxBaseFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.gami_menu_share, menu)
         super.onCreateOptionsMenu(menu, inflater)
+        val drawable = menu.getItem(0).icon
+        drawable.mutate()
+        context?.let {
+            drawable.setColorFilter(ContextCompat.getColor(it, android.R.color.white), PorterDuff.Mode.SRC_IN)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

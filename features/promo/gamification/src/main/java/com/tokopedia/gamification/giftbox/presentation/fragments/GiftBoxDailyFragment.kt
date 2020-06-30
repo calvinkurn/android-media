@@ -614,6 +614,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     override fun initialViewSetup() {
         super.initialViewSetup()
+
+        tvTapHint.setBackgroundResource(R.drawable.gami_bg_text_hint_box)
+        tvTapHint.setTextColor(ContextCompat.getColor(tvTapHint.context, R.color.gf_tap_hint))
         llBenefits.alpha = 0f
         llRewardMessage.alpha = 0f
         reminderLayout.alpha = 0f

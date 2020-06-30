@@ -614,9 +614,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     override fun initialViewSetup() {
         super.initialViewSetup()
-        tvToolbarTitle.text = activity?.getString(com.tokopedia.gamification.R.string.gami_gift_60_toolbar_title)
-        ImageViewCompat.setImageTintList(imageToolbarIcon, ColorStateList.valueOf(ContextCompat.getColor(imageToolbarIcon.context, android.R.color.white)))
-        tvToolbarTitle.setTextColor(ContextCompat.getColor(tvToolbarTitle.context, android.R.color.white))
 
         tvTimer.alpha = 0f
         progressBarTimer.alpha = 0f
@@ -906,15 +903,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 dialog.cancel()
             }
             dialog.show()
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        val drawable = menu.getItem(0).icon
-        drawable.mutate()
-        context?.let {
-            drawable.setColorFilter(ContextCompat.getColor(it, android.R.color.white), PorterDuff.Mode.SRC_IN)
         }
     }
 
