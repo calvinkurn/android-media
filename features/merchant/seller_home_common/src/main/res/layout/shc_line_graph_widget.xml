@@ -66,8 +66,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl1"
-            android:textSize="@dimen/fontSize_lvl2"
             android:ellipsize="end"
+            android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphValue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -76,9 +76,9 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
-        <LinearLayout
-            android:id="@+id/linearLineGraphView"
-            android:layout_width="match_parent"
+        <com.tokopedia.charts.view.LineChartView
+            android:id="@+id/lineGraphView"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
@@ -86,18 +86,19 @@
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl2"
-            android:gravity="bottom"
             app:layout_constraintBottom_toTopOf="@+id/btnLineGraphMore"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLineGraphValue"
-            app:layout_constraintVertical_bias="0.0">
-
-            <com.db.williamchart.view.LineChartView
-                android:id="@+id/lineGraphView"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/shc_dimen_190dp" />
-        </LinearLayout>
+            app:layout_constraintVertical_bias="0.0"
+            app:lcvFillColor="@color/shc_line_chart_fill_color"
+            app:lcvLineColor="@color/shc_line_chart_line_color"
+            app:lcvLineWidth="1.8"
+            app:lcvShowChartDot="false"
+            app:lcvShowChartValue="false"
+            app:lcvShowVerticalGrid="false"
+            app:lcvXAxisTextColor="@color/Neutral_N700_96"
+            app:lcvYAxisTextColor="@color/Neutral_N700_96" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btnLineGraphMore"
