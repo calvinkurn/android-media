@@ -55,6 +55,7 @@ import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
+import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
@@ -180,7 +181,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         CookieManager.getInstance().setAcceptCookie(true);
 
         webView.clearCache(true);
-        webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
+        webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -329,7 +330,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onPermissionRequest(PermissionRequest request) {
-            for (String resource:
+            for (String resource :
                     request.getResources()) {
                 if (resource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
                     permissionCheckerHelper = new PermissionCheckerHelper();
@@ -338,10 +339,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         public void onPermissionDenied(String permissionText) {
                             request.deny();
                         }
+
                         @Override
                         public void onNeverAskAgain(String permissionText) {
                             request.deny();
                         }
+
                         @Override
                         public void onPermissionGranted() {
                             request.grant(request.getResources());
@@ -350,6 +353,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             }
         }
+
         @Override
         public void onPermissionRequestCanceled(PermissionRequest request) {
             super.onPermissionRequestCanceled(request);
@@ -472,6 +476,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
 
     class MyWebViewClient extends WebViewClient {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            if (view.getContext() instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) view.getContext();
+                String title = view.getTitle();
+                String activityTitle = activity.getTitle();
+                if (TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE)) {
+                    if (activity.getShowTitleBar()) {
+                        activity.setTitle(title);
+                        activity.updateTitle(title);
+                    }
+                }
+            }
+        }
 
         @Nullable
         @Override
@@ -558,7 +577,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         String headerText = null;
 
         try {
-            if(uri.isHierarchical()) {
+            if (uri.isHierarchical()) {
                 queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
                 headerText = uri.getQueryParameter(CUST_HEADER);
             }
@@ -577,7 +596,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
             if (queryParam != null)
                 intent.putExtra(CUST_OVERLAY_URL, queryParam);
-            if(headerText != null)
+            if (headerText != null)
                 intent.putExtra(CUST_HEADER, headerText);
             startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
@@ -610,7 +629,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         }
-        if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
+        if (url.contains(LOGIN_APPLINK) || url.contains(REGISTER_APPLINK)) {
             startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
             return true;
         }
