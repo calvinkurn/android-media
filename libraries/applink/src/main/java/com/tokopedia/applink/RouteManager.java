@@ -160,8 +160,6 @@ public class RouteManager {
      * @return true if successfully routing to activity
      */
     public static boolean route(Context context, String applinkPattern, String... parameter) {
-        Bundle bundle = getBundleFromAppLinkQueryParams(applinkPattern);
-        bundle.putBundle(QUERY_PARAM, bundle);
         return route(context, new Bundle(), applinkPattern, parameter);
     }
 
@@ -182,6 +180,8 @@ public class RouteManager {
             mappedDeeplink = uriString;
         }
         ApplinkLogger.getInstance(context).appendTrace("Mapped Deeplink:\n" + mappedDeeplink);
+
+        queryParamBundle.putAll(getBundleFromAppLinkQueryParams(mappedDeeplink));
 
         Intent intent;
         String dynamicFeatureDeeplink = DeeplinkDFMapper.getDFDeeplinkIfNotInstalled(context, mappedDeeplink);

@@ -39,7 +39,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieCompositionFactory;
 import com.airbnb.lottie.LottieDrawable;
@@ -200,50 +199,6 @@ public class MainParentActivity extends BaseActivity implements
     private float OS_STATE_SELECTED = 1f;
     private float OS_STATE_UNSELECTED = 0f;
     private float OS_STATE_ANIMATED = 0.7f;
-
-    @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
-    public static Intent getApplinkIntent(Context context, Bundle bundle) {
-        return start(context);
-    }
-
-    @DeepLink({ApplinkConst.HOME_FEED, ApplinkConst.FEED, ApplinkConst.CONTENT_EXPLORE})
-    public static Intent getApplinkFeedIntent(Context context, Bundle bundle) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    @DeepLink(ApplinkConst.HOME_ACCOUNT)
-    public static Intent getApplinkAccountIntent(Context context, Bundle bundle) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
-        return intent;
-    }
-
-    @DeepLink(ApplinkConst.HOME_ACCOUNT_SELLER)
-    public static Intent getApplinkAccountSellerIntent(Context context) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
-        intent.putExtra(GlobalNavConstant.ACCOUNT_TAB, GlobalNavConstant.ACCOUNT_TAB_SELLER);
-        return intent;
-    }
-
-    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE, ApplinkConst.OFFICIAL_STORE_CATEGORY})
-    public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    @DeepLink({ApplinkConst.HOME_RECOMMENDATION})
-    public static Intent getApplinkRecommendationEvent(Context context) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, RECOMENDATION_LIST);
-        intent.putExtra(SCROLL_RECOMMEND_LIST, true);
-        return intent;
-    }
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -951,9 +906,6 @@ public class MainParentActivity extends BaseActivity implements
                 applinkIntent.setData(Uri.parse(applink));
                 if (getIntent() != null && getIntent().getExtras() != null) {
                     Intent newIntent = getIntent();
-                    newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
-                    newIntent.removeExtra(DeepLink.REFERRER_URI);
-                    newIntent.removeExtra(DeepLink.URI);
                     newIntent.removeExtra(ApplinkRouter.EXTRA_APPLINK);
                     if (newIntent.getExtras() != null)
                         applinkIntent.putExtras(newIntent.getExtras());

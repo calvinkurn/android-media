@@ -20,6 +20,11 @@ import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForLayanan
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
+import com.tokopedia.applink.home.DeeplinkMapperHome
+import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
+import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeContentExplore
+import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeFeed
+import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeOfficialStore
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.marketplace.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
@@ -82,6 +87,7 @@ object DeeplinkMapper {
                 val uri = Uri.parse(deeplink)
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
+                    deeplink.startsWith(ApplinkConst.HOME, true) -> getRegisteredNavigationHome(deeplink)
                     deeplink.startsWith(ApplinkConst.INBOX, true) -> ApplinkConsInternalHome.HOME_INBOX
                     deeplink.startsWith(ApplinkConst.QRSCAN, true) -> ApplinkConstInternalMarketplace.QR_SCANNEER
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_SHOP, true) -> getRegisteredNavigationSalamUmrahShop(deeplink, context)
@@ -133,6 +139,7 @@ object DeeplinkMapper {
                         getRegisteredNavigationSalamUmrahOrderDetail(deeplink, context)
                     deeplink.startsWith(ApplinkConst.BRAND_LIST, true) ->
                         getBrandlistInternal(deeplink)
+                    deeplink.startsWith(ApplinkConst.OFFICIAL_STORE) -> getRegisteredNavigationHomeOfficialStore(deeplink)
                     deeplink.startsWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) ->
                         getRegisteredNavigationMarketplace(deeplink)
                     deeplink.startsWith(ApplinkConst.SHOP_SCORE_DETAIL) ->
@@ -164,6 +171,9 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.SELLER_STATUS, true) -> getSomShippedAppLink(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.FEED_DETAILS) ->
                         getRegisteredFeed(deeplink)
+                    deeplink.startsWith(ApplinkConst.FEED) && uri.host == Uri.parse(ApplinkConst.FEED).host && uri.pathSegments.isEmpty() ->
+                        getRegisteredNavigationHomeFeed()
+                    deeplink.startsWithPattern(ApplinkConst.CONTENT_EXPLORE) -> getRegisteredNavigationHomeContentExplore(deeplink)
                     DeeplinkMapperMerchant.isShopPageDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageInternalApplink(uri)
                     DeeplinkMapperMerchant.isShopPageHomeDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageHomeInternalApplink(uri)
                     DeeplinkMapperMerchant.isShopPageInfoDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri)
