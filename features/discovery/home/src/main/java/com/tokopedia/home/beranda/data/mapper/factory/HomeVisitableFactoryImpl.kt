@@ -21,10 +21,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -129,6 +131,7 @@ class HomeVisitableFactoryImpl(
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
         if (needToShowUserWallet) {
             val headerViewModel = HeaderDataModel()
+            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
             visitableList.add(headerViewModel)
         }
         return this
@@ -250,7 +253,10 @@ class HomeVisitableFactoryImpl(
                         )
                     }
                 }
-                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
+                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createReminderWidget(ReminderEnum.RECHARGE) }
+                DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> {
+                    createReminderWidget(ReminderEnum.SALAM)
+                }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                     createDynamicChannel(
                             channel,
@@ -480,8 +486,8 @@ class HomeVisitableFactoryImpl(
         visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
-    private fun createRechargeRecommendationWidget() {
-        if (!isCache) visitableList.add(RechargeRecommendationViewModel())
+    private fun createReminderWidget(source: ReminderEnum){
+        if (!isCache) visitableList.add(ReminderWidgetModel(source=source))
     }
 
     override fun build(): List<Visitable<*>> = visitableList

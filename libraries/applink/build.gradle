@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.playCore)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.devMonitoringTools)
 
     implementation (rootProject.ext.serviceDependencies.crashlytics)
 }

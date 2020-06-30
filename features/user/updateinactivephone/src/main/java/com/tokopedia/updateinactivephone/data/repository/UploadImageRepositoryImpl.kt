@@ -10,12 +10,12 @@ import okhttp3.RequestBody
 
 class UploadImageRepositoryImpl @Inject constructor(private val uploadImageSourceFactory: UploadImageSourceFactory) : UploadImageRepository {
 
-    override suspend fun uploadImage(url: String, params: Map<String, String>, imageFile: RequestBody): UploadImageModel {
+    override suspend fun uploadImage(url: String, userId: RequestBody, imageFile: RequestBody): UploadImageModel {
         return uploadImageSourceFactory
                 .createCloudUploadImageDataStore()
                 .uploadImage(
                         url,
-                        params,
+                        userId,
                         imageFile)
     }
 

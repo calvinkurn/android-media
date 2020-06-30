@@ -40,10 +40,10 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
         })
 
         brandRecommendationViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            val itemList: ArrayList<ComponentsItem>? = item.filter { !it.data?.get(0)?.imageUrlMobile.isNullOrEmpty() } as ArrayList<ComponentsItem>
-            itemList?.let {
-                discoveryRecycleAdapter.setDataList(it)
-                sendBrandRecommendationImpressionGtm(it[0].data ?: ArrayList())
+            val itemList: List<ComponentsItem> = item.filter { !it.data?.get(0)?.imageUrlMobile.isNullOrEmpty() }
+            if (itemList.isNotEmpty()) {
+                discoveryRecycleAdapter.setDataList(itemList as? ArrayList<ComponentsItem>)
+                sendBrandRecommendationImpressionGtm(itemList[0].data ?: ArrayList())
             }
         })
     }

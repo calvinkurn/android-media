@@ -26,14 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        tools:text="TopDonasi100" />
-
-    <ImageView
-        android:id="@+id/img_donation_info"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
-        android:src="@drawable/info_icon" />
+        android:drawableRight="@drawable/info_icon"
+        android:drawablePadding="@dimen/dp_8"
+        tools:text="TopDonasi100 donasi " />
 
 </LinearLayout>

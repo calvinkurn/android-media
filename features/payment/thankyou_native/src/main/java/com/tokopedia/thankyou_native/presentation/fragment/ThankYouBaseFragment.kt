@@ -27,11 +27,14 @@ import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListene
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
-import com.tokopedia.thankyou_native.recommendation.presentation.view.WishList
+import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
+import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
+
 
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
@@ -53,11 +56,16 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
 
+    private var iDigitalRecommendationView: IDigitalRecommendationView? = null
+
+    private val digitalRecommendationLayout = R.layout.thank_layout_digital_recom
+
     private val thanksPageDataViewModel: ThanksPageDataViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
+    private var trackingQueue: TrackingQueue? = null
 
     lateinit var thanksPageData: ThanksPageData
 
@@ -72,6 +80,18 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
             }
         }
+        activity?.let { trackingQueue = TrackingQueue(it) }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue?.sendAll()
+    }
+
+
+    open fun getTrackingQueue(): TrackingQueue? {
+        return trackingQueue
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,19 +106,36 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun addRecommendation() {
-        val merchantType = ThankPageTypeMapper.getThankPageType(thanksPageData)
-        val recomContainer = getRecommendationContainer()
-        recomContainer?.let { container ->
-            iRecommendationView = when (merchantType) {
-                is MarketPlaceThankPage -> {
-                    val view = getRecommendationView(marketRecommendationPlaceLayout)
-                    container.addView(view)
-                    view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
-                }
-                is DigitalThankPage -> null
+        when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+            is MarketPlaceThankPage -> {
+                addMarketPlaceRecommendation()
+                addDigitalRecommendation()
             }
-            iRecommendationView?.loadRecommendation(this)
+            is DigitalThankPage -> {
+                addDigitalRecommendation()
+                addMarketPlaceRecommendation()
+            }
         }
+    }
+    private fun addMarketPlaceRecommendation(){
+        val recomContainer = getRecommendationContainer()
+        iRecommendationView = recomContainer?.let { container ->
+            val view = getRecommendationView(marketRecommendationPlaceLayout)
+            container.addView(view)
+            view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
+        }
+        getTrackingQueue()?.let { iRecommendationView?.loadRecommendation(this, it) }
+
+    }
+    private fun addDigitalRecommendation(){
+        val recomContainer = getRecommendationContainer()
+        iDigitalRecommendationView =  recomContainer?.let { container ->
+            val view = getRecommendationView(digitalRecommendationLayout)
+            container.addView(view)
+            view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
+        }
+        getTrackingQueue()?.let { iDigitalRecommendationView?.loadRecommendation(this, it) }
+
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {
@@ -177,6 +214,13 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         activity?.finish()
     }
 
+    override fun launchApplink(applink: String) {
+        RouteManager.route(context, applink, "")
+        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent()
+        activity?.finish()
+    }
+
+
     override fun gotoPaymentWaitingPage() {
         val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
         val paymentListIntent = RouteManager.getIntent(context, ApplinkConst.PMS, "")
@@ -204,6 +248,27 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         } catch (e: Exception) {
         }
     }
+
+    override fun gotoOrderList(applink: String) {
+        try {
+            if(applink.isNullOrBlank()){
+                gotoOrderList()
+            }else {
+                thankYouPageAnalytics.get().sendCheckTransactionListEvent()
+                val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
+                val orderListListIntent = RouteManager.getIntent(context, applink)
+                orderListListIntent?.let {
+                    TaskStackBuilder.create(context)
+                            .addNextIntent(homeIntent)
+                            .addNextIntent(orderListListIntent)
+                            .startActivities()
+                }
+                activity?.finish()
+            }
+        } catch (e: Exception) {
+        }
+    }
+
 
     private fun getOrderListPageIntent(): Intent? {
         //todo need multi deeplink once other type of transaction integrated.
