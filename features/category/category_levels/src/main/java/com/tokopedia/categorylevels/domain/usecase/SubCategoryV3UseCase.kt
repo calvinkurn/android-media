@@ -1,6 +1,5 @@
 package com.tokopedia.categorylevels.domain.usecase
 
-import android.content.Context
 import com.tokopedia.common_category.data.raw.GQL_NAV_CATEGORY_DETAIL_V3
 import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
 import com.tokopedia.common_category.model.bannedCategory.Data
@@ -11,7 +10,7 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-class SubCategoryV3UseCase @Inject constructor(private val context: Context, private val graphqlUseCase: GraphqlUseCase) : UseCase<Data?>() {
+class SubCategoryV3UseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) : UseCase<Data?>() {
     override fun createObservable(requestParams: RequestParams?): Observable<Data?> {
 
         val graphqlRequest = GraphqlRequest(GQL_NAV_CATEGORY_DETAIL_V3, BannedCategoryResponse::class.java, requestParams?.parameters, false)
