@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -184,7 +185,7 @@ public class MainParentActivity extends BaseActivity implements
     private BroadcastReceiver newFeedClickedReceiver;
     private SharedPreferences cacheManager;
     private Handler handler = new Handler();
-    private CoordinatorLayout fragmentContainer;
+    private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
 
     private PerformanceMonitoring officialStorePerformanceMonitoring;
