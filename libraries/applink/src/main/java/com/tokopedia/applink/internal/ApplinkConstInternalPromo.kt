@@ -14,7 +14,8 @@ object ApplinkConstInternalPromo {
     const val PROMO_LIST_FLIGHT = "${INTERNAL_PROMO}/list/flight"
     const val PROMO_DETAIL_FLIGHT = "${INTERNAL_PROMO}/detail/flight"
 
-    const val PROMO_CAMPAIGN_SHAKE_LANDING = "${INTERNAL_PROMO}/campaign-shake-landing/{is_long_shake}/"
+    const val PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX = "${INTERNAL_PROMO}/campaign-shake-landing"
+    const val PROMO_CAMPAIGN_SHAKE_LANDING = "${PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX}/{is_long_shake}/"
 
     /**
      * PromoCheckoutListHotelActivity

@@ -69,18 +69,32 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun showShopPageHeaderContent() {
-        view.shop_page_header_content_shimmer_loading.hide()
+        hideLoaderLoading()
         view.shop_page_header_content.show()
     }
 
     fun showShopPageHeaderContentError() {
-        view.shop_page_header_content_shimmer_loading.hide()
+        hideLoaderLoading()
         view.shop_page_header_content.invisible()
     }
 
     fun showShopPageHeaderContentLoading() {
-        view.shop_page_header_content_shimmer_loading.show()
+        showLoaderLoading()
         view.shop_page_header_content.hide()
+    }
+
+    private fun showLoaderLoading(){
+        view.loader_profile_image.show()
+        view.first_rect_loader_view.show()
+        view.second_rect_loader_view.show()
+        view.third_rect_loader_view.show()
+    }
+
+    private fun hideLoaderLoading(){
+        view.loader_profile_image.hide()
+        view.first_rect_loader_view.hide()
+        view.second_rect_loader_view.hide()
+        view.third_rect_loader_view.hide()
     }
 
     private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {

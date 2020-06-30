@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -38,7 +37,7 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
+import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.GMModuleRouter;
@@ -470,8 +469,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
-        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
-        return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
+        return DevOptConfig.isChuckNotifEnabled(this);
     }
 
     @Override

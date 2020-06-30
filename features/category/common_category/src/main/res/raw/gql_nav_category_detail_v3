@@ -10,6 +10,7 @@ query CategoryDetailQueryV3($identifier: String!, $intermediary: Boolean!, $safe
       name
       tree
       parent
+      rootId
       url
       redirectionURL
       appRedirectionURL

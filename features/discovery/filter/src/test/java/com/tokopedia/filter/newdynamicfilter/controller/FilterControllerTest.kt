@@ -58,8 +58,12 @@ class FilterControllerTest {
         it.isPopular = true
     }
 
-    private val minPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga Minimum"))
-    private val maxPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga Maximum"))
+    private val minPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "0", "Harga Minimum")).also {
+        it.inputType = Option.INPUT_TYPE_TEXTBOX
+    }
+    private val maxPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga Maximum")).also {
+        it.inputType = Option.INPUT_TYPE_TEXTBOX
+    }
 
     private val tokoOptions = mutableListOf<Option>()
     private val locationOptions = mutableListOf<Option>()
@@ -183,7 +187,7 @@ class FilterControllerTest {
     }
 
     @Test
-    fun testFilterControllerInitializedUsingOptionsWithEmptyValue() {
+    fun testFilterControllerInitializedUsingOptionsWithEmptyValueAndTypeTextBox() {
         val filterParameter = HashMap<String, String>(createParameter())
         filterParameter[minPriceOption.key] = 1000.toString()
         filterParameter[maxPriceOption.key] = 10000.toString()
@@ -201,7 +205,7 @@ class FilterControllerTest {
         expectedOptionList.add(createPriceOptionWithValue(minPriceOption, 1000))
         expectedOptionList.add(createPriceOptionWithValue(maxPriceOption, 10000))
 
-        assertFilterViewStateSizeCorrect(expectedOptionList.size)
+        assertFilterViewStateSizeCorrect(2) // Expected is 2, min and max price option counted as 1
         assertFilterViewStateCorrect(expectedOptionList)
     }
 
@@ -450,7 +454,7 @@ class FilterControllerTest {
                     "Parameter should contain key: $expectedParameterKey, expected: $expectedParameterContainsKey, actual: ${actualParameter.contains(expectedParameterKey)}"
         }
 
-        val actualFilterViewStateSize = filterController.getFilterViewStateSize()
+        val actualFilterViewStateSize = filterController.getFilterCount()
         assert(actualFilterViewStateSize == 0) {
             "Testing reset all filters:\n" +
                     "Filter View State expected size: 0, actual size: $actualFilterViewStateSize"
@@ -669,9 +673,9 @@ class FilterControllerTest {
     }
 
     private fun assertFilterViewStateSizeCorrect(expectedSize: Int) {
-        val actualSize = filterController.getFilterViewStateSize()
+        val actualSize = filterController.getFilterCount()
 
-        assert(filterController.getFilterViewStateSize() == expectedSize) {
+        assert(filterController.getFilterCount() == expectedSize) {
             getAssertFilterViewStateSizeMessage(expectedSize, actualSize)
         }
     }

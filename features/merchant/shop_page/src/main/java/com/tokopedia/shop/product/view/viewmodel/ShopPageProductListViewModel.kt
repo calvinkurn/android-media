@@ -51,6 +51,7 @@ class ShopPageProductListViewModel @Inject constructor(
         private const val ORDER_BY_LAST_UPDATE = 3
         private const val ORDER_BY_MOST_SOLD = 8
         private const val NUM_VOUCHER_DISPLAY = 3
+        private const val START_PAGE = 1
 
     }
 
@@ -101,13 +102,15 @@ class ShopPageProductListViewModel @Inject constructor(
                     else getShopProductEtalaseHighlightData(shopId, etalaseList)
                 }
                 val productListDataAsync = async(Dispatchers.IO) {
-                    getProductList(getShopProductUseCase, shopId, ShopProductFilterInput().apply {
-                        this.page = 1
-                        this.perPage = ShopPageConstant.DEFAULT_PER_PAGE
-                        this.etalaseMenu = shopEtalaseItemDataModel.etalaseId
-                        this.searchKeyword = ""
-                        this.sort = sortId.toIntOrZero()
-                    })
+                    getProductList(
+                            getShopProductUseCase,
+                            shopId,
+                            START_PAGE,
+                            ShopPageConstant.DEFAULT_PER_PAGE,
+                            shopEtalaseItemDataModel.etalaseId,
+                            "",
+                            sortId.toIntOrZero()
+                    )
                 }
                 membershipStampProgressDataAsync.await()?.let {
                     membershipData.postValue(Success(it))
@@ -141,13 +144,15 @@ class ShopPageProductListViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             coroutineScope {
                 val productListDataAsync = async(Dispatchers.IO) {
-                    getProductList(getShopProductUseCase, shopId, ShopProductFilterInput().apply {
-                        this.page = 1
-                        this.perPage = ShopPageConstant.DEFAULT_PER_PAGE
-                        this.etalaseMenu = shopEtalaseItemDataModel.etalaseId
-                        this.searchKeyword = ""
-                        this.sort = sortId.toIntOrZero()
-                    })
+                    getProductList(
+                            getShopProductUseCase,
+                            shopId,
+                            START_PAGE,
+                            ShopPageConstant.DEFAULT_PER_PAGE,
+                            shopEtalaseItemDataModel.etalaseId,
+                            "",
+                            sortId.toIntOrZero()
+                    )
                 }
                 val productListDataModel = productListDataAsync.await()
                 productListData.postValue(Success(productListDataModel))
@@ -165,17 +170,18 @@ class ShopPageProductListViewModel @Inject constructor(
             val listEtalaseHighlight = etalaseList
                     .filter { it.highlighted }
             val listProductEtalaseHighlightResponse = listEtalaseHighlight.map {
-                val productFilter = ShopProductFilterInput().apply {
-                    this.page = 1
-                    this.perPage = ShopPageConstant.ETALASE_HIGHLIGHT_COUNT
-                    this.etalaseMenu = it.etalaseId
-                    this.searchKeyword = ""
-                    this.sort = getSort(it.etalaseId)
-                }
                 async(Dispatchers.IO) {
                     val getShopHighlightProductUseCase = getShopHighlightProductUseCase.get()
                     listGetShopHighlightProductUseCase.add(getShopHighlightProductUseCase)
-                    getProductList(getShopHighlightProductUseCase, shopId, productFilter).second
+                    getProductList(
+                            getShopHighlightProductUseCase,
+                            shopId,
+                            START_PAGE,
+                            ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
+                            it.etalaseId,
+                            "",
+                            getSort(it.etalaseId)
+                    ).second
                 }
             }.awaitAll()
             val listEtalaseHighlightCarouselViewModel = mutableListOf<EtalaseHighlightCarouselViewModel>()
@@ -251,14 +257,20 @@ class ShopPageProductListViewModel @Inject constructor(
     private suspend fun getProductList(
             useCase: GqlGetShopProductUseCase,
             shopId: String,
-            productFilter: ShopProductFilterInput
+            page : Int,
+            perPage: Int,
+            etalaseId: String,
+            keyword: String,
+            sortId: Int
     ): Pair<Boolean, List<ShopProductViewModel>> {
-        useCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
+        useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
+                page,perPage,keyword,etalaseId,sortId
+        ))
         val productListResponse = useCase.executeOnBackground()
-        val isHasNextPage = isHasNextPage(productFilter.page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
+        val isHasNextPage = isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
         return Pair(
                 isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu) }
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), etalaseId) }
         )
     }
 
@@ -280,13 +292,15 @@ class ShopPageProductListViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val listShopProduct = withContext(Dispatchers.IO) {
-                getProductList(getShopProductUseCase, shopId, ShopProductFilterInput().apply {
-                    this.page = 1
-                    this.perPage = ShopPageConstant.DEFAULT_PER_PAGE
-                    this.etalaseMenu = selectedEtalaseId
-                    this.searchKeyword = ""
-                    this.sort = sortId.toIntOrZero()
-                })
+                getProductList(
+                        getShopProductUseCase,
+                        shopId,
+                        START_PAGE,
+                        ShopPageConstant.DEFAULT_PER_PAGE,
+                        selectedEtalaseId,
+                        "",
+                        sortId.toIntOrZero()
+                )
             }
             productListData.postValue(Success(listShopProduct))
         }) {
@@ -297,17 +311,20 @@ class ShopPageProductListViewModel @Inject constructor(
     fun getNextProductListData(
             shopId: String,
             selectedEtalaseId: String,
-            page: Int
+            page: Int,
+            sortId: String
     ) {
         launchCatchError(block = {
             val listShopProduct = withContext(Dispatchers.IO) {
-                getProductList(getShopProductUseCase, shopId, ShopProductFilterInput().apply {
-                    this.page = page
-                    this.perPage = ShopPageConstant.DEFAULT_PER_PAGE
-                    this.etalaseMenu = selectedEtalaseId
-                    this.searchKeyword = ""
-                    this.sort = 0
-                })
+                getProductList(
+                        getShopProductUseCase,
+                        shopId,
+                        page,
+                        ShopPageConstant.DEFAULT_PER_PAGE,
+                        selectedEtalaseId,
+                        "",
+                        sortId.toIntOrZero()
+                )
             }
             productListData.postValue(Success(listShopProduct))
         }) {
