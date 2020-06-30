@@ -23,12 +23,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -41,11 +42,16 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_NETWORK_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_PREPARE_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_RENDER_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_TRACE
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
@@ -54,6 +60,7 @@ import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPerformanceMonitoringListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
@@ -69,6 +76,7 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductsEmptyViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
+import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -705,12 +713,24 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun initInjector() {
-        DaggerShopProductComponent
-                .builder()
-                .shopProductModule(ShopProductModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.run {
+            DaggerShopProductComponent
+                    .builder()
+                    .shopProductModule(ShopProductModule())
+                    .shopComponent(ShopComponentInstance.getComponent(application))
+                    .build()
+                    .inject(this@ShopPageProductListFragment)
+        }
+    }
+
+    override fun onGetListErrorWithExistingData(throwable: Throwable?) {
+        clearCache()
+        super.onGetListErrorWithExistingData(throwable)
+    }
+
+    override fun onRetryClicked() {
+        clearCache()
+        super.onRetryClicked()
     }
 
     override fun loadInitialData() {
@@ -718,6 +738,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             isLoadingNewProductData = true
             shopProductAdapter.clearAllElements()
             showLoading()
+            startMonitoringPltNetworkRequest()
             viewModel.getEtalaseData(it)
         }
     }
@@ -833,10 +854,39 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun callInitialLoadAutomatically(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPltMonitoring()
         super.onCreate(savedInstanceState)
         context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
+    }
+
+    private fun initPltMonitoring() {
+        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.initShopPageProductTabPerformanceMonitoring()
+    }
+
+    private fun startMonitoringPltNetworkRequest(){
+        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltNetworkRequest(it)
+            }
+        }
+    }
+
+    private fun startMonitoringPltRenderPage() {
+        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltRenderPage(it)
+            }
+        }
+    }
+
+    private fun stopMonitoringPltRenderPage() {
+        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltRenderPage(it)
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -921,6 +971,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun observeViewModelLiveData() {
         viewModel.etalaseListData.observe(this, Observer {
+            startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
                     onSuccessGetEtalaseListData(it.data)
@@ -980,6 +1031,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     showErrorToasterWithRetry(it.throwable)
                 }
             }
+            stopMonitoringPltRenderPage()
         })
 
         viewModel.claimMembershipResp.observe(this, Observer {
@@ -1157,14 +1209,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun showToasterError(message: String) {
         activity?.let {
-            ToasterError.showClose(it, message)
+            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
     private fun onErrorGetMembershipInfo(t: Throwable) {
         shopProductAdapter.clearMembershipData()
         activity?.let {
-            ToasterError.showClose(it, ErrorHandler.getErrorMessage(context, t))
+            Toaster.make(view!!, ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

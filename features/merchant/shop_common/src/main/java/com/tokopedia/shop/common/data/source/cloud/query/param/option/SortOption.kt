@@ -9,12 +9,14 @@ sealed class SortOption(open val id: SortId, open val option: SortOrderOption) {
     data class SortBySold(override val option: SortOrderOption): SortOption(SOLD, option)
     data class SortByPrice(override val option: SortOrderOption): SortOption(PRICE, option)
     data class SortByName(override val option: SortOrderOption): SortOption(NAME, option)
+    data class SortByStock(override val option: SortOrderOption): SortOption(STOCK, option)
 
     enum class SortId {
         DEFAULT,
         UPDATE_TIME,
         SOLD,
         PRICE,
-        NAME
+        NAME,
+        STOCK
     }
 }

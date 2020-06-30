@@ -12,7 +12,7 @@ import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.shop_score.R;
 import com.tokopedia.shop_score.view.widget.SquareProgressBar;
 

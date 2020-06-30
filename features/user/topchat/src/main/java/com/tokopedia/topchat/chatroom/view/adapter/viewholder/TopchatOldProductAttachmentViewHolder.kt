@@ -12,12 +12,11 @@ class TopchatOldProductAttachmentViewHolder(
         private val listener: ProductAttachmentListener
 ) : ProductAttachmentViewHolder(itemView, listener) {
 
-    private var thumbnail: ImageView? = null
+    private var thumbnail: ImageView? = itemView?.findViewById(com.tokopedia.chat_common.R.id.attach_product_chat_image)
 
     override fun bind(product: ProductAttachmentViewModel?) {
         if (product == null) return
         super.bind(product)
-        bindView(product)
         bindImageClick(product)
     }
 
@@ -33,9 +32,5 @@ class TopchatOldProductAttachmentViewHolder(
                     )
             )
         }
-    }
-
-    private fun bindView(product: ProductAttachmentViewModel) {
-        thumbnail = itemView.findViewById(com.tokopedia.chat_common.R.id.attach_product_chat_image)
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.product.manage.item.video.di;
 
 import android.content.Context;
 
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -27,12 +26,6 @@ import retrofit2.Retrofit;
 @ActivityScope
 @Module
 public class YoutubeVideoModule {
-
-    @ActivityScope
-    @Provides
-    ImageHandler provideImageHandler(@ApplicationContext Context context) {
-        return new ImageHandler(context);
-    }
 
     @ActivityScope
     @Provides

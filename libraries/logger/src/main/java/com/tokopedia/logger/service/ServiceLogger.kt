@@ -3,7 +3,6 @@ package com.tokopedia.logger.service
 import android.content.Context
 import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.utils.ConnectionUtil
-import com.tokopedia.logger.utils.globalScopeLaunch
 
 class ServiceLogger {
     companion object {
@@ -15,17 +14,17 @@ class ServiceLogger {
                 return false
             }
             isRunning = true
-            globalScopeLaunch({
+            try {
                 if (ConnectionUtil.isInternetAvailable(context.applicationContext)) {
                     LogManager.sendLogToServer()
                 }
                 LogManager.deleteExpiredLogs()
-            }, {
-                it.printStackTrace()
-            }, {
+            } catch (e:Exception) {
+                e.printStackTrace()
+            } finally {
                 isRunning = false
                 onComplete()
-            })
+            }
             return false
         }
     }

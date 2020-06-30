@@ -25,16 +25,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.fragment_top_ads_add_credit.*
-
 import javax.inject.Inject
 
 class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFactory>(), TopAdsAddCreditView, DataCreditViewHolder.OnSelectedListener {
 
     private var selectedCreditPos = -1
+    private var userSession: UserSessionInterface? = null
 
     @Inject
     lateinit var presenter: TopAdsAddCreditPresenter
-    private var userSession: UserSessionInterface? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_top_ads_add_credit, container, false)

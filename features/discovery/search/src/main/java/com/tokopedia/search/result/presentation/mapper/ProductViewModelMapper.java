@@ -5,6 +5,8 @@ import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
@@ -13,7 +15,7 @@ import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
-import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
+import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 
@@ -30,9 +32,8 @@ public class ProductViewModelMapper {
             productViewModel.setGlobalNavViewModel(convertToViewModel(searchProductModel.getGlobalNavModel()));
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
-        if (searchProduct.getRelated() != null &&
-                !textIsEmpty(searchProduct.getRelated().getRelatedKeyword())) {
-            productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
+        if (searchProduct.getRelated() != null) {
+            productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProduct.getRelated()));
         }
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts(), useRatingString));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
@@ -67,10 +68,6 @@ public class ProductViewModelMapper {
         productViewModel.setDefaultView(searchProduct.getDefaultView());
 
         return productViewModel;
-    }
-
-    private boolean textIsEmpty(String str) {
-        return str == null || str.length() == 0;
     }
 
     private QuickFilterViewModel convertToQuickFilterViewModel(DataValue dynamicFilterModel, String formattedResultCount) {
@@ -137,20 +134,52 @@ public class ProductViewModelMapper {
         return itemList;
     }
 
-    private RelatedSearchViewModel convertToRelatedSearchModel(SearchProductModel.Related related) {
-        RelatedSearchViewModel relatedSearchModel = new RelatedSearchViewModel();
-        relatedSearchModel.setRelatedKeyword(related.getRelatedKeyword());
-
-        List<RelatedSearchViewModel.OtherRelated> otherRelatedList = new ArrayList<>();
-        for (SearchProductModel.OtherRelated otherRelatedResponse : related.getOtherRelated()) {
-            RelatedSearchViewModel.OtherRelated otherRelatedViewModel = new RelatedSearchViewModel.OtherRelated();
-            otherRelatedViewModel.setKeyword(otherRelatedResponse.getKeyword());
-            otherRelatedViewModel.setUrl(otherRelatedResponse.getUrl());
-            otherRelatedList.add(otherRelatedViewModel);
+    private RelatedViewModel convertToRelatedViewModel(SearchProductModel.Related related) {
+        List<BroadMatchViewModel> broadMatchViewModelList = new ArrayList<>();
+        for (SearchProductModel.OtherRelated otherRelated: related.getOtherRelated()) {
+            broadMatchViewModelList.add(convertToBroadMatchViewModel(otherRelated));
         }
-        relatedSearchModel.setOtherRelated(otherRelatedList);
 
-        return relatedSearchModel;
+        return new RelatedViewModel(
+                related.getRelatedKeyword(),
+                broadMatchViewModelList
+        );
+    }
+
+    private BroadMatchViewModel convertToBroadMatchViewModel(SearchProductModel.OtherRelated otherRelated) {
+        List<BroadMatchItemViewModel> broadMatchItemViewModelList = new ArrayList<>();
+        int position = 0;
+        for (SearchProductModel.OtherRelatedProduct otherRelatedProduct: otherRelated.getOtherRelatedProductList()) {
+            position++;
+            broadMatchItemViewModelList.add(convertToBroadMatchItemViewModel(otherRelatedProduct, position, otherRelated.getKeyword()));
+        }
+
+        return new BroadMatchViewModel(
+                otherRelated.getKeyword(),
+                otherRelated.getUrl(),
+                otherRelated.getApplink(),
+                broadMatchItemViewModelList
+        );
+    }
+
+    private BroadMatchItemViewModel convertToBroadMatchItemViewModel(
+            SearchProductModel.OtherRelatedProduct otherRelatedProduct,
+            int position,
+            String alternativeKeyword
+    ) {
+        return new BroadMatchItemViewModel(
+                otherRelatedProduct.getId(),
+                otherRelatedProduct.getName(),
+                otherRelatedProduct.getPrice(),
+                otherRelatedProduct.getImageUrl(),
+                otherRelatedProduct.getRating(),
+                otherRelatedProduct.getCountReview(),
+                otherRelatedProduct.getUrl(),
+                otherRelatedProduct.getApplink(),
+                otherRelatedProduct.getPriceString(),
+                position,
+                alternativeKeyword
+        );
     }
 
     private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels, boolean useRatingString) {
@@ -263,6 +292,8 @@ public class ProductViewModelMapper {
         TickerViewModel tickerViewModel = new TickerViewModel();
         tickerViewModel.setText(tickerModel.getText());
         tickerViewModel.setQuery(tickerModel.getQuery());
+        tickerViewModel.setTypeId(tickerModel.getTypeId());
+
         return tickerViewModel;
     }
 

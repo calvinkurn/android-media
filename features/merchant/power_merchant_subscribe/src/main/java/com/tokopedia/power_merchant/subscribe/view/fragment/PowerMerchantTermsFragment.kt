@@ -15,11 +15,6 @@ import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
-import com.tokopedia.power_merchant.subscribe.ACTION_AUTO_EXTEND
-import com.tokopedia.power_merchant.subscribe.ACTION_KEY
-import com.tokopedia.power_merchant.subscribe.ACTION_KYC
-import com.tokopedia.power_merchant.subscribe.ACTION_SHOP_SCORE
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
@@ -27,6 +22,8 @@ import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeCom
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.*
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.APPLINK_POWER_MERCHANT_KYC
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult.*
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmTermsViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -49,8 +46,8 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     lateinit var viewModel: PmTermsViewModel
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
+
     private var isTermsAgreed: Boolean = false
-    private var action: String = ""
 
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
@@ -77,7 +74,6 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
         observeActivatePm()
         observeViewState()
 
-        initVar()
         initView()
     }
 
@@ -103,13 +99,23 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
         mainView.hideLoading()
     }
 
-    private fun onSuccessActivate() {
-        resultOkAndFinish()
+    private fun onSuccessActivate(result: PowerMerchantActivationResult) {
+        when(result)  {
+            is ActivationSuccess -> resultOkAndFinish()
+            is KycNotVerified -> showDialogKyc()
+            is ShopScoreNotEligible -> showShopScoreBottomSheet()
+            is GeneralError -> showErrorToast(result.message)
+        }
     }
 
-    private fun onError(throwable: Throwable?) {
+    private fun onErrorActivate(error: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, error)
+        showErrorToast(message)
+    }
+
+    private fun showErrorToast(message: String) {
         view?.let {
-            Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
@@ -124,8 +130,8 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     private fun observeActivatePm() {
         observe(viewModel.activatePmResult) {
             when(it) {
-                is Success -> onSuccessActivate()
-                is Fail -> onError(it.throwable)
+                is Success -> onSuccessActivate(it.data)
+                is Fail -> onErrorActivate(it.throwable)
             }
         }
     }
@@ -137,10 +143,6 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
                 is HideLoading -> hideLoading()
             }
         }
-    }
-
-    private fun initVar() {
-        setAction(arguments?.getString(ACTION_KEY) ?: "")
     }
 
     private fun initView() {
@@ -163,12 +165,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     }
 
     private fun onClickActivateButton() {
-        when(action) {
-            ACTION_ACTIVATE,
-            ACTION_AUTO_EXTEND -> viewModel.activatePowerMerchant()
-            ACTION_SHOP_SCORE -> showShopScoreBottomSheet()
-            ACTION_KYC -> showDialogKyc()
-        }
+        viewModel.activatePowerMerchant()
     }
 
     private fun openKycPage() {
@@ -181,10 +178,6 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     private fun onCheckBoxClicked() {
         isTermsAgreed = !isTermsAgreed
         checkbox.isChecked = isTermsAgreed
-    }
-
-    private fun setAction(action: String) {
-        this.action = action
     }
 
     private fun resultOkAndFinish() {

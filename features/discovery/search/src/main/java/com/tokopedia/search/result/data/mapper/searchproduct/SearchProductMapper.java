@@ -15,6 +15,9 @@ final class SearchProductMapper implements Func1<GraphqlResponse, SearchProductM
     public SearchProductModel call(GraphqlResponse graphqlResponse) {
         if(graphqlResponse == null) return null;
 
-        return graphqlResponse.getData(SearchProductModel.class);
+        SearchProductModel data = graphqlResponse.getData(SearchProductModel.class);
+
+        if(data == null) throw new RuntimeException(graphqlResponse.getError(SearchProductModel.class).toString());
+        else return data;
     }
 }

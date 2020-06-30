@@ -26,14 +26,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ticker.TouchViewPager
 import com.tokopedia.design.list.adapter.TouchImageAdapter
 import com.tokopedia.imagepreview.ImagePreviewUtils.getUri
 import com.tokopedia.imagepreview.ImagePreviewUtils.processPictureName
 import com.tokopedia.imagepreview.ImagePreviewUtils.saveImageFromBitmap
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.unifycomponents.Toaster
 import java.io.File
 import java.util.*
 
@@ -228,10 +227,8 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         notificationBuilder.build().flags =
                 notificationBuilder.build().flags or Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(notificationId, notificationBuilder.build())
-        val snackbar = ToasterError.make(findViewById<View>(android.R.id.content),
-                getString(R.string.download_failed), BaseToaster.LENGTH_SHORT)
-        snackbar.setAction(R.string.title_ok) { snackbar.dismiss() }
-        snackbar.show()
+        Toaster.make(findViewById<View>(android.R.id.content), getString(R.string.download_failed),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.title_ok))
     }
 
     override fun getNewFragment(): Fragment? {

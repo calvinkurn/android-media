@@ -3,6 +3,8 @@ package com.tokopedia.notifcenter.presentation.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Companion.STATUS_OK
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -31,8 +33,8 @@ class NotificationUpdatePresenter @Inject constructor(
         private var clearCounterNotificationUpdateUseCase: ClearCounterNotificationUpdateUseCase,
         private var markReadNotificationUpdateItemUseCase: MarkReadNotificationUpdateItemUseCase,
         private var markAllReadNotificationUpdateUseCase: MarkAllReadNotificationUpdateUseCase,
-        private var getNotificationUpdateMapper : GetNotificationUpdateMapper,
-        private var getNotificationUpdateFilterMapper : GetNotificationUpdateFilterMapper,
+        private var getNotificationUpdateMapper: GetNotificationUpdateMapper,
+        private var getNotificationUpdateFilterMapper: GetNotificationUpdateFilterMapper,
         private var addToCartUseCase: AddToCartUseCase
 ) : BaseDaggerPresenter<NotificationUpdateContract.View>(), NotificationUpdateContract.Presenter {
 
@@ -84,9 +86,12 @@ class NotificationUpdatePresenter @Inject constructor(
         )
     }
 
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
+    override fun addProductToCart(
+            product: ProductData,
+            onSuccessAddToCart: (data: DataModel) -> Unit
+    ) {
         val requestParams = getCartRequestParams(product)
-        val atcSubscriber = getAtcSubscriber(product, onSuccessAddToCart)
+        val atcSubscriber = getAtcSubscriber(onSuccessAddToCart)
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -94,16 +99,13 @@ class NotificationUpdatePresenter @Inject constructor(
                 .subscribe(atcSubscriber)
     }
 
-    private fun getAtcSubscriber(product: ProductData, onSuccessAddToCart: () -> Unit): Subscriber<AddToCartDataModel> {
+    private fun getAtcSubscriber(
+            onSuccessAddToCart: (data: DataModel) -> Unit
+    ): Subscriber<AddToCartDataModel> {
         return object : Subscriber<AddToCartDataModel>() {
             override fun onNext(data: AddToCartDataModel) {
-                val isAtcSuccess = data.status.equals(AddToCartDataModel.STATUS_OK, true)
-                        && data.data.success == 1
-                if (isAtcSuccess) {
-                    val message = data.data.message.first()
-                    view.showMessageAtcSuccess(message)
-                    view.onTrackerAddToCart(product, data.data)
-                    onSuccessAddToCart()
+                if (data.status.equals(STATUS_OK, true) && data.data.success == 1) {
+                    onSuccessAddToCart(data.data)
                 } else {
                     val errorException = MessageErrorException(data.errorMessage[0])
                     onError(errorException)
@@ -126,6 +128,8 @@ class NotificationUpdatePresenter @Inject constructor(
         addToCartRequestParams.shopId = product.shop?.id ?: -1
         addToCartRequestParams.quantity = 1
         addToCartRequestParams.notes = ""
+        addToCartRequestParams.productName = product.name
+        addToCartRequestParams.price = product.price
 
        return RequestParams.create().apply {
            putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)

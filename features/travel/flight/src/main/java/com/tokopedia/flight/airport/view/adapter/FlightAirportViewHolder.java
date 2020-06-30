@@ -1,28 +1,30 @@
 package com.tokopedia.flight.airport.view.adapter;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.core.content.ContextCompat;
+import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by zulfikarrahman on 10/24/17.
  */
 
-public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportViewModel> {
+public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportModel> {
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_airport;
 
-    private TextView cityTextView;
-    private TextView airportTextView;
+    private Typography cityTextView;
+    private Typography airportTextView;
 
     private FlightAirportClickListener filterTextListener;
     private ForegroundColorSpan boldColor;
@@ -30,17 +32,23 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportVie
 
     public FlightAirportViewHolder(View itemView, FlightAirportClickListener filterTextListener) {
         super(itemView);
-        cityTextView = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.city);
-        airportTextView = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.airport);
+        cityTextView = itemView.findViewById(com.tokopedia.flight.R.id.city);
+        airportTextView = itemView.findViewById(com.tokopedia.flight.R.id.airport);
         this.filterTextListener = filterTextListener;
-        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(),
+                com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
 
     }
 
     @Override
-    public void bind(final FlightAirportViewModel airport) {
+    public void bind(final FlightAirportModel airport) {
         Context context = itemView.getContext();
         String filterText = filterTextListener.getFilterText();
+
+        if (filterText.length() > 0) {
+            cityTextView.setWeight(Typography.REGULAR);
+            airportTextView.setWeight(Typography.REGULAR);
+        }
 
         String cityStr = context.getString(com.tokopedia.flight.R.string.flight_label_city,
                 airport.getCityName(), airport.getCountryName());
@@ -63,31 +71,30 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportVie
     }
 
     private CharSequence getSpandableBoldText(String strToPut, String stringToBold) {
-        int indexStartBold = -1;
-        int indexEndBold = -1;
+        int indexStartBold = 0;
+        int indexEndBold = strToPut.length();
         if (TextUtils.isEmpty(stringToBold)) {
             return strToPut;
         }
         String strToPutLowerCase = strToPut.toLowerCase();
         String strToBoldLowerCase = stringToBold.toLowerCase();
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(strToPut);
-        indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase);
-        if (indexStartBold != -1) {
-            indexEndBold = indexStartBold + stringToBold.length();
-
-            if (indexEndBold >= strToPut.length()) {
-                indexEndBold = strToPut.length() - 1;
+        try {
+            if (strToPutLowerCase.contains(strToBoldLowerCase)) {
+                indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase) + stringToBold.length();
             }
-        }
-        if (indexStartBold == -1) {
+            if (indexStartBold < strToPut.length()) {
+                spannableStringBuilder.setSpan(new android.text.style.StyleSpan(Typeface.BOLD),
+                        indexStartBold, indexEndBold, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableStringBuilder.setSpan(boldColor, indexStartBold, indexEndBold,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                return spannableStringBuilder;
+            } else {
+                return spannableStringBuilder;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
             return spannableStringBuilder;
-        } else {
-            spannableStringBuilder.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    indexStartBold, indexEndBold, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannableStringBuilder.setSpan(boldColor, indexStartBold, indexEndBold,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return spannableStringBuilder;
         }
-
     }
 }

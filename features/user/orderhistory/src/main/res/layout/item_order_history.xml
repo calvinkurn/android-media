@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerProduct"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_orderhistory_12"
+    android:layout_marginEnd="@dimen/dp_orderhistory_12"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
+    android:background="@drawable/bg_orderhistory_shadow_product"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/dp_orderhistory_12"
+    android:paddingLeft="@dimen/dp_orderhistory_12"
+    android:paddingTop="@dimen/dp_orderhistory_12"
+    android:paddingEnd="@dimen/dp_orderhistory_12"
+    android:paddingRight="@dimen/dp_orderhistory_12"
+    android:paddingBottom="@dimen/dp_orderhistory_12">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_thumbnail"
+            android:layout_width="@dimen/dp_orderhistory_96"
+            android:layout_height="@dimen/dp_orderhistory_96"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars[0]" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lb_empty_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl2"
+            android:text="@string/title_orderhistory_empty_stock"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/iv_thumbnail"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_orderhistory_12"
+            android:layout_marginLeft="@dimen/dp_orderhistory_12"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/light_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            tools:text="@tools:sample/lorem/random" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/tv_campaign_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_orderhistory_12"
+            android:layout_marginLeft="@dimen/dp_orderhistory_12"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:maxLines="1"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl3"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:labelType="general_light_red"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
+            app:lineHeight="@dimen/dp_orderhistory_20"
+            tools:text="20%"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_campaign_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:maxLines="1"
+            android:textColor="@color/light_N700_44"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_campaign_discount"
+            app:layout_constraintStart_toEndOf="@+id/tv_campaign_discount"
+            app:layout_constraintTop_toTopOf="@+id/tv_campaign_discount"
+            app:typographyType="small"
+            tools:text="Rp8.499.000"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_orderhistory_12"
+            android:layout_marginLeft="@dimen/dp_orderhistory_12"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:maxLines="1"
+            android:textColor="@color/light_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tv_campaign_discount"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp7.999.000" />
+
+        <ImageView
+            android:id="@+id/iv_free_shipping"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_orderhistory_20"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:scaleType="fitStart"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/tv_price"
+            app:layout_constraintTop_toBottomOf="@+id/tv_price"
+            tools:src="@drawable/ic_close_default"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_info">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/tv_buy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:gravity="center"
+            android:text="@string/title_orderhistory_buy_again"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="transaction"
+            app:unifyButtonVariant="ghost"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/tv_wishlist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:gravity="center"
+            android:text="@string/title_orderhistory_add_to_wishlist"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_buy"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="transaction"
+            app:unifyButtonVariant="ghost"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

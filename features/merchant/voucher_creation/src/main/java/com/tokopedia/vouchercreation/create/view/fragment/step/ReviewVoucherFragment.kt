@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.fragment.step
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,8 +13,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -161,6 +164,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false) ?: false
     }
 
+    private val impressHolder = ImpressHolder()
+
     private var isWaitingForResult = false
 
     private var squareVoucherBitmap: Bitmap? = null
@@ -181,15 +186,17 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.addOnImpressionListener(impressHolder) {
+            VoucherCreationTracking.sendOpenScreenTracking(
+                    if (isDuplicate) {
+                        VoucherCreationAnalyticConstant.ScreenName.VOUCHER_DUPLICATE_REVIEW
+                    } else {
+                        VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.REVIEW
+                    },
+                    userSession.isLoggedIn,
+                    userSession.userId)
+        }
         observeLiveData()
-        VoucherCreationTracking.sendOpenScreenTracking(
-                if (isDuplicate) {
-                    VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.REVIEW
-                } else {
-                    VoucherCreationAnalyticConstant.ScreenName.VOUCHER_DUPLICATE_REVIEW
-                },
-                userSession.isLoggedIn,
-                userSession.userId)
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
@@ -270,7 +277,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.REVIEW,
                 action = VoucherCreationAnalyticConstant.EventAction.Click.TOOLTIP_SPENDING_ESTIMATION,
-                userId = userSession.userId
+                userId = userSession.userId,
+                isDuplicate = isDuplicate
         )
         generalExpenseBottomSheet.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment.TAG)
     }
@@ -352,6 +360,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                     putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data)
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                 }
+                                activity?.run {
+                                    setResult(Activity.RESULT_OK, intent)
+                                    finish()
+                                }
                                 startActivity(intent)
                                 sharedPref?.run {
                                     if (getBoolean(IS_MVC_FIRST_TIME, true)) {
@@ -383,6 +395,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                 val intent = VoucherListActivity.createInstance(this, true).apply {
                                     putExtra(VoucherListActivity.UPDATE_VOUCHER_KEY, true)
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                }
+                                activity?.run {
+                                    setResult(Activity.RESULT_OK, intent)
+                                    finish()
                                 }
                                 startActivity(intent)
                             }

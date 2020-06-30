@@ -72,6 +72,7 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductManageMoreMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
+import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
 import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
@@ -122,7 +123,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     ProductManageFilterFragment.OnFinishedListener,
     ProductManageQuickEditPriceFragment.OnFinishedListener,
     ProductManageQuickEditStockFragment.OnFinishedListener,
-    ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener {
+    ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
+    ProductManageListListener{
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
@@ -237,6 +239,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
         else if (item.itemId == R.id.action_more_menu) {
             showMoreMenuBottomSheet()
+            ProductManageTracking.eventClickMoreMenuEllipses()
         }
 
         return super.onOptionsItemSelected(item)
@@ -247,6 +250,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             // goto showcase list
             RouteManager.route(requireContext(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             productManageMoreMenuBottomSheet?.dismiss()
+            ProductManageTracking.eventClickMoreMenuShopShowcase()
         }
     }
 
@@ -292,7 +296,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onFinishEditPrice(product: ProductViewModel) {
-        product.title?.let { product.price?.let { price -> viewModel.editPrice(product.id, price, it) } }
+        product.title?.let { product.minPrice?.price?.let { price -> viewModel.editPrice(product.id, price, it) } }
     }
 
     override fun onFinishEditStock(modifiedProduct: ProductViewModel) {
@@ -1140,7 +1144,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun onSetCashbackClicked(productManageViewModel: ProductViewModel) {
         with(productManageViewModel) {
             context?.let {
-                val intent = ProductManageSetCashbackActivity.createIntent(it, id, title, cashBack, price)
+                val intent = ProductManageSetCashbackActivity.createIntent(it, id, title, cashBack, minPrice?.price)
                 startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
             }
         }
@@ -1200,6 +1204,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         ProductManageTracking.eventOnProduct(product.id)
     }
 
+    override fun clearAndGetProductList() {
+        clearAllData()
+        resetMultiSelect()
+        disableMultiSelect()
+        getProductList()
+    }
     /**
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
@@ -1448,9 +1458,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     if(data is ShowFilterTab) {
                         filterTab?.show(data)
                     } else {
-                        filterTab?.update(data)
+                        filterTab?.update(data, this)
                     }
-
                     renderCheckedView()
                 }
             }
@@ -1560,6 +1569,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.editVariantPriceResult) {
             when (it) {
                 is Success -> {
+                    productManageListAdapter.updatePrice(it.data)
                     val message = context?.getString(
                         R.string.product_manage_quick_edit_price_success,
                         it.data.productName
@@ -1625,7 +1635,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         if(isLoadingInitialData && showProductEmptyState()) {
             searchBar.showWithCondition(productList.isNotEmpty())
             tabSortFilter.showWithCondition(productList.isNotEmpty())
-            tabSortFilter.textView.text = getString(R.string.product_manage_filter)
         }
     }
 
@@ -1666,4 +1675,5 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         private const val MAX_FEATURED_PRODUCT = 5
 
     }
+
 }
