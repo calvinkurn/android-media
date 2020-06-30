@@ -52,6 +52,7 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
             navigateToOtherFragment(fragmentQuisionerPage, FIRST_FRAGMENT_TAG)
         } else if (userSession.hasShop() && !isNeedLocation) {
             RouteManager.route(this, ApplinkConst.SHOP, userSession.shopId)
+            finish()
         }
     }
 
