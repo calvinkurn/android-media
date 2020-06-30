@@ -1160,7 +1160,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String) {
         var index = 1
         var recommendationItemClick: RecommendationItem? = null
-        for ((recommendationItem) in recommendationList as List<CartRecommendationItemHolderData>) {
+        for ((_, recommendationItem) in recommendationList as List<CartRecommendationItemHolderData>) {
             if (recommendationItem.productId.toString().equals(productId, ignoreCase = true)) {
                 recommendationItemClick = recommendationItem
                 break
@@ -1185,6 +1185,39 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         when {
             topAds -> {
                 activity?.let { ImpresionTask(it::class.qualifiedName).execute(trackingImageUrl) }
+            }
+        }
+    }
+
+    override fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData) {
+        if (recommendationList.isNullOrEmpty()) return
+        recommendationList?.let {
+            val currentIndex = it.indexOf(recommendationItem)
+            if (it.size >= 2) {
+                if (currentIndex == it.size - 1) {
+                    // edge case : send last single item impression if recommendation list contain odd item count
+                    val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+                    cartRecommendationList.add(it[currentIndex])
+                    sendAnalyticsOnViewProductRecommendation(
+                            dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
+                    )
+                } else if (currentIndex > 0 && currentIndex % 2 == 1) {
+                    // send analytics on impression recommendation item odd position
+                    // send analytics every 2 item impression
+                    val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+                    cartRecommendationList.add(it[currentIndex - 1])
+                    cartRecommendationList.add(it[currentIndex])
+                    sendAnalyticsOnViewProductRecommendation(
+                            dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
+                    )
+                }
+            } else {
+                // edge case : send single item impression if recommendation list only contain 1 item
+                val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+                cartRecommendationList.add(it[currentIndex])
+                sendAnalyticsOnViewProductRecommendation(
+                        dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
+                )
             }
         }
     }
@@ -2596,7 +2629,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             // Render from API
             val recommendationItems = recommendationWidget.recommendationItemList
             for (recommendationItem in recommendationItems) {
-                val cartRecommendationItemHolderData = CartRecommendationItemHolderData(recommendationItem)
+                val cartRecommendationItemHolderData = CartRecommendationItemHolderData(false, recommendationItem)
                 cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData)
             }
         } else {
@@ -2625,12 +2658,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (cartRecommendationItemHolderDataList.size > 0) {
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList)
             recommendationList = cartRecommendationItemHolderDataList
-
-            recommendationList?.let {
-                sendAnalyticsOnViewProductRecommendation(
-                        dPresenter.generateRecommendationImpressionDataAnalytics(it, FLAG_IS_CART_EMPTY)
-                )
-            }
         }
     }
 

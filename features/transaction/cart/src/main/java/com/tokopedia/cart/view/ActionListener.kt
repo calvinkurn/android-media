@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view
 
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 
 /**
@@ -50,6 +51,8 @@ interface ActionListener {
     fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String)
 
     fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String)
+
+    fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData)
 
     fun onButtonAddToCartClicked(productModel: Any)
 

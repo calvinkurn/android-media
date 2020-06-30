@@ -1059,7 +1059,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productPrice = productModel.price
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
         } else if (productModel is CartRecommendationItemHolderData) {
-            val (recommendationItem) = productModel
+            val (_, recommendationItem) = productModel
             productId = recommendationItem.productId
             shopId = recommendationItem.shopId
             productName = recommendationItem.name
