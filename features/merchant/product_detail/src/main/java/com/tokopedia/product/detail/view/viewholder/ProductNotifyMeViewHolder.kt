@@ -91,9 +91,6 @@ class ProductNotifyMeViewHolder(val view: View, private val listener: DynamicPro
 
     private fun bindButton(data: ProductNotifyMeDataModel, isShopOwner: Boolean) = with(itemView) {
         btn_notify_me?.showWithCondition(!isShopOwner)
-        view.btn_notify_me?.maxLines = 1
-        view.btn_notify_me?.ellipsize = TextUtils.TruncateAt.END
-
         when (data.notifyMe) {
             true -> {
                 btn_notify_me?.buttonType = UnifyButton.Type.ALTERNATE
@@ -104,7 +101,8 @@ class ProductNotifyMeViewHolder(val view: View, private val listener: DynamicPro
                 btn_notify_me?.text = getString(R.string.notify_me_inactive)
             }
         }
-
+        view.btn_notify_me?.maxLines = 1
+        view.btn_notify_me?.ellipsize = TextUtils.TruncateAt.END
     }
 
     private fun bindListener(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel) {
