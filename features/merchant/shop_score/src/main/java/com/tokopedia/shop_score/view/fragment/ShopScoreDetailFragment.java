@@ -28,6 +28,7 @@ import com.tokopedia.shop_score.view.model.ShopScoreDetailStateEnum;
 import com.tokopedia.shop_score.view.model.ShopScoreDetailSummaryViewModel;
 import com.tokopedia.shop_score.view.presenter.ShopScoreDetailPresenterImpl;
 import com.tokopedia.shop_score.view.recyclerview.ShopScoreDetailAdapter;
+import com.tokopedia.unifycomponents.LoaderUnify;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     private ImageView imageViewGoldBadge;
     private FrameLayout mainFrame;
     private ProgressDialog progressDialog;
+    private LoaderUnify loadingUnify;
 
     private View.OnClickListener goToSellerCenter = new View.OnClickListener() {
         @Override
@@ -92,6 +94,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         summaryDetailTitle = (TextView) parentView.findViewById(R.id.text_view_shop_score_summary_detail_tittle);
         descriptionGoldBadge = (TextView) parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
         imageViewGoldBadge = (ImageView) parentView.findViewById(R.id.image_view_gold_badge);
+        loadingUnify = (LoaderUnify) parentView.findViewById(R.id.loading);
 
         parentView.findViewById(R.id.button_go_to_seller_center).setOnClickListener(goToSellerCenter);
         parentView.findViewById(R.id.button_go_to_complete_information).setOnClickListener(goToCompleteInformation);
@@ -172,14 +175,14 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void showProgressDialog() {
-        progressDialog.show();
-        containerView.setVisibility(View.GONE);
+//        progressDialog.show();
+//        containerView.setVisibility(View.GONE);
     }
 
     @Override
     public void dismissProgressDialog() {
-        progressDialog.dismiss();
-        containerView.setVisibility(View.VISIBLE);
+//        progressDialog.dismiss();
+//        containerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -196,6 +199,16 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
                         R.drawable.unify_globalerrors_connection,
                         retryLoadShopScore
                 );
+    }
+
+    @Override
+    public void showLoading() {
+        loadingUnify.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void dismissLoading() {
+        loadingUnify.setVisibility(View.GONE);
     }
 
     private void setGravityCenter() {

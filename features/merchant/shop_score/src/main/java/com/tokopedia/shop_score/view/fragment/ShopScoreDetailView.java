@@ -23,4 +23,9 @@ public interface ShopScoreDetailView extends CustomerView {
     void dismissProgressDialog();
 
     void emptyState();
+
+    void showLoading();
+
+    void dismissLoading();
+
 }

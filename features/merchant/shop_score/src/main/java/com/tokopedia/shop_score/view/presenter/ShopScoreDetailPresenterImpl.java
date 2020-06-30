@@ -28,7 +28,8 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
 
     @Override
     public void getShopScoreDetail() {
-        getView().showProgressDialog();
+//        getView().showProgressDialog();
+        getView().showLoading();
         getShopScoreDetailUseCase.execute(
                 RequestParams.EMPTY,
                 new GetShopScoreDetailSubscriber()
@@ -47,13 +48,15 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
 
         @Override
         public void onError(Throwable e) {
-            getView().dismissProgressDialog();
+//            getView().dismissProgressDialog();
+            getView().dismissLoading();
             getView().emptyState();
         }
 
         @Override
         public void onNext(ShopScoreDetailDomainModel domainModels) {
-            getView().dismissProgressDialog();
+//            getView().dismissProgressDialog();
+            getView().dismissLoading();
             renderItemsDetail(domainModels);
             renderSummary(domainModels);
             renderState(domainModels);

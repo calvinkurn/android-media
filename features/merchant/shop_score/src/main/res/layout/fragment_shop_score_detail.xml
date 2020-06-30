@@ -11,6 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loading"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/container_view"
             android:layout_width="match_parent"
