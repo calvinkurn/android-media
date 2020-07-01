@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 
 class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     : RecyclerView.Adapter<VariantTypeViewHolder>(), VariantTypeViewHolder.OnVariantTypeViewHolderClickListener {
@@ -66,10 +65,6 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         return items[position]
     }
 
-    fun getItems(): List<VariantDetail> {
-        return items
-    }
-
     fun deselectItem(adapterPosition: Int) {
         selectedItems[adapterPosition] = VariantTypeViewHolder.ViewHolderState.NORMAL
         manageUnselectedItems(getSelectedCount())
@@ -84,9 +79,10 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         return positions
     }
 
-    private fun manageUnselectedItems(selectedCount: Int) {
-        if (selectedCount >= maxSelectedItems) disableUnselectedItems()
-        else enableUnselectedItems()
+    fun getSelectedItems(): List<VariantDetail> {
+        return items.filterIndexed { index, _ ->
+            selectedItems.getOrNull(index) == VariantTypeViewHolder.ViewHolderState.SELECTED
+        }
     }
 
     fun setSelectedItems(selectedVariantDetails: List<VariantDetail>) {
@@ -103,6 +99,11 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         manageUnselectedItems(getSelectedCount())
     }
 
+    private fun manageUnselectedItems(selectedCount: Int) {
+        if (selectedCount >= maxSelectedItems) disableUnselectedItems()
+        else enableUnselectedItems()
+    }
+
     private fun getSelectedCount(): Int {
         return selectedItems.count { it == VariantTypeViewHolder.ViewHolderState.SELECTED }
     }
@@ -115,7 +116,6 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         }
         notifyDataSetChanged()
     }
-
 
     private fun enableUnselectedItems() {
         selectedItems.forEachIndexed { index, viewHolderState ->

@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_CUSTOM_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
@@ -46,7 +47,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     // layout position - selected unit values map
     private var selectedVariantUnitValuesMap: HashMap<Int, MutableList<UnitValue>> = HashMap()
 
-    private var selectedVariantDetails = listOf<VariantDetail>()
+    private var selectedVariantDetails = mutableListOf<VariantDetail>()
     private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<List<UnitValue>>()
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<List<UnitValue>>()
 
@@ -143,16 +144,11 @@ class AddEditProductVariantViewModel @Inject constructor(
         mSelectedVariantUnitValuesLevel2.value = selectedVariantUnitValues
     }
 
-    fun updateVariantInputModel(variantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>) {
-        val variantInputModel = productInputModel.value?.variantInputModel
-        val variantTypesSelected = variantValuesLayoutMap.map { it.key }
-        val variantDetailsSelected =
-                variantDetails.filterIndexed { index, _ -> variantTypesSelected.contains(index) }
-
-        variantInputModel?.apply {
-            this.products = mapProducts(variantPhotos)
-            this.selections = mapSelections(variantDetailsSelected)
-            this.sizecharts = variantSizechart.value ?: PictureVariantInputModel()
+    fun updateVariantInputModel(selectedVariantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>) {
+        productInputModel.value?.variantInputModel?.apply {
+            products = mapProducts(variantPhotos)
+            selections = mapSelections(selectedVariantDetails)
+            sizecharts = variantSizechart.value ?: PictureVariantInputModel()
         }
     }
 
@@ -169,6 +165,12 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
         if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
             mIsVariantSizechartVisible.value = isVisible
+        }
+    }
+
+    fun updateSizechartFieldVisibility() {
+        mIsVariantSizechartVisible.value = selectedVariantDetails.any {
+            it.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART
         }
     }
 
@@ -231,8 +233,16 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit? {
         val unitValue = value.firstOrNull()
-        return variantDetail.units.firstOrNull {
-            it.unitValues.contains(unitValue)
+        return if (unitValue?.variantUnitValueID == VARIANT_CUSTOM_UNIT_VALUE_ID) {
+            // condition for custom value (get first unit)
+            variantDetail.units.firstOrNull()
+        } else {
+            // condition for main value
+            variantDetail.units.firstOrNull { unit ->
+                unit.unitValues.any {
+                    it.variantUnitValueID == unitValue?.variantUnitValueID
+                }
+            }
         }
     }
 
@@ -295,12 +305,14 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     private fun mapVariantPhoto(variantPhoto: VariantPhoto?): List<PictureVariantInputModel> {
-        return variantPhoto?.let {
+        return if (variantPhoto != null && variantPhoto.imageUrlOrPath.isNotEmpty()) {
             val result = PictureVariantInputModel(
                     filePath = variantPhoto.imageUrlOrPath
             )
             listOf(result)
-        } ?: emptyList()
+        } else {
+            emptyList()
+        }
     }
 
     fun extractSelectedVariantDetails(productInputModel: ProductInputModel): List<VariantDetail> {
@@ -339,7 +351,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun setSelectedVariantDetails(selectedVariantDetails: List<VariantDetail>) {
-        this.selectedVariantDetails = selectedVariantDetails
+        this.selectedVariantDetails = selectedVariantDetails.toMutableList()
     }
 
     fun getProductVariantPhotos(productInputModel: ProductInputModel): List<VariantPhoto> {

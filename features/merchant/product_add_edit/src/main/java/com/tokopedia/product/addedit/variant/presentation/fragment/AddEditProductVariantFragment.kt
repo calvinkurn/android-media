@@ -56,7 +56,6 @@ import com.tokopedia.product.addedit.variant.presentation.widget.CustomVariantUn
 import com.tokopedia.product.addedit.variant.presentation.widget.VariantDetailValuesPicker
 import com.tokopedia.product.addedit.variant.presentation.widget.VariantUnitPicker
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
@@ -182,9 +181,9 @@ class AddEditProductVariantFragment :
 
         // button save on click listener
         buttonSave.setOnClickListener {
-            val variantDetails = variantTypeAdapter?.getItems().orEmpty()
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
-            viewModel.updateVariantInputModel(variantDetails, variantPhotos)
+            val selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty()
+            viewModel.updateVariantInputModel(selectedVariantDetails, variantPhotos)
             startAddEditProductVariantDetailActivity()
         }
 
@@ -638,6 +637,7 @@ class AddEditProductVariantFragment :
                     val sizechart = viewModel.productInputModel.value?.variantInputModel?.sizecharts
                             ?: PictureVariantInputModel()
                     viewModel.updateSizechart(sizechart)
+                    viewModel.updateSizechartFieldVisibility()
                 }
                 is Fail -> {
                     context?.let {
