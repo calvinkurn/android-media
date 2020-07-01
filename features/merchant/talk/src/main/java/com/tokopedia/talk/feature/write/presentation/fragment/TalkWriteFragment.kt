@@ -270,7 +270,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
             textAreaInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     s?.let {
-                        viewModel.updateIsTextEmpty(it.isNotEmpty() && it.length >= minChar)
+                        viewModel.updateIsTextNotEmpty(it.isNotEmpty() && it.length >= minChar)
                         isError = s.length == maxChar
                         textAreaMessage = if(isError) {
                             getString(R.string.write_question_error_message)

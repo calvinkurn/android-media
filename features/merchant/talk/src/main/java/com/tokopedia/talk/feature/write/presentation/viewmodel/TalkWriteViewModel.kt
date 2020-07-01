@@ -100,7 +100,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         _buttonState.notifyObserver()
     }
 
-    fun updateIsTextEmpty(isTextNotEmptyData: Boolean) {
+    fun updateIsTextNotEmpty(isTextNotEmptyData: Boolean) {
         isTextNotEmpty.value = isTextNotEmptyData
     }
 

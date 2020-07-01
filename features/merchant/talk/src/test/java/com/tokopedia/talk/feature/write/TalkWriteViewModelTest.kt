@@ -3,12 +3,15 @@ package com.tokopedia.talk.feature.write
 import android.accounts.NetworkErrorException
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingForm
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingFormResponseWrapper
+import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteButtonState
 import com.tokopedia.talk.util.verifyErrorEquals
 import com.tokopedia.talk.util.verifySuccessEquals
+import com.tokopedia.talk.util.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import org.junit.Assert
 import org.junit.Test
 import java.lang.Exception
 
@@ -38,6 +41,37 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
         verifyDiscussionGetWritingFormUseCaseCalled()
         verifyDiscussionGetWritingErrorEquals(Fail(expectedError))
+    }
+
+    @Test
+    fun `when toggleCategory should select category if not selected and vice versa`() {
+
+    }
+
+    @Test
+    fun `when getProductId should return expected productId`() {
+        val expectedProductId = 0
+
+        viewModel.setProductId(expectedProductId)
+
+        verifyProductIdEquals(expectedProductId)
+    }
+
+    @Test
+    fun `when refresh should trigger load form again`() {
+        viewModel.setProductId(0)
+        viewModel.refresh()
+
+        verifyDiscussionGetWritingFormUseCaseCalled()
+    }
+
+    @Test
+    fun `when updateIsTextNotEmpty should set buttonState's isNotTextEmpty to expected value`() {
+        val expectedValue = TalkWriteButtonState(false, true)
+
+        viewModel.updateIsTextNotEmpty(expectedValue.isNotTextEmpty)
+
+        verifyButtonStateIsTextNotEmptyEquals(expectedValue)
     }
 
     // TO DO CHANGE TO CORRECT USE CASE WHEN AVAILABLE
@@ -126,5 +160,13 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     private fun verifyDiscussionGetWritingErrorEquals(expectedError: Fail) {
         viewModel.writeFormData.verifyErrorEquals(expectedError)
+    }
+
+    private fun verifyProductIdEquals(expectedProductId: Int) {
+        Assert.assertEquals(expectedProductId, viewModel.getProductId())
+    }
+
+    private fun verifyButtonStateIsTextNotEmptyEquals(expectedValue: TalkWriteButtonState) {
+        viewModel.buttonState.verifyValueEquals(expectedValue)
     }
 }
