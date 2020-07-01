@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "de.mannodermaus.android-junit5"
+apply from: "../../../compile-unit-test.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 
 android {
     testOptions {
@@ -106,13 +108,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
 
     // spek
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
-    testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
