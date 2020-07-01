@@ -20,7 +20,7 @@
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:layout_marginTop="37dp"
-            app:srcCompat="@drawable/ic_system_action_see_more_arrow_normal"
+            app:srcCompat="@drawable/ic_product_action_see_more_arrow_normal_352"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/suggestionTopShopSeeMoreTitle"
             app:layout_constraintLeft_toLeftOf="parent"
