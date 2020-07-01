@@ -1,10 +1,15 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
+import android.text.Html
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPlay
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,6 +22,7 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.util.TextHtmlUtils.getTextFromHtml
 import com.tokopedia.shop.extension.formatToSimpleNumber
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -37,7 +43,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavourited) }
         view.shop_page_main_profile_location.text = shopInfo.location
-        view.play_seller_widget_container.visibility = if(isMyShop) View.VISIBLE else View.GONE
+
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopInfo.shopAssets.avatar)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
@@ -56,17 +62,25 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 view.shop_page_main_profile_badge.visibility = View.GONE
             }
         }
-
         if (isMyShop) {
             displayAsSeller()
         } else {
             displayAsBuyer()
         }
+        setupSgcPlayWidget(!isMyShop)
 
         if (shopInfo.freeOngkir.isActive)
             showLabelFreeOngkir(remoteConfig)
         else
             view.shop_page_main_profile_free_ongkir.hide()
+    }
+
+    private fun setupSgcPlayWidget(isMyShop: Boolean){
+        view.shop_page_sgc_title_1.text = getTextFromHtml(view.context.getString(R.string.shop_page_play_widget_title))
+        view.play_seller_widget_container.visibility = if(isMyShop) View.VISIBLE else View.GONE
+        view.container_lottie?.setOnClickListener {
+            RouteManager.route(view.context, "tokopedia-android-internal://play-broadcaster")
+        }
     }
 
     private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {

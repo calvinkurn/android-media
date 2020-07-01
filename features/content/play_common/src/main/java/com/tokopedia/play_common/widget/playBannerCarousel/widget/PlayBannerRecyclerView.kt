@@ -19,12 +19,14 @@ import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader
 import com.google.android.exoplayer2.util.Util
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play_common.R
+import com.tokopedia.play_common.util.PlayConnectionCommon
 import com.tokopedia.play_common.widget.playBannerCarousel.helper.GravitySnapHelper
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
@@ -43,11 +45,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
     private val snapListener = object : GravitySnapHelper.SnapListener{
         override fun onSnap(recyclerView: RecyclerView?, position: Int) {
-            if (recyclerView?.canScrollHorizontally(1) == false) {
-                playVideos()
-            } else {
-                playVideos()
-            }
+            playVideos()
         }
     }
 
@@ -70,14 +68,18 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     private val mediaObjects: MutableList<BasePlayBannerCarouselModel> = mutableListOf()
     private val mediaObjectsLastPosition = mutableListOf<Int>()
     private var isAutoPlay: Boolean = false
-    private var delay: Int = 2500 // default from PO
+
+    /* In Millisecond */
+    private var durationPlayWithWifi: Int = 0
+    private var durationPlayWithData: Int = 0
+    private var delayDuration: Int = 0
+
     private val masterJob = Job()
 
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.IO
 
-
-            constructor(context: Context) : this(context, null, 0)
+    constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     init {
@@ -95,7 +97,8 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
     fun playVideos() {
         try{
-            if(!isAutoPlay || mediaObjects.isEmpty()) return
+            // check internet wifi or data available or auto play or video data is not empty
+            if(!PlayConnectionCommon.isInternetAvailable(context, checkWifi = true, checkCellular = true) || !isAutoPlay || mediaObjects.isEmpty()) return
 
             val targetPositions: MutableList<Int> = mutableListOf()
             var startPosition: Int = (Objects.requireNonNull(
@@ -183,12 +186,19 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             videoPlayer.position = playPosition
             videoPlayer.viewHolderParent = holder.itemView
             videoPlayer.autoPlayJob = launch {
-                exoPlayer.seekTo(mediaObjectsLastPosition[playPosition].toLong())
-                delay(2500)
-                launch(Dispatchers.Main){
+                launchCatchError(Dispatchers.Main, block = {
+                    exoPlayer.seekTo(mediaObjectsLastPosition[playPosition].toLong())
+                }){}
+                delay(delayDuration.toLong())
+                launchCatchError(Dispatchers.Main, block = {
                     exoPlayer.prepare(videoSource)
                     exoPlayer.playWhenReady = true
-                }
+                }){}
+                delay(if(PlayConnectionCommon.isConnectWifi(context)) durationPlayWithWifi.toLong() else durationPlayWithData.toLong())
+                launchCatchError(Dispatchers.Main, block = {
+                    exoPlayer.playWhenReady = false
+                    removeVideoView(videoPlayer)
+                }){}
             }
             videoPlayer.autoPlayJob?.start()
         }
@@ -232,6 +242,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         videoPlayer.position = -1
         videoPlayer.viewHolderParent = null
         videoPlayer.autoPlayJob?.cancel()
+        videoPlayer.autoPlayJob = null
     }
 
     private fun resetVideoView(viewHolder: Any?) {
@@ -278,14 +289,18 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         }
         videoPlayers.clear()
 
-        for(i in 0 until autoPlayAmount){
+        for(i in autoPlayAmount - 1 downTo 0) {
             val exoPlayer = SimpleExoPlayer.Builder(context).build()
             exoPlayer.volume = 0f
 
-            val videoSurfaceView = PlayerView(this.context)
+            val videoSurfaceView = VideoPlayerView(context)
             videoSurfaceView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-            videoSurfaceView.player = exoPlayer
-            videoSurfaceView.useController = false
+            videoSurfaceView.setPlayer(exoPlayer)
+            val layoutParams = videoSurfaceView.findViewById<AspectRatioFrameLayout>(R.id.exo_content_frame).layoutParams
+            layoutParams.width = this.resources.getDimensionPixelOffset(R.dimen.play_banner_item_carousel_width)
+            layoutParams.height = this.resources.getDimensionPixelOffset(R.dimen.play_banner_item_carousel_height)
+            videoSurfaceView.layoutParams = layoutParams
+            videoSurfaceView.findViewById<AspectRatioFrameLayout>(R.id.exo_content_frame).requestLayout()
 
             val videoPlayer = ViewPlayerModel(videoSurfaceView, exoPlayer,-1)
             exoPlayer.addListener(object : Player.EventListener {
@@ -306,10 +321,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
             videoPlayers.add(videoPlayer)
         }
-    }
-
-    fun setDelay(delay: Int){
-        this.delay = delay
     }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri, appName: String): MediaSource {

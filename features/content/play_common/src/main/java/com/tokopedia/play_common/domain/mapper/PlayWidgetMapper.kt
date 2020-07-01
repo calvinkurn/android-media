@@ -41,7 +41,8 @@ object PlayWidgetMapper {
                                 coverUrl = it.video.coverUrl,
                                 channelId = it.id,
                                 videoId = it.video.id,
-                                videoType = it.video.type
+                                videoType = it.video.type,
+                                remindMe = it.config.isReminderSet
                         )
                     }
                 }
