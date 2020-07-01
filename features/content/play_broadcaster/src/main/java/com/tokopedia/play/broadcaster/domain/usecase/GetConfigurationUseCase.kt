@@ -6,7 +6,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
@@ -32,8 +31,7 @@ class GetConfigurationUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): Config {
-        val gqlRequest = GraphqlRequest(query, GetBroadcasterShopConfigResponse::class.java, params)
-        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetBroadcasterShopConfigResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetBroadcasterShopConfigResponse>(GetBroadcasterShopConfigResponse::class.java)
         response?.config?.let { shopConfig -> return mapConfiguration(shopConfig) }

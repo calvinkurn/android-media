@@ -9,34 +9,34 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.usecase.coroutines.UseCase
+import java.lang.reflect.Type
 import java.net.UnknownHostException
 
 
 /**
  * Created by mzennis on 30/06/20.
  */
-abstract class BaseUseCase<out T : Any>: UseCase<T>() {
+abstract class BaseUseCase<T : Any>: UseCase<T>() {
 
     suspend fun configureGqlResponse(
             gqlRepository: GraphqlRepository,
-            gqlRequest: GraphqlRequest,
+            query: String, typeOfT: Type, params: Map<String, Any>,
             gqlCacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
+        val gqlRequest = GraphqlRequest(query, typeOfT, params)
+        var gqlResponse: GraphqlResponse? = null
         try {
-            val gqlResponse =  gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
-//            val errors = gqlResponse.getError(clazz)
-//            if (!errors.isNullOrEmpty()) {
-//                if (GlobalConfig.DEBUG) {
-//                    throw DefaultErrorThrowable(errors[0].message)
-//                }
-//                Crashlytics.log(0, TAG, errors[0].message)
-//            }
-            return gqlResponse
+            gqlResponse =  gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
         } catch (throwable: Throwable) {
-            Crashlytics.log(0, TAG, throwable.localizedMessage)
             if (throwable is UnknownHostException) throw DefaultNetworkThrowable()
         }
-        throw DefaultErrorThrowable()
+        val errors = gqlResponse?.getError(typeOfT)
+        if (!errors.isNullOrEmpty()) {
+            if (GlobalConfig.DEBUG) {
+                throw DefaultErrorThrowable(errors[0].message)
+            }
+        }
+        return gqlResponse?: throw DefaultErrorThrowable()
     }
 
     companion object {
