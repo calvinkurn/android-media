@@ -30,15 +30,17 @@ class GetCancelReasonBottomSheetAdapter(private var listener: ActionListener): R
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.label_cancel.text = listReason[position]
-        if (listReason[position].equals(currReason, true)) {
-            holder.itemView.ic_green_check.visible()
-        } else {
-            holder.itemView.ic_green_check.gone()
-        }
+        if (listReason.isNotEmpty()) {
+            holder.itemView.label_cancel.text = listReason[position]
+            if (listReason[position].equals(currReason, true)) {
+                holder.itemView.ic_green_check.visible()
+            } else {
+                holder.itemView.ic_green_check.gone()
+            }
 
-        holder.itemView.setOnClickListener {
-            listener.onReasonClicked(listReason[position])
+            holder.itemView.setOnClickListener {
+                listener.onReasonClicked(listReason[position])
+            }
         }
     }
 
