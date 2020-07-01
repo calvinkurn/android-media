@@ -166,6 +166,12 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(PROFILE) }, DF_BASE, R.string.applink_title_profile))
             add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DF_BASE, R.string.applink_title_affiliate))
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
+            add(DFP({ it.startsWithPattern(KOL_COMMENT) }, DF_BASE, R.string.applink_title_comment_kol))
+            add(DFP({ it.startsWithPattern(CONTENT_DETAIL) }, DF_BASE, R.string.applink_title_kol_post_detail))
+            add(DFP({ it.startsWithPattern(KOL_YOUTUBE) }, DF_BASE, R.string.applink_title_kol_post_youtube))
+            add(DFP({ it.startsWithPattern(KOL_CONTENT_REPORT) }, DF_BASE, R.string.applink_title_kol_content_report))
+            add(DFP({ it.startsWithPattern(KOL_VIDEO_DETAIL) }, DF_BASE, R.string.applink_title_kol_video_detail))
+            add(DFP({ it.startsWithPattern(KOL_MEDIA_PREVIEW) }, DF_BASE, R.string.applink_title_kol_media_preview))
 
             // Digital
             add(DFP({
