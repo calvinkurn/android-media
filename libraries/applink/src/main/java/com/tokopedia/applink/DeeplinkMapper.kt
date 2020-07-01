@@ -82,12 +82,13 @@ object DeeplinkMapper {
             }
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = uri.query
-                var tempDeeplink = getRegisteredNavigationFromTokopedia(context, uri, deeplink)
-                tempDeeplink = createAppendDeeplinkWithQuery(tempDeeplink, query)
-                tempDeeplink
+                val tempDeeplink = getRegisteredNavigationFromTokopedia(context, uri, deeplink)
+                return createAppendDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_SELLERAPP -> {
-                getRegisteredNavigationFromSellerapp(context, uri, deeplink)
+                val query = uri.query
+                val tempDeeplink = getRegisteredNavigationFromSellerapp(context, uri, deeplink)
+                return createAppendDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_INTERNAL -> {
                 getRegisteredNavigationFromInternalTokopedia(context, uri, deeplink)
@@ -189,7 +190,7 @@ object DeeplinkMapper {
      * eg: https://www.tokopedia.com/pulsa/ to tokopedia://pulsa
      */
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
-        if (uri.path == TOKOPOINTS) {
+        if (uri.pathSegments.joinToString("/") == TOKOPOINTS) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
@@ -222,7 +223,6 @@ object DeeplinkMapper {
             DLP.startWithPattern(ApplinkConst.HOME_HOTLIST) { _, _, deeplink -> getRegisteredHotlist(deeplink) },
             DLP.startWithPattern(ApplinkConst.PRODUCT_EDIT) { _, _, deeplink -> DeepLinkMapperProductManage.getEditProductInternalAppLink(deeplink) },
             DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
-            DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
             DLP(logic = { _, _, deeplink -> GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) },
                     targetDeeplink = { _, _, _ -> ApplinkConstInternalSellerapp.SELLER_HOME }),
             DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, _, deeplink -> getRegisteredNavigationProductReview(deeplink) },
@@ -233,7 +233,6 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink -> getRegisteredNavigationCatalog(deeplink) },
             DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink -> getRegisteredNavigationMoneyIn(deeplink) },
             DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, _, deeplink -> getRegisteredNavigationForFintech(deeplink) },
-            DLP.startWith(ApplinkConst.LAYANAN_FINANSIAL) { _, _, deeplink -> getRegisteredNavigationForLayanan(deeplink) },
             DLP.startWith(ApplinkConst.LAYANAN_FINANSIAL) { _, _, deeplink -> getRegisteredNavigationForLayanan(deeplink) },
             DLP.startWith(ApplinkConst.SALAM_UMRAH) { ctx, _, deeplink -> getRegisteredNavigationSalamUmrah(deeplink, ctx) },
             DLP.startWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL) { ctx, _, deeplink -> getRegisteredNavigationSalamUmrahOrderDetail(deeplink, ctx) },
@@ -417,7 +416,7 @@ object DeeplinkMapper {
                 ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
         }
         return when (trimDeeplink) {
-            ApplinkConst.SellerApp.SELLER_APP_HOME -> AppLinkMapperSellerHome.getSellerHomeAppLink(deeplink)
+            ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
