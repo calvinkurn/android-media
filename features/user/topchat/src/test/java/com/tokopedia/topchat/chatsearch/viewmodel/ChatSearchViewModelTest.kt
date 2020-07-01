@@ -69,38 +69,47 @@ class ChatSearchViewModelTest {
 
     @Test
     fun `Success load new query`() {
+        // Given
         viewModel.searchResult.observeForever(searchResultObserver)
         every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
 //                    val onSuccess = firstArg<(GetChatSearchResponse, SearchListHeaderUiModel?) -> Unit>()
 //                    onSuccess.invoke(exGetChatSearchResponse, null)
         }
 
+        // When
         viewModel.onSearchQueryChanged(Dummy.exQuery)
 
+        // Then
 //                verify { searchResultObserver.onChanged(exGetChatSearchResponse.searchResults) }
     }
 
     @Test
     fun `Fail load new query`() {
+        // Given
         viewModel.errorMessage.observeForever(errorMessageObserver)
         every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
             val onError = secondArg<(Throwable) -> Unit>()
             onError.invoke(Dummy.exThrowable)
         }
 
+        // When
         viewModel.onSearchQueryChanged(Dummy.exQuery)
 
+        // Then
         verify { errorMessageObserver.onChanged(Dummy.exThrowable) }
     }
 
     @Test
     fun `User input new query 2`() {
+        // Given
         every { getSearchQueryUseCase.isSearching } returns true
         viewModel.loadInitialData.observeForever(loadInitialDataObserver)
         viewModel.triggerSearch.observeForever(triggerSearchObserver)
 
+        // When
         viewModel.onSearchQueryChanged(Dummy.exQuery)
 
+        // Then
         verifyOrder {
             getSearchQueryUseCase.cancelRunningSearch()
             loadInitialDataObserver.onChanged(true)
@@ -112,11 +121,14 @@ class ChatSearchViewModelTest {
 
     @Test
     fun `User input empty query`() {
+        // Given
         viewModel.emptyQuery.observeForever(emptyQueryObserver)
 
+        // When
         viewModel.onSearchQueryChanged(Dummy.exQuery)
         viewModel.onSearchQueryChanged("")
 
+        // Then
         verifyOrder {
             getSearchQueryUseCase.cancelRunningSearch()
             emptyQueryObserver.onChanged(true)
@@ -126,27 +138,32 @@ class ChatSearchViewModelTest {
 
     @Test
     fun `User input the same query`() {
+        // Given
         viewModel.emptyQuery.observeForever(emptyQueryObserver)
 
-
+        // When
         viewModel.onSearchQueryChanged("")
 
-
+        // Then
         verify { getSearchQueryUseCase wasNot Called }
     }
 
     @Test
     fun `User load next page query`() {
+        // Given
         every { getSearchQueryUseCase.hasNext } returns true
 
+        // When
         viewModel.loadPage(Dummy.exPage)
 
+        // Then
 //                verify { getSearchQueryUseCase.doSearch(any(), any(), any(), exPage) }
 
     }
 
     @Test
     fun `User retry load page`() {
+        // Given
         viewModel.errorMessage.observeForever(errorMessageObserver)
         every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
             val onError = secondArg<(Throwable) -> Unit>()
@@ -154,10 +171,10 @@ class ChatSearchViewModelTest {
         }
         viewModel.onSearchQueryChanged(Dummy.exQuery)
 
-
+        // When
         viewModel.loadPage(1)
 
-
+        // Then
         verify(exactly = 2) { getSearchQueryUseCase.doSearch(any(), any(), Dummy.exQuery, 1) }
     }
 
