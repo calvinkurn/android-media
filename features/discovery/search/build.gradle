@@ -27,10 +27,8 @@ android {
     }
 
     defaultConfig {
-        defaultConfig {
-            multiDexEnabled true
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
     testOptions {
@@ -115,6 +113,10 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 }
 
 project.ext {
