@@ -8,6 +8,7 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
 import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
 import com.tokopedia.troubleshooter.notification.domain.TroubleshootStatusUseCase
+import com.tokopedia.troubleshooter.notification.domain.UpdateTokenUseCase
 import com.tokopedia.troubleshooter.notification.util.AppDispatcherProvider
 import com.tokopedia.troubleshooter.notification.util.DispatcherProvider
 import dagger.Module
@@ -44,6 +45,19 @@ import dagger.Provides
                 R.raw.query_send_notif_troubleshooter
         )
         return TroubleshootStatusUseCase(repository, query)
+    }
+
+    @Provides
+    @TroubleshootScope
+    fun provideUpdateTokenUseCase(
+            repository: GraphqlRepository,
+            @TroubleshootContext context: Context
+    ): UpdateTokenUseCase {
+        val query = GraphqlHelper.loadRawString(
+                context.resources,
+                R.raw.query_update_gcm_token
+        )
+        return UpdateTokenUseCase(repository, query)
     }
 
 }

@@ -2,9 +2,11 @@ package com.tokopedia.troubleshooter.notification.ui.fragment
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
+import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
@@ -41,7 +44,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
                 R.layout.fragment_notif_troubleshooter,
                 container,
                 false
-        )
+        ).apply { setupToolbar() }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,19 +52,37 @@ class TroubleshootFragment : BaseDaggerFragment() {
         initObservable()
         showLoading()
 
-        viewModel.troubleshoot()
+        /*
+        * adding interval to request
+        * for user experience purpose
+        * */
+        Handler().postDelayed({
+            viewModel.troubleshoot()
+        }, REQ_DELAY)
     }
 
     private fun initObservable() {
         viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
             hideLoading()
-            imgStatus.show()
-            onIconStatus(it.isSuccess == 1)
+            if (it.isSuccess == 1) {
+                viewModel.updateToken()
+                onIconStatus(true)
+            } else {
+                onIconStatus(false)
+            }
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
             hideLoading()
             onIconStatus(false)
+        })
+
+        viewModel.updateToken.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(
+                    context,
+                    getString(R.string.success_update_token),
+                    Toast.LENGTH_LONG
+            ).show()
         })
     }
 
@@ -85,6 +106,14 @@ class TroubleshootFragment : BaseDaggerFragment() {
         pgLoader?.hide()
     }
 
+    private fun setupToolbar() {
+        activity?.let {
+            it as? TroubleshootActivity?
+        }.also {
+            it?.supportActionBar?.title = screenName
+        }
+    }
+
     override fun initInjector() {
         val application = (activity as Activity).application as BaseMainApplication
         val baseAppComponent = application.baseAppComponent
@@ -99,6 +128,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
     companion object {
         private const val SCREEN_NAME = "Push Notification Troubleshooter"
+        private const val REQ_DELAY = 2000L
     }
 
 }

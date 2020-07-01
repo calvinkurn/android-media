@@ -3,8 +3,9 @@ package com.tokopedia.troubleshooter.notification.ui.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.troubleshooter.notification.domain.TroubleshootStatusUseCase
-import com.tokopedia.troubleshooter.notification.entity.NotifierSendTroubleshooter
-import com.tokopedia.troubleshooter.notification.entity.PushNotifCheckerResponse
+import com.tokopedia.troubleshooter.notification.domain.UpdateTokenUseCase
+import com.tokopedia.troubleshooter.notification.entity.NotificationSendTroubleshoot
+import com.tokopedia.troubleshooter.notification.entity.NotificationTroubleshoot
 import com.tokopedia.troubleshooter.notification.util.TestDispatcherProvider
 import com.tokopedia.troubleshooter.notification.util.isEqualsTo
 import com.tokopedia.usecase.RequestParams
@@ -20,22 +21,23 @@ class TroubleshootViewModelTest {
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: TroubleshootViewModel
-    private val useCase: TroubleshootStatusUseCase = mockk(relaxed = true)
+    private val troubleshoot: TroubleshootStatusUseCase = mockk(relaxed = true)
+    private val updateToken: UpdateTokenUseCase = mockk(relaxed = true)
 
     // observer
-    private val troubleshootObservable: Observer<NotifierSendTroubleshooter> = mockk(relaxed = true)
+    private val troubleshootObservable: Observer<NotificationSendTroubleshoot> = mockk(relaxed = true)
 
     @Before fun setUp() {
-        viewModel = TroubleshootViewModel(useCase, TestDispatcherProvider())
+        viewModel = TroubleshootViewModel(troubleshoot, updateToken, TestDispatcherProvider())
         viewModel.troubleshoot.observeForever(troubleshootObservable)
     }
 
     @Test fun `it should troubleshoot properly`() {
-        val expectedValue = NotifierSendTroubleshooter()
+        val expectedValue = NotificationSendTroubleshoot()
 
         coEvery {
-            useCase.execute(RequestParams.EMPTY)
-        } returns PushNotifCheckerResponse()
+            troubleshoot.execute(RequestParams.EMPTY)
+        } returns NotificationTroubleshoot()
 
         viewModel.troubleshoot()
 
