@@ -64,12 +64,15 @@ class TroubleshootFragment : BaseDaggerFragment() {
     }
 
     private fun onIconStatus(isSuccess: Boolean) {
-        if (isSuccess) {
-            imgStatus?.setImageDrawable(drawable(activity, R.drawable.ic_green_checked))
-        } else {
-            imgStatus?.setImageDrawable(drawable(activity, R.drawable.ic_red_error))
-        }
         imgStatus?.show()
+
+        activity?.let {
+            imgStatus?.setImageDrawable(if (isSuccess) {
+                drawable(it, R.drawable.ic_green_checked)
+            } else {
+                drawable(it, R.drawable.ic_red_error)
+            })
+        }
     }
 
     private fun showLoading() {
