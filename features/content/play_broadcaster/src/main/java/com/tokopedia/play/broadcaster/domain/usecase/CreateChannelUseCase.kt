@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.CreateChannelBroadcastResponse
 import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
@@ -33,8 +32,7 @@ class CreateChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): ChannelId {
-        val gqlRequest = GraphqlRequest(query, CreateChannelBroadcastResponse::class.java, params)
-        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, CreateChannelBroadcastResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<CreateChannelBroadcastResponse>(CreateChannelBroadcastResponse::class.java)
         response?.getChannelId?.let { return it }
