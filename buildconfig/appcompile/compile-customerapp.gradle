@@ -14,6 +14,7 @@ include "features:category:find_native"
 
 include "features:communication:broadcast_message_common"
 include "features:merchant:product_manage_common"
+include "features:merchant:product_add_edit"
 include "features:content:affiliate"
 include "features:content:affiliate_common"
 include "features:content:createpost"
