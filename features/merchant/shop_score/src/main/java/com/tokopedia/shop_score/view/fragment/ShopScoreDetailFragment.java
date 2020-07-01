@@ -203,12 +203,15 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void showLoading() {
+        setGravityCenter();
         loadingUnify.setVisibility(View.VISIBLE);
+        containerView.setVisibility(View.GONE);
     }
 
     @Override
     public void dismissLoading() {
         loadingUnify.setVisibility(View.GONE);
+        containerView.setVisibility(View.VISIBLE);
     }
 
     private void setGravityCenter() {
