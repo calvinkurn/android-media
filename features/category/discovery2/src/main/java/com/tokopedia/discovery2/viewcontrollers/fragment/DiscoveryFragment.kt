@@ -41,6 +41,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -62,11 +63,16 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
-    private val analytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
+    private val analytics: DiscoveryAnalytics by lazy {
+        DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType,
+                pageIdentifier = discoveryViewModel.pageIdentifier)
+    }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: ProgressBar
     var pageEndPoint = ""
     private var componentPosition: Int? = null
+    private var openScreenStatus = false
+
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -131,6 +137,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     ivToTop.show()
                 }
             }
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -152,13 +159,20 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
         discoveryViewModel.getDiscoveryData()
-
         setUpObserver()
-
     }
 
     fun reSync() {
         discoveryViewModel.getDiscoveryData()
+    }
+
+    private fun sendOpenScreenAnalytics(identifier: String?) {
+        if (identifier.isNullOrEmpty()) {
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, isUserLoggedIn())
+        } else {
+            getDiscoveryAnalytics().trackOpenScreen(identifier, isUserLoggedIn())
+        }
+        openScreenStatus = true
     }
 
     private fun setUpObserver() {
@@ -217,7 +231,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             }
         })
     }
-
 
     private fun setPageInfo(data: PageInfo?) {
         typographyHeader.text = data?.name
@@ -278,7 +291,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
 
-
             override fun onPermissionGranted() {
                 grantedPermission()
             }
@@ -302,12 +314,14 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
+        getDiscoveryAnalytics().clearProductViewIds()
     }
 
     override fun onRefresh() {
         discoveryAdapter.clearListViewModel()
         discoveryViewModel.clearPageData()
         discoveryViewModel.getDiscoveryData()
+        getDiscoveryAnalytics().clearProductViewIds()
     }
 
     fun openLoginScreen(componentPosition: Int = -1) {
@@ -370,5 +384,42 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 ivToTop.hide()
             }
         }
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        return UserSession(activity).isLoggedIn
+    }
+
+    override fun onResume() {
+        super.onResume()
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+            if (!openScreenStatus) {
+                when (it) {
+                    is Success -> {
+                        sendOpenScreenAnalytics(it.data.identifier)
+                    }
+
+                    is Fail -> {
+                        sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
+                    }
+                }
+            }
+        })
+
+        if (!openScreenStatus) {
+            when (val discoPageInfo = discoveryViewModel.getDiscoveryPageInfo().value) {
+                is Success -> {
+                    sendOpenScreenAnalytics(discoPageInfo.data.identifier)
+                }
+                is Fail -> {
+                    sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
+                }
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        openScreenStatus = false
     }
 }
