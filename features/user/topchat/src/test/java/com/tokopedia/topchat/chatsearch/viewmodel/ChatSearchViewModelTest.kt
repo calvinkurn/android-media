@@ -3,8 +3,11 @@ package com.tokopedia.topchat.chatsearch.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.topchat.FileUtil
+import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.data.GetMultiChatSearchResponse
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
+import com.tokopedia.topchat.chatsearch.view.uimodel.BigDividerUiModel
 import com.tokopedia.topchat.chatsearch.view.uimodel.SearchListHeaderUiModel
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -43,6 +46,24 @@ class ChatSearchViewModelTest {
         val exPage = 2
         val exGetChatSearchResponse = GetMultiChatSearchResponse()
         val exThrowable = Throwable()
+
+        val successSearchContactOnlyLessThan5: GetMultiChatSearchResponse = FileUtil.parse(
+                "/success_search_contact_only_less_than_5.json",
+                GetMultiChatSearchResponse::class.java
+        )
+
+        val successSearchContactOnlyMoreThan5: GetMultiChatSearchResponse = FileUtil.parse(
+                "/success_search_contact_only_more_than_5.json",
+                GetMultiChatSearchResponse::class.java
+        )
+        val successSearchReplyOnlyLessThan5: GetMultiChatSearchResponse = FileUtil.parse(
+                "/success_search_reply_only_less_than_5.json",
+                GetMultiChatSearchResponse::class.java
+        )
+        val successSearchContactAndReplyMoreThan5: GetMultiChatSearchResponse = FileUtil.parse(
+                "/success_search_contact_and_reply_more_than_5.json",
+                GetMultiChatSearchResponse::class.java
+        )
     }
 
     @Before
@@ -117,7 +138,7 @@ class ChatSearchViewModelTest {
     }
 
     @Test
-    fun `Success load new query`() {
+    fun `Success load new query first page and has empty result`() {
         // Given
         viewModel.searchResults.observeForever(searchResultObserver)
         every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
@@ -130,6 +151,97 @@ class ChatSearchViewModelTest {
 
         // Then
         verify { searchResultObserver.onChanged(emptyList()) }
+    }
+
+    @Test
+    fun `Success load new query first page and has contact only result less than 5`() {
+        // Given
+        val contactHeader = SearchListHeaderUiModel()
+        viewModel.searchResults.observeForever(searchResultObserver)
+        every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
+            val onSuccess = firstArg<(GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit>()
+            onSuccess.invoke(Dummy.successSearchContactOnlyLessThan5, contactHeader, null)
+        }
+        val contactResponse = GetChatSearchResponse(Dummy.successSearchContactOnlyLessThan5.searchByName)
+        val expectedList = arrayListOf<Visitable<*>>().apply {
+            add(contactHeader)
+            addAll(contactResponse.searchResults)
+        }
+
+        // When
+        viewModel.onSearchQueryChanged(Dummy.exQuery)
+
+        // Then
+        verify { searchResultObserver.onChanged(expectedList) }
+    }
+
+    @Test
+    fun `Success load new query first page and has reply only result less than 5`() {
+        // Given
+        val replyHeader = SearchListHeaderUiModel()
+        viewModel.searchResults.observeForever(searchResultObserver)
+        every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
+            val onSuccess = firstArg<(GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit>()
+            onSuccess.invoke(Dummy.successSearchReplyOnlyLessThan5, null, replyHeader)
+        }
+        val expectedList = arrayListOf<Visitable<*>>().apply {
+            add(replyHeader)
+            addAll(Dummy.successSearchReplyOnlyLessThan5.replySearchResults)
+        }
+
+        // When
+        viewModel.onSearchQueryChanged(Dummy.exQuery)
+
+        // Then
+        verify { searchResultObserver.onChanged(expectedList) }
+    }
+
+    @Test
+    fun `Success load new query first page and has contact only result more than 5`() {
+        // Given
+        val contactHeader = SearchListHeaderUiModel()
+        viewModel.searchResults.observeForever(searchResultObserver)
+        every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
+            val onSuccess = firstArg<(GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit>()
+            onSuccess.invoke(Dummy.successSearchContactOnlyMoreThan5, contactHeader, null)
+        }
+        val contactResponse = GetChatSearchResponse(Dummy.successSearchContactOnlyMoreThan5.searchByName)
+        val expectedList = arrayListOf<Visitable<*>>().apply {
+            add(contactHeader)
+            addAll(contactResponse.searchResults.subList(0, 5))
+        }
+
+        // When
+        viewModel.onSearchQueryChanged(Dummy.exQuery)
+
+        // Then
+        verify { searchResultObserver.onChanged(expectedList) }
+    }
+
+    @Test
+    fun `Success load new query first page and has contact & reply more than 5`() {
+        // Given
+        val contactHeader = SearchListHeaderUiModel()
+        val replyHeader = SearchListHeaderUiModel()
+        viewModel.searchResults.observeForever(searchResultObserver)
+        every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
+            val onSuccess = firstArg<(GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit>()
+            onSuccess.invoke(Dummy.successSearchContactAndReplyMoreThan5, contactHeader, replyHeader)
+        }
+        val contactResponse = GetChatSearchResponse(Dummy.successSearchContactAndReplyMoreThan5.searchByName)
+        val expectedList = arrayListOf<Visitable<*>>().apply {
+            add(contactHeader)
+            addAll(contactResponse.searchResults.subList(0, 5))
+            add(BigDividerUiModel())
+            add(replyHeader)
+            addAll(Dummy.successSearchContactAndReplyMoreThan5.replySearchResults)
+        }
+
+        // When
+        viewModel.onSearchQueryChanged(Dummy.exQuery)
+
+        // Then
+        verify { searchResultObserver.onChanged(expectedList) }
     }
 
     @Test
@@ -189,6 +301,18 @@ class ChatSearchViewModelTest {
 
         assertEquals(false, viewModel.isFirstPage())
     }
+
+    @Test
+    fun `Get hasNext page status`() {
+        every { getSearchQueryUseCase.hasNext } returns false
+
+        assertEquals(false, viewModel.hasNext)
+
+        every { getSearchQueryUseCase.hasNext } returns true
+
+        assertEquals(true, viewModel.hasNext)
+    }
+
 
     @Test
     fun `on reset live data`() {
