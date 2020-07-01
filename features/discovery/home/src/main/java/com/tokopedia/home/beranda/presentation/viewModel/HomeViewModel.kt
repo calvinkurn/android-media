@@ -156,7 +156,7 @@ open class HomeViewModel @Inject constructor(
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
     val errorEventLiveData: LiveData<Event<String>>
-            get() = _errorEventLiveData
+        get() = _errorEventLiveData
     private val _errorEventLiveData = MutableLiveData<Event<String>>()
 
     val isViewModelInitalized: LiveData<Event<Boolean>>
@@ -269,16 +269,25 @@ open class HomeViewModel @Inject constructor(
                     authorType = GetPlayWidgetUseCase.HOME_AUTHOR_TYPE
             )
             val newPlayCarouselDataModel = getPlayBannerUseCase.executeOnBackground()
+            if(newPlayCarouselDataModel.channelList.isEmpty()){
+                _homeLiveData.value?.list?.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }?.let{ playIndex ->
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                }
+            } else {
+                val newList = mutableListOf<Visitable<*>>()
+                newList.addAll(_homeLiveData.value?.list ?: listOf())
+                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
+                if(playIndex != -1 && newList[playIndex] is PlayCarouselCardDataModel) {
+                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCarouselCardDataModel.copy(
+                            playBannerCarouselDataModel = newPlayCarouselDataModel
+                    ), playIndex))
+                }
+            }
+        }){
             val newList = mutableListOf<Visitable<*>>()
             newList.addAll(_homeLiveData.value?.list ?: listOf())
             val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
-            if(playIndex != -1 && newList[playIndex] is PlayCarouselCardDataModel){
-                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCarouselCardDataModel.copy(
-                        playBannerCarouselDataModel = newPlayCarouselDataModel
-                ), playIndex))
-            }
-        }){
-
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
         }
     }
 
@@ -1052,7 +1061,7 @@ open class HomeViewModel @Inject constructor(
                 data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
                     homeDataModel = evaluateAvailableComponent(homeDataModel)
-                        _homeLiveData.value = homeDataModel
+                    _homeLiveData.value = homeDataModel
                 }
             } else {
                 val newList = _homeLiveData.value?.list?.toMutableList()

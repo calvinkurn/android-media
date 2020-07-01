@@ -14,5 +14,8 @@ data class PlayBannerCarouselDataModel (
         val isAutoRefreshTimer: Int = 0,
         val isAutoPlayAmount: Int = 1,
         val isAutoPlay: Boolean = false,
-        val channelList: List<BasePlayBannerCarouselModel> = listOf()
+        val channelList: List<BasePlayBannerCarouselModel> = listOf(),
+        val durationPlayWithWifi: Int = 40,
+        val durationPlayWithData: Int = 25,
+        val durationDelayStartVideo: Int = 3
 )
