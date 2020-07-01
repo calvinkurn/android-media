@@ -127,7 +127,7 @@ class FlightSearchViewModel @Inject constructor(
         val child = flightSearchPassData.flightPassengerModel.children
         val infant = flightSearchPassData.flightPassengerModel.infant
         val classId = flightSearchPassData.flightClass.id
-        val searchRequestId = flightSearchPassData.searchRequestId ?: ""
+        val searchRequestId = flightSearchPassData.searchRequestId
 
         val requestModel = FlightSearchRequestModel(
                 flightAirportCombine.departureAirport,
@@ -189,7 +189,7 @@ class FlightSearchViewModel @Inject constructor(
                 flightSearchPassData.flightPassengerModel.infant,
                 flightSearchPassData.flightClass.id,
                 FlightRequestUtil.getLocalIpAddress(),
-                flightSearchPassData.searchRequestId ?: "")
+                flightSearchPassData.searchRequestId)
 
         launchCatchError(context = dispatcherProvider.ui(), block = {
             isCombineDone = flightSearchCombineUseCase.execute(combineRequestModel)
@@ -371,7 +371,7 @@ class FlightSearchViewModel @Inject constructor(
                     date, adult, child, infant, classId,
                     flightAirportCombine.airlines,
                     FlightRequestUtil.getLocalIpAddress(),
-                    searchRequestId ?: "")
+                    searchRequestId)
 
             launchCatchError(dispatcherProvider.ui(), {
                 flightSearchUseCase.execute(requestModel,

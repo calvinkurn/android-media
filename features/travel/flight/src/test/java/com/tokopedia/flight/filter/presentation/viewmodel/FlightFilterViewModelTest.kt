@@ -258,7 +258,6 @@ class FlightFilterViewModelTest {
         val filterModel = FlightFilterModel()
         filterModel.priceMin = 90000
         filterModel.airlineList = mutableListOf("Garuda")
-        flightFilterViewModel.init(TravelSortOption.SHORTEST_DURATION, filterModel)
 
         //when
         flightFilterViewModel.resetFilter()
