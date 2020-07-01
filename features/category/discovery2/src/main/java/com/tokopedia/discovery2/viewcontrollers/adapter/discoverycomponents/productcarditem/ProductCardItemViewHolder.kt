@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -121,6 +123,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             setSlashedPrice(dataItem.discountedPrice)
             textViewPrice.setTextAndCheckShow(dataItem.price)
             showOutOfStockLabel(dataItem.stock, PRODUCT_STOCK)
+            if(productCardName == ComponentNames.ProductCardCarouselItem.componentName){
+                val displayMetrics = getDisplayMetric(context)
+                productCardView.layoutParams.width = (displayMetrics.widthPixels/2.3).toInt()
+            }
         } else {
             productName.setTextAndCheckShow(dataItem.title)
             setSlashedPrice(dataItem.price)
@@ -137,6 +143,12 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         setPDPView(dataItem)
         showInterestedView(dataItem)
         showNotifyMe(dataItem)
+    }
+
+    private fun getDisplayMetric(context: Context?): DisplayMetrics {
+        val displayMetrics = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics
     }
 
     private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
