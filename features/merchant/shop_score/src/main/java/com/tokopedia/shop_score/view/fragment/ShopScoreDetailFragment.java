@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,6 +51,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     private FrameLayout mainFrame;
     private ProgressDialog progressDialog;
     private LoaderUnify loadingUnify;
+    private NestedScrollView scrollview;
 
     private View.OnClickListener goToSellerCenter = new View.OnClickListener() {
         @Override
@@ -95,6 +98,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         descriptionGoldBadge = (TextView) parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
         imageViewGoldBadge = (ImageView) parentView.findViewById(R.id.image_view_gold_badge);
         loadingUnify = (LoaderUnify) parentView.findViewById(R.id.loading);
+        scrollview = (NestedScrollView) parentView.findViewById(R.id.scrollview);
 
         parentView.findViewById(R.id.button_go_to_seller_center).setOnClickListener(goToSellerCenter);
         parentView.findViewById(R.id.button_go_to_complete_information).setOnClickListener(goToCompleteInformation);
@@ -187,6 +191,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void emptyState() {
+        scrollview.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
         containerView.setVisibility(View.GONE);
         setGravityCenter();
         NetworkErrorHelper
