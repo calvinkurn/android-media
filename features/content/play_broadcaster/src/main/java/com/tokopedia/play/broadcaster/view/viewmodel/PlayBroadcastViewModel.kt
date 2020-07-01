@@ -212,6 +212,10 @@ class PlayBroadcastViewModel @Inject constructor(
         }.executeOnBackground()
     }
 
+    private suspend fun getSocketCredential() = withContext(dispatcher.io) {
+        return@withContext getSocketCredentialUseCase.executeOnBackground()
+    }
+
     /**
      * Permission
      */
