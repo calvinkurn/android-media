@@ -49,7 +49,7 @@ object ProductHighlightTracking : BaseTracking() {
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = EVENT_ACTION_CLICK_PRODUCT_DYNAMIC_CHANNEL_HERO,
-            eventLabel = headerName,
+            eventLabel = "$channelId - $headerName",
             channelId = channelId,
             campaignCode = campaignCode,
             products = listOf(
