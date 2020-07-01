@@ -318,7 +318,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     override fun onRefresh() {
-        discoveryAdapter.clearListViewModel()
+        trackingQueue.sendAll()
+        getDiscoveryAnalytics().clearProductViewIds()
         discoveryViewModel.clearPageData()
         discoveryViewModel.getDiscoveryData()
         getDiscoveryAnalytics().clearProductViewIds()
