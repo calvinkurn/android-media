@@ -180,7 +180,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
 
             Bundle queryParamBundle = RouteManager.getBundleFromAppLinkQueryParams(applinkString);
-            queryParamBundle.putAll(RouteManager.getBundleFromAppLinkQueryParams(mappedDeeplink));
             Bundle defaultBundle = new Bundle();
             defaultBundle.putBundle(RouteManager.QUERY_PARAM, queryParamBundle);
 
