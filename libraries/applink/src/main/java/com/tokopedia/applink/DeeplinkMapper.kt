@@ -207,7 +207,7 @@ object DeeplinkMapper {
 
     private val deeplinkPatternTokopediaSchemeList: MutableList<DLP> = listOf(
             DLP.startWith(ApplinkConst.HOME) { _, _, deeplink -> getRegisteredNavigationHome(deeplink) },
-            DLP.startWith(ApplinkConst.INBOX, ApplinkConstInternalMarketplace.HOME_INBOX),
+            DLP.startWith(ApplinkConst.INBOX, ApplinkConsInternalHome.HOME_INBOX),
             DLP.startWith(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER),
             DLP.startWith(ApplinkConst.SALAM_UMRAH_SHOP) { ctx, _, deeplink -> getRegisteredNavigationSalamUmrahShop(deeplink, ctx) },
             DLP(logic = { _, _, deeplink -> deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) },
