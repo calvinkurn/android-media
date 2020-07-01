@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
-import com.crashlytics.android.Crashlytics
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -28,11 +27,13 @@ abstract class BaseUseCase<T : Any>: UseCase<T>() {
         try {
             gqlResponse =  gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
         } catch (throwable: Throwable) {
+//            Crashlytics.log(0, TAG, throwable.localizedMessage) // TODO uncomment Crashlytics
             if (throwable is UnknownHostException) throw DefaultNetworkThrowable()
         }
         val errors = gqlResponse?.getError(typeOfT)
         if (!errors.isNullOrEmpty()) {
             if (GlobalConfig.DEBUG) {
+//                Crashlytics.log(0, TAG, errors[0].message)
                 throw DefaultErrorThrowable(errors[0].message)
             }
         }
