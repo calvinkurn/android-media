@@ -66,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="end"
-        app:constraint_referenced_ids="notify_count_down,product_notify_subtitle, product_notify_subtitle"/>
+        app:constraint_referenced_ids="notify_count_down,product_notify_subtitle, product_notify_title"/>
 
     <ImageView
         android:layout_width="@dimen/dp_110"
