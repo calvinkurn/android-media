@@ -368,9 +368,6 @@ class PromoCheckoutViewModelGetPromoListTest {
         assert(promoRequest.orders[0].codes.isNotEmpty() ||
                 promoRequest.orders[1].codes.isNotEmpty() ||
                 promoRequest.orders[2].codes.isNotEmpty())
-        assert(promoRequest.orders[0].codes.size == 1 ||
-                promoRequest.orders[1].codes.size == 1 ||
-                promoRequest.orders[2].codes.size == 1)
     }
 
     @Test
@@ -407,9 +404,6 @@ class PromoCheckoutViewModelGetPromoListTest {
         assert(promoRequest.orders[0].codes.isNotEmpty() ||
                 promoRequest.orders[1].codes.isNotEmpty() ||
                 promoRequest.orders[2].codes.isNotEmpty())
-        assert(promoRequest.orders[0].codes.size == 1 ||
-                promoRequest.orders[1].codes.size == 1 ||
-                promoRequest.orders[2].codes.size == 1)
     }
 
 }
