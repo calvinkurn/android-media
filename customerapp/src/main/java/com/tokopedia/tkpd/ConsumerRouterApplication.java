@@ -105,21 +105,18 @@ import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
-import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -175,7 +172,6 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
-        SellerModuleRouter,
         ReactApplication,
         ReputationRouter,
         AbstractionRouter,
@@ -312,17 +308,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public ShopComponent getShopComponent() {
-        if (shopComponent == null) {
-            if(daggerShopBuilder == null){
-                daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-            }
-            shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return shopComponent;
     }
 
     @Override
@@ -479,11 +464,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getHomeIntent(Context context) {
         return MainParentActivity.start(context);
-    }
-
-    @Override
-    public Intent getPhoneVerificationActivityIntent(Context context) {
-        return PhoneVerificationActivationActivity.getIntent(context, false, false);
     }
 
     @Override
