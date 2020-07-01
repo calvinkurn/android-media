@@ -24,7 +24,8 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.R
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT
@@ -34,14 +35,14 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.util.*
 import javax.inject.Inject
-import com.tokopedia.unifycomponents.TextAreaUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var mBtnSendGift: TextView? = null
     private var mBtnSendNow: TextView? = null
-    private var mWrapperEmail: TextAreaUnify? = null
-    private var mWrapperNote: TextAreaUnify? = null
+    private var mWrapperEmail: TextFieldUnify? = null
+    private var mWrapperNote: TextFieldUnify? = null
     var tokoPointComponent: TokopointBundleComponent? = null
 
     @Inject
@@ -56,7 +57,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(com.tokopedia.tokopoints.R.layout.tp_fragment_send_gift, container, false)
+        val view = inflater.inflate(R.layout.tp_fragment_send_gift, container, false)
         initView()
         return view
     }
@@ -68,18 +69,18 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContainerMain = view.findViewById(com.tokopedia.tokopoints.R.id.container_main)
+        mContainerMain = view.findViewById(R.id.container_main)
         mContainerMain?.displayedChild = CONTAINER_SEND_FORM
-        mWrapperEmail = view.findViewById(com.tokopedia.tokopoints.R.id.wrapper_email)
-        mWrapperNote = view.findViewById(com.tokopedia.tokopoints.R.id.wrapper_text_count)
-        mBtnSendGift = view.findViewById(com.tokopedia.tokopoints.R.id.button_send)
-        mBtnSendNow = view.findViewById(com.tokopedia.tokopoints.R.id.button_send_now)
-        val ivCancelInitial = getView()!!.findViewById<ImageView>(com.tokopedia.tokopoints.R.id.iv_cancel)
-        val ivCancelPreConfirm = getView()!!.findViewById<ImageView>(com.tokopedia.tokopoints.R.id.iv_cancel_preconfirmation)
+        mWrapperEmail = view.findViewById(R.id.wrapper_email)
+        mWrapperNote = view.findViewById(R.id.wrapper_text_count)
+        mBtnSendGift = view.findViewById(R.id.button_send)
+        mBtnSendNow = view.findViewById(R.id.button_send_now)
+        val ivCancelInitial = getView()!!.findViewById<ImageView>(R.id.iv_cancel)
+        val ivCancelPreConfirm = getView()!!.findViewById<ImageView>(R.id.iv_cancel_preconfirmation)
         ivCancelInitial.setOnClickListener { view1: View? -> dismiss() }
         ivCancelPreConfirm.setOnClickListener { view1: View? -> dismiss() }
-        mWrapperEmail?.textAreaWrapper?.editText?.addTextChangedListener(this)
-        mWrapperNote?.textAreaWrapper?.editText?.addTextChangedListener(this)
+        mWrapperEmail?.textFieldInput?.addTextChangedListener(this)
+        mWrapperNote?.textFieldInput?.addTextChangedListener(this)
         mBtnSendGift?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
         mBtnSendNow?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
         stopPreparePagePerformanceMonitoring()
@@ -132,20 +133,20 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     })
 
     override fun onClick(view: View) {
-        if (view.id == com.tokopedia.tokopoints.R.id.button_send) {
+        if (view.id == R.id.button_send) {
             if (arguments == null || activity == null) {
                 return
             }
 
             KeyboardHandler.hideSoftKeyboard(activity)
-            mViewModel!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mWrapperEmail?.textAreaInput.toString())
-        } else if (view.id == com.tokopedia.tokopoints.R.id.button_send_now) {
+            mViewModel!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mWrapperEmail?.textFieldInput?.text.toString())
+        } else if (view.id == R.id.button_send_now) {
             if (arguments == null || activity == null) {
                 return
             }
             mViewModel.sendGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID),
-                    mWrapperEmail?.textAreaInput.toString(),
-                    mWrapperNote?.textAreaInput.toString())
+                    mWrapperEmail?.textFieldInput?.text.toString(),
+                    mWrapperNote?.textFieldInput?.text.toString())
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                     AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,
@@ -158,7 +159,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         if (view == null) {
             return
         }
-        view!!.findViewById<View>(com.tokopedia.tokopoints.R.id.progress_send).visibility = View.VISIBLE
+        view!!.findViewById<View>(R.id.progress_send).visibility = View.VISIBLE
         mBtnSendGift!!.text = ""
     }
 
@@ -166,15 +167,15 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         if (view == null) {
             return
         }
-        view!!.findViewById<View>(com.tokopedia.tokopoints.R.id.progress_send).visibility = View.GONE
-        mBtnSendGift!!.setText(com.tokopedia.tokopoints.R.string.tp_label_send)
+        view!!.findViewById<View>(R.id.progress_send).visibility = View.GONE
+        mBtnSendGift!!.setText(R.string.tp_label_send)
     }
 
     override fun showLoadingSendNow() {
         if (view == null) {
             return
         }
-        view!!.findViewById<View>(com.tokopedia.tokopoints.R.id.progress_send_now).visibility = View.VISIBLE
+        view!!.findViewById<View>(R.id.progress_send_now).visibility = View.VISIBLE
         mBtnSendGift!!.text = ""
     }
 
@@ -182,8 +183,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         if (view == null) {
             return
         }
-        view!!.findViewById<View>(com.tokopedia.tokopoints.R.id.progress_send_now).visibility = View.GONE
-        mBtnSendGift!!.setText(com.tokopedia.tokopoints.R.string.tp_label_send_now)
+        view!!.findViewById<View>(R.id.progress_send_now).visibility = View.GONE
+        mBtnSendGift!!.setText(R.string.tp_label_send_now)
     }
 
     private val couponTitle: String
@@ -209,22 +210,23 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         if (view == null || arguments == null) {
             return
         }
-        val textTitle = view!!.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_title_banner)
-        val textPoint = view!!.findViewById<TextView>(com.tokopedia.tokopoints.R.id.point)
-        val textEmail = view!!.findViewById<TextView>(com.tokopedia.tokopoints.R.id.email)
-        val textNotes = view!!.findViewById<TextView>(com.tokopedia.tokopoints.R.id.message)
-        val imgBanner = view!!.findViewById<ImageView>(com.tokopedia.tokopoints.R.id.iv_banner)
-        ImageHandler.loadImage(this.context, imgBanner, arguments!!.getString(CommonConstant.EXTRA_COUPON_BANNER), R.color.grey_100)
+        val textTitle = view!!.findViewById<TextView>(R.id.tv_title_banner)
+        val textPoint = view!!.findViewById<TextView>(R.id.point)
+        val textEmail = view!!.findViewById<TextView>(R.id.email)
+        val textNotes = view!!.findViewById<TextView>(R.id.message)
+        val imgBanner = view!!.findViewById<ImageView>(R.id.iv_banner)
+        arguments?.getString(CommonConstant.EXTRA_COUPON_BANNER)?.let { imgBanner.loadImage(it) }
         textTitle.text = couponTitle
         textPoint.text = couponPoint
-        textEmail.text = mWrapperEmail?.textAreaInput.toString()
-        if (!mWrapperNote?.textAreaInput.toString().trim { it <= ' ' }.isEmpty()) {
-            textNotes.text = "\"" + mWrapperNote?.textAreaInput.toString().trim { it <= ' ' } + "\""
+        textEmail.text = mWrapperEmail?.textFieldInput?.text?.toString()
+        if (!mWrapperNote?.textFieldInput.toString().trim { it <= ' ' }.isEmpty()) {
+            textNotes.text = "\"" + mWrapperNote?.textFieldInput?.text.toString().trim { it <= ' ' } + "\""
         }
     }
 
     override fun onErrorPreValidate(error: String) {
-        mWrapperEmail?.textAreaMessage = error
+        mWrapperEmail?.setError(true)
+        mWrapperEmail?.setMessage(error)
     }
 
     override fun onSuccess() {}
@@ -238,24 +240,24 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     }
 
     override fun showPopup(title: String, message: String, success: Int) {
-        val constraintLayout: ConstraintLayout = view!!.findViewById(com.tokopedia.tokopoints.R.id.pre_confirmation_parent_container)
+        val constraintLayout: ConstraintLayout = view!!.findViewById(R.id.pre_confirmation_parent_container)
         constraintLayout.visibility = View.GONE
-        val viewSentFail = View.inflate(this.context, com.tokopedia.tokopoints.R.layout.tp_gift_coupon_sent_fail, null)
-        val viewSentSuccess = View.inflate(this.context, com.tokopedia.tokopoints.R.layout.tp_gift_coupon_sent, null)
-        val adb = AlertDialog.Builder(activityContext)
+        val viewSentFail = View.inflate(this.activity, R.layout.tp_gift_coupon_sent_fail, null)
+        val viewSentSuccess = View.inflate(this.activity, R.layout.tp_gift_coupon_sent, null)
+        val adb = activityContext.let { AlertDialog.Builder(it) }
         if (success == 1) {
-            val tvTitle = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_title)
-            val tvContent = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.content)
-            val btnSuccess = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.btn_sentSuccess)
+            val tvTitle = viewSentSuccess.findViewById<TextView>(R.id.tv_title)
+            val tvContent = viewSentSuccess.findViewById<TextView>(R.id.content)
+            val btnSuccess = viewSentSuccess.findViewById<TextView>(R.id.btn_sentSuccess)
             btnSuccess.setOnClickListener { view: View? -> activity!!.finish() }
             tvTitle.text = title
             tvContent.text = message
             adb.setView(viewSentSuccess)
         } else {
-            val tvTitle = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_title)
-            val tvContent = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.content)
-            val tvRoute = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_route)
-            val btnFailed = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.btn_sentFail)
+            val tvTitle = viewSentFail.findViewById<TextView>(R.id.tv_title)
+            val tvContent = viewSentFail.findViewById<TextView>(R.id.content)
+            val tvRoute = viewSentFail.findViewById<TextView>(R.id.tv_route)
+            val btnFailed = viewSentFail.findViewById<TextView>(R.id.btn_sentFail)
             btnFailed.setOnClickListener { view: View? -> activity!!.finish() }
             tvRoute.setOnClickListener { view: View? -> RouteManager.route(this.context, ApplinkConst.TOKOPOINTS) }
             tvTitle.text = title
@@ -263,9 +265,9 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             adb.setView(viewSentFail)
         }
         val dialog = adb.create()
-        dialog.window.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
-        decorateDialog(dialog)
+        //   decorateDialog(dialog)
     }
 
     private fun decorateDialog(dialog: AlertDialog) {
@@ -280,10 +282,10 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
         if (charSequence.length == 0) {
             mBtnSendGift!!.isEnabled = false
-            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.tokopoints.R.color.tp_btn_sent_gift_color))
+            mBtnSendGift!!.setTextColor(resources.getColor(R.color.tp_btn_sent_gift_color))
         } else {
             mBtnSendGift!!.isEnabled = true
-            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.tokopoints.R.color.tp_bg_button_orange_border))
+            mBtnSendGift!!.setTextColor(resources.getColor(R.color.tp_bg_button_orange_border))
         }
     }
 
