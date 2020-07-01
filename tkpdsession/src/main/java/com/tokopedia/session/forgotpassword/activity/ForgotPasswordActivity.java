@@ -10,9 +10,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.session.forgotpassword.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenterImpl;
@@ -30,6 +36,14 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     private static final String INTENT_EXTRA_PARAM_EMAIL = "email";
     private static final String INTENT_EXTRA_AUTO_RESET = "INTENT_EXTRA_AUTO_RESET";
     private static final String INTENT_EXTRA_REMOVE_FOOTER = "INTENT_EXTRA_REMOVE_FOOTER";
+
+    private static final String URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password";
+    private static final String REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url";
+    private static final String AB_TEST_RESET_PASSWORD_KEY = "Reset Password AND";
+    private static final String AB_TEST_RESET_PASSWORD = "Reset Password AND";
+
+    private RemoteConfig remoteConfig;
+    private RemoteConfigInstance remoteConfigInstance;
 
     public static Intent createInstance(Context context) {
         return new Intent(context, ForgotPasswordActivity.class);
@@ -59,8 +73,23 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
         return R.layout.activity_simple_fragment;
     }
 
+    private AbTestPlatform getAbTestPlatform() {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = new RemoteConfigInstance(this.getApplication());
+        }
+        return remoteConfigInstance.getABTestPlatform();
+    }
+
     @Override
     protected void initView() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
+        getAbTestPlatform().fetch(null);
+
+        if (isDirectToWebView()) {
+            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, getUrlResetPassword()));
+            finish();
+            return;
+        }
 
         if (getSupportFragmentManager().findFragmentById(R.id.container) == null) {
             ForgotPasswordFragment fragment = ForgotPasswordFragment.createInstance(
@@ -72,6 +101,19 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
             fragmentTransaction.add(R.id.container, fragment, TAG);
             fragmentTransaction.commit();
         }
+    }
+
+    private String getUrlResetPassword() {
+        String url = remoteConfig.getString(REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL, "");
+        if(url.isEmpty()) {
+            return URL_FORGOT_PASSWORD;
+        } else {
+            return url;
+        }
+    }
+
+    private boolean isDirectToWebView() {
+        return getAbTestPlatform().getString(AB_TEST_RESET_PASSWORD_KEY).equals(AB_TEST_RESET_PASSWORD);
     }
 
     @Override

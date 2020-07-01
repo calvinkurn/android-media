@@ -21,11 +21,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
+import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.*
@@ -67,18 +66,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var isReminderSet = false
     var reminder: Reminder? = null
     var gameRemindMeCheck: GameRemindMeCheck? = null
+
     @TokenUserState
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
 
-    override fun getLayout() = R.layout.fragment_gift_box_daily
+    override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_box_daily
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
-                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                    .activityContextModule(ActivityContextModule(it))
                     .build()
             component.inject(this)
 
@@ -140,7 +140,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun setShadows() {
         context?.let {
-            val shadowColor = ContextCompat.getColor(it, R.color.gf_box_text_shadow)
+            val shadowColor = ContextCompat.getColor(it, com.tokopedia.gamification.R.color.gf_box_text_shadow)
             val shadowRadius = tvRewardFirstLine.dpToPx(5)
             val shadowOffset = tvRewardFirstLine.dpToPx(4)
             tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
@@ -520,12 +520,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun renderReminderButton(isUserReminded: Boolean) {
         context?.let {
             if (isUserReminded) {
-                fmReminder.background = ContextCompat.getDrawable(it, R.drawable.gf_bg_disabled_3d)
+                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_disabled_3d)
                 tvReminderBtn.text = reminder?.disableText
                 isReminderSet = true
             } else {
                 tvReminderBtn.text = reminder?.enableText
-                fmReminder.background = ContextCompat.getDrawable(it, R.drawable.gf_bg_green_3d)
+                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_green_3d)
                 isReminderSet = false
             }
             tvReminderMessage.text = reminder?.text
@@ -537,10 +537,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         rewardContainer.setFinalTranslationOfCirclesTap(giftBoxDailyView.fmGiftBox.top)
 
         giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
-            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_height)
+            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_height)
             val lidTop = fmGiftBox.top
             var translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
-            if(isTablet){
+            if (isTablet) {
                 translationY -= fmGiftBox.dpToPx(8)
             }
 

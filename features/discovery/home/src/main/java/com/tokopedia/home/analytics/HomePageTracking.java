@@ -6,6 +6,7 @@ import android.content.Context;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel;
@@ -252,7 +253,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventEnhancedClickDynamicIconHomePage(Context context, HomeIconItem homeIconItem, int position) {
+    public static void eventEnhancedClickDynamicIconHomePage(Context context, DynamicHomeIcon.DynamicIcon homeIconItem, int position) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
@@ -334,7 +335,6 @@ public class HomePageTracking {
                                                 FIELD_ID, channel.getId() + "_" + grid.getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
-                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position)
                                         )
                                 )
@@ -369,7 +369,6 @@ public class HomePageTracking {
                                                         channel.getCategoryID()),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
-                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position)
                                         )
                                 )
@@ -417,14 +416,13 @@ public class HomePageTracking {
         getTracker().sendGeneralEvent(map);
     }
 
-    public static void eventClickSeeAllLegoBannerChannel(Context context,
-                                                         String applink,
+    public static void eventClickSeeAllLegoBannerChannel(String headerName,
                                                          String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
         map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL);
-        map.put(EVENT_LABEL, applink);
+        map.put(EVENT_LABEL, headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker().sendGeneralEvent(map);
     }
@@ -441,8 +439,7 @@ public class HomePageTracking {
         getTracker().sendGeneralEvent(map);
     }
 
-    public static void eventClickSeeAllThreeLegoBannerChannel(Context context,
-                                                              String headerName,
+    public static void eventClickSeeAllThreeLegoBannerChannel(String headerName,
                                                               String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
@@ -862,7 +859,6 @@ public class HomePageTracking {
                                                 FIELD_ID, bannerChannel.getBanner().getId()+"_"+bannerChannel.getId(),
                                                 FIELD_NAME, bannerChannel.getPromoName(),
                                                 FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
-                                                FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(1)
                                         )
                                 )
@@ -1269,24 +1265,24 @@ public class HomePageTracking {
         return list;
     }
 
-    public static Map<String, Object> getEnhanceClickDynamicIconHomePage(int position, HomeIconItem homeIconItem) {
+    public static Map<String, Object> getEnhanceClickDynamicIconHomePage(int position, DynamicHomeIcon.DynamicIcon homeIconItem) {
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_CLICK_ON_DYNAMIC_ICON,
                 EVENT_LABEL, LABEL_EMPTY,
                 ATTRIBUTION, homeIconItem.getGalaxyAttribution(),
-                AFFINITY_LABEL, homeIconItem.getAffinityLabel(),
+                AFFINITY_LABEL, homeIconItem.getPersona(),
                 GALAXY_CATEGORY_ID, homeIconItem.getCategoryPersona(),
-                SHOP_ID, homeIconItem.getShopId(),
+                SHOP_ID, homeIconItem.getBrandId(),
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 FIELD_ID, homeIconItem.getId(),
                                                 FIELD_NAME, VALUE_NAME_DYNAMIC_ICON,
-                                                FIELD_CREATIVE, homeIconItem.getBuIdentifier(),
-                                                FIELD_CREATIVE_URL, homeIconItem.getIcon(),
+                                                FIELD_CREATIVE, homeIconItem.getBu_identifier(),
+                                                FIELD_CREATIVE_URL, homeIconItem.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position+1)
                                         )
                                 )
@@ -1315,7 +1311,7 @@ public class HomePageTracking {
         );
     }
 
-    public static Map<String, Object> getEnhanceImpressionDynamicIconHomePage(List<HomeIconItem> homeIconItem) {
+    public static Map<String, Object> getEnhanceImpressionDynamicIconHomePage(List<DynamicHomeIcon.DynamicIcon> homeIconItem) {
         List<Object> list = convertEnhanceDynamicIcon(homeIconItem);
         return DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
@@ -1332,18 +1328,18 @@ public class HomePageTracking {
         );
     }
 
-    private static List<Object> convertEnhanceDynamicIcon(List<HomeIconItem> homeIconItem) {
+    private static List<Object> convertEnhanceDynamicIcon(List<DynamicHomeIcon.DynamicIcon> homeIconItem) {
         List<Object> list = new ArrayList<>();
 
         if (homeIconItem != null) {
             for (int i = 0; i < homeIconItem.size(); i++) {
-                HomeIconItem item = homeIconItem.get(i);
+                DynamicHomeIcon.DynamicIcon item = homeIconItem.get(i);
                 list.add(
                         DataLayer.mapOf(
                                 FIELD_ID, item.getId(),
                                 FIELD_NAME, VALUE_NAME_DYNAMIC_ICON,
-                                FIELD_CREATIVE, item.getBuIdentifier(),
-                                FIELD_CREATIVE_URL, item.getIcon(),
+                                FIELD_CREATIVE, item.getBu_identifier(),
+                                FIELD_CREATIVE_URL, item.getImageUrl(),
                                 FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );

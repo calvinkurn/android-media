@@ -242,7 +242,20 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT_SAVE, "")
     }
 
+    fun eventClickMoreMenuEllipses() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_MENU_MORE_ELLIPSES, "")
+    }
+
+    fun eventClickMoreMenuShopShowcase() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_MENU_MORE_SHOP_SHOWCASE, "")
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    fun sendScreen(screenName: String, pageSource: String) {
+        val customDimension = mapOf(ProductManageDataLayer.CUSTOM_DIMENSION_PAGE_SOURCE to pageSource)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 }

@@ -1,10 +1,10 @@
 package com.tokopedia.opportunity.presenter.subscriber;
 
-import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.FilterData;
-import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OpportunityCategoryData;
-import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OptionItem;
-import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SearchData;
-import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SortData;
+import com.tokopedia.opportunity.data.entity.opportunitycategorydata.FilterData;
+import com.tokopedia.opportunity.data.entity.opportunitycategorydata.OpportunityCategoryData;
+import com.tokopedia.opportunity.data.entity.opportunitycategorydata.OptionItem;
+import com.tokopedia.opportunity.data.entity.opportunitycategorydata.SearchData;
+import com.tokopedia.opportunity.data.entity.opportunitycategorydata.SortData;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.opportunity.data.OpportunityFilterModel;
 import com.tokopedia.opportunity.domain.model.OpportunityFirstTimeModel;

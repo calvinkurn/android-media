@@ -83,8 +83,8 @@ data class Shop(
         @SerializedName("id") val id: Int = 0,
         @SerializedName("name") val name: String = "",
         @SerializedName("location") val location: String = "",
-        @SerializedName("badges") val badges: List<ShopBadge> = emptyList(),
-        @SerializedName("free_shipping_icon") val freeShippingIcon: String = ""
+        @SerializedName("badges") val badges: List<ShopBadge>? = emptyList(),
+        @SerializedName("free_shipping_icon") val freeShippingIcon: String? = ""
 )
 
 data class ShopBadge(

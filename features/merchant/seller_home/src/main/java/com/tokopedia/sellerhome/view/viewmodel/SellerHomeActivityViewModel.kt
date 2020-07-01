@@ -32,6 +32,7 @@ class SellerHomeActivityViewModel @Inject constructor(
         get() = _shopInfo
 
     fun getNotifications() = executeCall(_notifications) {
+        getNotificationUseCase.params = GetNotificationUseCase.getRequestParams()
         getNotificationUseCase.executeOnBackground()
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom.view.fragment
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -57,6 +58,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
         private const val SAVED_SOURCE = "saved_source"
         private const val REQUEST_FROM_PDP = 399
 
+        @SuppressLint("SyntheticAccessor")
         fun newInstance(productId: String = "", ref: String = "", source: String = "", internalRef: String = "") = SimilarProductRecommendationFragment().apply {
             this.ref = ref
             this.source = source
@@ -86,7 +88,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
             layoutManager = recyclerViewLayoutManager
         }
         enableLoadMore()
-        recommendationViewModel.getRecommendationItem().observe(viewLifecycleOwner, Observer {
+        recommendationViewModel.recommendationItem.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when {
                     it.status.isLoading() || it.status.isLoadMore()  -> showLoading()

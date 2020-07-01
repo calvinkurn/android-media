@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4">
+
+        <com.tokopedia.flight.common.view.FlightMultiAirlineView
+            android:id="@+id/flightMultiAirline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvAirline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintBottom_toBottomOf="@+id/flightMultiAirline"
+            app:layout_constraintLeft_toRightOf="@+id/flightMultiAirline"
+            app:layout_constraintTop_toTopOf="@+id/flightMultiAirline"
+            app:typographyType="body_2"
+            tools:text="Air Asia + Garuda Indonesia" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tagBestPairing"
+            style="@style/FlightChips.Info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flight_search_best_pairing_tag"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvAirline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvAirline"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivDepartureTime"
+            android:layout_width="@dimen/layout_lvl1"
+            android:layout_height="@dimen/layout_lvl1"
+            app:layout_constraintBottom_toBottomOf="@+id/tvDepartureTime"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvDepartureTime"
+            app:srcCompat="@drawable/flight_circle_green_stroke" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true"
+            android:background="@color/flight_dashed_line"
+            app:layout_constraintBottom_toTopOf="@+id/ivArrivalTime"
+            app:layout_constraintLeft_toLeftOf="@+id/ivDepartureTime"
+            app:layout_constraintRight_toRightOf="@+id/ivDepartureTime"
+            app:layout_constraintTop_toBottomOf="@+id/ivDepartureTime" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivArrivalTime"
+            android:layout_width="@dimen/layout_lvl1"
+            android:layout_height="@dimen/layout_lvl1"
+            app:layout_constraintBottom_toBottomOf="@+id/tvArrivalTime"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvArrivalTime"
+            app:srcCompat="@drawable/flight_circle_green_fill" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDepartureTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintLeft_toRightOf="@+id/ivDepartureTime"
+            app:layout_constraintTop_toBottomOf="@+id/tvAirline"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="19:25" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDepartureAirport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintLeft_toRightOf="@+id/tvDepartureTime"
+            app:layout_constraintTop_toTopOf="@+id/tvDepartureTime"
+            app:typographyType="body_2"
+            tools:text="CGK" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvFlightDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:textColor="@color/Neutral_N700_44"
+            app:layout_constraintLeft_toLeftOf="@+id/tvDepartureTime"
+            app:layout_constraintTop_toBottomOf="@+id/tvDepartureTime"
+            app:typographyType="body_3"
+            tools:text="9j 20m (1 transit)"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvArrivalTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintLeft_toLeftOf="@+id/tvDepartureTime"
+            app:layout_constraintTop_toBottomOf="@+id/tvFlightDuration"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="19:25" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvArrivalAirport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintLeft_toRightOf="@+id/tvArrivalTime"
+            app:layout_constraintTop_toTopOf="@+id/tvArrivalTime"
+            app:typographyType="body_2"
+            tools:text="CGK" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvFlightAdditionalDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:textColor="@color/Neutral_N700_44"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvArrivalAirport"
+            app:layout_constraintLeft_toRightOf="@+id/tvArrivalAirport"
+            app:layout_constraintTop_toTopOf="@+id/tvArrivalAirport"
+            app:typographyType="body_3"
+            tools:text="(+1 hari)"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvFlightStrikePrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/tvFlightPrice"
+            app:layout_constraintRight_toRightOf="parent"
+            app:typographyType="body_3"
+            tools:text="Rp1.750.000"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvFlightPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintBottom_toBottomOf="@+id/tvFlightPricePeopleLabel"
+            app:layout_constraintRight_toLeftOf="@+id/tvFlightPricePeopleLabel"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp1.550.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvFlightPricePeopleLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flight_search_people_label"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintBottom_toBottomOf="@+id/tvArrivalTime"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvDepartureTime"
+            app:typographyType="body_3" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnFlightDetail"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:background="@drawable/bg_flight_gray_rounded"
+            android:padding="@dimen/spacing_lvl1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFlightPricePeopleLabel"
+            app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/flight_search_list_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</LinearLayout>

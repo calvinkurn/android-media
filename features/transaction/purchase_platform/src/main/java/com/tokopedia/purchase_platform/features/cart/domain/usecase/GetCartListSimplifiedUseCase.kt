@@ -19,6 +19,7 @@ import javax.inject.Named
  */
 
 class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifiedQuery") private val queryString: String,
+                                                       private val graphqlUseCase: GraphqlUseCase,
                                                        private val cartSimplifiedMapper: CartSimplifiedMapper,
                                                        private val schedulers: ExecutorSchedulers) : UseCase<CartListData>() {
 
@@ -38,7 +39,6 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
         )
 
         val graphqlRequest = GraphqlRequest(queryString, ShopGroupSimplifiedGqlResponse::class.java, variables)
-        val graphqlUseCase = GraphqlUseCase()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)

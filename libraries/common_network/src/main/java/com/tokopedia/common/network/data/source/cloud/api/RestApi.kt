@@ -58,49 +58,49 @@ interface RestApi {
 
     //Deferred
     @GET
-    fun getDeferred(@Url url: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun getDeferred(@Url url: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @POST
-    fun postDeferred(@Url url: String, @Body json: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun postDeferred(@Url url: String, @Body json: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @Multipart
     @POST
-    fun postMultipartDeferred(@Url url: String, @Part file: MultipartBody.Part, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun postMultipartDeferred(@Url url: String, @Part file: MultipartBody.Part, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @Multipart
     @POST
-    fun postMultipartDeferred(@Url url: String, @PartMap partMap: Map<String, RequestBody>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun postMultipartDeferred(@Url url: String, @PartMap partMap: Map<String, RequestBody>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @FormUrlEncoded
     @POST
-    fun postDeferred(@Url url: String, @FieldMap(encoded = true) params: Map<String, String>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun postDeferred(@Url url: String, @FieldMap(encoded = true) params: Map<String, String>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @PATCH
-    fun patchDeferred(@Url url: String, @Body json: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun patchDeferred(@Url url: String, @Body json: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @FormUrlEncoded
     @PATCH
-    fun patchDeferred(@Url url: String, @FieldMap(encoded = true) params: Map<String, String>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun patchDeferred(@Url url: String, @FieldMap(encoded = true) params: Map<String, String>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @PUT
     fun putDeferred(@Url url: String, @Body json: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
 
     @FormUrlEncoded
     @PUT
-    fun putDeferred(@Url url: String, @FieldMap(encoded = true) params: Map<String, String>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun putDeferred(@Url url: String, @FieldMap(encoded = true) params: Map<String, String>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @DELETE
-    fun deleteDeferred(@Url url: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun deleteDeferred(@Url url: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @Multipart
     @PUT
-    fun putMultipartDeferred(@Url url: String, @Part file: MultipartBody.Part, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun putMultipartDeferred(@Url url: String, @Part file: MultipartBody.Part, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
     @Multipart
     @PUT
-    fun putMultipartDeferred(@Url url: String, @PartMap partMap: Map<String, RequestBody>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun putMultipartDeferred(@Url url: String, @PartMap partMap: Map<String, RequestBody>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
 
     @PUT
-    fun putRequestBodyDeferred(@Url url: String, @Body requestBody: RequestBody, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
+    suspend fun putRequestBodyDeferred(@Url url: String, @Body requestBody: RequestBody, @HeaderMap headers: Map<String, String>?): Response<String>
 }

@@ -16,7 +16,6 @@ object TopAdsDashboardConstant {
     const val EXTRA_AD_CHANGED = "EXTRA_AD_CHANGED"
     const val EXTRA_FROM_PUSH = "from_notif"
     const val EXTRA_APPLINK_FROM_PUSH = "applink_from_notif"
-    const val EXTRA_CREDIT = "EXTRA_CREDIT"
     const val EXTRA_TOTAL_GROUP_ADS = "EXTRA_TOTAL_GROUP_ADS"
     const val EXTRA_TOTAL_PRODUCT_ADS = "EXTRA_TOTAL_PRODUCT_ADS"
     const val EXTRA_SELECTED_OPTION = "selected_option"

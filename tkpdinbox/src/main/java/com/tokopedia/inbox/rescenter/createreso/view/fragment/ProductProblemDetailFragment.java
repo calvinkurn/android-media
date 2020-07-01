@@ -26,7 +26,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
@@ -309,7 +309,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void showInfoDialog(ProductProblemViewModel productProblemViewModel) {
-        if (dialog == null && !MethodChecker.isTimezoneNotAutomatic()) {
+        if (dialog == null && !MethodChecker.isTimezoneNotAutomatic(getActivity())) {
             dialog = new Dialog(getActivity());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.layout_info);
@@ -342,7 +342,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
             dialog.setOnDismissListener(dialog -> timeTickerUtil.destroy());
 
             dialog.show();
-        } else if (MethodChecker.isTimezoneNotAutomatic()) {
+        } else if (MethodChecker.isTimezoneNotAutomatic(getActivity())) {
             ServerErrorHandler.showTimezoneErrorSnackbar();
         } else if (dialog != null) {
             dialog.show();
