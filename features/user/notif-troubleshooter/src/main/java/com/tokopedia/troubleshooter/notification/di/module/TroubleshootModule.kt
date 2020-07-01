@@ -8,6 +8,8 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
 import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
 import com.tokopedia.troubleshooter.notification.domain.TroubleshootStatusUseCase
+import com.tokopedia.troubleshooter.notification.util.AppDispatcherProvider
+import com.tokopedia.troubleshooter.notification.util.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 
@@ -17,6 +19,12 @@ import dagger.Provides
     @TroubleshootContext
     fun provideContext(): Context {
         return context
+    }
+
+    @Provides
+    @TroubleshootScope
+    fun provideMainDispatcher(): DispatcherProvider {
+        return AppDispatcherProvider()
     }
 
     @Provides
