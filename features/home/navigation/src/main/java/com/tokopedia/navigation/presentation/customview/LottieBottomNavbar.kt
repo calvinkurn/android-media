@@ -317,6 +317,7 @@ class LottieBottomNavbar : LinearLayout {
             buttonContainer.setOnClickListener {
                 setSelected(index)
             }
+            buttonContainer.id = bottomMenu.id
 
             // add view to container
             navbarContainer?.addView(buttonContainer)
@@ -410,7 +411,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 }
 
-data class BottomMenu(val id: Long,
+data class BottomMenu(val id: String,
                       val title: String,
                       val animName: Int? = null,
                       val animToEnabledName: Int? = null,
