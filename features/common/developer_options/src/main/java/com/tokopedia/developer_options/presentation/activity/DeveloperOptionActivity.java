@@ -141,6 +141,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
     private TextView tvFakeResponse;
+    private TextView tvShareCrashReport;
 
     private Button requestFcmToken;
 
@@ -266,6 +267,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
+        tvShareCrashReport = findViewById(R.id.tv_share_crash);
 
         validateIfSellerapp();
     }
@@ -542,6 +544,27 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         tvFakeResponse.setOnClickListener(v -> {
             new FakeResponseActivityProvider().startActivity(this);
+        });
+
+        tvShareCrashReport.setOnClickListener(v -> {
+            try {
+
+                SharedPreferences sp = getSharedPreferences("crash",Context.MODE_PRIVATE);;
+                String text = sp.getString("exception","");
+
+//                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+//                ClipData clip = ClipData.newPlainText("Copied Text", text);
+//                if (clipboard != null) {
+//                    clipboard.setPrimaryClip(clip);
+//                }
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, text);
+                Intent shareIntent = Intent.createChooser(intent, null);
+                startActivity(shareIntent);
+
+            }catch (Exception e){}
         });
     }
 

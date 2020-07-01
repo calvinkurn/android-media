@@ -141,6 +141,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                SharedPreferences sp = ConsumerMainApplication.this.getSharedPreferences("crash",Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("exception",e.getMessage());
+                editor.apply();
+                System.exit(2);
+            }
+        });
 
     }
 
