@@ -6,6 +6,7 @@ import com.tokopedia.troubleshooter.notification.di.module.TroubleshootViewModel
 import com.tokopedia.troubleshooter.notification.ui.fragment.TroubleshootFragment
 import dagger.Component
 
+@TroubleshootScope
 @Component(modules = [
     TroubleshootModule::class,
     TroubleshootViewModelModule::class

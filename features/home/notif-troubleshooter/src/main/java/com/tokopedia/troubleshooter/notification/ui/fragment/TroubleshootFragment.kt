@@ -1,28 +1,35 @@
 package com.tokopedia.troubleshooter.notification.ui.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
+import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
+import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
+import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
 
 class TroubleshootFragment : BaseDaggerFragment() {
 
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: TroubleshootViewModel
-
-    override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders
+                .of(this, viewModelFactory)
+                .get(TroubleshootViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -73,6 +80,16 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
     private fun hideLoading() {
         pgLoader?.hide()
+    }
+
+    override fun initInjector() {
+        val application = (activity as Activity).application as BaseMainApplication
+        val baseAppComponent = application.baseAppComponent
+        DaggerTroubleshootComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .troubleshootModule(TroubleshootModule(requireContext()))
+                .build()
+                .inject(this)
     }
 
     override fun getScreenName() = SCREEN_NAME
