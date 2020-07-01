@@ -964,12 +964,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             dialog.setPrimaryCTAText(backButton.yesText)
             dialog.setPrimaryCTAClickListener {
                 GtmGiftTapTap.clickContinueButton(userSession?.userId)
+                dialog.dismiss()
                 activity?.finish()
             }
             dialog.setSecondaryCTAText(backButton.cancelText)
             dialog.setSecondaryCTAClickListener {
                 GtmGiftTapTap.clickExitButton(userSession?.userId)
-                dialog.cancel()
+                dialog.dismiss()
             }
             dialog.show()
         }
