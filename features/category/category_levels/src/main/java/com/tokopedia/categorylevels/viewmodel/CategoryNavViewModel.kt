@@ -3,6 +3,8 @@ package com.tokopedia.categorylevels.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.common_category.data.catalogModel.CatalogListResponse
+import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
 import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.common_category.usecase.repository.CategoryNavRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -28,12 +30,18 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     private var categoryDetail = MutableLiveData<Result<Data>>()
     private var redirectionUrl = MutableLiveData<Result<String>>()
     private var adultProduct = MutableLiveData<Result<String>>()
+    private var hasCatalog = MutableLiveData<Boolean>()
 
     fun fetchCategoryDetail(departmentId: String) {
         launchCatchError(block = {
-            val categoryDetailResponse = categoryNavRepository.getCategoryDetail(departmentId)
-            categoryDetailResponse?.let {
-                handleCategoryResponse(it)
+            val graphqlResponse = categoryNavRepository.getCategoryDetailWithCatalogCount(departmentId)
+            graphqlResponse?.let {
+                it.getData<CatalogListResponse>(CatalogListResponse::class.java).searchCatalog?.let { searchCatalog ->
+                    hasCatalog.value = searchCatalog.count != 0
+                }
+                it.getData<BannedCategoryResponse>(BannedCategoryResponse::class.java).categoryDetailQuery?.data?.let { data ->
+                    handleCategoryResponse(data)
+                }
             }
         }, onError = {
             categoryDetail.value = Fail(it)
@@ -89,6 +97,10 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     fun getAdultProductLiveData(): MutableLiveData<Result<String>> {
         return adultProduct
+    }
+
+    fun getHasCatalogLiveData(): MutableLiveData<Boolean> {
+        return hasCatalog
     }
 }
 

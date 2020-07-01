@@ -69,6 +69,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
@@ -102,7 +103,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-        StickerViewHolder.Listener, DeferredViewHolderAttachment {
+        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -287,7 +288,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel) {
         updateViewData(chatRoom)
-        checkCanAttachVoucher(chatRoom)
+        checkCanAttachVoucher()
         presenter.updateMinReplyTime(chatRoom)
         presenter.connectWebSocket(messageId)
         presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
@@ -305,8 +306,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         fpm.stopTrace()
     }
 
-    private fun checkCanAttachVoucher(room: ChatroomViewModel) {
-        if (room.isSeller()) {
+    private fun checkCanAttachVoucher() {
+        if (amISeller) {
             chatMenu?.addVoucherAttachmentMenu()
         }
     }
@@ -419,7 +420,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         super.onProductClicked(element)
-        analytics.eventClickProductThumbnailEE(element, session)
+        context?.let {
+            analytics.eventClickProductThumbnailEE(it, element, session)
+        }
+
         analytics.trackProductAttachmentClicked()
     }
 
@@ -471,7 +475,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         return TopChatTypeFactoryImpl(
                 this, this, this, this,
                 this, this, this, this,
-                this
+                this, this
         )
     }
 
@@ -899,7 +903,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
-            analytics.eventSeenProductAttachment(element, session)
+            analytics.eventSeenProductAttachment(requireContext(), element, session)
         }
     }
 
@@ -1122,5 +1126,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun getLoadedChatAttachments(): ArrayMap<String, Attachment> {
         return presenter.attachments
+    }
+
+    override fun isSeller(): Boolean {
+        return amISeller
     }
 }

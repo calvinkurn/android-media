@@ -42,15 +42,11 @@ data class MultiDPIImageType(
 ) : ImageType() {
 
     init {
-        checkFileName()
         /**
-         * Running unit test confirms the requirement of this validation. User may create this
-         * object even before preparing ResourceDownloadManager. We don't need that. We always
-         * prioritize ResourceDownloadManager.initialize() call before MultiDPIImage object gets
-         * created.
-         *
+         * User may create this object even before preparing ResourceDownloadManager. We don't
+         * need that. We always prioritize ResourceDownloadManager.initialize() call before
+         * MultiDPIImage object gets created.
          */
-
         check(DensityFinder.densityUrlPath.isNotEmpty()) {
             Constants.CONTEXT_NOT_INITIALIZED_MESSAGE
         }
@@ -66,10 +62,6 @@ data class SingleDPIImageType(
         override var remoteFileName: String
 ) : ImageType() {
 
-    init {
-        checkFileName()
-    }
-
     override val relativeFilePath =
             commonPath.format(SINGLE_DPI_ARRAY, remoteFileName)
     override var densityType = DisplayMetrics.DENSITY_MEDIUM
@@ -80,11 +72,6 @@ data class NoDPIImageType(
         override var imageView: DeferredImageView?,
         override var remoteFileName: String
 ) : ImageType() {
-
-    init {
-        checkFileName()
-    }
-
     override val relativeFilePath =
             commonPath.format(NO_DPI_ARRAY, remoteFileName)
     override var densityType = 0
