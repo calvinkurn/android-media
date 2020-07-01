@@ -1221,7 +1221,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (itemSize > 0) {
                 setSelected(items, 0) {
                     val categoryId = it.getCategoryId().toString()
+                    val categoryName = it.getCategoryName()
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId
+                    viewModel.productInputModel.detailInputModel.categoryName = categoryName
                     true
                 }
             }
@@ -1231,22 +1233,23 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
         productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
             setSelected(items, position) {
-                onCategoryRecommendationSelected(it.getCategoryId().toString())
+                onCategoryRecommendationSelected(it.getCategoryId().toString(), it.getCategoryName())
             }
         }
 
         items.forEachIndexed { index, item ->
             item.listRightRadiobtn?.setOnClickListener {
                 setSelected(items, index) {
-                    onCategoryRecommendationSelected(it.getCategoryId().toString())
+                    onCategoryRecommendationSelected(it.getCategoryId().toString(), it.getCategoryName())
                 }
             }
         }
     }
 
-    private fun onCategoryRecommendationSelected(categoryId: String) {
+    private fun onCategoryRecommendationSelected(categoryId: String, categoryName: String) {
         productNameRecView?.hide()
         viewModel.productInputModel.detailInputModel.categoryId = categoryId
+        viewModel.productInputModel.detailInputModel.categoryName = categoryName
         if(viewModel.isAdding) {
             ProductAddMainTracking.clickProductCategoryRecom(shopId)
         }
