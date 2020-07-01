@@ -1,14 +1,18 @@
 package com.tokopedia.flight.dummy
 
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.bookingV3.data.FlightBookingModel
-import com.tokopedia.flight.bookingV3.data.FlightCart
+import com.tokopedia.flight.bookingV3.data.*
+import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightFareModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 
@@ -190,3 +194,173 @@ val DUMMY_BOOKING_INTERNATIONAL_MODEL = FlightBookingModel("dummyDeparture",
                 ""
         ),
         arrayListOf())
+
+val DUMMY_BOOKING_FLIGHT_DETAIL = arrayListOf(
+        FlightDetailModel("dummy departure id",
+                "dummy departure term",
+                "CGK",
+                "Jakarta",
+                "2020-11-11T10:10:10Z",
+                "BTJ",
+                "Banda Aceh",
+                "2020-11-11T14:14:14Z",
+                0,
+                "Rp10.000",
+                10000,
+                "",
+                RefundableEnum.REFUNDABLE,
+                10000,
+                0,
+                0,
+                1,
+                0,
+                0,
+                arrayListOf(),
+                arrayListOf(),
+                "Ekonomi"),
+        FlightDetailModel("dummy return id",
+                "dummy return term",
+                "CGK",
+                "Jakarta",
+                "2020-11-11T10:10:10Z",
+                "BTJ",
+                "Banda Aceh",
+                "2020-11-11T14:14:14Z",
+                0,
+                "Rp10.000",
+                10000,
+                "",
+                RefundableEnum.REFUNDABLE,
+                10000,
+                0,
+                0,
+                1,
+                0,
+                0,
+                arrayListOf(),
+                arrayListOf(),
+                "Ekonomi"))
+
+val DUMMY_BOOKING_NEW_PRICE = arrayListOf<FlightCart.NewPrice>(
+        FlightCart.NewPrice(
+                "dummy departure id",
+                FlightCart.Fare("Rp1000",
+                        "Rp0",
+                        "Rp0",
+                        1000, 0, 0)
+        ),
+        FlightCart.NewPrice(
+                "dummy return id",
+                FlightCart.Fare("Rp5000",
+                        "Rp0",
+                        "Rp0",
+                        5000, 0, 0)
+        )
+)
+
+val DUMMY_MEALS_AMENITIES = arrayListOf(
+        FlightBookingAmenityMetaModel().apply {
+            arrivalId = "dummy arrival id"
+            departureId = "dummy departure id"
+            journeyId = "dummy journey id"
+            key = "dummy key"
+            description = "dummy description"
+            amenities = arrayListOf(
+                    FlightBookingAmenityModel().apply {
+                        id = "dummy id"
+                        title = "makanan"
+                        price = "Rp10.000"
+                        priceNumeric = 10000
+                        departureId = "dummy departure id"
+                        arrivalId = "dummy arrival id"
+                        amenityType = FlightBookingMapper.AMENITY_MEAL
+                    }
+            )
+        },
+        FlightBookingAmenityMetaModel().apply {
+            arrivalId = "dummy arrival id"
+            departureId = "dummy departure id"
+            journeyId = "dummy journey id"
+            key = "dummy key"
+            description = "dummy description"
+            amenities = arrayListOf(
+                    FlightBookingAmenityModel().apply {
+                        id = "dummy id"
+                        title = "makanan"
+                        price = "Rp10.000"
+                        priceNumeric = 10000
+                        departureId = "dummy departure id"
+                        arrivalId = "dummy arrival id"
+                        amenityType = FlightBookingMapper.AMENITY_MEAL
+                    }
+            )
+        }
+)
+
+val DUMMY_LUGGAGE_AMENITIES = arrayListOf(
+        FlightBookingAmenityMetaModel().apply {
+            arrivalId = "dummy arrival id"
+            departureId = "dummy departure id"
+            journeyId = "dummy journey id"
+            key = "dummy key"
+            description = "dummy description"
+            amenities = arrayListOf(
+                    FlightBookingAmenityModel().apply {
+                        id = "dummy id"
+                        title = "bagasi"
+                        price = "Rp10.000"
+                        priceNumeric = 10000
+                        departureId = "dummy departure id"
+                        arrivalId = "dummy arrival id"
+                        amenityType = FlightBookingMapper.AMENITY_LUGGAGE
+                    }
+            )
+        },
+        FlightBookingAmenityMetaModel().apply {
+            arrivalId = "dummy arrival id"
+            departureId = "dummy departure id"
+            journeyId = "dummy journey id"
+            key = "dummy key"
+            description = "dummy description"
+            amenities = arrayListOf(
+                    FlightBookingAmenityModel().apply {
+                        id = "dummy id"
+                        title = "bagasi"
+                        price = "Rp10.000"
+                        priceNumeric = 10000
+                        departureId = "dummy departure id"
+                        arrivalId = "dummy arrival id"
+                        amenityType = FlightBookingMapper.AMENITY_LUGGAGE
+                    }
+            )
+        }
+)
+
+val DUMMY_CHECKOUT = FlightCheckoutData(
+        "dummy checkout id",
+        "tokopedia://dummyRedirectUrl",
+        "",
+        "",
+        "",
+        FlightCheckoutData.CheckoutParameter(),
+        ""
+)
+
+val DUMMY_ATC = FlightAddToCartData.Response(
+        FlightAddToCartData(
+                id = "dummy cart id",
+                meta = Meta("dummy request id")
+        )
+)
+
+val DUMMY_INSURANCE = FlightCart.Insurance(
+        "dummy insurance id",
+        "insurance name",
+        "insurance description",
+        10000,
+        false,
+        "insurance tnc",
+        "insurance url",
+        arrayListOf()
+
+)

@@ -356,8 +356,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightVerifyPassenger.passportNumber = passenger.passportNumber ?: ""
                     flightVerifyPassenger.passportCountry = passenger.passportIssuerCountry?.countryId
                             ?: ""
-                    flightVerifyPassenger.passportExpire = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, passenger.passportExpiredDate))
-                            ?: ""
+                    flightVerifyPassenger.passportExpire = passenger.passportExpiredDate?.let {
+                        TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it))
+                    } ?: ""
                 }
 
                 for (mealMeta in passenger.flightBookingMealMetaViewModels) {
@@ -417,10 +418,10 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun onPassengerResultReceived(passengerModel: FlightBookingPassengerModel) {
-        val passengerViewModels = flightPassengersData.value?.toMutableList()
+        val passengerViewModels = flightPassengersData.value!!.toMutableList()
         val indexPassenger = passengerViewModels?.indexOf(passengerModel) ?: -1
         if (indexPassenger != -1) {
-            passengerViewModels?.set(indexPassenger, passengerModel)
+            passengerViewModels[indexPassenger] = passengerModel
             _flightPassengersData.value = passengerViewModels
         }
         addPassengerAmenitiesPrices()
@@ -440,7 +441,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun resetFirstPassenger() {
-        val passengers = (flightPassengersData.value ?: listOf()).toMutableList()
+        val passengers = (flightPassengersData.value!!).toMutableList()
         if (passengers.isNotEmpty()) {
             val passenger = FlightBookingPassengerModel()
             passenger.passengerLocalId = 1
@@ -454,7 +455,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     private fun addPassengerAmenitiesPrices(): Int {
-        val flightBookingPassengers = flightPassengersData.value ?: listOf()
+        val flightBookingPassengers = flightPassengersData.value!!
         // amenities
         val meals = hashMapOf<String, Int>()
         val mealsCount = hashMapOf<String, Int>()
@@ -528,7 +529,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun updateFlightDetailPriceData(newPrices: List<FlightCart.NewPrice>) {
         for (newPrice in newPrices) {
             for (item in flightDetailModels) {
-                if (newPrice.id.equals(item.id)) {
+                if (newPrice.id == item.id) {
                     item.adultNumericPrice = newPrice.fare.adultNumeric
                     item.infantNumericPrice = newPrice.fare.infantNumeric
                     item.childNumericPrice = newPrice.fare.childNumeric
@@ -539,15 +540,14 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun onInsuranceChanges(insurance: FlightCart.Insurance, checked: Boolean) {
-        val otherPrices = flightOtherPriceData.value?.toMutableList() ?: mutableListOf()
+        val otherPrices = flightOtherPriceData.value!!.toMutableList()
         val insuranceTemp = flightBookingParam.insurances.toMutableList()
         if (checked) {
             val index = flightBookingParam.insurances.indexOf(insurance)
             if (index == -1) {
                 insuranceTemp.add(insurance)
                 flightBookingParam.insurances = insuranceTemp
-                otherPrices.add(FlightCart.PriceDetail(label = String.format("%s (x%d)", insurance.name, flightPassengersData.value?.size
-                        ?: 1),
+                otherPrices.add(FlightCart.PriceDetail(label = String.format("%s (x%d)", insurance.name, flightPassengersData.value!!.size),
                         priceNumeric = insurance.totalPriceNumeric, price = FlightCurrencyFormatUtil.convertToIdrPrice(insurance.totalPriceNumeric),
                         priceDetailId = insurance.id))
             }
@@ -558,7 +558,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 insuranceTemp.removeAt(index)
                 flightBookingParam.insurances = insuranceTemp
                 for ((index, price) in otherPrices.withIndex()) {
-                    if (price.priceDetailId.equals(insurance.id)) {
+                    if (price.priceDetailId == insurance.id) {
                         otherPrices.removeAt(index)
                         break
                     }
@@ -589,7 +589,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         } catch (e: Exception) {
             promoEligibility.success = false
             if (!e.message.isNullOrEmpty()) {
-                val error = mapThrowableToFlightError(e.message ?: "")
+                val error = mapThrowableToFlightError(e.message!!)
                 promoEligibility.message = error.title
                 if (error.id == "4") promoEligibility.message += ". Promo akan dihapus jika lanjut bayar"
             }
@@ -705,7 +705,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun proceedCheckoutWithoutLuggage(checkVoucherQuery: String, verifyQuery: String,
                                       totalPriceWithoutAmenities: Int, contactName: String, contactEmail: String,
                                       contactPhone: String, contactCountry: String) {
-        val passengerViewModels = flightPassengersData.value ?: listOf()
+        val passengerViewModels = flightPassengersData.value!!
         for (passenger in passengerViewModels) {
             passenger.flightBookingLuggageMetaViewModels = listOf()
         }
