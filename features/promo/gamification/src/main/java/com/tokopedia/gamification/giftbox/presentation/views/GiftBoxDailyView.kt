@@ -2,11 +2,13 @@ package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.animation.*
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -14,6 +16,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.presentation.LidImagesDownloader
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
@@ -29,6 +32,8 @@ open class GiftBoxDailyView : FrameLayout {
     lateinit var imageBoxFront: AppCompatImageView
     lateinit var imageBg: AppCompatImageView
     lateinit var imageShadow: AppCompatImageView
+    val lidImagesDownloader = LidImagesDownloader()
+    val lidImages = arrayListOf<Bitmap>()
 
     var boxCallback: BoxCallback? = null
     var initialBounceAnimatorSet: AnimatorSet? = null
@@ -82,7 +87,7 @@ open class GiftBoxDailyView : FrameLayout {
             startBoxOpenAnimation()
         }
     }
-    
+
     fun startBoxOpenAnimation() {
         initialBounceAnimatorSet?.end()
 
@@ -102,26 +107,30 @@ open class GiftBoxDailyView : FrameLayout {
     fun loadFiles(@TokenUserState state: String,
                   imageFrontUrl: String?,
                   imageBgUrl: String,
+                  lidImageList: List<String>,
                   imageCallback: ((isLoaded: Boolean) -> Unit)) {
 
-        var drawableRedForLid = R.drawable.gf_ic_lid_7
-        if (state == TokenUserState.ACTIVE) {
-            drawableRedForLid = R.drawable.gf_ic_lid_0
+        lidImagesDownloader.downloadImages(this.context, lidImageList) { images ->
+            if (images.isNullOrEmpty()) {
+                imageCallback.invoke(false)
+            } else {
+                lidImages.addAll(images)
+                var bmp = images.last()
+                if (state == TokenUserState.ACTIVE) {
+                    bmp = images.first()
+                }
+                loadOriginalImages(bmp, imageCallback)
+            }
         }
-        Glide.with(this)
-                .load(drawableRedForLid)
-                .dontAnimate()
-                .addListener(getGlideListener(imageCallback))
-                .into(imageGiftBoxLid)
 
-        Glide.with(this)
+        Glide.with(imageBoxFront)
                 .load(imageFrontUrl)
                 .dontAnimate()
                 .addListener(getGlideListener(imageCallback))
                 .into(imageBoxFront)
 
 
-        Glide.with(this)
+        Glide.with(imageBg)
                 .load(imageBgUrl)
                 .dontAnimate()
                 .addListener(getGlideListener(imageCallback))
@@ -227,9 +236,7 @@ open class GiftBoxDailyView : FrameLayout {
         return Pair(animatorSet, totalDuration)
     }
 
-
-    open fun loadLidFrames(): Animator {
-
+    private fun loadBackupImages(): Animator {
         val drawableArray = arrayOf(
                 R.drawable.gf_ic_lid_0,
                 R.drawable.gf_ic_lid_0,
@@ -248,6 +255,46 @@ open class GiftBoxDailyView : FrameLayout {
         return valueAnimator
     }
 
+    open fun loadLidFrames(): Animator {
+        return if (lidImages.isEmpty()) {
+            loadBackupImages()
+        } else {
+            val valueAnimator = ValueAnimator.ofInt(lidImages.size - 1)
+            valueAnimator.addUpdateListener {
+                imageGiftBoxLid.setImageBitmap(lidImages[it.animatedValue as Int])
+            }
+            valueAnimator.duration = LID_ANIMATION_DURATION
+            valueAnimator
+        }
+    }
+
+    fun loadOriginalImages(bmp: Bitmap?, imageCallback: ((isLoaded: Boolean) -> Unit), @DrawableRes resId: Int = R.drawable.gf_ic_lid_0) {
+        val rp = if (bmp != null) {
+            Glide.with(this)
+                    .load(bmp)
+
+        } else {
+            Glide.with(this)
+                    .load(resId)
+        }
+        rp.dontAnimate()
+                .addListener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        imageCallback.invoke(false)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        val count = imagesLoaded.incrementAndGet()
+                        if (count == TOTAL_ASYNC_IMAGES) {
+                            imageCallback.invoke(true)
+                        }
+                        return false
+                    }
+                })
+                .into(imageGiftBoxLid)
+    }
+
     enum class GiftBoxState {
         CLOSED, OPEN
     }
@@ -256,11 +303,5 @@ open class GiftBoxDailyView : FrameLayout {
         fun onBoxScaleDownAnimationStart()
         fun onBoxOpenAnimationStart(startDelay: Long)
         fun onBoxOpened()
-    }
-
-    interface BoxRewardCallback {
-        fun showPoints(): Animator
-        fun showPointsWithCoupons(): Animator
-        fun showCoupons(): Animator
     }
 }

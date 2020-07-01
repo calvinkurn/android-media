@@ -254,7 +254,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             reminder = giftBoxEntity.gamiLuckyHome.reminder
                             when (tokenUserState) {
                                 TokenUserState.ACTIVE -> {
-                                    fadeInSoundIcon()
                                     if (!viewModel.campaignSlug.isNullOrEmpty()) {
                                         GtmEvents.viewGiftBoxPage(viewModel.campaignSlug!!, userSession?.userId)
                                     }
@@ -273,11 +272,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                                     tvReminderMessage.text = reminder?.text
                                     setInitialUiForReminder()
-                                    playLoopSound()
                                     setClickEventOnReminder()
                                 }
                                 TokenUserState.EMPTY -> {
-                                    fadeOutSoundIcon()
                                     reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     tvRewardFirstLine.visibility = View.GONE
@@ -346,7 +343,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     } else {
                         val code = it.data?.gamiCrack.resultStatus.code
                         if (code == 200) {
-                            fadeOutSoundIcon()
                             //set data in rewards first and then animate
                             disableGiftBoxTap = true
                             giftBoxRewardEntity = it.data
@@ -665,8 +661,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     frontImageUrl = ""
                 }
             }
+            val lidImages = arrayListOf<String>()
+
+            if (imageUrlList != null && imageUrlList.size > 2) {
+                lidImages.addAll(imageUrlList.subList(2, imageUrlList.size))
+            }
+
             if (!bgUrl.isNullOrEmpty())
-                fadeInActiveStateViews(frontImageUrl, bgUrl)
+                fadeInActiveStateViews(frontImageUrl, bgUrl, lidImages)
         }
     }
 
@@ -721,8 +723,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String) {
-        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, imageCallback = {
+    private fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String, lidImages: List<String>) {
+        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, lidImages, imageCallback = {
+            giftBoxDailyView.imagesLoaded.lazySet(0)
             if (it) {
                 setPositionOfViewsAtBoxOpen(tokenUserState)
                 hideLoader()
@@ -751,6 +754,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 animatorSet.start()
             } else {
                 //Do nothing
+                hideLoader()
+                renderGiftBoxError(defaultErrorMessage, "Oke")
             }
         })
     }
