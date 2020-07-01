@@ -133,7 +133,7 @@ class PlayCoverSetupViewModel @Inject constructor(
                                 )
                         )
                     }
-                    else throw Throwable("Error in uploading image")
+                    else throw IllegalStateException("Error in validating image")
                 }
             } else {
                 throw IllegalStateException("Cover is not cropped yet")
