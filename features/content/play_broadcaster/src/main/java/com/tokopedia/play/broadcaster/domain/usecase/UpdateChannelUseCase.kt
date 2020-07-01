@@ -19,25 +19,10 @@ class UpdateChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : UseCase<ChannelId>() {
 
-    private val query = """
-            mutation UpdateChannel(${'$'}channelId: String!, ${'$'}authorId: String, ${'$'}status: Int!){
-              broadcasterUpdateChannel(
-                req : {
-                  channelID: ${'$'}channelId,
-                  fieldsToUpdate: ["status","authorID"],
-                  authorID: ${'$'}authorId,
-                  status: ${'$'}status
-                }
-              ) {
-                channelID
-              }
-            }
-        """
-
-    var params: Map<String, Any> = emptyMap()
+    private var mQueryParams = QueryParams()
 
     override suspend fun executeOnBackground(): ChannelId {
-        val gqlRequest = GraphqlRequest(query, UpdateChannelResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(mQueryParams.query, UpdateChannelResponse::class.java, mQueryParams.params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<UpdateChannelResponse>(UpdateChannelResponse::class.java)
@@ -47,20 +32,103 @@ class UpdateChannelUseCase @Inject constructor(
         throw DefaultErrorThrowable()
     }
 
+    fun setQueryParams(queryParams: QueryParams) {
+        mQueryParams = queryParams
+    }
+
+    data class QueryParams(
+            val query: String = "",
+            val params: Map<String, Any> = emptyMap()
+    )
+
     companion object {
 
         private const val PARAMS_CHANNEL_ID = "channelId"
-        private const val PARAMS_AUTHOR_ID = "authorId"
-        private const val PARAMS_STATUS = "status"
 
-        fun createParams(
+        fun createUpdateStatusRequest(
                 channelId: String,
                 authorId: String,
                 status: PlayChannelStatus
-        ): Map<String, Any> = mapOf(
-                PARAMS_CHANNEL_ID to channelId,
-                PARAMS_AUTHOR_ID to authorId,
-                PARAMS_STATUS to status.value.toInt()
-        )
+        ): QueryParams {
+            val params = mapOf(
+                    PARAMS_CHANNEL_ID to channelId,
+                    FieldsToUpdate.AuthorID.fieldName to authorId,
+                    FieldsToUpdate.Status.fieldName to status.value.toInt()
+            )
+
+            val query = buildQueryString(listOf(FieldsToUpdate.Status, FieldsToUpdate.AuthorID))
+
+            return QueryParams(query, params)
+        }
+
+        fun createUpdateCoverRequest(
+                channelId: String,
+                authorId: String,
+                coverTitle: String,
+                coverUrl: String
+        ): QueryParams {
+            val params = mapOf(
+                    PARAMS_CHANNEL_ID to channelId,
+                    FieldsToUpdate.AuthorID.fieldName to authorId,
+                    FieldsToUpdate.Title.fieldName to coverTitle,
+                    FieldsToUpdate.Cover.fieldName to coverUrl
+            )
+
+            val query = buildQueryString(listOf(FieldsToUpdate.Title, FieldsToUpdate.Cover, FieldsToUpdate.AuthorID))
+
+            return QueryParams(query, params)
+        }
+
+        private fun buildQueryString(fields: List<FieldsToUpdate>): String {
+            return buildString {
+                append("mutation UpdateChannel(${'$'}channelId: String!")
+                fields.forEach { field ->
+                    append(", ${'$'}")
+                    append(field.fieldName)
+                    append(": ")
+                    append(field.gqlType)
+                }
+                append("){")
+                appendln()
+                appendln("broadcasterUpdateChannel(")
+                appendln(buildRequestString(fields))
+                appendln("""
+                        ) {
+                    channelID
+                  }
+                }
+                """)
+            }
+        }
+
+        private fun buildRequestString(fields: List<FieldsToUpdate>): String {
+            return buildString {
+                appendln("req : {")
+
+                appendln("channelID: ${'$'}channelId,")
+
+                append("fieldsToUpdate: [")
+                append(fields.joinToString { "\"${it.fieldName}\"" })
+                appendln("],")
+
+                fields.forEach { field ->
+                    append(field.fieldName)
+                    append(": ")
+                    append("${'$'}")
+                    append(field.fieldName)
+                    appendln(",")
+                }
+
+                appendln("}")
+            }
+        }
+    }
+
+    private enum class FieldsToUpdate(val fieldName: String, val gqlType: String) {
+
+        Status("status", "Int!"),
+        AuthorID("authorID", "String"),
+        Title("title", "String"),
+        Cover("coverURL", "String")
     }
 }

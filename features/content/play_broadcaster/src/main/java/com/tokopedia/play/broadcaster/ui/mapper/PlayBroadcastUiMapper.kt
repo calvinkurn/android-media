@@ -8,7 +8,6 @@ import android.text.style.StyleSpan
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -187,7 +186,8 @@ object PlayBroadcastUiMapper {
         return PlayCoverUiModel(
                 croppedCover = CoverSetupState.Cropped(
                         coverImage = Uri.parse(coverUrl),
-                        coverSource = prevSource ?: CoverSource.None
+                        coverSource = prevSource ?: CoverSource.None,
+                        state = SetupDataState.Uploaded
                 ),
                 state = SetupDataState.Uploaded,
                 title = coverTitle
