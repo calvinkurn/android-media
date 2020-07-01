@@ -36,7 +36,7 @@ dependencies {
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.productShare)
-//    implementation project(rootProject.ext.features.sellerMigrationCommon)
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.features.topAdsFreeClaim)
