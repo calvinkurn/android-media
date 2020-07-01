@@ -12,8 +12,6 @@ class TroubleshootStatusUseCase @Inject constructor(
 ) : BaseUseCase<RequestParams, PushNotifCheckerResponse>() {
 
     override suspend fun execute(params: RequestParams): PushNotifCheckerResponse {
-        if (params.paramsAllValueInString.isEmpty()) throw Exception("Not param found")
-
         return execute(
                 query = graphQuery,
                 repository = repository,
