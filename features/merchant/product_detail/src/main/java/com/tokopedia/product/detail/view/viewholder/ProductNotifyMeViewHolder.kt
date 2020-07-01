@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.partial_product_notify_me.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class ProductNotifyMeViewHolder(val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
+class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.partial_product_notify_me
@@ -101,8 +101,8 @@ class ProductNotifyMeViewHolder(val view: View, private val listener: DynamicPro
                 btn_notify_me?.text = getString(R.string.notify_me_inactive)
             }
         }
-        view.btn_notify_me?.maxLines = 1
-        view.btn_notify_me?.ellipsize = TextUtils.TruncateAt.END
+        btn_notify_me?.maxLines = 1
+        btn_notify_me?.ellipsize = TextUtils.TruncateAt.END
     }
 
     private fun bindListener(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel) {
