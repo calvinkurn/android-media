@@ -216,7 +216,7 @@ class CoverSetupPartialView(
             updateTitleCounter(coverTitle)
             updateTextField(coverTitle)
             showHint(!hasFocus)
-            showCounter(!hasFocus)
+            showCounter(hasFocus)
         }
         etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(mMaxTitleChars))
     }
