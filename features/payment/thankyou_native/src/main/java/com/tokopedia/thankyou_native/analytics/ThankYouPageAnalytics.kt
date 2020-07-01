@@ -118,7 +118,7 @@ class ThankYouPageAnalytics @Inject constructor(
         return mapOf(
                 ParentTrackingKey.KEY_ID to orderedItem.orderId,
                 ActionFieldNodeTrackingKey.KEY_AFFILIATION to orderedItem.storeName,
-                ActionFieldNodeTrackingKey.KEY_REVENUE to thanksPageData.additionalInfo.revenue.toString(),
+                ActionFieldNodeTrackingKey.KEY_REVENUE to orderedItem.revenue.toString(),
                 ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
                 ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount.toString(),
                 ActionFieldNodeTrackingKey.KEY_COUPON to orderedItem.coupon
@@ -335,8 +335,8 @@ class ThankYouPageAnalytics @Inject constructor(
 
         const val EVENT_ACTION_LIHAT_DETAIL = "click lihat detail tagihan"
         const val EVENT_ACTION_CHECK_TRANSACTION_LIST = "click check transactions list"
-        const val EVENT_ACTION_BELANJA_LAGI = "click check transactions list"
-        const val EVENT_ACTION_SALIN_CLICK = "click check transactions list"
+        const val EVENT_ACTION_BELANJA_LAGI = "click belanja lagi"
+        const val EVENT_ACTION_SALIN_CLICK = "click salin kode pembayaran"
         const val EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK = "click lihat cara pembayaran"
 
 
