@@ -195,14 +195,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     return true;
                 }
             });
-            item.getSubMenu().findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    Intent intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(getContext());
-                    startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE);
-                    return false;
-                }
-            });
         }
         return super.onOptionsItemSelected(item);
     }
