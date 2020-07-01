@@ -32,13 +32,8 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    var title: String
+    val title: String
         get() = mDataStore.getSetupDataStore().getSelectedCover()?.title ?: throw IllegalStateException("Cover / Cover Title is null")
-        set(value) {
-            val currentDataStore = mDataStore.getSetupDataStore()
-            currentDataStore.updateCoverTitle(value)
-            setDataFromSetupDataStore(currentDataStore)
-        }
 
     val observableFollowers: LiveData<FollowerDataUiModel>
         get() = _observableFollowers

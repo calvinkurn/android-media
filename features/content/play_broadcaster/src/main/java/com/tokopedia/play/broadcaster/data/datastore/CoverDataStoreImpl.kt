@@ -63,6 +63,18 @@ class CoverDataStoreImpl @Inject constructor(
         }
     }
 
+    override suspend fun uploadCoverTitle(channelId: String): NetworkResult<Unit> {
+        return try {
+            syncCoverTitle(channelId)
+            getSelectedCover()?.let {
+                setFullCover(it.copy(state = SetupDataState.Uploaded))
+            }
+            NetworkResult.Success(Unit)
+        } catch (e: Throwable) {
+            NetworkResult.Fail(e)
+        }
+    }
+
     private suspend fun updateCover(channelId: String) = withContext(dispatcher.io) {
         val currentCover = getSelectedCover()
         val coverUrl = when (val croppedCover = currentCover?.croppedCover) {
@@ -74,11 +86,27 @@ class CoverDataStoreImpl @Inject constructor(
 
         updateChannelUseCase.apply {
             setQueryParams(
-                    UpdateChannelUseCase.createUpdateCoverRequest(
+                    UpdateChannelUseCase.createUpdateFullCoverRequest(
                             channelId = channelId,
                             authorId = userSession.shopId,
                             coverTitle = coverTitle,
                             coverUrl = coverUrl
+                    )
+            )
+        }
+        return@withContext updateChannelUseCase.executeOnBackground()
+    }
+
+    private suspend fun syncCoverTitle(channelId: String) = withContext(dispatcher.io) {
+        val currentCover = getSelectedCover()
+        val coverTitle = currentCover?.title ?: throw IllegalStateException("Cover title cannot be null")
+
+        updateChannelUseCase.apply {
+            setQueryParams(
+                    UpdateChannelUseCase.createUpdateCoverTitleRequest(
+                            channelId = channelId,
+                            authorId = userSession.shopId,
+                            coverTitle = coverTitle
                     )
             )
         }

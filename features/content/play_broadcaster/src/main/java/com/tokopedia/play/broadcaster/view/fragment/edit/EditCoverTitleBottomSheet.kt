@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.bottomsheet
+package com.tokopedia.play.broadcaster.view.fragment.edit
 
 import android.os.Bundle
 import android.text.Editable
@@ -11,18 +11,35 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.data.type.OverwriteMode
+import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
+import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
 import com.tokopedia.play.broadcaster.util.setTextFieldColor
+import com.tokopedia.play.broadcaster.util.showToaster
+import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.EditCoverTitleViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import javax.inject.Inject
 
 /**
  * @author by furqan on 12/06/2020
  */
-class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
+class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
-    private var mListener: Listener? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private var mListener: SetupResultListener? = null
 
     private val title: String
         get() = etCoverTitle.text.toString()
@@ -37,7 +54,16 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
     private lateinit var tvTitleCounter: TextView
     private lateinit var btnSave: UnifyButton
 
+    private lateinit var parentViewModel: PlayBroadcastViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
+    private lateinit var viewModel: EditCoverTitleViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditCoverTitleViewModel::class.java)
+
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         initBottomSheet()
@@ -49,6 +75,12 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
         setupView(view)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        observeUpdateTitle()
+    }
+
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
     }
@@ -57,8 +89,15 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
         args.putString(EXTRA_CURRENT_TITLE, title)
     }
 
-    fun setListener(listener: Listener) {
+    fun setListener(listener: SetupResultListener) {
         mListener = listener
+    }
+
+    private fun inject() {
+        DaggerPlayBroadcastSetupComponent.builder()
+                .setBroadcastComponent((requireActivity() as PlayBroadcastComponentProvider).getBroadcastComponent())
+                .build()
+                .inject(this)
     }
 
     private fun initBottomSheet() {
@@ -79,6 +118,9 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView(view: View) {
+        setOnDismissListener { mListener?.onSetupCanceled() }
+        dataStoreViewModel.setDataStore(parentViewModel.getCurrentSetupDataStore(), modeExclusion = listOf(OverwriteMode.Cover))
+
         bottomSheetHeader.setPadding(
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
                 bottomSheetHeader.top,
@@ -109,12 +151,12 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
         etCoverTitle.setTextFieldColor(com.tokopedia.unifyprinciples.R.color.Neutral_N150)
 
         setupTitleCounter()
-        btnSave.setOnClickListener {
-            mListener?.onSaveEditedTitle(title)
-            dismiss()
-        }
-
         setupSaveButton()
+
+        btnSave.setOnClickListener {
+            if (btnSave.isLoading) return@setOnClickListener
+            viewModel.editTitle(title, parentViewModel.channelId)
+        }
     }
 
     private fun setupTitleCounter() {
@@ -127,8 +169,29 @@ class PlayBroadcastEditTitleBottomSheet : BottomSheetUnify() {
                 title.length <= PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE
     }
 
-    interface Listener {
-        fun onSaveEditedTitle(title: String)
+    /**
+     * Observe
+     */
+    private fun observeUpdateTitle() {
+        viewModel.observableUpdateTitle.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is NetworkResult.Success -> {
+                    btnSave.isLoading = false
+                    mListener?.onSetupCompletedWithData(dataStoreViewModel.getDataStore())
+                    dismiss()
+                }
+                is NetworkResult.Fail -> {
+                    btnSave.isLoading = false
+                    requireView().showToaster(
+                            message = it.error.localizedMessage,
+                            type = Toaster.TYPE_ERROR
+                    )
+                }
+                NetworkResult.Loading -> {
+                    btnSave.isLoading = true
+                }
+            }
+        })
     }
 
     companion object {

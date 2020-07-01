@@ -21,12 +21,12 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.showToaster
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastEditTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
+import com.tokopedia.play.broadcaster.view.fragment.edit.EditCoverTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
@@ -228,11 +228,14 @@ class PlayBeforeLiveFragment @Inject constructor(
         getExitDialog().show()
     }
 
-    private fun getEditTitleBottomSheet(): PlayBroadcastEditTitleBottomSheet {
-        val editTitleBottomSheet = PlayBroadcastEditTitleBottomSheet()
-        editTitleBottomSheet.setListener(object : PlayBroadcastEditTitleBottomSheet.Listener {
-            override fun onSaveEditedTitle(title: String) {
-                prepareViewModel.title = title
+    private fun getEditTitleBottomSheet(): EditCoverTitleBottomSheet {
+        val editTitleBottomSheet = EditCoverTitleBottomSheet()
+        editTitleBottomSheet.setListener(object : SetupResultListener {
+            override fun onSetupCanceled() {
+            }
+
+            override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
+                prepareViewModel.setDataFromSetupDataStore(dataStore)
             }
         })
         editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
