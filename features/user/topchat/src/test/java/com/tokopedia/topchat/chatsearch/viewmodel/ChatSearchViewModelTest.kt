@@ -4,7 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
+import com.tokopedia.topchat.chatsearch.data.GetMultiChatSearchResponse
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
+import com.tokopedia.topchat.chatsearch.view.uimodel.SearchListHeaderUiModel
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +42,7 @@ class ChatSearchViewModelTest {
     object Dummy {
         val exQuery = "tokopedia"
         val exPage = 2
-        val exGetChatSearchResponse = GetChatSearchResponse()
+        val exGetChatSearchResponse = GetMultiChatSearchResponse()
         val exThrowable = Throwable()
     }
 
@@ -72,15 +74,15 @@ class ChatSearchViewModelTest {
         // Given
         viewModel.searchResult.observeForever(searchResultObserver)
         every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
-//                    val onSuccess = firstArg<(GetChatSearchResponse, SearchListHeaderUiModel?) -> Unit>()
-//                    onSuccess.invoke(exGetChatSearchResponse, null)
+                    val onSuccess = firstArg<(GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit>()
+                    onSuccess.invoke(Dummy.exGetChatSearchResponse, null, null)
         }
 
         // When
         viewModel.onSearchQueryChanged(Dummy.exQuery)
 
         // Then
-//                verify { searchResultObserver.onChanged(exGetChatSearchResponse.searchResults) }
+        verify { searchResultObserver.onChanged(emptyList()) }
     }
 
     @Test
@@ -116,7 +118,6 @@ class ChatSearchViewModelTest {
             triggerSearchObserver.onChanged(Dummy.exQuery)
             getSearchQueryUseCase.doSearch(any(), any(), Dummy.exQuery, 1)
         }
-
     }
 
     @Test
@@ -157,8 +158,7 @@ class ChatSearchViewModelTest {
         viewModel.loadPage(Dummy.exPage)
 
         // Then
-//                verify { getSearchQueryUseCase.doSearch(any(), any(), any(), exPage) }
-
+        verify { getSearchQueryUseCase.doSearch(any(), any(), any(), Dummy.exPage, true) }
     }
 
     @Test
