@@ -135,6 +135,7 @@ class PlayBroadcastViewModel @Inject constructor(
     init {
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
         _observableChannelId.observeForever(channelIdObserver)
+        initPushStream()
 
         mockChatList()
         mockMetrics()
@@ -160,6 +161,8 @@ class PlayBroadcastViewModel @Inject constructor(
                 return@withContext getConfigurationUseCase.executeOnBackground()
             }
             val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
+//            delay(2000)
+//            val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel() // TODO remove mock
             if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
@@ -231,7 +234,7 @@ class PlayBroadcastViewModel @Inject constructor(
     /**
      * Apsara integration
      */
-    fun initPushStream() {
+    private fun initPushStream() {
         playPusher.create()
     }
 
