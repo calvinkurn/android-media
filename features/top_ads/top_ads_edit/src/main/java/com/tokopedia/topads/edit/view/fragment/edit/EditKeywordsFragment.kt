@@ -295,7 +295,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun updateKeywords(selectedKeywords: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>?) {
-        if (adapter.items[0] is EditKeywordEmptyViewModel) {
+        if (adapter.items.isNotEmpty() && adapter.items[0] is EditKeywordEmptyViewModel) {
             adapter.items.clear()
         }
         selectedKeywords?.forEach {
@@ -328,7 +328,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
         list.addAll(adapter.getCurrentItems())
 
-        if (adapter.items[0] !is EditKeywordEmptyViewModel) {
+        if (adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->
                 if ((item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
                     item.data.priceBid = adapter.data[index]
