@@ -184,6 +184,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private fun observeHasWholesale() {
         viewModel.hasWholesale.observe(this, Observer {
             variantDetailFieldsAdapter?.updatePriceEditingStatus(viewModel.getAvailableFields(), !it)
+            tickerVariantWholesale.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 

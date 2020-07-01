@@ -184,7 +184,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         cacheManagerId?.run {
             viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
-            viewModel.hasVariants = viewModel.productInputModel.variantInputModel.products.isNotEmpty()
           
             var pictureIndex = 0
             viewModel.productPhotoPaths = viewModel.productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->

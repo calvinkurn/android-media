@@ -260,6 +260,6 @@
     <string name="label_variant_delete_all_description">Dengan hapus semua varian, data yang kamu sudah isi akan hilang.</string>
     <string name="action_variant_delete_all_negative">Batal</string>
     <string name="action_variant_delete_all_positive">Ya, Hapus</string>
+    <string name="label_variant_wholesale_warning">Harga varian tidak bisa kamu ubah karena harga grosir sedang aktif.</string>
 
->>>>>>> feature/stuart/add_variant_revamp
 </resources>
