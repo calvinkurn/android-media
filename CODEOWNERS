@@ -171,6 +171,7 @@
 /features/user/sessioncommon/                   		@tokopedia/minion-kevin
 /features/user/loginphone/                      		@tokopedia/minion-kevin
 /features/user/managename/                      		@tokopedia/minion-kevin
+/features/user/notif-troubleshooter/                    @tokopedia/minion-kevin
 /features/user/notifcenter/                     		@tokopedia/minion-kevin
 /features/user/attachproduct/                   		@tokopedia/minion-kevin
 /features/user/changephonenumber                		@tokopedia/minion-kevin
@@ -269,7 +270,7 @@
 /libraries/locationmanager/								@tokopedia/core-team
 /libraries/logger/										@tokopedia/core-team
 /libraries/mapviewer/								    @tokopedia/core-team
-/libraries/mediauploader/			                    @tokopedia/core-team
+/libraries/mediauploader/			                    @tokopedia/minion-kevin
 /libraries/oms/											@tokopedia/core-team
 /libraries/permissionchecker/							@tokopedia/core-team
 /libraries/pre_release_inspector/			            @tokopedia/core-team
