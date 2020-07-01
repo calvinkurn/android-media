@@ -4,6 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.usecase.coroutines.UseCase
@@ -23,7 +25,12 @@ abstract class BaseUseCase<out T : Any>: UseCase<T>() {
             gqlCacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
         try {
-            return gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
+            val gqlResponse =  gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
+            val errors = gqlResponse.getError(GetLiveStatisticsResponse::class.java)
+            if (!errors.isNullOrEmpty()) {
+                throw DefaultErrorThrowable(errors[0].message)
+            }
+            return gqlResponse
         } catch (throwable: Throwable) {
             if (throwable is UnknownHostException) throw DefaultNetworkThrowable()
         }
