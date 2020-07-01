@@ -63,12 +63,12 @@ class ProductManageFilterTab(
                 // select tab with prev index
                 chip.type = ChipsUnify.TYPE_SELECTED
 
-                val prevStatusName = selectedTab?.statusName
+                val prevStatusName = selectedTab?.status
                 val tabSelectedBasedIndex = tabs[selectedTabIndex]
                 tabSelectedBasedIndex.status?.let {
-                    selectedTab = SelectedTab(chip, tabSelectedBasedIndex.count, it.name)
+                    selectedTab = SelectedTab(chip, tabSelectedBasedIndex.count, it)
                 }
-                val newStatusName = selectedTab?.statusName
+                val newStatusName = selectedTab?.status
 
                 // check whether the status name still the same or not
                 if (prevStatusName != newStatusName) {
@@ -83,20 +83,7 @@ class ProductManageFilterTab(
     }
 
     fun getSelectedFilter(): ProductStatus? {
-        return when (selectedTab?.statusName) {
-            ProductStatus.ACTIVE.name -> {
-                ProductStatus.ACTIVE
-            }
-            ProductStatus.INACTIVE.name -> {
-                ProductStatus.INACTIVE
-            }
-            ProductStatus.VIOLATION.name -> {
-                ProductStatus.VIOLATION
-            }
-            else -> {
-                null
-            }
-        }
+        return selectedTab?.status
     }
 
     fun setActiveFilterCount(count: Int) {
@@ -171,7 +158,7 @@ class ProductManageFilterTab(
     }
 
     private fun setSelectedFilter(filter: SortFilterItem, tab: FilterTabViewModel) {
-        tab.status?.let { selectedTab = SelectedTab(filter, tab.count, it.name) }
+        tab.status?.let { selectedTab = SelectedTab(filter, tab.count, it) }
     }
 
     private fun resetSelectedFilter() {
