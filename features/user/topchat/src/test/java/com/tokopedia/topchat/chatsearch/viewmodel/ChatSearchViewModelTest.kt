@@ -245,6 +245,23 @@ class ChatSearchViewModelTest {
     }
 
     @Test
+    fun `on success load 2nd page`() {
+        // Given
+        viewModel.searchResults.observeForever(searchResultObserver)
+        every { getSearchQueryUseCase.hasNext } returns true
+        every { getSearchQueryUseCase.doSearch(any(), any(), any(), any(), true) } answers {
+            val onSuccess = firstArg<(GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit>()
+            onSuccess.invoke(Dummy.successSearchReplyOnlyLessThan5, null, null)
+        }
+
+        // When
+        viewModel.loadPage(2)
+
+        // Then
+        verify { searchResultObserver.onChanged(Dummy.successSearchReplyOnlyLessThan5.replySearchResults) }
+    }
+
+    @Test
     fun `Fail load new query`() {
         // Given
         viewModel.errorMessage.observeForever(errorMessageObserver)
