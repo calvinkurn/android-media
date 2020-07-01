@@ -4,7 +4,7 @@ import android.animation.*
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
+import android.os.Handler
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -634,8 +634,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val ratio = 3 //coming from R.layout.list_item_coupons
                 if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
                     rewardContainer.rvCoupons.translationY = (translationY + (2 * sideMargin / ratio)) - fmGiftBox.context.resources.getDimension(R.dimen.gami_box_coupon_padding)
-                }
-                else {
+                } else {
                     rewardContainer.rvCoupons.translationY = translationY + (2 * sideMargin / ratio)
                 }
 
@@ -823,14 +822,16 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         if (!isBackgroundSoundPlaying()) {
             playLoopSound()
         }
-
     }
 
     private fun renderBottomHourTimer(timeLeftSeconds: Long) {
         hourCountDownTimer?.cancel()
 
         fun callApiAgain() {
-            viewModel.getGiftBoxHome()
+            val delayArrayList = arrayListOf(0L, 300L, 600L)
+            val delay = delayArrayList[(0 until delayArrayList.size).random()]
+            val handler = Handler()
+            handler.postDelayed({ viewModel.getGiftBoxHome() }, delay)
         }
 
         val time = (timeLeftSeconds) * 1000L
