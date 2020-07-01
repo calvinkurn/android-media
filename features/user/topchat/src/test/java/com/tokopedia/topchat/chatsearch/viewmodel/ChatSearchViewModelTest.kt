@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatsearch.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.data.GetMultiChatSearchResponse
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
 import com.tokopedia.topchat.chatsearch.view.uimodel.SearchListHeaderUiModel
@@ -53,7 +52,7 @@ class ChatSearchViewModelTest {
     }
 
     @Test
-    fun `User input new query`() {
+    fun `User input new query first page for the first time`() {
         // Given
         viewModel.loadInitialData.observeForever(loadInitialDataObserver)
         viewModel.triggerSearch.observeForever(triggerSearchObserver)
@@ -65,44 +64,12 @@ class ChatSearchViewModelTest {
         verifyOrder {
             loadInitialDataObserver.onChanged(true)
             triggerSearchObserver.onChanged(Dummy.exQuery)
-            getSearchQueryUseCase.doSearch(any(), any(), Dummy.exQuery, 1)
+            getSearchQueryUseCase.doSearch(any(), any(), Dummy.exQuery, 1, false)
         }
     }
 
     @Test
-    fun `Success load new query`() {
-        // Given
-        viewModel.searchResult.observeForever(searchResultObserver)
-        every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
-                    val onSuccess = firstArg<(GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit>()
-                    onSuccess.invoke(Dummy.exGetChatSearchResponse, null, null)
-        }
-
-        // When
-        viewModel.onSearchQueryChanged(Dummy.exQuery)
-
-        // Then
-        verify { searchResultObserver.onChanged(emptyList()) }
-    }
-
-    @Test
-    fun `Fail load new query`() {
-        // Given
-        viewModel.errorMessage.observeForever(errorMessageObserver)
-        every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
-            val onError = secondArg<(Throwable) -> Unit>()
-            onError.invoke(Dummy.exThrowable)
-        }
-
-        // When
-        viewModel.onSearchQueryChanged(Dummy.exQuery)
-
-        // Then
-        verify { errorMessageObserver.onChanged(Dummy.exThrowable) }
-    }
-
-    @Test
-    fun `User input new query 2`() {
+    fun `User input new query when previous search progress is still running`() {
         // Given
         every { getSearchQueryUseCase.isSearching } returns true
         viewModel.loadInitialData.observeForever(loadInitialDataObserver)
@@ -150,6 +117,38 @@ class ChatSearchViewModelTest {
     }
 
     @Test
+    fun `Success load new query`() {
+        // Given
+        viewModel.searchResults.observeForever(searchResultObserver)
+        every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
+            val onSuccess = firstArg<(GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit>()
+            onSuccess.invoke(Dummy.exGetChatSearchResponse, null, null)
+        }
+
+        // When
+        viewModel.onSearchQueryChanged(Dummy.exQuery)
+
+        // Then
+        verify { searchResultObserver.onChanged(emptyList()) }
+    }
+
+    @Test
+    fun `Fail load new query`() {
+        // Given
+        viewModel.errorMessage.observeForever(errorMessageObserver)
+        every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
+            val onError = secondArg<(Throwable) -> Unit>()
+            onError.invoke(Dummy.exThrowable)
+        }
+
+        // When
+        viewModel.onSearchQueryChanged(Dummy.exQuery)
+
+        // Then
+        verify { errorMessageObserver.onChanged(Dummy.exThrowable) }
+    }
+
+    @Test
     fun `User load next page query`() {
         // Given
         every { getSearchQueryUseCase.hasNext } returns true
@@ -192,13 +191,19 @@ class ChatSearchViewModelTest {
     }
 
     @Test
-    fun `Get hasNext page status`() {
-        every { getSearchQueryUseCase.hasNext } returns false
+    fun `on reset live data`() {
+        viewModel.emptyQuery.observeForever(emptyQueryObserver)
+        viewModel.searchResults.observeForever(searchResultObserver)
+        viewModel.loadInitialData.observeForever(loadInitialDataObserver)
+        viewModel.errorMessage.observeForever(errorMessageObserver)
+        viewModel.triggerSearch.observeForever(triggerSearchObserver)
 
-        assertEquals(false, viewModel.hasNext)
+        viewModel.resetLiveData()
 
-        every { getSearchQueryUseCase.hasNext } returns true
-
-        assertEquals(true, viewModel.hasNext)
+        emptyQueryObserver.onChanged(false)
+        searchResultObserver.onChanged(null)
+        loadInitialDataObserver.onChanged(false)
+        errorMessageObserver.onChanged(null)
+        triggerSearchObserver.onChanged(null)
     }
 }
