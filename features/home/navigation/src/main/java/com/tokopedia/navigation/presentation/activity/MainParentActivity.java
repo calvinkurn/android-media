@@ -387,6 +387,9 @@ public class MainParentActivity extends BaseActivity implements
         if (getIntent().getExtras() != null) {
             tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
         }
+        if (tabPosition > fragmentList.size() - 1) {
+            tabPosition = HOME_MENU
+        }
         Fragment fragment = fragmentList.get(tabPosition);
         if (fragment != null) {
             this.currentFragment = fragment;
