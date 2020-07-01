@@ -128,8 +128,7 @@ class TicketListAdapter(private val itemList: MutableList<TicketsItem>,
         private var checkboxDelete: AppCompatCheckBox? = null
         private var tvTicketStatus: TextView? = null
         private var tvTicketTitle: TextView? = null
-        //private var tvTicketDesc: TextView? = null
-        //private var tvTicketDate: TextView? = null
+        private var tvTicketDate: TextView? = null
         private var tvPrioritylabel: TextView? = null
         private var layoutItemTicket: ConstraintLayout? = null
         private var isOfficialStore = false
@@ -138,8 +137,7 @@ class TicketListAdapter(private val itemList: MutableList<TicketsItem>,
             checkboxDelete = view.findViewById(R.id.checkbox_delete)
             tvTicketStatus = view.findViewById(R.id.tv_ticket_status)
             tvTicketTitle = view.findViewById(R.id.tv_ticket_title)
-//            tvTicketDesc = view.findViewById(R.id.tv_ticket_desc)
-//            tvTicketDate = view.findViewById(R.id.tv_ticket_date)
+            tvTicketDate = view.findViewById(R.id.tv_ticket_date)
             tvPrioritylabel = view.findViewById(R.id.tv_priority_label)
             layoutItemTicket = view.findViewById(R.id.layout_item_ticket)
         }
@@ -156,7 +154,7 @@ class TicketListAdapter(private val itemList: MutableList<TicketsItem>,
             }
             tvTicketTitle?.text = item.subject
 //            tvTicketDesc?.text = item.lastMessagePlaintext
-//            tvTicketDate?.text = utils.getDateTimeYear(item.lastUpdate ?: "")
+            tvTicketDate?.text = utils.getDateTimeYear(item.lastUpdate ?: "")
             if (item.statusId == IN_PROCESS) {
                 MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_yellow))
                 tvTicketStatus?.setText(R.string.on_going)

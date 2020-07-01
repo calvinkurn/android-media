@@ -25,6 +25,8 @@
         android:id="@+id/tv_ticket_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:typographyType="small"
+        app:typographyWeight="bold"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
@@ -37,8 +39,6 @@
         android:textColor="#fa591d"
         app:layout_constraintStart_toStartOf="@id/checkbox_delete"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="small"
-        app:typographyWeight="bold"
         tools:text="Dalam Proses" />
 
 
@@ -79,6 +79,8 @@
         android:id="@+id/priorityTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:typographyType="small"
+        app:typographyWeight="bold"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         android:gravity="center"
@@ -86,14 +88,14 @@
         app:layout_constraintBottom_toBottomOf="@id/view3"
         app:layout_constraintStart_toEndOf="@id/view3"
         app:layout_constraintTop_toTopOf="@id/view3"
-        app:typographyType="small"
-        app:typographyWeight="bold"
-        tools:text="Layanan Prioritas" />
+        android:text="Layanan Prioritas" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_ticket_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
@@ -106,7 +108,6 @@
         app:layout_constraintStart_toEndOf="@+id/checkbox_delete"
         app:layout_constraintTop_toBottomOf="@+id/tv_ticket_status"
         app:layout_goneMarginStart="@dimen/dp_16"
-        app:typographyType="body_2"
         tools:text="Pembayaran belum diverifikasi" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -123,6 +124,7 @@
         tools:text="ID: 14322322" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_ticket_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
