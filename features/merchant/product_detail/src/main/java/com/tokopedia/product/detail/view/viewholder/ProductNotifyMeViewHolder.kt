@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -90,7 +91,6 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
 
     private fun bindButton(data: ProductNotifyMeDataModel, isShopOwner: Boolean) = with(itemView) {
         btn_notify_me?.showWithCondition(!isShopOwner)
-
         when (data.notifyMe) {
             true -> {
                 btn_notify_me?.buttonType = UnifyButton.Type.ALTERNATE
@@ -101,7 +101,8 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
                 btn_notify_me?.text = getString(R.string.notify_me_inactive)
             }
         }
-
+        btn_notify_me?.maxLines = 1
+        btn_notify_me?.ellipsize = TextUtils.TruncateAt.END
     }
 
     private fun bindListener(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel) {

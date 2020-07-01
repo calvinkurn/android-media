@@ -39,10 +39,6 @@ import kotlinx.android.synthetic.main.tp_history_point_header.*
 import javax.inject.Inject
 
 class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
-
-    private var mStrPointExpInfo: String? = null
-    private var mStrLoyaltyExpInfo: String? = null
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -149,8 +145,6 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
                 con_header.visibility = View.VISIBLE
                 text_my_points_value.text = CurrencyHelper.convertPriceValue(data.reward.toDouble(), false)
                 text_loyalty_value.text = CurrencyHelper.convertPriceValue(data.loyalty.toDouble(), false)
-                mStrPointExpInfo = data.rewardExpiryInfo
-                mStrLoyaltyExpInfo = data.loyaltyExpiryInfo
                 container_main.displayedChild = CONTAINER_DATA
             }
 
@@ -173,7 +167,7 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
 
     override fun onClick(v: View) {
         if (v.id == R.id.btn_history_info) {
-            showHistoryExpiryBottomSheet(mStrPointExpInfo, mStrLoyaltyExpInfo)
+            showHistoryExpiryBottomSheet()
         } else if (v.id == R.id.text_failed_action) {
             val btnActionFailed = v as TextView
             mPresenter.onErrorButtonClicked(btnActionFailed.text.toString(), v.context)
@@ -181,13 +175,9 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
         }
     }
 
-    private fun showHistoryExpiryBottomSheet(pointInfo: String?, loyaltyInfo: String?) {
+    private fun showHistoryExpiryBottomSheet() {
         val dialog = BottomSheetUnify()
         val view = layoutInflater.inflate(R.layout.tp_point_history_info, null, false)
-        val textPoint = view.findViewById<TextView>(R.id.text_point_exp_info)
-        val textLoyalty = view.findViewById<TextView>(R.id.text_loyalty_exp_info)
-        textPoint.text = MethodChecker.fromHtml(pointInfo)
-        textLoyalty.text = MethodChecker.fromHtml(loyaltyInfo)
         view.findViewById<View>(R.id.btn_help_history).setOnClickListener { v -> RouteManager.route(context, CommonConstant.WebLink.INFO_EXPIRED_POINTS, getString(R.string.tp_title_tokopoints)) }
         dialog.apply {
             setChild(view)

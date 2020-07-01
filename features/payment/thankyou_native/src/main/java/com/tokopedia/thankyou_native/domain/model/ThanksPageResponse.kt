@@ -280,7 +280,10 @@ data class ShopOrder(
         @SerializedName("tax")
         val tax: Long,
         @SerializedName("coupon")
-        val coupon: String
+        val coupon: String,
+        @SerializedName("revenue")
+        val revenue: Float
+
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -298,7 +301,8 @@ data class ShopOrder(
             parcel.readString() ?: "",
             parcel.createTypedArrayList(PromoData) ?: arrayListOf(),
             parcel.readLong(),
-            parcel.readString() ?: "")
+            parcel.readString() ?: "",
+            parcel.readFloat())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(orderId)
@@ -317,6 +321,7 @@ data class ShopOrder(
         parcel.writeTypedList(promoData?.let { promoData } ?: run { arrayListOf<PromoData>() })
         parcel.writeLong(tax)
         parcel.writeString(coupon)
+        parcel.writeFloat(revenue)
     }
 
     override fun describeContents(): Int {

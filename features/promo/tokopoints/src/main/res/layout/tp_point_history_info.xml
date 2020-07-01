@@ -68,62 +68,6 @@
         app:layout_constraintTop_toTopOf="@+id/img_exp_loyalty" />
 
     <TextView
-        android:id="@+id/text_exp_info"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_14"
-        android:lineSpacingExtra="@dimen/sp_6"
-        android:text="@string/tp_exp_info"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintStart_toStartOf="@+id/text_header"
-        app:layout_constraintTop_toBottomOf="@+id/text_loyalty_info" />
-
-    <View
-        android:id="@+id/view_bg_exp_info"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_8"
-        android:background="@drawable/bg_tp_history_info"
-        app:layout_constraintBottom_toBottomOf="@+id/text_loyalty_exp_info"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_point_exp_info" />
-
-    <TextView
-        android:id="@+id/text_point_exp_info"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:lineSpacingExtra="@dimen/sp_6"
-        android:paddingTop="@dimen/dp_20"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintEnd_toEndOf="@+id/view_bg_exp_info"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@+id/view_bg_exp_info"
-        app:layout_constraintTop_toBottomOf="@+id/text_exp_info"
-        app:layout_constraintWidth_default="wrap" />
-
-    <TextView
-        android:id="@+id/text_loyalty_exp_info"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_16"
-        android:lineSpacingExtra="@dimen/sp_6"
-        android:paddingBottom="@dimen/dp_12"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintEnd_toEndOf="@+id/view_bg_exp_info"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@+id/view_bg_exp_info"
-        app:layout_constraintTop_toBottomOf="@+id/text_point_exp_info"
-        app:layout_constraintWidth_default="wrap" />
-
-    <TextView
         android:id="@+id/btn_help_history"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -136,7 +80,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_bg_exp_info"
+        app:layout_constraintTop_toBottomOf="@+id/text_loyalty_info"
         app:layout_constraintWidth_default="wrap" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
