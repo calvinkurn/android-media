@@ -107,7 +107,6 @@ ext {
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
-            notifTroubleshooter             : ":features:home:notif-troubleshooter",
 
             logisticdata                    : ":features:logistic:logisticdata",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
@@ -211,6 +210,7 @@ ext {
             loginregister                   : ":features:user:loginregister",
             loginfingerprint                : ":features:user:loginfingerprint",
             sessioncommon                   : ":features:user:sessioncommon",
+            notifTroubleshooter             : ":features:user:notif-troubleshooter",
             notifCenter                     : ":features:user:notifcenter",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
@@ -229,6 +229,7 @@ ext {
             kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
             liveness                        : ":features:user:liveness",
+
             fcm_common                      : ":features:fcm_common",
             tkpdcore                        : ":tkpdcore",
             tkpdseller                      : ":tkpdseller",
