@@ -122,6 +122,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
             when {
                 uri.host == "youtu.be" -> uri.lastPathSegment
                 uri.host == "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 else -> throw MessageErrorException("")
             }
         } catch (e: NullPointerException) {
