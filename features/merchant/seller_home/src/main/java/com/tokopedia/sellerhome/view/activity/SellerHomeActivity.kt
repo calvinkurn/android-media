@@ -46,6 +46,8 @@ import javax.inject.Inject
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     companion object {
+        private const val KEY_LAST_PAGE = "last_page"
+
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 
@@ -126,13 +128,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt("last_page", sharedViewModel.currentSelectedPage.value?.type ?: FragmentType.HOME)
+        outState.putInt(KEY_LAST_PAGE, sharedViewModel.currentSelectedPage.value?.type ?: FragmentType.HOME)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
         savedInstanceState?.run {
-            val lastPage = getInt("last_page", FragmentType.HOME)
+            val lastPage = getInt(KEY_LAST_PAGE, FragmentType.HOME)
             sharedViewModel.setCurrentSelectedPage(PageFragment(lastPage))
         }
     }
