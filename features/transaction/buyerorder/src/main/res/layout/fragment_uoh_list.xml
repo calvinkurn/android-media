@@ -17,12 +17,14 @@
         app:siv_search_hint="@string/hint_cari_transaksi"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_quick_filter"
-        android:layout_width="0dp"
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/uoh_sort_filter"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/search_input_view"
         app:layout_constraintStart_toStartOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_12"/>

@@ -1,16 +1,14 @@
 package com.tokopedia.buyerorder.unifiedhistory.view.fragment
 
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ImageSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.buyerorder.R
-import com.tokopedia.design.quickfilter.QuickFilterItem
-import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
+import kotlinx.android.synthetic.main.fragment_uoh_list.*
 
 
 /**
@@ -30,37 +28,50 @@ class UohListFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderQuickFilter()
+        renderChipsFilter()
     }
 
-    private fun renderQuickFilter() {
-        val listQuickFilter = arrayListOf<QuickFilterItem>()
+    private fun renderChipsFilter() {
+        val chips = arrayListOf<SortFilterItem>()
 
-        val filterItem1 = CustomViewQuickFilterItem()
-        filterItem1.name = "X"
-        listQuickFilter.add(filterItem1)
+        val filter1 = SortFilterItem("Semua Tanggal", ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
+        filter1.listener = {
+            filter1.type = if(filter1.type == ChipsUnify.TYPE_NORMAL) {
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                ChipsUnify.TYPE_NORMAL
+            }
+            println("++ SHOW BOTTOMSHEET 1!")
+        }
+        chips.add(filter1)
 
-        val filterItem2 = CustomViewQuickFilterItem()
-        filterItem2.name = "Semua Tanggal"
+        val filter2 = SortFilterItem("Semua Status", ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
+        filter2.listener = {
+            filter2.type = if(filter2.type == ChipsUnify.TYPE_NORMAL) {
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                ChipsUnify.TYPE_NORMAL
+            }
+            println("++ SHOW BOTTOMSHEET 2!")
+        }
+        chips.add(filter2)
 
-        val str = "Semua Tanggal"
-        val spannableString = SpannableString(str)
-        val d = resources.getDrawable(R.drawable.ic_unified_chevron_down)
-        d.setBounds(0, 0, d.intrinsicWidth, d.intrinsicHeight)
-        val span = ImageSpan(d, ImageSpan.ALIGN_BOTTOM)
-        spannableString.setSpan(span, str.length, str.length + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-        filterItem2.name = spannableString.toString()
-        listQuickFilter.add(filterItem2)
+        val filter3 = SortFilterItem("Semua Kategori", ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
+        filter3.listener = {
+            filter3.type = if(filter3.type == ChipsUnify.TYPE_NORMAL) {
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                ChipsUnify.TYPE_NORMAL
+            }
+            println("++ SHOW BOTTOMSHEET 3!")
+        }
+        chips.add(filter3)
 
-        val filterItem3 = CustomViewQuickFilterItem()
-        filterItem3.name = "Semua Status"
-        listQuickFilter.add(filterItem3)
-
-        val filterItem4 = CustomViewQuickFilterItem()
-        filterItem4.name = "Semua Kategori"
-        listQuickFilter.add(filterItem4)
-
-        quick_filter?.renderFilter(listQuickFilter, 0)
+        uoh_sort_filter?.addItem(chips)
+        uoh_sort_filter?.resetAllFilters()
+        filter1.refChipUnify.setChevronClickListener {  }
+        filter2.refChipUnify.setChevronClickListener {  }
+        filter3.refChipUnify.setChevronClickListener {  }
     }
 
     override fun getScreenName(): String = ""
