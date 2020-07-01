@@ -379,15 +379,10 @@ object DeeplinkMapper {
     }
 
     private fun trimDeeplink(uri: Uri, deeplink: String): String {
-        var deeplinkWithoutQuery = ""
-        if (uri.query?.isNotEmpty() == true) {
-            val qIndex = deeplink.indexOf('?')
-            deeplinkWithoutQuery = if (qIndex > 0) {
-                deeplink.substring(0, qIndex)
-            } else {
-                deeplink
-            }
-        }
+        val qIndex = deeplink.indexOf('?')
+        val deeplinkWithoutQuery = if (uri.query?.isNotEmpty() == true && qIndex > 0) {
+            deeplink.substring(0, qIndex)
+        } else deeplink
         return if (deeplinkWithoutQuery.endsWith("/")) {
             deeplinkWithoutQuery.substringBeforeLast("/")
         } else {
