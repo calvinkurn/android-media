@@ -51,10 +51,10 @@ class SuggestionTopShopCardViewHolder(
     }
 
     private fun bindProductImage(element: SuggestionTopShopCardViewModel) {
-        if(element.products.size == 3) {
+        if (element.products.isNotEmpty()) {
             bindProductImage1(element.products[0].imageUrl)
-            bindProductImage2(element.products[1].imageUrl)
-            bindProductImage3(element.products[2].imageUrl)
+            if (element.products.size >= 2) bindProductImage2(element.products[1].imageUrl)
+            if (element.products.size >= 3) bindProductImage3(element.products[2].imageUrl)
         }
     }
 
