@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import javax.inject.Inject
@@ -34,8 +33,7 @@ class CreateLiveStreamChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): CreateLiveStreamChannelResponse.GetMedia {
-        val gqlRequest = GraphqlRequest(query, CreateLiveStreamChannelResponse::class.java, params)
-        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, CreateLiveStreamChannelResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<CreateLiveStreamChannelResponse>(CreateLiveStreamChannelResponse::class.java)
         response?.media?.let {

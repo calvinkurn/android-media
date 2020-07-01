@@ -3,8 +3,6 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
@@ -45,18 +43,11 @@ class GetLiveStatisticsUseCase @Inject constructor(
     var params: Map<String, Any> = mapOf()
 
     override suspend fun executeOnBackground(): LiveStats {
-        val gqlRequest = GraphqlRequest(query, LiveStats::class.java, params)
-        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, LiveStats::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val errors = gqlResponse.getError(GetLiveStatisticsResponse::class.java)
-        return if (!errors.isNullOrEmpty()) {
-            throw MessageErrorException(errors[0].message)
-        } else {
-            val response = gqlResponse.getData<GetLiveStatisticsResponse>(GetLiveStatisticsResponse::class.java)
-            try {
-                response.response.channel.metrics
-            } catch (e: Exception) { throw DefaultErrorThrowable() }
-        }
+        val response = gqlResponse.getData<GetLiveStatisticsResponse>(GetLiveStatisticsResponse::class.java)
+        return try { response.response.channel.metrics
+        } catch (e: Exception) { throw DefaultErrorThrowable() }
     }
 
     companion object {
