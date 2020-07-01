@@ -23,11 +23,11 @@ class TestBottomNavActivity: AppCompatActivity() {
 
         bottomNav.setMenu(menu)
         bottomNav.setMenuClickListener(object: IBottomClickListener {
-            override fun menuClicked(position: Int, id: Long): Boolean {
+            override fun menuClicked(position: Int, id: Int): Boolean {
                 return true
             }
 
-            override fun menuReselected(position: Int, id: Long) {
+            override fun menuReselected(position: Int, id: Int) {
 
             }
         })

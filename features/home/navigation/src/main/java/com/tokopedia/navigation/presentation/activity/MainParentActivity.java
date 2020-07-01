@@ -1197,7 +1197,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public boolean menuClicked(int index, long id) {
+    public boolean menuClicked(int index, int id) {
         int position = getPositionFragmentByMenu(index);
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
@@ -1226,7 +1226,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void menuReselected(int position, long id) {
+    public void menuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
         scrollToTop(fragment); // enable feature scroll to top for home & feed
     }
