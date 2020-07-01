@@ -22,8 +22,7 @@ import kotlinx.android.synthetic.main.view_recharge_home_banner.view.*
  */
 
 class RechargeHomepageBannerViewHolder(itemView: View,
-                                       val listener: OnItemBindListener,
-                                       private val isEmpty: Boolean = false)
+                                       val listener: OnItemBindListener)
     : AbstractViewHolder<RechargeHomepageBannerModel>(itemView),
         CircularListener {
     private lateinit var slidesList: List<RechargeHomepageSections.Item>
@@ -32,15 +31,15 @@ class RechargeHomepageBannerViewHolder(itemView: View,
     override fun bind(element: RechargeHomepageBannerModel) {
         slidesList = element.section.items
         if (slidesList.isNotEmpty()) {
-            initSeeAllPromo()
+            initSeeAllPromo(element.section)
             initBanner(slidesList.map { CircularModel(it.id, it.mediaUrl) })
         } else {
-            itemView.view_recharge_home_banner_container.hide()
+            listener.onRechargeSectionEmpty(adapterPosition)
         }
     }
 
-    private fun initSeeAllPromo(){
-        itemView.see_all_promo.setOnClickListener { onPromoAllClick() }
+    private fun initSeeAllPromo(section: RechargeHomepageSections.Section){
+        itemView.see_all_promo.setOnClickListener { onPromoAllClick(section) }
     }
 
     private fun initBanner(list: List<CircularModel>){
@@ -78,8 +77,8 @@ class RechargeHomepageBannerViewHolder(itemView: View,
         }
     }
 
-    private fun onPromoAllClick() {
-        listener.onRechargeBannerAllItemClicked()
+    private fun onPromoAllClick(section: RechargeHomepageSections.Section) {
+        listener.onRechargeBannerAllItemClicked(section)
     }
 
     companion object {

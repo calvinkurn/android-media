@@ -45,7 +45,7 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: OnIte
                     listener.onRechargeSectionItemImpression(section.items, PRODUCT_CARDS_IMPRESSION)
                 }
             } else {
-                view_recharge_home_product_cards_container.hide()
+                listener.onRechargeSectionEmpty(adapterPosition)
             }
         }
     }

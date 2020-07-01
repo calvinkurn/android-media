@@ -42,7 +42,7 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: OnIte
                     listener.onRechargeSectionItemImpression(items, DUAL_BANNER_IMPRESSION)
                 }
             }
-            if (items == null) view_recharge_home_dual_banners_container.hide()
+            if (items == null) listener.onRechargeSectionEmpty(adapterPosition)
         }
     }
 

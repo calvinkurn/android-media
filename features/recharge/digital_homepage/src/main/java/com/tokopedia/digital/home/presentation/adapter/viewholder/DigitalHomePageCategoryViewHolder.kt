@@ -17,15 +17,14 @@ class DigitalHomePageCategoryViewHolder(itemView: View?, val onItemBindListener:
     override fun bind(element: DigitalHomePageCategoryModel?) {
         with (itemView) {
             val layoutManager = LinearLayoutManager(context)
-            rv_recharge_home_category.layoutManager = layoutManager
+            rv_digital_homepage_category.layoutManager = layoutManager
             if (element?.isLoaded == true) {
-                categoryShimmering.hide()
-                tv_recharge_home_category_title.hide()
-                rv_recharge_home_category.show()
-                rv_recharge_home_category.adapter = DigitalItemCategoryAdapter(element.listSubtitle, onItemBindListener)
+                view_recharge_home_category_shimmering.hide()
+                rv_digital_homepage_category.show()
+                rv_digital_homepage_category.adapter = DigitalItemCategoryAdapter(element.listSubtitle, onItemBindListener)
             } else {
-                categoryShimmering.show()
-                rv_recharge_home_category.hide()
+                view_recharge_home_category_shimmering.show()
+                rv_digital_homepage_category.hide()
             }
         }
     }

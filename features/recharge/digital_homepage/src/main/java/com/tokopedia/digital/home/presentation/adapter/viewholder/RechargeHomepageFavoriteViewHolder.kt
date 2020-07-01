@@ -11,7 +11,7 @@ import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.layout_digital_home_favorites.view.*
+import kotlinx.android.synthetic.main.view_recharge_home_favorites.view.*
 
 /**
  * @author by resakemal on 05/06/20.
@@ -23,27 +23,27 @@ class RechargeHomepageFavoriteViewHolder(itemView: View?, val listener: OnItemBi
 
     override fun bind(element: RechargeHomepageFavoriteModel) {
         val section = element.section
-        with (itemView) {
+        with(itemView) {
             if (section.items.isNotEmpty()) {
                 val layoutManager = GridLayoutManager(context, FAVORITES_SPAN_COUNT)
-                rv_digital_homepage_favorites.layoutManager = layoutManager
-                digital_homepage_favorites_container.show()
+                rv_recharge_home_favorites.layoutManager = layoutManager
+                recharge_home_favorites_container.show()
                 tv_recharge_home_favorites_title.text = section.title
                 tv_recharge_home_favorites_see_all.setOnClickListener {
-                    listener.onRechargeFavoriteAllItemClicked()
+                    listener.onRechargeFavoriteAllItemClicked(section)
                 }
-                rv_digital_homepage_favorites.adapter = RechargeItemFavoriteAdapter(section.items, listener)
+                rv_recharge_home_favorites.adapter = RechargeItemFavoriteAdapter(section.items, listener)
                 addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section.items, BEHAVIORAL_CATEGORY_IMPRESSION)
                 }
             } else {
-                digital_homepage_favorites_container.hide()
+                listener.onRechargeSectionEmpty(adapterPosition)
             }
         }
     }
 
     companion object {
-        val LAYOUT = R.layout.layout_digital_home_favorites
+        val LAYOUT = R.layout.view_recharge_home_favorites
         const val FAVORITES_SPAN_COUNT = 5
     }
 }

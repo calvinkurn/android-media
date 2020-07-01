@@ -41,7 +41,7 @@ class RechargeHomepageVideoHighlightViewHolder(
             initView(element.section)
             container.show()
         } else {
-            container.hide()
+            listener.onRechargeSectionEmpty(adapterPosition)
         }
     }
 

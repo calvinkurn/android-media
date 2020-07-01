@@ -5,6 +5,7 @@ query rechargeGetDynamicPage($platformId: Int!, $enablePersonalize: Boolean) {
       title
       sub_title
       template
+      app_link
       tracking {
         action
         data

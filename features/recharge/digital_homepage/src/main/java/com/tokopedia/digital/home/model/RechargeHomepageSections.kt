@@ -33,6 +33,9 @@ data class RechargeHomepageSections (
             @SerializedName("tracking")
             @Expose
             val tracking: List<Tracking> = listOf(),
+            @SerializedName("app_link")
+            @Expose
+            val applink: String = "",
             @SerializedName("items")
             @Expose
             val items: List<Item> = listOf()

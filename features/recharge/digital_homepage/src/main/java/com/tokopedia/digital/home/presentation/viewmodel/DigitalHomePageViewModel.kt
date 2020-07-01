@@ -2,13 +2,11 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
-import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -34,8 +32,8 @@ class DigitalHomePageViewModel @Inject constructor(
     private val mutableIsAllError = MutableLiveData<Boolean>()
     val isAllError: LiveData<Boolean>
         get() = mutableIsAllError
-    private val mutableRechargeHomepageSections = MutableLiveData<Result<List<Visitable<*>>>>()
-    val rechargeHomepageSections: LiveData<Result<List<Visitable<*>>>>
+    private val mutableRechargeHomepageSections = MutableLiveData<Result<List<RechargeHomepageSections.Section>>>()
+    val rechargeHomepageSections: LiveData<Result<List<RechargeHomepageSections.Section>>>
         get() = mutableRechargeHomepageSections
 
     fun initialize(queryList: Map<String, String>) {
@@ -71,10 +69,12 @@ class DigitalHomePageViewModel @Inject constructor(
             }.getSuccessData<RechargeHomepageSections.Response>().response
 
             // Filter out sections with no items then map sections based on their types
-            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(data.sections.filter {
-                it.items.isNotEmpty() || it.template == SECTION_PRODUCT_CARD_ROW
-            }).filterNotNull()
-            mutableRechargeHomepageSections.postValue(Success(mappedData))
+            val filteredData = data.sections.filter {
+                it.items.isNotEmpty()
+                        || it.template == SECTION_PRODUCT_CARD_ROW
+                        || it.template == SECTION_URGENCY_WIDGET
+            }
+            mutableRechargeHomepageSections.postValue(Success(filteredData))
         }) {
             mutableRechargeHomepageSections.postValue(Fail(it))
         }

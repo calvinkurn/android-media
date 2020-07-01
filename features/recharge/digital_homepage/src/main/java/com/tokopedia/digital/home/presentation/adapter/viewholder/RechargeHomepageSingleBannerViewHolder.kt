@@ -38,10 +38,10 @@ class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: OnIt
                     listener.onRechargeSectionItemImpression(section.items, SINGLE_BANNER_IMPRESSION)
                 }
 
-                view_recharge_home_single_banner_title.displayTextOrHide(item.title)
-                view_recharge_home_single_banner_label.displayTextOrHide(item.subtitle)
+                view_recharge_home_single_banner_title.displayTextOrHide(section.title)
+                view_recharge_home_single_banner_label.displayTextOrHide(section.subtitle)
             } else {
-                view_recharge_home_single_banner_container.hide()
+                listener.onRechargeSectionEmpty(adapterPosition)
             }
         }
     }

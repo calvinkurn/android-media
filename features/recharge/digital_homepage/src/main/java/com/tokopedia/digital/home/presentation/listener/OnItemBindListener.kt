@@ -7,8 +7,9 @@ import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.listener.ReminderWidgetListener
 
-interface OnItemBindListener: DynamicLegoBannerListener, HomeComponentListener {
+interface OnItemBindListener {
     fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int)
     fun onBannerItemClicked(element: DigitalHomePageBannerModel.Banner?, position: Int)
     fun onBannerAllItemClicked()
@@ -21,8 +22,15 @@ interface OnItemBindListener: DynamicLegoBannerListener, HomeComponentListener {
     fun onRecommendationImpression(elements: List<RecommendationItemEntity>)
 
     fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String)
+    fun onRechargeBannerAllItemClicked(section: RechargeHomepageSections.Section)
+    fun onRechargeReminderWidgetClicked()
+    fun onRechargeFavoriteAllItemClicked(section: RechargeHomepageSections.Section)
+    fun onRechargeLegoBannerItemClicked(itemPosition: Int)
+    fun onRechargeProductBannerClose(section: RechargeHomepageSections.Section)
+
     fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String)
-    fun onRechargeFavoriteAllItemClicked()
-    fun onRechargeBannerAllItemClicked()
-    fun onRechargeProductBannerClose(element: RechargeHomepageSections.Item)
+    fun onRechargeReminderWidgetImpression()
+    fun onRechargeLegoBannerItemImpression()
+
+    fun onRechargeSectionEmpty(position: Int)
 }

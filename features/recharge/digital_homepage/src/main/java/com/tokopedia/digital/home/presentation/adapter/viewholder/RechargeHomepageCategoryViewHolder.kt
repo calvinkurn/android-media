@@ -10,7 +10,7 @@ import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemCateg
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
-import kotlinx.android.synthetic.main.layout_digital_home_category.view.*
+import kotlinx.android.synthetic.main.view_recharge_home_category.view.*
 
 /**
  * @author by resakemal on 05/06/20.
@@ -31,13 +31,13 @@ class RechargeHomepageCategoryViewHolder(itemView: View, val listener: OnItemBin
                     listener.onRechargeSectionItemImpression(section.items, DYNAMIC_ICON_IMPRESSION)
                 }
             } else {
-                view_recharge_home_category_container.hide()
+                listener.onRechargeSectionEmpty(adapterPosition)
             }
         }
     }
 
     companion object {
-        val LAYOUT = R.layout.layout_digital_home_category
+        val LAYOUT = R.layout.view_recharge_home_category
         const val CATEGORY_SPAN_COUNT = 5
     }
 }

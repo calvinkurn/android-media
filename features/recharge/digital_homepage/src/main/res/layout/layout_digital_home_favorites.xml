@@ -1,44 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/digital_homepage_favorites_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingRight="@dimen/spacing_lvl4">
+    android:orientation="vertical">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_recharge_home_favorites_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_recharge_home_favorites_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/recharge_home_banner_see_all_label"
-        android:textColor="@color/unify_G500"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_digital_homepage_favorites"
+    <LinearLayout
+        android:id="@+id/view_digital_homepage_favorites_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_recharge_home_favorites_title" />
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_digital_homepage_favorites_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="heading_5" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_digital_homepage_favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+    </LinearLayout>
 
     <include
-        android:id="@+id/digital_homepage_favorites_shimmering"
+        android:id="@+id/view_digital_homepage_favorites_shimmering"
         layout="@layout/content_digital_hone_shimmering_favorites"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

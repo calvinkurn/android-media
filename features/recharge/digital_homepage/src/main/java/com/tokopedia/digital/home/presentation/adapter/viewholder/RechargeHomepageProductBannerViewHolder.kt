@@ -35,7 +35,7 @@ class RechargeHomepageProductBannerViewHolder(
             setHeader(section)
             setProduct(section)
         } else {
-            itemView.view_recharge_home_product_banner_container.hide()
+            listener.onRechargeSectionEmpty(adapterPosition)
         }
     }
 
@@ -72,7 +72,7 @@ class RechargeHomepageProductBannerViewHolder(
             }
             iv_recharge_home_product_banner_close_button.setOnClickListener {
                 view_recharge_home_product_banner_container.hide()
-                listener.onRechargeProductBannerClose(item)
+                listener.onRechargeProductBannerClose(section)
             }
         }
     }

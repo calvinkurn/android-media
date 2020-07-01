@@ -12,11 +12,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -33,14 +30,15 @@ import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataMapper
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
+import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeHomeSectionDecorator
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -58,6 +56,9 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var viewModel: DigitalHomePageViewModel
+
+    private lateinit var sections: List<RechargeHomepageSections.Section>
+
     private var searchBarTransitionRange = 0
 
     private var platformId: Int = 0
@@ -197,7 +198,9 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         viewModel.rechargeHomepageSections.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    renderList(it.data)
+                    sections = it.data
+                    val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(sections).filterNotNull()
+                    renderList(mappedData)
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -208,7 +211,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     override fun loadData(page: Int) {
         // Load dynamic sub-homepage if platformId is provided; else load old sub-homepage
-        if (platformId > 0) {
+        if (isDynamicPage()) {
             viewModel.getRechargeHomepageSections(
                     GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
                     viewModel.createRechargeHomepageSectionsParams(platformId, false),
@@ -268,23 +271,43 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     override fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
-        // do nothing
+        // Do nothing
     }
 
     override fun onRecommendationImpression(elements: List<RecommendationItemEntity>) {
         trackingUtil.eventRecommendationImpression(elements)
     }
 
-    override fun onRechargeFavoriteAllItemClicked() {
-        // TODO: Set favorites see all redirect
+    override fun onRechargeFavoriteAllItemClicked(section: RechargeHomepageSections.Section) {
+        RouteManager.route(context, section.applink)
     }
 
-    override fun onRechargeBannerAllItemClicked() {
-        // TODO: Set banner see all redirect
+    override fun onRechargeLegoBannerItemClicked(itemPosition: Int) {
+        if (::sections.isInitialized) {
+            val trackingData = RechargeHomepageSectionMapper.getSection(
+                    sections,
+                    DigitalHomePageViewModel.SECTION_LEGO_BANNERS
+            )?.items?.get(itemPosition)
+            // TODO: Implement tracking
+        }
     }
 
-    override fun onRechargeProductBannerClose(element: RechargeHomepageSections.Item) {
+    override fun onRechargeBannerAllItemClicked(section: RechargeHomepageSections.Section) {
+        RouteManager.route(context, section.applink)
+    }
+
+    override fun onRechargeReminderWidgetClicked() {
+        if (::sections.isInitialized) {
+            val trackingData = RechargeHomepageSectionMapper.getSection(
+                    sections,
+                    DigitalHomePageViewModel.SECTION_URGENCY_WIDGET
+            )
+        }
+    }
+
+    override fun onRechargeProductBannerClose(section: RechargeHomepageSections.Section) {
         // TODO: Trigger close product banner query
+        RouteManager.route(context, section.applink)
     }
 
     override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
@@ -301,67 +324,40 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 //        val trackingMap = Gson().fromJson<Any>(stringJson, object : TypeToken<HashMap<String, Any>>() {}.type)
     }
 
-    override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
-        // Do nothing
+    override fun onRechargeReminderWidgetImpression() {
+        if (::sections.isInitialized) {
+            val trackingData = RechargeHomepageSectionMapper.getSection(
+                    sections,
+                    DigitalHomePageViewModel.SECTION_URGENCY_WIDGET
+            )
+        }
     }
 
-    override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
-        // Do nothing
+    override fun onRechargeLegoBannerItemImpression() {
+        if (::sections.isInitialized) {
+            val trackingData = RechargeHomepageSectionMapper.getSection(
+                    sections,
+                    DigitalHomePageViewModel.SECTION_LEGO_BANNERS
+            )
+            // TODO: Implement tracking
+        }
     }
 
-    override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
-        // Do nothing
-    }
-
-    // TODO: Add lego banner click listener; current default is to 6 image
-    override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-
-    }
-
-    override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-
-    }
-
-    override fun onClickGridThreeImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-
-    }
-
-    // TODO: Add lego banner item impression listener; current default is to 6 image
-    override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    // TODO: Add lego banner section impression listener; current default is to 6 image
-    override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
-        // Do nothing
+    override fun onRechargeSectionEmpty(position: Int) {
+        adapter.apply {
+            data.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, dataSize)
+        }
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
-        return DigitalHomePageTypeFactory(this, this, platformId > 0)
+        return DigitalHomePageTypeFactory(this, RechargeHomepageReminderWidgetCallback(this),
+                RechargeHomepageDynamicLegoBannerCallback(this), this)
     }
 
     override fun onItemClicked(t: Visitable<*>) {
-        // do nothing
+        // Do nothing
     }
 
     override fun onClickFavNumber() {
@@ -394,6 +390,10 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     fun onBackPressed() {
         trackingUtil.eventClickBackButton()
+    }
+
+    private fun isDynamicPage(): Boolean {
+        return platformId > 0
     }
 
     companion object {
