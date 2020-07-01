@@ -39,6 +39,7 @@ import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
+import com.tokopedia.buyerorder.list.data.Order;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
@@ -437,9 +438,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (details.getItems() != null && details.getItems().size() > 0) {
             Flags flags = details.getFlags();
             if (flags != null)
-                getView().setItems(details.getItems(), flags.isIsOrderTradeIn());
+                getView().setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
             else
-                getView().setItems(details.getItems(), false);
+                getView().setItems(details.getItems(), false, details);
         }
         if (details.additionalInfo().size() > 0) {
             getView().setAdditionInfoVisibility(View.VISIBLE);
@@ -477,7 +478,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().setPaymentData(details.paymentData());
         getView().setContactUs(details.contactUs(),details.getHelpLink());
 
-        if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
+        if(details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)){
+            getView().setActionButtonsVisibility(View.GONE, View.GONE);
+        } else if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
                 ActionButton leftActionButton = details.actionButtons().get(0);
                 ActionButton rightActionButton = details.actionButtons().get(1);
@@ -663,7 +666,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             if (details != null && details.getPayMethods() != null && details.getPayMethods().size() > 0 && !TextUtils.isEmpty(details.getPayMethods().get(0).getValue())) {
                 paymentMethod = details.getPayMethods().get(0).getValue();
             }
-            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
+            if(categoryType==3){
+                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getProductName(), metaDataInfo.getTotalPrice(), metaDataInfo.getQuantity(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
+            }else {
+                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
+            }
         }
     }
 
