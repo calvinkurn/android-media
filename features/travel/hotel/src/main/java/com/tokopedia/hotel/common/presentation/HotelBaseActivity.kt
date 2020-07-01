@@ -85,7 +85,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
     }
 
     override fun onPromoClicked() {
-        RouteManager.route(this, "tokopedia://webview?url=https://www.tokopedia.com/promo/tiket/hotel")
+        RouteManager.route(this, getString(R.string.hotel_promo_list_applink))
     }
 
     override fun onHelpClicked() {
