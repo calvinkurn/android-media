@@ -1609,6 +1609,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             filterProductListByStatus(it)
             renderMultiSelectProduct()
         }
+
+        getFiltersTab(withDelay = true)
     }
 
     private fun showErrorMessageToast(result: Fail) {
