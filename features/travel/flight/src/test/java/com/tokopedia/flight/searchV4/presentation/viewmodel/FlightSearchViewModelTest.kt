@@ -207,7 +207,7 @@ class FlightSearchViewModelTest {
                     airportCode = ""
                 },
                 FlightClassModel(1, "Ekonomi"),
-                "", "")
+                "tokopedia-android-internal://dummy", "")
 
         coEvery { flightSearchCombineUseCase.execute(any()) } returns true
         coEvery { flightSortAndFilterUseCase.execute(any(), any()) } returns arrayListOf()
@@ -252,6 +252,7 @@ class FlightSearchViewModelTest {
         val needDeleteData = false
         val isReturnTrip = true
         flightSearchViewModel.flightSearchPassData.isOneWay = false
+        flightSearchViewModel.flightSearchPassData.searchRequestId
 
         coEvery { flightSearchCombineUseCase.execute(any()) } returns true
         coEvery { flightSortAndFilterUseCase.execute(any(), any()) } returns arrayListOf()
