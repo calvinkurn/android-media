@@ -22,6 +22,7 @@ import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigati
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
+import com.tokopedia.applink.kol.DeepLinkMapperKol.getKolDeepLink
 import com.tokopedia.applink.marketplace.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
@@ -52,7 +53,6 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.config.GlobalConfig
-import java.lang.Exception
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -283,6 +283,12 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.ORDER_HISTORY) { _, uri, _ -> getRegisteredNavigationOrderHistory(uri) },
             DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalGlobal.FORGOT_PASSWORD),
             DLP.startWith(ApplinkConst.PRODUCT_ADD) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
+            DLP.startWithPattern(ApplinkConst.KOL_COMMENT) { _, _, deeplink -> getKolDeepLink(deeplink) },
+            DLP.startWithPattern(ApplinkConst.CONTENT_DETAIL) { _, _, deeplink -> getKolDeepLink(deeplink) },
+            DLP.startWithPattern(ApplinkConst.KOL_YOUTUBE) { _, _, deeplink -> getKolDeepLink(deeplink) },
+            DLP.startWithPattern(ApplinkConst.KOL_CONTENT_REPORT) { _, _, deeplink -> getKolDeepLink(deeplink) },
+            DLP.startWithPattern(ApplinkConst.KOL_VIDEO_DETAIL) { _, _, deeplink -> getKolDeepLink(deeplink) },
+            DLP.startWithPattern(ApplinkConst.KOL_MEDIA_PREVIEW) { _, _, deeplink -> getKolDeepLink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY) { _, _, deeplink -> getDiscoveryDeeplink(deeplink) },
             DLP(logic = { _, uri, _ -> specialNavigationMapper(uri, ApplinkConst.HOST_CATEGORY_P) },
                     targetDeeplink = { _, _, deeplink -> getRegisteredCategoryNavigation(deeplink) }),
