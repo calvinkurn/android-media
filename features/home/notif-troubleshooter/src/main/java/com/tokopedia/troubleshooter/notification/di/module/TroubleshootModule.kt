@@ -1,9 +1,11 @@
-package com.tokopedia.troubleshooter.notification.di
+package com.tokopedia.troubleshooter.notification.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.troubleshooter.notification.R
+import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
+import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
 import com.tokopedia.troubleshooter.notification.domain.TroubleshootStatusUseCase
 import dagger.Module
 import dagger.Provides
