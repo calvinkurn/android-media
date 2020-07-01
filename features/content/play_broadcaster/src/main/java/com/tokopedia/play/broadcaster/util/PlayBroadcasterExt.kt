@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
@@ -97,6 +98,13 @@ internal fun GlobalError.productEtalaseEmpty() {
     errorTitle.text = context.getString(R.string.play_product_etalase_empty_title)
     errorDescription.text = context.getString(R.string.play_product_etalase_empty_desc)
     errorAction.gone()
+}
+
+internal fun GlobalError.channelNotFound(onAction: () -> Unit) {
+    this.errorTitle.setTextColor(ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+    this.errorDescription.setTextColor(ContextCompat.getColor(this.context, R.color.play_white_68))
+    this.setType(GlobalError.PAGE_NOT_FOUND)
+    this.setActionClickListener { onAction() }
 }
 
 internal fun Context.getDialog(

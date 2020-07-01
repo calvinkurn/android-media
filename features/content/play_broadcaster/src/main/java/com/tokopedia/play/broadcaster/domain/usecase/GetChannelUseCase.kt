@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -15,7 +14,7 @@ import javax.inject.Inject
  */
 class GetChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<GetChannelResponse.Channel>() {
+) : BaseUseCase<GetChannelResponse.Channel>() {
 
     //TODO("Add coverURL field in basic")
     private val query = """
@@ -117,7 +116,7 @@ class GetChannelUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): GetChannelResponse.Channel {
         val gqlRequest = GraphqlRequest(query, GetChannelResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetChannelResponse>(GetChannelResponse::class.java)
         try { response?.broadcasterGetChannels?.channels?.let { return it.first() } }

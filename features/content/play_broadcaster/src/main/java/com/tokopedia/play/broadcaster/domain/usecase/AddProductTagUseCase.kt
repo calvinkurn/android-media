@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.domain.model.AddProductTagChannelResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -15,7 +14,7 @@ import javax.inject.Inject
  */
 class AddProductTagUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<AddProductTagChannelResponse.GetProductId>() {
+) : BaseUseCase<AddProductTagChannelResponse.GetProductId>() {
 
     private val query = """
             mutation setProductTag(${'$'}channelId: String!, ${'$'}productIds: [String]!){
@@ -32,7 +31,7 @@ class AddProductTagUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): AddProductTagChannelResponse.GetProductId {
         val gqlRequest = GraphqlRequest(query, AddProductTagChannelResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<AddProductTagChannelResponse>(AddProductTagChannelResponse::class.java)
         response?.productId?.let {

@@ -10,7 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -18,7 +17,7 @@ import javax.inject.Inject
  */
 class GetConfigurationUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<Config>() {
+) : BaseUseCase<Config>() {
 
     private val query = """
             query getConfig(${'$'}shopId: String!) {
@@ -34,7 +33,7 @@ class GetConfigurationUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Config {
         val gqlRequest = GraphqlRequest(query, GetBroadcasterShopConfigResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetBroadcasterShopConfigResponse>(GetBroadcasterShopConfigResponse::class.java)
         response?.config?.let { shopConfig -> return mapConfiguration(shopConfig) }

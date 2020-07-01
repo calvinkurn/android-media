@@ -135,6 +135,7 @@ class PlayBroadcastViewModel @Inject constructor(
     init {
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
         _observableChannelId.observeForever(channelIdObserver)
+        initPushStream()
 
         mockChatList()
         mockMetrics()
@@ -155,23 +156,16 @@ class PlayBroadcastViewModel @Inject constructor(
     fun getConfiguration() {
         scope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
-
-//            val config = withContext(dispatcher.io) {
-//                getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
-//                return@withContext getConfigurationUseCase.executeOnBackground()
-//            }
-//            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
-            // TODO("remove mock")
-            delay(1000)
-            val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel()
-
-            if (configUiModel.channelStatus == PlayChannelStatus.Unknown) createChannel()
-            else getChannel(configUiModel.channelId)
-
+            val config = withContext(dispatcher.io) {
+                getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
+                return@withContext getConfigurationUseCase.executeOnBackground()
+            }
+            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
+//            delay(2000)
+//            val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel() // TODO remove mock
+            if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
-
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
         }
@@ -242,7 +236,7 @@ class PlayBroadcastViewModel @Inject constructor(
     /**
      * Apsara integration
      */
-    fun initPushStream() {
+    private fun initPushStream() {
         playPusher.create()
     }
 

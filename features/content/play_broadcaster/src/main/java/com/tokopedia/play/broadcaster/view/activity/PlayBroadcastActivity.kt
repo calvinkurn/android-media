@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -20,9 +21,10 @@ import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
+import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.channelNotFound
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.showToaster
@@ -56,6 +58,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private lateinit var viewActionBar: ActionBarPartialView
     private lateinit var viewRequestPermission: PlayRequestPermissionView
     private lateinit var loaderView: LoaderUnify
+    private lateinit var globalErrorView: GlobalError
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
@@ -66,7 +69,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
-        initPushStream()
         setupContent()
         initView()
         getConfiguration()
@@ -88,9 +90,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
-    private fun initPushStream() {
+    private fun checkPermission() {
         viewModel.checkPermission()
-        viewModel.initPushStream()
     }
 
     private fun setFragmentFactory() {
@@ -110,6 +111,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         containerSetup = findViewById(R.id.fl_setup)
         viewRequestPermission = findViewById(R.id.view_request_permission)
         loaderView = findViewById(R.id.loader_initial)
+        globalErrorView = findViewById(R.id.error_channel)
 
         viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener{
             override fun onCameraIconClicked() {
@@ -231,12 +233,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun handleChannelConfiguration(config: ConfigurationUiModel) =
             if (config.streamAllowed) {
-                when(config.channelStatus) {
-                    PlayChannelStatus.Live -> showDialogWhenActiveOnOtherDevices()
-                    PlayChannelStatus.Pause -> openBroadcastActivePage()
-                    else -> openBroadcastSetupPage() /* TODO("handle when channel Deleted & Stop") */
+                if (config.channelType != ChannelType.Active) checkPermission()
+                when(config.channelType) {
+                    ChannelType.Active -> showDialogWhenActiveOnOtherDevices()
+                    ChannelType.Pause -> openBroadcastActivePage()
+                    ChannelType.Draft, ChannelType.Unknown -> openBroadcastSetupPage()
                 }
-            } else { /* TODO("handle when stream not allowed") */ }
+            } else {
+                globalErrorView.channelNotFound { this.finish() }
+                globalErrorView.show()
+            }
 
     private fun onPermissionGranted() {
         containerSetup.show()

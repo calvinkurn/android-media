@@ -100,6 +100,8 @@
     <string name="play_dialog_continue_live_desc">Live streaming tokomu berhenti sementara karena kamu sempat keluar dari apli</string>
     <string name="play_dialog_error_active_other_devices_title">Tokomu sedang siaran di\n perangkat lain</string>
     <string name="play_dialog_error_active_other_devices_desc">Akhiri siaran live streaming di perangkat lain\n jika ingin mengambil alih siaran</string>
+    <string name="play_loader_connecting">Menyambungkan…</string>
+    <string name="play_loader_live_paused">Live streaming berhenti sementara.</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>

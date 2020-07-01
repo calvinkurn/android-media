@@ -124,7 +124,7 @@ object PlayBroadcastUiMapper {
     }
 
     fun mapConfiguration(config: Config): ConfigurationUiModel {
-        val channelStatus = PlayChannelStatus.getChannelStatus(
+        val channelStatus = ChannelType.getChannelType(
                 config.activeLiveChannel,
                 config.pausedChannel,
                 config.draftChannel
@@ -132,7 +132,7 @@ object PlayBroadcastUiMapper {
         return ConfigurationUiModel(
                 streamAllowed = config.streamAllowed,
                 channelId = channelStatus.first,
-                channelStatus =  channelStatus.second,
+                channelType =  channelStatus.second,
                 durationConfig = DurationConfigUiModel(
                         duration = config.maxDuration,
                         pauseDuration = config.maxPauseDuration,

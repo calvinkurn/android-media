@@ -8,7 +8,6 @@ import com.tokopedia.play.broadcaster.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.UpdateChannelResponse
 import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -17,13 +16,13 @@ import javax.inject.Inject
  */
 class UpdateChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<ChannelId>() {
+) : BaseUseCase<ChannelId>() {
 
     private var mQueryParams = QueryParams()
 
     override suspend fun executeOnBackground(): ChannelId {
         val gqlRequest = GraphqlRequest(mQueryParams.query, UpdateChannelResponse::class.java, mQueryParams.params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<UpdateChannelResponse>(UpdateChannelResponse::class.java)
         response?.updateChannel?.let {
