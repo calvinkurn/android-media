@@ -2,11 +2,11 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import com.google.gson.annotations.SerializedName
 
-data class BroadcasterConfig (
+data class Broadcaster (
         @SerializedName("broadcasterGetShopConfig")
-        val response: Response
+        val config: Config
 ){
-    data class Response(
+    data class Config(
         @SerializedName("streamAllowed")
         val streamAllowed: Boolean = false
     )

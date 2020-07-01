@@ -549,7 +549,7 @@ class ShopPageFragment :
             isGoldMerchant = (goldOS.isGoldBadge == 1)
             shopName = shopInfo.shopCore.name
             customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
-            shopPageFragmentHeaderViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
+            shopPageFragmentHeaderViewHolder.bind(this, shopInfo.broadcasterConfig, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             setupTabs()
             if (!isMyShop) {
                 button_chat.show()
