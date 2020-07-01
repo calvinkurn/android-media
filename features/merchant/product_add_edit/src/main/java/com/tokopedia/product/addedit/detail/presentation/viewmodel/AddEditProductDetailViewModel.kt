@@ -40,11 +40,10 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isAdding = false
 
-    var hasVariants = false
-
     var shouldUpdateVariant = false
 
     var productInputModel = ProductInputModel()
+    val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
 

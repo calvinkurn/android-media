@@ -120,6 +120,18 @@
         app:layout_constraintBottom_toBottomOf="@id/textViewVariantList"
         app:layout_constraintRight_toRightOf="parent" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerVariantWholesale"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:descriptionText="@string/label_variant_wholesale_warning"
+        app:layout_constraintTop_toBottomOf="@+id/textViewVariantList"
+        app:tickerShapeType="loose"
+        app:tickerType=" " />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewVariantDetailFields"
         android:layout_width="match_parent"
@@ -127,7 +139,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toTopOf="@id/buttonSave"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewVariantList" />
+        app:layout_constraintTop_toBottomOf="@+id/tickerVariantWholesale" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonSave"
