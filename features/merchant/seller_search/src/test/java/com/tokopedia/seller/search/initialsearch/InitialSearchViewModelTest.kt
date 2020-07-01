@@ -1,7 +1,7 @@
 package com.tokopedia.seller.search.initialsearch
 
-import com.tokopedia.seller.search.common.data.SellerSearchResponse
-import com.tokopedia.seller.search.feature.initialsearch.data.DeleteHistoryResponse
+import com.tokopedia.seller.search.common.domain.model.SellerSearchResponse
+import com.tokopedia.seller.search.feature.initialsearch.domain.model.DeleteHistoryResponse
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail

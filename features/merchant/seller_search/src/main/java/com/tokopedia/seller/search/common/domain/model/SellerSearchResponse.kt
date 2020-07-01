@@ -1,4 +1,4 @@
-package com.tokopedia.seller.search.common.data
+package com.tokopedia.seller.search.common.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

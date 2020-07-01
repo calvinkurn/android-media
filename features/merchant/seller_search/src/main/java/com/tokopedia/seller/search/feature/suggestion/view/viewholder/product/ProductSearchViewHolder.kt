@@ -30,7 +30,9 @@ class ProductSearchViewHolder(private val view: View,
                     show()
                     text = element.actionTitle.orEmpty()
                     setOnClickListener {
-                        productSearchListener.onProductMoreClicked(element, adapterPosition)
+                        element.takeIf { it.id == PRODUCT }?.let {
+                            productSearchListener.onProductMoreClicked(it, adapterPosition)
+                        }
                     }
                 }
             }

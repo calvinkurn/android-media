@@ -28,7 +28,9 @@ class FaqSearchViewHolder(private val view: View,
                     show()
                     text = element.actionTitle.orEmpty()
                     setOnClickListener {
-                        faqSearchListener.onFaqMoreClicked(element, adapterPosition)
+                        element.takeIf { it.id == GlobalSearchSellerConstant.FAQ }?.let {
+                            faqSearchListener.onFaqMoreClicked(it, adapterPosition)
+                        }
                     }
                 }
             }

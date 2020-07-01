@@ -1,7 +1,7 @@
 package com.tokopedia.seller.search.suggestionsearch
 
-import com.tokopedia.seller.search.common.data.SellerSearchResponse
-import com.tokopedia.seller.search.feature.suggestion.data.SuccessSearchResponse
+import com.tokopedia.seller.search.common.domain.model.SellerSearchResponse
+import com.tokopedia.seller.search.feature.suggestion.domain.model.SuccessSearchResponse
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

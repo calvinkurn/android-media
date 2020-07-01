@@ -44,16 +44,20 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMoreResultProduct"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvResultProduct"
         app:typographyWeight="bold"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:textColor="@color/clr03AC0E"
+        android:background="?selectableItemBackground"
+        android:visibility="gone"
+        tools:visibility="visible"
         tools:text="Lihat 3 lainnya di halaman produk"/>
 
     <com.tokopedia.unifycomponents.DividerUnify

@@ -10,10 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.R
-import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FITUR
-import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PESANAN
-import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUK
 import com.tokopedia.seller.search.common.util.OnScrollListenerAutocomplete
+import com.tokopedia.seller.search.common.util.decodeString
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
@@ -29,7 +27,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.suggestion_search_fragment.*
 import javax.inject.Inject
 
-class SuggestionSearchFragment: BaseDaggerFragment(),
+class SuggestionSearchFragment : BaseDaggerFragment(),
         ProductSearchListener, OrderSearchListener, NavigationSearchListener, FaqSearchListener {
 
     @Inject
@@ -53,7 +51,6 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     private var searchKeyword = ""
     private var shopId = ""
     private var userId = ""
-    private var positionFilter = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,16 +85,17 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
 
     private fun observeLiveData() {
         viewModel.getSellerSearch.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     setSuggestionSearch(it.data)
                 }
-                is Fail -> { }
+                is Fail -> {
+                }
             }
         })
 
         viewModel.insertSuccessSearch.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     dropKeyBoard()
                 }
@@ -110,7 +108,7 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
 
     private fun setSuggestionSearch(data: List<SellerSearchUiModel>) {
         suggestionSearchAdapter.clearAllElements()
-        if(data.isEmpty()) {
+        if (data.isEmpty()) {
             suggestionSearchAdapter.addNoResultState()
             SellerSearchTracking.impressionEmptyResultEvent(userId)
         } else {
@@ -148,7 +146,6 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
 
     private fun startActivityFromAutoComplete(appLink: String) {
         if (activity == null) return
-
         RouteManager.route(activity, appLink)
         activity?.finish()
     }
@@ -168,8 +165,8 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     }
 
     override fun onOrderMoreClicked(element: SellerSearchUiModel, position: Int) {
-        startActivityFromAutoComplete(element.appActionLink.orEmpty())
         SellerSearchTracking.clickOrderFilterEvent(userId)
+        startActivityFromAutoComplete(element.appActionLink.orEmpty())
         dropKeyBoard()
     }
 
@@ -181,26 +178,21 @@ class SuggestionSearchFragment: BaseDaggerFragment(),
     }
 
     override fun onProductMoreClicked(element: SellerSearchUiModel, position: Int) {
-        startActivityFromAutoComplete(element.appActionLink.orEmpty())
         SellerSearchTracking.clickProductFilterEvent(userId)
+        startActivityFromAutoComplete(element.appActionLink.orEmpty())
         dropKeyBoard()
     }
 
-    private fun sendTrackingSelectedFilter(title: String) {
-        when(title) {
-            PESANAN -> SellerSearchTracking.clickOrderFilterEvent(userId)
-            PRODUK -> SellerSearchTracking.clickProductFilterEvent(userId)
-            FITUR -> SellerSearchTracking.clickFeatureFilterEvent(userId)
-            else -> SellerSearchTracking.clickAllFilterEvent(userId)
-        }
-    }
-
     override fun onFaqItemClicked(data: ItemSellerSearchUiModel, position: Int) {
-
+        viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
+        val appUrl = decodeString(data.appUrl.orEmpty())
+        startActivityFromAutoComplete(decodeString(appUrl))
+        dropKeyBoard()
     }
 
     override fun onFaqMoreClicked(element: SellerSearchUiModel, position: Int) {
-        startActivityFromAutoComplete(element.appActionLink.orEmpty())
+        val appUrl = decodeString(element.appActionLink.orEmpty())
+        startActivityFromAutoComplete(decodeString(appUrl))
         dropKeyBoard()
     }
 

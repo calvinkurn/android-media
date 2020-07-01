@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
@@ -36,12 +35,14 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     companion object {
         private const val FILTER_OPTIONS = "filter_options"
+        private const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
 
         @JvmStatic
-        fun newInstance(filterOptions: ArrayList<String>): ProductManageSellerFragment {
+        fun newInstance(filterOptions: ArrayList<String>, searchKeyWord: String): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
+                    putString(SEARCH_KEYWORD_OPTIONS, searchKeyWord)
                 }
             }
         }
@@ -157,12 +158,8 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     private fun getDefaultKeywordOptionFromArguments() {
-        context?.let {
-            activity?.intent?.data?.apply {
-                val searchKeyword = getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SEARCH).orEmpty()
-                super.setSearchKeywordOptions(searchKeyword)
-            }
-        }
+        val searchKeyword = arguments?.getString(SEARCH_KEYWORD_OPTIONS).orEmpty()
+        super.setSearchKeywordOptions(searchKeyword)
     }
 
     private fun getDefaultFilterOptionsFromArguments() {

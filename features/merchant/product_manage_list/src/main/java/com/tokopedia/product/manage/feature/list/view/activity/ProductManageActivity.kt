@@ -26,9 +26,11 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
     private val productManageSellerFragment by lazy {
         val uri = intent.data
         val filterId = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_FILTER).orEmpty()
+        val searchKeyword = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SEARCH).orEmpty()
+
         return@lazy when {
-            filterId.isNotBlank() -> {
-                ProductManageSellerFragment.newInstance(arrayListOf(filterId))
+            filterId.isNotBlank() || searchKeyword.isNotBlank() -> {
+                ProductManageSellerFragment.newInstance(arrayListOf(filterId), searchKeyword)
             }
             else -> {
                 ProductManageSellerFragment()

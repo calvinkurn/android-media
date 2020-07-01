@@ -578,8 +578,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Fragment getProductManageFragment(@NotNull ArrayList<String> filterOptions) {
-        return ProductManageSellerFragment.newInstance(filterOptions);
+    public Fragment getProductManageFragment(@NotNull ArrayList<String> filterOptions, @NotNull String searchKeyword) {
+        return ProductManageSellerFragment.newInstance(filterOptions, searchKeyword);
     }
 
     @NotNull

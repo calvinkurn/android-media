@@ -52,7 +52,7 @@ object DeepLinkMapperProductManage {
             val param: HashMap<String, String> = hashMapOf()
             when {
                 filterId.isNotBlank() -> {
-                    param[QUERY_PARAM_FILTER] =  filterId
+                    param[QUERY_PARAM_FILTER] = filterId
                 }
                 searchKeyword.isNotBlank() -> {
                     param[QUERY_PARAM_SEARCH] = searchKeyword

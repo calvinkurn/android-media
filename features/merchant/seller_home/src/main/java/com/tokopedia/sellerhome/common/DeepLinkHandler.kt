@@ -43,7 +43,8 @@ object DeepLinkHandler {
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST) -> {
                 val uri = intent.data
                 val filterId = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_FILTER).orEmpty()
-                callback(PageFragment(FragmentType.PRODUCT, filterId))
+                val searchKeyword = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SEARCH).orEmpty()
+                callback(PageFragment(FragmentType.PRODUCT, filterId, searchKeyword))
             }
 
             //Top Chat

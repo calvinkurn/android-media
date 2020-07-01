@@ -30,7 +30,9 @@ class OrderSearchViewHolder(private val view: View,
                     show()
                     text = element.actionTitle.orEmpty()
                     setOnClickListener {
-                        orderSearchListener.onOrderMoreClicked(element, adapterPosition)
+                        element.takeIf { it.id == ORDER }?.let {
+                            orderSearchListener.onOrderMoreClicked(it, adapterPosition)
+                        }
                     }
                 }
             }

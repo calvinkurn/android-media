@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.domain.mapper.GlobalSearchSellerMapper
 import com.tokopedia.seller.search.common.util.CoroutineDispatcherProvider
-import com.tokopedia.seller.search.feature.suggestion.domain.InsertSuccessSearchUseCase
+import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail

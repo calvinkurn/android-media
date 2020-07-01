@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.seller.search.common.data.SellerSearchResponse
+import com.tokopedia.seller.search.common.domain.model.SellerSearchResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -29,6 +29,7 @@ class GetSellerSearchUseCase @Inject constructor(
                     has_more
                     action_title
                     action_link
+                    app_action_link
                     title
                     items {
                       id

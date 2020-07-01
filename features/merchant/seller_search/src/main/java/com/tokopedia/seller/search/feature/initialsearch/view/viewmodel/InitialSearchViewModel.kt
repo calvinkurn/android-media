@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.domain.mapper.GlobalSearchSellerMapper
 import com.tokopedia.seller.search.common.util.CoroutineDispatcherProvider
-import com.tokopedia.seller.search.feature.initialsearch.domain.DeleteSuggestionHistoryUseCase
+import com.tokopedia.seller.search.feature.initialsearch.domain.usecase.DeleteSuggestionHistoryUseCase
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail

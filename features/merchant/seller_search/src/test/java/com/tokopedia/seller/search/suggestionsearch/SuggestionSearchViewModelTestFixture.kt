@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.coroutine.TestCoroutineDispatchers
-import com.tokopedia.seller.search.feature.suggestion.domain.InsertSuccessSearchUseCase
+import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
 import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionSearchViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations

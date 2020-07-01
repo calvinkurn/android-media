@@ -1,14 +1,14 @@
-package com.tokopedia.seller.search.feature.suggestion.data
+package com.tokopedia.seller.search.feature.initialsearch.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class SuccessSearchResponse(
+data class DeleteHistoryResponse(
         @Expose
-        @SerializedName("successSearch")
-        val successSearch: SuccessSearch = SuccessSearch()
+        @SerializedName("deleteHistory")
+        val deleteHistory: DeleteHistory = DeleteHistory()
 ) {
-    data class SuccessSearch(
+    data class DeleteHistory(
             @Expose
             @SerializedName("message")
             val message: String? = "",

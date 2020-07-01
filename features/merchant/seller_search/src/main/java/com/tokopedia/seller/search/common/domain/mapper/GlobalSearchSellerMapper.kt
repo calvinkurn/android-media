@@ -1,12 +1,12 @@
 package com.tokopedia.seller.search.common.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.seller.search.common.data.SellerSearchResponse
-import com.tokopedia.seller.search.feature.initialsearch.data.DeleteHistoryResponse
+import com.tokopedia.seller.search.common.domain.model.SellerSearchResponse
+import com.tokopedia.seller.search.feature.initialsearch.domain.model.DeleteHistoryResponse
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
-import com.tokopedia.seller.search.feature.suggestion.data.SuccessSearchResponse
+import com.tokopedia.seller.search.feature.suggestion.domain.model.SuccessSearchResponse
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.SellerSearchUiModel

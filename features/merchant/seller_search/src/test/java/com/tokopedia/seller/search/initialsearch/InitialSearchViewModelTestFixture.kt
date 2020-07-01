@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.coroutine.TestCoroutineDispatchers
-import com.tokopedia.seller.search.feature.initialsearch.domain.DeleteSuggestionHistoryUseCase
+import com.tokopedia.seller.search.feature.initialsearch.domain.usecase.DeleteSuggestionHistoryUseCase
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations
