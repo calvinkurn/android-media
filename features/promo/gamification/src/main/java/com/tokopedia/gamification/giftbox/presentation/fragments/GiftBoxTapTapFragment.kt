@@ -112,6 +112,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     var oldTokenUserState = DEFAULT
     var forceOpenGiftBox = false
     var serverLimitReached = false
+    var isRewardAnimationGoingOn = false
 
     override fun getLayout() = R.layout.fragment_gift_tap_tap
 
@@ -151,6 +152,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val NEGATIVE_DURATION = -250L
 
         giftBoxDailyView.postDelayed({ playPrizeSound() }, soundDelay)
+        isRewardAnimationGoingOn = true
 
         when (rewardState) {
             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
@@ -168,6 +170,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
                 ovoPointsTextAnim.addListener(onEnd = { toggleInActiveHint(true) })
                 animatorSet.start()
+
                 getTapTapView().postDelayed({
                     afterRewardAnimationEnds()
                 }, startDelay + pairAnim1.second + NEGATIVE_DURATION)
@@ -466,7 +469,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         Log.d("NOOB", "count - tap = ${getTapTapView().tapCount}, target = ${getTapTapView().targetTapCount}\"")
         if (isTimeOut) {
             //Do nothing
-        } else if (getTapTapView().isGiftTapAble) {
+        } else if (getTapTapView().isGiftTapAble && !isRewardAnimationGoingOn) {
             playTapSound()
             getTapTapView().isGiftTapAble = false
             if (getTapTapView().tapCount == getTapTapView().targetTapCount || forceOpenGiftBox) {
@@ -685,6 +688,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun afterRewardAnimationEnds() {
+        isRewardAnimationGoingOn = false
         (giftBoxDailyView as GiftBoxTapTapView).isGiftTapAble = true
     }
 
