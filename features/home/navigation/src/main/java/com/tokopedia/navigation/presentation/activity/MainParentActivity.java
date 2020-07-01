@@ -897,23 +897,7 @@ public class MainParentActivity extends BaseActivity implements
                 Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
             }
 
-            // Note: applink/deeplink router already in DeeplinkHandlerActivity.
-            // Applink should not be passed to home because the analytics at home might be triggered.
-            // It is better to use TaskStackBuilder to build taskstack for home, rather than passwing to home directly.
-            // Below code is still maintained to ensure no deeplink/applink uri is lost
-            try {
-                Intent applinkIntent = new Intent(this, MainParentActivity.class);
-                applinkIntent.setData(Uri.parse(applink));
-                if (getIntent() != null && getIntent().getExtras() != null) {
-                    Intent newIntent = getIntent();
-                    newIntent.removeExtra(ApplinkRouter.EXTRA_APPLINK);
-                    if (newIntent.getExtras() != null)
-                        applinkIntent.putExtras(newIntent.getExtras());
-                }
-                ((ApplinkRouter) getApplicationContext()).applinkDelegate().dispatchFrom(this, applinkIntent);
-            } catch (ActivityNotFoundException ex) {
-                ex.printStackTrace();
-            }
+            RouteManager.route(this, applink);
 
             presenter.setIsRecurringApplink(true);
         }
