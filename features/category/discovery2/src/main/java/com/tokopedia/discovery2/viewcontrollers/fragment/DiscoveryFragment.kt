@@ -48,8 +48,9 @@ import javax.inject.Inject
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
+private const val SCROLL_TOP_DIRECTION = -1
 
-class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
+class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -57,6 +58,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var typographyHeader: Typography
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
+    private lateinit var ivToTop: ImageView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
@@ -116,8 +118,26 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
         mProgressBar = view.findViewById(R.id.progressBar)
+        ivToTop = view.findViewById(R.id.toTopImg)
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
+        ivToTop.setOnClickListener(this)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    ivToTop.hide()
+                } else if (dy < 0) {
+                    ivToTop.show()
+                }
+            }
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    ivToTop.hide()
+                }
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -145,8 +165,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    it.data?.let {
-                        discoveryAdapter.addDataList(it)
+                    it.data.let { listComponent ->
+                        discoveryAdapter.addDataList(listComponent)
                     }
                     mProgressBar.hide()
                 }
@@ -340,6 +360,15 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         closeableBottomSheetDialog.setCloseClickListener {
             closeableBottomSheetDialog.dismiss()
             getDiscoveryAnalytics().trackQuickCouponPhoneVerifyCancel()
+        }
+    }
+
+    override fun onClick(view: View?) {
+        when (view) {
+            ivToTop -> {
+                recyclerView.smoothScrollToPosition(0)
+                ivToTop.hide()
+            }
         }
     }
 }

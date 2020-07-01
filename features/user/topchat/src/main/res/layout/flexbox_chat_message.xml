@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:includeFontPadding="false"
-            android:textColor="@color/topchat_chat_hour_time"
+            android:textColor="@color/topchat_grey"
             app:typographyType="body_3"
             tools:text="11:00" />
     </LinearLayout>
