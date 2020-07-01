@@ -152,7 +152,6 @@ include "features:category:age_restriction"
 include "features:category:basemvvm"
 include "features:common:common_tradein"
 include "features:fintech:merchant_lending_widget"
-include "features:merchant:seller_migration_common"
 
 include 'tkpdloyalty'
 include 'tkpdcore'
