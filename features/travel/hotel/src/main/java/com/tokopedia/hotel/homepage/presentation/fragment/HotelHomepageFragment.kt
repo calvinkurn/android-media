@@ -257,7 +257,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         tv_hotel_homepage_checkout_date.setOnClickListener { configAndRenderCheckOutDate() }
         tv_hotel_homepage_guest_info.setOnClickListener { onGuestInfoClicked() }
         btn_hotel_homepage_search.setOnClickListener { onSearchButtonClicked() }
-        tv_hotel_homepage_all_promo.setOnClickListener { RouteManager.route(context, ApplinkConst.PROMO_LIST) }
+        tv_hotel_homepage_all_promo.setOnClickListener { RouteManager.route(context, "tokopedia://webview?url=https://www.tokopedia.com/promo/tiket/hotel") }
 
         renderView()
     }
