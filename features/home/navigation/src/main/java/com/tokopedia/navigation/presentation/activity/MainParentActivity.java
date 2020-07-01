@@ -385,7 +385,7 @@ public class MainParentActivity extends BaseActivity implements
     private void showSelectedPage(){
         int tabPosition = HOME_MENU;
         if (getIntent().getExtras() != null) {
-            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+            tabPosition = getTabPositionFromIntent();
         }
         if (tabPosition > fragmentList.size() - 1) {
             tabPosition = HOME_MENU;
@@ -397,10 +397,22 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    private int getTabPositionFromIntent() {
+        int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
+        if (position != -1) return position;
+        
+        try {
+            String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
+            return Integer.parseInt(posString);
+        } catch (Exception e) {
+            return HOME_MENU;
+        }
+    }
+
     private void startSelectedPagePerformanceMonitoring(){
         int tabPosition = HOME_MENU;
         if (getIntent().getExtras() != null) {
-            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+            tabPosition = getTabPositionFromIntent();
         }
         switch (tabPosition){
             case HOME_MENU:
@@ -413,7 +425,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
         if (getIntent().getExtras() != null) {
-            int tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+            int tabPosition = getTabPositionFromIntent();
             switch (tabPosition) {
                 case FEED_MENU:
                     bottomNavigation.setSelected(FEED_MENU);
