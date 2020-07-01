@@ -3,6 +3,7 @@ package com.tokopedia.talk.feature.write.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.talk.common.utils.setCustomMovementMethod
 import com.tokopedia.talk.feature.write.presentation.listener.TalkWriteCategoryDetailsListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -33,9 +34,7 @@ class TalkWriteCategoryDetails : BaseCustomView {
         writeCategoryDetailTitle.text = content
         writeCategoryDetailSubtitle.apply {
             text = HtmlLinkHelper(context, context.getString(R.string.write_category_details_subtitle)).spannedString
-            setOnClickListener {
-                talkWriteCategoryDetailsListener.onClickGoToChat()
-            }
+            setCustomMovementMethod { talkWriteCategoryDetailsListener.onClickGoToChat() }
         }
     }
 }

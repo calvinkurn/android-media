@@ -21,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:text="iPhone Xs 256GB Garansi Resmi - Space Gray"
         app:layout_constraintStart_toEndOf="@id/talkWriteProductImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/talkWriteProductImage"

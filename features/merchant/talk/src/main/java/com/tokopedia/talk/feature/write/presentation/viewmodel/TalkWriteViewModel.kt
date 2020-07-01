@@ -25,6 +25,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
 ): BaseViewModel(dispatchers.io) {
 
     val userId = userSession.userId ?: ""
+    var shopId = ""
 
     private val productId = MutableLiveData<Int>()
     val writeFormData: LiveData<Result<DiscussionGetWritingForm>> = Transformations.switchMap(productId) {
@@ -66,6 +67,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
                 discussionGetWritingFormUseCase.executeOnBackground()
             }
             result.postValue(Success(response.discussionGetWritingForm))
+            shopId = response.discussionGetWritingForm.shopId
         }) {
             result.postValue(Fail(it))
         }

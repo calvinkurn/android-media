@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -40,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_write.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
+import kotlinx.android.synthetic.main.widget_talk_write_header.*
 import javax.inject.Inject
 
 class TalkWriteFragment : BaseDaggerFragment(),
@@ -47,6 +49,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         TalkWriteCategoryDetailsListener, TalkPerformanceMonitoringContract {
 
     companion object {
+        const val TOP_CHAT_APPLINK = "tokopedia://topchat/askseller/"
 
         @JvmStatic
         fun createNewInstance(productId: Int): TalkWriteFragment {
@@ -104,8 +107,8 @@ class TalkWriteFragment : BaseDaggerFragment(),
         viewModel.toggleCategory(category)
     }
 
-    override fun onClickGoToChat() {
-        goToChat()
+    override fun onClickGoToChat(): Boolean {
+        return goToChat()
     }
 
     override fun onAttach(context: Context) {
@@ -180,8 +183,8 @@ class TalkWriteFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun goToChat() {
-
+    private fun goToChat(): Boolean {
+        return RouteManager.route(context, TOP_CHAT_APPLINK + viewModel.shopId)
     }
 
     private fun goToReplyPage(questionId: Int) {
@@ -191,7 +194,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId.toString()))
                         .buildUpon()
                         .appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, viewModel.getProductId().toString())
-                        .appendQueryParameter(TalkConstants.PARAM_SHOP_ID, "")
+                        .appendQueryParameter(TalkConstants.PARAM_SHOP_ID, viewModel.shopId)
                         .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkConstants.WRITING_SOURCE)
                         .build().toString()
         )
@@ -251,21 +254,24 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetWriteData(discussionGetWritingForm: DiscussionGetWritingForm) {
-        setMaxCharsLimit(discussionGetWritingForm.maxChar)
+        with(discussionGetWritingForm) {
+            setCharLimits(maxChar, minChar)
+            setProductCard(productName, productThumbnailUrl)
+        }
     }
 
     private fun submitNewQuestion() {
         TalkWriteTracking.eventClickSendButton(viewModel.userId, viewModel.getProductId().toString())
     }
 
-    private fun setMaxCharsLimit(limit: Int) {
+    private fun setCharLimits(maxChar: Int, minChar: Int) {
         writeQuestionTextArea.apply {
-            textAreaCounter = limit
+            textAreaCounter = maxChar
             textAreaInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     s?.let {
-                        viewModel.updateIsTextEmpty(it.isNotEmpty())
-                        isError = s.length == limit
+                        viewModel.updateIsTextEmpty(it.isNotEmpty() && it.length >= minChar)
+                        isError = s.length == maxChar
                         textAreaMessage = if(isError) {
                             getString(R.string.write_question_error_message)
                         } else {
@@ -286,7 +292,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
                 if(!hasFocus) {
                     val editText = v as? EditText
                     editText?.let {
-                        if(it.text.isNotEmpty() && it.text.length < 5) {
+                        if(it.text.isNotEmpty() && it.text.length < minChar) {
                             isError = true
                             textAreaMessage = getString(R.string.write_question_length_minimum_error)
                         }
@@ -297,6 +303,11 @@ class TalkWriteFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    private fun setProductCard(productName: String, productUrl: String) {
+        talkWriteProductName.text = productName
+        talkWriteProductImage.loadImage(productUrl)
     }
 
     private fun showErrorToaster() {
@@ -321,6 +332,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     private fun showCategoryDetails(content: String?) {
         if(content.isNullOrEmpty()) {
+            writeCategoryDetails.hide()
             return
         }
         writeCategoryDetails.apply {
