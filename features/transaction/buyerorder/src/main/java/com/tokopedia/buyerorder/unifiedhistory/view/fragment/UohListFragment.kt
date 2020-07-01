@@ -68,7 +68,9 @@ class UohListFragment: BaseDaggerFragment() {
         chips.add(filter3)
 
         uoh_sort_filter?.addItem(chips)
-        uoh_sort_filter?.resetAllFilters()
+        uoh_sort_filter?.sortFilterPrefix?.setOnClickListener {
+            uoh_sort_filter?.resetAllFilters()
+        }
         filter1.refChipUnify.setChevronClickListener {  }
         filter2.refChipUnify.setChevronClickListener {  }
         filter3.refChipUnify.setChevronClickListener {  }
