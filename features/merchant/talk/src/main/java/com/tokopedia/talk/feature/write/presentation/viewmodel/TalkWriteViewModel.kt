@@ -51,6 +51,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
 
     init {
         _buttonState.value = TalkWriteButtonState()
+        _categoryChips.value = emptyList()
         _buttonState.addSource(categoryChips) {
             updateButtonFromCategories(it.any { category -> category.isSelected })
         }
@@ -114,6 +115,10 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
 
     fun refresh() {
         productId.notifyObserver()
+    }
+
+    fun getSelectedCategory(): TalkWriteCategory? {
+        return selectedCategory
     }
 
     private fun <T> MutableLiveData<T>.notifyObserver() {

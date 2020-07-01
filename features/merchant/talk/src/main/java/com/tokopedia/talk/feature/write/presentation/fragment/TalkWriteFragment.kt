@@ -3,6 +3,7 @@ package com.tokopedia.talk.feature.write.presentation.fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -50,6 +52,8 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     companion object {
         const val TOP_CHAT_APPLINK = "tokopedia://topchat/askseller/"
+        const val KEY_CACHE_MANAGER = "cache_manager_id"
+        const val KEY_SELECTED_CATEGORY = "selected_category"
 
         @JvmStatic
         fun createNewInstance(productId: Int): TalkWriteFragment {
@@ -66,9 +70,13 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     private val adapter = TalkWriteCategoryChipsWidget(this)
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
+    private var cacheManager: SaveInstanceCacheManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context?.let {
+            cacheManager = SaveInstanceCacheManager(it, savedInstanceState?.getString(KEY_CACHE_MANAGER))
+        }
         getDataFromArguments()
     }
 
@@ -147,6 +155,13 @@ class TalkWriteFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.put(KEY_SELECTED_CATEGORY, viewModel.getSelectedCategory())
+        outState.putString(KEY_CACHE_MANAGER, cacheManager?.id)
+    }
+
     private fun initView() {
         writeTNC.setOnClickListener {
             goToTermsAndConditionsPage()
@@ -188,7 +203,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     private fun goToReplyPage(questionId: Int) {
-        // TO DO add shop ID
         val intent = RouteManager.getIntent(
                 context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId.toString()))
@@ -217,7 +231,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     private fun observeReviewForm() {
         viewModel.writeFormData.observe(viewLifecycleOwner, Observer {
-            hideLoading()
             when(it) {
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
@@ -229,6 +242,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
                     showError()
                 }
             }
+            hideLoading()
         })
     }
 
@@ -243,6 +257,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
             if(it.isEmpty()) {
                 return@Observer
             }
+            updateFromCacheIfExist()
             adapter.setData(it)
             val selectedCategory = it.firstOrNull { category -> category.isSelected }
             if(selectedCategory == null) {
@@ -258,6 +273,14 @@ class TalkWriteFragment : BaseDaggerFragment(),
             setCharLimits(maxChar, minChar)
             setProductCard(productName, productThumbnailUrl)
         }
+    }
+
+    private fun updateFromCacheIfExist() {
+        val talkWriteCategory: TalkWriteCategory? = cacheManager?.get(KEY_SELECTED_CATEGORY, TalkWriteCategory::class.java)
+        talkWriteCategory?.let {
+            viewModel.toggleCategory(talkWriteCategory)
+        }
+        cacheManager = null
     }
 
     private fun submitNewQuestion() {
