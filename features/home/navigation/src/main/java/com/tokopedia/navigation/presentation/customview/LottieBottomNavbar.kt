@@ -317,6 +317,7 @@ class LottieBottomNavbar : LinearLayout {
             buttonContainer.setOnClickListener {
                 setSelected(index)
             }
+            buttonContainer.id = bottomMenu.id
 
             // add view to container
             navbarContainer?.addView(buttonContainer)
@@ -410,7 +411,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 }
 
-data class BottomMenu(val id: Long,
+data class BottomMenu(val id: Int,
                       val title: String,
                       val animName: Int? = null,
                       val animToEnabledName: Int? = null,
@@ -421,8 +422,8 @@ data class BottomMenu(val id: Long,
                       val animSpeed: Float = 1f,
                       val animToEnabledSpeed: Float = 1f)
 interface IBottomClickListener {
-    fun menuClicked(position: Int, id: Long): Boolean
-    fun menuReselected(position: Int, id: Long)
+    fun menuClicked(position: Int, id: Int): Boolean
+    fun menuReselected(position: Int, id: Int)
 }
 
 fun Float.toDp(context: Context): Int {
