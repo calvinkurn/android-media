@@ -808,7 +808,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
                 var seconds = (millisUntilFinished / 1000f).roundToInt()
                 tvProgressCount.text = "$seconds"
-                progressBarTimer.progress = 100 - (seconds / 60f * 100).toInt()
+                progressBarTimer.progress = 100 - (seconds / totalSeconds.toFloat() * 100).toInt()
                 if (seconds == 3) {
                     playCountDownSound()
                 }
