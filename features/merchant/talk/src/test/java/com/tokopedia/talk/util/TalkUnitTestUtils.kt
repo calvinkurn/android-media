@@ -1,6 +1,7 @@
 package com.tokopedia.talk.util
 
 import androidx.lifecycle.LiveData
+import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingFormCategory
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -23,10 +24,10 @@ fun LiveData<*>.verifyErrorEquals(expected: Fail) {
     Assert.assertEquals(expectedResult, actualResult)
 }
 
-val unselectedCategories: List<TalkWriteCategory> = listOf(
-        TalkWriteCategory("Stock", "", false),
-        TalkWriteCategory("Varian", "", false),
-        TalkWriteCategory("Deskripsi Produk", "", false),
-        TalkWriteCategory("Logistik", "", false),
-        TalkWriteCategory("Lainnya", "", false)
+val unselectedCategories: List<DiscussionGetWritingFormCategory> = listOf(
+        DiscussionGetWritingFormCategory("Stock", ""),
+        DiscussionGetWritingFormCategory("Varian", ""),
+        DiscussionGetWritingFormCategory("Deskripsi Produk", ""),
+        DiscussionGetWritingFormCategory("Logistik", ""),
+        DiscussionGetWritingFormCategory("Lainnya", "")
 )

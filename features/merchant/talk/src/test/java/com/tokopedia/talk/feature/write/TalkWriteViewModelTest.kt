@@ -4,6 +4,8 @@ import android.accounts.NetworkErrorException
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingForm
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingFormResponseWrapper
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteButtonState
+import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
+import com.tokopedia.talk.util.unselectedCategories
 import com.tokopedia.talk.util.verifyErrorEquals
 import com.tokopedia.talk.util.verifySuccessEquals
 import com.tokopedia.talk.util.verifyValueEquals
@@ -45,7 +47,53 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when toggleCategory should select category if not selected and vice versa`() {
+        val productId = 0
+        val expectedResponse = DiscussionGetWritingFormResponseWrapper(DiscussionGetWritingForm(categories = unselectedCategories))
 
+        onGetDiscussionWritingForm_shouldReturn(expectedResponse)
+
+        viewModel.setProductId(productId)
+        val categoryToSelect = TalkWriteCategory("Stock", "", false)
+        viewModel.toggleCategory(categoryToSelect)
+
+        verifyDiscussionGetWritingFormUseCaseCalled()
+        val expectedSelectedCategories = listOf(
+                TalkWriteCategory("Stock", "", true),
+                TalkWriteCategory("Varian", "", false),
+                TalkWriteCategory("Deskripsi Produk", "", false),
+                TalkWriteCategory("Logistik", "", false),
+                TalkWriteCategory("Lainnya", "", false)
+        )
+
+        verifyCategoriesEquals(expectedSelectedCategories)
+        verifySelectedCategoryEquals(categoryToSelect)
+
+        viewModel.toggleCategory(TalkWriteCategory("Stock", "", false))
+
+        val expectedUnselectedCategories = listOf(
+                TalkWriteCategory("Stock", "", false),
+                TalkWriteCategory("Varian", "", false),
+                TalkWriteCategory("Deskripsi Produk", "", false),
+                TalkWriteCategory("Logistik", "", false),
+                TalkWriteCategory("Lainnya", "", false)
+        )
+
+        verifyCategoriesEquals(expectedUnselectedCategories)
+        verifySelectedCategoryEquals(null)
+    }
+
+    @Test
+    fun `when getShopId should get expected shopId`() {
+        val expectedShopId = "12345"
+        val productId = 0
+        val expectedResponse = DiscussionGetWritingFormResponseWrapper(DiscussionGetWritingForm(shopId = expectedShopId))
+
+        onGetDiscussionWritingForm_shouldReturn(expectedResponse)
+
+        viewModel.setProductId(productId)
+
+        verifyDiscussionGetWritingFormUseCaseCalled()
+        verifyShopIdEquals(expectedShopId)
     }
 
     @Test
@@ -168,5 +216,17 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     private fun verifyButtonStateIsTextNotEmptyEquals(expectedValue: TalkWriteButtonState) {
         viewModel.buttonState.verifyValueEquals(expectedValue)
+    }
+
+    private fun verifyShopIdEquals(expectedShopId: String) {
+        Assert.assertEquals(expectedShopId, viewModel.shopId)
+    }
+
+    private fun verifyCategoriesEquals(categories: List<TalkWriteCategory>) {
+        viewModel.categoryChips.verifyValueEquals(categories)
+    }
+
+    private fun verifySelectedCategoryEquals(category: TalkWriteCategory?) {
+        Assert.assertEquals(category, viewModel.getSelectedCategory())
     }
 }
