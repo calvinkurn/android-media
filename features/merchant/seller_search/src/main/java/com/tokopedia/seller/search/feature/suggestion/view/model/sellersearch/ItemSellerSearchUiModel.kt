@@ -6,5 +6,6 @@ data class ItemSellerSearchUiModel(
         val desc: String? = "",
         val imageUrl: String? = "",
         val appUrl: String? = "",
+        val url: String? = "",
         val keyword: String? = ""
 )

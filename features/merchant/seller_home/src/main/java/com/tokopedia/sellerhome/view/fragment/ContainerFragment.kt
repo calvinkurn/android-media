@@ -190,14 +190,15 @@ class ContainerFragment : Fragment() {
     private fun addProductFragment(fragment: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
         val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
         val searchKeyword = page.keywordSearch
-        val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock), searchKeyword)
         if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock), searchKeyword)
             if (null != productManageFragment) {
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)
             } else {
                 addFragmentToTransaction(transaction, fragment, fragmentName)
             }
         } else if(page.tabPage.isBlank() && searchKeyword.isNotBlank()) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
             if (null != productManageFragment) {
                 transaction.remove(fragment)
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)
@@ -225,8 +226,8 @@ class ContainerFragment : Fragment() {
     private fun showProductMangePage(fmt: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
         val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
         val searchKeyword = page.keywordSearch
-        val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock), searchKeyword)
         if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock), searchKeyword)
             if (null != productManageFragment) {
                 transaction.remove(fmt)
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)
@@ -234,6 +235,7 @@ class ContainerFragment : Fragment() {
                 transaction.show(fmt)
             }
         } else if(page.tabPage.isBlank() && searchKeyword.isNotBlank()) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
             if (null != productManageFragment) {
                 transaction.remove(fmt)
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)

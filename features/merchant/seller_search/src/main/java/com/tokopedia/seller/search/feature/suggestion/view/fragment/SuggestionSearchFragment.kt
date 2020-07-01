@@ -8,10 +8,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.util.OnScrollListenerAutocomplete
-import com.tokopedia.seller.search.common.util.decodeString
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
@@ -185,15 +185,12 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
 
     override fun onFaqItemClicked(data: ItemSellerSearchUiModel, position: Int) {
         viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
-        val appUrl = decodeString(data.appUrl.orEmpty())
-        startActivityFromAutoComplete(decodeString(appUrl))
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, data.appUrl))
         dropKeyBoard()
     }
 
     override fun onFaqMoreClicked(element: SellerSearchUiModel, position: Int) {
-        val appUrl = decodeString(element.appActionLink.orEmpty())
-        startActivityFromAutoComplete(decodeString(appUrl))
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, element.appActionLink))
         dropKeyBoard()
     }
-
 }

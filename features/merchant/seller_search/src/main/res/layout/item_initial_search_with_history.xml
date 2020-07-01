@@ -14,8 +14,8 @@
         android:id="@+id/ivHistoryTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_time_history"/>
 
@@ -27,6 +27,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivHistoryTime"
         app:layout_constraintEnd_toStartOf="@id/ivCloseHistory"
         tools:text="Sop jamur"/>
@@ -39,8 +40,8 @@
         android:focusable="true"
         android:background="?selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingTop="@dimen/spacing_lvl2"
         android:paddingLeft="@dimen/spacing_lvl2"
         android:paddingStart="@dimen/spacing_lvl2"
         android:paddingEnd="@dimen/spacing_lvl3"
