@@ -1,4 +1,5 @@
 {
+  "readme": "Autocomplete Suggestion Tracking",
   "query" : [
     {
       "event": "clickTopNav",
