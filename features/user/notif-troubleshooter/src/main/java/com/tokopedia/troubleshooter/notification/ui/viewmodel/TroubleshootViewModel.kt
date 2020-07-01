@@ -66,9 +66,9 @@ class TroubleshootViewModel @Inject constructor(
         FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
             if (!task.isSuccessful) return@addOnCompleteListener
             if (task.result?.token == null) return@addOnCompleteListener
-
-            val currentFcmToken = task.result?.token
-            token(currentFcmToken)
+            task.result?.token?.let { newToken ->
+                token(newToken)
+            }
         }
     }
 
