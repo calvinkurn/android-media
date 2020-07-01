@@ -209,10 +209,12 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private suspend fun updateChannelStatus(status: PlayChannelStatus)  = withContext(dispatcher.io) {
         updateChannelUseCase.apply {
-            params = UpdateChannelUseCase.createParams(
-                    channelId = channelId,
-                    authorId = userSession.shopId,
-                    status = status
+            setQueryParams(
+                    UpdateChannelUseCase.createUpdateStatusRequest(
+                            channelId = channelId,
+                            authorId = userSession.shopId,
+                            status = status
+                    )
             )
         }.executeOnBackground()
     }
