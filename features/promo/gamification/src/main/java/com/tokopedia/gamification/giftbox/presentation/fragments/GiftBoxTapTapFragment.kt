@@ -103,6 +103,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var endTimeMinute: String
     private val LOW_VOLUME = 0.3f
     private val NORMAL_VOLUME = 1f
+    private val LARGE_PHONE_HEIGHT = 1900
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -466,14 +467,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun handleGiftBoxTap() {
-        Log.d("NOOB", "count - tap = ${getTapTapView().tapCount}, target = ${getTapTapView().targetTapCount}\"")
         if (isTimeOut) {
             //Do nothing
         } else if (getTapTapView().isGiftTapAble && !isRewardAnimationGoingOn) {
             playTapSound()
             getTapTapView().isGiftTapAble = false
             if (getTapTapView().tapCount == getTapTapView().targetTapCount || forceOpenGiftBox) {
-                Log.d("NOOB", "SUCCESS")
                 forceOpenGiftBox = false
                 crackGiftBox()
                 getTapTapView().resetTapCount()
@@ -481,7 +480,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 if (boxState == OPEN)
                     getTapTapView().showConfettiAnimation()
             } else {
-                Log.d("NOOB", "FAIL")
                 if (boxState == OPEN)
                     getTapTapView().showConfettiAnimation()
                 else
@@ -505,7 +503,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
         val showTimer = gamiTapEggHome.timeRemaining?.isShow
         if (showTimer != null && timeLeftSeconds != null) {
-            startOneMinuteCounter(30)
+            startOneMinuteCounter(timeLeftSeconds)
         }
     }
 
@@ -551,7 +549,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 isGiftTapAble = true
             }
             animateTvTimerAndProgressBar()
-            startOneMinuteCounter(30)
+            startOneMinuteCounter(timeLeftSeconds)
         }
     }
 
@@ -634,7 +632,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
                 val sideMargin = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_top_margin).toInt()
                 val ratio = 3 //coming from R.layout.list_item_coupons
-                rewardContainer.rvCoupons.translationY = translationY + (2 * sideMargin / ratio)
+                if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
+                    rewardContainer.rvCoupons.translationY = (translationY + (2 * sideMargin / ratio)) - fmGiftBox.context.resources.getDimension(R.dimen.gami_box_coupon_padding)
+                }
+                else {
+                    rewardContainer.rvCoupons.translationY = translationY + (2 * sideMargin / ratio)
+                }
 
                 val distanceFromLidTop = fmGiftBox.context.resources.getDimension(R.dimen.gami_lid_top_distance_for_reward_text)
                 rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
