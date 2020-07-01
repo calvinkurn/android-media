@@ -265,21 +265,30 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
 
         btn_req_cancel?.setOnClickListener {
-            if (reasonCancel.equals(BuyerConsts.LAINNYA, ignoreCase = true)) {
-                val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text
-                if (subReasonLainnya.isNotEmpty()) {
-                    reasonCancel += " - $subReasonLainnya"
-                }
-            }
-            if (reasonCancel.isNotEmpty() && reasonCode != -1) {
-                if (reasonCancel.contains(BuyerConsts.LAINNYA)) {
-                    if (tf_choose_sub_reason_editable.textFieldInput.text.isEmpty()) {
-                        showToasterEmpty()
-                    } else {
-                        submitResultReason()
+            if (reasonCancel.isNotEmpty()) {
+                if (reasonCode == BuyerConsts.REASON_CODE_LAINNYA) {
+                    when {
+                        tf_choose_sub_reason_editable.textFieldInput.text.isEmpty() -> {
+                            showToaster(getString(R.string.toaster_lainnya_empty), Toaster.TYPE_NORMAL)
+                        }
+                        tf_choose_sub_reason_editable.textFieldInput.text.length < 15 -> {
+                            showToaster(getString(R.string.toaster_manual_min), Toaster.TYPE_ERROR)
+                        }
+                        tf_choose_sub_reason_editable.textFieldInput.text.length > 160 -> {
+                            showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
+                        }
+                        else -> {
+                            val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text
+                            if (subReasonLainnya.isNotEmpty()) {
+                                reasonCancel += " - $subReasonLainnya"
+                            }
+                            submitResultReason()
+                        }
                     }
                 } else {
-                    submitResultReason()
+                    if (reasonCode != -1) {
+                        submitResultReason()
+                    }
                 }
             }
         }
@@ -395,7 +404,42 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         reasonCancel = reason
         currentReasonStr = reason
 
-        if (reason.equals(BuyerConsts.LAINNYA, ignoreCase = true)) {
+        if (cancelReasonResponse.reasons.isNotEmpty()) {
+            tf_choose_sub_reason_editable?.gone()
+            tf_choose_sub_reason?.visible()
+            tf_choose_sub_reason?.setPlaceholder(getString(R.string.reason_placeholder))
+            tf_choose_sub_reason?.textFieldIcon1?.setImageResource(R.drawable.ic_chevron_down)
+            tf_choose_sub_reason?.textFieldInput?.setText("")
+            tf_choose_sub_reason?.textFiedlLabelText?.setText(R.string.ask_2_placeholder)
+
+            cancelReasonResponse.reasons.forEach {
+                if (it.title.equals(reason, true))  {
+                    listOfSubReason = it.subReasons
+
+                    tf_choose_sub_reason?.textFiedlLabelText?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                    tf_choose_sub_reason?.textFieldInput?.setSingleLine(false)
+                    tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+                    tf_choose_sub_reason?.textFiedlLabelText?.text = it.question
+                    tf_choose_sub_reason?.textFieldInput?.isFocusable = false
+                    tf_choose_sub_reason?.textFieldInput?.isClickable = true
+                    tf_choose_sub_reason?.setOnClickListener {
+                        showSubReasonBottomSheet()
+                    }
+                    tf_choose_sub_reason?.textFieldInput?.setOnClickListener {
+                        showSubReasonBottomSheet()
+                    }
+                    tf_choose_sub_reason?.textFieldIcon1?.setOnClickListener {
+                        showSubReasonBottomSheet()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onSubReasonClicked(rCode: Int, reason: String) {
+        bottomSheet.dismiss()
+        reasonCode = rCode
+        if (rCode == BuyerConsts.REASON_CODE_LAINNYA) {
             tf_choose_sub_reason?.gone()
             tf_choose_sub_reason_editable?.visible()
             tf_choose_sub_reason_editable?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
@@ -416,53 +460,18 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 }
             })
         } else {
-            if (cancelReasonResponse.reasons.isNotEmpty()) {
-                tf_choose_sub_reason_editable?.gone()
-                tf_choose_sub_reason?.visible()
-                tf_choose_sub_reason?.setPlaceholder(getString(R.string.reason_placeholder))
-                tf_choose_sub_reason?.textFieldIcon1?.setImageResource(R.drawable.ic_chevron_down)
-                tf_choose_sub_reason?.textFieldInput?.setText("")
-                tf_choose_sub_reason?.textFiedlLabelText?.setText(R.string.ask_2_placeholder)
+            tf_choose_sub_reason?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            tf_choose_sub_reason?.textFieldInput?.setSingleLine(false)
+            tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+            tf_choose_sub_reason?.textFieldInput?.setText(reason)
+            reasonCancel += " - $reason"
 
-                cancelReasonResponse.reasons.forEach {
-                    if (it.title.equals(reason, true))  {
-                        listOfSubReason = it.subReasons
-
-                        tf_choose_sub_reason?.textFiedlLabelText?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                        tf_choose_sub_reason?.textFieldInput?.setSingleLine(false)
-                        tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-                        tf_choose_sub_reason?.textFiedlLabelText?.text = it.question
-                        tf_choose_sub_reason?.textFieldInput?.isFocusable = false
-                        tf_choose_sub_reason?.textFieldInput?.isClickable = true
-                        tf_choose_sub_reason?.setOnClickListener {
-                            showSubReasonBottomSheet()
+            tf_choose_reason?.textFieldInput?.text?.let { inputReason ->
+                if (inputReason.isNotEmpty()) {
+                    tf_choose_sub_reason?.textFieldInput?.text?.let { inputSubReason ->
+                        if (inputSubReason.isNotEmpty()) {
+                            btn_req_cancel?.isEnabled = true
                         }
-                        tf_choose_sub_reason?.textFieldInput?.setOnClickListener {
-                            showSubReasonBottomSheet()
-                        }
-                        tf_choose_sub_reason?.textFieldIcon1?.setOnClickListener {
-                            showSubReasonBottomSheet()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onSubReasonClicked(rCode: Int, reason: String) {
-        bottomSheet.dismiss()
-        tf_choose_sub_reason?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-        tf_choose_sub_reason?.textFieldInput?.setSingleLine(false)
-        tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-        tf_choose_sub_reason?.textFieldInput?.setText(reason)
-        reasonCancel += " - $reason"
-        reasonCode = rCode
-
-        tf_choose_reason?.textFieldInput?.text?.let { inputReason ->
-            if (inputReason.isNotEmpty()) {
-                tf_choose_sub_reason?.textFieldInput?.text?.let { inputSubReason ->
-                    if (inputSubReason.isNotEmpty()) {
-                        btn_req_cancel?.isEnabled = true
                     }
                 }
             }
@@ -496,10 +505,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun showToasterEmpty() {
-        val toasterSuccess = Toaster
+    private fun showToaster(msg: String, type: Int) {
+        val toaster = Toaster
         view?.let { v ->
-            toasterSuccess.make(v, getString(R.string.toaster_lainnya_empty), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, BuyerConsts.ACTION_OK)
+            toaster.make(v, msg, Toaster.LENGTH_SHORT, type, BuyerConsts.ACTION_OK)
         }
     }
 }
