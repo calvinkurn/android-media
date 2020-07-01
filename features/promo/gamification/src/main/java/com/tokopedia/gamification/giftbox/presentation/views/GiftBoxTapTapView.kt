@@ -81,7 +81,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
     fun boxBounceAnimation(): Animator {
         fmGiftBox.pivotY = fmGiftBox.height.toFloat()
-        val duration = 250L
+        val duration = 350L
 
         val scaleYAnimDown = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0.9f, 1f)
         val bounceAnimDown: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(fmGiftBox, scaleYAnimDown)
@@ -91,11 +91,11 @@ class GiftBoxTapTapView : GiftBoxDailyView {
     }
 
     fun incrementTapCount() {
-        ++tapCount
+        tapCount += 1
     }
 
     fun resetTapCount() {
-        tapCount = 0
+        tapCount = -1
     }
 
     fun getRandomNumber(): Int {
@@ -147,7 +147,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                            lidImageList: List<String>,
                            imageCallback: ((isLoaded: Boolean) -> Unit)) {
 
-        fun incrementAndSendCallback(){
+        fun incrementAndSendCallback() {
             val count = imagesLoaded.incrementAndGet()
             if (count == TOTAL_ASYNC_IMAGES) {
                 imageCallback.invoke(true)

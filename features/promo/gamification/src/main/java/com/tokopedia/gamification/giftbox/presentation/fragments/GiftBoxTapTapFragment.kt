@@ -4,6 +4,7 @@ import android.animation.*
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -94,11 +95,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     var minuteTimerState: Int = NOT_STARTED
 
     private val CONTAINER_INACTIVE = 2
-    private val SERVER_LIMIT_REACHED = "47004"
+    private val SERVER_LIMIT_REACHED_CODE = "47004"
     private val STATUS_OK = "200"
     private var MAX_REWARD_LIMIT = -1
     private val CAPPING = 3
-    var clientLimitReached = MAX_REWARD_LIMIT == benefitItems.size
     lateinit var endTime: String
     lateinit var endTimeMinute: String
     private val LOW_VOLUME = 0.3f
@@ -110,6 +110,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     @TokenUserStateTapTap
     var oldTokenUserState = DEFAULT
+    var forceOpenGiftBox = false
+    var serverLimitReached = false
 
     override fun getLayout() = R.layout.fragment_gift_tap_tap
 
@@ -343,7 +345,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     boxState = OPEN
                                     toggleInActiveHint(false)
                                     getTapTapView().disableConfettiAnimation = true
-                                    getTapTapView().resetTapCount()
 
                                     val benefits = responseCrackResultEntity.crackResultEntity?.benefits
 
@@ -362,18 +363,11 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     }
 
                                 }
-                                SERVER_LIMIT_REACHED -> {
-                                    //todo Rahul how to show the ui - how to
-                                    // show you have won all the rewards
+                                SERVER_LIMIT_REACHED_CODE -> {
+                                    serverLimitReached = true
 
                                     viewModel.waitingForCrackResult = false
-                                    getTapTapView().isGiftTapAble = false
-                                    minuteCountDownTimer?.cancel()
-                                    minuteTimerState = FINISHED
-                                    rewardSummary.visibility = View.VISIBLE
-                                    toggleInActiveHint(false)
-                                    dimBackground()
-                                    showRewardSummary()
+                                    getTapTapView().isGiftTapAble = true
                                     return@Observer
                                 }
                                 else -> {
@@ -469,16 +463,22 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun handleGiftBoxTap() {
-
+        Log.d("NOOB", "count - tap = ${getTapTapView().tapCount}, target = ${getTapTapView().targetTapCount}\"")
         if (isTimeOut) {
             //Do nothing
         } else if (getTapTapView().isGiftTapAble) {
             playTapSound()
             getTapTapView().isGiftTapAble = false
-            if (getTapTapView().tapCount == getTapTapView().targetTapCount) {
+            if (getTapTapView().tapCount == getTapTapView().targetTapCount || forceOpenGiftBox) {
+                Log.d("NOOB", "SUCCESS")
+                forceOpenGiftBox = false
                 crackGiftBox()
+                getTapTapView().resetTapCount()
                 getTapTapView().targetTapCount = getTapTapView().getRandomNumber()
+                if (boxState == OPEN)
+                    getTapTapView().showConfettiAnimation()
             } else {
+                Log.d("NOOB", "FAIL")
                 if (boxState == OPEN)
                     getTapTapView().showConfettiAnimation()
                 else
@@ -502,7 +502,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
         val showTimer = gamiTapEggHome.timeRemaining?.isShow
         if (showTimer != null && timeLeftSeconds != null) {
-            startOneMinuteCounter(timeLeftSeconds)
+            startOneMinuteCounter(30)
         }
     }
 
@@ -548,7 +548,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 isGiftTapAble = true
             }
             animateTvTimerAndProgressBar()
-            startOneMinuteCounter(timeLeftSeconds)
+            startOneMinuteCounter(30)
         }
     }
 
@@ -652,12 +652,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
+    private fun clientLimitReached() = MAX_REWARD_LIMIT == benefitItems.size || serverLimitReached
+
     private fun crackGiftBox() {
-        if (!clientLimitReached)
+        if (!clientLimitReached())
             viewModel.crackGiftBox()
     }
 
     private fun renderGiftBoxOpenError(message: String, actionText: String) {
+        forceOpenGiftBox = true
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
@@ -688,6 +691,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     override fun initialViewSetup() {
         super.initialViewSetup()
         endTime = context?.getString(R.string.gami_end_time) ?: ""
+        endTimeMinute = context?.getString(R.string.gami_end_time_minute) ?: ""
         tvTimer.alpha = 0f
         progressBarTimer.alpha = 0f
         tvProgressCount.alpha = 0f
