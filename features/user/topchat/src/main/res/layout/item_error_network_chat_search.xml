@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main_retry"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4">
+
+    <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:gravity="center_horizontal"
+            app:srcCompat="@drawable/unify_globalerrors_connection"
+            tools:ignore="ContentDescription" />
+
+    <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/message_retry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_topchat_34"
+            android:layout_marginEnd="@dimen/dp_topchat_34"
+            android:textColor="@color/Neutral_N700_96"
+            android:textStyle="bold"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
+            tools:text="@string/msg_network_error_1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/sub_message_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_topchat_12"
+            android:gravity="center"
+            android:textColor="@color/Neutral_N700_68"
+            android:textStyle="bold"
+            android:text="@string/desc_sub_error_message"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/button_retry"
+            android:layout_width="@dimen/dp_topchat_240"
+            android:layout_height="@dimen/spacing_lvl7"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:gravity="center"
+            android:text="@string/title_try_again"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
+
+</LinearLayout>

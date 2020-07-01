@@ -26,6 +26,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationReviewBottomSheet;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
@@ -48,6 +49,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxR
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.user.session.UserSession;
+
 import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -90,6 +93,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Inject
     ReputationTracking reputationTracking;
+
+    @Inject
+    UserSession userSession;
 
     public static Fragment createInstance(int tab) {
         InboxReputationFragment fragment = new InboxReputationFragment();
@@ -193,6 +199,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             sellerMigrationTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    SellerMigrationTracking.INSTANCE.eventOnClickReviewTicker(userSession.getUserId());
                     openSellerMigrationBottomSheet();
                 }
 
@@ -202,6 +209,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 }
             });
             sellerMigrationTicker.setVisibility(View.VISIBLE);
+        } else {
+            sellerMigrationTicker.setVisibility(View.GONE);
         }
     }
 
@@ -284,7 +293,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
         searchView.setVisibility(View.VISIBLE);
         filterButton.setVisibility(View.VISIBLE);
-        sellerMigrationTicker.setVisibility(View.VISIBLE);
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
@@ -296,6 +304,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain) {
+        if(getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+            ovoTicker.setVisibility(View.GONE);
+            return;
+        }
         String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
         String subtitle = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getSubtitle();
         ovoTicker.setVisibility(View.VISIBLE);

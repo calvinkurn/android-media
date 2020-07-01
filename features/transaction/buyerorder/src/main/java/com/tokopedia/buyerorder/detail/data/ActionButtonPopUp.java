@@ -3,10 +3,11 @@ package com.tokopedia.buyerorder.detail.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActionButtonPopUp {
+public class ActionButtonPopUp implements Serializable {
 
     @SerializedName("title")
     @Expose

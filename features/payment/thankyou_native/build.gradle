@@ -22,6 +22,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.features.nps)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -64,8 +65,10 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.couroutinesTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     implementation rootProject.ext.miscDependencies.lottie
+    implementation project(rootProject.ext.libraries.iris)
 
 
 }

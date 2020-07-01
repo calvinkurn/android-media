@@ -30,7 +30,7 @@ class OfficialProductRecommendationViewHolder(
                             discountPercentage = element.productItem.discountPercentage.toString(),
                             reviewCount = element.productItem.countReview,
                             ratingCount = element.productItem.rating,
-                            shopLocation = element.productItem.location,
+                            shopLocation = element.productItem.shopName,
                             isWishlistVisible = true,
                             isWishlisted = element.productItem.isWishlist,
                             shopBadgeList = element.productItem.badgesUrl.map {

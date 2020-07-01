@@ -48,8 +48,6 @@
     <dimen name="use_case_and_dynamic_image_size">48dp</dimen>
     <dimen name="use_case_and_dynamic_icon_size">56dp</dimen>
     <dimen name="home_searchbar_transition_range">50dp</dimen>
-    <dimen name="home_banner_mix_carousel_width">125dp</dimen>
-    <dimen name="home_banner_mix_arrow_icon_size">50dp</dimen>
 
     <!--Banner Play-->
     <dimen name="home_play_banner_play_icon_size">34dp</dimen>
@@ -62,8 +60,4 @@
 
     <dimen name="new_margin_sm">24dp</dimen>
 
-    <dimen name="home_recharge_recommendation_card_min_height">110dp</dimen>
-    <dimen name="home_recharge_recommendation_background_margin">6dp</dimen>
-    <dimen name="home_recharge_recommendation_product_icon_card_padding">10dp</dimen>
-    <dimen name="home_recharge_recommendation_shimmering_card_size">120dp</dimen>
 </resources>

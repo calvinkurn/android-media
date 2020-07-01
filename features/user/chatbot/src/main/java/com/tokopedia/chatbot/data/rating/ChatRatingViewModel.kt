@@ -9,7 +9,7 @@ import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
  * @author by yfsx on 14/05/18.
  */
 
-class ChatRatingViewModel(msgId: String = "",
+class ChatRatingViewModel constructor(msgId: String = "",
                           fromUid: String = "",
                           from: String = "",
                           fromRole: String = "",
@@ -19,8 +19,9 @@ class ChatRatingViewModel(msgId: String = "",
                           replyTime: String = "",
                           var ratingStatus: Int = 0,
                           val replyTimeNano: Long = 0,
-                          var quickReplies: List<QuickReplyViewModel> = ArrayList()) : BaseChatViewModel(msgId, fromUid, from,
-        fromRole, attachmentId, attachmentType, replyTime, message)
+                          var quickReplies: List<QuickReplyViewModel> = ArrayList(),
+                          source: String = "") : BaseChatViewModel(msgId, fromUid, from,
+        fromRole, attachmentId, attachmentType, replyTime, message, source)
         , Visitable<ChatbotTypeFactory> {
 
     override fun type(typeFactory: ChatbotTypeFactory): Int {

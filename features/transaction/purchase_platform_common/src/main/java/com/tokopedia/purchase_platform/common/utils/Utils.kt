@@ -42,6 +42,11 @@ object Utils {
         val px = dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
         return px.roundToInt()
     }
+
+    @JvmStatic
+    fun removeDecimalSuffix(currencyString: String): String {
+        return currencyString.removeDecimalSuffix()
+    }
 }
 
 fun convertToString(stringList: List<String>?): String {
@@ -61,3 +66,5 @@ fun <T : Any> List<T>.each(action: T.() -> Unit) {
         item.action()
     }
 }
+
+fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")

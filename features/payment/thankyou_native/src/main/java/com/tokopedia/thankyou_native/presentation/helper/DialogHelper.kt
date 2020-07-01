@@ -21,35 +21,19 @@ class DialogHelper(val context: Context, val listener: OnDialogRedirectListener)
     }
 
     private fun showPaymentFailedDialog() {
-        showSingleActionDialog(R.string.thank_payment_failed, R.string.thank_payment_failed_description,
-                R.string.thank_shop_again) {
-            dialogUnify?.cancel()
-            listener.gotoHomePage()
-        }
+        listener.gotoHomePage()
     }
 
     private fun showPaymentWaitingDialog() {
-        showTwoActionDialog(R.string.thank_exit_this_page, R.string.thank_payment_waiting_desc,
-                R.string.thank_exit_page, R.string.thank_cancel, {
-            dialogUnify?.cancel()
-            listener.gotoPaymentWaitingPage()
-        }, { dialogUnify?.cancel() })
+        listener.gotoPaymentWaitingPage()
     }
 
     private fun showPaymentSuccessDialog() {
-        showSingleActionDialog(R.string.thank_payment_success, R.string.thank_payment_success_description,
-                R.string.thank_see_transaction_list) {
-            dialogUnify?.cancel()
-            listener.gotoOrderList()
-        }
+        listener.gotoOrderList()
     }
 
     private fun showPaymentTimeExpired() {
-        showSingleActionDialog(R.string.thank_payment_expired_title,
-                R.string.thank_payment_expired_desc, R.string.thank_shop_again) {
-            dialogUnify?.cancel()
-            listener.gotoHomePage()
-        }
+        listener.gotoHomePage()
     }
 
     private fun getString(@StringRes resId: Int): String = context.getString(resId)
@@ -87,8 +71,10 @@ class DialogHelper(val context: Context, val listener: OnDialogRedirectListener)
 }
 
 interface OnDialogRedirectListener {
+    fun launchApplink(applink: String)
     fun gotoHomePage()
     fun gotoPaymentWaitingPage()
     fun gotoOrderList()
+    fun gotoOrderList(applink: String)
 }
 

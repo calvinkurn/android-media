@@ -23,6 +23,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String warehouseID;
     private String productName;
     private String imageUrl;
+    private String imageUrl300;
     private String imageUrl700;
     private int rating;
     private String ratingString;
@@ -128,6 +129,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public void setImageUrl300(String imageUrl300) {
+        this.imageUrl300 = imageUrl300;
+    }
+
+    public String getImageUrl300() {
+        return imageUrl300;
     }
 
     public void setImageUrl700(String imageUrl700) {

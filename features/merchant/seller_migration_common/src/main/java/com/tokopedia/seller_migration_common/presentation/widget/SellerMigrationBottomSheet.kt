@@ -13,18 +13,24 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.partial_seller_migration_footer.*
-import kotlinx.android.synthetic.main.partial_seller_migration_warning.*
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
 abstract class SellerMigrationBottomSheet(private val titles: List<String> = emptyList(),
                                           private val contents: List<String> = emptyList(),
-                                          private val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
+                                          private val images: ArrayList<String> = arrayListOf(),
+                                          private val showWarningCard: Boolean = true) : BottomSheetUnify() {
+
+    abstract fun trackGoToSellerApp()
+    abstract fun trackGoToPlayStore()
+    abstract fun trackLearnMore()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,26 +41,43 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
         setupWarningCard()
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (titles.isEmpty() && contents.isEmpty() && images.isEmpty()) {
+            dismissIfExist()
+        }
+    }
+
+    private fun dismissIfExist() {
+        val bottomSheet = parentFragment?.childFragmentManager?.findFragmentByTag(TAG_SELLER_MIGRATION_BOTTOM_SHEET)
+        if (bottomSheet is BottomSheetUnify) {
+            bottomSheet.dismiss()
+            parentFragment?.childFragmentManager?.beginTransaction()?.remove(this)?.commit()
+        }
+    }
+
     private fun setupPadding() {
         setShowListener {
             val headerMargin = 16.toPx()
-            bottomSheetWrapper.setPadding(0,0,0,0)
-            (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(headerMargin,headerMargin,headerMargin,headerMargin)
+            bottomSheetWrapper.setPadding(0, 0, 0, 0)
+            (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(headerMargin, headerMargin, headerMargin, headerMargin)
         }
     }
 
     private fun setUpButtons() {
-        sellerMigrationBottomSheetButton.setOnClickListener {
+        val sellerMigrationBottomSheetButton: UnifyButton? = view?.findViewById(R.id.sellerMigrationBottomSheetButton)
+        sellerMigrationBottomSheetButton?.setOnClickListener {
             goToSellerApp()
         }
-        sellerMigrationBottomSheetLink.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
-        sellerMigrationBottomSheetLink.setOnTouchListener(SellerMigrationTouchListener {
+        val sellerMigrationBottomSheetLink: Typography? = view?.findViewById(R.id.sellerMigrationBottomSheetLink)
+        sellerMigrationBottomSheetLink?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
+        sellerMigrationBottomSheetLink?.setOnTouchListener(SellerMigrationTouchListener {
             goToInformationWebview(it)
         })
     }
 
     private fun setupText() {
-        if(contents.isNotEmpty() && titles.isNotEmpty()) {
+        if (contents.isNotEmpty() && titles.isNotEmpty()) {
             context?.let {
                 setContentText(HtmlLinkHelper(it, contents.first()).spannedString)
             }
@@ -63,10 +86,10 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
     }
 
     private fun setupImages() {
-        if(images.isEmpty()) {
+        if (images.isEmpty()) {
             return
         }
-        if(images.size == 1) {
+        if (images.size == 1) {
             setupImageView()
             return
         }
@@ -74,10 +97,13 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
     }
 
     private fun setupWarningCard() {
-        val remoteConfigDate = getSellerMigrationDate(context)
-        if(remoteConfigDate.isNotBlank()) {
-            sellerMigrationWarningCard.show()
-            sellerMigrationWarningDate.text = remoteConfigDate
+        if (showWarningCard) {
+            val remoteConfigDate = getSellerMigrationDate(context)
+            if (remoteConfigDate.isNotBlank()) {
+                val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
+                sellerMigrationWarningCard.show()
+                sellerMigrationWarningDate?.text = remoteConfigDate
+            }
         }
     }
 
@@ -114,19 +140,23 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
         with(SellerMigrationConstants) {
             try {
                 val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
-                if(intent != null) {
+                if (intent != null) {
                     intent.putExtra(SELLER_MIGRATION_KEY_AUTO_LOGIN, true)
                     activity?.startActivity(intent)
+                    trackGoToSellerApp()
                 } else {
                     activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+                    trackGoToPlayStore()
                 }
             } catch (anfe: ActivityNotFoundException) {
                 activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
+                trackGoToPlayStore()
             }
         }
     }
 
-    private fun goToInformationWebview(link: String) : Boolean {
+    private fun goToInformationWebview(link: String): Boolean {
+        trackLearnMore()
         return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
     }
 }
