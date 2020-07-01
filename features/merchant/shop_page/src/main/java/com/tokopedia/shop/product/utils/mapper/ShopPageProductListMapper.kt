@@ -30,6 +30,7 @@ object ShopPageProductListMapper {
         val id = if (shopEtalaseModel.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) shopEtalaseModel.alias else shopEtalaseModel.id
         return ShopEtalaseItemDataModel(
                 id,
+                shopEtalaseModel.alias,
                 shopEtalaseModel.name,
                 shopEtalaseModel.type,
                 shopEtalaseModel.badge,

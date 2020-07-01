@@ -11,6 +11,7 @@ import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
 
 data class ShopEtalaseItemDataModel(
         val etalaseId: String = "",
+        val alias: String = "",
         val etalaseName: String = "",
         @ShopEtalaseTypeDef val type: Int = ETALASE_DEFAULT,
         val etalaseBadge: String = "",
@@ -20,6 +21,7 @@ data class ShopEtalaseItemDataModel(
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readInt(),
             parcel.readString() ?: "",
             parcel.readLong(),
@@ -27,6 +29,7 @@ data class ShopEtalaseItemDataModel(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(etalaseId)
+        parcel.writeString(alias)
         parcel.writeString(etalaseName)
         parcel.writeInt(type)
         parcel.writeString(etalaseBadge)

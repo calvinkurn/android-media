@@ -461,7 +461,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun onSuccessGetSortFilterData(shopStickySortFilter: ShopStickySortFilter) {
         val etalaseList = shopStickySortFilter.etalaseList
         defaultEtalaseName = etalaseList.firstOrNull()?.etalaseName.orEmpty()
-        selectedEtalaseId = shopStickySortFilter.etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.etalaseId
+        selectedEtalaseId = shopStickySortFilter.etalaseList.firstOrNull { isEtalaseMatch(it) }?.etalaseId
                 ?: ""
         sortValue = shopStickySortFilter.sortList.firstOrNull { it.value == sortValue }?.value ?: ""
         selectedEtalaseName = etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.etalaseName
@@ -484,6 +484,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 keyword,
                 isNeedToReloadData
         )
+    }
+
+    private fun isEtalaseMatch(model: ShopEtalaseItemDataModel): Boolean {
+        return (model.etalaseId.toLowerCase() == selectedEtalaseId.toLowerCase() ||
+                model.etalaseName.toLowerCase() == selectedEtalaseId.toLowerCase() ||
+                model.alias.toLowerCase() == selectedEtalaseId.toLowerCase()) && selectedEtalaseId.isNotEmpty()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
