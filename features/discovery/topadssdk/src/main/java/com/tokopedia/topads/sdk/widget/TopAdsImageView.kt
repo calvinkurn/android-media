@@ -22,6 +22,7 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import timber.log.Timber
 import javax.inject.Inject
 
 class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
@@ -95,9 +96,11 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
             when (it) {
                 is Success -> {
                     topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
+                    Timber.d("Response received successfully")
                 }
                 is Fail -> {
                     topAdsImageVieWApiResponseListener?.onError(it.throwable)
+                    Timber.d("error in response")
                 }
             }
 
@@ -133,8 +136,10 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
             )
             topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
                     ?: "")
+            Timber.d("TopAdsImageView is visible")
             this.setOnClickListener {
                 topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
+                Timber.d("TopAdsImageView is clicked")
                 ImpresionTask(className).execute(imageData.adClickUrl)
             }
         } else {
