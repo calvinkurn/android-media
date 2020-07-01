@@ -411,7 +411,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 }
 
-data class BottomMenu(val id: String,
+data class BottomMenu(val id: Int,
                       val title: String,
                       val animName: Int? = null,
                       val animToEnabledName: Int? = null,
