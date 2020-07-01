@@ -70,6 +70,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
 
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
+        private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -164,7 +165,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onFollowersCountClicked() {
-        goToReputationHistory()
+        goToShopFavouriteList()
     }
 
     override fun onSaldoClicked() {
@@ -473,6 +474,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             putExtra(GO_TO_REPUTATION_HISTORY, true)
         }
         startActivity(reputationHistoryIntent)
+    }
+
+    private fun goToShopFavouriteList() {
+        val shopFavouriteListIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST).apply {
+            putExtra(EXTRA_SHOP_ID, userSession.shopId)
+        }
+        startActivity(shopFavouriteListIntent)
     }
 
 }
