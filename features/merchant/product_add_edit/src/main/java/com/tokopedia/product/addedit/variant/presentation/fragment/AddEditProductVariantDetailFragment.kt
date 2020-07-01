@@ -121,7 +121,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         observeHasWholesale()
     }
 
-    override fun onHeaderClicked(adapterPosition: Int) {
+    override fun onHeaderClicked(adapterPosition: Int): Boolean {
         val isCollapsed = viewModel.isVariantDetailHeaderCollapsed(adapterPosition)
         if (!isCollapsed) {
             variantDetailFieldsAdapter?.collapseUnitValueHeader(adapterPosition, viewModel.getInputFieldSize())
@@ -129,9 +129,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             viewModel.updateVariantDetailHeaderMap(adapterPosition, true)
         } else {
             variantDetailFieldsAdapter?.expandDetailFields(adapterPosition, viewModel.getVariantDetailHeaderData(adapterPosition))
+            recyclerViewVariantDetailFields.scrollToPosition(adapterPosition)
             viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(adapterPosition, false)
         }
+        return viewModel.isVariantDetailHeaderCollapsed(adapterPosition)
     }
 
     override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
@@ -211,7 +213,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>) {
-        //increement for indexing product variant
+        //increment for indexing product variant
         var productVariantIndex = 0
         val productVariants = viewModel.productInputModel.value?.variantInputModel?.products.orEmpty()
         // variant level 1 properties
@@ -273,5 +275,4 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             activity?.finish()
         }
     }
-
 }

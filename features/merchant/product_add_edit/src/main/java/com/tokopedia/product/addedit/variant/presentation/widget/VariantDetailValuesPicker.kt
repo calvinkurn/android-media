@@ -17,7 +17,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
 
     private var layoutPosition: Int? = null
 
-    private var selectedVariantUnit: Unit? = null
+    private var selectedVariantUnit: Unit = Unit()
 
     private var selectedVariantUnitValues = mutableListOf<UnitValue>()
 
@@ -26,7 +26,6 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
     private var onAddCustomVariantUnitValueListener: OnAddCustomVariantUnitValueListener? = null
 
     private var onButtonSaveClickListener: OnButtonSaveClickListener? = null
-
 
     interface OnVariantUnitPickerClickListener {
         fun onVariantUnitSelected(selectedVariantUnit: Unit, layoutPosition: Int)
@@ -75,19 +74,21 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
     }
 
     fun setupVariantDetailValuesPicker(variantDetail: VariantDetail) {
-        val selectedVariantUnit = selectedVariantUnit ?: variantDetail.units[0]
+        var selectedUnit = variantDetail.units[0]
+        if(selectedVariantUnit.unitValues.isNotEmpty()) selectedUnit = this.selectedVariantUnit
         setupVariantUnitPicker(variantDetail.name, variantDetail.units)
-        setupVariantUnitValuePicker(variantDetail.variantID, variantDetail.name, selectedVariantUnit.unitValues)
+        setupVariantUnitValuePicker(variantDetail.variantID, variantDetail.name, selectedUnit.unitValues)
         setupSaveButton(selectedVariantUnitValues, layoutPosition, variantDetail.variantID)
         configureSaveButton(selectedVariantUnitValues)
     }
 
     private fun setupVariantUnitPicker(unitName: String, variantUnits: List<Unit>) {
         if (variantUnits.size > 1) {
-            val selectedVariantUnit = selectedVariantUnit ?: variantUnits[0]
+            var selectedUnit = variantUnits[0]
+            if (selectedVariantUnit.unitName.isBlank()) selectedUnit = this.selectedVariantUnit
             variantUnitLayout.show()
             textFieldUnifyVariantUnit.textFiedlLabelText.text = unitName
-            textFieldUnifyVariantUnit.textFieldInput.setText(selectedVariantUnit.unitName)
+            textFieldUnifyVariantUnit.textFieldInput.setText(selectedUnit.unitName)
             textFieldUnifyVariantUnit.textFieldInput.isFocusable = false
             textFieldUnifyVariantUnit.textFieldInput.isActivated = false
             textFieldUnifyVariantUnit.textFieldInput.setOnClickListener {
@@ -133,6 +134,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
                         selectedItem.listRightCheckbox?.isChecked = !this
                     }
                 } else {
+                    // add custom variant unit value
                     layoutPosition?.run {
                         onAddCustomVariantUnitValueListener?.onAddButtonClicked(this, variantId, unitName)
                     }

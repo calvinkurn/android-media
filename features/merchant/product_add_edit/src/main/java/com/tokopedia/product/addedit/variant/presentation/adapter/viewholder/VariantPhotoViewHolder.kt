@@ -23,7 +23,7 @@ class VariantPhotoViewHolder(itemView: View, onItemClickListener: OnItemClickLis
         itemView.typographyVariantPhoto.text = data.variantUnitValueName
         if (data.imageUrlOrPath.isNotBlank()) {
             itemView.ivAddIndicator.hide()
-            itemView.ivVariantPhoto.setImage(data.imageUrlOrPath, 0F)
+            if (data.imageUrlOrPath.isNotBlank()) itemView.ivVariantPhoto.setImage(data.imageUrlOrPath, 0F)
         }
     }
 }
