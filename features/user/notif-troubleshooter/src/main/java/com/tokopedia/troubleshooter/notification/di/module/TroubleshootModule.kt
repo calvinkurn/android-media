@@ -1,6 +1,8 @@
 package com.tokopedia.troubleshooter.notification.di.module
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -20,6 +22,12 @@ import dagger.Provides
     @TroubleshootContext
     fun provideContext(): Context {
         return context
+    }
+
+    @Provides
+    @TroubleshootScope
+    fun provideSharedPreferences(): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     @Provides

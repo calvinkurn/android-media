@@ -65,8 +65,8 @@ class TroubleshootFragment : BaseDaggerFragment() {
         viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
             hideLoading()
             if (it.isSuccess == 1) {
-                viewModel.updateToken()
                 onIconStatus(true)
+                updateToken()
             } else {
                 onIconStatus(false)
             }
@@ -84,6 +84,12 @@ class TroubleshootFragment : BaseDaggerFragment() {
                     Toast.LENGTH_LONG
             ).show()
         })
+    }
+
+    private fun updateToken() {
+        viewModel.getNewToken { newToken ->
+            viewModel.updateToken(newToken)
+        }
     }
 
     private fun onIconStatus(isSuccess: Boolean) {
