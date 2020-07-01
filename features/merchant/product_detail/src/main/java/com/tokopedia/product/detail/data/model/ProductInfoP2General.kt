@@ -30,7 +30,6 @@ data class ProductInfoP2General(
         var latestTalk: Talk = Talk(),
         var discussionMostHelpful: DiscussionMostHelpful? = null,
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
-        var variantResp: ProductVariantCommon? = null,
         var shopFeature: ShopFeatureData = ShopFeatureData(),
         var productSpecificationResponse: ProductSpecificationResponse = ProductSpecificationResponse(),
         var productFinancingRecommendationData: PDPInstallmentRecommendationResponse = PDPInstallmentRecommendationResponse(),

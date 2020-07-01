@@ -13,7 +13,8 @@ data class VariantDataModel(
         val type: String = "",
         val name: String = "",
         var listOfVariantCategory: List<VariantCategory>? = null,
-        var mapOfSelectedVariant: MutableMap<String, Int> = mutableMapOf()
+        var mapOfSelectedVariant: MutableMap<String, Int> = mutableMapOf(),
+        var isVariantError: Boolean = false
 ) : DynamicPdpDataModel {
 
     fun getFirstSelectedVariantId(): Int {

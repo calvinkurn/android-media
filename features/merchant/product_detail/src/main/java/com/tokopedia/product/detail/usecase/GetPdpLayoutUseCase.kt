@@ -49,7 +49,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
-        val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data ?: PdpGetLayout()
+        val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
+                ?: PdpGetLayout()
 
         if (gqlResponse.isCached) {
             Timber.w("P2#PDP_CACHE#true;productId=$productId")
@@ -70,7 +71,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
     private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
         val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components)
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
-        return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData)
+        val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
+        return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
     }
 
 }

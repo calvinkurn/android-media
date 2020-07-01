@@ -211,6 +211,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun updateVariantError() {
+        productNewVariantDataModel?.run {
+            isVariantError = true
+        }
+    }
+
     fun updateDataInstallment(context: Context?, financingData: PDPInstallmentRecommendationResponse, isOs: Boolean) {
         productInstallmentInfoMap?.run {
             data.first().subtitle = String.format(context?.getString(R.string.new_installment_template)

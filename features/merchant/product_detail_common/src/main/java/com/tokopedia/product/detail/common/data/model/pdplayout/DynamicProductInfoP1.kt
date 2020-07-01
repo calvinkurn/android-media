@@ -8,6 +8,8 @@ data class DynamicProductInfoP1(
         val layoutName: String = ""
 ) {
 
+    fun isProductVariant(): Boolean = data.variant.isVariant
+
     fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()
 
     val shopTypeString: String

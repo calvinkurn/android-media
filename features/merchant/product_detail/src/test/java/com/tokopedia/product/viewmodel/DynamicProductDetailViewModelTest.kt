@@ -838,7 +838,7 @@ class DynamicProductDetailViewModelTest {
      */
     @Test
     fun `process initial variant`() {
-        viewModel.processVariant(ProductVariantCommon(), mutableMapOf())
+        viewModel.processInitialVariant(ProductVariantCommon(), mutableMapOf())
 
         Assert.assertTrue(viewModel.initialVariantData.value != null)
     }

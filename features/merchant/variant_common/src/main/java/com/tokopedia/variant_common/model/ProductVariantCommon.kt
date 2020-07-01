@@ -16,6 +16,11 @@ data class ProductDetailVariantCommonResponse(
 
 data class ProductVariantCommon(
 
+
+        @SerializedName("errorCode")
+        @Expose
+        var errorCode: Int = 0,
+
         @SerializedName("parentID")
         @Expose
         var parentId: Int = 0,

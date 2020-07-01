@@ -185,4 +185,12 @@ object VariantMapper {
         return DynamicProductInfoP1(basic ?: BasicInfo(), data
                 ?: ComponentData(), oldData?.layoutName ?: "")
     }
+
+    fun generateVariantString(variantData:ProductVariantCommon?): String {
+        return try {
+            variantData?.variant?.map { it.name }?.joinToString(separator = ", ") ?: ""
+        } catch (e: Throwable) {
+            ""
+        }
+    }
 }

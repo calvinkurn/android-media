@@ -96,6 +96,7 @@ import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.product.detail.data.util.*
+import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
@@ -672,7 +673,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 if (!GlobalConfig.isSellerApp()) {
-                    DynamicProductDetailTracking.Click.eventClickVariant(generateVariantString(), viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                    DynamicProductDetailTracking.Click.eventClickVariant(generateVariantString(viewModel.variantData), viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                 }
             }
             ProductDetailConstant.PRODUCT_WHOLESALE_INFO -> {
@@ -1176,25 +1177,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeInitialVariantData() {
         viewLifecycleOwner.observe(viewModel.initialVariantData) {
-            if (pdpUiUpdater?.productNewVariantDataModel == null) {
-                return@observe
-            }
-
-            if (it == null) {
-                dynamicAdapter.clearElement(pdpUiUpdater?.productNewVariantDataModel)
-                return@observe
-            }
-
             if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == true) {
                 pdpUiUpdater?.productNewVariantDataModel?.listOfVariantCategory = it
+                dynamicAdapter.notifyVariantSection(pdpUiUpdater?.productNewVariantDataModel, null)
             } else {
-                /**
-                 * If variant child only has 1 child, we will auto selected it.
-                 * So we have to update existing product and UI
-                 */
+                //If variant did auto select, we have to update the UI
                 updateVariantDataToExistingProductData(it)
             }
-            dynamicAdapter.notifyVariantSection(pdpUiUpdater?.productNewVariantDataModel, null)
         }
     }
 
@@ -1435,6 +1424,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
+            renderVariant(viewModel.variantData)
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             pdpUiUpdater?.updateDataP1(context, productInfo)
             viewModel.listOfParentMedia = productInfo.data.media.toMutableList()
@@ -1586,7 +1576,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
 
-        onSuccessGetProductVariantInfo(it.variantResp)
         pdpUiUpdater?.updateDataP2General(it)
         viewModel.getDynamicProductInfoP1?.run {
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
@@ -1598,7 +1587,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessGetDataP3Variant() {
-        autoSelectVariant()
     }
 
     private fun onSuccessGetDataP3RateEstimate(it: ProductInfoP3) {
@@ -1615,17 +1603,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_P3)
         dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, ProductDetailConstant.PAYLOAD_P3)
-    }
-
-    private fun autoSelectVariant() {
-        viewModel.variantData?.let {
-            val isOnlyHaveOneVariantLeftData = it.autoSelectedOptionIds()
-            if (isOnlyHaveOneVariantLeftData.isNotEmpty() && viewModel.cartTypeData != null) {
-                //If empty means child is more than 1 , so render initial variant data without selected any of them
-                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(it, isOnlyHaveOneVariantLeftData)
-                viewModel.processVariant(it, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant)
-            }
-        }
     }
 
     private fun logException(t: Throwable) {
@@ -1702,14 +1679,29 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 variantOptions.imageOriginal)
     }
 
-    private fun onSuccessGetProductVariantInfo(data: ProductVariantCommon?) {
-        if (data == null || !data.hasChildren) {
+    private fun renderVariant(data: ProductVariantCommon?) {
+        if (data == null || !data.hasChildren || pdpUiUpdater?.productNewVariantDataModel == null) {
             dynamicAdapter.clearElement(pdpUiUpdater?.productNewVariantDataModel)
-            return
+        } else {
+            if (data.errorCode > 0) {
+                pdpUiUpdater?.updateVariantError()
+            } else {
+                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
+                viewModel.processInitialVariant(data, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant)
+            }
         }
+    }
 
-        pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
-        viewModel.processVariant(data, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant)
+    private fun autoSelectVariant() {
+        viewModel.variantData?.let {
+            //Auto select variant will be execute when there is only 1 child left
+            val isOnlyHaveOneVariantLeftData = it.autoSelectedOptionIds()
+            if (isOnlyHaveOneVariantLeftData.isNotEmpty() && viewModel.cartTypeData != null) {
+                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(it, isOnlyHaveOneVariantLeftData)
+            } else {
+                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(it)
+            }
+        }
     }
 
     private fun showAddToCartDoneBottomSheet() {
@@ -2080,7 +2072,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         viewModel.tradeInParams.usedPrice > 0,
                         viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment,
                         deeplinkUrl,
-                        viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString()) ?: "0"
+                        viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString())
+                                ?: "0"
                 )
                 context?.let {
                     getInstance(it).saveEvent(sentBundle)
@@ -2105,19 +2098,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             bundleData.putString(FtPDPInstallmentBottomSheet.KEY_PDP_FINANCING_DATA, cacheManager.id!!)
             bundleData.putFloat(FtPDPInstallmentBottomSheet.KEY_PDP_PRODUCT_PRICE, productInfo?.data?.price?.value?.toFloat()
                     ?: 0f)
-            bundleData.putBoolean(FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL, productInfo?.data?.isOS ?: false)
+            bundleData.putBoolean(FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL, productInfo?.data?.isOS
+                    ?: false)
 
             pdpInstallmentBottomSheet.arguments = bundleData
             pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
-        }
-    }
-
-    private fun generateVariantString(): String {
-        return try {
-            viewModel.p2General.value?.variantResp?.variant?.map { it.name }?.joinToString(separator = ", ")
-                    ?: ""
-        } catch (e: Throwable) {
-            ""
         }
     }
 
@@ -2475,7 +2460,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             DynamicProductDetailTracking.Click.eventClickApplyLeasing(
                     viewModel.getDynamicProductInfoP1,
-                    generateVariantString()
+                    generateVariantString(viewModel.variantData)
             )
 
             val urlApplyLeasingWithProductId = String.format(
@@ -2618,7 +2603,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun gotoCart() {
         activity?.let {
-            DynamicProductDetailTracking.Click.eventCartToolbarClicked(generateVariantString(),
+            DynamicProductDetailTracking.Click.eventCartToolbarClicked(generateVariantString(viewModel.variantData),
                     viewModel.getDynamicProductInfoP1)
             doActionOrLogin({
                 startActivity(RouteManager.getIntent(it, ApplinkConst.CART))

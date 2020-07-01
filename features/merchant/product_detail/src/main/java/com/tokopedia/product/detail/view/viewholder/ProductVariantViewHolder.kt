@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
@@ -12,6 +13,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.variant_common.util.VariantItemDecorator
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.adapter.VariantContainerAdapter
+import kotlinx.android.synthetic.main.item_local_load_unify.view.*
 import kotlinx.android.synthetic.main.item_product_variant_view_holder.view.*
 
 /**
@@ -28,21 +30,21 @@ class ProductVariantViewHolder(val view: View,
 
     override fun bind(element: VariantDataModel) {
         with(view) {
-            if (element.listOfVariantCategory != null && element.listOfVariantCategory?.isNotEmpty() == true) {
-                containerProductVariant.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            if (element.isVariantError) {
+                showError()
             } else {
-                containerProductVariant.layoutParams.height = 0
+                hideError()
+                element.listOfVariantCategory?.let {
+                    containerAdapter = VariantContainerAdapter(listener)
+                    rvContainerVariant.adapter = containerAdapter
+                    if (rvContainerVariant.itemDecorationCount == 0) {
+                        rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, R.drawable.bg_separator_variant)))
+                    }
+                    rvContainerVariant.itemAnimator = null
+                    containerAdapter?.setData(it)
+                }
             }
 
-            element.listOfVariantCategory?.let {
-                containerAdapter = VariantContainerAdapter(listener)
-                rvContainerVariant.adapter = containerAdapter
-                if (rvContainerVariant.itemDecorationCount == 0) {
-                    rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, R.drawable.bg_separator_variant)))
-                }
-                rvContainerVariant.itemAnimator = null
-                containerAdapter?.setData(it)
-            }
         }
     }
 
@@ -52,5 +54,15 @@ class ProductVariantViewHolder(val view: View,
             containerAdapter?.variantContainerData = it
             containerAdapter?.notifyItemRangeChanged(0, it.size, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
         }
+    }
+
+    fun showError() = with(view) {
+        variant_local_load.show()
+        rvContainerVariant.hide()
+    }
+
+    fun hideError() = with(view) {
+        rvContainerVariant.show()
+        variant_local_load.hide()
     }
 }
