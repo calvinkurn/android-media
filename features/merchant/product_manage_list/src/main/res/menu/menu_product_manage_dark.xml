@@ -12,6 +12,7 @@
                 android:id="@+id/label_view_add_image"
                 app:showAsAction="never"
                 android:title="@string/add_product_text_description" />
+
         </menu>
     </item>
 </menu>
