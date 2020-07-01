@@ -278,10 +278,12 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         coroutineContext.cancelChildren()
     }
 
+    /* in seconds */
     fun setDelayDuration(delayPlayVideo: Int, stopTimeVideoWihData: Int, stopTimeVideoWithWifi: Int){
-        delayDuration = delayPlayVideo
-        durationPlayWithWifi = stopTimeVideoWithWifi
-        durationPlayWithData = stopTimeVideoWihData
+        /* convert to millisecond */
+        delayDuration = delayPlayVideo * 1000
+        durationPlayWithWifi = stopTimeVideoWithWifi * 1000
+        durationPlayWithData = stopTimeVideoWihData * 1000
     }
 
     fun setAutoPlay(isAutoPlay: Boolean, autoPlayAmount: Int){
