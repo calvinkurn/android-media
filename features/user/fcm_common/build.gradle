@@ -40,4 +40,4 @@ project.ext {
     artifactName = "fcm_common-release"
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../../../publish_local.gradle'
