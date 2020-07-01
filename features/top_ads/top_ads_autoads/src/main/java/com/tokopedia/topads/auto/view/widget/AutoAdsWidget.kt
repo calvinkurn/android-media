@@ -27,6 +27,7 @@ import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
+import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
 import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.internal.NonDeliveryReason
 import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
@@ -79,7 +80,6 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
     }
 
     private fun renderUI() {
-        try {
             widgetViewModel.autoAdsData.observe(context as BaseActivity, Observer {
                 currentBudget = it.dailyBudget
                 if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
@@ -95,10 +95,6 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 (context as BaseActivity).setResult(Activity.RESULT_OK)
                 (context as BaseActivity).finish()
             })
-        }
-        catch (e:Exception){
-
-        }
     }
 
     private fun setUiComponent(status: Int, dailyUsage: Int) {
@@ -292,16 +288,12 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
     }
 
     private fun initView(context: Context) {
-        try {
             getComponent(context).inject(this)
             View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
             baseLayout = findViewById(R.id.base_layout)
-        }
-        catch (e:Exception){
 
-        }
     }
 
     private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).autoAdsQueryModule(AutoAdsQueryModule(context)).build()
 }
