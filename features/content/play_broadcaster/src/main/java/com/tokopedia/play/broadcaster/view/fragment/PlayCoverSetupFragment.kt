@@ -188,6 +188,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     }
                 }
         )
+        viewLifecycleOwner.lifecycle.addObserver(coverSetupView)
 
         coverCropView = CoverCropPartialView(view, object : CoverCropPartialView.Listener {
             override fun onAddButtonClicked(

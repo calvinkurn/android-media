@@ -186,7 +186,8 @@ object PlayBroadcastUiMapper {
         return PlayCoverUiModel(
                 croppedCover = CoverSetupState.Cropped(
                         coverImage = Uri.parse(coverUrl),
-                        coverSource = prevSource ?: CoverSource.None
+                        coverSource = prevSource ?: CoverSource.None,
+                        state = SetupDataState.Uploaded
                 ),
                 state = SetupDataState.Uploaded,
                 title = coverTitle

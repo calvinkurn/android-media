@@ -5,15 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.domain.usecase.AddMediaUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveFollowersDataUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.FollowerDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -27,9 +24,7 @@ import javax.inject.Inject
 class PlayBroadcastPrepareViewModel @Inject constructor(
         private val mDataStore: PlayBroadcastDataStore,
         private val dispatcher: CoroutineDispatcherProvider,
-        private val addProductTagUseCase: AddProductTagUseCase,
         private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
-        private val addMediaUseCase: AddMediaUseCase,
         private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
         private val userSession: UserSessionInterface
 ) : ViewModel() {
@@ -72,26 +67,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
                     if (isDataAlreadyValid()) NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
                     else NetworkResult.Fail(IllegalStateException("Oops tambah cover dulu sebelum mulai"))
         }
-    }
-
-    private fun selectedProductIds(productList: List<ProductContentUiModel>): List<String> = productList.map { it.id.toString() }.toList()
-
-    private suspend fun updateProduct(channelId: String, productIds: List<String>) = withContext(dispatcher.io) {
-        return@withContext addProductTagUseCase.apply {
-            params = AddProductTagUseCase.createParams(
-                    channelId = channelId,
-                    productIds = productIds
-            )
-        }.executeOnBackground()
-    }
-
-    private suspend fun updateCover(channelId: String, coverUrl: String) = withContext(dispatcher.io) {
-        return@withContext addMediaUseCase.apply {
-            params = AddMediaUseCase.createParams(
-                    channelId = channelId,
-                    coverUrl = coverUrl
-            )
-        }.executeOnBackground()
     }
 
     private suspend fun createLiveStream(channelId: String) = withContext(dispatcher.io) {

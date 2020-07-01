@@ -9,7 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.usecase.coroutines.UseCase
-import java.lang.reflect.ParameterizedType
 import java.net.UnknownHostException
 
 
