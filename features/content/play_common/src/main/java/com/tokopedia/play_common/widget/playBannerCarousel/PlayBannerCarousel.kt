@@ -2,8 +2,10 @@ package com.tokopedia.play_common.widget.playBannerCarousel
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
@@ -23,7 +25,9 @@ import com.tokopedia.play_common.widget.playBannerCarousel.extension.showOrHideV
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.PlayBannerCarouselTypeImpl
 import com.tokopedia.play_common.widget.playBannerCarousel.widget.PlayBannerRecyclerView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
@@ -37,6 +41,9 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private val parallaxBackground: AppCompatImageView
     private val parallaxImage: AppCompatImageView
     private val parallaxView: FrameLayout
+    private val containerShimmering: FrameLayout
+    private val containerPlayBanner: FrameLayout
+    private val shimmeringView: View
 
 
     private var adapter: PlayBannerCarouselAdapter? = null
@@ -44,6 +51,8 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private val adapterTypeFactory = PlayBannerCarouselTypeImpl()
     private var listener: PlayBannerCarouselViewEventListener? = null
     private var playBannerCarouselDataModel: PlayBannerCarouselDataModel? = null
+
+    private var timer: CountDownTimer? = null
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -54,14 +63,19 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     init {
         val view = LayoutInflater.from(context).inflate(LAYOUT, this)
+        shimmeringView = LayoutInflater.from(context).inflate(R.layout.partial_layout_shimmering_play_banner, null)
         recyclerView = view.findViewById(R.id.recycler_view)
         channelTitle = view.findViewById(R.id.channel_title)
         channelSubtitle = view.findViewById(R.id.channel_subtitle)
         seeAllButton = view.findViewById(R.id.see_all_button)
+        containerPlayBanner = view.findViewById(R.id.content_play_banner)
         backgroundLoader = view.findViewById(R.id.background_loader)
         parallaxBackground = view.findViewById(R.id.parallax_background)
         parallaxImage = view.findViewById(R.id.parallax_image)
+        containerShimmering = view.findViewById(R.id.container_play_shimmering)
         parallaxView = view.findViewById(R.id.parallax_view)
+        containerShimmering.addView(shimmeringView)
+        showRefreshShimmer()
     }
 
     fun setListener(listener: PlayBannerCarouselViewEventListener){
@@ -80,6 +94,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     fun onDestroy(){
         recyclerView.releasePlayer()
+        stopTimer()
     }
 
     fun setItem(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
@@ -91,11 +106,12 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
             recyclerView.adapter = adapter
             recyclerView.addOnScrollListener(configureParallax())
         }
-        recyclerView.setAutoPlay(playBannerCarouselDataModel.isAutoPlay, playBannerCarouselDataModel.isAutoPlayAmount)
+        recyclerView.setAutoPlay(true, playBannerCarouselDataModel.isAutoPlayAmount)
         recyclerView.setMedia(list)
         configureHeader(playBannerCarouselDataModel)
         configureBackground(playBannerCarouselDataModel)
         adapter?.setItems(list)
+        removeRefreshShimmer()
     }
 
     private fun configureHeader(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
@@ -122,22 +138,25 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         seeAllButton.setOnClickListener { listener?.onSeeMoreClick(playBannerCarouselDataModel) }
     }
 
-    private fun autoScrollLauncher(interval: Long) = launch(coroutineContext) {
-        delay(interval)
-        intervalAutoRefreshCoroutine()
-    }
+    private fun configureAutoRefresh(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
+        if(playBannerCarouselDataModel.isAutoRefresh){
+            timer = object : CountDownTimer(playBannerCarouselDataModel.isAutoRefreshTimer.toLong() * 1000, 1000) {
+                override fun onFinish() {
+                    playBannerCarouselDataModel?.let {
+                        recyclerView.resetVideoPlayer()
+                        listener?.onRefreshView(it)
+                        showRefreshShimmer()
+                    }
+                }
 
-    private suspend fun intervalAutoRefreshCoroutine() = withContext(Dispatchers.Main){
-        playBannerCarouselDataModel?.let {
-            recyclerView.resetVideoPlayer()
-            listener?.onRefreshView(it)
+                override fun onTick(millisUntilFinished: Long) {}
+            }.start()
         }
     }
 
-    private fun configureAutoRefresh(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        if(playBannerCarouselDataModel.isAutoRefresh){
-            masterJob.cancelChildren()
-            autoScrollLauncher(playBannerCarouselDataModel.isAutoRefreshTimer.toLong())
+    private fun stopTimer(){
+        if(timer != null){
+            timer?.cancel()
         }
     }
 
@@ -187,6 +206,23 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         }
     }
 
+    private fun showRefreshShimmer(){
+        if(shimmeringView.parent == null) containerShimmering.addView(shimmeringView)
+        channelTitle.hide()
+        channelSubtitle.hide()
+        seeAllButton.hide()
+        backgroundLoader.hide()
+        containerPlayBanner.hide()
+    }
+
+    private fun removeRefreshShimmer(){
+        containerShimmering.removeView(shimmeringView)
+        channelTitle.show()
+        channelSubtitle.show()
+        seeAllButton.show()
+        backgroundLoader.show()
+        containerPlayBanner.show()
+    }
     companion object{
         private val LAYOUT = R.layout.layout_play_banner_carousel
     }
