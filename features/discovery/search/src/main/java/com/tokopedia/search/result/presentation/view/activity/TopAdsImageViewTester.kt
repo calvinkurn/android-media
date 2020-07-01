@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.presentation.view.activity
 
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.search.R
@@ -14,6 +16,9 @@ class TopAdsImageViewTester : AppCompatActivity() {
 
     private lateinit var adsBannerView: TopAdsImageView
     private lateinit var adsBannerView2: TopAdsImageView
+    private lateinit var button: Button
+    private lateinit var id: EditText
+    private lateinit var count: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,14 +26,28 @@ class TopAdsImageViewTester : AppCompatActivity() {
 
         adsBannerView = findViewById(R.id.ads_banner)
         adsBannerView2 = findViewById(R.id.ads_banner2)
+        button = findViewById(R.id.loadImage)
+        id = findViewById(R.id.imageId)
+        count = findViewById(R.id.adsCount)
 
-        adsBannerView.getImageData("iphone","2","1",1)
+        button.setOnClickListener {
+            adsBannerView.getImageData("iphone","2",count.text.toString(),id.text.toString().toInt())
+        }
+
+
 
 
         adsBannerView.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
 
             override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
-                adsBannerView.loadImage(imageDataList[0])
+                if (imageDataList.size==1){
+                    adsBannerView.loadImage(imageDataList[0])
+                }  else if(imageDataList.size==2){
+                    adsBannerView.loadImage(imageDataList[0])
+                    adsBannerView2.loadImage(imageDataList[1])
+                }
+
+
             }
 
             override fun onError(t: Throwable) {

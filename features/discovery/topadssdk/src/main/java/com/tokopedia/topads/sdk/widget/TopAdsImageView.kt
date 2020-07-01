@@ -91,20 +91,21 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
     fun getImageData(query: String, source: String, adsCount: String, dimenId: Int, depId: String = "", pageToken: String = "") {
         val queryParams = topAdsImageViewViewModel.getQueryParams(query,source, pageToken, adsCount, dimenId, depId)
         topAdsImageViewViewModel.getImageData(queryParams)
-
-        topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
-                    Timber.d("Response received successfully")
+        if (!topAdsImageViewViewModel.getResponse().hasActiveObservers()){
+            topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
+                        Timber.d("Response received successfully")
+                    }
+                    is Fail -> {
+                        topAdsImageVieWApiResponseListener?.onError(it.throwable)
+                        Timber.d("error in response")
+                    }
                 }
-                is Fail -> {
-                    topAdsImageVieWApiResponseListener?.onError(it.throwable)
-                    Timber.d("error in response")
-                }
-            }
 
-        })
+            })
+        }
     }
 
     override fun getComponent(): TopAdsComponent {

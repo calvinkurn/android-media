@@ -20,7 +20,7 @@ class TopAdsImageViewViewModel @Inject constructor(private val topAdsImageViewUs
     fun getImageData(queryParams: MutableMap<String, Any>) {
         launchCatchError(
                 block = {
-                    response.value = Success(topAdsImageViewUseCase.getImageData(queryParams))
+                    response.postValue(Success(topAdsImageViewUseCase.getImageData(queryParams)))
                 },
                 onError = {
                     response.postValue(Fail(it))
