@@ -2,11 +2,11 @@ package com.tokopedia.manageaddress.domain.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.subfeature.address_choice.addressoptions.Paging;
-import com.tokopedia.checkout.subfeature.address_choice.addressoptions.PeopleAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.manageaddress.domain.model.addressoptions.Paging;
+import com.tokopedia.manageaddress.domain.model.addressoptions.PeopleAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;

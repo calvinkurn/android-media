@@ -1,12 +1,11 @@
 package com.tokopedia.checkout.subfeature.corner_list
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.checkout.R
-
+import androidx.recyclerview.widget.RecyclerView
+import com.example.manageaddress.R
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 
 /**

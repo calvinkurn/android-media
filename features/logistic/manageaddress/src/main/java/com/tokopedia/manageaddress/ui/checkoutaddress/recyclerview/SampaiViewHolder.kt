@@ -1,14 +1,15 @@
 package com.tokopedia.checkout.subfeature.address_choice.view.recyclerview
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
-import com.tokopedia.checkout.R
-import com.tokopedia.checkout.subfeature.address_choice.addressoptions.CornerAddressModel
+import androidx.recyclerview.widget.RecyclerView
+import com.example.manageaddress.R
 import com.tokopedia.design.component.Tooltip
+import com.tokopedia.manageaddress.domain.model.addressoptions.CornerAddressModel
+import com.tokopedia.manageaddress.ui.checkoutaddress.recyclerview.ShipmentAddressListAdapter
 
 /**
  * Created by fajarnuha on 2019-05-21.

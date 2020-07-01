@@ -1,13 +1,14 @@
 package com.tokopedia.manageaddress.ui.checkoutaddress;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.tokopedia.checkout.R;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.manageaddress.R;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.manageaddress.ui.shipmentaddress.ShipmentAddressListAdapter;
+import com.tokopedia.manageaddress.ui.checkoutaddress.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifyprinciples.Typography;
