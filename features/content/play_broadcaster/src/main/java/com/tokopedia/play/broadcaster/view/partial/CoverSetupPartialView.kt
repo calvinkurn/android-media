@@ -1,26 +1,28 @@
 package com.tokopedia.play.broadcaster.view.partial
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.util.doOnLayout
+import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.setTextFieldColor
+import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -29,7 +31,7 @@ class CoverSetupPartialView(
         container: ViewGroup,
         private val dataSource: DataSource,
         listener: Listener
-) : PartialView(container, R.id.cl_cover_setup) {
+) : PartialView(container, R.id.cl_cover_setup), LifecycleObserver {
 
     var coverTitle: String
         get() = etCoverTitle.text?.toString() ?: ""
@@ -46,8 +48,26 @@ class CoverSetupPartialView(
     private val tvCoverTitleCounter: TextView = findViewById(R.id.tv_cover_title_counter)
     private val tvAddChangeCover: TextView = findViewById(R.id.tv_add_change_cover)
     private val btnNext: UnifyButton = findViewById(R.id.btn_next)
+    private val clCropButton: ConstraintLayout = findViewById(R.id.cl_crop_button)
+    private val flCropSize: FrameLayout = findViewById(R.id.fl_crop_size)
+    private val clCropParent: ConstraintLayout = findViewById(R.id.cl_crop_parent)
+    private val slCropParent: ScrollView = findViewById(R.id.sl_crop_parent)
 
     private var mMaxTitleChars = DEFAULT_MAX_CHAR
+
+    private val keyboardWatcher = KeyboardWatcher().apply {
+        listen(rootView, object : KeyboardWatcher.Listener {
+            override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                stabilizeScroll(false)
+                clCropButton.gone()
+            }
+
+            override fun onKeyboardHidden() {
+                stabilizeScroll(true)
+                clCropButton.visible()
+            }
+        })
+    }
 
     init {
         llChangeCover.setOnClickListener { listener.onImageAreaClicked(this) }
@@ -59,10 +79,31 @@ class CoverSetupPartialView(
             listener.onNextButtonClicked(this, coverTitle)
         }
 
+        setupScrollView()
+
+        showHint(true)
         setupTitleTextField()
         tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), coverTitle)
 
         updateViewState()
+
+        flCropSize.doOnLayout { flCrop ->
+            clCropParent.layoutParams.height = flCrop.measuredHeight
+
+            ivCoverImage.doOnPreDraw {
+                ivCoverImage.layoutParams.height = flCrop.measuredHeight
+                ivCoverImage.layoutParams.width = flCrop.measuredWidth
+
+                ivCoverImage.invalidate()
+                ivCoverImage.requestLayout()
+            }
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        keyboardWatcher.unlisten(rootView)
+        etCoverTitle.clearFocus()
     }
 
     fun show() {
@@ -174,7 +215,8 @@ class CoverSetupPartialView(
         etCoverTitle.setOnFocusChangeListener { _, hasFocus ->
             updateTitleCounter(coverTitle)
             updateTextField(coverTitle)
-            if (hasFocus) tvCoverTitleCounter.visible() else tvCoverTitleCounter.invisible()
+            showHint(!hasFocus)
+            showCounter(hasFocus)
         }
         etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(mMaxTitleChars))
     }
@@ -198,6 +240,26 @@ class CoverSetupPartialView(
         }
 
         return spanBuilder
+    }
+
+    private fun showHint(shouldShow: Boolean) {
+        etCoverTitle.hint =
+                if (shouldShow) getString(R.string.play_prepare_cover_title_default_title_placeholder)
+                else ""
+    }
+    
+    private fun showCounter(shouldShow: Boolean) {
+        if (shouldShow) tvCoverTitleCounter.visible() else tvCoverTitleCounter.invisible()
+    }
+
+    private fun stabilizeScroll(shouldStabilize: Boolean) {
+        if (shouldStabilize) slCropParent.smoothScrollTo(0, 0)
+        else slCropParent.smoothScrollTo(0, slCropParent.bottom)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupScrollView() {
+        slCropParent.setOnTouchListener { _, _ -> true }
     }
 
     interface Listener {
