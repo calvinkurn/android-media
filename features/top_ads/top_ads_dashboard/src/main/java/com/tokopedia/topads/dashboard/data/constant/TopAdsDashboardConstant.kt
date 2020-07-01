@@ -40,24 +40,15 @@ object TopAdsDashboardConstant {
     const val SOURCE_DASH = "dashboard"
     const val ACTION_MOVE = "move_group"
     const val AD_ID = "ads"
-    const val KEYWORD_TYPE_PHRASE = 11
-    const val KEYWORD_TYPE_EXACT = 21
-    const val KEYWORD_TYPE_NEGATIVE_PHRASE = 12
-    const val KEYWORD_TYPE_NEGATIVE_EXACT = 22
     const val TIDAK_DIBATASI = "Tidak Dibatasi"
     const val GROUP_ID = "group_id"
-    const val PRICE_DAILY = "daily_budget"
-    const val GROUP_STATUS = "group_status"
     const val PRICE_SPEND = "price_spent"
     const val NOT_VALID = "Rp 0"
-    const val IS_ACTIVE = "is_active"
     const val GROUP_NAME = "group_name"
     const val GROUP_TOTAL = "group_total"
     const val GROUPID = "groupId"
     const val GROUPNAME = "groupName"
-    const val GROUPSTATUS = "status"
     const val PRICEBID = "price_bid"
-    const val PRICEDAILY = "price_daily"
     const val CUSTOM_DATE = 5
     const val DATE_RANGE_PRODUK = "dateRangeSelectedProduct"
     const val DATE_RANGE_BERANDA = "dateRangeSelectedBeranda"
@@ -83,4 +74,6 @@ object TopAdsDashboardConstant {
     const val AUTO_ADS_DISABLED = 111
     const val STATUS_ACTIVE = 1
     const val STATUS_TIDAK_TAMPIL = 2
+    const val TAB_POSITION = "tab_position"
+
 }

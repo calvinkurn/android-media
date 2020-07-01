@@ -30,7 +30,7 @@ class NonGroupItemsItemViewHolder(val view: View,
         var LAYOUT = R.layout.topads_dash_item_non_group_card
     }
 
-    override fun bind(item: NonGroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: NonGroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
         item.let {
             when (it.data.adStatusDesc) {
 
@@ -58,14 +58,18 @@ class NonGroupItemsItemViewHolder(val view: View,
             view.label.text = it.data.adStatusDesc
             ImageLoader.LoadImage(view.product_img, it.data.productImageUri)
             view.product_name.text = it.data.productName
-            view.tampil_count.text = it.data.statTotalImpression
-            view.klik_count.text = it.data.statTotalClick
-            view.persentase_klik_count.text = it.data.statTotalCtr
-            view.pengeluaran_count.text = it.data.statTotalSpent
-            view.pendapatan_count.text = it.data.statTotalGrossProfit
-            view.produk_terjual_count.text = it.data.statTotalSold
             setProgressBar(it.data)
             view.check_box.isChecked = item.isChecked
+
+            if(statsData.isNotEmpty()){
+                view.tampil_count.text = statsData[adapterPosition].statTotalImpression
+                view.klik_count.text = statsData[adapterPosition].statTotalClick
+                view.persentase_klik_count.text = statsData[adapterPosition].statTotalCtr
+                view.pengeluaran_count.text = statsData[adapterPosition].statTotalSpent
+                view.pendapatan_count.text = statsData[adapterPosition].statTotalGrossProfit
+                view.produk_terjual_count.text = statsData[adapterPosition].statTotalSold
+
+            }
 
             if (!view.check_box.isChecked) {
                 view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))

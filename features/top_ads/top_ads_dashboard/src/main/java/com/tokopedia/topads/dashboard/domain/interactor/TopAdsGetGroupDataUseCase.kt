@@ -6,10 +6,10 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.END_DATE
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.internal.ParamObject.PAGE
 import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
-import com.tokopedia.topads.common.data.internal.ParamObject.SINGLE_ROW
 import com.tokopedia.topads.common.data.internal.ParamObject.SORT
 import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
@@ -34,7 +34,7 @@ class TopAdsGetGroupDataUseCase @Inject constructor(graphqlRepository: GraphqlRe
         queryMap[START_DATE] = startDate
         queryMap[END_DATE] = endDate
         queryMap[STATUS] = status
-        queryMap[SINGLE_ROW] = "1"/*for keyword count*/
+        queryMap[GROUP_TYPE] = 1
         setRequestParams(mapOf(QUERY_INPUT to queryMap))
     }
 
@@ -42,7 +42,6 @@ class TopAdsGetGroupDataUseCase @Inject constructor(graphqlRepository: GraphqlRe
             .Builder(CacheType.CLOUD_THEN_CACHE).build()
 
     fun executeQuerySafeMode(onSuccess: (GroupItemResponse) -> Unit, onError: (Throwable) -> Unit) {
-        8
         setTypeClass(GroupItemResponse::class.java)
         setCacheStrategy(cacheStrategy)
         execute({

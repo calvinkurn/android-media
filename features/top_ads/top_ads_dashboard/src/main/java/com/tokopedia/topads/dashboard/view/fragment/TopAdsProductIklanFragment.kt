@@ -40,6 +40,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.AdStatusResponse
 import com.tokopedia.topads.dashboard.data.model.AutoAdsResponse
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
@@ -59,7 +60,9 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.loader
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_product_iklan_empty_view.*
@@ -77,7 +80,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private var datePickerSheet: DatePickerSheet? = null
     private var groupPagerAdapter: GroupNonGroupPagerAdapter? = null
     private lateinit var autoAdsAdapter: AutoAdsItemsListAdapter
-
+    private var currentPageNum = 1
     private var collapseStateCallBack: AppBarAction? = null
     private val SEVEN_DAYS_RANGE_INDEX = 2
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
@@ -240,9 +243,9 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (currentPage < totalPage) {
-                    currentPage++
-                    fetchNextPage(currentPage)
+                if (currentPageNum < totalPage) {
+                    currentPageNum++
+                    fetchNextPage(currentPageNum)
                 }
             }
         }
@@ -322,6 +325,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun fetchData() {
+        currentPageNum = 1
         autoAdsAdapter.items.clear()
         autoAdsAdapter.notifyDataSetChanged()
         topAdsDashboardPresenter.getGroupProductData(resources, 1, null, searchBar?.searchBarTextField?.text.toString(),
@@ -412,17 +416,26 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {
         totalCount = response.meta.page.total
-        totalPage = totalCount / response.meta.page.perPage
+        totalPage = (totalCount / response.meta.page.perPage) + 1
+        loader.visibility = View.GONE
+        val adIds: MutableList<String> = mutableListOf()
         response.data.forEach {
+            adIds.add(it.adId.toString())
             autoAdsAdapter.items.add(AutoAdsItemsItemViewModel(it))
         }
-        autoAdsAdapter.notifyDataSetChanged()
+        if (adIds.isNotEmpty()) {
+            topAdsDashboardPresenter.getProductStats(resources, format.format(startDate), format.format(endDate), adIds, ::OnSuccessStats)
+        }
         if (!groupFilterSheet.getFilterCount().isZero()) {
             filterCount.visibility = View.VISIBLE
             filterCount.text = groupFilterSheet.getFilterCount().toString()
         } else
             filterCount.visibility = View.GONE
         groupFilterSheet.removeStatusFilter()
+    }
+
+    private fun OnSuccessStats(stats: GetDashboardProductStatistics) {
+        autoAdsAdapter.setstatistics(stats.data)
     }
 
     private fun onEmptyResult() {

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.auto.view.widget
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -78,21 +79,26 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
     }
 
     private fun renderUI() {
-        widgetViewModel.autoAdsData.observe(context as BaseActivity, Observer {
-            currentBudget = it.dailyBudget
-            if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-                widgetViewModel.getNotDeliveredReason(userSession.shopId)
-            } else
-                setUiComponent(it.status, it.dailyUsage)
-        })
-        widgetViewModel.adsDeliveryStatus.observe(context as BaseActivity, Observer {
-            if (it.status == 2)
-                setUi(it.statusDetail)
-        })
-        widgetViewModel.autoAdsStatus.observe(context as BaseActivity, Observer {
-            (context as BaseActivity).setResult(AUTO_ADS_DISABLED)
-            (context as BaseActivity).finish()
-        })
+        try {
+            widgetViewModel.autoAdsData.observe(context as BaseActivity, Observer {
+                currentBudget = it.dailyBudget
+                if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+                    widgetViewModel.getNotDeliveredReason(userSession.shopId)
+                } else
+                    setUiComponent(it.status, it.dailyUsage)
+            })
+            widgetViewModel.adsDeliveryStatus.observe(context as BaseActivity, Observer {
+                if (it.status == 2)
+                    setUi(it.statusDetail)
+            })
+            widgetViewModel.autoAdsStatus.observe(context as BaseActivity, Observer {
+                (context as BaseActivity).setResult(Activity.RESULT_OK)
+                (context as BaseActivity).finish()
+            })
+        }
+        catch (e:Exception){
+
+        }
     }
 
     private fun setUiComponent(status: Int, dailyUsage: Int) {
@@ -286,9 +292,14 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
     }
 
     private fun initView(context: Context) {
-        getComponent(context).inject(this)
-        View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
-        baseLayout = findViewById(R.id.base_layout)
+        try {
+            getComponent(context).inject(this)
+            View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
+            baseLayout = findViewById(R.id.base_layout)
+        }
+        catch (e:Exception){
+
+        }
     }
 
     private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()

@@ -8,6 +8,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NOT_VALID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.groupitem.DataItem
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
@@ -31,7 +32,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         var LAYOUT = R.layout.topads_dash_item_with_group_card
     }
 
-    override fun bind(item: GroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: GroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
 
             if (selectedMode) {
@@ -57,17 +58,24 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             }
             view.group_title.text = it.data.groupName
             view.label.text = it.data.groupStatusDesc
-            view.tampil_count.text = it.data.statTotalImpression
-            view.klik_count.text = it.data.statTotalClick
-            view.persentase_klik_count.text = it.data.statTotalCtr
-            view.pengeluaran_count.text = it.data.statTotalSpent
-            view.pendapatan_count.text = it.data.statTotalConversion
-            view.produk_terjual_count.text = it.data.statTotalSold
-            view.total_item.text = it.data.totalItem.toString()
-            view.key_count.text = it.data.totalKeyword.toString()
+//            view.tampil_count.text = it.data.statTotalImpression
+//            view.klik_count.text = it.data.statTotalClick
+
+            if(countList.isNotEmpty() && adapterPosition < countList.size) {
+                view.total_item.text = countList[adapterPosition].totalAds.toString()
+                view.key_count.text = countList[adapterPosition].totalKeywords.toString()
+            }
             setProgressBar(it.data)
-
-
+            statsData.forEachIndexed { index, stats ->
+                if (stats.groupId == it.data.groupId) {
+                    view.tampil_count.text = statsData[index].statTotalImpression
+                    view.klik_count.text = statsData[index].statTotalClick
+                    view.persentase_klik_count.text = statsData[index].statTotalCtr
+                    view.pengeluaran_count.text = statsData[index].statTotalSpent
+                    view.pendapatan_count.text = statsData[index].statTotalConversion
+                    view.produk_terjual_count.text = statsData[index].statTotalSold
+                }
+            }
             view.item_card?.setOnClickListener { _ ->
                 if (!selectedMode) {
                     if (item.data.groupPriceDailyBar.isNotEmpty())

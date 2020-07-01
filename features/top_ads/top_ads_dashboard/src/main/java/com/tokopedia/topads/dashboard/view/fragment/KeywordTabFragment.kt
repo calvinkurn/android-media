@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +10,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
@@ -19,6 +22,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPTY_SEARCH_VIEW
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -48,10 +52,15 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private lateinit var adapter: KeywordAdapter
     private var deleteCancel = false
     private var singleAction = false
-
+    private var currentPageNum = 1
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
+    private var totalCount = 0
+    private var totalPage = 0
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -83,6 +92,42 @@ class KeywordTabFragment : BaseDaggerFragment() {
         adapter = KeywordAdapter(KeywordAdapterTypeFactoryImpl(::onCheckedChange, ::setSelectMode, ::startEditActivity))
     }
 
+    override fun initInjector() {
+        getComponent(TopAdsDashboardComponent::class.java).inject(this)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_keyword_list), container, false)
+        recyclerView = view.findViewById(R.id.key_list)
+        setAdapterView()
+        return view
+    }
+
+    private fun setAdapterView() {
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewScrollListener = onRecyclerViewListener()
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = layoutManager
+        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (currentPageNum < totalPage) {
+                    currentPageNum++
+                    fetchNextPage(currentPageNum)
+                }
+            }
+        }
+    }
+
+    private fun fetchNextPage(currentPage: Int) {
+        viewModel.getGroupKeywordData(resources, 1, arguments?.getInt(GROUP_ID)
+                ?: 0, searchBar.searchBarTextField.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), currentPage, ::onSuccessKeyword, ::onEmpty)
+    }
+
     private fun onCheckedChange(pos: Int, isChecked: Boolean) {
         singleAction = true
         val actionActivate: String = if (isChecked)
@@ -111,14 +156,6 @@ class KeywordTabFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun initInjector() {
-        getComponent(TopAdsDashboardComponent::class.java).inject(this)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_keyword_list), container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnFilter.setOnClickListener {
@@ -136,14 +173,16 @@ class KeywordTabFragment : BaseDaggerFragment() {
         Utils.setSearchListener(context, view, ::fetchData)
         btnAddItem.setOnClickListener {
             startEditActivity()
-
         }
-        key_list?.adapter = adapter
-        key_list?.layoutManager = LinearLayoutManager(context)
+    }
+
+    private fun successCount(list: List<CountDataItem>) {
+        totalCount = list[0].totalKeywords
     }
 
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+            putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
             putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(GROUP_ID).toString())
             putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
         }
@@ -153,7 +192,8 @@ class KeywordTabFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE) {
-            fetchData()
+            if (resultCode == Activity.RESULT_OK)
+                fetchData()
         }
     }
 
@@ -180,12 +220,14 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        viewModel.getCountProductKeyword(resources, listOf(arguments?.getInt(GROUP_ID).toString()),::successCount)
+        currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
         viewModel.getGroupKeywordData(resources, 1, arguments?.getInt(GROUP_ID)
                 ?: 0, searchBar.searchBarTextField.text.toString(), groupFilterSheet.getSelectedSortId(),
-                groupFilterSheet.getSelectedStatusId(), ::onSuccessKeyword, ::onEmpty)
+                groupFilterSheet.getSelectedStatusId(), currentPageNum, ::onSuccessKeyword, ::onEmpty)
     }
 
     private fun getAdIds(): MutableList<String> {
@@ -196,14 +238,16 @@ class KeywordTabFragment : BaseDaggerFragment() {
         return ads
     }
 
-    private fun onSuccessKeyword(data: List<KeywordsResponse.GetTopadsDashboardKeywords.DataItem>) {
+    private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
+        //     totalCount = response.meta.page.total
+        totalPage = (totalCount / response.meta.page.perPage) + 1
         loader.visibility = View.GONE
-        data.forEach { result ->
+        response.data.forEach { result ->
             adapter.items.add(KeywordItemViewModel(result))
         }
         adapter.notifyDataSetChanged()
         setFilterCount()
-        (activity as TopAdsGroupDetailViewActivity).setKeywordCount(adapter.itemCount)
+        (activity as TopAdsGroupDetailViewActivity).setKeywordCount(totalCount)
     }
 
     private fun setFilterCount() {
@@ -239,7 +283,8 @@ class KeywordTabFragment : BaseDaggerFragment() {
                 delay(TOASTER_DURATION)
                 if (!deleteCancel) {
                     viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
-                    activity?.setResult(TopAdsDashboardConstant.GROUP_UPDATED)
+                    activity?.setResult(Activity.RESULT_OK)
+
                 }
                 deleteCancel = false
                 setSelectMode(false)

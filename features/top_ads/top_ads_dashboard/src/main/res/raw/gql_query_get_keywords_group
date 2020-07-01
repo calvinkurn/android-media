@@ -1,5 +1,13 @@
 query GetTopadsDashboardKeywords($queryInput :  GetTopadsDashboardKeywordsInputType!){
   GetTopadsDashboardKeywords(queryInput: $queryInput) {
+        meta {
+          page {
+            min
+            per_page
+            max
+            current
+          }
+        }
     data {
       keyword_id
       keyword_tag

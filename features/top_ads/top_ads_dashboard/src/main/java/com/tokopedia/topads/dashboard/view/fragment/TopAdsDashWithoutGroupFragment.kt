@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -58,6 +60,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private lateinit var recyclerView: RecyclerView
     private var totalCount = 0
     private var totalPage = 0
+    private var currentPageNum = 1
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -101,9 +104,9 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (currentPage < totalPage) {
-                    currentPage++
-                    fetchNextPage(currentPage)
+                if (currentPageNum < totalPage) {
+                    currentPageNum++
+                    fetchNextPage(currentPageNum)
                 }
             }
         }
@@ -144,7 +147,8 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == TopAdsDashboardConstant.EDIT_WITHOUT_GROUP_REQUEST_CODE) {
-            fetchData()
+            if(resultCode == Activity.RESULT_OK)
+                fetchData()
         }
     }
 
@@ -284,14 +288,24 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {
         totalCount = response.meta.page.total
-        totalPage = totalCount / response.meta.page.perPage
+        totalPage = (totalCount / response.meta.page.perPage) + 1
         loader.visibility = View.GONE
+        val adIds: MutableList<String> = mutableListOf()
         response.data.forEach {
+            adIds.add(it.adId.toString())
             adapter.items.add(NonGroupItemsItemViewModel(it))
         }
-        adapter.notifyDataSetChanged()
+        if (adIds.isNotEmpty()) {
+            val startDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
+            val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
+            topAdsDashboardPresenter.getProductStats(resources, startDate, endDate, adIds, ::OnSuccessStats)
+        }
         (parentFragment as TopAdsProductIklanFragment).setNonGroupCount(totalCount)
         setFilterCount()
+    }
+
+    private fun OnSuccessStats(stats: GetDashboardProductStatistics) {
+        adapter.setstatistics(stats.data)
     }
 
     private fun setFilterCount() {
@@ -303,6 +317,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()

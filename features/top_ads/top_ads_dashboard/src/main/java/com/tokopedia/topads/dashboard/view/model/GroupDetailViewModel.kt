@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.domain.interactor.*
@@ -34,14 +36,16 @@ class GroupDetailViewModel @Inject constructor(
         private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
         private val topAdsKeywordsActionUseCase: TopAdsKeywordsActionUseCase,
         private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
+        private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
+        private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
         private val groupInfoUseCase: GroupInfoUseCase,
         private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
-    fun getGroupProductData(resources: Resources, page:Int, groupId: Int, search: String, sort: String, status: Int?,
-                            startDate:String, endDate:String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
+    fun getGroupProductData(resources: Resources, page: Int, groupId: Int, search: String, sort: String, status: Int?,
+                            startDate: String, endDate: String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
         topAdsGetGroupProductDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.query_get_group_products_dashboard))
-        topAdsGetGroupProductDataUseCase.setParams(groupId, page,search, sort, status,startDate,endDate)
+        topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
         topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
                 {
                     if (it.topadsDashboardGroupProducts.data.isEmpty()) {
@@ -68,16 +72,42 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
-    fun getGroupKeywordData(resources: Resources, isPositive: Int, group: Int, search: String, sort: String?, status: Int?, onSuccess: ((List<KeywordsResponse.GetTopadsDashboardKeywords.DataItem>) -> Unit), onEmpty: (() -> Unit)) {
+    fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: ((GetDashboardProductStatistics) -> Unit)) {
+        topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_product_statistics))
+        topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds)
+        topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.getDashboardProductStatistics)
+                },
+                {
+                    it.printStackTrace()
+                })
+    }
+
+    fun getGroupKeywordData(resources: Resources, isPositive: Int, group: Int, search: String, sort: String?, status: Int?, page: Int, onSuccess: ((KeywordsResponse.GetTopadsDashboardKeywords) -> Unit), onEmpty: (() -> Unit)) {
         topAdsGetAdKeywordUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_get_keywords_group))
-        topAdsGetAdKeywordUseCase.setParams(isPositive, group, search, sort, status)
+        topAdsGetAdKeywordUseCase.setParams(isPositive, group, search, sort, status, page)
         topAdsGetAdKeywordUseCase.executeQuerySafeMode(
                 {
                     if (it.getTopadsDashboardKeywords.data.isEmpty()) {
                         onEmpty()
                     } else
-                        onSuccess(it.getTopadsDashboardKeywords.data)
+                        onSuccess(it.getTopadsDashboardKeywords)
+                },
+                {
+                    it.printStackTrace()
+                })
+    }
+
+    fun getCountProductKeyword(resources: Resources, groupIds: List<String>, onSuccess: ((List<CountDataItem>) -> Unit)) {
+        topAdsGetProductKeyCountUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_total_products_keywords))
+        topAdsGetProductKeyCountUseCase.setParams(groupIds)
+        topAdsGetProductKeyCountUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.topAdsGetTotalAdsAndKeywords.data)
                 },
                 {
                     it.printStackTrace()
@@ -161,9 +191,9 @@ class GroupDetailViewModel @Inject constructor(
         topAdsProductActionUseCase.cancelJobs()
         topAdsGetGroupListUseCase.cancelJobs()
         topAdsGroupActionUseCase.cancelJobs()
+        topAdsGetProductStatisticsUseCase.cancelJobs()
+        topAdsGetProductKeyCountUseCase.cancelJobs()
     }
-
-
 }
 
 

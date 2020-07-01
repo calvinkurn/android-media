@@ -37,7 +37,8 @@
             app:layout_constraintStart_toEndOf="@id/img"
             app:layout_constraintTop_toTopOf="@id/img"
             app:typographyType="heading_6"
-            tools:text="sepatu" />
+            tools:text="sepatu"
+            android:layout_marginRight="@dimen/dp_4" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
             android:id="@+id/btn_switch"

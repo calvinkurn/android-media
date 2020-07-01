@@ -1,5 +1,6 @@
 package com.tokopedia.topads.edit.view.fragment.edit
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -136,7 +137,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
         save_butt.setOnClickListener {
             viewModel.editSingleAd(adId.toString(), replace(budget.textFieldInput.text.toString()).toFloat(),
                     replace(daily_budget.textFieldInput.text.toString()).toFloat())
-            activity?.setResult(EDIT_WITHOUT_GROUP_REQUEST_CODE)
+            activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
     }

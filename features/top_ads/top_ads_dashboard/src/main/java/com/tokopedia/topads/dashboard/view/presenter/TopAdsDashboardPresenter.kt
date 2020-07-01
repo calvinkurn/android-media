@@ -11,9 +11,15 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.topads.auto.data.network.response.TopAdsShopInfo
+import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
+import com.tokopedia.topads.auto.internal.RawQueryKeyObject
+import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositUseCase
@@ -22,7 +28,10 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.groupitem.DataItem
+import com.tokopedia.topads.dashboard.data.model.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.dashboard.data.model.groupitem.GroupItemResponse
+import com.tokopedia.topads.dashboard.data.model.groupitem.GroupStatisticsResponse
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.domain.interactor.*
@@ -32,6 +41,8 @@ import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import timber.log.Timber
 import java.util.*
@@ -48,6 +59,9 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             private val topAdsAddSourceTaggingUseCase: TopAdsAddSourceTaggingUseCase,
             private val deleteTopAdsStatisticsUseCase: DeleteTopAdsStatisticsUseCase,
             private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
+            private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
+            private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
+            private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
             private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
             private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
             private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
@@ -84,25 +98,55 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                 })
     }
 
-    override fun detachView() {
-        super.detachView()
-        topAdsGetShopDepositUseCase.unsubscribe()
-        gqlGetShopInfoUseCase.cancelJobs()
-        topAdsGetStatisticsUseCase.unsubscribe()
-        topAdsAddSourceTaggingUseCase.unsubscribe()
-        deleteTopAdsStatisticsUseCase.unsubscribe()
-        topAdsGetGroupDataUseCase.cancelJobs()
-        topAdsGetGroupProductDataUseCase.cancelJobs()
-    }
-
-    fun getGroupData(resources: Resources,page:Int, search: String, sort: String, status: Int?,
-                     startDate:String,endDate:String, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
+    fun getGroupData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
+                     startDate: String, endDate: String, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
         topAdsGetGroupDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.query_get_groups_dashboard))
-        topAdsGetGroupDataUseCase.setParams(search,page, sort, status,startDate,endDate)
+        topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate)
         topAdsGetGroupDataUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.getTopadsDashboardGroups)
+                },
+                {
+                    it.printStackTrace()
+                })
+    }
+
+
+    fun getGroupStatisticsData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
+                               startDate: String, endDate: String, groupIds: List<String>, onSuccess: ((GetTopadsDashboardGroupStatistics) -> Unit)) {
+        topAdsGetGroupStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_group_statistics))
+        topAdsGetGroupStatisticsUseCase.setParams(search, page, sort, status, startDate, endDate, groupIds)
+        topAdsGetGroupStatisticsUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.getTopadsDashboardGroupStatistics)
+                },
+                {
+                    it.printStackTrace()
+                })
+    }
+
+    fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: ((GetDashboardProductStatistics) -> Unit)) {
+        topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_product_statistics))
+        topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds)
+        topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.getDashboardProductStatistics)
+                },
+                {
+                    it.printStackTrace()
+                })
+    }
+
+    fun getCountProductKeyword(resources: Resources, groupIds: List<String>, onSuccess: ((List<CountDataItem>) -> Unit)) {
+        topAdsGetProductKeyCountUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_total_products_keywords))
+        topAdsGetProductKeyCountUseCase.setParams(groupIds)
+        topAdsGetProductKeyCountUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.topAdsGetTotalAdsAndKeywords.data)
                 },
                 {
                     it.printStackTrace()
@@ -152,11 +196,11 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
     }
 
 
-    fun getGroupProductData(resources: Resources,page:Int, groupId: Int?,
-                            search: String, sort: String, status: Int?,startDate:String,endDate:String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
+    fun getGroupProductData(resources: Resources, page: Int, groupId: Int?,
+                            search: String, sort: String, status: Int?, startDate: String, endDate: String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
         topAdsGetGroupProductDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.query_get_group_products_dashboard))
-        topAdsGetGroupProductDataUseCase.setParams(groupId,page, search, sort, status,startDate,endDate)
+        topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
         topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
                 {
                     if (it.topadsDashboardGroupProducts.data.isEmpty()) {
@@ -169,6 +213,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
                 })
     }
+
 
     fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
         topAdsGetStatisticsUseCase.execute(TopAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
@@ -322,5 +367,19 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                 }
             }
         })
+    }
+
+    override fun detachView() {
+        super.detachView()
+        topAdsGetShopDepositUseCase.unsubscribe()
+        gqlGetShopInfoUseCase.cancelJobs()
+        topAdsGetStatisticsUseCase.unsubscribe()
+        topAdsAddSourceTaggingUseCase.unsubscribe()
+        deleteTopAdsStatisticsUseCase.unsubscribe()
+        topAdsGetGroupDataUseCase.cancelJobs()
+        topAdsGetGroupProductDataUseCase.cancelJobs()
+        topAdsGetGroupStatisticsUseCase.cancelJobs()
+        topAdsGetProductKeyCountUseCase.cancelJobs()
+        topAdsGetProductStatisticsUseCase.cancelJobs()
     }
 }

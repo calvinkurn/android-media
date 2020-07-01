@@ -80,6 +80,7 @@ object Constants {
     const val priceBid = "price_bid"
     const val priceDaily = "price_daily"
     const val groupName = "groupName"
+    const val TAB_POSITION = "tab_position"
 
 
     var locale = Locale("in", "ID")

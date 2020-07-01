@@ -3,39 +3,12 @@ query GetTopadsDashboardGroupStatistics($queryInput: GetTopadsDashboardGroupStat
     separate_statistic
     meta {
       page {
-        min
         per_page
-        max
         current
       }
     }
-    page {
-      per_page
-    }
     data {
       group_id
-      total_item
-      total_item_fmt
-      total_keyword
-      total_keyword_fmt
-      group_status
-      group_status_desc
-      group_status_toogle
-      group_price_bid_fmt
-      group_price_bid
-      group_price_daily
-      group_price_daily_fmt
-      group_price_daily_spent_fmt
-      group_price_daily_bar
-      group_editable
-      group_start_date
-      group_start_time
-      group_end_date
-      group_end_time
-      group_moderated
-      group_moderated_reason
-      group_name
-      group_type
       stat_avg_click
       stat_total_spent
       stat_total_impression
@@ -43,49 +16,6 @@ query GetTopadsDashboardGroupStatistics($queryInput: GetTopadsDashboardGroupStat
       stat_total_ctr
       stat_total_conversion
       stat_total_sold
-      stat_avg_position
-      stat_avg_position_fmt
-      stat_max_position
-      stat_low_bid_alert
-      label_edit
-      label_per_click
-      label_of
-      topads_statistic {
-        type
-        status
-        status_desc
-        status_toggle
-        stat_spent
-        stat_impression
-        stat_click
-        stat_ctr
-        stat_conversion
-        stat_sold
-        cpc
-        impression
-        click
-        conversion
-        group_id
-        limit_budget
-      }
-      google_statistic {
-        type
-        status
-        status_desc
-        status_toggle
-        stat_spent
-        stat_impression
-        stat_click
-        stat_ctr
-        stat_conversion
-        stat_sold
-        cpc
-        impression
-        click
-        conversion
-        group_id
-        limit_budget
-      }
     }
   }
 }

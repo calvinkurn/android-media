@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsEmptyViewModel
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 
@@ -17,7 +18,7 @@ class NonGroupItemsEmptyViewHolder(val view: View) : NonGroupItemsViewHolder<Non
         val LAYOUT = R.layout.topads_dash_group_empty_state
     }
 
-    override fun bind(item: NonGroupItemsEmptyViewModel, selectedMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: NonGroupItemsEmptyViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
         item.let {
             view.btn_submit.visibility = View.GONE
             if (!fromSearch) {

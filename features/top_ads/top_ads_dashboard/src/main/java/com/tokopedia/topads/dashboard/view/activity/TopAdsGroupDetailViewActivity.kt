@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -107,7 +108,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         this.run { TopAdsStatisticPagerAdapter(this, supportFragmentManager, fragmentList) }
     }
 
-    protected val currentStatisticsFragment: TopAdsDashboardStatisticFragment?
+    private val currentStatisticsFragment: TopAdsDashboardStatisticFragment?
         get() = pagerAdapter?.instantiateItem(pager, topAdsTabAdapter?.selectedTabPosition
                 ?: 0) as? TopAdsDashboardStatisticFragment
 
@@ -162,6 +163,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         header_toolbar.addRightIcon(R.drawable.topads_edit_pen_icon).setOnClickListener {
 
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+                putExtra(TopAdsDashboardConstant.TAB_POSITION,2)
                 putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
                 putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
             }
@@ -230,7 +232,8 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_GROUP_REQUEST_CODE) {
-            loadData()
+            if(resultCode == Activity.RESULT_OK)
+                loadData()
         }
     }
 
@@ -398,6 +401,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        setResult(Activity.RESULT_OK)
         when {
             isChecked -> viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId.toString()), resources)
             else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId.toString()), resources)

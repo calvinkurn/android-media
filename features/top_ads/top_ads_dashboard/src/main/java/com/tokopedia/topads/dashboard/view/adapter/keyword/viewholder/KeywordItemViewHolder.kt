@@ -27,7 +27,7 @@ class KeywordItemViewHolder(val view: View,
     override fun bind(item: KeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean) {
         item.let {
             if (selectMode) {
-                view.btn_switch.visibility = View.GONE
+                view.btn_switch.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE
             } else {
                 view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))

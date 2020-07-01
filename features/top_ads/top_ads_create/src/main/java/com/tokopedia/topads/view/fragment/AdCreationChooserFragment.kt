@@ -1,5 +1,6 @@
 package com.tokopedia.topads.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -150,7 +151,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AUTO_ADS_DISABLED) {
-            activity?.setResult(AUTO_ADS_DISABLED)
+            activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
         viewModel.getAutoAdsStatus(this::onSuccessAutoAds)

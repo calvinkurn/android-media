@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class TopAdsGetAdKeywordUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<KeywordsResponse>(graphqlRepository) {
 
-    fun setParams(isPositive:Int,group:Int, search:String, sort:String?, status:Int?) {
+    fun setParams(isPositive:Int,group:Int, search:String, sort:String?, status:Int?,page:Int) {
         val map = HashMap<String, Any?>()
         map[ParamObject.SHOP_id] = userSession.shopId.toInt()
         map[ParamObject.GROUP] = group
@@ -23,6 +23,7 @@ class TopAdsGetAdKeywordUseCase @Inject constructor(graphqlRepository: GraphqlRe
         map[ParamObject.IS_POSTIVE] = isPositive
         map[ParamObject.SORT] = sort
         map[ParamObject.STATUS] = status
+        map[ParamObject.PAGE] = page
         setRequestParams(mapOf(ParamObject.QUERY_INPUT to map))
     }
     private val cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy

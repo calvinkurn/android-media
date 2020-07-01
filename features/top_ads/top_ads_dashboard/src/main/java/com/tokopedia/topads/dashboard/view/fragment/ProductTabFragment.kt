@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -25,6 +26,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -67,6 +69,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     private lateinit var recyclerView: RecyclerView
     private var totalCount = 0
     private var totalPage = 0
+    private var currentPageNum = 1
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -129,9 +132,9 @@ class ProductTabFragment : BaseDaggerFragment() {
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (currentPage < totalPage) {
-                    currentPage++
-                    fetchNextPage(currentPage)
+                if (currentPageNum < totalPage) {
+                    currentPageNum++
+                    fetchNextPage(currentPageNum)
                 }
             }
         }
@@ -187,6 +190,7 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+            putExtra(TopAdsDashboardConstant.TAB_POSITION,0)
             putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
             putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
         }
@@ -196,7 +200,8 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE) {
-            fetchData()
+            if(resultCode == Activity.RESULT_OK)
+                fetchData()
         }
     }
 
@@ -279,6 +284,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
@@ -292,14 +298,29 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     private fun onProductFetch(response: NonGroupResponse.TopadsDashboardGroupProducts) {
         totalCount = response.meta.page.total
-        totalPage = totalCount / response.meta.page.perPage
+        totalPage = (totalCount / response.meta.page.perPage)  + 1
         loader.visibility = View.GONE
+        if (searchBar?.searchBarTextField?.text.toString().isEmpty()
+                && groupFilterSheet.getSelectedSortId() == ""
+                && groupFilterSheet.getSelectedStatusId() == null) {
+            totalProductCount = totalCount
+        }
+        val adIds: MutableList<String> = mutableListOf()
         response.data.forEach {
+            adIds.add(it.adId.toString())
             adapter.items.add(ProductItemViewModel(it))
         }
-        adapter.notifyDataSetChanged()
+        if(adIds.isNotEmpty()) {
+            val startDate = getDateCallBack?.getStartDate() ?: ""
+            val endDate = getDateCallBack?.getEndDate() ?: ""
+            viewModel.getProductStats(resources, startDate, endDate, adIds, ::onSuccessStats)
+        }
         setFilterCount()
         (activity as TopAdsGroupDetailViewActivity).setProductCount(totalCount)
+    }
+
+    private fun onSuccessStats(stats: GetDashboardProductStatistics) {
+        adapter.setstatistics(stats.data)
     }
 
     private fun setFilterCount() {
@@ -318,7 +339,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun performAction(actionActivate: String, selectedFilter: String?) {
-        activity?.setResult(GROUP_UPDATED)
+        activity?.setResult(Activity.RESULT_OK)
         when (actionActivate) {
             ACTION_DELETE -> {
                 view.let {

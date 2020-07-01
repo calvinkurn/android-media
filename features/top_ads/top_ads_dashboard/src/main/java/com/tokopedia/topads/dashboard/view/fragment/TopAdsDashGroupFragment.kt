@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +23,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.dashboard.data.model.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.dashboard.data.model.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
@@ -35,6 +38,9 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.actionbar
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.loader
+import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.coroutines.CoroutineScope
@@ -61,7 +67,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private lateinit var recyclerView: RecyclerView
     private var totalCount = 0
     private var totalPage = 0
-    private var currentPage = 0
+    private var currentPageNum = 1
 
     override fun getScreenName(): String {
         return TopAdsDashGroupFragment::class.java.name
@@ -92,6 +98,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
 
     private fun editGroup(groupId: Int, groupName: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+            putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
             putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
             putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
         }
@@ -108,7 +115,8 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_GROUP_REQUEST_CODE || requestCode == GROUP_UPDATED) {
-            fetchData()
+            if(resultCode == Activity.RESULT_OK)
+                fetchData()
         }
     }
 
@@ -124,9 +132,9 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (currentPage < totalPage) {
-                    currentPage++
-                    fetchNextPage(currentPage)
+                if (currentPageNum < totalPage) {
+                    currentPageNum++
+                    fetchNextPage(currentPageNum)
                 }
             }
         }
@@ -138,7 +146,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         topAdsDashboardPresenter.getGroupData(resources, currentPage, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
                 startDate, endDate,
-                this::onSuccessResult)
+                this::onSuccessGroupResult)
     }
 
     private fun statusChange(pos: Int, status: Int) {
@@ -220,22 +228,6 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         (parentFragment as TopAdsProductIklanFragment).setGroupCount(0)
     }
 
-    private fun onSuccessResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
-        loader.visibility = View.GONE
-        totalCount = response.meta.page.total
-        totalPage = totalCount / response.meta.page.perPage
-        response.data.forEach {
-            if (it.groupType == PRODUCT)
-                adapter.items.add(GroupItemsItemViewModel(it))
-        }
-        (parentFragment as TopAdsProductIklanFragment).setGroupCount(totalCount)
-        if (adapter.items.size.isZero()) {
-            onEmptyResult()
-        }
-        adapter.notifyDataSetChanged()
-        setFilterCount()
-    }
-
     private fun setFilterCount() {
         if (!groupFilterSheet.getFilterCount().isZero()) {
             filterCount.visibility = View.VISIBLE
@@ -245,6 +237,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
@@ -253,7 +246,38 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         topAdsDashboardPresenter.getGroupData(resources, 1, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
                 startDate, endDate,
-                this::onSuccessResult)
+                this::onSuccessGroupResult)
+    }
+
+    private fun onSuccessGroupResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
+        totalCount = response.meta.page.total
+        totalPage = (totalCount / response.meta.page.perPage) + 1
+        loader.visibility = View.GONE
+        val groupIds: MutableList<String> = mutableListOf()
+        response.data.forEach {
+            groupIds.add(it.groupId.toString())
+            adapter.items.add(GroupItemsItemViewModel(it))
+        }
+        (parentFragment as TopAdsProductIklanFragment).setGroupCount(totalCount)
+        if (adapter.items.size.isZero()) {
+            onEmptyResult()
+        } else if (groupIds.isNotEmpty()) {
+            val startDate = format.format((parentFragment as TopAdsProductIklanFragment).startDate)
+            val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
+            topAdsDashboardPresenter.getGroupStatisticsData(resources, 1, ",", "", 0,
+                    startDate, endDate, groupIds, ::onSuccessStatistics)
+            topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+        }
+        setFilterCount()
+    }
+
+    private fun onSuccessStatistics(statistics: GetTopadsDashboardGroupStatistics) {
+        adapter.setstatistics(statistics.data)
+    }
+
+    private fun onSuccessCount(countList: List<CountDataItem>) {
+        adapter.setItemCount(countList)
+        loader.visibility = View.GONE
     }
 
     private fun performAction(actionActivate: String) {

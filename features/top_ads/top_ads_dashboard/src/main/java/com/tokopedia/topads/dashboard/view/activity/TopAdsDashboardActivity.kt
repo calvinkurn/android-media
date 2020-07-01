@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -33,7 +34,7 @@ import javax.inject.Inject
 /**
  * Created by hadi.putra on 23/04/2018.
  */
-class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent> , TopAdsProductIklanFragment.AppBarAction {
+class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction {
 
     private var tracker: TopAdsDashboardTracking? = null
 
@@ -49,9 +50,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         header_toolbar?.actionTextView?.setOnClickListener {
             if (GlobalConfig.isSellerApp()) {
                 val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
-                startActivityForResult(intent,AUTO_ADS_DISABLED)
-            }
-            else {
+                startActivityForResult(intent, AUTO_ADS_DISABLED)
+            } else {
                 openDashboard()
             }
         }
@@ -75,14 +75,14 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         createAd.setOnClickListener {
             if (GlobalConfig.isSellerApp()) {
                 val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
-                startActivityForResult(intent,AUTO_ADS_DISABLED)
+                startActivityForResult(intent, AUTO_ADS_DISABLED)
             } else {
                 openDashboard()
             }
         }
         createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val height = createAd?.measuredHeight
-        view_pager?.setPadding(0, 0, 0, height?:0)
+        view_pager?.setPadding(0, 0, 0, height ?: 0)
 
         tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab?) {}
@@ -94,7 +94,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                     bottom.visibility = View.VISIBLE
                     createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
                     val height = createAd?.measuredHeight
-                    view_pager?.setPadding(0, 0, 0, height?:0)
+                    view_pager?.setPadding(0, 0, 0, height ?: 0)
                 } else {
                     bottom.visibility = View.GONE
                     view_pager?.setPadding(0, 0, 0, 0)
@@ -106,8 +106,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == AUTO_ADS_DISABLED){
-            renderTabAndViewPager()
+        if (requestCode == AUTO_ADS_DISABLED) {
+            if (resultCode == Activity.RESULT_OK)
+                renderTabAndViewPager()
         }
     }
 
@@ -178,10 +179,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     override fun setAppBarState(state: TopAdsProductIklanFragment.State?) {
-        if(state == TopAdsProductIklanFragment.State.COLLAPSED){
+        if (state == TopAdsProductIklanFragment.State.COLLAPSED) {
             app_bar_layout.setExpanded(false)
-        }
-        else if (state == TopAdsProductIklanFragment.State.EXPANDED){
+        } else if (state == TopAdsProductIklanFragment.State.EXPANDED) {
             app_bar_layout.setExpanded(true)
         }
     }

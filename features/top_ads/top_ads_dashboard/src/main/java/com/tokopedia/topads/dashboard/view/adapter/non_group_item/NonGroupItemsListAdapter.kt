@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder.NonGroupItemsViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsViewModel
@@ -15,6 +16,7 @@ class NonGroupItemsListAdapter(private val typeFactory: NonGroupItemsAdapterType
 
 
     var items: MutableList<NonGroupItemsViewModel> = mutableListOf()
+    var statsData: MutableList<WithoutGroupDataItem> = mutableListOf()
     var selectedMode = false
     var fromSearch = false
 
@@ -39,7 +41,7 @@ class NonGroupItemsListAdapter(private val typeFactory: NonGroupItemsAdapterType
     }
 
     override fun onBindViewHolder(holder: NonGroupItemsViewHolder<NonGroupItemsViewModel>, position: Int) {
-        holder.bind(items[position], selectedMode, fromSearch)
+        holder.bind(items[position], selectedMode, fromSearch ,statsData)
     }
 
     fun getSelectedItems(): MutableList<NonGroupItemsItemViewModel> {
@@ -67,6 +69,11 @@ class NonGroupItemsListAdapter(private val typeFactory: NonGroupItemsAdapterType
 
     fun setEmptyView(fromSearch: Boolean) {
         this.fromSearch = fromSearch
+        notifyDataSetChanged()
+    }
+
+    fun setstatistics(data: List<WithoutGroupDataItem>) {
+        statsData = data.toMutableList()
         notifyDataSetChanged()
     }
 

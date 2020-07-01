@@ -7,6 +7,7 @@ import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
+import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
 
@@ -24,7 +25,7 @@ class ProductItemViewHolder(val view: View,
         var LAYOUT = R.layout.topads_dash_item_non_group_card
     }
 
-    override fun bind(item: ProductItemViewModel, selectMode: Boolean) {
+    override fun bind(item: ProductItemViewModel, selectMode: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
         item.let {
             if (selectMode) {
                 view.btn_switch.visibility = View.GONE
@@ -38,12 +39,14 @@ class ProductItemViewHolder(val view: View,
             view.btn_switch.isChecked = it.data.adStatus == STATUS_ACTIVE || it.data.adStatus == STATUS_TIDAK_TAMPIL
             ImageLoader.LoadImage(view.product_img, it.data.productImageUri)
             view.product_name.text = it.data.productName
-            view.tampil_count.text = it.data.statTotalImpression
-            view.klik_count.text = it.data.statTotalClick
-            view.persentase_klik_count.text = it.data.statTotalCtr
-            view.pengeluaran_count.text = it.data.statTotalSpent
-            view.pendapatan_count.text = it.data.statTotalConversion
-            view.produk_terjual_count.text = it.data.statTotalSold
+            if (statsData.isNotEmpty() && adapterPosition < statsData.size) {
+                view.tampil_count.text = statsData[adapterPosition].statTotalImpression
+                view.klik_count.text = statsData[adapterPosition].statTotalClick
+                view.persentase_klik_count.text = statsData[adapterPosition].statTotalCtr
+                view.pengeluaran_count.text = statsData[adapterPosition].statTotalSpent
+                view.pendapatan_count.text = statsData[adapterPosition].statTotalConversion
+                view.produk_terjual_count.text = statsData[adapterPosition].statTotalSold
+            }
             view.label.visibility = View.GONE
             view.img_menu.visibility = View.GONE
             view.progress_layout.visibility = View.GONE
