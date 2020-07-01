@@ -29,4 +29,12 @@ abstract class DiscoveryBaseViewModel() {
     fun onDetachToViewHolder() {
 
     }
+
+    open fun loggedInCallback() {
+
+    }
+
+    open fun isPhoneVerificationSuccess(phoneVerifyStatus: Boolean) {
+
+    }
 }
