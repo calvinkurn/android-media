@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
@@ -88,7 +89,7 @@ class PlayBroadcastSetupBottomSheet(
         childFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
-//        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         broadcastViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 

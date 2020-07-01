@@ -62,30 +62,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private var mListener: ProductSetupListener? = null
 
-    private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
-        private var isAlreadyBound = false
-
-        override fun onImageLoaded(position: Int, isSuccess: Boolean) {
-            if (!isAlreadyBound) {
-                startPostponedTransition()
-                isAlreadyBound = true
-            }
-        }
-
-        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
-            viewModel.selectProduct(productId, isSelected)
-        }
-
-        override fun onProductSelectError(reason: Throwable) {
-            //TODO("Increase distance from bottom")
-            Toaster.make(
-                    view = requireView(),
-                    text = reason.localizedMessage,
-                    duration = Toaster.LENGTH_SHORT,
-                    actionText = getString(R.string.play_ok)
-            )
-        }
-    })
+    private lateinit var selectableProductAdapter: ProductSelectableAdapter
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
@@ -152,6 +129,31 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
+        selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
+            private var isAlreadyBound = false
+
+            override fun onImageLoaded(position: Int, isSuccess: Boolean) {
+                if (!isAlreadyBound) {
+                    startPostponedTransition()
+                    isAlreadyBound = true
+                }
+            }
+
+            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+                viewModel.selectProduct(productId, isSelected)
+            }
+
+            override fun onProductSelectError(reason: Throwable) {
+                //TODO("Increase distance from bottom")
+                Toaster.make(
+                        view = requireView(),
+                        text = reason.localizedMessage,
+                        duration = Toaster.LENGTH_SHORT,
+                        actionText = getString(R.string.play_ok)
+                )
+            }
+        })
+
         rvProduct.layoutManager = GridLayoutManager(rvProduct.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
 
