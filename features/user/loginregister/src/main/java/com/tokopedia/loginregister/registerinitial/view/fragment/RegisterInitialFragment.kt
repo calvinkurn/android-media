@@ -415,6 +415,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 is Fail -> onFailedGetUserInfo(it.throwable)
             }
         })
+        registerInitialViewModel.getUserInfoAddPinResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetUserInfoAddPin(it.data)
+                is Fail -> onFailedGetUserInfo(it.throwable)
+            }
+        })
         registerInitialViewModel.getTickerInfoResponse.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetTickerInfo(it.data)
@@ -563,6 +569,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         } else {
             onSuccessRegister()
         }
+    }
+
+    private fun onSuccessGetUserInfoAddPin(profileInfo: ProfileInfo) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+        startActivityForResult(intent, REQUEST_ADD_PIN)
     }
 
     private fun onFailedGetUserInfo(throwable: Throwable) {
@@ -798,8 +810,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                registerInitialViewModel.getUserInfoAddPin()
+            } else if (requestCode == REQUEST_ADD_PIN && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
-            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
+            }
+            else if (requestCode == REQUEST_ADD_PIN && resultCode == Activity.RESULT_CANCELED) {
+                dismissProgressBar()
+                it.setResult(Activity.RESULT_CANCELED)
+            }
+            else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
@@ -1315,6 +1334,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private val REQUEST_LOGIN_GOOGLE = 112
         private val REQUEST_OTP_VALIDATE = 113
         private val REQUEST_PENDING_OTP_VALIDATE = 114
+        private val REQUEST_ADD_PIN = 115
 
         private const val OTP_TYPE_ACTIVATE = 143
         private const val OTP_TYPE_REGISTER = 126
