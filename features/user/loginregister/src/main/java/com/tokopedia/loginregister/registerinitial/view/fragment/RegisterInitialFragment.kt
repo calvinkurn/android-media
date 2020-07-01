@@ -54,6 +54,7 @@ import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
@@ -415,12 +416,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 is Fail -> onFailedGetUserInfo(it.throwable)
             }
         })
-        registerInitialViewModel.getUserInfoAddPinResponse.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessGetUserInfoAddPin(it.data)
-                is Fail -> onFailedGetUserInfo(it.throwable)
-            }
-        })
         registerInitialViewModel.getTickerInfoResponse.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetTickerInfo(it.data)
@@ -561,20 +556,20 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         onErrorRegister(errorMessage)
     }
 
-    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo) {
-        val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-
-        if (profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
-            onGoToChangeName()
+    private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
+        if(profileInfoData.isCreatePin) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+            startActivityForResult(intent, REQUEST_ADD_PIN)
         } else {
-            onSuccessRegister()
+            val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
+            if (profileInfoData.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+                onGoToChangeName()
+            } else {
+                onSuccessRegister()
+            }
         }
-    }
 
-    private fun onSuccessGetUserInfoAddPin(profileInfo: ProfileInfo) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-        startActivityForResult(intent, REQUEST_ADD_PIN)
     }
 
     private fun onFailedGetUserInfo(throwable: Throwable) {
@@ -810,7 +805,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                registerInitialViewModel.getUserInfoAddPin()
+                registerInitialViewModel.getUserInfo(isCreatePin = true)
             } else if (requestCode == REQUEST_ADD_PIN && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
             }

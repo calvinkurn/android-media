@@ -17,6 +17,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
+import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
@@ -105,13 +106,9 @@ class RegisterInitialViewModel @Inject constructor(
     val goToSecurityQuestionAfterRelogin: LiveData<String>
         get() = mutableGoToSecurityQuestionAfterRelogin
 
-    private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfo>>()
-    val getUserInfoResponse: LiveData<Result<ProfileInfo>>
+    private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfoData>>()
+    val getUserInfoResponse: LiveData<Result<ProfileInfoData>>
         get() = mutableGetUserInfoResponse
-
-    private val mutableGetUserInfoAddPinResponse = MutableLiveData<Result<ProfileInfo>>()
-    val getUserInfoAddPinResponse: LiveData<Result<ProfileInfo>>
-        get() = mutableGetUserInfoAddPinResponse
 
     private val mutableGetTickerInfoResponse = MutableLiveData<Result<List<TickerInfoPojo>>>()
     val getTickerInfoResponse: LiveData<Result<List<TickerInfoPojo>>>
@@ -206,16 +203,10 @@ class RegisterInitialViewModel @Inject constructor(
 
     }
 
-    fun getUserInfo() {
+    fun getUserInfo(isCreatePin: Boolean = false) {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                onSuccessGetUserInfo(),
+                onSuccessGetUserInfo(isCreatePin),
                 onFailedGetUserInfo()))
-    }
-
-    fun getUserInfoAddPin() {
-        getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                onSuccessGetUserInfoAddPin(),
-                onFailedGetUserInfoAddPin()))
     }
 
     fun getTickerInfo() {
@@ -393,27 +384,15 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
+    private fun onSuccessGetUserInfo(isCreatePin: Boolean): (ProfilePojo) -> Unit {
         return {
-            mutableGetUserInfoResponse.value = Success(it.profileInfo)
+            mutableGetUserInfoResponse.value = Success(ProfileInfoData(isCreatePin, it.profileInfo))
         }
     }
 
     private fun onFailedGetUserInfo(): (Throwable) -> Unit {
         return {
             mutableGetUserInfoResponse.value = Fail(it)
-        }
-    }
-
-    private fun onSuccessGetUserInfoAddPin(): (ProfilePojo) -> Unit {
-        return {
-            mutableGetUserInfoAddPinResponse.value = Success(it.profileInfo)
-        }
-    }
-
-    private fun onFailedGetUserInfoAddPin(): (Throwable) -> Unit {
-        return {
-            mutableGetUserInfoAddPinResponse.value = Fail(it)
         }
     }
 
