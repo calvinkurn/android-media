@@ -67,6 +67,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
 
+        private const val IS_NEED_TO_SHOW_COACHMARK = "need_to_show_coachmark"
+
         fun createInstance(): RatingProductFragment {
             return RatingProductFragment()
         }
@@ -142,6 +144,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 getString(R.string.desc_filter_and_sort))
     }
 
+    private val isNeedToShowCoachMark by lazy {
+        arguments?.getBoolean(IS_NEED_TO_SHOW_COACHMARK, true) ?: true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -497,7 +502,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun showCoachMark() {
-        if (!isCompletedCoachMark) {
+        if (!isCompletedCoachMark && isNeedToShowCoachMark) {
             coachMark.show(activity, TAG_COACH_MARK_RATING_PRODUCT, coachMarkItems)
         }
     }

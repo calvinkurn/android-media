@@ -47,6 +47,7 @@ import java.util.List;
 public class  InboxReputationActivity extends BaseActivity implements HasComponent {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
+    public static final String IS_NEED_TO_SHOW_COACHMARK = "need_to_show_coachmark";
 
     public static final int TAB_WAITING_REVIEW = 1;
     public static final int TAB_MY_REVIEW = 2;
@@ -98,6 +99,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
             reviewSellerFragment = applicationContext.getReviewSellerFragment();
+            Bundle reviewSellerBundle = new Bundle();
+            reviewSellerBundle.putBoolean(IS_NEED_TO_SHOW_COACHMARK, !goToReputationHistory);
+            reviewSellerFragment.setArguments(reviewSellerBundle);
         }
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
