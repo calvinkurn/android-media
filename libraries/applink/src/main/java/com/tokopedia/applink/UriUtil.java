@@ -157,6 +157,7 @@ public class UriUtil {
                         result.put(segmentName.substring(1, segmentName.length() - 1) ,
                                 uri.getPathSegments().get(i));
                     }
+                    i++;
                 }
             }
         } catch (Exception e) {
