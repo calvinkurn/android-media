@@ -4,7 +4,8 @@ package com.tokopedia.play.broadcaster.pusher.state
 /**
  * Created by mzennis on 17/06/20.
  */
-enum class PlayPusherErrorType {
-    UnSupportedDevice,
-    ReachMaximumPauseDuration
+sealed class PlayPusherErrorType {
+    object UnSupportedDevice: PlayPusherErrorType()
+    object ReachMaximumPauseDuration: PlayPusherErrorType()
+    data class Throwable(val message: String): PlayPusherErrorType()
 }

@@ -69,6 +69,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
+        viewModel.initPushStream()
         setupContent()
         initView()
         getConfiguration()

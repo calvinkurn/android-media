@@ -9,10 +9,7 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.Metric
-import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.UpdateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
@@ -43,6 +40,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
         private val updateChannelUseCase: UpdateChannelUseCase,
+        private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val dispatcher: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
         private val playSocket: PlayBroadcastSocket
@@ -135,10 +133,6 @@ class PlayBroadcastViewModel @Inject constructor(
     init {
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
         _observableChannelId.observeForever(channelIdObserver)
-        initPushStream()
-
-        mockChatList()
-        mockMetrics()
     }
 
     override fun onCleared() {
@@ -219,6 +213,10 @@ class PlayBroadcastViewModel @Inject constructor(
         }.executeOnBackground()
     }
 
+    private suspend fun getSocketCredential() = withContext(dispatcher.io) {
+        return@withContext getSocketCredentialUseCase.executeOnBackground()
+    }
+
     /**
      * Permission
      */
@@ -236,44 +234,42 @@ class PlayBroadcastViewModel @Inject constructor(
     /**
      * Apsara integration
      */
-    private fun initPushStream() {
+    fun initPushStream() {
         playPusher.create()
     }
 
     fun startPushStream(ingestUrl: String) {
         if (ingestUrl.isEmpty() || !allPermissionGranted()) return
-        scope.launchCatchError(block = {
-            startWebSocket()
-            updateChannelStatus(PlayChannelStatus.Live)
-            playPusher.startPush(ingestUrl)
-        }) {
-
+        scope.launch {
+//            startWebSocket()
+            playPusher.startPush(ingestUrl) {
+                launch { updateChannelStatus(PlayChannelStatus.Live) }
+            }
         }
     }
 
     fun resumePushStream() {
-        if (playPusher.isPushing() || !allPermissionGranted()) return
-        scope.launchCatchError(block = {
-            updateChannelStatus(PlayChannelStatus.Live)
-            playPusher.resume()
-        }) {
-
+        if (!allPermissionGranted()) return
+        scope.launch {
+            playPusher.resume {
+                launch { updateChannelStatus(PlayChannelStatus.Live) }
+            }
         }
     }
 
     fun pausePushStream() {
         scope.launch {
-            if (playPusher.isPushing()) {
-                updateChannelStatus(PlayChannelStatus.Pause)
-                playPusher.pause()
+            playPusher.pause {
+                launch { updateChannelStatus(PlayChannelStatus.Pause) }
             }
         }
     }
 
     fun stopPushStream() {
         scope.launch {
-            updateChannelStatus(PlayChannelStatus.Stop)
-            playPusher.stopPush()
+            playPusher.stopPush {
+                launch { updateChannelStatus(PlayChannelStatus.Stop) }
+            }
             playPusher.stopPreview()
             playSocket.destroy()
         }
@@ -283,13 +279,20 @@ class PlayBroadcastViewModel @Inject constructor(
         return playPusher
     }
 
-    private fun startWebSocket() {
-        playSocket.connect(channelId = "", groupChatToken = "")
-        playSocket.socketInfoListener(object : PlaySocketInfoListener{
-            override fun onError(throwable: Throwable) {
-                // TODO("reconnect socket")
-            }
-        })
+    private suspend fun startWebSocket() {
+        val socketCredential = getSocketCredential()
+        playSocket.config(socketCredential.setting.minReconnectDelay, socketCredential.setting.maxRetries, socketCredential.setting.pingInterval)
+
+        fun connectWebSocket(): Job = scope.launch {
+            playSocket.connect(channelId = channelId, groupChatToken = socketCredential.gcToken)
+            playSocket.socketInfoListener(object : PlaySocketInfoListener{
+                override fun onError(throwable: Throwable) {
+                    connectWebSocket()
+                }
+            })
+        }
+
+        connectWebSocket()
     }
 
     private fun setSelectedProduct(products: List<ProductData>) {
@@ -326,7 +329,7 @@ class PlayBroadcastViewModel @Inject constructor(
     /**
      * mock
      */
-    private fun mockChatList() {
+    fun mockChatList() {
         scope.launch(dispatcher.io) {
             while(isActive) {
                 delay(1000)
@@ -337,7 +340,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private fun mockMetrics() {
+    fun mockMetrics() {
         scope.launch(dispatcher.io) {
             while(isActive) {
                 delay(3000)

@@ -43,7 +43,7 @@ class GetLiveStatisticsUseCase @Inject constructor(
     var params: Map<String, Any> = mapOf()
 
     override suspend fun executeOnBackground(): LiveStats {
-        val gqlResponse = configureGqlResponse(graphqlRepository, query, LiveStats::class.java, params, GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetLiveStatisticsResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetLiveStatisticsResponse>(GetLiveStatisticsResponse::class.java)
         return try { response.response.channel.metrics
