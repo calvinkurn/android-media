@@ -264,12 +264,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private fun handleChannelConfiguration(config: ConfigurationUiModel) =
             if (config.streamAllowed) {
                 if (config.channelType != ChannelType.Active) checkPermission()
-                openBroadcastSetupPage()
-//                when(config.channelType) {
-//                    ChannelType.Active -> showDialogWhenActiveOnOtherDevices()
-//                    ChannelType.Pause -> openBroadcastActivePage()
-//                    ChannelType.Draft, ChannelType.Unknown -> openBroadcastSetupPage()
-//                }
+                when(config.channelType) {
+                    ChannelType.Active -> showDialogWhenActiveOnOtherDevices()
+                    ChannelType.Pause -> openBroadcastActivePage()
+                    ChannelType.Draft, ChannelType.Unknown -> openBroadcastSetupPage()
+                }
             } else {
                 globalErrorView.channelNotFound { this.finish() }
                 globalErrorView.show()
