@@ -153,12 +153,12 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     public void initCrashlytics() {
-//        if (!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
             Crashlytics.setUserIdentifier(userSession.getUserId());
             Crashlytics.setUserEmail(userSession.getEmail());
             Crashlytics.setUserName(userSession.getName());
-//        }
+        }
     }
 
     public AppComponent getApplicationComponent() {
