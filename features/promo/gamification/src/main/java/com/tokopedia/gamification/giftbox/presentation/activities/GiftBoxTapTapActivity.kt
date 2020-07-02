@@ -18,9 +18,17 @@ class GiftBoxTapTapActivity : BaseGiftBoxActivity() {
             val canGoBack = fragment!!.onBackPressed()
             if (canGoBack) {
                 super.onBackPressed()
+                fragment?.forceStopAll()
             }
         } else {
             super.onBackPressed()
+            fragment?.forceStopAll()
+
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        fragment?.forceStopAll()
     }
 }

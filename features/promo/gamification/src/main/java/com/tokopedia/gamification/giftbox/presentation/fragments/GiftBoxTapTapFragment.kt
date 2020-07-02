@@ -986,15 +986,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        bgSoundManager?.destroy()
-        hourCountDownTimer?.cancel()
-        minuteCountDownTimer?.cancel()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
+    fun forceStopAll() {
+        countDownAudioManager?.destroy()
         bgSoundManager?.destroy()
         hourCountDownTimer?.cancel()
         minuteCountDownTimer?.cancel()

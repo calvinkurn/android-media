@@ -2,14 +2,8 @@ package com.tokopedia.gamification.giftbox.presentation
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.RuntimeException
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class LidImagesDownloader : CoroutineScope {
@@ -45,5 +39,28 @@ class LidImagesDownloader : CoroutineScope {
         }
     }
 
+    //Glide was not giving callback, so we have to come up with this
+    fun downloadBgImage(context: Context, url: String, imageCallback: ((bmp: Bitmap?) -> Unit)) {
+        val job = launch {
+            try {
+                withTimeout(6000L) {
+
+                    val drawable = Glide.with(context)
+                            .asBitmap()
+                            .load(url)
+                            .submit()
+                            .get()
+
+                    withContext(Dispatchers.Main) {
+                        imageCallback.invoke(drawable)
+                    }
+                }
+            } catch (ex: Exception) {
+                withContext(Dispatchers.Main) {
+                    imageCallback.invoke(null)
+                }
+            }
+        }
+    }
 
 }

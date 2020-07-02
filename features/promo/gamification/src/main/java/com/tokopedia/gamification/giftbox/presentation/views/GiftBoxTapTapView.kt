@@ -2,7 +2,6 @@ package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.animation.*
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
@@ -195,6 +194,19 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             TOTAL_ASYNC_IMAGES -= 1
         }
 
+        lidImagesDownloader.downloadBgImage(context, bgUrl) { bmp ->
+            val rp = if (bmp != null) {
+                Glide.with(this)
+                        .load(bmp)
+
+            } else {
+                Glide.with(this)
+                        .load(R.drawable.gf_gift_bg)
+            }
+            rp.dontAnimate()
+                    .into(imageBg)
+            incrementAndSendCallback()
+        }
         Glide.with(this)
                 .load(bgUrl)
                 .dontAnimate()
