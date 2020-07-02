@@ -48,6 +48,6 @@
     <color name="gf_box_text_shadow">#4A000000</color>
     <color name="gf_n600">#40454C</color>
     <color name="gf_tap_hint">#58595B</color>
-
+    <color name="gf_outline_btn">#9FA6B0</color>
 
 </resources>
