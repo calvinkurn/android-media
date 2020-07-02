@@ -99,7 +99,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     fun playVideos() {
         try{
             // check internet wifi or data available or auto play or video data is not empty
-            if(!PlayConnectionCommon.isInternetAvailable(context, checkWifi = true, checkCellular = true) || !isAutoPlay || mediaObjects.isEmpty()) return
+            if(!(PlayConnectionCommon.isConnectWifi(context) || PlayConnectionCommon.isConnectCellular(context)) || !isAutoPlay || mediaObjects.isEmpty()) return
 
             val targetPositions: MutableList<Int> = mutableListOf()
             var startPosition: Int = (Objects.requireNonNull(

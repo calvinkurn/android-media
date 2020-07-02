@@ -25,7 +25,6 @@ object PlayWidgetMapper {
                                 applink = it.appLink,
                                 channelCreator = it.partner.name,
                                 countView = it.stats.view.formatted,
-                                endTime = DateHelper.getExpiredTime(it.endTime),
                                 isLive = it.video.isLive,
                                 isShowTotalView = it.video.isShowTotalView,
                                 isPromo = it.config.hasPromo,
@@ -36,7 +35,7 @@ object PlayWidgetMapper {
                                     else -> PlayBannerWidgetType.NONE
                                 },
                                 serverTime = 0,
-                                startTime = DateHelper.getExpiredTime(it.startTime),
+                                startTime = it.startTime,
                                 videoUrl = it.video.streamSource,
                                 coverUrl = it.video.coverUrl,
                                 channelId = it.id,
