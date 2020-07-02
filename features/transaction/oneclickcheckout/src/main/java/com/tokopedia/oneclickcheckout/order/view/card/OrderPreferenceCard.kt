@@ -151,12 +151,12 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                             OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
                         }
                         tvShippingDuration?.text = serviceDur
-                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoShipping.productData.price.price.toDouble()) {
+                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
                             tvShippingPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
                             tvShippingSlashPrice?.gone()
                         } else {
-                            tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price - shipping.logisticPromoViewModel.benefitAmount, false).removeDecimalSuffix()
-                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price, false).removeDecimalSuffix()
+                            tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
+                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
                             tvShippingSlashPrice?.paintFlags?.let {
                                 tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
                             }

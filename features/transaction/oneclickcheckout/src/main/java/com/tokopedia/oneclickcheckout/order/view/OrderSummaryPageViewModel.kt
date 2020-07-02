@@ -1425,8 +1425,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
         val totalProductPrice = quantity.orderQuantity * productPrice
         val shipping = _orderPreference?.shipping
-        val totalShippingPrice: Double = if (shipping?.logisticPromoShipping != null && shipping.isApplyLogisticPromo) {
-            shipping.logisticPromoShipping.productData.price.price.toDouble()
+        val totalShippingPrice: Double = if (shipping?.logisticPromoShipping != null && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null) {
+            shipping.logisticPromoViewModel.shippingRate.toDouble()
         } else if (shipping?.shippingPrice != null) {
             shipping.shippingPrice.toDouble()
         } else 0.0
