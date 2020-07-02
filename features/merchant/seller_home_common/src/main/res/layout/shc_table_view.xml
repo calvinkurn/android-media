@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:orientation="horizontal"
+        tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/shc_item_table_page" />
 
