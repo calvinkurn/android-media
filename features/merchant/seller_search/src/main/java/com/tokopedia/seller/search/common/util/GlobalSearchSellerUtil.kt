@@ -2,7 +2,8 @@ package com.tokopedia.seller.search.common.util
 
 import android.text.SpannableString
 import android.text.TextUtils
-import java.net.URLDecoder
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.HTTPS_APP_LINK_PREFIX
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.WWW_APP_LINK_PREFIX
 import java.util.*
 
 fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {
@@ -14,16 +15,16 @@ fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {
 internal fun SpannableString.safeSetSpan(what: Any, start: Int, end: Int, flags: Int) {
     try {
         setSpan(what, start, end, flags)
-    }
-    catch (throwable: Throwable) {
+    } catch (throwable: Throwable) {
         throwable.printStackTrace()
     }
 }
 
-fun decodeString(appUrl: String): String {
-    return try {
-        URLDecoder.decode(appUrl, "UTF-8")
-    } catch (e: Exception) {
-        appUrl
+val String.addWWWPrefix: String
+    get() {
+        return try {
+            this.replace(HTTPS_APP_LINK_PREFIX, WWW_APP_LINK_PREFIX)
+        } catch (e: NullPointerException) {
+            this
+        }
     }
-}
