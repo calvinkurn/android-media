@@ -78,7 +78,7 @@
             android:layout_marginBottom="@dimen/dp_12"
             android:paddingStart="@dimen/layout_lvl2"
             android:paddingEnd="@dimen/layout_lvl2"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Neutral_N700_32"
             app:typographyType="small"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
             app:layout_constraintStart_toStartOf="@id/write_category_header"
