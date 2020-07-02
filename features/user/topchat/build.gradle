@@ -1,24 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 apply from: "../../../compile-unit-test.gradle"
 apply from: "../../../compile-instrument-test.gradle"
-
-android {
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-    }
-}
 
 repositories {
     maven { url 'https://hansel.io/maven' }
