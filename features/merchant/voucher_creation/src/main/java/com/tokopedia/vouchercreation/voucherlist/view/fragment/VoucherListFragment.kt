@@ -189,7 +189,6 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun onDestroy() {
         super.onDestroy()
-        (activity as? MvcPerformanceMonitoringListener)?.finishMonitoring()
         mViewModel.flush()
     }
 

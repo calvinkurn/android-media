@@ -127,7 +127,6 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        (activity as? MvcPerformanceMonitoringListener)?.finishMonitoring()
         viewModel.flush()
     }
 

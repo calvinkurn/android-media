@@ -286,7 +286,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        performanceMonitoring.stopPerformanceMonitoring()
         viewModel.flush()
     }
 
