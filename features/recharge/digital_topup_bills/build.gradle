@@ -19,6 +19,17 @@ buildscript {
     }
 }
 
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.commonDigital)
@@ -55,14 +66,27 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    //Unit Test
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestApi(project(rootProject.ext.libraries.instrumentation_test)) {
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    }
 }
 
 project.ext {
     artifactId = 'topup-bills'
     groupId = 'com.tokopedia.digital'
-    versionName = "0.0.2"
+    versionName = "1.0.0"
     artifactName ="digital_topup_bills-release"
 }
 
