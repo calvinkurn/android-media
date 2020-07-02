@@ -396,7 +396,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDestroy() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         showPromoButtonJob?.cancel()
         super.onDestroy()
@@ -2108,7 +2108,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun clearRecyclerView() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         cartRecyclerView.removeAllViews()
         cartRecyclerView.recycledViewPool.clear()
     }

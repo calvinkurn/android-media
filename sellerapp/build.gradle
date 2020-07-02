@@ -203,7 +203,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.features.createpost)
-    implementation project(rootProject.ext.features.developerOptions)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.features.developerOptions)
+    } else {
+        implementation project(rootProject.ext.features.developerOptionsNoop)
+    }
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.shopPage)
@@ -223,7 +227,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.topAdsCreate)
     implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
@@ -238,7 +241,6 @@ dependencies {
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.features.homecredit)
-    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.linker)
@@ -380,9 +382,9 @@ dependencies {
     implementation rootProject.ext.monitoringDependencies.bugSnag
 
     if (rootProject.ext.debugToolsEnabled) {
-        implementation project(project.ext.debugToolsDependencies.blockCanary)
+        implementation project(rootProject.ext.libraries.blockCanary)
     } else {
-        implementation project.ext.debugToolsDependencies.blockCanaryNoOp
+        implementation rootProject.ext.libraries.blockCanaryNoOp
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary

@@ -24,7 +24,7 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="@style/toolbarStyle" />
+            />
 
     </com.google.android.material.appbar.AppBarLayout>
 

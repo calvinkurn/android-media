@@ -66,6 +66,8 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
 }
 
 project.ext {

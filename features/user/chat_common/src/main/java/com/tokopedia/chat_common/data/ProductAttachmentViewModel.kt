@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
@@ -105,12 +106,17 @@ open class ProductAttachmentViewModel : SendableViewModel,
         this.isError = true
     }
 
-    constructor(messageId: String, fromUid: String, from: String,
-                fromRole: String, attachmentId: String, attachmentType: String,
-                replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,
-                isSender: Boolean, message: String)
-            : super(messageId, fromUid, from, fromRole, attachmentId,
-            attachmentType, replyTime, startTime, isRead, isDummy, isSender, message) {
+    constructor(
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
+            isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String,
+            source: String
+    ) : super(
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, startTime,
+            isRead, isDummy, isSender, message,
+            source
+    ) {
     }
 
     /**
@@ -132,20 +138,19 @@ open class ProductAttachmentViewModel : SendableViewModel,
      * @param productImage   product image url
      */
     constructor(
-            messageId: String, fromUid: String,
-            from: String, fromRole: String,
-            attachmentId: String, attachmentType: String,
-            replyTime: String, isRead: Boolean,
-            productId: Int, productName: String,
-            productPrice: String, productUrl: String,
-            productImage: String, isSender: Boolean, message: String,
-            canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
-            minOrder: Int, remainingStock: Int, status: Int, wishList: Boolean, images: List<String>
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
+            productId: Int, productName: String, productPrice: String, productUrl: String,
+            productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
+            blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
+            categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
+            status: Int, wishList: Boolean, images: List<String>, source: String
     ) : super(
-            messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
-            "", isRead, false, isSender, message
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, "",
+            isRead, false, isSender, message,
+            source
     ) {
         this.productId = productId
         this.productName = productName
@@ -193,20 +198,19 @@ open class ProductAttachmentViewModel : SendableViewModel,
      * @param startTime
      */
     constructor(
-            messageId: String, fromUid: String,
-            from: String, fromRole: String,
-            attachmentId: String, attachmentType: String,
-            replyTime: String, productId: Int,
-            productName: String, productPrice: String,
-            productUrl: String, productImage: String,
-            isSender: Boolean, message: String, startTime: String,
-            canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
-            remainingStock: Int, status: Int
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, productId: Int,
+            productName: String, productPrice: String, productUrl: String, productImage: String,
+            isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
+            blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
+            categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
+            source: String
     ) : super(
-            messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
-            startTime, false, false, isSender, message
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, startTime,
+            false, false, isSender, message,
+            source
     ) {
         this.productId = productId
         this.productName = productName
@@ -257,12 +261,16 @@ open class ProductAttachmentViewModel : SendableViewModel,
      * @param productImage product image url
      * @param startTime    send time to validate dummy mesages.
      */
-    constructor(loginID: String, productId: Int, productName: String,
-                productPrice: String, productUrl: String,
-                productImage: String, startTime: String, canShowFooter: Boolean, shopId: Int) : super("",
-            loginID, "", "", "",
-            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT, SendableViewModel.SENDING_TEXT,
-            startTime, false, true, true, productUrl) {
+    constructor(
+            loginID: String, productId: Int, productName: String, productPrice: String,
+            productUrl: String, productImage: String, startTime: String, canShowFooter: Boolean,
+            shopId: Int
+    ) : super(
+            "", loginID, "", "",
+            "", AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT, SENDING_TEXT, startTime,
+            false, true, true, productUrl,
+            ""
+    ) {
         this.productId = productId
         this.productName = productName
         this.productPrice = productPrice
@@ -340,6 +348,13 @@ open class ProductAttachmentViewModel : SendableViewModel,
     override fun finishLoading() {
         this.isLoading = false
         this.isError = false
+    }
+
+    fun getAtcDimension40(sourcePage: String): String {
+        return when (sourcePage) {
+            ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "/chat - search chat"
+            else -> "/chat - 0"
+        }
     }
 
     companion object {

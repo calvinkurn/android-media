@@ -27,23 +27,23 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
      * @param productImage   product image url
      */
     constructor(
-            messageId: String, fromUid: String,
-            from: String, fromRole: String,
-            attachmentId: String, attachmentType: String,
-            replyTime: String, isRead: Boolean,
-            productId: Int, productName: String,
-            productPrice: String, productUrl: String,
-            productImage: String, isSender: Boolean, message: String,
-            canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variant: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData, minOrder: Int,
-            remainingStock: Int, status: Int, wishList: Boolean, images: List<String>
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
+            productId: Int, productName: String, productPrice: String, productUrl: String,
+            productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
+            blastId: Int, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
+            categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
+            status: Int, wishList: Boolean, images: List<String>, source: String
     ) : super(
-            messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, isRead,
-            productId, productName, productPrice, productUrl, productImage, isSender, message,
-            canShowFooter, blastId, productPriceInt, category, variant, dropPercentage, priceBefore,
-            shopId, freeShipping, categoryId, playStoreData, minOrder, remainingStock, status,
-            wishList, images
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, isRead,
+            productId, productName, productPrice, productUrl,
+            productImage, isSender, message, canShowFooter,
+            blastId, productPriceInt, category, variant,
+            dropPercentage, priceBefore, shopId, freeShipping,
+            categoryId, playStoreData, minOrder, remainingStock,
+            status, wishList, images, source
     )
 
 
@@ -66,22 +66,23 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
      * @param startTime
      */
     constructor(
-            messageId: String, fromUid: String,
-            from: String, fromRole: String,
-            attachmentId: String, attachmentType: String,
-            replyTime: String, productId: Int,
-            productName: String, productPrice: String,
-            productUrl: String, productImage: String,
-            isSender: Boolean, message: String, startTime: String,
-            canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variant: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int,
-            status: Int
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, productId: Int,
+            productName: String, productPrice: String, productUrl: String, productImage: String,
+            isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
+            blastId: Int, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
+            categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
+            source: String
     ) : super(
-            messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, productId,
-            productName, productPrice, productUrl, productImage, isSender, message, startTime,
-            canShowFooter, blastId, productPriceInt, category, variant, dropPercentage, priceBefore,
-            shopId, freeShipping, categoryId, playStoreData, remainingStock, status
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, productId,
+            productName, productPrice, productUrl, productImage,
+            isSender, message, startTime, canShowFooter,
+            blastId, productPriceInt, category, variant,
+            dropPercentage, priceBefore, shopId, freeShipping,
+            categoryId, playStoreData, remainingStock, status,
+            source
     )
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {

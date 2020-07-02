@@ -10,10 +10,10 @@ import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.searchV4.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.searchV4.presentation.fragment.FlightSearchReturnFragment
+import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 
 /**
  * @author by furqan on 15/04/2020
@@ -72,7 +72,7 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                 FlightDateUtil.DEFAULT_FORMAT,
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,
                 flightSearchPassDataModel.returnDate)
-        passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerViewModel)
+        passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
         classString = flightSearchPassDataModel.flightClass.title
     }
 

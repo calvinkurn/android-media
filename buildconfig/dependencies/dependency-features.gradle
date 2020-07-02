@@ -7,6 +7,7 @@ ext {
             resourcesCommon                 : ":features:common:resources_common",
             qrscanner                       : ":features:common:qr_scanner",
             developerOptions                : ":features:common:developer_options",
+            developerOptionsNoop            : ":features:common:developer_options_noop",
             nps                             : ":features:common:nps",
 
             catalog                         : ":features:category:catalog",
@@ -227,7 +228,7 @@ ext {
             kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
             liveness                        : ":features:user:liveness",
-            fcm_common                      : ":features:fcm_common",
+            fcm_common                      : ":features:user:fcm_common",
             tkpdcore                        : ":tkpdcore",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
