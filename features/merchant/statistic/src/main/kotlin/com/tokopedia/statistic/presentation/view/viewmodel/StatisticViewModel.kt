@@ -30,6 +30,7 @@ class StatisticViewModel @Inject constructor(
         private val getProgressDataUseCase: GetProgressDataUseCase,
         private val getPostDataUseCase: GetPostDataUseCase,
         private val getCarouselDataUseCase: GetCarouselDataUseCase,
+        private val getTableDataUseCase: GetTableDataUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -50,6 +51,8 @@ class StatisticViewModel @Inject constructor(
         get() = _postListWidgetData
     val carouselWidgetData: LiveData<Result<List<CarouselDataUiModel>>>
         get() = _carouselWidgetData
+    val tableWidgetData: LiveData<Result<List<TableDataUiModel>>>
+        get() = _tableWidgetData
 
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -58,6 +61,7 @@ class StatisticViewModel @Inject constructor(
     private val _progressWidgetData = MutableLiveData<Result<List<ProgressDataUiModel>>>()
     private val _postListWidgetData = MutableLiveData<Result<List<PostListDataUiModel>>>()
     private val _carouselWidgetData = MutableLiveData<Result<List<CarouselDataUiModel>>>()
+    private val _tableWidgetData = MutableLiveData<Result<List<TableDataUiModel>>>()
 
     private var startDate: String = ""
     private var endDate: String = ""
@@ -106,7 +110,7 @@ class StatisticViewModel @Inject constructor(
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<ProgressDataUiModel>> = Success(withContext(Dispatchers.IO) {
-                val today: String = DateTimeUtil.format(java.util.Date().time, DATE_FORMAT)
+                val today: String = DateTimeUtil.format(Date().time, DATE_FORMAT)
                 getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
                 return@withContext getProgressDataUseCase.executeOnBackground()
             })
@@ -137,6 +141,18 @@ class StatisticViewModel @Inject constructor(
             _carouselWidgetData.postValue(result)
         }, onError = {
             _carouselWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getTableWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<TableDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, startDate, endDate)
+                return@withContext getTableDataUseCase.executeOnBackground()
+            })
+            _tableWidgetData.postValue(result)
+        }, onError = {
+            _tableWidgetData.postValue(Fail(it))
         })
     }
 }
