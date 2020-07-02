@@ -533,10 +533,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         setPositionOfViewsAtBoxOpen()
                         hideLoader()
                         fadeInActiveStateViews()
+                        showMinuteTimer(gamiTapEggHome)
                     }
             )
         }
-        showMinuteTimer(gamiTapEggHome)
     }
 
     private fun showMinuteTimer(gamiTapEggHome: GamiTapEggHome) {
@@ -636,7 +636,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val ratio = 3 //coming from R.layout.list_item_coupons
                 if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
                     rewardContainer.rvCoupons.translationY = (translationY + (2 * sideMargin / ratio)) - fmGiftBox.context.resources.getDimension(R.dimen.gami_box_coupon_padding)
-                    tvTapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin)
+                    tvTapHint.doOnLayout {tapHint->
+                        tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin) - tapHint.height
+                    }
 
                 } else {
                     rewardContainer.rvCoupons.translationY = translationY + (2 * sideMargin / ratio)
@@ -984,8 +986,16 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        bgSoundManager?.destroy()
+        hourCountDownTimer?.cancel()
+        minuteCountDownTimer?.cancel()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        bgSoundManager?.destroy()
         hourCountDownTimer?.cancel()
         minuteCountDownTimer?.cancel()
     }
