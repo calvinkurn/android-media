@@ -11,22 +11,8 @@ data class GetSocketCredentialResponse(
         val socketCredential: SocketCredential
 ) {
     data class SocketCredential(
-            @SerializedName("header")
-            val header: Header = Header(),
-            @SerializedName("data")
-            val data: Credential = Credential()
-    )
-
-    data class Header(
-            @SerializedName("status")
-            val status: Int = 0,
-            @SerializedName("message")
-            val message: String = ""
-    )
-
-    data class Credential(
             @SerializedName("gc_token")
-            val gc_token: String = "",
+            val gcToken: String = "",
             @SerializedName("setting")
             val setting: Setting = Setting()
     )
@@ -41,5 +27,4 @@ data class GetSocketCredentialResponse(
             @SerializedName("min_reconnect_delay")
             val minReconnectDelay: Int = 0
     )
-
 }

@@ -14,38 +14,28 @@ import javax.inject.Inject
  */
 class GetSocketCredentialUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : BaseUseCase<GetSocketCredentialResponse.Credential>() {
+) : BaseUseCase<GetSocketCredentialResponse.SocketCredential>() {
 
     private val query = """
-            query {
-              playGetSocketCredential(){
-                header{
-                  status
-                  message
-                }
-                data{
-                  gc_token
-                  setting {
-                    ping_interval
-                    max_char
-                    max_retry
-                    min_reconnect_delay
-                  }
-                }
-              }
+        query GetSocketCredential{
+          playGetSocketCredential{
+            gc_token,
+            setting {
+              ping_interval
+              max_chars
+              max_retries
+              min_reconnect_delay
             }
+          }
+        }
         """
 
-    override suspend fun executeOnBackground(): GetSocketCredentialResponse.Credential {
-        val gqlRequest = GraphqlRequest(query, GetSocketCredentialResponse::class.java, emptyMap())
-        val gqlResponse = configureGqlResponse(graphqlRepository, gqlRequest, GraphqlCacheStrategy
+    override suspend fun executeOnBackground(): GetSocketCredentialResponse.SocketCredential {
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetSocketCredentialResponse::class.java, emptyMap(), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetSocketCredentialResponse>(GetSocketCredentialResponse::class.java)
         if (response?.socketCredential != null) {
-            if (response.socketCredential.header.message.isNotEmpty())
-                throw DefaultErrorThrowable(response.socketCredential.header.message)
-            else
-                return response.socketCredential.data
+            return response.socketCredential
         }
         throw DefaultErrorThrowable()
     }
