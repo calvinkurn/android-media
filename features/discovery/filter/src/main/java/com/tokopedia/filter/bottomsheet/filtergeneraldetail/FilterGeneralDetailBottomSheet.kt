@@ -166,6 +166,10 @@ internal class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneral
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
         searchBarFilterDetail?.searchBarTextField?.addTextChangedListener(createSearchBarTextWatcher())
+        searchBarFilterDetail?.searchBarTextField?.setOnEditorActionListener { _, _, _ ->
+            hideKeyboard()
+            true
+        }
     }
 
     private fun createSearchBarTextWatcher() = object: TextWatcher {
