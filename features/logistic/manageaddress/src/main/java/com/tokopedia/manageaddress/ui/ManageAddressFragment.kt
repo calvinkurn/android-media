@@ -26,7 +26,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity
-import com.tokopedia.logisticdata.data.entity.address.AddressModel
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.di.ManageAddressComponent
@@ -239,21 +239,21 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    private fun renderData(data: List<AddressModel>) {
+    private fun renderData(data: List<RecipientAddressModel>) {
         adapter.addressList.clear()
         adapter.addressList.addAll(data)
         adapter.notifyDataSetChanged()
     }
 
-    override fun onManageAddressEditClicked(peopleAddress: AddressModel) {
+    override fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel) {
        openFormAddressView(peopleAddress)
     }
 
-    override fun onManageAddressLainnyaClicked(peopleAddress: AddressModel) {
+    override fun onManageAddressLainnyaClicked(peopleAddress: RecipientAddressModel) {
         openBottomSheetView(peopleAddress)
     }
 
-    private fun openFormAddressView(data: AddressModel?) {
+    private fun openFormAddressView(data: RecipientAddressModel?) {
         val token = viewModel.getToken()
             if(data == null) {
                 activity?.let { ManageAddressAnalytics.sendScreenName(it, SCREEN_NAME_USER_NEW) }
@@ -267,15 +267,15 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
     }
 
-    private fun openBottomSheetView(data: AddressModel) {
+    private fun openBottomSheetView(data: RecipientAddressModel) {
         bottomSheetLainnya = BottomSheetUnify()
         val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
             btn_alamat_utama.setOnClickListener {
-                viewModel.setDefaultPeopleAddress(data.addressId)
+                viewModel.setDefaultPeopleAddress(data.id)
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat.setOnClickListener {
-                viewModel.deletePeopleAddress(data.addressId)
+                viewModel.deletePeopleAddress(data.id)
                 bottomSheetLainnya?.dismiss()
             }
         }
