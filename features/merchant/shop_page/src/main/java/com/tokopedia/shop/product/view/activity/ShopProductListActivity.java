@@ -63,9 +63,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     private ShopInfo shopInfo;
     private OldShopPageTrackingBuyer shopPageTracking;
-    private RemoteConfig remoteConfig;
     private EditText editTextSearch;
-    private View imageViewSortIcon;
     private View textViewCancel;
 
     public static Intent createIntent(Context context, String shopId, String keyword,
@@ -95,7 +93,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
         shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
         shopRef = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_REF);
         etalaseId = getIntent().getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
@@ -154,7 +151,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     private void initSearchInputView() {
         editTextSearch = findViewById(R.id.editTextSearchProduct);
-        imageViewSortIcon = findViewById(R.id.image_view_sort);
         textViewCancel = findViewById(R.id.text_view_cancel);
         editTextSearch.setText(keyword);
         editTextSearch.setKeyListener(null);
@@ -163,40 +159,25 @@ public class ShopProductListActivity extends BaseSimpleActivity
             if (null != shopPageTracking)
                 shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE);
             if (null != shopInfo) {
-                String cacheManagerId = saveShopInfoModelToCacheManager(shopInfo);
-                if (null != cacheManagerId) {
-                    redirectToShopSearchProduct(cacheManagerId);
-                }
+                redirectToShopSearchProduct();
             }
         });
         textViewCancel.setOnClickListener(view -> {
             finish();
         });
-        imageViewSortIcon.setOnClickListener(view -> {
-            if (shopInfo != null) {
-                Fragment fragmentShopPageProductListResultFragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
-                if (fragmentShopPageProductListResultFragment instanceof ShopPageProductListResultFragment) {
-                    ((ShopPageProductListResultFragment) fragmentShopPageProductListResultFragment).clickSortButton();
-                }
-            }
-        });
     }
 
-    private void redirectToShopSearchProduct(String cacheManagerId) {
+    private void redirectToShopSearchProduct() {
         startActivity(ShopSearchProductActivity.createIntent(
                 this,
+                shopId,
+                shopInfo.getShopCore().getName(),
+                shopInfo.getGoldOS().isOfficial() == 1,
+                shopInfo.getGoldOS().isGold() == 1,
                 keyword,
-                cacheManagerId,
                 attribution,
-                sort,
                 shopRef
         ));
-    }
-
-    private String saveShopInfoModelToCacheManager(ShopInfo shopInfo) {
-        CacheManager cacheManager = new SaveInstanceCacheManager(this, true);
-        cacheManager.put(ShopInfo.TAG, shopInfo, TimeUnit.DAYS.toMillis(7));
-        return cacheManager.getId();
     }
 
     @Override

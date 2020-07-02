@@ -130,6 +130,9 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PAGE_INFO = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/info"
 
     @JvmField
+    val SHOP_PAGE_REVIEW = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/review"
+
+    @JvmField
     val SHOP_PAGE_PRODUCT_LIST = "$INTERNAL_MARKETPLACE/shop-page-product-list/{shop_id}/etalase/{etalase_id}/"
 
     //ReviewShopInfoActiviy

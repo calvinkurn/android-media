@@ -90,6 +90,9 @@
 
     <string name="error_empty_provider">Gagal mendownload provider.</string>
     <string name="facebook_error_not_authorized">Gagal login facebook. Silahkan coba lagi.</string>
+    <string name="facebook_error_empty_token">Gagal mendapatkan token facebook. Silahkan coba lagi.</string>
+    <string name="error_login_using_facebook">Gagal login menggunakan akun facebook. Silahkan coba lagi.</string>
+    <string name="error_login_using_facebook_with_exception">Gagal login menggunakan akun facebook. </string>
     <string name="default_datepicker">Tanggal / Bulan / Tahun</string>
     <string name="terms_and_conditions">Syarat dan Ketentuan</string>
     <string name="privacy">Kebijakan Privasi</string>
@@ -135,6 +138,8 @@
     <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor]]></string>
     <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b> ke
     nomor]]></string>
+    <string name="need_help_call_tokopedia_care">Butuh bantuan? Hubungi Tokopedia Care</string>
+    <string name="call_tokopedia_care">Hubungi Tokopedia Care</string>
 
     <string name="verification_masking_x">**** - **** - %1$s</string>
     <string name="verification_code_sent_to_call"><![CDATA[Kode verifikasi telah dikirimkan

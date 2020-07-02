@@ -90,6 +90,10 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         }
     }
 
+    override fun saveEvent(bundle: Bundle) {
+        saveEvent(Utils.bundleToMap(bundle))
+    }
+
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
@@ -139,14 +143,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         }
     }
 
-    override fun setUserId(userId: String) {
-        session.setUserId(userId)
-    }
-
-    override fun setDeviceId(deviceId: String) {
-        session.setDeviceId(deviceId)
-    }
-
     override fun setAlarm(isTurnOn: Boolean, force: Boolean) {
         if (!force && isTurnOn == isAlarmOn) {
             return
@@ -173,6 +169,10 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
             }
         }
         isAlarmOn = isTurnOn
+    }
+
+    override fun getSessionId(): String {
+        return session.getSessionId()
     }
 
     companion object {

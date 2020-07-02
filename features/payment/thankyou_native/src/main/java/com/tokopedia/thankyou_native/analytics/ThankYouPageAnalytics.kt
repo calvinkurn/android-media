@@ -1,15 +1,16 @@
 package com.tokopedia.thankyou_native.analytics
 
+import android.os.Bundle
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerCommerceData
-import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.AF_KEY_CATEGORY_NAME
-import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_ID
-import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_QTY
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
@@ -25,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import javax.inject.Inject
+
 
 class ThankYouPageAnalytics @Inject constructor(
         @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
@@ -56,6 +58,38 @@ class ThankYouPageAnalytics @Inject constructor(
         })
     }
 
+    fun sendigitalThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
+        this.thanksPageData = thanksPageData
+        CoroutineScope(mainDispatcher).launchCatchError(block = {
+            withContext(bgDispatcher) {
+                thanksPageData.shopOrder.forEach { shopOrder ->
+                    processDataForGTM(thanksPageData.thanksCustomization.trackingData)
+                }
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+    private fun processDataForGTM(eventData: String) {
+        val gson = Gson()
+        val eventList: JsonArray = gson.fromJson(eventData, object : TypeToken<JsonArray>() {}.type)
+
+        eventList.forEach { data ->
+            val eventMap: MutableMap<String, Any> = gson.fromJson(data, object : TypeToken<Map<String, Any>>(){}.type)
+            analyticTracker.sendEnhanceEcommerceEvent(eventMap)
+        }
+    }
+
+    private fun getBundleFromMap(dataMap: Map<String, Any> ): Bundle {
+        var bundle = Bundle()
+        for (entry in dataMap.entries) {
+            bundle.putString(entry.key, entry.value?.toString())
+        }
+
+        return bundle
+    }
+
     private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
         return mutableMapOf(
                 ParentTrackingKey.KEY_EVENT to thanksPageData.event,
@@ -82,7 +116,7 @@ class ThankYouPageAnalytics @Inject constructor(
 
     private fun getActionFieldNode(orderedItem: ShopOrder): Map<String, Any?> {
         return mapOf(
-                KEY_ID to orderedItem.orderId,
+                ParentTrackingKey.KEY_ID to orderedItem.orderId,
                 ActionFieldNodeTrackingKey.KEY_AFFILIATION to orderedItem.storeName,
                 ActionFieldNodeTrackingKey.KEY_REVENUE to thanksPageData.additionalInfo.revenue.toString(),
                 ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
@@ -96,12 +130,12 @@ class ThankYouPageAnalytics @Inject constructor(
         purchaseItemList.forEach { item ->
             val productNodeMap = HashMap<String, Any?>()
             productNodeMap[ProductNodeTrackingKey.KEY_NAME] = item.productName
-            productNodeMap[KEY_ID] = item.productId
+            productNodeMap[ParentTrackingKey.KEY_ID] = item.productId
             productNodeMap[ProductNodeTrackingKey.KEY_PRICE] = item.price.toString()
             productNodeMap[ProductNodeTrackingKey.KEY_BRAND] = item.productBrand
-            productNodeMap[AF_KEY_CATEGORY_NAME] = item.category
+            productNodeMap[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = addSlashInCategory(item.category)
             productNodeMap[ProductNodeTrackingKey.KEY_VARIANT] = item.variant
-            productNodeMap[KEY_QTY] = item.quantity
+            productNodeMap[ParentTrackingKey.KEY_QTY] = item.quantity
             productNodeMap[ProductNodeTrackingKey.KEY_DIMENSION83] = item.bebasOngkirDimension
             productNodeList.add(productNodeMap)
         }
@@ -168,6 +202,15 @@ class ThankYouPageAnalytics @Inject constructor(
                 ))
     }
 
+    fun sendPushGtmFalseEvent(paymentId:String) {
+        analyticTracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                        EVENT_CATEGORY_ORDER_COMPLETE,
+                        EVENT_ACTION_PUSH_GTM_FALSE,
+                        paymentId
+                ))
+    }
+
     fun appsFlyerPurchaseEvent(thanksPageData: ThanksPageData) {
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
@@ -203,7 +246,10 @@ class ThankYouPageAnalytics @Inject constructor(
                 afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
                 afValue[AFInAppEventType.ORDER_ID] = orderIds
                 afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
-                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = ThankPageTypeMapper.getThankPageType(thanksPageData)
+                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when(ThankPageTypeMapper.getThankPageType(thanksPageData)){
+                    MarketPlaceThankPage -> MARKET_PLACE
+                    else -> DIGITAL
+                }
                 afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
                 afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
                 afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
@@ -235,9 +281,12 @@ class ThankYouPageAnalytics @Inject constructor(
                     val branchIOPayment: com.tokopedia.linker.model.PaymentData = com.tokopedia.linker.model.PaymentData()
                     branchIOPayment.setPaymentId(thanksPageData.paymentID.toString())
                     branchIOPayment.setOrderId(shopOrder.orderId)
-                    branchIOPayment.setShipping(shopOrder.shippingAmountStr)
-                    branchIOPayment.setRevenue(thanksPageData.amountStr)
-                    branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE)
+                    branchIOPayment.setShipping(shopOrder.shippingAmount.toString())
+                    branchIOPayment.setRevenue(thanksPageData.amount.toString())
+                    branchIOPayment.setProductType(when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+                        DigitalThankPage -> LinkerConstants.PRODUCTTYPE_DIGITAL
+                        else -> LinkerConstants.PRODUCTTYPE_MARKETPLACE
+                    })
                     branchIOPayment.isNewBuyer = thanksPageData.isNewUser
                     branchIOPayment.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
                     var price = 0F
@@ -246,10 +295,10 @@ class ThankYouPageAnalytics @Inject constructor(
                         product[LinkerConstants.ID] = productItem.productId
                         product[LinkerConstants.NAME] = productItem.productName
                         price += productItem.price
-                        product[LinkerConstants.PRICE] = productItem.priceStr
-                        product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.priceStr
+                        product[LinkerConstants.PRICE] = productItem.price.toString()
+                        product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.price.toString()
                         product[LinkerConstants.QTY] = productItem.quantity.toString()
-                        product[LinkerConstants.CATEGORY] = productItem.category
+                        product[LinkerConstants.CATEGORY] = getCategoryLevel1(productItem.category)
                         branchIOPayment.setProduct(product)
                     }
                     branchIOPayment.setItemPrice(price.toString())
@@ -261,6 +310,22 @@ class ThankYouPageAnalytics @Inject constructor(
                 }
             }
         }, onError = { it.printStackTrace() })
+    }
+
+    private fun getCategoryLevel1(category: String?): String {
+        return if (category.isNullOrBlank()) {
+            ""
+        } else {
+            category.split("_")[0]
+        }
+    }
+
+    private fun addSlashInCategory(category: String?): String {
+        return if (category.isNullOrBlank()) {
+            ""
+        } else {
+            category.replace("_", " / ")
+        }
     }
 
     companion object {
@@ -278,8 +343,9 @@ class ThankYouPageAnalytics @Inject constructor(
         const val EVENT_LABEL_INSTANT = "instant"
         const val EVENT_LABEL_DEFERRED = "deffer"
         const val EVENT_LABEL_PROCESSING = "processing"
-    }
 
+        const val EVENT_ACTION_PUSH_GTM_FALSE = "push false gtm"
+    }
 }
 
 

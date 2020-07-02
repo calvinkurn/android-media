@@ -53,7 +53,6 @@
     <string name="product_manage_filter_free_returns">Free Returns</string>
     <string name="product_manage_filter_preorder">Preorder</string>
     <string name="product_manage_filter_all_showcase">Semua Etalase</string>
-    <string name="product_manage_filter_all_products">Semua Produk</string>
     <string name="product_manage_filter_product_sold">Produk Terjual</string>
     <string name="product_manage_stock_empty">Kosong</string>
     <string name="product_manage_stock_nonactive">Nonaktif</string>

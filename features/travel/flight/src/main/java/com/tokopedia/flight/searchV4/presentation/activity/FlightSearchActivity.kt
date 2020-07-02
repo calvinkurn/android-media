@@ -22,11 +22,11 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.flight.search.util.FlightSearchCache
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.searchV4.presentation.fragment.FlightSearchFragment
+import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.search_universal.presentation.bottomsheet.FlightSearchUniversalBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
@@ -106,7 +106,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         flightSearchPassDataModel.isOneWay = flightSearchParams.isOneWay
         flightSearchPassDataModel.departureDate = flightSearchParams.departureDate
         flightSearchPassDataModel.returnDate = flightSearchParams.returnDate
-        flightSearchPassDataModel.flightPassengerViewModel = flightSearchParams.flightPassengerViewModel
+        flightSearchPassDataModel.flightPassengerModel = flightSearchParams.flightPassengerModel
         flightSearchPassDataModel.flightClass = flightSearchParams.flightClass
         flightSearchPassDataModel.searchRequestId = ""
 
@@ -149,7 +149,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,
                 flightSearchPassDataModel.departureDate
         )
-        passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerViewModel)
+        passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
         classString = flightSearchPassDataModel.flightClass.title
     }
 
@@ -208,8 +208,10 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     private fun setupSearchToolbarText() {
-        val departureCode = if (getDepartureAirport().airportCode.isNotEmpty()) getDepartureAirport().airportCode else getDepartureAirport().cityCode
-        val arrivalCode = if (getArrivalAirport().airportCode.isNotEmpty()) getArrivalAirport().airportCode else getArrivalAirport().cityCode
+        val departureCode = if (getDepartureAirport().airportCode != null && getDepartureAirport().airportCode.isNotEmpty())
+            getDepartureAirport().airportCode else getDepartureAirport().cityCode
+        val arrivalCode = if (getArrivalAirport().airportCode != null && getArrivalAirport().airportCode.isNotEmpty())
+            getArrivalAirport().airportCode else getArrivalAirport().cityCode
         val title = "${getDepartureAirport().cityName} (${departureCode}) ➝ ${getArrivalAirport().cityName} (${arrivalCode})"
         val subtitle = "$dateString | $passengerString | $classString"
 

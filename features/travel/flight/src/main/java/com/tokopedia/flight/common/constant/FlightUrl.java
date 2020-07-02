@@ -10,13 +10,12 @@ public class FlightUrl {
 
     public static final String FLIGHT_PATH = "travel/v1/flight/";
     public static final String FLIGHT_PATH_V11 = "travel/v1.1/flight/";
-    public static final String FLIGHT_SEARCH_SINGLE = FLIGHT_PATH + "search/single";
-    public static final String FLIGHT_SEARCH_COMBINED = FLIGHT_PATH + "search/combined";
     public static final String FLIGHT_CANCELLATION_PATH = FLIGHT_PATH + "cancel/";
     public static final String FLIGHT_CANCELLATION_PATH_V11 = FLIGHT_PATH_V11 + "cancel/";
     public static final String FLIGHT_CANCELLATION_PASSENGER = FLIGHT_CANCELLATION_PATH + "passenger";
     public static final String FLIGHT_CANCELLATION_ESTIMATE_REFUND = FLIGHT_CANCELLATION_PATH + "estimate";
     public static final String FLIGHT_CANCELLATION_REQUEST = FLIGHT_CANCELLATION_PATH_V11 + "request";
+    public static final String FLIGHT_CANCELLATION_UPLOAD = FLIGHT_CANCELLATION_PATH_V11 + "upload";
     public static final String CONTACT_US_FLIGHT_HOME_PREFIX = "contact-us?pid=97&flag_app=1&device=android&utm_source=android";
     public static String BASE_URL = TokopediaUrl.Companion.getInstance().getAPI();
     public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();

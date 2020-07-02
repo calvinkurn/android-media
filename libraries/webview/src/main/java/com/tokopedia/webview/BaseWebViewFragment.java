@@ -553,15 +553,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         Uri uri = Uri.parse(url);
+        if (uri.isOpaque()) {
+            return false;
+        }
         if (goToLoginGoogle(uri)) return true;
 
         String queryParam = null;
         String headerText = null;
+
         try {
-            if(uri.isHierarchical()) {
-                queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
-                headerText = uri.getQueryParameter(CUST_HEADER);
-            }
+            queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+            headerText = uri.getQueryParameter(CUST_HEADER);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -643,7 +645,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void logApplinkErrorOpen(String url) {
         String referrer = getPreviousUri();
-        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s'",
+        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s';journey='-'",
                 getClass().getSimpleName(), referrer, url);
     }
 

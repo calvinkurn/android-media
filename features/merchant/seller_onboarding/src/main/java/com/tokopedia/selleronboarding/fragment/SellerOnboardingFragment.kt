@@ -18,6 +18,7 @@ import com.tokopedia.selleronboarding.adapter.SlideAdapter
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingAnalytic
 import com.tokopedia.selleronboarding.model.SlideUiModel
 import com.tokopedia.selleronboarding.utils.OnboardingLayoutManager
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_sob_onboarding.view.*
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 
@@ -97,7 +98,8 @@ class SellerOnboardingFragment : Fragment() {
         val position = mLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: -1
         if (position >= 0) {
             val irisSession = IrisSession(context ?: return)
-            SellerOnboardingAnalytic.sendEventClickOpenApp(position, irisSession.getSessionId(), irisSession.getDeviceId())
+            val userSession = UserSession(context ?: return)
+            SellerOnboardingAnalytic.sendEventClickOpenApp(position, irisSession.getSessionId(), userSession.deviceId)
         }
     }
 }

@@ -44,6 +44,8 @@ public class TkpdWebView extends WebView {
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String HEADER_TKPD_SESSION_ID = "tkpd-sessionid";
+    private static final String HEADER_TKPD_SESSION_ID2 = "Tkpd-SessionId";
+    private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
     private static final String HEADER_TKPD_USER_AGENT = "tkpd-useragent";
     private RemoteConfig remoteConfig;
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
@@ -119,14 +121,11 @@ public class TkpdWebView extends WebView {
                     AuthConstant.DATE_FORMAT,
                     userSession.getUserId(),
                     userSession);
-            header.put(
-                    HEADER_TKPD_SESSION_ID,
-                    getRegistrationIdWithTemp(getContext())
-            );
-            header.put(
-                    HEADER_TKPD_USER_AGENT,
-                    DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-            );
+            String deviceId = userSession.getDeviceId();
+            header.put(HEADER_TKPD_SESSION_ID, deviceId);
+            header.put(HEADER_TKPD_SESSION_ID2, deviceId);
+            header.put(HEADER_TKPD_USER_AGENT, DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE);
+            header.put(HEADER_TKPD_USER_ID, userSession.getUserId());
             Context application = getContext().getApplicationContext();
             if (application instanceof NetworkRouter) {
                 FingerprintModel fingerprintModel = ((NetworkRouter) (application)).getFingerprintModel();
@@ -142,18 +141,6 @@ public class TkpdWebView extends WebView {
             }
             loadUrl(urlToLoad, header);
         }
-    }
-
-    private String getRegistrationIdWithTemp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        if (cache.getString(GCM_ID, "").equals("")) {
-            String tempID = UUID.randomUUID().toString();
-            ;
-            cache.putString(GCM_ID, tempID);
-            cache.applyEditor();
-            return tempID;
-        }
-        return cache.getString(GCM_ID, "");
     }
 
     /**

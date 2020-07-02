@@ -10,6 +10,8 @@ import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -61,6 +63,12 @@ public class ProductViewModelMapper {
                     .setInspirationCarouselViewModel(
                             convertToInspirationCarouselViewModel(searchProductModel.getSearchInspirationCarousel()
                             )
+                    );
+        }
+        if (searchProductModel.getSearchInspirationCard() != null) {
+            productViewModel
+                    .setInspirationCardViewModel(
+                            convertToInspirationCardViewModel(searchProductModel.getSearchInspirationCard())
                     );
         }
         productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
@@ -201,7 +209,8 @@ public class ProductViewModelMapper {
         productItem.setWarehouseID(productModel.getWarehouseId());
         productItem.setProductName(productModel.getName());
         productItem.setImageUrl(productModel.getImageUrl());
-        productItem.setImageUrl700(productModel.getImageUrlLarge());
+        productItem.setImageUrl300(productModel.getImageUrl300());
+        productItem.setImageUrl700(productModel.getImageUrl700());
         productItem.setRatingString(useRatingString ? productModel.getRatingAverage() : "");
         productItem.setRating(useRatingString ? 0 : productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
@@ -360,5 +369,37 @@ public class ProductViewModelMapper {
         }
 
         return products;
+    }
+
+    private List<InspirationCardViewModel> convertToInspirationCardViewModel(SearchProductModel.SearchInspirationCard searchInspirationCard) {
+        List<InspirationCardViewModel> inspirationCardViewModel = new ArrayList<>();
+
+        for (SearchProductModel.InspirationCardData data : searchInspirationCard.getData()) {
+            inspirationCardViewModel.add(new InspirationCardViewModel(
+                    data.getTitle(),
+                    data.getType(),
+                    data.getPosition(),
+                    convertToInspirationCardOptionViewModel(data.getInspiratioWidgetOptions(), data.getType())
+            ));
+        }
+
+        return inspirationCardViewModel;
+    }
+
+    private List<InspirationCardOptionViewModel> convertToInspirationCardOptionViewModel(List<SearchProductModel.InspirationCardOption> inspiratioWidgetOptions, String inspirationCardType) {
+        List<InspirationCardOptionViewModel> options = new ArrayList<>();
+
+        for (SearchProductModel.InspirationCardOption option : inspiratioWidgetOptions) {
+            options.add(new InspirationCardOptionViewModel(
+                    option.getText(),
+                    option.getImg(),
+                    option.getUrl(),
+                    option.getColor(),
+                    option.getApplink(),
+                    inspirationCardType
+            ));
+        }
+
+        return options;
     }
 }

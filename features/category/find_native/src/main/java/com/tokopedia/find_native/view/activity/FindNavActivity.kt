@@ -165,18 +165,18 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
                 STATE_GRID -> {
                     findPageAnalytics.eventClickViewType()
                     imageDisplayButton.tag = STATE_LIST
-                    imageDisplayButton.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
+                    imageDisplayButton.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_list_display))
                 }
 
                 STATE_LIST -> {
                     findPageAnalytics.eventClickViewType()
                     imageDisplayButton.tag = STATE_BIG
-                    imageDisplayButton.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
+                    imageDisplayButton.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_big_display))
                 }
                 STATE_BIG -> {
                     findPageAnalytics.eventClickViewType()
                     imageDisplayButton.tag = STATE_GRID
-                    imageDisplayButton.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
+                    imageDisplayButton.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_grid_display))
                 }
             }
         }

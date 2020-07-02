@@ -1,191 +1,184 @@
 query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
   pdpGetLayout(productID:$productID, shopDomain:$shopDomain,productKey:$productKey) {
     name
-    basicInfo {
-      productID
-      category{
-        id
-        name
-        title
-        breadcrumbURL
-        isAdult
-        detail{
-          id
-          name
-        }
-      }
-      menu{
-        id
-        name
-        url
-      }
-      txStats{
-        transactionSuccess
-        transactionReject
-        countSold
-        paymentVerified
-        itemSoldPaymentVerified
-       }
-      stats{
-        countView
-        countReview
-        countTalk
-        rating
-      }
-      defaultOngkirEstimation
-      shopID
-      alias
-      minOrder
-      maxOrder
-      status
-      url
-      sku
-      gtin
-      weight
-      weightUnit
-      condition
-      isMustInsurance
-      catalogID
-      needPrescription
-      isLeasing
-      isBlacklisted
-      blacklistMessage{
-        title
-        description
-        button
-        url
-      }
-    }
-    components {
-      name
-      type
-      data {
-        ...on pdpDataProductSnapshot {
-          name
-          media {
-            type
-            URLOriginal
-            URLThumbnail
-            URL300
-            description
-            videoURLAndroid
-            videoURLIOS
-            isAutoplay
-          }
-          pictures {
-            picID
-            description
-            filePath
-            fileName
-            width
-            height
-            isFromIG
-            urlOriginal
-            urlThumbnail
-            url300
-            Status
-          }
-          preorder{
-            duration
-            timeUnit
-            isActive
-          }
-          videos {
-            source
+        basicInfo {
+          alias
+          productID
+          shopID
+          minOrder
+          maxOrder
+          weight
+          weightUnit
+          condition
+          status
+          url
+          sku
+          gtin
+          isMustInsurance
+          needPrescription
+          catalogID
+          isLeasing
+          isBlacklisted
+          menu {
+            id
+            name
             url
           }
-
-          price {
-            value
-            currency
-            lastUpdateUnix
-          }
-          campaign {
-            campaignID
-            campaignType
-            campaignTypeName
-            percentageAmount
-            originalPrice
-            discountedPrice
-            stock
-            stockSoldPercentage
-            startDate
-            endDate
-            endDateUnix
-            appLinks
-            isAppsOnly
-            isActive
-            hideGimmick
-            isCheckImei
-            isUsingOvo
-          }
-          stock {
-            useStock
-            value
-            stockWording
-          }
-
-          variant{
-            isVariant
-            parentID
-          }
-          wholesale {
-            minQty
-            price{
-              value
-              lastUpdateUnix
-              currency
+          category {
+            id
+            name
+            title
+            breadcrumbURL
+            isAdult
+            lastUpdateCategory
+            detail {
+              id
+              name
+              breadcrumbURL
+              isAdult
             }
           }
-          isCashback {
-            percentage
-          }
-          isFreeOngkir {
-            isActive
-            imageURL
-          }
-          isTradeIn
-          isOS
-          isPowerMerchant
-          isCOD
-        }
-        ...on pdpDataProductInfo {
-          row
-          content {
+          blacklistMessage {
             title
-            subtitle
-            applink
+            description
+            button
+            url
           }
-        }
-        ...on pdpDataSocialProof {
-          row
-          content {
-            icon
-            title
-            subtitle
-            applink
-            type
+          txStats {
+            transactionSuccess
+            transactionReject
+            countSold
+            paymentVerified
+            itemSoldPaymentVerified
+          }
+          stats {
+            countView
+            countReview
+            countTalk
             rating
           }
         }
-        ...on pdpDataInfo {
-          title
-          icon
-          isApplink
-          content {
-            icon
-            text
+        components {
+          name
+          type
+          data {
+    		... on pdpDataProductMedia {
+    			media {
+    				type
+    				URLOriginal
+    				URLThumbnail
+    				URL300
+    				description
+    				videoURLAndroid
+    				videoURLIOS
+    				isAutoplay
+    			}
+    			videos{
+                    url
+                    source
+                }
+    		}
+    		... on pdpDataProductContent {
+    			name
+    			price {
+    				value
+    				currency
+    				lastUpdateUnix
+    			}
+    			campaign {
+    				campaignID
+    				campaignType
+    				campaignTypeName
+    				percentageAmount
+    				originalPrice
+    				discountedPrice
+    				originalStock
+    				stock
+    				stockSoldPercentage
+    				threshold
+    				startDate
+    				endDate
+    				endDateUnix
+    				appLinks
+    				isAppsOnly
+    				isActive
+    				hideGimmick
+    				isUsingOvo
+                    isCheckImei
+    			}
+    			stock {
+    				useStock
+    				value
+    				stockWording
+    			}
+    			variant {
+    				isVariant
+    				parentID
+    			}
+    			wholesale {
+    				minQty
+    				price {
+    					value
+    					lastUpdateUnix
+    					currency
+    				}
+    			}
+    			preorder {
+    				duration
+    				timeUnit
+    				isActive
+    			}
+    			isCashback {
+    				percentage
+    			}
+    			isFreeOngkir {
+    				isActive
+    				imageURL
+    			}
+    			isTradeIn
+    			isOS
+    			isPowerMerchant
+    			isWishlist
+    			isCOD
+    		}
+            ... on pdpDataProductInfo {
+              row
+              content {
+                title
+                subtitle
+                applink
+              }
+            }
+            ... on pdpDataSocialProof {
+              row
+              content {
+                icon
+                title
+                subtitle
+                applink
+                type
+                rating
+              }
+            }
+            ... on pdpDataInfo {
+              icon
+              title
+              isApplink
+              applink
+              content {
+                icon
+                text
+              }
+            }
+            ... on pdpDataUpcomingCampaign {
+              campaignID
+              campaignType
+              campaignTypeName
+              startDate
+              endDate
+              notifyMe
+            }
           }
         }
-        ...on pdpDataUpcomingCampaign {
-          campaignID
-          campaignType
-          campaignTypeName
-          endDate
-          startDate
-		  notifyMe
-        }
-      }
     }
-  }
 }

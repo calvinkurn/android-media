@@ -1,6 +1,6 @@
 query get_chat_replies($msgId: Int!, $beforeReplyTime: String) {
   status
-  chatReplies(msgId: $msgId, beforeReplyTime: $beforeReplyTime) {
+  chatReplies(msgId: $msgId, beforeReplyTime: $beforeReplyTime, isTextOnly: true) {
     minReplyTime
     block {
       blockedUntil
@@ -9,6 +9,7 @@ query get_chat_replies($msgId: Int!, $beforeReplyTime: String) {
     }
     hasNext
     textareaReply
+    attachmentIDs
     contacts {
       role
       userId
@@ -45,6 +46,7 @@ query get_chat_replies($msgId: Int!, $beforeReplyTime: String) {
           isHighlight
           isRead
           blastId
+          source
           attachment {
             id
             type

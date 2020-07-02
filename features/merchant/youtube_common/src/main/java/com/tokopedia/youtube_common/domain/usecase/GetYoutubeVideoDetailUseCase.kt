@@ -6,6 +6,10 @@ import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.youtube_common.YoutubeCommonConstant.ENDPOINT_URL
+import com.tokopedia.youtube_common.YoutubeCommonConstant.ID_KEY
+import com.tokopedia.youtube_common.YoutubeCommonConstant.PART_KEY
+import com.tokopedia.youtube_common.YoutubeCommonConstant.PART_VALUE
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -13,13 +17,6 @@ import javax.inject.Inject
 class GetYoutubeVideoDetailUseCase @Inject constructor(
         private val repository: RestRepository
 ): RestRequestUseCase(repository) {
-
-    companion object {
-        val ENDPOINT_URL =  "${TokopediaUrl.getInstance().GOLDMERCHANT}youtube/v3/videos"
-        const val ID_KEY = "id"
-        const val PART_KEY = "part"
-        const val PART_VALUE = "snippet"
-    }
 
     private var videoId: String? = ""
 
@@ -34,14 +31,14 @@ class GetYoutubeVideoDetailUseCase @Inject constructor(
         return repository.getResponses(restRequestList)
     }
 
+    fun setVideoId(videoId: String) {
+        this.videoId = videoId
+    }
+
     private fun generateRequestParam(): Map<String, Any> {
         val requestParamMap = mutableMapOf<String, Any>()
         requestParamMap[ID_KEY] = videoId.toString()
         requestParamMap[PART_KEY] = PART_VALUE
         return requestParamMap
-    }
-
-    fun setVideoId(videoId: String) {
-        this.videoId = videoId
     }
 }

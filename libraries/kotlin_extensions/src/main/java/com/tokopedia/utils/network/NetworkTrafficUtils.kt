@@ -3,6 +3,7 @@ package com.tokopedia.utils.network
 import android.net.TrafficStats
 import timber.log.Timber
 import java.io.BufferedReader
+import java.io.File
 import java.io.FileReader
 
 object NetworkTrafficUtils {
@@ -23,9 +24,11 @@ object NetworkTrafficUtils {
         val reader: BufferedReader
         var trafficBytes = 0L
         try {
-            reader = BufferedReader(FileReader(filePath))
-            trafficBytes = reader.readLine().toLong()
-            reader.close()
+            if (File(filePath).exists()) {
+                reader = BufferedReader(FileReader(filePath))
+                trafficBytes = reader.readLine().toLong()
+                reader.close()
+            }
         } catch (e: Exception) {
             Timber.d(e)
         }
