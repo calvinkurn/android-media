@@ -67,7 +67,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
 
-        private const val IS_NEED_TO_SHOW_COACHMARK = "need_to_show_coachmark"
+        private const val IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating"
 
         fun createInstance(): RatingProductFragment {
             return RatingProductFragment()
@@ -131,6 +131,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     var isCompletedCoachMark = false
 
+    private var isClickTrackingAlreadySent = false
+
     private var coachMarkSummary: CoachMarkItem? = null
     private var coachMarkItemRatingProduct: CoachMarkItem? = null
 
@@ -145,13 +147,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private val isNeedToShowCoachMark by lazy {
-        arguments?.getBoolean(IS_NEED_TO_SHOW_COACHMARK, true) ?: true
+        arguments?.getBoolean(IS_DIRECTLY_GO_TO_RATING, true) ?: true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tracking.sendScreen(userSession.shopId.orEmpty())
-        tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList = ViewModelProvider(this, viewModelFactory).get(SellerReviewListViewModel::class.java)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         prefs = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
@@ -182,6 +183,14 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         viewModelListReviewList?.productRatingOverall?.removeObservers(this)
         viewModelListReviewList?.flush()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isClickTrackingAlreadySent) {
+            tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
+            isClickTrackingAlreadySent = true
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
