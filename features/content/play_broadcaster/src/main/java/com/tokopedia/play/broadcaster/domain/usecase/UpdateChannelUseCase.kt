@@ -58,7 +58,7 @@ class UpdateChannelUseCase @Inject constructor(
             return QueryParams(query, params)
         }
 
-        fun createUpdateCoverRequest(
+        fun createUpdateFullCoverRequest(
                 channelId: String,
                 authorId: String,
                 coverTitle: String,
@@ -72,6 +72,22 @@ class UpdateChannelUseCase @Inject constructor(
             )
 
             val query = buildQueryString(listOf(FieldsToUpdate.Title, FieldsToUpdate.Cover, FieldsToUpdate.AuthorID))
+
+            return QueryParams(query, params)
+        }
+
+        fun createUpdateCoverTitleRequest(
+                channelId: String,
+                authorId: String,
+                coverTitle: String
+        ): QueryParams {
+            val params = mapOf(
+                    PARAMS_CHANNEL_ID to channelId,
+                    FieldsToUpdate.AuthorID.fieldName to authorId,
+                    FieldsToUpdate.Title.fieldName to coverTitle
+            )
+
+            val query = buildQueryString(listOf(FieldsToUpdate.Title, FieldsToUpdate.AuthorID))
 
             return QueryParams(query, params)
         }

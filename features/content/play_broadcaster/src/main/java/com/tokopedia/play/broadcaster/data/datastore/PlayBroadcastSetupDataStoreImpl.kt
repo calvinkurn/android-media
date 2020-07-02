@@ -100,6 +100,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         return coverDataStore.uploadSelectedCover(channelId)
     }
 
+    override suspend fun uploadCoverTitle(channelId: String): NetworkResult<Unit> {
+        return coverDataStore.uploadCoverTitle(channelId)
+    }
+
     private fun validateCover() {
         val selectedCover = getSelectedCover()
         val selectedProducts = getSelectedProducts()
