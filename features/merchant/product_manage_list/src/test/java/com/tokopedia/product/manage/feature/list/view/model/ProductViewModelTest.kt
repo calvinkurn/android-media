@@ -5,7 +5,7 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ProductViewModelTest {
@@ -176,8 +176,8 @@ class ProductViewModelTest {
         val id = ""
         val name: String? = "Tolak Angin"
         val imageUrl: String? = "imageUrl"
-        val price: String? = "100000"
-        val priceFormatted: String? = "Ro100.000"
+        val minPrice: PriceUiModel? = PriceUiModel("10000", "Rp10.000")
+        val maxPrice: PriceUiModel? = PriceUiModel("100000", "Rp100.000")
         val status: ProductStatus? = ProductStatus.ACTIVE
         val url: String? = "productUrl"
         val cashBack = 0
@@ -191,8 +191,8 @@ class ProductViewModelTest {
             id,
             name,
             imageUrl,
-            price,
-            priceFormatted,
+            minPrice,
+            maxPrice,
             status,
             url,
             cashBack,
@@ -206,8 +206,8 @@ class ProductViewModelTest {
         assertEquals(id, viewModel.id)
         assertEquals(name, viewModel.title)
         assertEquals(imageUrl, viewModel.imageUrl)
-        assertEquals(price, viewModel.price)
-        assertEquals(priceFormatted, viewModel.priceFormatted)
+        assertEquals(minPrice, viewModel.minPrice)
+        assertEquals(maxPrice, viewModel.maxPrice)
         assertEquals(status, viewModel.status)
         assertEquals(url, viewModel.url)
         assertEquals(cashBack, viewModel.cashBack)
