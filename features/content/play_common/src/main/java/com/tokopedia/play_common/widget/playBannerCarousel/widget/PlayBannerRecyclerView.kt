@@ -3,6 +3,7 @@ package com.tokopedia.play_common.widget.playBannerCarousel.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -276,6 +277,9 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         this.mediaObjectsLastPosition.addAll(list.map { 0 })
         resetVideoPlayer()
         coroutineContext.cancelChildren()
+        Handler().postDelayed({
+            playVideos()
+        }, 150)
     }
 
     /* in seconds */
