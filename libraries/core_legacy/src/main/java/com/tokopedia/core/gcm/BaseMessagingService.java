@@ -104,6 +104,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         String fcmToken = FirebaseMessagingManagerImpl.getFcmTokenFromPref(this);
         addLogLine(logMessage, "fcmToken", fcmToken);
         addLogLine(logMessage, "userId", userSession.getUserId());
+        addLogLine(logMessage, "isSellerApp", GlobalConfig.isSellerApp());
         for (String key : data.keySet()) {
             addLogLine(logMessage, key, data.get(key));
         }
