@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
@@ -21,6 +22,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
@@ -137,6 +139,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
                 }
                 is NetworkResult.Fail -> {
                     loaderView.gone()
+                    if (GlobalConfig.DEBUG) requireView().showToaster(it.error.localizedMessage, type = Toaster.TYPE_ERROR)
                     summaryInfoView.showError { it.onRetry() }
                 }
             }

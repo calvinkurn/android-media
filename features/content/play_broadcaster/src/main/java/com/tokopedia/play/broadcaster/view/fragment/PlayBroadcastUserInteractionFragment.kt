@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -182,6 +183,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun startLiveStreaming(ingestUrl: String) {
         parentViewModel.startPushStream(ingestUrl)
+        // TODO remove mock
+        parentViewModel.mockChatList()
+        parentViewModel.mockMetrics()
     }
 
     private fun stopLiveStreaming() {
@@ -266,7 +270,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ).show()
     }
 
-    private fun showDialogContinueLiveStreaming(channelId: String) {
+    private fun showDialogContinueLiveStreaming(ingestUrl: String) {
         requireContext().getDialog(
                 actionType = DialogUnify.HORIZONTAL_ACTION,
                 title = getString(R.string.play_dialog_continue_live_title),
@@ -274,7 +278,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 primaryCta = getString(R.string.play_next),
                 primaryListener = { dialog ->
                     dialog.dismiss()
-                    startLiveStreaming(channelId)
+                    startLiveStreaming(ingestUrl)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
@@ -329,8 +333,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun handleChannelInfo(channelInfo: ChannelInfoUiModel) {
         when (channelInfo.status) {
             PlayChannelStatus.Active, PlayChannelStatus.Live -> startLiveStreaming(channelInfo.ingestUrl)
-            PlayChannelStatus.Pause -> showDialogContinueLiveStreaming(channelInfo.channelId)
+            PlayChannelStatus.Pause -> showDialogContinueLiveStreaming(channelInfo.ingestUrl)
             PlayChannelStatus.Stop -> doEndStreaming()
+            else -> {}
         }
     }
 
@@ -370,13 +375,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleLiveError(errorType: PlayPusherErrorType) {
         when(errorType) {
-            PlayPusherErrorType.UnSupportedDevice -> {
+            is PlayPusherErrorType.UnSupportedDevice -> {
                 // TODO("handle unsupported devices")
                 // Perangkat tidak mendukung\n layanan siaran live streaming
                 // Layanan live streaming tidak didukung pada perangkat Anda.
                 // showDialogWhenUnSupportedDevices()
             }
-            PlayPusherErrorType.ReachMaximumPauseDuration -> doEndStreaming()
+            is PlayPusherErrorType.ReachMaximumPauseDuration -> doEndStreaming()
+            is PlayPusherErrorType.Throwable -> if (GlobalConfig.DEBUG) showToast(errorType.message, type = Toaster.TYPE_ERROR)
         }
     }
 

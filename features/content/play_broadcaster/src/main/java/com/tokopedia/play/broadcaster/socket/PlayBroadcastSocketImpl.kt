@@ -13,9 +13,7 @@ import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.Metric
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.RxWebSocketUtil
-import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.websocket.WebSocketSubscriber
+import com.tokopedia.websocket.*
 import okhttp3.WebSocket
 import rx.subscriptions.CompositeSubscription
 import java.lang.reflect.Type
@@ -29,12 +27,23 @@ class PlayBroadcastSocketImpl constructor(
         private val cacheHandler: LocalCacheHandler
 ): PlayBroadcastSocket {
 
-    var socketInfoListener: PlaySocketInfoListener? = null
+    private var socketInfoListener: PlaySocketInfoListener? = null
 
+    private lateinit var webSocketUtil: RxWebSocketUtil
     private lateinit var compositeSubscription: CompositeSubscription
+
     private val gson = Gson()
+    private var config: SocketConfiguration = SocketConfiguration(
+            minReconnectDelay = DEFAULT_DELAY,
+            maxRetries = DEFAULT_MAX_RETRIES,
+            pingInterval = DEFAULT_PING
+    )
 
     private val _observableResponseMessage = MutableLiveData<PlaySocketType>()
+
+    override fun config(minReconnectDelay: Int, maxRetries: Int, pingInterval: Long) {
+        this.config = SocketConfiguration(minReconnectDelay, maxRetries, pingInterval)
+    }
 
     override fun socketInfoListener(listener: PlaySocketInfoListener) {
         this.socketInfoListener = listener
@@ -50,6 +59,8 @@ class PlayBroadcastSocketImpl constructor(
         var wsConnectUrl = "$wsBaseUrl${PlayBroadcastSocket.KEY_GROUP_CHAT_PATH}$channelId"
         if (groupChatToken.isNotEmpty())
             wsConnectUrl += "&token=$groupChatToken"
+
+        compositeSubscription = CompositeSubscription()
 
         val subscriber = object : WebSocketSubscriber() {
 
@@ -95,15 +106,24 @@ class PlayBroadcastSocketImpl constructor(
             }
         }
 
-        val config = configuration()
-        val webSocketUtil = RxWebSocketUtil.getInstance(null, config.minReconnectDelay, config.maxRetries, config.pingInterval)
-
+        webSocketUtil = RxWebSocketUtil.getInstance(
+                null,
+                delay = config.minReconnectDelay,
+                maxRetries = config.maxRetries,
+                pingInterval = config.pingInterval
+        )
         val subscription = webSocketUtil.getWebSocketInfo(wsConnectUrl, userSession.accessToken)?.
         subscribe(subscriber)
         compositeSubscription.add(subscription)
     }
 
+    override fun close() {
+        if (::webSocketUtil.isInitialized)
+            webSocketUtil.close()
+    }
+
     override fun destroy() {
+        close()
         if (::compositeSubscription.isInitialized)
             compositeSubscription.clear()
     }

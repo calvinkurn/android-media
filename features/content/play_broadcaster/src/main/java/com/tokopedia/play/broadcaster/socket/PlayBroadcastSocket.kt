@@ -1,9 +1,6 @@
 package com.tokopedia.play.broadcaster.socket
 
 import androidx.lifecycle.LiveData
-import com.tokopedia.websocket.DEFAULT_DELAY
-import com.tokopedia.websocket.DEFAULT_MAX_RETRIES
-import com.tokopedia.websocket.DEFAULT_PING
 
 
 /**
@@ -11,15 +8,15 @@ import com.tokopedia.websocket.DEFAULT_PING
  */
 interface PlayBroadcastSocket {
 
-    fun configuration(): PlayBroadcastSocketImpl.SocketConfiguration = PlayBroadcastSocketImpl.SocketConfiguration(
-            minReconnectDelay = DEFAULT_DELAY,
-            maxRetries = DEFAULT_MAX_RETRIES,
-            pingInterval = DEFAULT_PING
-    )
+    fun config(minReconnectDelay: Int,
+               maxRetries: Int,
+               pingInterval: Long)
 
     fun socketInfoListener(listener: PlaySocketInfoListener)
 
     fun connect(channelId: String, groupChatToken: String = "")
+
+    fun close()
 
     fun destroy()
 

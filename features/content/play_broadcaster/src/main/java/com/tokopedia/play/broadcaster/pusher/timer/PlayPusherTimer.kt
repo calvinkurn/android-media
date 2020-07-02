@@ -9,59 +9,68 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by mzennis on 25/05/20.
  */
-class PlayPusherTimer(val context: Context,
-                      private val duration: Long,
-                      private var callback: PlayPusherTimerListener) {
+class PlayPusherTimer(val context: Context) {
 
+    constructor(context: Context,
+                duration: Long) : this(context) {
+        this.duration = duration
+    }
+
+    var callback: PlayPusherTimerListener? = null
     var timeoutList: List<Timeout> = Timeout.Default()
     var pauseDuration: Long? = null
 
+    private var duration: Long = 0
     private var lastTimeLeftInMillis: Long = 0
 
-    private var countDownTimer: PlayCountDownTimer = getCountDownTimer(duration)
+    private var countDownTimer: PlayCountDownTimer? = null
     private var localStorage: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun start() {
-        countDownTimer.start()
+        if (countDownTimer != null)
+            countDownTimer = null
+
+        countDownTimer = getCountDownTimer(duration)
+        countDownTimer?.start()
     }
 
     fun stop() {
-        callback.onCountDownFinish(getTimeElapsed())
-        countDownTimer.cancel()
+        callback?.onCountDownFinish(getTimeElapsed())
+        countDownTimer?.cancel()
     }
 
     fun resume() {
         pauseDuration?.let { maxPauseMillis ->
             getLongValue(PLAY_TIMER_LAST_MILLIS)?.let { lastMillis ->
                 if (reachMaximumPauseDuration(lastMillis, maxPauseMillis)) {
-                    callback.onReachMaximumPauseDuration()
+                    callback?.onReachMaximumPauseDuration()
                     removeValue(PLAY_TIMER_LAST_MILLIS)
                 }
             }
         }
-        countDownTimer.resume()
+        countDownTimer?.resume()
     }
 
     fun pause() {
-        countDownTimer.pause()
+        countDownTimer?.pause()
         saveLongValue(PLAY_TIMER_LAST_MILLIS, System.currentTimeMillis())
     }
 
     fun destroy() {
-        countDownTimer.cancel()
+        countDownTimer?.cancel()
     }
 
     private fun getCountDownTimer(liveStreamDuration: Long): PlayCountDownTimer {
         return object : PlayCountDownTimer(liveStreamDuration, DEFAULT_INTERVAL) {
             override fun onFinish() {
-                callback.onCountDownFinish(getTimeElapsed())
+                callback?.onCountDownFinish(getTimeElapsed())
             }
 
             override fun onTick(millisUntilFinished: Long) {
                 lastTimeLeftInMillis = millisUntilFinished
                 val timeout = timeoutList.firstOrNull { millisUntilFinished in it.minMillis..it.maxMillis }
-                if (timeout != null) callback.onCountDownAlmostFinish(timeout.minute)
-                else callback.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
+                if (timeout != null) callback?.onCountDownAlmostFinish(timeout.minute)
+                else callback?.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
             }
         }
     }

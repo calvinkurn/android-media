@@ -29,7 +29,7 @@ interface PlayPusher {
     /**
      * Start live streaming by providing ingest url
      */
-    fun startPush(ingestUrl: String)
+    fun startPush(ingestUrl: String, onActive: () -> Unit = {})
 
     /**
      * Restart live streaming
@@ -39,7 +39,7 @@ interface PlayPusher {
     /**
      * Stop live streaming
      */
-    fun stopPush()
+    fun stopPush(onStop: () -> Unit = {})
 
     /**
      * Switch camera between front and back, the default is front
@@ -49,12 +49,12 @@ interface PlayPusher {
     /**
      * Resume pusher
      */
-    fun resume()
+    fun resume(onActive: () -> Unit = {})
 
     /**
      * Pause pusher
      */
-    fun pause()
+    fun pause(onPause: () -> Unit = {})
 
     /**
      * Destroy pusher
