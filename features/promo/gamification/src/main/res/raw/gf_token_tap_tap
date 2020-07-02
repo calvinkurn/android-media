@@ -13,6 +13,8 @@ query {
         tokenUserIDstr
         campaignID
         title
+        text
+        desc
     }
     timeRemaining {
         isShow

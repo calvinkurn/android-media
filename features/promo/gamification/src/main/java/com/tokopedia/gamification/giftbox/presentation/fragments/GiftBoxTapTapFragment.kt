@@ -503,7 +503,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
         val showTimer = gamiTapEggHome.timeRemaining?.isShow
         if (showTimer != null && timeLeftSeconds != null) {
-            startOneMinuteCounter(timeLeftSeconds)
+            startOneMinuteCounter(30)
         }
     }
 
@@ -549,7 +549,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 isGiftTapAble = true
             }
             animateTvTimerAndProgressBar()
-            startOneMinuteCounter(timeLeftSeconds)
+            startOneMinuteCounter(30)
         }
     }
 
@@ -634,6 +634,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val ratio = 3 //coming from R.layout.list_item_coupons
                 if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
                     rewardContainer.rvCoupons.translationY = (translationY + (2 * sideMargin / ratio)) - fmGiftBox.context.resources.getDimension(R.dimen.gami_box_coupon_padding)
+                    tvTapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin)
+
                 } else {
                     rewardContainer.rvCoupons.translationY = translationY + (2 * sideMargin / ratio)
                 }
@@ -651,7 +653,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
             val imageFrontTop = imageBoxFront.top + giftBoxDailyView.fmGiftBox.top
-            val translationY = imageFrontTop - imageBoxFront.dpToPx(40)
+            val translationY = imageFrontTop - imageBoxFront.context.resources.getDimension(com.tokopedia.design.R.dimen.dp_40)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
         }

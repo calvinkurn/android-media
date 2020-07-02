@@ -14,6 +14,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -80,7 +81,10 @@ import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -119,6 +123,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         System.loadLibrary("native-lib");
     }
 
+
     @Override
     public void onCreate() {
         if (!isMainProcess()) {
@@ -144,10 +149,17 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
-                SharedPreferences sp = ConsumerMainApplication.this.getSharedPreferences("crash",Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("exception",e.getMessage());
-                editor.apply();
+                try {
+                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/rahullohra");
+                    if (!dir.exists()) dir.mkdirs();
+                    File bugFile = new File(dir, "bugs.txt");
+                    FileOutputStream fos = new FileOutputStream(bugFile, true);
+                    PrintStream ps = new PrintStream(fos);
+                    e.printStackTrace(ps);
+                    fos.close();
+                    ps.close();
+                }catch (Exception ex){}
+
                 System.exit(2);
             }
         });
