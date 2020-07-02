@@ -3,6 +3,8 @@ package com.tokopedia.applink.promo
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 fun getRegisteredNavigationTokopoints(context: Context, deeplink: String) =
@@ -23,9 +25,12 @@ fun getDynamicDeeplinkForTokopoints(context: Context, deeplink: String): String 
     } else if (deeplink.contains(ApplinkConst.TOKOPEDIA_REWARD)) {
         deepLinkInternal = deeplink.replace(ApplinkConst.TOKOPEDIA_REWARD, ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS)
     }
-
     if (deepLinkInternal.contains(ApplinkConst.TokoPoints.COUPON_DETAIL)) {
         return deepLinkInternal.replace(ApplinkConst.TokoPoints.COUPON_DETAIL, ApplinkConst.TokoPoints.COUPON_DETAIL_VALUE)
+    }
+    val regex = "kupon-saya/?[a-z]*".toRegex()
+    if (regex.containsMatchIn(deepLinkInternal)) {
+        return deepLinkInternal.replace(regex, "kupon-saya")
     }
     if (deepLinkInternal.contains(ApplinkConst.TokoPoints.CATALOG_DETAIL)) {
         return deepLinkInternal.replace(ApplinkConst.TokoPoints.CATALOG_DETAIL, ApplinkConst.TokoPoints.CATALOG_DETAIL_VALUE)

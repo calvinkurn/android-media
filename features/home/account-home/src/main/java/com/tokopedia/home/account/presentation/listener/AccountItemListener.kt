@@ -19,6 +19,10 @@ interface AccountItemListener {
 
     fun onByMeClicked()
 
+    fun onMemberBadgeClicked()
+
+    fun onClickMemberDetail()
+
     fun onTokopediaPayLinkClicked()
 
     fun onMenuGridItemClicked(item: MenuGridItemViewModel)

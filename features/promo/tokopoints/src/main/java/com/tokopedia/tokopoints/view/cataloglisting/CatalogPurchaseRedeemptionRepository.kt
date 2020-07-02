@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @TokoPointScope
-open class CatalogPurchaseRedeemptionRepository @Inject constructor(private val map : Map<String, String>) {
+open class CatalogPurchaseRedeemptionRepository @Inject constructor(private val map: Map<String, String>) {
 
     @Inject
     lateinit var mSaveCouponUseCase: MultiRequestGraphqlUseCase
@@ -55,6 +55,7 @@ open class CatalogPurchaseRedeemptionRepository @Inject constructor(private val 
         val variables: MutableMap<String, Any> = HashMap()
         variables[CommonConstant.GraphqlVariableKeys.CATALOG_ID] = id
         variables[CommonConstant.GraphqlVariableKeys.IS_GIFT] = 0 //Never be a gift
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = CommonConstant.APIVERSION
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_REDEEM_COUPON],
                 RedeemCouponBaseEntity::class.java,
                 variables, false)

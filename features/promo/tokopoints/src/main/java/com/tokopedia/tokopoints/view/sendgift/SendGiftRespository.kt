@@ -15,14 +15,15 @@ import javax.inject.Inject
 
 
 class SendGiftRespository @Inject constructor(private val mStartSendGift: MultiRequestGraphqlUseCase,
-                                              private val mRedeemCouponUseCase: MultiRequestGraphqlUseCase, private val map : Map<String, String>) {
+                                              private val mRedeemCouponUseCase: MultiRequestGraphqlUseCase, private val map: Map<String, String>) {
 
-    suspend fun sendGift(id: Int?, email: String, notes: String) = withContext(Dispatchers.IO){
+    suspend fun sendGift(id: Int?, email: String, notes: String) = withContext(Dispatchers.IO) {
         val variables: MutableMap<String, Any?> = HashMap()
         variables[CommonConstant.GraphqlVariableKeys.CATALOG_ID] = id
         variables[CommonConstant.GraphqlVariableKeys.IS_GIFT] = 1
         variables[CommonConstant.GraphqlVariableKeys.GIFT_EMAIL] = email
         variables[CommonConstant.GraphqlVariableKeys.NOTES] = notes
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = CommonConstant.APIVERSION
         val request = GraphqlRequest(map[TP_GQL_TOKOPOINT_REDEEM_COUPON],
                 RedeemCouponBaseEntity::class.java,
                 variables, false)
@@ -31,7 +32,7 @@ class SendGiftRespository @Inject constructor(private val mStartSendGift: MultiR
         mRedeemCouponUseCase.executeOnBackground().getSuccessData<RedeemCouponBaseEntity>()
     }
 
-    suspend fun preValidateGift(id: Int?, email: String) = withContext(Dispatchers.IO){
+    suspend fun preValidateGift(id: Int?, email: String) = withContext(Dispatchers.IO) {
         val variables: MutableMap<String, Any?> = HashMap()
         variables[CommonConstant.GraphqlVariableKeys.CATALOG_ID] = id
         variables[CommonConstant.GraphqlVariableKeys.IS_GIFT] = 1

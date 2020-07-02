@@ -5,15 +5,16 @@
     android:layout_height="match_parent">
 
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/ivCouponError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_30"
+        app:imageDpiSupportType="singleDpi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/imagecouponerror" />
+        app:remoteFileName="imagecouponerror.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCoupornErrorTitle"

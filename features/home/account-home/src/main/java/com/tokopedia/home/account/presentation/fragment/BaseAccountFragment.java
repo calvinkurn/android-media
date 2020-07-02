@@ -141,7 +141,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
-        }else if(applink.equals(RESCENTER_BUYER)){
+        } else if (applink.equals(RESCENTER_BUYER)) {
             return true;
         }
 
@@ -157,7 +157,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onProfileCompletionClicked(BuyerCardViewModel element) {
-        openApplink(ApplinkConst.PROFILE_COMPLETION);
+        openApplink(ApplinkConst.TOKOPOINTS);
     }
 
     @Override
@@ -188,6 +188,16 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             sendTracking(PEMBELI, BY_ME_CURATION, "", true);
             RouteManager.route(getContext(), ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST);
         }
+    }
+
+    @Override
+    public void onMemberBadgeClicked() {
+        RouteManager.route(getContext(), ApplinkConst.TokoPoints.HOMEPAGE);
+    }
+
+    @Override
+    public void onClickMemberDetail() {
+        RouteManager.route(getContext(), ApplinkConst.TokoPoints.HOMEPAGE);
     }
 
     @Override

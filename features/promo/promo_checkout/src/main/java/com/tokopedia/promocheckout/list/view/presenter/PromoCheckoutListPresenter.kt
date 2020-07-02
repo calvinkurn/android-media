@@ -16,12 +16,13 @@ import java.util.HashMap
 import kotlin.collections.ArrayList
 
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
-                                 private val lastSeenPromoUseCase: GraphqlUseCase):
+                                 private val lastSeenPromoUseCase: GraphqlUseCase) :
         BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
 
     override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources) {
         val variables = HashMap<String, Any>()
         variables.put(INPUT_GQL, generateInputList(page, serviceId, categoryId))
+        variables.put(API_VERSION, "2.0.0")
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, variables, false)
         graphqlUseCase.clearRequest()
@@ -39,8 +40,10 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
 
             override fun onNext(objects: GraphqlResponse) {
                 val dataDetailCheckoutPromo = objects.getData<DataPromoCheckoutList>(DataPromoCheckoutList::class.java)
-                view.renderList(dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsCouponData?:ArrayList(),
-                        dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsPaging?.isHasNext?:false)
+                view.renderList(dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsCouponData
+                        ?: ArrayList(),
+                        dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsPaging?.isHasNext
+                                ?: false)
             }
         })
     }
@@ -88,6 +91,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     }
 
     companion object {
+        private val API_VERSION = "apiVersion"
         private val INPUT_GQL = "input"
         private val SERVICE_ID = "serviceID"
         private val CATEGORY_ID = "categoryID"

@@ -36,6 +36,7 @@
     <string name="path_tokopoints_coupon_details">/kupon-detail</string>
     <string name="path_tokopoints_catalog_details">/tukar-detail</string>
     <string name="path_tokopoints_catalog_listing">/tukar-point</string>
+    <string name="path_tokopoints_introduction">/introduction</string>
     <string name="title_tokopoints">TokoPoints</string>
 
     <!--gamification-->

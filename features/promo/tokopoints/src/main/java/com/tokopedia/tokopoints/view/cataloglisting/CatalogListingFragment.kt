@@ -92,7 +92,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         return view
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+ /*   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tp_menu_catalog_listing, menu)
         menuItemFilter = menu.findItem(R.id.filter_menu_item)
         super.onCreateOptionsMenu(menu, inflater)
@@ -111,7 +111,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             return true
         }
         return false
-    }
+    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

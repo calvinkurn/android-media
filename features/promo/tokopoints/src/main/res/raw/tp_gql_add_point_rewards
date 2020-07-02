@@ -1,5 +1,5 @@
 {
-  sheetHowToGetV2(type: "reward-points") {
+  sheetHowToGetV2(type: "reward-points",apiVersion:"2.0.0") {
     title
     subTitle
     sections {

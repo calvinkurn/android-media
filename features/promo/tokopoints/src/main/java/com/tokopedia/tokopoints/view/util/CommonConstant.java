@@ -44,6 +44,7 @@ public interface CommonConstant {
     int UI_SETTLING_DELAY_MS2 = 500;
     String ARGS_POINTS_AVAILABILITY = "points_availability";
     String BUNDLE_ARGS_USER_IS_LOGGED_IN = "USER_IS_LOGGEDIN";
+    String APIVERSION = "2.0.0";
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;
@@ -74,6 +75,7 @@ public interface CommonConstant {
         String NOTES = "notes";
         String PIN = "pin";
         String STACK_ID = "stackID";
+        String APIVERSION = "apiVersion";
     }
 
     interface TickerMapKeys {
@@ -129,7 +131,7 @@ public interface CommonConstant {
         String TP_GQL_REFETCH_REAL_CODE = "tp_gql_refetch_real_code";
         String TP_GQL_SWIPE_COUPON = "tp_gql_swipe_coupon";
         String TP_GQL_COUPON_FILTER = "tp_gql_coupon_filter";
-        String TP_GQL_COUPON_LISTING_STACK ="tp_gql_coupon_listing_stack";
+        String TP_GQL_COUPON_LISTING_STACK = "tp_gql_coupon_listing_stack";
         String TP_GQL_COUPON_IN_STACK = "tp_gql_coupon_in_stack";
         String TP_GQL_USER_INFO = "tp_gql_user_info";
         String TP_GQL_TOKOPOINT_REDEEM_COUPON = "tp_gql_tokopoint_redeem_coupon";
@@ -144,7 +146,7 @@ public interface CommonConstant {
         String TP_GQL_TOKOPOINT_TOP_SECTION_NEW = "tp_gql_topsection_new";
         String TP_GQL_HOME_PAGE_SECTION = "tp_gql_home_page_section";
         String TP_GQL_SUM_COUPON = "tp_gql_sum_coupon";
-        String TP_GQL_ADD_POINT_REWARD  = "tp_gql_add_point_reward";
-        String TP_GQL_REWARD_INTRO="tp_gql_reward_intro";
+        String TP_GQL_ADD_POINT_REWARD = "tp_gql_add_point_reward";
+        String TP_GQL_REWARD_INTRO = "tp_gql_reward_intro";
     }
 }

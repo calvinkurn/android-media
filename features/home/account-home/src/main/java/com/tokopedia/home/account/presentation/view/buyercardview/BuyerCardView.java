@@ -25,7 +25,6 @@ import com.tokopedia.home.account.R;
  */
 public class BuyerCardView extends BaseCustomView implements BuyerCardContract.View {
 
-    private ImageView imageProfileProgress;
     private ImageView imageProfileCompleted;
     private ImageView icByme;
     private ImageView eggImage;
@@ -40,7 +39,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private TextView textTokoMemberTitle;
     private TextView textTokoMemberAmount;
     private ImageView ivTokomember;
-    private ProgressBar progressBar;
     private View byMeButton;
     private View tokopointHolder;
     private View couponHolder;
@@ -68,7 +66,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private void init() {
         View view = inflate(getContext(), R.layout.view_buyer_card, this);
         icByme = view.findViewById(R.id.ic_affiliate_byme);
-        imageProfileProgress = view.findViewById(R.id.image_profile_progress);
         imageProfileCompleted = view.findViewById(R.id.image_profile_completed);
         textUsername = view.findViewById(R.id.text_username);
         textProfileCompletion = view.findViewById(R.id.text_profile_completion);
@@ -78,7 +75,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         textCouponTitle = view.findViewById(R.id.label_voucher);
         textCouponAmount = view.findViewById(R.id.text_voucher_amount);
         ivCoupon = view.findViewById(R.id.image_voucher);
-        progressBar = view.findViewById(R.id.circular_progress_bar);
         byMeButton = view.findViewById(R.id.by_me_button);
         tokopointHolder = view.findViewById(R.id.holder_tokopoint);
         couponHolder = view.findViewById(R.id.holder_coupon);
@@ -103,19 +99,10 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     }
 
     @Override
-    public void setAvatarImageUrl(int progress, String imageUrl) {
-
-    }
-
-    @Override
     public void showCompletedAvatar(String imageUrl) {
         ImageHandler.loadImageCircle2(getContext(), imageProfileCompleted, imageUrl, R.drawable.ic_big_notif_customerapp);
     }
 
-    @Override
-    public void showIncompleteAvatar(String imageUrl) {
-        ImageHandler.loadImageCircle2(getContext(), imageProfileProgress, imageUrl, R.drawable.ic_big_notif_customerapp);
-    }
 
     @Override
     public void setTokopoint(String tokopoint) {
@@ -159,24 +146,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     }
 
     @Override
-    public void showProfileProgress(int progress) {
-        imageProfileCompleted.setVisibility(GONE);
-        imageProfileProgress.setVisibility(VISIBLE);
-        progressBar.setVisibility(VISIBLE);
-        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, progress);
-        animation.setDuration(2000);
-        animation.setInterpolator(new DecelerateInterpolator());
-        animation.start();
-    }
-
-    @Override
-    public void hideProfileProgress() {
-        imageProfileCompleted.setVisibility(VISIBLE);
-        imageProfileProgress.setVisibility(INVISIBLE);
-        progressBar.setVisibility(GONE);
-    }
-
-    @Override
     public void setProfileStatusCompleted() {
         textProfileCompletion.setText(getContext().getString(R.string.verified_account));
         textProfileCompletion.setTypeface(null, Typeface.ITALIC);
@@ -193,14 +162,8 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         icByme.setVisibility(VISIBLE);
     }
 
-    public void setOnClickProfile(View.OnClickListener listener) {
-        textUsername.setOnClickListener(listener);
-        imageProfileCompleted.setOnClickListener(listener);
-    }
-
     public void setOnClickProfileCompletion(View.OnClickListener listener) {
-        textProfileCompletion.setOnClickListener(listener);
-        imageProfileProgress.setOnClickListener(listener);
+        imageProfileCompleted.setOnClickListener(listener);
     }
 
     public void setOnClickTokoPoint(View.OnClickListener listener) {
@@ -217,6 +180,14 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     public void setOnClickByMe(View.OnClickListener listener) {
         byMeButton.setOnClickListener(listener);
+    }
+
+    public void setOnClickBadge(View.OnClickListener listener) {
+        ivMemberBadge.setOnClickListener(listener);
+    }
+
+    public void setOnClickMemberDetail(View.OnClickListener listener) {
+        textProfileCompletion.setOnClickListener(listener);
     }
 
     @Override
@@ -256,7 +227,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     @Override
     public void setEggImage(String eggImageUrl) {
-        if (eggImageUrl!=null && eggImageUrl.length() != 0) {
+        if (eggImageUrl != null && eggImageUrl.length() != 0) {
             ivMemberBadge.setVisibility(VISIBLE);
             ImageHandler.loadImageCircle2(getContext(), ivMemberBadge, eggImageUrl, R.drawable.placeholder_grey);
         }

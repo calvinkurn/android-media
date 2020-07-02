@@ -112,17 +112,17 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
-        <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-            <data
-                android:host="@string/host_tokopoints"
-                android:pathPrefix="/intro"
-                android:scheme="@string/internal_scheme" />
-        </intent-filter>
+                <data
+                    android:host="@string/host_tokopoints"
+                    android:pathPrefix="@string/path_tokopoints_introduction"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
         </activity>
     </application>
 

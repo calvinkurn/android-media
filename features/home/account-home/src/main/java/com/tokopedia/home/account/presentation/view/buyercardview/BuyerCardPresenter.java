@@ -19,16 +19,7 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
     @Override
     public void setData(BuyerCard buyerCard) {
         if (view != null) {
-            if (buyerCard.getProgress() < 100) {
-                view.showProfileProgress(buyerCard.getProgress());
-                view.showIncompleteAvatar(buyerCard.getAvatar());
-                //view.setProfileStatusIncomplete(buyerCard.getProgress());
-            } else {
-                view.hideProfileProgress();
-                view.showCompletedAvatar(buyerCard.getAvatar());
-                //view.setProfileStatusCompleted();
-            }
-            view.setAvatarImageUrl(buyerCard.getProgress(), buyerCard.getAvatar());
+            view.showCompletedAvatar(buyerCard.getAvatar());
             view.setName(buyerCard.getUsername());
             view.setTokopointTitle(buyerCard.getTokopointTitle());
             view.setTokopoint(buyerCard.getTokopointAmount());

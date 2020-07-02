@@ -1,5 +1,5 @@
-{
-    tokopointsDrawer{
+query($apiVersion : String){
+    tokopointsDrawer(apiVersion: $apiVersion){
         iconImageURL
         redirectURL
         redirectAppLink

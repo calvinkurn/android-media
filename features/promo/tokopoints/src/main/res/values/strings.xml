@@ -33,8 +33,8 @@
     <string name="tp_label_help_with_storepoints">Bantuan TokoPoints</string>
     <string name="tp_label_valid_for">Berlaku selama</string>
     <string name="tp_label_applies_to">Berlaku pada:</string>
-    <string name="tp_label_prepare_catalog">Sedang Menyiapkan Katalog</string>
-    <string name="tp_label_go_shopping">Silakan lanjut berbelanja</string>
+    <string name="tp_label_prepare_catalog">Kamu tidak memiliki kupon untuk kategori ini</string>
+    <string name="tp_label_go_shopping">Ayo klaim kupon gratis di halaman Rewards!</string>
     <string name="tp_label_try_again">Silakan coba kembali</string>
     <string name="tp_label_server_error">Terjadi Kendala Pada Server</string>
     <string name="tp_label_remaining_exchange">Sisa Tukar</string>
@@ -42,7 +42,7 @@
     <string name="tp_message_tokopoints_on_boarding"><![CDATA[<strong>TokoPoints</strong> adalah program loyalitas konsumen untuk Pengguna yang memungkinkan Pengguna untuk mendapatkan.<br /><strong>Loyalty</strong> dari transaksi yang dilakukan melalui situs/aplikasi.<br /><br />Tingkatkan <strong>Loyalty</strong> untuk mendapatkan keuntungan yang lebih banyak .]]></string>
     <string name="tp_label_too_many_access">Failed to Redeem</string>
     <string name="tp_label_wait">Tunggu beberapa saat lagi</string>
-    <string name="tp_label_exchange_point">Tukar Points</string>
+    <string name="tp_label_exchange_point">Lihat Kupon</string>
     <string name="tp_label_how_to_use">Cara Pakai</string>
     <string name="tp_label_tnc">Ketentuan</string>
     <string name="tp_label_min_exchange">Minimal transaksi:</string>

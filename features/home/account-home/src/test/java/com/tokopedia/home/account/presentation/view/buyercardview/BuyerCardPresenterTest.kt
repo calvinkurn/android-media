@@ -38,13 +38,10 @@ class BuyerCardPresenterTest {
         buyerPresenter.setData(buyerCard)
 
         verify {
-            buyerView.showProfileProgress(buyerCard.progress)
-            buyerView.showIncompleteAvatar(buyerCard.avatar)
             buyerView.setProfileStatusIncomplete(buyerCard.progress)
         }
         
         verify {
-            buyerView.setAvatarImageUrl(buyerCard.progress, buyerCard.avatar)
             buyerView.setName(buyerCard.username)
             buyerView.setTokopoint(buyerCard.tokopointAmount)
             buyerView.setCoupon(buyerCard.couponAmount)
@@ -60,13 +57,11 @@ class BuyerCardPresenterTest {
         buyerPresenter.setData(buyerCard)
 
         verify {
-            buyerView.hideProfileProgress()
             buyerView.showCompletedAvatar(buyerCard.avatar)
             buyerView.setProfileStatusCompleted()
         }
         
         verify {
-            buyerView.setAvatarImageUrl(buyerCard.progress, buyerCard.avatar)
             buyerView.setName(buyerCard.username)
             buyerView.setTokopoint(buyerCard.tokopointAmount)
             buyerView.setCoupon(buyerCard.couponAmount)

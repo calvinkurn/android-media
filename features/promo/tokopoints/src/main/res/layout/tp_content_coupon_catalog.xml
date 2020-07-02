@@ -304,6 +304,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_6"
             android:text=";lkdf;lkjsdnm"
             android:textColor="@color/black"
             android:visibility="visible"
@@ -336,8 +337,9 @@
             android:textColor="@color/clr_ae31353b"
             android:visibility="gone"
             app:layout_constraintBaseline_toBaselineOf="@+id/text_point_value_label"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/text_point_value_label"
-            app:layout_constraintTop_toTopOf="@+id/text_point_value_label"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 

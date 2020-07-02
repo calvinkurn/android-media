@@ -1,5 +1,5 @@
-query CouponListingStack($categoryID: Int, $page: Int, $limit: Int, $serviceID: String, $categoryIDCoupon: Int, $includeExtraInfo: Int) {
-  coupons: tokopointsCouponListStack(input: {serviceID: $serviceID, categoryID: $categoryID, categoryIDCoupon: $categoryIDCoupon, page: $page, limit: $limit, includeExtraInfo: $includeExtraInfo}) {
+query CouponListingStack($categoryID: Int, $page: Int, $limit: Int, $serviceID: String, $categoryIDCoupon: Int, $includeExtraInfo: Int, $apiVersion : String) {
+  coupons: tokopointsCouponListStack(input: {serviceID: $serviceID, categoryID: $categoryID, categoryIDCoupon: $categoryIDCoupon, page: $page, limit: $limit, includeExtraInfo: $includeExtraInfo , apiVersion: $apiVersion}) {
     coupons: tokopointsCouponDataStack {
       id
       promoID

@@ -36,6 +36,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -422,6 +423,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         description.text = data.title
         ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
 
+        if (data.isIs_show_button) {
+            btnAction2.show()
+        }
         if (data.usage != null) {
             label.visibility = View.VISIBLE
             label.text = data.usage.text
@@ -435,9 +439,10 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                 } else {
                     btnAction2.visibility = View.VISIBLE
                 }
+                if (data.usage.btnUsage.type.equals("disable", ignoreCase = true)) {
+                    btnAction2.isEnabled = false
+                }
             }
-
-
         }
 
         if (TextUtils.isEmpty(data.minimumUsageLabel)) {
@@ -536,7 +541,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
 
     private fun setSwipeUi(swipeDetail: CouponSwipeDetail) = view?.apply {
-        ll_container_button.displayedChild = CONTAINER_SWIPE
+        layout_coupon_swipe.show()
         card_swipe?.apply {
             setTitle(swipeDetail.text)
             setOnSwipeListener(object : SwipeCardView.OnSwipeListener {

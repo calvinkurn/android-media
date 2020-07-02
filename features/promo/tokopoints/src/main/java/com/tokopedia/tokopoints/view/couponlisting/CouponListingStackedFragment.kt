@@ -180,7 +180,6 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
             return
         }
 
-        (view!!.findViewById<View>(R.id.img_error2) as ImageView).setImageResource(R.drawable.ic_tp_empty_pages)
         (view!!.findViewById<View>(R.id.text_title_error2) as TextView).text = errors[CommonConstant.CouponMapKeys.TITLE]
         (view!!.findViewById<View>(R.id.text_label_error2) as TextView).text = errors[CommonConstant.CouponMapKeys.SUB_TITLE]
         view!!.findViewById<View>(R.id.button_continue).visibility = View.VISIBLE

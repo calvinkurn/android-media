@@ -3,7 +3,6 @@ package com.tokopedia.tokopoints.view.tokopointhome
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -35,6 +34,8 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -55,6 +56,7 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.fragment.StartPurchaseBottomSheet
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
+import com.tokopedia.tokopoints.view.intro.IntroVisitedCheck
 import com.tokopedia.tokopoints.view.intro.RewardIntroActivity
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.LobDetails
@@ -62,13 +64,14 @@ import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.model.section.Text
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tp_fragment_homepage_new.*
-import kotlinx.android.synthetic.main.tp_layout_section_category_parent.*
 import javax.inject.Inject
 
 /*
@@ -117,6 +120,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     lateinit var tvSectionTitleCategory: TextView
     lateinit var tvSectionSubtitleCateory: TextView
     lateinit var appBarHeader: AppBarLayout
+    lateinit var categorySeeAll: TextView
+    private var visited = false
+    private var introVisitedCheck: IntroVisitedCheck = IntroVisitedCheck()
 
     //   private var tvNonLoginCta: TextView? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -137,20 +143,20 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar)
         collapsingToolbarLayout?.setExpandedTitleColor(resources.getColor(android.R.color.transparent))
         collapsingToolbarLayout?.setTitle(" ")
-        appBarHeader!!.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout: AppBarLayout?, verticalOffset: Int -> handleAppBarOffsetChange(verticalOffset) })
-        appBarHeader?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout: AppBarLayout?, verticalOffset: Int -> handleAppBarIconChange(appBarLayout, verticalOffset) })
+        if (::appBarHeader.isInitialized) {
+            appBarHeader.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout: AppBarLayout?, verticalOffset: Int -> handleAppBarOffsetChange(verticalOffset) })
+            appBarHeader.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout: AppBarLayout?, verticalOffset: Int -> handleAppBarIconChange(appBarLayout, verticalOffset) })
+        }
         setLayoutParams()
         return view
     }
 
     private fun handleAppBarIconChange(appBarLayout: AppBarLayout?, verticalOffset: Int) {
         val verticalOffset1 = Math.abs(verticalOffset)
-        if (::tickerContainer.isInitialized && ::dynamicLinksContainer.isInitialized) {
-            if (verticalOffset1 >= appBarLayout?.totalScrollRange!! - tickerContainer.height - dynamicLinksContainer.height - (card_point.height) / 2) {
-                tokoPointToolbar?.showToolbarIcon()
-            } else
-                tokoPointToolbar?.hideToolbarIcon()
-        }
+        if (verticalOffset1 >= (resources.getDimensionPixelSize(R.dimen.tp_home_top_bg_height))) {
+            tokoPointToolbar?.showToolbarIcon()
+        } else
+            tokoPointToolbar?.hideToolbarIcon()
     }
 
     private fun setLayoutParams() {
@@ -213,7 +219,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         startNetworkRequestPerformanceMonitoring()
         initListener()
         mPresenter.getTokoPointDetail()
-        mPresenter.getRewardIntroData()
+        if (!introVisitedCheck.isVisited) {
+            mPresenter.getRewardIntroData()
+        }
         tokoPointToolbar?.setTitle(R.string.tp_title_tokopoints)
         tokoPointToolbar?.setOnTokoPointToolbarClickListener(this)
         TokoPointsNotificationManager.fetchNotification(activity, "main", childFragmentManager)
@@ -363,6 +371,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         ivLoyaltyStack = view.findViewById(R.id.img_loyalty_stack)
         dynamicAction = view.findViewById(R.id.dynamic_widget)
         tvLoyaltyLabel = view.findViewById(R.id.text_loyalty_label)
+
         setStatusBarViewHeight()
     }
 
@@ -552,6 +561,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     private fun showOnBoardingTooltip(data: TokopediaRewardIntroPage?) {
         if (data != null && data.resultStatus?.code == "200") {
+            introVisitedCheck.isVisited = true
             val bundle = Bundle()
             bundle.putParcelable("intro", data)
             startActivity(RewardIntroActivity.getCallingIntent(context!!, bundle))
@@ -570,57 +580,45 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
 
         val pager: Ticker? = viewTicker?.findViewById(R.id.ticker_new)
-        val emptyTitle = ""
         var link = ""
         var desc = ""
-        val tickerDataList: MutableList<TickerData> = java.util.ArrayList()
-        for ((i, tickerItem) in content.layoutTickerAttr.tickerList.withIndex()) {
-            link = if (tickerItem.metadata[i].link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
-                tickerItem.metadata[i].link[CommonConstant.TickerMapKeys.APP_LINK].toString()
+        var linkDesc = ""
+        for (tickerItem in content.layoutTickerAttr.tickerList[0].metadata) {
+            link = if (tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
+                tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK].toString()
             } else {
-                tickerItem.metadata[i].link[CommonConstant.TickerMapKeys.URL].toString()
+                tickerItem.link[CommonConstant.TickerMapKeys.URL].toString()
             }
-            desc = tickerItem.metadata[i].text[CommonConstant.TickerMapKeys.CONTENT].toString()
-            tickerDataList.add(TickerData(emptyTitle, "$desc $link", Ticker.TYPE_ANNOUNCEMENT, true))
+
+            if (link.isNotEmpty()) {
+                linkDesc = tickerItem.text[CommonConstant.TickerMapKeys.CONTENT].toString()
+            } else {
+                desc = tickerItem.text[CommonConstant.TickerMapKeys.CONTENT].toString()
+            }
         }
-        val adapter = TickerPagerAdapter(context, tickerDataList)
-        pager?.addPagerView(adapter, tickerDataList)
 
+        val descriptionText = desc + "<a href=\"${link}\">" + ". " + linkDesc + "</a>"
+        pager?.setHtmlDescription(descriptionText)
+        pager?.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description)?.setMargin(16, 8, 22, 8)
         pager?.setDescriptionClickEvent(object : TickerCallback {
-
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-
-                if (linkUrl.startsWith(CommonConstant.TickerMapKeys.TOKOPEDIA)) {
-                    RouteManager.route(context, linkUrl.toString())
-
+                if (link.startsWith(CommonConstant.TickerMapKeys.TOKOPEDIA)) {
+                    RouteManager.route(context, link)
                 } else {
-                    RouteManager.route(context, String.format("%s?url=%", ApplinkConst.WEBVIEW, linkUrl.toString()))
-
+                    RouteManager.route(context, String.format("%s?url=%", ApplinkConst.WEBVIEW, link))
                 }
-
                 AnalyticsTrackerUtil.sendEvent(context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                         AnalyticsTrackerUtil.ActionKeys.CLICK_TICKER,
-                        "$desc $link")
-
+                        "$desc $linkDesc")
             }
 
             override fun onDismiss() {
             }
-
         })
-        adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.VIEW_TICKER,
-                        "")
-            }
 
-        })
-        tickerContainer?.visibility = View.VISIBLE
+        tickerContainer.visibility = View.VISIBLE
         categoryParent.addView(viewTicker)
     }
 
@@ -630,6 +628,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         tvSectionTitleCategory = viewCategory.findViewById(R.id.tv_sectionTitle)
         tvSectionSubtitleCateory = viewCategory.findViewById(R.id.tv_ovopointValue)
         dynamicLinksContainer = viewCategory.findViewById(R.id.container_dynamic_links)
+        categorySeeAll = viewCategory.findViewById(R.id.tv_seeall_category)
         mRvDynamicLinks = viewCategory.findViewById(R.id.rv_dynamic_link)
         if (content.layoutCategoryAttr == null || content.layoutCategoryAttr.categoryTokopointsList == null || content.layoutCategoryAttr.categoryTokopointsList.isEmpty()) {
             return
@@ -637,12 +636,18 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         if (content.sectionTitle.isNotEmpty()) {
             tvSectionTitleCategory.show()
             tvSectionTitleCategory.text = content.sectionTitle
+        } else if (content.sectionTitle.isEmpty()) {
+            tvSectionTitleCategory.show()
+            tvSectionTitleCategory.text = "Eksplor kupon hemat di sini"
         }
-        if (content.sectionTitle.isNotEmpty()) {
+        if (content.sectionSubTitle.isNotEmpty()) {
             tvSectionSubtitleCateory.show()
             tvSectionSubtitleCateory.text = content.sectionSubTitle
         }
-        dynamicLinksContainer?.visibility = View.VISIBLE
+        dynamicLinksContainer.visibility = View.VISIBLE
+        categorySeeAll.setOnClickListener {
+            RouteManager.route(context, "tokopedia://tokopoints/tukar-point")
+        }
         val manager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         mRvDynamicLinks?.layoutManager = manager
         mRvDynamicLinks?.adapter = SectionCategoryAdapter(activityContext, content.layoutCategoryAttr.categoryTokopointsList)
@@ -673,7 +678,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
         if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
-            ImageHandler.loadImageFitCenter(mImgBackground?.context, mImgBackground, data.backgroundImageURL)
+            data.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         }
 
         renderDynamicActionList(data?.dynamicActionList)
@@ -685,7 +690,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             dynamicAction?.setFirstLayoutVisibility(1)
             dataList[0]?.cta?.text?.let { dynamicAction?.setFirstLayoutText(it) }
             dataList[0]?.iconImageURL?.let { dynamicAction?.setFirstLayoutIcon(it) }
-            if (dataList[0]?.counter?.isShowCounter!!) {
+            if (dataList[0]?.counter?.isShowCounter!! && dataList[0]?.counter?.counterStr != "0") {
                 dataList[0]?.counter?.counterStr?.let { dynamicAction?.setFirstLayoutNotification(it) }
             }
             dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
@@ -695,10 +700,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dynamicAction?.setCenterLayoutVisibility(1)
                 dataList[1]?.cta?.text?.let { dynamicAction?.setCenterLayoutText(it) }
                 dataList[1]?.iconImageURL?.let { dynamicAction?.setCenterLayoutIcon(it) }
-                if (dataList[1]?.counter?.isShowCounter!!) {
+                if (dataList[1]?.counter?.isShowCounter!! && dataList[1]?.counter?.counterStr != "0") {
                     dataList[1]?.counter?.counterStr?.let { dynamicAction?.setCenterLayoutNotification(it) }
                 }
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_voucher)?.setOnClickListener {
+                dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
                     dataList[1]?.cta?.appLink?.let { dynamicAction?.setCenterLayoutClickListener(it) }
                 }
                 dynamicAction?.setVisibilityDividerOne(1)
@@ -707,7 +712,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dynamicAction?.setRightLayoutVisibility(1)
                 dataList[2]?.cta?.text?.let { dynamicAction?.setRightLayoutText(it) }
                 dataList[2]?.iconImageURL?.let { dynamicAction?.setRightLayoutIcon(it) }
-                if (dataList[2]?.counter?.isShowCounter!!) {
+                if (dataList[2]?.counter?.isShowCounter!! && dataList[2]?.counter?.counterStr != "0") {
                     dataList[2]?.counter?.counterStr?.let { dynamicAction?.setRightLayoutNotification(it) }
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
@@ -839,6 +844,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
         const val REQUEST_CODE_LOGIN = 1
+
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()
         }

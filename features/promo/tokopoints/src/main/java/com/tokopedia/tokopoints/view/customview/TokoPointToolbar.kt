@@ -184,7 +184,8 @@ class TokoPointToolbar : Toolbar {
                     val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
                     param.rightMargin = 18
                     ImageUtil.loadImage(viewCntainer.iv_dynamic, item?.iconImageURLScrolled)
-                    if (item?.counter?.isShowCounter != null && item.counter.counterStr != null && item.counter.counterStr.isNotEmpty()) {
+                    if (item?.counter?.isShowCounter != null && item.counter.counterStr != null
+                            && item.counter.counterStr.isNotEmpty() && item.counter.counterStr != "0") {
                         viewCntainer.notif_dynamic.visibility = View.VISIBLE
                         viewCntainer.notif_dynamic.setNotification(item.counter.counterStr, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
                     }

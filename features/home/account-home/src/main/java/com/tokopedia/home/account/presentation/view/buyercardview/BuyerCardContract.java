@@ -7,11 +7,7 @@ interface BuyerCardContract {
     interface View {
         void setName(String name);
 
-        void setAvatarImageUrl(int progress, String imageUrl);
-
         void showCompletedAvatar(String imageUrl);
-
-        void showIncompleteAvatar(String imageUrl);
 
         void setTokopoint(String tokopoint);
 
@@ -24,10 +20,6 @@ interface BuyerCardContract {
         void setCouponTitle(String title);
 
         void setCouponImageUrl(String imageUrl);
-
-        void showProfileProgress(int progress);
-
-        void hideProfileProgress();
 
         void setProfileStatusCompleted();
 
