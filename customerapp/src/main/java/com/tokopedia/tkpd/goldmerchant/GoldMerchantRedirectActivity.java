@@ -36,10 +36,9 @@ public class GoldMerchantRedirectActivity extends TActivity{
         backButton.setOnClickListener(onBackButtonClickedListener());
 
         TextView title = findViewById(R.id.title);
-	String gm = GM_TITLE;
-	title.setText(getString(R.string.title_gold_merchant_redirect, gm));
+	title.setText(getString(R.string.title_gold_merchant_redirect, GM_TITLE));
 
-	getSupportActionBar().setTitle(gm);
+	getSupportActionBar().setTitle(GM_TITLE);
     }
 
     private View.OnClickListener onBackButtonClickedListener() {
