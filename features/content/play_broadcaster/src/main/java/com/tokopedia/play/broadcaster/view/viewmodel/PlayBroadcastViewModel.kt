@@ -244,38 +244,36 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun startPushStream(ingestUrl: String) {
         if (ingestUrl.isEmpty() || !allPermissionGranted()) return
-        scope.launchCatchError(block = {
+        scope.launch {
             startWebSocket()
-            updateChannelStatus(PlayChannelStatus.Live)
-            playPusher.startPush(ingestUrl)
-        }) {
-
+            playPusher.startPush(ingestUrl) {
+                launch { updateChannelStatus(PlayChannelStatus.Live) }
+            }
         }
     }
 
     fun resumePushStream() {
-        if (playPusher.isPushing() || !allPermissionGranted()) return
-        scope.launchCatchError(block = {
-            updateChannelStatus(PlayChannelStatus.Live)
-            playPusher.resume()
-        }) {
-
+        if (!allPermissionGranted()) return
+        scope.launch {
+            playPusher.resume {
+                launch { updateChannelStatus(PlayChannelStatus.Live) }
+            }
         }
     }
 
     fun pausePushStream() {
         scope.launch {
-            if (playPusher.isPushing()) {
-                updateChannelStatus(PlayChannelStatus.Pause)
-                playPusher.pause()
+            playPusher.pause {
+                launch { updateChannelStatus(PlayChannelStatus.Pause) }
             }
         }
     }
 
     fun stopPushStream() {
         scope.launch {
-            updateChannelStatus(PlayChannelStatus.Stop)
-            playPusher.stopPush()
+            playPusher.stopPush {
+                launch { updateChannelStatus(PlayChannelStatus.Stop) }
+            }
             playPusher.stopPreview()
             playSocket.destroy()
         }
@@ -285,13 +283,20 @@ class PlayBroadcastViewModel @Inject constructor(
         return playPusher
     }
 
-    private fun startWebSocket() {
-        playSocket.connect(channelId = "", groupChatToken = "")
-        playSocket.socketInfoListener(object : PlaySocketInfoListener{
-            override fun onError(throwable: Throwable) {
-                // TODO("reconnect socket")
-            }
-        })
+    private suspend fun startWebSocket() {
+        val socketCredential = getSocketCredential()
+        playSocket.config(socketCredential.setting.minReconnectDelay, socketCredential.setting.maxRetries, socketCredential.setting.pingInterval)
+
+        fun connectWebSocket(): Job = scope.launch {
+            playSocket.connect(channelId = channelId, groupChatToken = socketCredential.gcToken)
+            playSocket.socketInfoListener(object : PlaySocketInfoListener{
+                override fun onError(throwable: Throwable) {
+                    connectWebSocket()
+                }
+            })
+        }
+
+        connectWebSocket()
     }
 
     private fun setSelectedProduct(products: List<ProductData>) {

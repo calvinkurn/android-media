@@ -31,37 +31,41 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun stopPreview() {}
 
     //TODO("for testing only")
-    override fun startPush(ingestUrl: String) {
+    override fun startPush(ingestUrl: String, onActive: () -> Unit) {
         if (!isPushing) {
             mTimer?.start()
             this.isPushing = true
+            onActive()
         }
     }
 
     override fun restartPush() {}
 
     //TODO("for testing only")
-    override fun stopPush() {
+    override fun stopPush(onStop: () -> Unit) {
         if (isPushing) {
             mTimer?.stop()
             this.isPushing = false
+            onStop()
         }
     }
 
     override fun switchCamera() {}
 
     //TODO("for testing only")
-    override fun resume() {
+    override fun resume(onActive: () -> Unit) {
         if (!isPushing) {
             mTimer?.resume()
+            onActive()
         }
     }
 
     //TODO("for testing only")
-    override fun pause() {
+    override fun pause(onPause: () -> Unit) {
         if (isPushing) {
             mTimer?.pause()
             this.isPushing = false
+            onPause()
         }
     }
 
