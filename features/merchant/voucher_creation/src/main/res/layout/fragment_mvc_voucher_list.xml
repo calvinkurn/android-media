@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0">
+    android:background="@color/transparent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarMvc"
@@ -19,13 +19,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N0">
+            android:background="@color/transparent">
 
             <com.tokopedia.header.HeaderUnify
                 android:id="@+id/toolbarMvcList"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 android:theme="?toolbarTheme"
+                android:background="@color/transparent"
                 app:contentInsetLeft="0dp"
                 app:contentInsetStart="0dp"
                 app:contentInsetStartWithNavigation="0dp"
