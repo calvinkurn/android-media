@@ -66,4 +66,13 @@ class StatisticUseCaseModule {
     ): GetCarouselDataUseCase {
         return GetCarouselDataUseCase(gqlRepository, mapper)
     }
+
+    @StatisticScope
+    @Provides
+    fun provideGetTableDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: TableMapper
+    ): GetTableDataUseCase {
+        return GetTableDataUseCase(gqlRepository, mapper)
+    }
 }
