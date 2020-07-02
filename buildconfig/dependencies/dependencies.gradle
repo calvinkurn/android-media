@@ -308,9 +308,6 @@ ext {
             chuckNoOp       : "com.github.ChuckerTeam.Chucker:library-no-op:$chuckerVersion",
             timber          : "com.jakewharton.timber:timber:4.7.1",
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
-            //blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
-            blockCanary     : ":libraries:blockcanary",
-            blockCanaryNoOp : "com.github.markzhai:blockcanary-no-op:1.5.0",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:2.2"
     ]
 
