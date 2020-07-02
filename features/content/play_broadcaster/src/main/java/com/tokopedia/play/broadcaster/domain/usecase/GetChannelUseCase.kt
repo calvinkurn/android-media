@@ -23,6 +23,7 @@ class GetChannelUseCase @Inject constructor(
                 channelID
                 title
                 slug
+                coverURL
                 description
                 activeMediaID
                 startTime

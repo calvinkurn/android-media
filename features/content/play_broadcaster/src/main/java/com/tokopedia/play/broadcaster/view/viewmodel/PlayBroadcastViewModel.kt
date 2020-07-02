@@ -189,9 +189,8 @@ class PlayBroadcastViewModel @Inject constructor(
             _observableChannelInfo.value = NetworkResult.Success(PlayBroadcastUiMapper.mapChannelInfo(channel))
             _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
 
-            //TODO("Uncomment this if channel is not mocked anymore")
-//            setSelectedProduct(PlayBroadcastUiMapper.mapProductListToData(channel.productTags))
-//            setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
+            setSelectedProduct(PlayBroadcastUiMapper.mapProductListToData(channel.productTags))
+            setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
 
         } catch (e: Throwable) {
             _observableChannelInfo.value = NetworkResult.Fail(e)
