@@ -169,7 +169,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingDuration?.text = shipping.serviceName
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     tvShippingDuration?.setOnClickListener {
-                        listener.chooseDuration()
+                        listener.chooseDuration(false)
                     }
                     tvShippingPrice?.gone()
                     tvShippingSlashPrice?.gone()
@@ -227,7 +227,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingMessage?.text = shipping.serviceErrorMessage
                     if (shipping.shippingRecommendationData != null) {
                         tvShippingChangeDuration?.setOnClickListener {
-                            listener.chooseDuration()
+                            listener.chooseDuration(true)
                         }
                         tvShippingChangeDuration?.visible()
                     } else {
@@ -373,7 +373,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         fun chooseCourier()
 
-        fun chooseDuration()
+        fun chooseDuration(isDurationError: Boolean)
 
         fun onPreferenceEditClicked(preference: OrderPreference)
     }
