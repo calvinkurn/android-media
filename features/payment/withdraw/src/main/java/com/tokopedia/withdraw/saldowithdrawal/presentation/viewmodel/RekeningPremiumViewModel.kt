@@ -44,8 +44,4 @@ class RekeningPremiumViewModel @Inject constructor(
         rekeningPremiumMutableData.value = Fail(throwable)
     }
 
-    override fun onCleared() {
-        gqlRekeningPremiumDataUseCase.cancelJobs()
-        super.onCleared()
-    }
 }

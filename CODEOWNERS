@@ -205,7 +205,6 @@
 /features/promo/tokopoints              				@tokopedia/minion-solo
 /features/promo/tokopoints_notification 				@tokopedia/minion-solo
 /features/promo/gamification            				@tokopedia/minion-solo
-/features/payment/withdraw/             				@tokopedia/minion-solo
 /features/kyc                           				@tokopedia/minion-yoda
 /features/promo/merchant_voucher                        @tokopedia/minion-solo
 /features/promo/promo_gamification_common               @tokopedia/minion-solo
@@ -223,6 +222,7 @@
 /features/digital/instant_debit_bca                     @tokopedia/minion-yoda
 /features/fintech/wallet                				@tokopedia/minion-yoda
 /features/payment/thankyou_native                		@tokopedia/minion-yoda
+/features/payment/withdraw/             				@tokopedia/minion-yoda
 
 /features/payment/payment_setting/              		@tokopedia/minion-yoda
 /features/payment/pms/                          		@tokopedia/minion-yoda
