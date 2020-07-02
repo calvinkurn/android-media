@@ -345,7 +345,7 @@ class AddEditProductDescriptionFragment:
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> tvAddVariant.isEnabled = true
-                is Fail -> showVariantErrorToast(getString(R.string.default_request_error_timeout))
+                is Fail -> showVariantErrorToast(getString(com.tokopedia.abstraction.R.string.default_request_error_timeout))
             }
         })
     }
@@ -437,7 +437,7 @@ class AddEditProductDescriptionFragment:
         view?.let {
             Toaster.make(it, errorMessage,
                     type =  Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.title_try_again),
+                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
                     clickListener =  View.OnClickListener {
                         descriptionViewModel.getVariants(descriptionViewModel.categoryId)
                     })

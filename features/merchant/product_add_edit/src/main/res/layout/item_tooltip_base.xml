@@ -11,7 +11,7 @@
         android:layout_marginStart="21dp"
         android:layout_marginLeft="21dp"
         android:layout_marginTop="17dp"
-        android:src="@drawable/rect_green_solid"
+        android:src="@drawable/product_add_edit_rect_green_solid"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
     </ImageView>
