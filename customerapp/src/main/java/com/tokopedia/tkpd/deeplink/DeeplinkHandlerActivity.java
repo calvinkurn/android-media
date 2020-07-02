@@ -41,8 +41,6 @@ import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
-import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
-import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
@@ -110,7 +108,6 @@ import timber.log.Timber;
         CreatePostModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
-        InterestPickApplinkModule.class,
         HowtopayApplinkModule.class,
         AccountHomeApplinkModule.class,
         RecentViewApplinkModule.class,
