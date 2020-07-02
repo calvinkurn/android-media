@@ -10,7 +10,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
-class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Broadcaster>() {
+class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Broadcaster.Config>() {
 
     var params: RequestParams = RequestParams.EMPTY
     private var isFromCacheFirst: Boolean = true
@@ -26,7 +26,7 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
         GraphqlRequest(query, Broadcaster::class.java, params.parameters)
     }
 
-    override suspend fun executeOnBackground(): Broadcaster {
+    override suspend fun executeOnBackground(): Broadcaster.Config {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
@@ -35,7 +35,7 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(Broadcaster::class.java)
         if (error == null || error.isEmpty()) {
-            return (gqlResponse.getData(Broadcaster::class.java) as Broadcaster)
+            return (gqlResponse.getData(Broadcaster::class.java) as Broadcaster).config
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }

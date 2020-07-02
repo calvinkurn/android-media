@@ -162,7 +162,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
 
         val broadcasterConfigError = gqlResponse.getError(Broadcaster::class.java)
         val broadcasterConfig = gqlResponse.getData<Broadcaster>(Broadcaster::class.java)
-        if(broadcasterConfigError == null || broadcasterConfig != null){
+        if(broadcasterConfigError == null || broadcasterConfig?.config != null){
             shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = broadcasterConfig.config)
         } else {
             throw MessageErrorException(broadcasterConfigError.mapNotNull { it.message }.joinToString(separator = ", "))
