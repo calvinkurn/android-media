@@ -23,7 +23,7 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
     }
     """
     val request by lazy{
-        GraphqlRequest(query, Broadcaster.Config::class.java, params.parameters)
+        GraphqlRequest(query, Broadcaster::class.java, params.parameters)
     }
 
     override suspend fun executeOnBackground(): Broadcaster {
@@ -33,7 +33,7 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
                 .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
 
         val gqlResponse = gqlUseCase.executeOnBackground()
-        val error = gqlResponse.getError(ShopInfo.Response::class.java)
+        val error = gqlResponse.getError(Broadcaster::class.java)
         if (error == null || error.isEmpty()) {
             return (gqlResponse.getData(Broadcaster::class.java) as Broadcaster)
         } else {
