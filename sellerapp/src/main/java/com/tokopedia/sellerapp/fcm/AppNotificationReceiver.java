@@ -85,10 +85,9 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
 
     private void logEvent(Bundle data, String message) {
         try {
-//            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
+            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
             String userId = userSession.getUserId();
-//            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
-            if (!userId.isEmpty()) {
+            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
                 executeCrashlyticLog(data,  message);
             }
         } catch (Exception exception) {
@@ -97,7 +96,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     }
 
     private void executeCrashlyticLog(Bundle data, String message) {
-//        if (!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             StringBuilder logMessage = new StringBuilder(message + "\n");
             for (String key : data.keySet()) {
                 logMessage.append(key);
@@ -106,7 +105,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
                 logMessage.append(", \n");
             }
             Crashlytics.logException(new Exception(logMessage.toString()));
-//        }
+        }
     }
 
     private boolean isInExcludedActivity(Bundle data) {
