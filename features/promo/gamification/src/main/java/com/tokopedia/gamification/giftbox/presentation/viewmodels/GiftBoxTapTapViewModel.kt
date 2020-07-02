@@ -31,7 +31,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     var campaignId: Long = 0
     var waitingForCrackResult = false
     private val CRACK_GIFT_TIME_OUT = 3000L
-    private val GET_COUPON_DETAIL_TIME_OUT = 1000L
+    private val GET_COUPON_DETAIL_TIME_OUT = 4000L
     var canShowLoader = true
 
     val giftHomeLiveData: MutableLiveData<LiveDataResult<TapTapBaseEntity>> = MutableLiveData()
@@ -39,8 +39,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     val couponLiveData: MutableLiveData<LiveDataResult<CouponDetailResponse>> = MutableLiveData()
 
     fun getGiftBoxHome() {
-
-        if(canShowLoader)
+        if (canShowLoader)
             giftHomeLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
             val response = homeUseCase.getResponse(HashMap())

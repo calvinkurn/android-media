@@ -421,10 +421,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                             }
                         }
                     }
+                    rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it.first) })
                     fadeOutWaktuHabisAndShowReward()
                 }
 
                 LiveDataResult.STATUS.ERROR -> {
+                    rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it.first) })
                     fadeOutWaktuHabisAndShowReward()
                 }
             }
