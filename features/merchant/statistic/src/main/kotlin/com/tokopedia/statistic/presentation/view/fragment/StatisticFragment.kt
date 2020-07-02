@@ -92,6 +92,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.progressWidgetData, WidgetType.PROGRESS)
         observeWidgetData(mViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(mViewModel.carouselWidgetData, WidgetType.CAROUSEL)
+        observeWidgetData(mViewModel.tableWidgetData, WidgetType.TABLE)
     }
 
     override fun onResume() {
@@ -219,34 +220,40 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         (bottomSheet as? BottomSheetUnify)?.dismiss()
     }
 
-    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchCardData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
         mViewModel.getCardWidgetData(dataKeys)
     }
 
-    private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
         mViewModel.getLineGraphWidgetData(dataKeys)
     }
 
-    private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchProgressData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
         mViewModel.getProgressWidgetData(dataKeys)
     }
 
-    private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchPostData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<PostListWidgetUiModel>(widgets)
         mViewModel.getPostWidgetData(dataKeys)
     }
 
-    private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
         mViewModel.getCarouselWidgetData(dataKeys)
+    }
+
+    private fun fetchTableData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        mViewModel.getTableWidgetData(dataKeys)
     }
 
     private fun selectDateRange() {
@@ -366,11 +373,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
         val groupedWidgets: Map<String, List<BaseWidgetUiModel<*>>> = widgets.groupBy { it.widgetType }
-        groupedWidgets[WidgetType.CARD]?.run { getCardData(this) }
-        groupedWidgets[WidgetType.LINE_GRAPH]?.run { getLineGraphData(this) }
-        groupedWidgets[WidgetType.PROGRESS]?.run { getProgressData(this) }
-        groupedWidgets[WidgetType.CAROUSEL]?.run { getCarouselData(this) }
-        groupedWidgets[WidgetType.POST_LIST]?.run { getPostData(this) }
+        groupedWidgets[WidgetType.CARD]?.run { fetchCardData(this) }
+        groupedWidgets[WidgetType.LINE_GRAPH]?.run { fetchLineGraphData(this) }
+        groupedWidgets[WidgetType.PROGRESS]?.run { fetchProgressData(this) }
+        groupedWidgets[WidgetType.CAROUSEL]?.run { fetchCarouselData(this) }
+        groupedWidgets[WidgetType.POST_LIST]?.run { fetchPostData(this) }
+        groupedWidgets[WidgetType.TABLE]?.run { fetchTableData(this) }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
@@ -447,6 +455,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
+        this.printStackTrace()
         val message = this.message.orEmpty()
         adapter.data.filter { it.widgetType == widgetType }
                 .forEach { widget ->
