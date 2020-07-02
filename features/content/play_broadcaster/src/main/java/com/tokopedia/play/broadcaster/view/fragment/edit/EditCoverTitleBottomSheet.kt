@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -43,12 +42,6 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
     private val title: String
         get() = etCoverTitle.text.toString()
-
-    private val args: Bundle
-        get() {
-            if (arguments == null) arguments = Bundle()
-            return arguments!!
-        }
 
     private lateinit var etCoverTitle: EditText
     private lateinit var tvTitleCounter: TextView
@@ -79,14 +72,11 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
         super.onActivityCreated(savedInstanceState)
 
         observeUpdateTitle()
+        observeSelectedCover()
     }
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
-    }
-
-    fun setCoverTitle(title: String) {
-        args.putString(EXTRA_CURRENT_TITLE, title)
     }
 
     fun setListener(listener: SetupResultListener) {
@@ -119,7 +109,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
     private fun setupView(view: View) {
         setOnDismissListener { mListener?.onSetupCanceled() }
-        dataStoreViewModel.setDataStore(parentViewModel.getCurrentSetupDataStore(), modeExclusion = listOf(OverwriteMode.Cover))
+        dataStoreViewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
 
         bottomSheetHeader.setPadding(
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
@@ -131,7 +121,6 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
                 0,
                 bottomSheetWrapper.paddingBottom)
 
-        etCoverTitle.setText(arguments?.getString(EXTRA_CURRENT_TITLE).orEmpty())
         etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE))
         etCoverTitle.setRawInputType(InputType.TYPE_CLASS_TEXT)
         etCoverTitle.addTextChangedListener(object : TextWatcher {
@@ -156,6 +145,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
         btnSave.setOnClickListener {
             if (btnSave.isLoading) return@setOnClickListener
             viewModel.editTitle(title, parentViewModel.channelId)
+            etCoverTitle.clearFocus()
         }
     }
 
@@ -176,11 +166,13 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
         viewModel.observableUpdateTitle.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is NetworkResult.Success -> {
+                    etCoverTitle.isEnabled = true
                     btnSave.isLoading = false
                     mListener?.onSetupCompletedWithData(dataStoreViewModel.getDataStore())
                     dismiss()
                 }
                 is NetworkResult.Fail -> {
+                    etCoverTitle.isEnabled = true
                     btnSave.isLoading = false
                     requireView().showToaster(
                             message = it.error.localizedMessage,
@@ -188,15 +180,20 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
                     )
                 }
                 NetworkResult.Loading -> {
+                    etCoverTitle.isEnabled = false
                     btnSave.isLoading = true
                 }
             }
         })
     }
 
-    companion object {
-        private const val EXTRA_CURRENT_TITLE = "EXTRA_CURRENT_TITLE"
+    private fun observeSelectedCover() {
+        viewModel.observableCurrentTitle.observe(viewLifecycleOwner, Observer {
+            etCoverTitle.setText(it.orEmpty())
+        })
+    }
 
+    companion object {
         const val TAG = "TagPlayBroadcastEditTitleBottomSheet"
     }
 }

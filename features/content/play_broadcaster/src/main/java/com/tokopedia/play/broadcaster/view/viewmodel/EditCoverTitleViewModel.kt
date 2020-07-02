@@ -2,9 +2,11 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.ui.model.result.map
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -23,6 +25,10 @@ class EditCoverTitleViewModel @Inject constructor(
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
 
+    val observableCurrentTitle: LiveData<String> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
+        it.title
+    }
+
     val observableUpdateTitle: LiveData<NetworkResult<Unit>>
         get() = _observableUpdateTitle
     private val _observableUpdateTitle = MutableLiveData<NetworkResult<Unit>>()
@@ -30,8 +36,10 @@ class EditCoverTitleViewModel @Inject constructor(
     fun editTitle(title: String, channelId: String) {
         setupDataStore.updateCoverTitle(title)
 
-        scope.launch(dispatcher.io) {
-            setupDataStore.uploadCoverTitle(channelId)
+        scope.launch {
+            _observableUpdateTitle.value = NetworkResult.Loading
+            val value = setupDataStore.uploadCoverTitle(channelId).map { Unit }
+            _observableUpdateTitle.value = value
         }
     }
 

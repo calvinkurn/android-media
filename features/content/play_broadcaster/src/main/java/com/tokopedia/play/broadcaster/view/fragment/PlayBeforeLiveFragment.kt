@@ -191,9 +191,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun openEditCoverTitlePage() {
-        getEditTitleBottomSheet().apply {
-            setCoverTitle(prepareViewModel.title)
-        }.show(childFragmentManager)
+        getEditTitleBottomSheet().show(childFragmentManager)
     }
 
     private fun doCopyShareLink() {
