@@ -170,7 +170,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var cartListData: CartListData? = null
     private var wishLists: List<CartWishlistItemHolderData>? = null
     private var recentViewList: List<CartRecentViewItemHolderData>? = null
-    private var recommendationList: List<CartRecommendationItemHolderData>? = null
+    private var recommendationList: MutableList<CartRecommendationItemHolderData>? = null
     private var recommendationSectionHeader: CartSectionHeaderHolderData? = null
     private var recommendationWishlistActionListener: WishListActionListener? = null
     private var cartAvailableWishlistActionListener: WishListActionListener? = null
@@ -342,7 +342,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 object : TypeToken<ArrayList<CartWishlistItemHolderData>>() {}.type, null)
         recentViewList = saveInstanceCacheManager?.get<List<CartRecentViewItemHolderData>>(CartRecentViewItemHolderData::class.java.simpleName,
                 object : TypeToken<ArrayList<CartRecentViewItemHolderData>>() {}.type, null)
-        recommendationList = saveInstanceCacheManager?.get<List<CartRecommendationItemHolderData>>(CartRecommendationItemHolderData::class.java.simpleName,
+        recommendationList = saveInstanceCacheManager?.get<MutableList<CartRecommendationItemHolderData>>(CartRecommendationItemHolderData::class.java.simpleName,
                 object : TypeToken<ArrayList<CartRecommendationItemHolderData>>() {}.type, null)
         recommendationSectionHeader = saveInstanceCacheManager?.get<CartSectionHeaderHolderData>(CartSectionHeaderHolderData::class.java.simpleName,
                 object : TypeToken<CartSectionHeaderHolderData>() {}.type, null)
@@ -1221,7 +1221,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
         cartRecommendationList.add(it[currentIndex])
         sendAnalyticsOnViewProductRecommendation(
-                dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
+                dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
         )
     }
 
@@ -1230,7 +1230,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecommendationList.add(it[currentIndex - 1])
         cartRecommendationList.add(it[currentIndex])
         sendAnalyticsOnViewProductRecommendation(
-                dPresenter.generateRecommendationImpressionDataAnalytics(cartRecommendationList, FLAG_IS_CART_EMPTY)
+                dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
         )
     }
 
@@ -2669,7 +2669,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (cartRecommendationItemHolderDataList.size > 0) {
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList)
-            recommendationList = cartRecommendationItemHolderDataList
+            if (recommendationList == null) {
+                recommendationList = cartRecommendationItemHolderDataList
+            } else {
+                recommendationList?.addAll(cartRecommendationItemHolderDataList)
+            }
         }
     }
 
