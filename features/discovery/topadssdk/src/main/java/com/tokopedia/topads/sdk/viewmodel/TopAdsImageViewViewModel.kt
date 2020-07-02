@@ -27,7 +27,7 @@ class TopAdsImageViewViewModel @Inject constructor(private val topAdsImageViewUs
                 })
     }
 
-    fun getQueryParams(query: String,source: String, pageToken: String, adsCount: String, dimenId: Int, depId: String): MutableMap<String, Any> {
+    fun getQueryParams(query: String,source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String): MutableMap<String, Any> {
         return topAdsImageViewUseCase.getQueryMap(query,source, pageToken, adsCount, dimenId,depId)
     }
 

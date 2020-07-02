@@ -88,7 +88,7 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
      * @param dimenId Use this parameter to provide dimen id
      * @param depId Required in case of category and intermediate page else optional
      * */
-    fun getImageData(query: String, source: String, adsCount: String, dimenId: Int, depId: String = "", pageToken: String = "") {
+    fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "",  depId: String = "", pageToken: String = "") {
         val queryParams = topAdsImageViewViewModel.getQueryParams(query,source, pageToken, adsCount, dimenId, depId)
         topAdsImageViewViewModel.getImageData(queryParams)
         if (!topAdsImageViewViewModel.getResponse().hasActiveObservers()){

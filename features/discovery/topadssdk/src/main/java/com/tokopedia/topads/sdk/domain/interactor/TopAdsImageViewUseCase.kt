@@ -23,7 +23,7 @@ class TopAdsImageViewUseCase @Inject constructor(private val userSession: UserSe
         return repository.getImageData(queryParams)
     }
 
-    fun getQueryMap(query: String, source: String, pageToken: String, adsCount: String, dimenId: Int, depId: String): MutableMap<String, Any> {
+    fun getQueryMap(query: String, source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String): MutableMap<String, Any> {
         val queryMap = HashMap<String, Any>()
         queryMap[USER_ID] = userSession.userId
         queryMap[ADS_TYPE] = "banner"
@@ -32,7 +32,7 @@ class TopAdsImageViewUseCase @Inject constructor(private val userSession: UserSe
         queryMap[PAGE_TOKEN] = pageToken
         queryMap[ADS_COUNT] = adsCount
         queryMap[DIMEN_ID] = dimenId
-        queryMap[QUERY] = query
+        if (query.isNotEmpty()) queryMap[QUERY] = query
         if (depId.isNotEmpty()) queryMap[DEP_ID] = depId
 
         return queryMap
