@@ -6,18 +6,16 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.getIntIntentExtra
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
-import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created By @ilhamsuaib on 30/04/20
@@ -33,15 +31,15 @@ class VoucherDetailActivity : BaseActivity(), MvcPerformanceMonitoringListener {
         }
     }
 
-    @field:[Inject Named("detail")]
-    lateinit var performanceMonitoring: MvcPerformanceMonitoringInterface
+    private val performanceMonitoring: MvcPerformanceMonitoringInterface by lazy {
+        MvcPerformanceMonitoring(MvcPerformanceMonitoringType.Detail)
+    }
 
     private val voucherId by getIntIntentExtra(VOUCHER_ID, 0)
 
     override fun getScreenName(): String = this::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initInjector()
         performanceMonitoring.initMvcPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_detail)
@@ -60,13 +58,6 @@ class VoucherDetailActivity : BaseActivity(), MvcPerformanceMonitoringListener {
 
     override fun finishMonitoring() {
         performanceMonitoring.stopPerformanceMonitoring()
-    }
-
-    private fun initInjector() {
-        DaggerVoucherCreationComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
     }
 
     private fun showFragment() {

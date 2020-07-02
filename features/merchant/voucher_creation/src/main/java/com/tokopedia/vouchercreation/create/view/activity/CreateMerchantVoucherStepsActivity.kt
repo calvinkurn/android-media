@@ -30,7 +30,9 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
@@ -54,7 +56,6 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 
 class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
@@ -83,9 +84,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    @field:[Inject Named("create")]
-    lateinit var performanceMonitoring: MvcPerformanceMonitoringInterface
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -93,8 +91,13 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         ViewModelProvider(this, viewModelFactory)
     }
 
+
     private val viewModel by lazy {
         viewModelProvider.get(CreateMerchantVoucherStepsViewModel::class.java)
+    }
+
+    private val performanceMonitoring: MvcPerformanceMonitoringInterface by lazy {
+        MvcPerformanceMonitoring(MvcPerformanceMonitoringType.Create)
     }
 
     private val viewPagerAdapter by lazy {
@@ -251,9 +254,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private var bannerBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initInjector()
         performanceMonitoring.initMvcPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        initInjector()
         setContentView(R.layout.activity_create_merchant_voucher_steps)
         setupView()
         observeLiveData()

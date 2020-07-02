@@ -6,17 +6,15 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
-import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created By @ilhamsuaib on 17/04/20
@@ -42,8 +40,9 @@ class VoucherListActivity : BaseActivity(),
         const val HISTORY = "history"
     }
 
-    @field:[Inject Named("list")]
-    lateinit var voucherListPerformanceMonitoring: MvcPerformanceMonitoringInterface
+    private val voucherListPerformanceMonitoring: MvcPerformanceMonitoringInterface by lazy {
+        MvcPerformanceMonitoring(MvcPerformanceMonitoringType.List)
+    }
 
     private var isSuccessDialogAlreadyShowed = false
 
@@ -53,7 +52,6 @@ class VoucherListActivity : BaseActivity(),
     private val isUpdateVoucherSuccess by lazy { intent?.extras?.getBoolean(UPDATE_VOUCHER_KEY) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initInjector()
         voucherListPerformanceMonitoring.initMvcPerformanceMonitoring()
 
         super.onCreate(savedInstanceState)
@@ -124,13 +122,6 @@ class VoucherListActivity : BaseActivity(),
 
     override fun finishMonitoring() {
         voucherListPerformanceMonitoring.stopPerformanceMonitoring()
-    }
-
-    private fun initInjector() {
-        DaggerVoucherCreationComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
     }
 
     private fun showFragment(fragment: Fragment) {
