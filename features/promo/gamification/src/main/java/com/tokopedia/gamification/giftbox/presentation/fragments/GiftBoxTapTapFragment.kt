@@ -421,7 +421,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                             }
                         }
                     }
-                    rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it.first) })
+
                     fadeOutWaktuHabisAndShowReward()
                 }
 
