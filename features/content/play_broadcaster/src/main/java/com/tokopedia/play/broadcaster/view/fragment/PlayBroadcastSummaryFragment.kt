@@ -14,7 +14,7 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.showToaster
+import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -58,7 +58,14 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        setupInsets(view)
         setupContent()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireView().requestApplyInsetsWhenAttached()
+        btnFinish.requestApplyInsetsWhenAttached()
     }
 
     private fun initView(view: View) {
@@ -73,6 +80,21 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         broadcastCoordinator.showActionBar(false)
         btnFinish.setOnClickListener { activity?.finish() }
         summaryInfoView.entranceAnimation(view as ViewGroup)
+    }
+
+    private fun setupInsets(view: View) {
+        view.doOnApplyWindowInsets { v, insets, padding, _ ->
+            v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
+        }
+
+        btnFinish.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.requestLayout()
+            }
+        }
     }
 
     private fun setupContent() {

@@ -86,7 +86,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     override fun onStart() {
         super.onStart()
-        containerSetup.requestApplyInsetsWhenAttached()
         viewActionBar.rootView.requestApplyInsetsWhenAttached()
     }
 
@@ -144,10 +143,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun setupInsets() {
-        containerSetup.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
-        }
-
         viewActionBar.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
             v.updatePadding(top = insets.systemWindowInsetTop)
         }

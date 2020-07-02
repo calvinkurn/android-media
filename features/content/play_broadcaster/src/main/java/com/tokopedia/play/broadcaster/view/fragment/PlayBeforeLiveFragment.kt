@@ -18,9 +18,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.PlayShareWrapper
-import com.tokopedia.play.broadcaster.util.getDialog
-import com.tokopedia.play.broadcaster.util.showToaster
+import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
@@ -80,6 +78,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        setupInsets(view)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -89,6 +88,11 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeCreateChannel()
         observeProductList()
         observeCover()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireView().requestApplyInsetsWhenAttached()
     }
 
     override fun onBackPressed(): Boolean {
@@ -118,6 +122,12 @@ class PlayBeforeLiveFragment @Inject constructor(
 
         btnStartLive.setMaxStreamingDuration(30)
         ivShareLink.setOnClickListener { doCopyShareLink() }
+    }
+
+    private fun setupInsets(view: View) {
+        view.doOnApplyWindowInsets { v, insets, padding, _ ->
+            v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
+        }
     }
 
     //region observe

@@ -20,9 +20,7 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.PlayShareWrapper
-import com.tokopedia.play.broadcaster.util.getDialog
-import com.tokopedia.play.broadcaster.util.showToaster
+import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -73,6 +71,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView()
+        setupInsets(view)
         setupContent()
     }
 
@@ -86,6 +85,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeNetworkConnectionDuringLive()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        ivShareLink.requestApplyInsetsWhenAttached()
+        viewTimer.requestApplyInsetsWhenAttached()
     }
 
     private fun initView(view: View) {
@@ -106,6 +111,26 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         ivShareLink.setOnClickListener{ doCopyShareLink() }
         ivProductTag.setOnClickListener { doShowProductInfo() }
+    }
+
+    private fun setupInsets(view: View) {
+        viewTimer.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.requestLayout()
+            }
+        }
+
+        ivShareLink.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.requestLayout()
+            }
+        }
     }
 
     private fun setupContent() {

@@ -233,7 +233,7 @@ internal fun View.invalidateInsets() {
     } catch (e: Exception) {}
 }
 
-fun View.doOnApplyWindowInsets(f: (View, WindowInsetsCompat, InitialPadding, InitialMargin) -> Unit) {
+fun View.doOnApplyWindowInsets(f: (view: View, insets: WindowInsetsCompat, padding: InitialPadding, margin: InitialMargin) -> Unit) {
     val initialPadding = recordInitialPadding()
     val initialMargin = recordInitialMargin()
 

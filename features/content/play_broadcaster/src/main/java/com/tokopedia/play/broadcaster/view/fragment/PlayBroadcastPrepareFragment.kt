@@ -17,7 +17,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.doOnApplyWindowInsets
+import com.tokopedia.play.broadcaster.util.requestApplyInsetsWhenAttached
 import com.tokopedia.play.broadcaster.util.showToaster
+import com.tokopedia.play.broadcaster.util.updatePadding
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
@@ -71,6 +74,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        setupInsets(view)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -78,6 +82,11 @@ class PlayBroadcastPrepareFragment @Inject constructor(
 
         observeFollowers()
         observeChannelInfo()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireView().requestApplyInsetsWhenAttached()
     }
 
     private fun initView(view: View) {
@@ -95,6 +104,12 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         }
 
         setupTermsCondition()
+    }
+
+    private fun setupInsets(view: View) {
+        view.doOnApplyWindowInsets { v, insets, padding, _ ->
+            v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
+        }
     }
 
     private fun setupTermsCondition() {
