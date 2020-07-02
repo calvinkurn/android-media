@@ -37,10 +37,10 @@ object VoucherCreationAnalyticConstant {
         }
 
         object VoucherDetail {
-            const val UPCOMING = "/voucher detail page - mendatang"
-            const val ONGOING = "/voucher detail page - berlangsung"
-            const val ENDED = "/voucher detail page - berakhir"
-            const val CANCELLED = "/voucher detail page - dibatalkan"
+            const val UPCOMING = "/voucherdetailpage - mendatang"
+            const val ONGOING = "/voucherdetailpage - berlangsung"
+            const val ENDED = "/voucherdetailpage - berakhir"
+            const val CANCELLED = "/voucherdetailpage - dibatalkan"
         }
 
         const val VOUCHER_DUPLICATE_REVIEW = "/voucherduplicate - review"
@@ -94,7 +94,7 @@ object VoucherCreationAnalyticConstant {
         object Impression {
             const val VOUCHER_DETAIL_DISPLAY_PUBLIC = "impression tampilan voucher detail - public"
             const val VOUCHER_DETAIL_DISPLAY_PRIVATE = "impression tampilan voucher detail - private"
-            const val DISPLAY_PERIOD = "impression period tampil"
+            const val DISPLAY_PERIOD = "impression periode tampil"
             const val ERROR_STATE = "impression error state"
             const val NO_RESULT = "impression no result"
             const val VOUCHER_DETAIL_DISPLAY = "impression tampilan voucher detail"
@@ -105,7 +105,8 @@ object VoucherCreationAnalyticConstant {
             const val LAMP_ICON = "click lamp icon"
             const val VOUCHER_TARGET_PUBLIC = "click voucher target - public"
             const val VOUCHER_TARGET_PRIVATE = "click voucher target - private"
-            const val VOUCHER_DISPLAY_PUBLIC = "click tampilan voucher - publik"
+            const val VOUCHER_DISPLAY_PUBLIK = "click tampilan voucher - publik"
+            const val VOUCHER_DISPLAY_PUBLIC = "click tampilan voucher - public"
             const val VOUCHER_DISPLAY_PRIVATE = "click tampilan voucher - private"
             const val SAVE_PRIVATE = "click simpan - private"
             const val CLOSE_PRIVATE = "click close - private"

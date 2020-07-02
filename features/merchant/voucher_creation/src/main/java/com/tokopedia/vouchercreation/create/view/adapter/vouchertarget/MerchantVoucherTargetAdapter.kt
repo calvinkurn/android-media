@@ -14,7 +14,8 @@ class MerchantVoucherTargetAdapter(private val merchantVoucherTargetList: List<V
                                    private val onShouldOpenBottomSheet: (CreateVoucherBottomSheetType, VoucherTargetCardType?) -> Unit,
                                    private val onSetVoucherTargetType: (Int) -> Unit,
                                    private val onRadioButtonClicked: (Int) -> Unit,
-                                   private val onChangePromoCodeButtonClicked: () -> Unit) : RecyclerView.Adapter<MerchantVoucherTargetAdapter.MerchantVoucherTargetViewHolder>() {
+                                   private val onChangePromoCodeButtonClicked: () -> Unit,
+                                   private val isEditVoucher: Boolean) : RecyclerView.Adapter<MerchantVoucherTargetAdapter.MerchantVoucherTargetViewHolder>() {
 
     class MerchantVoucherTargetViewHolder(itemView: VoucherTargetCardItemView) : RecyclerView.ViewHolder(itemView)
 
@@ -29,7 +30,7 @@ class MerchantVoucherTargetAdapter(private val merchantVoucherTargetList: List<V
         merchantVoucherTargetList[position].let { uiModel ->
             (holder.itemView as? VoucherTargetCardItemView)?.run {
                 val canShowBottomSheet = uiModel.voucherTargetType == VoucherTargetCardType.PRIVATE && !uiModel.isHavePromoCard
-                setupCurrentView(uiModel.voucherTargetType, uiModel.isEnabled, uiModel.isHavePromoCard, uiModel.promoCode)
+                setupCurrentView(uiModel.voucherTargetType, uiModel.isEnabled, uiModel.isHavePromoCard, uiModel.promoCode, !isEditVoucher)
                 voucherTargetItemRadioButton?.run {
                     setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
@@ -39,8 +40,13 @@ class MerchantVoucherTargetAdapter(private val merchantVoucherTargetList: List<V
                             }
                         }
                     }
-                    setOnClickListener {
-                        onRadioButtonClicked(uiModel.voucherTargetType.targetType)
+                    if (!isEditVoucher) {
+                        setOnClickListener {
+                            onRadioButtonClicked(uiModel.voucherTargetType.targetType)
+                        }
+                    } else {
+                        isEnabled = false
+                        isClickable = false
                     }
                 }
                 voucherTargetPromoCodeInfo?.run {

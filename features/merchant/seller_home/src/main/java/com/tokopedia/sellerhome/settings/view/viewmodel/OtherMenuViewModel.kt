@@ -63,7 +63,7 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     fun getFreeShippingStatus() {
-        val freeShippingDisabled = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        val freeShippingDisabled = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
         val inTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         if(freeShippingDisabled || inTransitionPeriod) return
 

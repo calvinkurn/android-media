@@ -73,6 +73,30 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
         showFragment(getFragment(isActive))
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        var isActive = true
+        val voucherId = intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY)
+
+        intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
+            isActive = it
+        }
+
+        intent?.data?.lastPathSegment?.let { status ->
+            if (status.isNotEmpty()) {
+                isActive =
+                        when(status) {
+                            ACTIVE -> true
+                            HISTORY -> false
+                            else -> true
+                        }
+            }
+        }
+
+        showFragment(getFragment(isActive, voucherId))
+    }
+
     override fun onBackPressed() {
         if (isActiveVoucher) {
             super.onBackPressed()
@@ -103,10 +127,11 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
         }
     }
 
-    private fun getFragment(isActiveVoucher: Boolean): VoucherListFragment {
+    private fun getFragment(isActiveVoucher: Boolean,
+                            voucherId: Int? = successVoucherId): VoucherListFragment {
         return VoucherListFragment.newInstance(isActiveVoucher).apply {
             setFragmentListener(this@VoucherListActivity)
-            val willShowSuccessCreationDialog = !isSuccessDialogAlreadyShowed && isActiveVoucher && successVoucherId != 0
+            val willShowSuccessCreationDialog = !isSuccessDialogAlreadyShowed && isActiveVoucher && voucherId != 0
             if (willShowSuccessCreationDialog) {
                 val bundle = Bundle().apply bun@{
                     isUpdateVoucherSuccess?.let { isUpdate ->
@@ -115,7 +140,7 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
                             return@bun
                         }
                     }
-                    successVoucherId?.run {
+                    voucherId?.run {
                         putBoolean(VoucherListFragment.IS_SUCCESS_VOUCHER, true)
                         putInt(VoucherListFragment.VOUCHER_ID_KEY, this)
                     }
