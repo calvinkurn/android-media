@@ -38,6 +38,7 @@ import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
 import com.tokopedia.play.broadcaster.view.state.Changeable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.NotChangeable
+import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -400,7 +401,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 CoverSetupState.Blank -> showInitCoverLayout(null)
                 is CoverSetupState.Cropping -> handleCroppingState(it)
                 is CoverSetupState.Cropped -> {
-                    if (isEditCoverMode) shouldUploadCover(coverTitle = viewModel.savedCoverTitle)
+                    if (isEditCoverMode && it.state != SetupDataState.Uploaded) shouldUploadCover(coverTitle = viewModel.savedCoverTitle)
                     else showInitCoverLayout(it.coverImage)
                 }
             }.exhaustive

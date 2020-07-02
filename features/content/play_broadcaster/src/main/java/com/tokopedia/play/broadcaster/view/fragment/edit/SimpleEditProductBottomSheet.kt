@@ -114,6 +114,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
         rvSelectedProduct.addOnScrollListener(StopFlingScrollListener())
 
         btnAction.setOnClickListener {
+            if (btnAction.isLoading) return@setOnClickListener
             viewModel.uploadProduct(parentViewModel.channelId)
         }
         tvChooseOver.setOnClickListener { mListener?.onChooseOver() }
