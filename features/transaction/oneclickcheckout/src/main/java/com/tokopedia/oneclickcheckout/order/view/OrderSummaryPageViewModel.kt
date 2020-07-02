@@ -230,6 +230,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     val curShip = value.preference.shipment
                                     var shipping = value.shipping
                                     var shippingErrorId: String? = null
+                                    var preselectedSpId: String? = null
 
                                     if (!shippingRecommendationData.errorId.isNullOrEmpty() && !shippingRecommendationData.errorMessage.isNullOrEmpty()) {
                                         shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = shippingRecommendationData.errorMessage, shippingRecommendationData = null)
@@ -375,6 +376,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                     serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                                                                     shippingRecommendationData = shippingRecommendationData)
+
+                                                            if (shipping.serviceErrorMessage.isNullOrEmpty()) {
+                                                                preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
+                                                            }
                                                         }
                                                     }
                                                 } else {
@@ -438,6 +443,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     if (!hasSentViewOspEe) {
                                         orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
                                         hasSentViewOspEe = true
+                                    }
+                                    if (preselectedSpId != null) {
+                                        orderSummaryAnalytics.eventViewPreselectedCourierOption(preselectedSpId, userSessionInterface.userId)
                                     }
                                     calculateTotal()
                                 }
