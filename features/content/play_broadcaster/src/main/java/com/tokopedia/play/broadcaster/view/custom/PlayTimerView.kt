@@ -28,12 +28,12 @@ class PlayTimerView : ConstraintLayout {
         tvTimeCounterEnd = view.findViewById(R.id.tv_time_counter_end)
     }
 
-    fun showTimeRunOut(minutesUntilFinished: Long = 0L) {
+    fun showTimeRemaining(minutesUntilFinished: Long = 0L) {
         setVisibilityWhenTimesRunOut(true)
         tvTimeCounterEnd.text = context.getString(R.string.play_live_broadcast_time_left, minutesUntilFinished)
     }
 
-    fun showTimeLeft(timeLeft: String = "") {
+    fun showCounterDuration(timeLeft: String = "") {
         setVisibilityWhenTimesRunOut(false)
         tvTimeCounter.text = timeLeft
     }

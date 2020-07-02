@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
+import com.tokopedia.play.broadcaster.domain.model.LiveDuration
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.Metric
 import com.tokopedia.play.broadcaster.domain.usecase.*
@@ -60,6 +61,8 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
         get() = _observableTotalLike
+    val observableLiveDuration: LiveData<DurationUiModel>
+        get() = _observableLiveDuration
     val observableLiveInfoState: LiveData<Event<PlayPusherInfoState>>
         get() = _observableLiveInfoState
     val observableLiveNetworkState: LiveData<Event<PlayPusherNetworkState>>
@@ -84,6 +87,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
+    private val _observableLiveDuration = MutableLiveData<DurationUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
     private val _observableShareInfo = MutableLiveData<ShareUiModel>()
@@ -118,8 +122,8 @@ class PlayBroadcastViewModel @Inject constructor(
                 is Metric -> onRetrievedNewMetric(PlayBroadcastUiMapper.mapMetricList(it))
                 is ConcurrentUser -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(it)
                 is LiveStats -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(it)
+                is LiveDuration -> _observableLiveDuration.value = PlayBroadcastUiMapper.mapLiveDuration(it)
             }
-            // TODO("retrieve & update count down")
         }
     }
     private val socketResponseHandlerObserver = object : Observer<Unit> {
