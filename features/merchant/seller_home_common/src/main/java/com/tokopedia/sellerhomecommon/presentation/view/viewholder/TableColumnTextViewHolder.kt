@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
+import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,8 +20,14 @@ class TableColumnTextViewHolder(itemView: View?) : AbstractViewHolder<TableRowsU
     }
 
     override fun bind(element: TableRowsUiModel.RowColumnText) {
+        println("text -> text isLeftAlign : ${element.isLeftAlign} -> ${element.valueStr}")
         with(itemView) {
             tvTableColumnText.text = element.valueStr
+            if (element.isLeftAlign) {
+                tvTableColumnText.gravity = Gravity.START
+            } else {
+                tvTableColumnText.gravity = Gravity.END
+            }
         }
     }
 }

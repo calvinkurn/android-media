@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
+import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,8 +20,14 @@ class TableHeaderColumnViewHolder(itemView: View?) : AbstractViewHolder<TableHea
     }
 
     override fun bind(element: TableHeaderUiModel) {
+        println("text -> header isLeftAlign : ${element.isLeftAlign} -> ${element.title}")
         with(itemView) {
             tvTableHeader.text = element.title
+            if (element.isLeftAlign) {
+                tvTableHeader.gravity = Gravity.START
+            } else {
+                tvTableHeader.gravity = Gravity.END
+            }
         }
     }
 }

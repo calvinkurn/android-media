@@ -27,7 +27,8 @@ object TableItemDivider : Visitable<TableItemFactory> {
 
 data class TableHeaderUiModel(
         val title: String = "",
-        val width: Int = 0
+        val width: Int = 0,
+        val isLeftAlign: Boolean = false
 ) : Visitable<TableItemFactory> {
 
     override fun type(typeFactory: TableItemFactory): Int {
@@ -35,11 +36,15 @@ data class TableHeaderUiModel(
     }
 }
 
-sealed class TableRowsUiModel(open val valueStr: String = "", open val width: Int = 0) : Visitable<TableItemFactory> {
+sealed class TableRowsUiModel(
+        open val valueStr: String = "",
+        open val width: Int = 0
+) : Visitable<TableItemFactory> {
 
     data class RowColumnText(
             override val valueStr: String = "",
-            override val width: Int = 0
+            override val width: Int = 0,
+            val isLeftAlign: Boolean = false
     ) : TableRowsUiModel(valueStr, width) {
 
         override fun type(typeFactory: TableItemFactory): Int {
@@ -59,7 +64,8 @@ sealed class TableRowsUiModel(open val valueStr: String = "", open val width: In
 
     data class RowColumnHtml(
             override val valueStr: String = "",
-            override val width: Int = 0
+            override val width: Int = 0,
+            val isLeftAlign: Boolean = false
     ) : TableRowsUiModel(valueStr, width) {
 
         override fun type(typeFactory: TableItemFactory): Int {

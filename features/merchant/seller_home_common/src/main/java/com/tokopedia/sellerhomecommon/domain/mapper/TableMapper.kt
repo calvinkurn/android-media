@@ -44,19 +44,20 @@ class TableMapper @Inject constructor() {
         var rows = mutableListOf<TableRowsUiModel>()
         val rowCount = data.rows.size
         data.rows.forEachIndexed { i, row ->
+            val firstTextColumn = row.columns.firstOrNull { it.type == COLUMN_TEXT || it.type == COLUMN_HTML }
             row.columns.forEachIndexed { j, col ->
                 if (j < headers.size) {
                     val width = headers[j].width
                     val rowColumn: TableRowsUiModel = when (col.type) {
-                        COLUMN_TEXT -> TableRowsUiModel.RowColumnText(col.value, width)
+                        COLUMN_TEXT -> TableRowsUiModel.RowColumnText(col.value, width, firstTextColumn == col)
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
-                        else -> TableRowsUiModel.RowColumnHtml(col.value, width) //it's COLUMN_HTML
+                        else -> TableRowsUiModel.RowColumnHtml(col.value, width, firstTextColumn == col) //it's COLUMN_HTML
                     }
                     rows.add(rowColumn)
                 }
             }
 
-            if (i.plus(1) % MAX_ROWS_PER_PAGE == 0 && rowCount >= MAX_ROWS_PER_PAGE) {
+            if (i.plus(1).rem(MAX_ROWS_PER_PAGE) == 0 && rowCount >= MAX_ROWS_PER_PAGE) {
                 val tablePage = TablePageUiModel(headers, rows)
                 tablePages.add(tablePage)
                 rows = mutableListOf()
@@ -70,9 +71,10 @@ class TableMapper @Inject constructor() {
     }
 
     private fun getHeaders(headers: List<HeaderModel>): List<TableHeaderUiModel> {
-        return headers.map {
-            val headerWidth = if (it.width < 0) 0 else it.width
-            return@map TableHeaderUiModel(it.title, headerWidth)
+        val firstHeader = headers.firstOrNull { it.title.isNotBlank() }
+        return headers.map { header ->
+            val headerWidth = if (header.width < 0) 0 else header.width
+            return@map TableHeaderUiModel(header.title, headerWidth, header == firstHeader)
         }
     }
 }
