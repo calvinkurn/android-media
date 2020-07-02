@@ -673,7 +673,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun enableDetailEdit() {
         context?.let {
             addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
-            addEditProductDetailButton?.text = getString(R.string.label_change)
+            addEditProductDetailButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addEditProductDetailButton?.show()
             dividerDetail?.hide()
         }
