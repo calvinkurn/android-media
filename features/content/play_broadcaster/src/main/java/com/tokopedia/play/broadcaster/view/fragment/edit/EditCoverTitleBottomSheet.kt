@@ -58,7 +58,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditCoverTitleViewModel::class.java)
 
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheet_Setup_Pinned)
         initBottomSheet()
     }
 
