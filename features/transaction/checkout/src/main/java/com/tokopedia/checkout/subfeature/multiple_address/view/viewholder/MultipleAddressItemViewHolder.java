@@ -13,11 +13,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressItemAdapter;
+import com.tokopedia.manageaddress.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityWrapper;
-import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
-import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressItemAdapter;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifyprinciples.Typography;
 

@@ -50,7 +50,7 @@ import javax.inject.Inject;
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
-import static com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
+import static com.tokopedia.manageaddress.ui.addresschoice.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 
 public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressListContract.View, SearchInputView.Listener,
