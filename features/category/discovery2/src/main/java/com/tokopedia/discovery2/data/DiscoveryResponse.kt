@@ -10,12 +10,14 @@ data class DiscoveryResponse(
         @SerializedName("component")
         val component: ComponentsItem? = null,
 
-
         @SerializedName("page_info")
         var pageInfo: PageInfo,
 
         @SerializedName("title")
-        val title: String
+        val title: String,
+
+        @SerializedName("additional_info")
+        val additionalInfo: AdditionalInfo?
 
 ) {
     lateinit var componentMap: MutableMap<String, ComponentsItem>
