@@ -17,7 +17,6 @@ import java.util.*
 object TravelTickerUtils {
     private const val ANNOUNCEMENT_TYPE = 1
     private const val WARNING_TYPE = 2
-    private const val DANGER_TYPE = 2
 
     fun buildTravelTicker(context: Context?, travelTickerModel: TravelTickerModel, tickerView: TickerView) {
         val messages = ArrayList<String>()
@@ -28,7 +27,7 @@ object TravelTickerUtils {
                 tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.tkpd_main_green))
                 tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.light_green))
                 tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, R.color.light_green))
-            } else if (travelTickerModel.type == DANGER_TYPE) {
+            } else if (travelTickerModel.type == WARNING_TYPE) {
                 tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.snackbar_border_error))
                 tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.colorPink))
                 tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, R.color.colorPink))
