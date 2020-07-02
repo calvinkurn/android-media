@@ -25,12 +25,22 @@
             android:contentDescription="@string/icon_placeholder" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_uoh_categories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/ic_vertical"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="@dimen/dp_15"
-            android:layout_marginStart="@dimen/dp_15"/>
+            android:layout_marginStart="@dimen/dp_15"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_uoh_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/tv_uoh_categories"
+            app:layout_constraintTop_toBottomOf="@id/tv_uoh_categories"
+            android:layout_marginTop="@dimen/dp_4"/>
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_buyer_request_cancel"
