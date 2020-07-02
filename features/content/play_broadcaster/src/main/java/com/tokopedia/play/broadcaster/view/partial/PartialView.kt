@@ -15,7 +15,7 @@ abstract class PartialView(
         @IdRes rootId: Int
 ) {
 
-    protected val rootView = container.findViewById<View>(rootId)
+    val rootView = container.findViewById<View>(rootId)
 
     protected fun<T: View> findViewById(@IdRes id: Int): T = rootView.findViewById(id)
 

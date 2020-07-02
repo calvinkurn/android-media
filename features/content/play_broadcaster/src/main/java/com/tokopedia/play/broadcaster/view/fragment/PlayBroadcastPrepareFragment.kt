@@ -25,6 +25,9 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
@@ -71,6 +74,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        setupInsets(view)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -78,6 +82,11 @@ class PlayBroadcastPrepareFragment @Inject constructor(
 
         observeFollowers()
         observeChannelInfo()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireView().requestApplyInsetsWhenAttached()
     }
 
     private fun initView(view: View) {
@@ -95,6 +104,12 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         }
 
         setupTermsCondition()
+    }
+
+    private fun setupInsets(view: View) {
+        view.doOnApplyWindowInsets { v, insets, padding, _ ->
+            v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
+        }
     }
 
     private fun setupTermsCondition() {

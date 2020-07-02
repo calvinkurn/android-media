@@ -37,6 +37,9 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteraction
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -62,6 +65,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
+    private var systemUiVisibility: Int
+        get() = window.decorView.systemUiVisibility
+        set(value) {
+            window.decorView.systemUiVisibility = value
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
@@ -72,10 +81,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewModel.initPushStream()
         setupContent()
         initView()
+        setupView()
+        setupInsets()
+
         getConfiguration()
 
         observeConfiguration()
         observePermissionStateEvent()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewActionBar.rootView.requestApplyInsetsWhenAttached()
     }
 
     private fun inject() {
@@ -123,6 +140,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 onBackPressed()
             }
         })
+    }
+
+    private fun setupView() {
+        systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    }
+
+    private fun setupInsets() {
+        viewActionBar.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
+            v.updatePadding(top = insets.systemWindowInsetTop)
+        }
     }
 
     private fun getConfiguration() {

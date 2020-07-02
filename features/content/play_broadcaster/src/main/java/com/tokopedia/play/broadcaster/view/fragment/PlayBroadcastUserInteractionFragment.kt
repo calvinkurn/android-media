@@ -34,6 +34,9 @@ import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -74,6 +77,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView()
+        setupInsets(view)
         setupContent()
     }
 
@@ -87,6 +91,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeNetworkConnectionDuringLive()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        ivShareLink.requestApplyInsetsWhenAttached()
+        viewTimer.requestApplyInsetsWhenAttached()
     }
 
     private fun initView(view: View) {
@@ -107,6 +117,26 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         ivShareLink.setOnClickListener{ doCopyShareLink() }
         ivProductTag.setOnClickListener { doShowProductInfo() }
+    }
+
+    private fun setupInsets(view: View) {
+        viewTimer.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.requestLayout()
+            }
+        }
+
+        ivShareLink.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.requestLayout()
+            }
+        }
     }
 
     private fun setupContent() {
