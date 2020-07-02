@@ -1,16 +1,16 @@
 package com.tokopedia.flight.searchV4.domain
 
 import com.google.gson.Gson
-import com.tokopedia.flight.search.data.db.FlightComboTable
-import com.tokopedia.flight.search.data.db.FlightJourneyTable
-import com.tokopedia.flight.search.data.db.FlightRouteTable
-import com.tokopedia.flight.search.data.db.JourneyAndRoutes
-import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
-import com.tokopedia.flight.search.presentation.model.FlightAirportModel
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV4.data.cache.db.FlightComboTable
+import com.tokopedia.flight.searchV4.data.cache.db.FlightJourneyTable
+import com.tokopedia.flight.searchV4.data.cache.db.FlightRouteTable
+import com.tokopedia.flight.searchV4.data.cache.db.JourneyAndRoutes
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchData
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchIncluded
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRoute
+import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightAirportModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
 
 /**
  * @author by furqan on 08/04/2020

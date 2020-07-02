@@ -2,11 +2,11 @@ package com.tokopedia.common_category.usecase.repository
 
 import android.content.res.Resources
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.common_category.R
 import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.data.catalogModel.CatalogListResponse
+import com.tokopedia.common_category.data.raw.GQL_NAV_CATEGORY_DETAIL_V3
+import com.tokopedia.common_category.data.raw.GQL_NAV_SEARCH_CATALOG_COUNT
 import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
 import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -25,9 +25,8 @@ class CategoryNavRepository @Inject constructor() {
 
     suspend fun getCategoryDetail(departmentId: String): Data? {
         val params: RequestParams = getSubCategoryParam(departmentId)
-        val query = GraphqlHelper.loadRawString(resources, R.raw.gql_nav_category_detail_v3)
-        return (baseRepository.getGQLData(query, BannedCategoryResponse::class.java, params.parameters)
-                as BannedCategoryResponse).categoryDetailQuery?.data as Data
+        val query = GQL_NAV_CATEGORY_DETAIL_V3
+        return baseRepository.getGQLData(query, BannedCategoryResponse::class.java, params.parameters).categoryDetailQuery?.data as Data
     }
 
     suspend fun getCategoryDetailWithCatalogCount(departmentId: String): GraphqlResponse? {
@@ -39,8 +38,8 @@ class CategoryNavRepository @Inject constructor() {
 
     private fun getQueries(): MutableList<String> {
         val queries: MutableList<String> = ArrayList()
-        queries.add(GraphqlHelper.loadRawString(resources, R.raw.gql_nav_category_detail_v3))
-        queries.add(GraphqlHelper.loadRawString(resources, R.raw.gql_nav_search_catalog_count))
+        queries.add(GQL_NAV_CATEGORY_DETAIL_V3)
+        queries.add(GQL_NAV_SEARCH_CATALOG_COUNT)
         return queries
     }
 
