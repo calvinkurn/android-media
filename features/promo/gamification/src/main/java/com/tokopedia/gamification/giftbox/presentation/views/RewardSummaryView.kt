@@ -177,7 +177,7 @@ class RewardSummaryView : FrameLayout {
 
         val filteredItems = rewardSummaryItemList.filter { it.benfit.isBigPrize }
         list.removeAll(filteredItems)
-        list.addAll(filteredItems)
+        list.addAll(0, filteredItems)
 
         if (filteredItems.isNotEmpty()) {
             decoration.indexTillBigPrize = filteredItems.size - 1

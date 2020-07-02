@@ -24,6 +24,7 @@ class LidImagesDownloader : CoroutineScope {
                     val drawable = Glide.with(context)
                             .asBitmap()
                             .load(url)
+                            .timeout(10000)
                             .submit()
                             .get()
                     drawableList.add(drawable)

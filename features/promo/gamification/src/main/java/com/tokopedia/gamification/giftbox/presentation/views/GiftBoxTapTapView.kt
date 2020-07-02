@@ -34,6 +34,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
     override var TOTAL_ASYNC_IMAGES = 5
     override var GIFT_BOX_START_DELAY = 0L
+    val GLIDE_TIME_OUT = 6000
 
     companion object {
         const val REWARD_START_DELAY = 300L // added because GIFT_BOX_START_DELAY was 300L in base class
@@ -154,6 +155,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             Glide.with(this)
                     .load(glowImageUrl)
                     .dontAnimate()
+                    .timeout(GLIDE_TIME_OUT)
                     .error(R.drawable.gf_gift_white_waktu)
                     .addListener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -175,6 +177,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             Glide.with(this)
                     .load(glowImageShadowUrl)
                     .dontAnimate()
+                    .timeout(GLIDE_TIME_OUT)
                     .error(R.drawable.gf_gift_glow)
                     .addListener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -195,6 +198,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         Glide.with(this)
                 .load(bgUrl)
                 .dontAnimate()
+                .timeout(GLIDE_TIME_OUT)
                 .error(R.drawable.gf_gift_bg)
                 .addListener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -212,6 +216,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         Glide.with(this)
                 .load(imageFrontUrl)
                 .dontAnimate()
+                .timeout(GLIDE_TIME_OUT)
                 .error(R.drawable.gf_gift_green_front)
                 .addListener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
