@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.subfeature.address_choice.view.di
 
-import com.tokopedia.checkout.subfeature.address_choice.view.AddressListContract
-import com.tokopedia.checkout.subfeature.address_choice.view.AddressListPresenter
+import com.tokopedia.manageaddress.ui.addresschoice.AddressListContract
+import com.tokopedia.manageaddress.ui.addresschoice.AddressListPresenter
 import dagger.Module
 import dagger.Provides
 

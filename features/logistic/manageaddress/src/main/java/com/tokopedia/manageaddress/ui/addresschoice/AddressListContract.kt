@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui.checkoutaddress
+package com.tokopedia.manageaddress.ui.addresschoice
 
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.Token

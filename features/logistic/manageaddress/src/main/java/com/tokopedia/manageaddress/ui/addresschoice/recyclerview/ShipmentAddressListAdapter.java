@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui.checkoutaddress.recyclerview;
+package com.tokopedia.manageaddress.ui.addresschoice.recyclerview;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.checkout.subfeature.address_choice.view.recyclerview.SampaiViewHolder;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.manageaddress.domain.model.addressoptions.CornerAddressModel;
-import com.tokopedia.manageaddress.ui.checkoutaddress.RecipientAddressViewHolder;
+import com.tokopedia.manageaddress.ui.addresschoice.RecipientAddressViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

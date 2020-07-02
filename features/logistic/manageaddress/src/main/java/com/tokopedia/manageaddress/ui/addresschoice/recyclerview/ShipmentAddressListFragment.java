@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui.checkoutaddress.recyclerview;
+package com.tokopedia.manageaddress.ui.addresschoice.recyclerview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,17 +24,18 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
+import com.tokopedia.checkout.subfeature.address_choice.view.di.DaggerAddressChoiceComponent;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.manageaddress.data.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.manageaddress.data.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.manageaddress.data.analytics.CornerAnalytics;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
-import com.tokopedia.manageaddress.ui.checkoutaddress.AddressListContract;
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.manageaddress.ui.addresschoice.AddressListContract;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;

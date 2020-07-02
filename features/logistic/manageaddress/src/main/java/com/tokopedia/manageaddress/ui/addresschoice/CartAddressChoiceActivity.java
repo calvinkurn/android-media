@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui.checkoutaddress;
+package com.tokopedia.manageaddress.ui.addresschoice;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +15,7 @@ import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
 import com.tokopedia.manageaddress.domain.model.MultipleAddressAdapterData;
-import com.tokopedia.manageaddress.ui.checkoutaddress.recyclerview.ShipmentAddressListFragment;
+import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListFragment;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;

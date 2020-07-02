@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.manageaddress.R
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.manageaddress.domain.model.addressoptions.CornerAddressModel
-import com.tokopedia.manageaddress.ui.checkoutaddress.recyclerview.ShipmentAddressListAdapter
+import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListAdapter
 
 /**
  * Created by fajarnuha on 2019-05-21.

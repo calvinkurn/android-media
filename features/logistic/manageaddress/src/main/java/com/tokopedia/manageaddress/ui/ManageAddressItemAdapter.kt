@@ -10,19 +10,19 @@ import com.example.manageaddress.R
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticdata.data.entity.address.AddressModel
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
 
 class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterListener) : RecyclerView.Adapter<ManageAddressItemAdapter.ManageAddressViewHolder>() {
 
-    var addressList = mutableListOf<AddressModel>()
+    var addressList = mutableListOf<RecipientAddressModel>()
     var token: Token? = null
 
     interface ManageAddressItemAdapterListener {
-        fun onManageAddressEditClicked(peopleAddress: AddressModel)
-        fun onManageAddressLainnyaClicked(peopleAddress: AddressModel)
+        fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel)
+        fun onManageAddressLainnyaClicked(peopleAddress: RecipientAddressModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
@@ -44,16 +44,16 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         val lainnyaButton = itemView.findViewById<ImageView>(R.id.label_lainnya)
 
         @SuppressLint("SetTextI18n")
-        fun bindData(data: AddressModel) {
+        fun bindData(data: RecipientAddressModel) {
             with(itemView) {
-                val addressStreet = data.addressStreet
+                val addressStreet = data.street
                 val postalCode = data.postalCode
                 val tokopediaNote = "[" + addressStreet.substringAfterLast("[")
                 setVisibility(data)
                 setPrimary(data)
                 address_name.text = data.addressName
-                receiver_name.text = data.receiverName
-                receiver_phone.text = data.receiverPhone
+                receiver_name.text = data.recipientName
+                receiver_phone.text = data.recipientPhoneNumber
                 if(addressStreet.contains("Tokopedia Note")) {
                     val newAddress = addressStreet.replace(tokopediaNote, "")
                     tokopedia_note.visible()
@@ -61,14 +61,14 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     if(addressStreet.contains(postalCode)) address_detail.text = newAddress
                     else address_detail.text = newAddress + "," + data.postalCode
                 } else {
-                    address_detail.text = data.addressStreet + ", " + data.postalCode
+                    address_detail.text = data.street + ", " + data.postalCode
                 }
                 setListener(data)
 
             }
         }
 
-        private fun setPrimary(peopleAddress: AddressModel) {
+        private fun setPrimary(peopleAddress: RecipientAddressModel) {
             if (peopleAddress.addressStatus == 2) {
                 itemView.lbl_main_address.visible()
             } else {
@@ -76,7 +76,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
             }
         }
 
-        private fun setVisibility(peopleAddress: AddressModel) {
+        private fun setVisibility(peopleAddress: RecipientAddressModel) {
             if(( peopleAddress.latitude.isNullOrEmpty())|| peopleAddress.longitude.isNullOrEmpty()) {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pinpoint)
                 imageLocation.setImageDrawable(icon)
@@ -88,7 +88,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
             }
         }
 
-        private fun setListener(peopleAddress: AddressModel) {
+        private fun setListener(peopleAddress: RecipientAddressModel) {
             editButton.setOnClickListener  {
                 listener.onManageAddressEditClicked(peopleAddress)
             }
