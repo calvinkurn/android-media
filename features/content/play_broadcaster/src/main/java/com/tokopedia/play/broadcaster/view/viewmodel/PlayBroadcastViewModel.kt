@@ -133,10 +133,6 @@ class PlayBroadcastViewModel @Inject constructor(
     init {
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
         _observableChannelId.observeForever(channelIdObserver)
-        initPushStream()
-
-        mockChatList()
-        mockMetrics()
     }
 
     override fun onCleared() {
@@ -238,14 +234,14 @@ class PlayBroadcastViewModel @Inject constructor(
     /**
      * Apsara integration
      */
-    private fun initPushStream() {
+    fun initPushStream() {
         playPusher.create()
     }
 
     fun startPushStream(ingestUrl: String) {
         if (ingestUrl.isEmpty() || !allPermissionGranted()) return
         scope.launch {
-            startWebSocket()
+//            startWebSocket()
             playPusher.startPush(ingestUrl) {
                 launch { updateChannelStatus(PlayChannelStatus.Live) }
             }
@@ -333,7 +329,7 @@ class PlayBroadcastViewModel @Inject constructor(
     /**
      * mock
      */
-    private fun mockChatList() {
+    fun mockChatList() {
         scope.launch(dispatcher.io) {
             while(isActive) {
                 delay(1000)
@@ -344,7 +340,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private fun mockMetrics() {
+    fun mockMetrics() {
         scope.launch(dispatcher.io) {
             while(isActive) {
                 delay(3000)

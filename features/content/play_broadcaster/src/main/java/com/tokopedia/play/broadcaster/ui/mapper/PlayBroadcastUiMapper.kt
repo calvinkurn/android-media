@@ -8,6 +8,7 @@ import android.text.style.StyleSpan
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker.LOCAL_RTMP_URL
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -151,6 +152,7 @@ object PlayBroadcastUiMapper {
             title = channel.basic.title,
             description = channel.basic.description,
             ingestUrl = channel.medias.firstOrNull()?.ingestUrl.orEmpty(),
+//            ingestUrl = LOCAL_RTMP_URL, // TODO remove mock
             coverUrl = channel.medias.firstOrNull()?.coverUrl.orEmpty(),
             status = PlayChannelStatus.getByValue(channel.basic.status.id)
     )

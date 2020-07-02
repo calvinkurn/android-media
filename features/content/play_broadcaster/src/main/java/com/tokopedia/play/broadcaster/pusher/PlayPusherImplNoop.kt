@@ -75,29 +75,19 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
 
     //TODO("for testing only")
     override fun addMaxStreamDuration(millis: Long) {
-        this.mTimer = PlayPusherTimer(builder.context, millis, object: PlayPusherTimerListener {
-            override fun onCountDownActive(timeLeft: String) {
-                _observableInfoState.postValue(PlayPusherInfoState.TimerActive(timeLeft))
-            }
+        if (this.mTimer == null)
+            this.mTimer = PlayPusherTimer(builder.context, millis)
 
-            override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
-                _observableInfoState.postValue(PlayPusherInfoState.TimerAlmostFinish(minutesUntilFinished))
-            }
-
-            override fun onCountDownFinish(timeElapsed: String) {
-                stopPush()
-                _observableInfoState.postValue(PlayPusherInfoState.TimerFinish(timeElapsed))
-            }
-
-            override fun onReachMaximumPauseDuration() {
-                _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.ReachMaximumPauseDuration))
-            }
-        })
+        this.mTimer?.callback = mPlayPusherTimerListener
     }
 
     //TODO("for testing only")
     override fun addMaxPauseDuration(millis: Long) {
+        if (this.mTimer == null)
+            this.mTimer = PlayPusherTimer(builder.context)
+
         this.mTimer?.pauseDuration = millis
+        this.mTimer?.callback = mPlayPusherTimerListener
     }
 
     override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
@@ -110,5 +100,23 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun isPushing(): Boolean {
         return isPushing
+    }
+
+    private val mPlayPusherTimerListener = object : PlayPusherTimerListener{
+        override fun onCountDownActive(timeLeft: String) {
+            _observableInfoState.postValue(PlayPusherInfoState.TimerActive(timeLeft))
+        }
+
+        override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
+            _observableInfoState.postValue(PlayPusherInfoState.TimerAlmostFinish(minutesUntilFinished))
+        }
+
+        override fun onCountDownFinish(timeElapsed: String) {
+            _observableInfoState.postValue(PlayPusherInfoState.TimerFinish(timeElapsed))
+        }
+
+        override fun onReachMaximumPauseDuration() {
+            _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.ReachMaximumPauseDuration))
+        }
     }
 }

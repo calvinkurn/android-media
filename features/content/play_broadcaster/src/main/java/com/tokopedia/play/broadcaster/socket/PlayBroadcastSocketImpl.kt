@@ -32,7 +32,6 @@ class PlayBroadcastSocketImpl constructor(
     private lateinit var webSocketUtil: RxWebSocketUtil
     private lateinit var compositeSubscription: CompositeSubscription
 
-
     private val gson = Gson()
     private var config: SocketConfiguration = SocketConfiguration(
             minReconnectDelay = DEFAULT_DELAY,
@@ -60,6 +59,8 @@ class PlayBroadcastSocketImpl constructor(
         var wsConnectUrl = "$wsBaseUrl${PlayBroadcastSocket.KEY_GROUP_CHAT_PATH}$channelId"
         if (groupChatToken.isNotEmpty())
             wsConnectUrl += "&token=$groupChatToken"
+
+        compositeSubscription = CompositeSubscription()
 
         val subscriber = object : WebSocketSubscriber() {
 
