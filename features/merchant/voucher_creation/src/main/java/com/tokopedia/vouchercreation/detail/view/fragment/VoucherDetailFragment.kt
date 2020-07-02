@@ -63,13 +63,11 @@ import javax.inject.Inject
 class VoucherDetailFragment : BaseDetailFragment() {
 
     companion object {
-        fun newInstance(voucherId: Int,
-                        mvcPerformanceMonitoringListener: MvcPerformanceMonitoringListener? = null): VoucherDetailFragment = VoucherDetailFragment().apply {
+        fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment().apply {
             val bundle = Bundle().apply {
                 putInt(VOUCHER_ID_KEY, voucherId)
             }
             arguments = bundle
-            performanceMonitoring = mvcPerformanceMonitoringListener
         }
 
         const val DOWNLOAD_REQUEST_CODE = 222
@@ -81,8 +79,6 @@ class VoucherDetailFragment : BaseDetailFragment() {
     }
 
     private var voucherUiModel: VoucherUiModel? = null
-
-    private var performanceMonitoring: MvcPerformanceMonitoringListener? = null
 
     private val voucherId by lazy {
         arguments?.getInt(VOUCHER_ID_KEY)
@@ -131,7 +127,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        performanceMonitoring?.finishMonitoring()
+        (activity as? MvcPerformanceMonitoringListener)?.finishMonitoring()
         viewModel.flush()
     }
 
@@ -324,7 +320,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     private fun observeLiveData() {
         viewLifecycleOwner.run {
             observe(viewModel.merchantVoucherModelLiveData) { result ->
-                performanceMonitoring?.startRenderPerformanceMonitoring()
+                (activity as? MvcPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
                 when(result) {
                     is Success -> {
                         adapter.clearAllElements()
@@ -371,7 +367,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     private fun setupView() = view?.run {
         showLoadingState()
         voucherId?.run {
-            performanceMonitoring?.startNetworkPerformanceMonitoring()
+            (activity as? MvcPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
             viewModel.getVoucherDetail(this)
         }
     }
@@ -668,7 +664,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
         viewTreeObserver?.run {
             addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    performanceMonitoring?.finishMonitoring()
+                    (activity as? MvcPerformanceMonitoringListener)?.finishMonitoring()
                     removeOnGlobalLayoutListener(this)
                 }
             })

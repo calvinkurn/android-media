@@ -256,8 +256,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoring.initMvcPerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        initInjector()
         setContentView(R.layout.activity_create_merchant_voucher_steps)
+        initInjector()
         setupView()
         observeLiveData()
     }

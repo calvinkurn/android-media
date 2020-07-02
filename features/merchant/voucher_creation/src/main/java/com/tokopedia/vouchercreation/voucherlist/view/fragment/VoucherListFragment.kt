@@ -96,20 +96,16 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         private const val DOWNLOAD_REQUEST_CODE = 223
         private const val SHARE_REQUEST_CODE = 224
 
-        fun newInstance(isActiveVoucher: Boolean,
-                        performanceMonitoring: MvcPerformanceMonitoringListener? = null): VoucherListFragment {
+        fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
             return VoucherListFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(KEY_IS_ACTIVE_VOUCHER, isActiveVoucher)
                 }
-                this.performanceMonitoring = performanceMonitoring
             }
         }
     }
 
     private var fragmentListener: Listener? = null
-    
-    private var performanceMonitoring: MvcPerformanceMonitoringListener? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -169,7 +165,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        performanceMonitoring?.startNetworkPerformanceMonitoring()
+        (activity as? MvcPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
         setHasOptionsMenu(true)
 
         if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
@@ -193,7 +189,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun onDestroy() {
         super.onDestroy()
-        performanceMonitoring?.finishMonitoring()
+        (activity as? MvcPerformanceMonitoringListener)?.finishMonitoring()
         mViewModel.flush()
     }
 
@@ -1017,7 +1013,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun observeLiveData() {
         mViewModel.voucherList.observe(viewLifecycleOwner, Observer {
-            performanceMonitoring?.startRenderPerformanceMonitoring()
+            (activity as? MvcPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
                     setOnSuccessGetVoucherList(it.data)
@@ -1219,7 +1215,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         viewTreeObserver?.run {
             addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    performanceMonitoring?.finishMonitoring()
+                    (activity as? MvcPerformanceMonitoringListener)?.finishMonitoring()
                     removeOnGlobalLayoutListener(this)
                 }
             })
