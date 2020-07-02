@@ -19,8 +19,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.gm.common.constant.GMCommonConstantKt;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopscore.di.ShopScoreDetailDependencyInjector;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
@@ -99,7 +100,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
         TextView textView = parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
         textView.setText(getString(R.string.description_shop_score_gold_badge_state,
-                getString(GMConstant.getGMBadgeTitleResource(getActivity()))));
+                GMCommonConstantKt.GM_BADGE_TITLE));
 
         presenter.attachView(this);
         presenter.getShopScoreDetail();
@@ -157,14 +158,14 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         switch (shopScoreDetailStateEnum) {
             case GOLD_MERCHANT_QUALIFIED_BADGE:
             case GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
-                icon = GMConstant.getGMDrawable(getContext());
+                icon = MethodChecker.getDrawable(getContext(), com.tokopedia.gm.common.R.drawable.ic_power_merchant);
                 break;
             case NOT_GOLD_MERCHANT_QUALIFIED_BADGE:
             case NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
-                icon = GMConstant.getGMRegularBadgeDrawable(getContext());
+                icon = MethodChecker.getDrawable(getContext(), com.tokopedia.gm.common.R.drawable.ic_pm_badge_shop_regular);
                 break;
             default:
-                icon = GMConstant.getGMRegularBadgeDrawable(getContext());
+                icon = MethodChecker.getDrawable(getContext(), com.tokopedia.gm.common.R.drawable.ic_pm_badge_shop_regular);
                 break;
         }
         setShopScoreGoldBadgeState(icon);

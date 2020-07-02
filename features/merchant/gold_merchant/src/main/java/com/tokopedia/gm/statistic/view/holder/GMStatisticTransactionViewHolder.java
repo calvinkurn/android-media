@@ -13,7 +13,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.gm.statistic.view.widget.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.gm.statistic.view.widget.ArrowPercentageView;
@@ -23,6 +22,8 @@ import com.tokopedia.gm.statistic.view.widget.config.EmptyDataTransactionDataSet
 import com.tokopedia.seller.common.utils.KMNumbers;
 
 import java.util.List;
+
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.GM_TITLE;
 
 /**
  * Created on 11/10/16.
@@ -74,7 +75,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
 
         TextView titleUpgradeGM = viewNotGM.findViewById(R.id.market_insight_gmsubscribe_text);
         titleUpgradeGM.setText(view.getContext().getString(R.string.gm_statistic_upgrade_to_gold_merchant,
-                view.getContext().getString(GMConstant.getGMTitleResource(view.getContext()))));
+                GM_TITLE));
     }
 
     public void bindData(GMGraphViewWithPreviousModel totalTransactionModel, boolean isGoldMerchant) {

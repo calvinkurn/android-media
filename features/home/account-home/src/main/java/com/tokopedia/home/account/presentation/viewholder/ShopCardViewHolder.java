@@ -4,7 +4,6 @@ import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.ShopCardView;
@@ -33,7 +32,7 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
         if (element.getShopIsOfficial().equals("1")) {
             shopCardView.setBadgeImage(R.drawable.ic_badge_shop_official);
         } else if (element.getGoldMerchant()) {
-            shopCardView.setBadgeImage(GMConstant.getGMDrawableResource(itemView.getContext()));
+            shopCardView.setBadgeImage(com.tokopedia.gm.common.R.drawable.ic_power_merchant);
         }
         shopCardView.setShopReputation(element.getReputationImageUrl());
 

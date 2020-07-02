@@ -29,7 +29,6 @@ dependencies {
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.libraries.core_legacy)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi

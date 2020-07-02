@@ -1,18 +1,17 @@
-package com.tokopedia.gm.resource
+package com.tokopedia.gm.common.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageView
-import com.tokopedia.gm.resource.GMConstant.getGMDrawable
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.gm.common.R
 
-class GMImageView @JvmOverloads constructor(
+class GMPointerImageView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ImageView(context, attrs, defStyleAttr){
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        setImageDrawable(getGMDrawable(context))
+        setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pointer_power_merchant))
     }
-
-
 }

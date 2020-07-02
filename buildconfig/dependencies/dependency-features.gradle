@@ -73,8 +73,6 @@ ext {
 
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
-            flashsaleManagement             : ":features:discovery:flashsale_management",
-            flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
             homeComponent                   : ":features:discovery:home_component",
             homeRecom                       : ":features:discovery:home_recom",
@@ -116,7 +114,6 @@ ext {
 
             goldMerchant                    : ":features:merchant:gold_merchant",
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
-            goldMerchantResource            : ":features:merchant:gold_merchant_resource",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",

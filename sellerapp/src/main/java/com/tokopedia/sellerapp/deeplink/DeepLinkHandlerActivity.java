@@ -16,8 +16,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
-import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
-import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
@@ -71,7 +69,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        FlashsaleDeeplinkModule.class,
         CreatePostModule.class,
         WebViewApplinkModule.class,
         HomeCreditAppLinkModule.class
@@ -98,7 +95,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
-                new FlashsaleDeeplinkModuleLoader(),
                 new CreatePostModuleLoader(),
                 new WebViewApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()
