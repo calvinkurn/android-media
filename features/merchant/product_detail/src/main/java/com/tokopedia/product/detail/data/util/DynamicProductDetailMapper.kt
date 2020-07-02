@@ -11,6 +11,10 @@ import com.tokopedia.variant_common.model.*
 
 object DynamicProductDetailMapper {
 
+    /**
+     * Map network data into UI data by type, just assign type and name here. The data will be assigned in fragment
+     * except info type
+     */
     fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPdpDataModel> {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
         data.forEachIndexed { index, component ->

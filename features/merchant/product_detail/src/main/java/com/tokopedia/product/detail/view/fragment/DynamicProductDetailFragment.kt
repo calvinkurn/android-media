@@ -1686,7 +1686,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (data.errorCode > 0) {
                 pdpUiUpdater?.updateVariantError()
             } else {
-                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
+                autoSelectVariant()
                 viewModel.processInitialVariant(data, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant)
             }
         }
@@ -1696,9 +1696,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.variantData?.let {
             //Auto select variant will be execute when there is only 1 child left
             val isOnlyHaveOneVariantLeftData = it.autoSelectedOptionIds()
-            if (isOnlyHaveOneVariantLeftData.isNotEmpty() && viewModel.cartTypeData != null) {
+//            if (isOnlyHaveOneVariantLeftData.isNotEmpty() && viewModel.cartTypeData != null) {
+            if (isOnlyHaveOneVariantLeftData.isNotEmpty()) {
                 pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(it, isOnlyHaveOneVariantLeftData)
             } else {
+                // If there's still many variant others, just render variant as is
                 pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(it)
             }
         }
