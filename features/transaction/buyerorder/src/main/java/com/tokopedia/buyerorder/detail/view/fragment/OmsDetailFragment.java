@@ -630,31 +630,35 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             }
         }
     }
+    @Override
+    public void setActionButtonEvent(Items item, ActionButton actionButton,OrderDetails orderDetails){
+        MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
+
+        if (orderDetails.actionButtons() == null || orderDetails.actionButtons().size() == 0) {
+            actionButtonLayout.setVisibility(View.GONE);
+            dividerActionBtn.setVisibility(View.GONE);
+        } else {
+            dividerActionBtn.setVisibility(View.VISIBLE);
+            actionButtonLayout.setVisibility(View.VISIBLE);
+            actionButtonText.setText(actionButton.getLabel());
+            actionButtonLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                        presenter.hitEventEmail(actionButton,orderDetails.getMetadata(), actionButtonText);
+                    } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
+                        RouteManager.route(getContext(), actionButton.getBody().getAppURL());
+                    }
+                }
+            });
+
+        }
+    }
 
     @Override
-    public void setPassengerEvent(Items item, ActionButton actionButton, OrderDetails orderDetails){
+    public void setPassengerEvent(Items item){
         if (item.getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
             MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
-
-            if (orderDetails.actionButtons() == null || orderDetails.actionButtons().size() == 0) {
-                actionButtonLayout.setVisibility(View.GONE);
-                dividerActionBtn.setVisibility(View.GONE);
-            } else {
-                dividerActionBtn.setVisibility(View.VISIBLE);
-                actionButtonLayout.setVisibility(View.VISIBLE);
-                actionButtonText.setText(actionButton.getLabel());
-                actionButtonLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                            presenter.hitEventEmail(actionButton,orderDetails.getMetadata(), actionButtonText, metaDataInfo.getEmail());
-                        } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
-                            RouteManager.route(getContext(), actionButton.getBody().getAppURL());
-                        }
-                    }
-                });
-
-            }
 
             if (metaDataInfo != null && !metaDataInfo.getPassengerForms().isEmpty()) {
                 userInfoLabel.setVisibility(View.VISIBLE);
@@ -664,7 +668,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 for (PassengerForm passengerForm : metaDataInfo.getPassengerForms()) {
                     for (PassengerInformation passengerInformation : passengerForm.getPassengerInformations()) {
                         DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
-                        doubleTextView.setTopText(passengerInformation.getName());
+                        doubleTextView.setTopText(passengerInformation.getTitle());
                         doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.subtitle_gray_color));
                         doubleTextView.setBottomText(passengerInformation.getValue());
                         doubleTextView.setBottomTextColor(ContextCompat.getColor(getContext(), R.color.title_gray_color));
@@ -743,10 +747,15 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
 
         if (!actionButton.getBody().getBody().isEmpty()) {
+            String[] voucherCodes = actionButton.getBody().getBody().split(",");
+            if (voucherCodes.length > 0) {
                 voucherCodeLayout.setVisibility(View.VISIBLE);
-                    BookingCodeView bookingCodeView = new BookingCodeView(getContext(),actionButton.getBody().getBody() , 0, getContext().getResources().getString(R.string.voucher_code_title), actionButton.getBody().getBody().length());
+                for (int i = 0; i < voucherCodes.length; i++) {
+                    BookingCodeView bookingCodeView = new BookingCodeView(getContext(), voucherCodes[i], 0, getContext().getResources().getString(R.string.voucher_code_title), voucherCodes[i].length());
                     bookingCodeView.setBackground(getContext().getResources().getDrawable(R.drawable.bg_search_input_text_area));
                     voucherCodeLayout.addView(bookingCodeView);
+                }
+            }
         }
         closeButton.setOnClickListener(v1 -> dialog.dismiss());
         dialog.show();

@@ -9,5 +9,14 @@ data class SendEventEmail(
     val status : String = "",
     @SerializedName("server_process_time")
     @Expose
-    val server_process_time : String = ""
+    val server_process_time : String = "",
+    @SerializedName("data")
+    @Expose
+    val data : DataEmail = DataEmail()
+)
+
+data class DataEmail(
+        @SerializedName("message")
+        @Expose
+        val message : String = ""
 )

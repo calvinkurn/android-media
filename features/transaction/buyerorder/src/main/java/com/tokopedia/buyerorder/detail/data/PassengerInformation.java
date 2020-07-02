@@ -14,11 +14,19 @@ public class PassengerInformation {
     @Expose
     private String value;
 
+    @SerializedName("title")
+    @Expose
+    private String title;
+
     public String getName() {
         return name;
     }
 
     public String getValue() {
         return value;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

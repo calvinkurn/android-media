@@ -113,7 +113,7 @@ public interface OrderListDetailContract {
 
         void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
-        void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText, String email);
+        void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText);
 
         List<ActionButton> getActionList();
 

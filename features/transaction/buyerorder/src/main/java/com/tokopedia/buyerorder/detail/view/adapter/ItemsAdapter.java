@@ -48,6 +48,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String KEY_BUTTON = "button";
     public static final String KEY_REFRESH = "refresh";
     public static final String KEY_TEXT = "text";
+    public static final String KEY_VOUCHER_CODE = "vouchercodes";
     public static final String KEY_REDIRECT = "redirect";
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
@@ -399,8 +400,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         llValid.setVisibility(View.GONE);
                     }
                     if (orderDetails.actionButtons() != null && orderDetails.actionButtons().size() > 0) {
-                        setEventDetails.setPassengerEvent(item, orderDetails.actionButtons().get(0), orderDetails);
+                        setEventDetails.setActionButtonEvent(item,orderDetails.actionButtons().get(0), orderDetails);
                     }
+                    setEventDetails.setPassengerEvent(item);
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label_events));
                     customTicketView1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -465,34 +467,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
             } else if (itemType == ITEM_EVENTS) {
-                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    tapActionLayoutEvents.setVisibility(View.GONE);
-                    customTicketView.setVisibility(View.GONE);
-                    presenter.setActionButton(details.actionButtons(), ItemsAdapter.this, getIndex(), true);
-                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                    if (!TextUtils.isEmpty(item.getTrackingNumber())) {
-                        String[] voucherCodes = item.getTrackingNumber().split(",");
-                        if (voucherCodes.length > 0) {
-                            if (metaDataInfo.getQuantity() > 0) {
-                                brandName.setText(String.format("%s %s", metaDataInfo.getQuantity(), context.getResources().getString(R.string.event_ticket_booking_multiple)));
-                            } else {
-                                brandName.setText(context.getResources().getString(R.string.event_ticket_booking_count));
-                            }
-                            voucherCodeLayout.setVisibility(View.VISIBLE);
-                            for (int i = 0; i < voucherCodes.length; i++) {
-                                BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
-                                bookingCodeView.setBackground(null);
-                                voucherCodeLayout.addView(bookingCodeView);
-                            }
-                        }
-                    } else {
-                        progressBar.setVisibility(View.GONE);
-                        customTicketView.setVisibility(View.GONE);
-                        tapActionLayoutEvents.setVisibility(View.GONE);
-                    }
-                }
-                if (!item.isTapActionsLoaded()) {
+                if(!item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.GONE);
                     customTicketView.setVisibility(View.VISIBLE);
                     tapActionLayoutEvents.setVisibility(View.VISIBLE);
@@ -500,12 +475,25 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     totalTicketCount = metaDataInfo.getQuantity();
                     int size = item.getActionButtons().size();
                     tapActionLayoutEvents.removeAllViews();
+                    if(size==0) setETiket(totalTicketCount);
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getActionButtons().get(i);
                         TextView tapActionTextView = renderActionButtons(i, actionButton, item);
                         if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
                             RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
                             tapActionLayoutEvents.addView(redeemVoucherView);
+                        } else if(actionButton.getControl().equalsIgnoreCase(KEY_VOUCHER_CODE)){
+                            if (!actionButton.getBody().getBody().isEmpty()) {
+                                String[] voucherCodes = actionButton.getBody().getBody().split(",");
+                                if (voucherCodes.length > 0) {
+                                    voucherCodeLayout.setVisibility(View.VISIBLE);
+                                    for (int j = 0; j < voucherCodes.length; j++) {
+                                        BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
+                                        bookingCodeView.setBackground(null);
+                                        voucherCodeLayout.addView(bookingCodeView);
+                                    }
+                                }
+                            }
                         } else {
                             if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                                 presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
@@ -517,22 +505,32 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         setEventInfo(actionButton, totalTicketCount);
                     }
                 }
-            }
+             }
         }
 
         private void setEventInfo(ActionButton actionButton, int totalTicketCount) {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT) || actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-                if (totalTicketCount > 0) {
-                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_voucher_multiple)));
-                } else {
-                    brandName.setText(context.getResources().getString(R.string.event_ticket_voucher_count));
-                }
+                setETiket(totalTicketCount);
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_POPUP)) {
                 if (totalTicketCount > 0) {
                     brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_qrcode_multiple)));
                 } else {
                     brandName.setText(context.getResources().getString(R.string.event_ticket_qrcode_count));
                 }
+            } else if(actionButton.getControl().equalsIgnoreCase(KEY_VOUCHER_CODE)){
+                if (totalTicketCount > 0) {
+                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_booking_multiple)));
+                } else {
+                    brandName.setText(context.getResources().getString(R.string.event_ticket_booking_count));
+                }
+            }
+        }
+
+        private void setETiket(int totalTicketCount){
+            if (totalTicketCount > 0) {
+                brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_voucher_multiple)));
+            } else {
+                brandName.setText(context.getResources().getString(R.string.event_ticket_voucher_count));
             }
         }
 
@@ -636,7 +634,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         void setInsuranceDetail();
 
-        void setPassengerEvent(Items item, ActionButton actionButton, OrderDetails orderDetails);
+        void setPassengerEvent(Items item);
+
+        void setActionButtonEvent(Items item,ActionButton actionButton, OrderDetails orderDetails);
 
     }
 

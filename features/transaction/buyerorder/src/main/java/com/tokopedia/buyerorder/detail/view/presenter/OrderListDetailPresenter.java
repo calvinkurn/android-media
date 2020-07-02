@@ -31,6 +31,7 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
+import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.buyagain.ResponseBuyAgain;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
@@ -232,7 +233,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText, String email){
+    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText){
         if (actionButton.getName().equalsIgnoreCase("customer_notification")){
             HashMap<String, String> mapBody = new HashMap<String, String>();
             mapBody.put("body", metadata);
@@ -247,18 +248,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 @Override
                 public void onError(Throwable e) {
                     if (getView() != null && getView().getAppContext() != null) {
-                        getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_fail));
-
+                        getView().showSuccessMessageWithAction(e.getMessage());
                     }
                 }
 
                 @Override
                 public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                    if (getView() != null && getView().getAppContext() != null) {
-                        actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_success));
-                        actionButtonText.setClickable(false);
-                        getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_copied)+email);
-                    }
+                        if (getView() != null && getView().getAppContext() != null) {
+                            actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_success));
+                            actionButtonText.setClickable(false);
+                            getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_copied));
+                        }
                 }
             });
         }
