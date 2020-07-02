@@ -35,7 +35,7 @@ private const val UNREGISTER = "UNREGISTER"
 private const val NOTIFY_ME_TEXT = "tertarik"
 private const val DEFAULT_COLOR = "#1e31353b"
 
-class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class ProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val stockWordData: StockWording = StockWording()

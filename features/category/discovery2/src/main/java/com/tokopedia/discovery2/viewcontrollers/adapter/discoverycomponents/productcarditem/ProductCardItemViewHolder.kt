@@ -73,10 +73,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private fun initView() {
         productCardItemViewModel.setContext(productCardView.context)
         productCardView.setOnClickListener {
-            handleUIClick(it, adapterPosition)
+            handleUIClick(it)
         }
         notifyMeView.setOnClickListener {
-            handleUIClick(it, adapterPosition)
+            handleUIClick(it)
         }
     }
 
@@ -103,6 +103,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer { message ->
                 showNotifyResultToast(message)
             })
+
         }
     }
 
@@ -331,12 +332,12 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun handleUIClick(view: View, adapterPosition: Int) {
+    private fun handleUIClick(view: View) {
         when (view) {
             productCardView -> {
                 productCardItemViewModel.sendTopAdsClick()
                 productCardItemViewModel.handleNavigation()
-                sendClickEvent(adapterPosition)
+                sendClickEvent()
             }
             notifyMeView -> productCardItemViewModel.subscribeUser()
         }
@@ -350,17 +351,13 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun sendClickEvent(adapterPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackProductCardClick(dataItem, productCardItemViewModel.isUserLoggedIn(), adapterPosition)
+    private fun sendClickEvent() {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackProductCardClick(productCardItemViewModel.components, productCardItemViewModel.isUserLoggedIn())
     }
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
         productCardItemViewModel.sendTopAdsView()
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().viewProductsList(productCardItemViewModel.components, productCardItemViewModel.isUserLoggedIn())
     }
 }
-
-
-
-
-

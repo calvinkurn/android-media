@@ -43,7 +43,10 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             intent.putExtra(END_POINT, endpoint)
             return intent
         }
+    }
 
+    override fun sendScreenAnalytics() {
+        //Empty to remove double open screen events
     }
 
     override fun initView() {

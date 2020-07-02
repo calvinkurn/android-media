@@ -40,7 +40,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         lifecycleOwner?.let {
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
                 mDiscoveryRecycleAdapter.setDataList(item)
-                sendProductCardImpressionEvent(item)
             })
             mProductCarouselComponentViewModel.syncData.observe(it, Observer { sync ->
                 if (sync) {
@@ -48,10 +47,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 }
             })
         }
-    }
-
-    private fun sendProductCardImpressionEvent(item: ArrayList<ComponentsItem>?) {
-        item?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventImpressionProductCard(it, mProductCarouselComponentViewModel.isUserLoggedIn()) }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
