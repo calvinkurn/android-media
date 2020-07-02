@@ -36,15 +36,13 @@ class SubmitImageUseCase @Inject constructor(
                 UpdateInactivePhoneConstants.QueryConstants.PHONE to requestParams.getString(UpdateInactivePhoneConstants.QueryConstants.PHONE, ""),
                 UpdateInactivePhoneConstants.QueryConstants.EMAIL to requestParams.getString(UpdateInactivePhoneConstants.QueryConstants.EMAIL, ""),
                 UpdateInactivePhoneConstants.QueryConstants.USER_ID to requestParams.getInt(UpdateInactivePhoneConstants.QueryConstants.USER_ID, 0),
-                UpdateInactivePhoneConstants.QueryConstants.FILE_UPLOADED to requestParams.getObject(PARAM_FILE_UPLOADED)
+                UpdateInactivePhoneConstants.QueryConstants.FILE_UPLOADED to "",
+                UpdateInactivePhoneConstants.QueryConstants.ID_CARD_IMAGE to requestParams.getString(UpdateInactivePhoneConstants.QueryConstants.ID_CARD_IMAGE, ""),
+                UpdateInactivePhoneConstants.QueryConstants.SAVING_BOOK_IMAGE to requestParams.getString(UpdateInactivePhoneConstants.QueryConstants.SAVING_BOOK_IMAGE, "")
         )
     }
 
     fun cancelJobs(){
         gqlUseCase.cancelJobs()
-    }
-
-    companion object {
-        const val PARAM_FILE_UPLOADED = "file_uploaded"
     }
 }

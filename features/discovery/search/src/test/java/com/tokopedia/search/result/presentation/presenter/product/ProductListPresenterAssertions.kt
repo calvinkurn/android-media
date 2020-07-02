@@ -2,10 +2,12 @@
 
 package com.tokopedia.search.result.presentation.presenter.product
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
 import com.tokopedia.search.shouldBe
+import io.mockk.CapturingSlot
 import io.mockk.MockKVerificationScope
 
 fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSectionContract.View) {
@@ -15,7 +17,11 @@ fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSection
     productListView.showRefreshLayout()
 }
 
-fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSectionContract.View) {
+fun MockKVerificationScope.verifyProcessingData(
+        productListView: ProductListSectionContract.View,
+        searchProductModel: SearchProductModel,
+        visitableListSlot: CapturingSlot<List<Visitable<*>>>
+) {
     productListView.stopNetworkRequestPerformanceMonitoring()
     productListView.startRenderPerformanceMonitoring()
 
@@ -25,11 +31,12 @@ fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSect
     productListView.lastProductItemPositionFromCache
     productListView.saveLastProductItemPositionToCache(any())
 
-    productListView.setAutocompleteApplink(searchProductModelCommon.searchProduct.autocompleteApplink)
-    productListView.setDefaultLayoutType(searchProductModelCommon.searchProduct.defaultView)
+    productListView.setAutocompleteApplink(searchProductModel.searchProduct.data.autocompleteApplink)
+    productListView.setDefaultLayoutType(searchProductModel.searchProduct.header.defaultView)
     productListView.removeLoading()
-    productListView.setProductList(any())
-    productListView.showFreeOngkirShowCase(false)
+    productListView.setProductList(capture(visitableListSlot))
+    productListView.backToTop()
+    productListView.showFreeOngkirShowCase(true)
     productListView.initQuickFilter(any())
     productListView.addLoading()
     productListView.setTotalSearchResultCount(any())
@@ -54,17 +61,18 @@ fun MockKVerificationScope.verifyShowLoadMoreError(productListView: ProductListS
 }
 
 fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View) {
+    productListView.queryKey
     productListView.sendTrackingEventAppsFlyerViewListingSearch(any(), any(), any())
     productListView.sendTrackingEventMoEngageSearchAttempt(any(), any(), any())
     productListView.previousKeyword
     productListView.sendTrackingGTMEventSearchAttempt(any())
 }
 
-fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductListSectionContract.View) {
+fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductListSectionContract.View, visitableListSlot: CapturingSlot<List<Visitable<*>>>) {
     productListView.lastProductItemPositionFromCache
-    productListView.saveLastProductItemPositionToCache(8)
+    productListView.saveLastProductItemPositionToCache(16)
     productListView.removeLoading()
-    productListView.addProductList(any())
+    productListView.addProductList(capture(visitableListSlot))
     productListView.addLoading()
     productListView.updateScrollListener()
 

@@ -75,6 +75,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     private var parentName: String? = null
 
     private var categoryUrl: String? = null
+    private var addCatalog: Boolean = true
 
     private lateinit var categoryNavComponent: com.tokopedia.categorylevels.di.CategoryNavComponent
 
@@ -104,15 +105,19 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     override fun sendScreenAnalytics() {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, getDimensionMap())
+        //Empty to remove double open screen events
+    }
+
+    private fun sendOpenScreenAnalytics(data: Data) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, getDimensionMap(data))
     }
 
     override fun getScreenName(): String {
         return SCREEN_NAME
     }
 
-    private fun getDimensionMap(): Map<String, String>? {
-        return catAnalyticsInstance.createOpenScreenEventMap(parentId, parentName, departmentId, departmentName)
+    private fun getDimensionMap(data: Data): Map<String, String>? {
+        return catAnalyticsInstance.createOpenScreenEventMap(rootId = data.rootId, parent = data.parent, id =  data.id.toString(), url = data.url)
     }
 
     private fun initializeSearchParameter(intent: Intent) {
@@ -233,6 +238,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 is Success -> {
                     updateToolBarHeading(it.data.name ?: "")
                     this.departmentId = it.data.id.toString()
+                    sendOpenScreenAnalytics(it.data)
                     handleCategoryDetailSuccess()
                 }
                 is Fail -> {
@@ -240,6 +246,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 }
             }
         })
+
+        categoryNavViewModel.getHasCatalogLiveData().observe(this, Observer {
+            if (!it) {
+                removeCatalogTab()
+            }
+            container.show()
+        })
+    }
+
+    private fun removeCatalogTab() {
+        tabs.hide()
+        addCatalog = false
     }
 
     private fun handleCategoryDetailSuccess() {
@@ -357,7 +375,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>) {
         searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName, categoryUrl)))
-        searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
+        if(addCatalog)
+            searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
     }
 
     private fun setActiveTab() {

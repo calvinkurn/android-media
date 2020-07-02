@@ -786,8 +786,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void checkAppliedCourierPromo(int position, CourierItemData oldCourierItemData,
                                           CourierItemData newCourierItemData, ShipmentCartItemModel shipmentCartItemModel) {
         // Do this section if toggle year end promo is on
-        boolean isToogleYearEndPromoOn = shipmentAdapterActionListener.isToogleYearEndPromoOn();
-        if (isToogleYearEndPromoOn && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+        if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             // Check if promo applied on current selected courier
             if (shipmentCartItemModel.getSelectedShipmentDetailData().isCourierPromoApplied() &&
                     TextUtils.isEmpty(newCourierItemData.getPromoCode())) {
