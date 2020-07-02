@@ -56,7 +56,7 @@ class TableMapper @Inject constructor() {
                 }
             }
 
-            if (i % 5 == 0 && rowCount >= MAX_ROWS_PER_PAGE) {
+            if (i % MAX_ROWS_PER_PAGE == 0 && rowCount >= MAX_ROWS_PER_PAGE) {
                 val tablePage = TablePageUiModel(headers, rows)
                 tablePages.add(tablePage)
                 rows = mutableListOf()
