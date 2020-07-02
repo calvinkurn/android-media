@@ -76,14 +76,10 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
             tableAdapter.items.add(TableItemDivider)
             val headerCount = item.headers.size
             val rowCount = item.rows.size
-            var counter = 0
             item.rows.forEachIndexed { i, row ->
                 tableAdapter.items.add(row)
-                if (counter == headerCount.minus(1) && i != rowCount.minus(1)) {
+                if (i.plus(1) % headerCount == 0 && i != rowCount.minus(1)) {
                     tableAdapter.items.add(TableItemDivider)
-                    counter = 0
-                } else {
-                    counter++
                 }
             }
             tableAdapter.notifyDataSetChanged()
