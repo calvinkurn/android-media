@@ -682,7 +682,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun enableDescriptionEdit() {
         context?.let {
             addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
-            addEditProductDescriptionButton?.text = getString(R.string.label_change)
+            addEditProductDescriptionButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addEditProductDescriptionButton?.show()
         }
     }
@@ -694,7 +694,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun enableShipmentEdit() {
         context?.let {
             addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
-            addEditProductShipmentButton?.text = getString(R.string.label_change)
+            addEditProductShipmentButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addEditProductShipmentButton?.show()
         }
     }
@@ -848,7 +848,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             addEditProductVariantButton?.text = getString(com.tokopedia.abstraction.R.string.label_add)
             addProductVariantTipsLayout?.show()
         } else {
-            addEditProductVariantButton?.text = getString(R.string.label_change)
+            addEditProductVariantButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addProductVariantTipsLayout?.hide()
         }
     }
