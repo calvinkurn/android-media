@@ -376,9 +376,15 @@ public class RouteManager {
         if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
             Intent intent = buildInternalImplicitIntent(context, mappedDeeplink);
-            ApplinkLogger.getInstance(context).appendTrace("Returning network intent:\n" + (intent != null ? intent.toString() : ""));
+            Intent webIntent;
+            if (intent.resolveActivity(context.getPackageManager()) == null) {
+                webIntent = null;
+            } else {
+                webIntent = intent;
+            }
+            ApplinkLogger.getInstance(context).appendTrace("Returning network intent:\n" + (webIntent != null ? webIntent.toString() : ""));
             ApplinkLogger.getInstance(context).save();
-            return intent;
+            return webIntent;
         }
         Intent intent = buildInternalExplicitIntent(context, mappedDeeplink);
         ApplinkLogger.getInstance(context).appendTrace("Returning intent:\n" + (intent != null ? intent.toString() : ""));
