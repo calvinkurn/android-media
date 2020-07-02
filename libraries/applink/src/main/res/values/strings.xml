@@ -54,4 +54,7 @@
     <!-- Voucher Creation -->
     <string name="title_voucher_creation">Voucher Creation</string>
 
+    <!--Product Add Edit-->
+    <string name="title_product_add_edit">Product Add Edit</string>
+
 </resources>
