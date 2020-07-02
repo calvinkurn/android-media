@@ -24,10 +24,8 @@ import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.channelNotFound
-import com.tokopedia.play.broadcaster.util.getDialog
+import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
-import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
@@ -62,6 +60,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
+    private var systemUiVisibility: Int
+        get() = window.decorView.systemUiVisibility
+        set(value) {
+            window.decorView.systemUiVisibility = value
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
@@ -71,10 +75,19 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         setContentView(R.layout.activity_play_broadcast)
         setupContent()
         initView()
+        setupView()
+        setupInsets()
+
         getConfiguration()
 
         observeConfiguration()
         observePermissionStateEvent()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        containerSetup.requestApplyInsetsWhenAttached()
+        viewActionBar.rootView.requestApplyInsetsWhenAttached()
     }
 
     private fun inject() {
@@ -122,6 +135,22 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 onBackPressed()
             }
         })
+    }
+
+    private fun setupView() {
+        systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    }
+
+    private fun setupInsets() {
+        containerSetup.doOnApplyWindowInsets { v, insets, padding, _ ->
+            v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
+        }
+
+        viewActionBar.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
+            v.updatePadding(top = insets.systemWindowInsetTop)
+        }
     }
 
     private fun getConfiguration() {
@@ -234,11 +263,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private fun handleChannelConfiguration(config: ConfigurationUiModel) =
             if (config.streamAllowed) {
                 if (config.channelType != ChannelType.Active) checkPermission()
-                when(config.channelType) {
-                    ChannelType.Active -> showDialogWhenActiveOnOtherDevices()
-                    ChannelType.Pause -> openBroadcastActivePage()
-                    ChannelType.Draft, ChannelType.Unknown -> openBroadcastSetupPage()
-                }
+                openBroadcastSetupPage()
+//                when(config.channelType) {
+//                    ChannelType.Active -> showDialogWhenActiveOnOtherDevices()
+//                    ChannelType.Pause -> openBroadcastActivePage()
+//                    ChannelType.Draft, ChannelType.Unknown -> openBroadcastSetupPage()
+//                }
             } else {
                 globalErrorView.channelNotFound { this.finish() }
                 globalErrorView.show()

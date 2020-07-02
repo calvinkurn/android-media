@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.PlayBroadcast" parent="@style/Theme.AppCompat.Light.NoActionBar" />
-
-    <style name="Theme.PlayBroadcast.FullScreen">
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
     <style name="DialogAnimationEnterRight">
         <item name="android:windowEnterAnimation">@anim/play_right_to_left_enter</item>
     </style>
