@@ -9,6 +9,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -19,6 +20,7 @@ import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.setTextFieldColor
 import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -28,7 +30,9 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by furqan on 12/06/2020
@@ -38,11 +42,22 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var dispatcher: CoroutineDispatcherProvider
+
+    private val job = SupervisorJob()
+
+    private val scope = object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = dispatcher.main + job
+    }
+
     private var mListener: SetupResultListener? = null
 
     private val title: String
         get() = etCoverTitle.text.toString()
 
+    private lateinit var containerEdit: CoordinatorLayout
     private lateinit var etCoverTitle: EditText
     private lateinit var tvTitleCounter: TextView
     private lateinit var btnSave: UnifyButton
@@ -75,6 +90,11 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
         observeSelectedCover()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
+    }
+
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
     }
@@ -101,6 +121,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
     private fun initView(view: View) {
         with (view) {
+            containerEdit = findViewById(R.id.container_edit)
             etCoverTitle = findViewById(R.id.et_cover_title)
             tvTitleCounter = findViewById(R.id.tv_title_counter)
             btnSave = findViewById(R.id.btn_save)
@@ -159,26 +180,36 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
                 title.length <= PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE
     }
 
+    private fun onUpdateSuccess() {
+        scope.launch {
+            val error = mListener?.onSetupCompletedWithData(this@EditCoverTitleBottomSheet, dataStoreViewModel.getDataStore())
+
+            if (error != null) {
+                yield()
+                onUpdateFail(error)
+            } else {
+                dismiss()
+            }
+        }
+    }
+
+    private fun onUpdateFail(error: Throwable) {
+        etCoverTitle.isEnabled = true
+        btnSave.isLoading = false
+        containerEdit.showToaster(
+                message = error.localizedMessage,
+                type = Toaster.TYPE_ERROR
+        )
+    }
+
     /**
      * Observe
      */
     private fun observeUpdateTitle() {
         viewModel.observableUpdateTitle.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is NetworkResult.Success -> {
-                    etCoverTitle.isEnabled = true
-                    btnSave.isLoading = false
-                    mListener?.onSetupCompletedWithData(dataStoreViewModel.getDataStore())
-                    dismiss()
-                }
-                is NetworkResult.Fail -> {
-                    etCoverTitle.isEnabled = true
-                    btnSave.isLoading = false
-                    requireView().showToaster(
-                            message = it.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR
-                    )
-                }
+                is NetworkResult.Success -> onUpdateSuccess()
+                is NetworkResult.Fail -> onUpdateFail(it.error)
                 NetworkResult.Loading -> {
                     etCoverTitle.isEnabled = false
                     btnSave.isLoading = true

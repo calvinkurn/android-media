@@ -23,6 +23,7 @@ import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -31,8 +32,12 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 26/05/20
@@ -49,6 +54,15 @@ class PlayBroadcastSetupBottomSheet(
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var dispatcher: CoroutineDispatcherProvider
+
+    private val job = SupervisorJob()
+    private val scope = object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = dispatcher.main + job
+    }
 
     private lateinit var broadcastViewModel: PlayBroadcastViewModel
 
@@ -105,6 +119,11 @@ class PlayBroadcastSetupBottomSheet(
         setupView(view)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
+    }
+
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
         addBreadcrumb()
         openFragment(fragmentClass, extras, sharedElements, onFragment)
@@ -127,7 +146,7 @@ class PlayBroadcastSetupBottomSheet(
         )
     }
 
-    override fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore) {
+    override suspend fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore): Throwable? {
         navigateToFragment(
                 fragmentClass = PlayCoverSetupFragment::class.java,
                 sharedElements = sharedElements,
@@ -135,10 +154,17 @@ class PlayBroadcastSetupBottomSheet(
                     it.setListener(this)
                 }
         )
+
+        return null
     }
 
-    override fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore) {
-        complete(dataStore)
+    override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
+        val error = mListener?.onSetupCompletedWithData(this@PlayBroadcastSetupBottomSheet, dataStore)
+        return if (error == null) {
+            dismiss()
+            null
+        }
+        else error
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -224,11 +250,6 @@ class PlayBroadcastSetupBottomSheet(
                     BreadcrumbsModel(fragment.javaClass, fragment.arguments ?: Bundle.EMPTY)
             )
         }
-    }
-
-    private fun complete(dataStore: PlayBroadcastSetupDataStore) {
-        mListener?.onSetupCompletedWithData(dataStore)
-        dismiss()
     }
 
     companion object {

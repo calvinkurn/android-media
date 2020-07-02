@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.compatTransitionName
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayEtalaseSetupCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
@@ -33,14 +34,19 @@ import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialVie
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
  * Created by jegul on 26/05/20
  */
 class PlayEtalasePickerFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val dispatcher: CoroutineDispatcherProvider
 ) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator {
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatcher.main + job)
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
     private lateinit var dataStoreViewModel: DataStoreViewModel
@@ -90,6 +96,11 @@ class PlayEtalasePickerFragment @Inject constructor(
 
         observeSelectedProducts()
         observeUploadProduct()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
     override fun onInterceptBackPressed(): Boolean {
@@ -259,12 +270,25 @@ class PlayEtalasePickerFragment @Inject constructor(
         (currentFragment as? PlayBaseEtalaseSetupFragment)?.refresh()
     }
 
-    private fun finishSetupProduct(nextBtnView: View) {
-        mListener?.onProductSetupFinished(listOf(nextBtnView), dataStoreViewModel.getDataStore())
-    }
-
     private fun uploadProduct() {
         viewModel.uploadProduct(bottomSheetCoordinator.channelId)
+    }
+
+    private fun onUploadSuccess() {
+        scope.launch {
+            val error = mListener?.onProductSetupFinished(listOf(bottomActionView.getButtonView()), dataStoreViewModel.getDataStore())
+            if (error != null) {
+                yield()
+                onUploadFailed(error)
+            }
+        }
+    }
+
+    private fun onUploadFailed(e: Throwable?) {
+        bottomActionView.setLoading(false)
+        e?.localizedMessage?.let {
+            errMessage -> requireView().showToaster(errMessage, type = Toaster.TYPE_ERROR)
+        }
     }
 
     /**
@@ -283,18 +307,10 @@ class PlayEtalasePickerFragment @Inject constructor(
                 NetworkResult.Loading -> {
                     bottomActionView.setLoading(true)
                 }
-                is NetworkResult.Fail -> {
-                    bottomActionView.setLoading(false)
-                    it.error.localizedMessage?.let {
-                        errMessage -> requireView().showToaster(errMessage, type = Toaster.TYPE_ERROR)
-                    }
-                }
+                is NetworkResult.Fail -> onUploadFailed(it.error)
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
-                    if (data != null) {
-                        bottomActionView.setLoading(false)
-                        finishSetupProduct(bottomActionView.getButtonView())
-                    }
+                    if (data != null) onUploadSuccess()
                 }
             }
         })

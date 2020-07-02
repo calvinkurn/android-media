@@ -109,9 +109,13 @@ class CoverCropEditBottomSheet @Inject constructor(
         val fragmentFactory = childFragmentManager.fragmentFactory
         val fragmentInstance = fragmentFactory.instantiate(requireContext().classLoader, PlayCoverSetupFragment::class.java.name) as PlayCoverSetupFragment
         fragmentInstance.setListener(object : PlayCoverSetupFragment.Listener {
-            override fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore) {
-                mListener?.onSetupCompletedWithData(dataStore)
-                dismiss()
+            override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
+                val error = mListener?.onSetupCompletedWithData(this@CoverCropEditBottomSheet, dataStore)
+                return if (error == null) {
+                    dismiss()
+                    null
+                }
+                else error
             }
 
             override fun onCancelCropping(coverSource: CoverSource): Boolean {

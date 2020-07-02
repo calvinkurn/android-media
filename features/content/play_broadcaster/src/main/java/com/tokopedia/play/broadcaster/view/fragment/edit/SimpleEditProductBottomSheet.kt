@@ -23,21 +23,28 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoratio
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
  * Created by jegul on 23/06/20
  */
 class SimpleEditProductBottomSheet @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val dispatcher: CoroutineDispatcherProvider
 ) : BottomSheetDialogFragment() {
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatcher.main + job)
 
     private lateinit var btnAction: UnifyButton
     private lateinit var vDragArea: View
@@ -87,6 +94,11 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
         observeSelectedProducts()
         observeUploadProduct()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -152,6 +164,25 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     private fun maxHeight(): Int = getScreenHeight()
 
+    private fun onUploadSuccess() {
+        scope.launch {
+            val error = mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore())
+            if (error != null) {
+                yield()
+                onUploadFailed(error)
+            }
+            else dismiss()
+        }
+    }
+
+    private fun onUploadFailed(e: Throwable) {
+        btnAction.isLoading = false
+        requireView().showToaster(
+                message = e.localizedMessage,
+                type = Toaster.TYPE_ERROR
+        )
+    }
+
     /**
      * Observe
      */
@@ -166,16 +197,10 @@ class SimpleEditProductBottomSheet @Inject constructor(
         viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
                 NetworkResult.Loading -> btnAction.isLoading = true
-                is NetworkResult.Fail -> {
-                    btnAction.isLoading = false
-                    Toaster.make(requireView(), it.error.localizedMessage)
-                }
+                is NetworkResult.Fail -> onUploadFailed(it.error)
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
-                    if (data != null) {
-                        btnAction.isLoading = false
-                        mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore())
-                    }
+                    if (data != null) onUploadSuccess()
                 }
             }
         })
@@ -190,6 +215,6 @@ class SimpleEditProductBottomSheet @Inject constructor(
     interface Listener {
 
         fun onChooseOver()
-        fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore)
+        suspend fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore): Throwable?
     }
 }

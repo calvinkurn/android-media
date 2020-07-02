@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -62,8 +63,9 @@ class PlayBeforeLiveFragment @Inject constructor(
         override fun onSetupCanceled() {
         }
 
-        override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
+        override suspend fun onSetupCompletedWithData(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable? {
             prepareViewModel.setDataFromSetupDataStore(dataStore)
+            return parentViewModel.getChannelDetail()
         }
     }
 
@@ -231,7 +233,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                     primaryCta = getString(R.string.play_prepare_broadcast_dialog_end_primary),
                     primaryListener = { dialog -> dialog.dismiss() },
                     secondaryCta = getString(R.string.play_broadcast_exit),
-                    secondaryListener = { dialog -> activity?.finish() }
+                    secondaryListener = { _ -> activity?.finish() }
             )
         }
         return exitDialog
@@ -243,14 +245,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun getEditTitleBottomSheet(): EditCoverTitleBottomSheet {
         val editTitleBottomSheet = EditCoverTitleBottomSheet()
-        editTitleBottomSheet.setListener(object : SetupResultListener {
-            override fun onSetupCanceled() {
-            }
-
-            override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
-                prepareViewModel.setDataFromSetupDataStore(dataStore)
-            }
-        })
+        editTitleBottomSheet.setListener(setupResultListener)
         editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         return editTitleBottomSheet
     }

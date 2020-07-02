@@ -125,8 +125,12 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
         )
     }
 
-    override fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore) {
-        finishSetup(dataStore)
+    override suspend fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore): Throwable? {
+        val error = mListener?.onSetupCompletedWithData(this, dataStore)
+        return if (error == null) {
+            dismiss()
+            null
+        } else error
     }
 
     fun setListener(listener: SetupResultListener) {
@@ -166,11 +170,6 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
                     it.setListener(this)
                 }
         )
-    }
-
-    private fun finishSetup(dataStore: PlayBroadcastSetupDataStore) {
-        mListener?.onSetupCompletedWithData(dataStore)
-        dismiss()
     }
 
     private fun<T: Fragment> openFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit): Fragment {
