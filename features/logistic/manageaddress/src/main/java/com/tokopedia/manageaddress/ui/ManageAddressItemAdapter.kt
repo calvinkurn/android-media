@@ -48,7 +48,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
             with(itemView) {
                 val addressStreet = data.addressStreet
                 val postalCode = data.postalCode
-                val tokopediaNote = "[" + addressStreet.substringAfterLast("[")
+                val tokopediaNote = "[Tokopedia Note:" + addressStreet.substringAfterLast("[Tokopedia Note:")
                 setVisibility(data)
                 setPrimary(data)
                 address_name.text = data.addressName
