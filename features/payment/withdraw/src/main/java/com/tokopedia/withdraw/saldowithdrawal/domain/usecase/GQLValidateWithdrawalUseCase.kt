@@ -1,35 +1,24 @@
 package com.tokopedia.withdraw.saldowithdrawal.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_VALIDATE_POP_UP_WITHDRAWAL
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.GqlGetValidatePopUpResponse
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.ValidatePopUpWithdrawal
 import javax.inject.Inject
 import javax.inject.Named
 
 class GQLValidateWithdrawalUseCase @Inject constructor(
-        @Named(WithdrawalDomainConstant.GQL_QUERY_VALIDATE_POP_UP_WITHDRAWAL) val query: String,
+        @Named(GQL_QUERY_VALIDATE_POP_UP_WITHDRAWAL) val query: String,
         graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<GqlGetValidatePopUpResponse>(graphqlRepository) {
+    : SaldoGQLUseCase<GqlGetValidatePopUpResponse>(graphqlRepository) {
 
-    fun getValidatePopUpData(bankAccount: BankAccount,
-                             onSuccess: (ValidatePopUpWithdrawal) -> Unit,
-                             onError: (Throwable) -> Unit) {
-        try {
-            this.setTypeClass(GqlGetValidatePopUpResponse::class.java)
-            this.setGraphqlQuery(query)
-            this.setRequestParams(getRequestParams(bankAccount))
-            this.execute(
-                    {
-                        onSuccess(it.validatePopUpWithdrawal)
-                    }, { error ->
-                onError(error)
-            })
-        } catch (throwable: Throwable) {
-            onError(throwable)
-        }
+
+    suspend fun getValidatePopUpData(bankAccount: BankAccount): Result<GqlGetValidatePopUpResponse> {
+        this.setTypeClass(GqlGetValidatePopUpResponse::class.java)
+        this.setGraphqlQuery(query)
+        this.setRequestParams(getRequestParams(bankAccount))
+        return executeUseCase()
     }
 
     private fun getRequestParams(bankAccount: BankAccount): Map<String, Any> {

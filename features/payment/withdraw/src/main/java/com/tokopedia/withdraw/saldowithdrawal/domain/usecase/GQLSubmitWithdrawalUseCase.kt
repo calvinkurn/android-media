@@ -1,10 +1,9 @@
 package com.tokopedia.withdraw.saldowithdrawal.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.GQLSubmitWithdrawalResponse
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.SubmitWithdrawalResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.WithdrawalRequest
 import javax.inject.Inject
 import javax.inject.Named
@@ -12,26 +11,14 @@ import javax.inject.Named
 class GQLSubmitWithdrawalUseCase @Inject constructor(
         @Named(WithdrawalDomainConstant.GQL_QUERY_SUBMIT_WITHDRAWAL) val query: String,
         graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<GQLSubmitWithdrawalResponse>(graphqlRepository) {
+    : SaldoGQLUseCase<GQLSubmitWithdrawalResponse>(graphqlRepository) {
 
-    fun submitWithdrawal(withdrawalRequest: WithdrawalRequest,
-                         validateToken: String,
-                         onRequestSubmitted: (response: SubmitWithdrawalResponse) -> Unit,
-                         onRequestSubmitError: (Throwable) -> Unit) {
-        try {
-            this.setTypeClass(GQLSubmitWithdrawalResponse::class.java)
-            this.setGraphqlQuery(query)
-            this.setRequestParams(getRequestParams(withdrawalRequest, validateToken))
-            this.execute(
-                    {
-                        onRequestSubmitted(it.submitWithdrawalResponse)
-                    }, { error ->
-                onRequestSubmitError(error)
-            }
-            )
-        } catch (throwable: Throwable) {
-            onRequestSubmitError(throwable)
-        }
+    suspend fun submitWithdrawal(withdrawalRequest: WithdrawalRequest,
+                                 validateToken: String): Result<GQLSubmitWithdrawalResponse> {
+        this.setTypeClass(GQLSubmitWithdrawalResponse::class.java)
+        this.setGraphqlQuery(query)
+        this.setRequestParams(getRequestParams(withdrawalRequest, validateToken))
+        return executeUseCase()
     }
 
     private fun getRequestParams(withdrawalRequest: WithdrawalRequest,

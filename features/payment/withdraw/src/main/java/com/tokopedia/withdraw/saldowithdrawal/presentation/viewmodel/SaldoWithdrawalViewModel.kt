@@ -8,19 +8,41 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BannerData
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.ValidatePopUpWithdrawal
+import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GQLValidateWithdrawalUseCase
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetBankListUseCase
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetWDBannerUseCase
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.util.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class SaldoWithdrawalViewModel @Inject constructor(
         private val bankListUseCase: GetBankListUseCase,
         private val bannerDataUseCase: GetWDBannerUseCase,
+        private val validatePopUpUseCase: GQLValidateWithdrawalUseCase,
         dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val bannerListLiveData = MutableLiveData<Result<ArrayList<BannerData>>>()
 
     val bankListResponseMutableData = MutableLiveData<Result<ArrayList<BankAccount>>>()
+
+    val validatePopUpWithdrawalMutableData = SingleLiveEvent<Result<ValidatePopUpWithdrawal>>()
+
+    fun getValidatePopUpData(bankAccount: BankAccount) {
+        launchCatchError(block = {
+            when (val result = validatePopUpUseCase.getValidatePopUpData(bankAccount)) {
+                is Success -> {
+                    validatePopUpWithdrawalMutableData
+                            .postValue(Success(result.data.validatePopUpWithdrawal))
+                }
+                is Fail -> {
+                    validatePopUpWithdrawalMutableData.postValue(result)
+                }
+            }
+        }, onError = {
+            validatePopUpWithdrawalMutableData.postValue(Fail(it))
+        })
+    }
 
     fun getRekeningBannerDataList() {
         launchCatchError(block = {

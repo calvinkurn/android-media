@@ -12,8 +12,6 @@ open class SaldoGQLUseCase<T : Any> @Inject constructor(
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<T>(graphqlRepository) {
 
-    //mT + Job--->IO
-    //cancel -- JOB
     private var job: Job = Job()
     private val defaultDispatchers: CoroutineDispatcher = Dispatchers.Default
 

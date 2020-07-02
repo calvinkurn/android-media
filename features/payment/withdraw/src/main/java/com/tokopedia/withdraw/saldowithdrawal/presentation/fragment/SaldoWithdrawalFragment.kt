@@ -42,7 +42,6 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJo
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SubmitWithdrawalViewModel
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.ValidatePopUpViewModel
 import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_fragment_saldo_withdrawal.*
 import javax.inject.Inject
@@ -73,7 +72,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     private lateinit var checkEligible: CheckEligible
     private lateinit var saldoWithdrawalPagerAdapter: SaldoWithdrawalPagerAdapter
 
-    private lateinit var validatePopUpViewModel: ValidatePopUpViewModel
     private lateinit var submitWithdrawalViewModel: SubmitWithdrawalViewModel
 
     private val saldoWithdrawalViewModel: SaldoWithdrawalViewModel by lazy(LazyThreadSafetyMode.NONE) {
@@ -109,7 +107,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     }
 
     private fun initViewModels() {
-        validatePopUpViewModel = viewModelProvider.get(ValidatePopUpViewModel::class.java)
         submitWithdrawalViewModel = viewModelProvider.get(SubmitWithdrawalViewModel::class.java)
     }
 
@@ -164,7 +161,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             }
         })
 
-        validatePopUpViewModel.validatePopUpWithdrawalMutableData.observe(viewLifecycleOwner, Observer {
+        saldoWithdrawalViewModel.validatePopUpWithdrawalMutableData.observe(viewLifecycleOwner, Observer {
             loadingLayout.hide()
             when (it) {
                 is Success -> {
@@ -208,9 +205,9 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
     private fun onCarouselItemClick(bannerData: BannerData) {
 
         WithdrawConstant.openSessionBaseURL(context, bannerData.cta)
-        if(bannerData.status == BANNER_WITH_CONTENT){
+        if (bannerData.status == BANNER_WITH_CONTENT) {
             analytics.get().onRekeningBannerClick()
-        }else{
+        } else {
             analytics.get().onBannerItemClick()
         }
     }
@@ -385,7 +382,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = false, programName = getProgramName(), isJoinRekeningPremium = false)
-        validatePopUpViewModel.checkForValidatePopup(selectedBankAccount)
+        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount)
     }
 
     fun initiateSellerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
@@ -394,7 +391,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = true, programName = getProgramName(), isJoinRekeningPremium = false)
-        validatePopUpViewModel.checkForValidatePopup(selectedBankAccount)
+        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount)
     }
 
     private fun checkAndCreateValidatePopup(validatePopUpWithdrawal: ValidatePopUpWithdrawal) {

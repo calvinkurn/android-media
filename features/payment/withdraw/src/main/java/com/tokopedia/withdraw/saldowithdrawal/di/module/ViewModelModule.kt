@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.*
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.JoinRekeningTermsConditionViewModel
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SubmitWithdrawalViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,11 +28,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RekeningPremiumViewModel::class)
     internal abstract fun rekeningPremiumViewModel(viewModel: RekeningPremiumViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(ValidatePopUpViewModel::class)
-    internal abstract fun validatePopUpViewModel(viewModel: ValidatePopUpViewModel): ViewModel
 
     @Binds
     @IntoMap
