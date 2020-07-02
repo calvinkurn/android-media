@@ -204,7 +204,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun startStreaming() {
-        prepareViewModel.createLiveStream()
+        prepareViewModel.createLiveStream(parentViewModel.channelId)
     }
 
     private fun getExitDialog(): DialogUnify {

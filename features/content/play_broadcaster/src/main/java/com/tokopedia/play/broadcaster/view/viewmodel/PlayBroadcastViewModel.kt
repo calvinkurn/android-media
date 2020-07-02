@@ -198,7 +198,7 @@ class PlayBroadcastViewModel @Inject constructor(
 //            _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
             _observableShareInfo.value = PlayBroadcastMocker.getMockShare()
 
-            //TODO("If channel data is not mocked from backend, uncomment this")
+            //TODO("Remove this if channel is not mocked anymore")
 //            setSelectedProduct(PlayBroadcastUiMapper.mapProductListToData(channel.productTags))
 //            setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
 
