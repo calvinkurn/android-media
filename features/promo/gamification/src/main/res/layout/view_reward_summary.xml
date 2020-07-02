@@ -16,10 +16,10 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageBox"
-            android:layout_width="102dp"
-            android:layout_height="79dp"
+            android:layout_width="@dimen/gami_dp_102"
+            android:layout_height="@dimen/gami_dp_79"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="@dimen/dp_44"
             android:scaleType="centerCrop" />
     </FrameLayout>
 

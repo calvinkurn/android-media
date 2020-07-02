@@ -16,15 +16,15 @@
     <FrameLayout
         android:id="@+id/fm_gift_box"
         android:layout_width="wrap_content"
-        android:layout_height="226dp"
+        android:layout_height="@dimen/gami_dp_226"
         android:layout_gravity="center">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_gravity="center_horizontal"
             android:id="@+id/imageShadow"
-            android:layout_width="350dp"
+            android:layout_width="@dimen/dp_350"
             android:layout_height="wrap_content"
-            android:translationY="180dp"
+            android:translationY="@dimen/gami_dp_108"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/gf_ic_box_shadow" />
 
@@ -32,19 +32,19 @@
             android:layout_gravity="center_horizontal"
             android:id="@+id/ll_gift_box"
             android:layout_width="wrap_content"
-            android:layout_height="226dp"
+            android:layout_height="@dimen/gami_dp_226"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_gift_box_lid"
-                android:layout_width="325dp"
-                android:layout_height="130dp"
+                android:layout_width="@dimen/gami_dp_325"
+                android:layout_height="@dimen/dp_130"
                 tools:srcCompat="@drawable/gf_ic_lid_7" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_box_front"
-                android:layout_width="210dp"
-                android:layout_height="97dp"
+                android:layout_width="@dimen/dp_210"
+                android:layout_height="@dimen/gami_dp_97"
                 android:layout_below="@id/image_gift_box_lid"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
@@ -63,14 +63,14 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_flat_glow"
-            android:layout_width="373dp"
-            android:layout_height="251dp"
+            android:layout_width="@dimen/gami_dp_373"
+            android:layout_height="@dimen/gami_dp_251"
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="@dimen/dp_7"
             android:layout_marginRight="@dimen/dp_7"
             android:alpha="0"
             tools:alpha="0.6"
-            android:translationY="-120dp"
+            android:translationY="@dimen/gami_dp_120_n"
             tools:background="@color/red_30"
             app:srcCompat="@drawable/gf_ic_box_stage_glow" />
 
@@ -79,8 +79,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_box_glow"
-        android:layout_width="290dp"
-        android:layout_height="251dp"
+        android:layout_width="@dimen/dp_290"
+        android:layout_height="@dimen/gami_dp_251"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/gami_box_glow_top_margin"
         android:alpha="0"
@@ -89,8 +89,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_box_white"
-        android:layout_width="221dp"
-        android:layout_height="208dp"
+        android:layout_width="@dimen/gami_dp_221"
+        android:layout_height="@dimen/gami_dp_208"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/gami_box_glow_top_margin"
         android:scaleType="fitCenter"
