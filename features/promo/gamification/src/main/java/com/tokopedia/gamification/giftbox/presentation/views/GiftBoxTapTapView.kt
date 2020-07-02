@@ -207,23 +207,6 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                     .into(imageBg)
             incrementAndSendCallback()
         }
-        Glide.with(this)
-                .load(bgUrl)
-                .dontAnimate()
-                .timeout(GLIDE_TIME_OUT)
-                .error(R.drawable.gf_gift_bg)
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        incrementAndSendCallback()
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        incrementAndSendCallback()
-                        return false
-                    }
-                })
-                .into(imageBg)
 
         Glide.with(this)
                 .load(imageFrontUrl)
