@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.unifiedhistory.view.adapter.UohListItemAdapter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ticker.*
@@ -18,6 +21,9 @@ import kotlinx.android.synthetic.main.fragment_uoh_list.*
  * Created by fwidjaja on 29/06/20.
  */
 class UohListFragment: BaseDaggerFragment() {
+    private lateinit var uohListItemAdapter: UohListItemAdapter
+    private var refreshHandler: RefreshHandler? = null
+
     companion object {
         @JvmStatic
         fun newInstance(): UohListFragment {
@@ -33,6 +39,19 @@ class UohListFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         renderChipsFilter()
         renderTicker()
+        prepareLayout()
+    }
+
+    private fun prepareLayout() {
+        // refreshHandler = RefreshHandler(swipe_refresh_layout, this)
+        // refreshHandler?.setPullEnabled(true)
+        uohListItemAdapter = UohListItemAdapter()
+        // .setActionListener(this)
+
+        rv_order_list?.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = uohListItemAdapter
+        }
     }
 
     private fun renderChipsFilter() {
