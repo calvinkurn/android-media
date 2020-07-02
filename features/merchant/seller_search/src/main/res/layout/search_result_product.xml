@@ -27,7 +27,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitleResultProduct"
-        android:paddingBottom="@dimen/spacing_lvl3"
         android:clipToPadding="false"
         tools:itemCount="5"
         tools:listitem="@layout/item_search_result_product" />
