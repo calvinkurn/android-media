@@ -29,6 +29,7 @@ class TableViewHolder(
 
     override fun bind(element: TableWidgetUiModel) {
         itemView.tvTableWidgetTitle.text = element.title
+        itemView.commonWidgetErrorState.gone()
 
         val data: TableDataUiModel? = element.data
         when {
@@ -65,7 +66,7 @@ class TableViewHolder(
         commonWidgetErrorState.visible()
         tvTableWidgetTitle.visible()
         shcTableView.gone()
-        
+
         ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
     }
 
