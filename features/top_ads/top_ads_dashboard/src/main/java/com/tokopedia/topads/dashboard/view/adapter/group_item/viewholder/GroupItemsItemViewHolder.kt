@@ -61,7 +61,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
 //            view.tampil_count.text = it.data.statTotalImpression
 //            view.klik_count.text = it.data.statTotalClick
 
-            if(countList.isNotEmpty() && adapterPosition < countList.size) {
+            if (countList.isNotEmpty() && adapterPosition < countList.size) {
                 view.total_item.text = countList[adapterPosition].totalAds.toString()
                 view.key_count.text = countList[adapterPosition].totalKeywords.toString()
             }

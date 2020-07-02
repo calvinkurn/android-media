@@ -220,7 +220,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
-        viewModel.getCountProductKeyword(resources, listOf(arguments?.getInt(GROUP_ID).toString()),::successCount)
+        viewModel.getCountProductKeyword(resources, listOf(arguments?.getInt(GROUP_ID).toString()), ::successCount)
         currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()

@@ -24,7 +24,7 @@ class NonGroupItemsItemViewHolder(val view: View,
                                   var selectMode: ((select: Boolean) -> Unit),
                                   var actionDelete: ((pos: Int) -> Unit),
                                   var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                                  var editDone:((groupId:Int,adPriceBid:Int)->Unit)) : NonGroupItemsViewHolder<NonGroupItemsItemViewModel>(view) {
+                                  var editDone: ((groupId: Int, adPriceBid: Int) -> Unit)) : NonGroupItemsViewHolder<NonGroupItemsItemViewModel>(view) {
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_non_group_card
@@ -61,7 +61,7 @@ class NonGroupItemsItemViewHolder(val view: View,
             setProgressBar(it.data)
             view.check_box.isChecked = item.isChecked
 
-            if(statsData.isNotEmpty()){
+            if (statsData.isNotEmpty()) {
                 view.tampil_count.text = statsData[adapterPosition].statTotalImpression
                 view.klik_count.text = statsData[adapterPosition].statTotalClick
                 view.persentase_klik_count.text = statsData[adapterPosition].statTotalCtr
@@ -93,7 +93,7 @@ class NonGroupItemsItemViewHolder(val view: View,
             val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.adStatus, item.data.productName)
             sheet.show()
             sheet.onEditAction = {
-                editDone.invoke(item.data.adId,item.data.adPriceBid)
+                editDone.invoke(item.data.adId, item.data.adPriceBid)
             }
             sheet.onDeleteClick = {
                 actionDelete(adapterPosition)

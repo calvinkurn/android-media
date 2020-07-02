@@ -68,16 +68,16 @@ class AutoAdsWidgetViewModel(
         }
     }
 
-    fun getNotDeliveredReason(shopID:String) {
+    fun getNotDeliveredReason(shopID: String) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_TOPADS_NONDELIVERY_REASON],
-                        NonDeliveryResponse::class.java, mapOf(SHOPID to shopID,ADTYPE to "1"), false)
+                        NonDeliveryResponse::class.java, mapOf(SHOPID to shopID, ADTYPE to "1"), false)
                 val cacheStrategy = GraphqlCacheStrategy
                         .Builder(CacheType.ALWAYS_CLOUD).build()
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
-            data.getSuccessData<NonDeliveryResponse>().topAdsGetShopStatus.data.let{
+            data.getSuccessData<NonDeliveryResponse>().topAdsGetShopStatus.data.let {
                 adsDeliveryStatus.postValue(it[0])
             }
         }) {

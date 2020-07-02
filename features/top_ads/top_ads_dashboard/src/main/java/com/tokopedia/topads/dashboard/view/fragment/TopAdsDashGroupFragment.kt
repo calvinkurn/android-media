@@ -21,7 +21,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPTY_SEARCH_VIEW
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.groupitem.GetTopadsDashboardGroupStatistics
@@ -38,9 +37,6 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.actionbar
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.loader
-import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.coroutines.CoroutineScope
@@ -60,7 +56,6 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private var SingleDelGroupId = ""
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
-
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
     private var deleteCancel = false
@@ -68,6 +63,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private var totalCount = 0
     private var totalPage = 0
     private var currentPageNum = 1
+    val groupIds: MutableList<String> = mutableListOf()
 
     override fun getScreenName(): String {
         return TopAdsDashGroupFragment::class.java.name
@@ -115,7 +111,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_GROUP_REQUEST_CODE || requestCode == GROUP_UPDATED) {
-            if(resultCode == Activity.RESULT_OK)
+            if (resultCode == Activity.RESULT_OK)
                 fetchData()
         }
     }
@@ -237,6 +233,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        groupIds.clear()
         currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()
@@ -253,7 +250,6 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage) + 1
         loader.visibility = View.GONE
-        val groupIds: MutableList<String> = mutableListOf()
         response.data.forEach {
             groupIds.add(it.groupId.toString())
             adapter.items.add(GroupItemsItemViewModel(it))

@@ -45,17 +45,15 @@ import javax.inject.Inject
  * Created by Pika on 16/5/20.
  */
 class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, attrs) {
-    private var baseLayout: ConstraintLayout? = null
+
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    private var fromEdit: Int = 0
-
     @Inject
     lateinit var factory: AutoAdsWidgetViewModelFactory
+    private var baseLayout: ConstraintLayout? = null
+    private var fromEdit: Int = 0
     private var currentBudget = 0
-
     val requestType = "auto_ads"
     val source = "update_auto_ads"
     private val TOPUP_LINK = " TopUp Sekarang"
@@ -80,21 +78,21 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
     }
 
     private fun renderUI() {
-            widgetViewModel.autoAdsData.observe(context as BaseActivity, Observer {
-                currentBudget = it.dailyBudget
-                if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-                    widgetViewModel.getNotDeliveredReason(userSession.shopId)
-                } else
-                    setUiComponent(it.status, it.dailyUsage)
-            })
-            widgetViewModel.adsDeliveryStatus.observe(context as BaseActivity, Observer {
-                if (it.status == 2)
-                    setUi(it.statusDetail)
-            })
-            widgetViewModel.autoAdsStatus.observe(context as BaseActivity, Observer {
-                (context as BaseActivity).setResult(Activity.RESULT_OK)
-                (context as BaseActivity).finish()
-            })
+        widgetViewModel.autoAdsData.observe(context as BaseActivity, Observer {
+            currentBudget = it.dailyBudget
+            if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+                widgetViewModel.getNotDeliveredReason(userSession.shopId)
+            } else
+                setUiComponent(it.status, it.dailyUsage)
+        })
+        widgetViewModel.adsDeliveryStatus.observe(context as BaseActivity, Observer {
+            if (it.status == 2)
+                setUi(it.statusDetail)
+        })
+        widgetViewModel.autoAdsStatus.observe(context as BaseActivity, Observer {
+            (context as BaseActivity).setResult(Activity.RESULT_OK)
+            (context as BaseActivity).finish()
+        })
     }
 
     private fun setUiComponent(status: Int, dailyUsage: Int) {
@@ -288,9 +286,9 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
     }
 
     private fun initView(context: Context) {
-            getComponent(context).inject(this)
-            View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
-            baseLayout = findViewById(R.id.base_layout)
+        getComponent(context).inject(this)
+        View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
+        baseLayout = findViewById(R.id.base_layout)
 
     }
 

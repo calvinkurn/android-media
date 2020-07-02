@@ -3,9 +3,7 @@ package com.tokopedia.topads.auto.view.activity
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
-import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.auto.view.fragment.EditAutoAdsBudgetFragment
 
 /**

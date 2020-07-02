@@ -23,12 +23,10 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_MOVE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
-import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
+import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
@@ -70,6 +68,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var totalCount = 0
     private var totalPage = 0
     private var currentPageNum = 1
+    private var adIds: MutableList<String> = mutableListOf()
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -234,7 +233,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         viewModel.getGroupList(resources, search, ::onSuccessGroupList)
     }
 
-    private fun onSuccessGroupList(list: List<DashGroupListResponse.GetTopadsDashboardGroups.GroupDataItem>) {
+    private fun onSuccessGroupList(list: List<GroupListDataItem>) {
         val grouplist: MutableList<MovetoGroupViewModel> = mutableListOf()
         list.forEach {
             if (it.groupName != arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
@@ -284,6 +283,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        adIds.clear()
         currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()
@@ -305,7 +305,6 @@ class ProductTabFragment : BaseDaggerFragment() {
                 && groupFilterSheet.getSelectedStatusId() == null) {
             totalProductCount = totalCount
         }
-        val adIds: MutableList<String> = mutableListOf()
         response.data.forEach {
             adIds.add(it.adId.toString())
             adapter.items.add(ProductItemViewModel(it))

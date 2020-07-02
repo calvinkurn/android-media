@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
-import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
+import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
@@ -130,7 +127,7 @@ class GroupDetailViewModel @Inject constructor(
     }
 
 
-    fun getGroupList(resources: Resources, search: String, onSuccess: ((List<DashGroupListResponse.GetTopadsDashboardGroups.GroupDataItem>) -> Unit)) {
+    fun getGroupList(resources: Resources, search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {
         topAdsGetGroupListUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.query_get_groups_dashboard))
         topAdsGetGroupListUseCase.setParams(search)

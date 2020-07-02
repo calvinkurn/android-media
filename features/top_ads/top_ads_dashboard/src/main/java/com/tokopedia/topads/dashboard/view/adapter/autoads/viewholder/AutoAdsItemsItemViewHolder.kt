@@ -30,7 +30,7 @@ class AutoAdsItemsItemViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoAd
             view.progress_layout.visibility = View.GONE
             view.product_name.text = it.data.productName
 
-            if(statsData.isNotEmpty() && adapterPosition < statsData.size){
+            if (statsData.isNotEmpty() && adapterPosition < statsData.size) {
                 view.tampil_count.text = statsData[adapterPosition].statTotalImpression
                 view.klik_count.text = statsData[adapterPosition].statTotalClick
                 view.persentase_klik_count.text = statsData[adapterPosition].statTotalCtr

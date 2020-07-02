@@ -12,13 +12,13 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.param.AutoAdsParam
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.data.response.TopAdsAutoAds
-import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,7 +38,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
     val SOURCE = "one_click_promo"
     val autoAdsData = MutableLiveData<TopAdsAutoAds.Response.TopAdsAutoAdsData>()
 
-      fun getAdsState(onSuccess: ((AdCreationOption) -> Unit)) {
+    fun getAdsState(onSuccess: ((AdCreationOption) -> Unit)) {
         launchCatchError(
                 block = {
                     val data = withContext(Dispatchers.IO) {
@@ -49,7 +49,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<AdCreationOption>().let {
-                            onSuccess(it)
+                        onSuccess(it)
                     }
                 },
                 onError = {
@@ -68,8 +68,8 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                     SOURCE
             ))
             val data = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,R.raw.query_ads_create_post_autoads)
-                        , TopAdsAutoAds.Response::class.java,getParams(param).parameters)
+                val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_post_autoads)
+                        , TopAdsAutoAds.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = GraphqlCacheStrategy
                         .Builder(CacheType.ALWAYS_CLOUD).build()
                 repository.getReseponse(listOf(request), cacheStrategy)
@@ -81,6 +81,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
             it.printStackTrace()
         }
     }
+
     fun getParams(dataParams: AutoAdsParam): RequestParams {
         val params = RequestParams.create()
         try {
@@ -110,8 +111,5 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                     it.printStackTrace()
                 }
         )
-
     }
-
-
 }

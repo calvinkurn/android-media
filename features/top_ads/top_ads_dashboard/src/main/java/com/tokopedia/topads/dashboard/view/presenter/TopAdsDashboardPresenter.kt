@@ -153,7 +153,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                 })
     }
 
-    fun getGroupList(resources: Resources, search: String, onSuccess: ((List<DashGroupListResponse.GetTopadsDashboardGroups.GroupDataItem>) -> Unit)) {
+    fun getGroupList(resources: Resources, search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {
         topAdsGetGroupListUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.query_get_group_list))
         topAdsGetGroupListUseCase.setParams(search)

@@ -19,7 +19,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
-import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
+import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -61,6 +61,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private var totalCount = 0
     private var totalPage = 0
     private var currentPageNum = 1
+    private var adIds: MutableList<String> = mutableListOf()
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -206,7 +207,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         topAdsDashboardPresenter.getGroupList(resources, search, ::onSuccessGroupList)
     }
 
-    private fun onSuccessGroupList(list: List<DashGroupListResponse.GetTopadsDashboardGroups.GroupDataItem>) {
+    private fun onSuccessGroupList(list: List<GroupListDataItem>) {
         val grouplist: MutableList<MovetoGroupViewModel> = mutableListOf()
         list.forEach {
             grouplist.add(MovetoGroupItemViewModel(it))
@@ -290,7 +291,6 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage) + 1
         loader.visibility = View.GONE
-        val adIds: MutableList<String> = mutableListOf()
         response.data.forEach {
             adIds.add(it.adId.toString())
             adapter.items.add(NonGroupItemsItemViewModel(it))
@@ -317,6 +317,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        adIds.clear()
         currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()

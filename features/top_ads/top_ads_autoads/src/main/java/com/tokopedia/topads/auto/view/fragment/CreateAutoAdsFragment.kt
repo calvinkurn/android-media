@@ -6,13 +6,14 @@ import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.sheet.AutoAdsCreateSheet
 import kotlinx.android.synthetic.main.topads_autoads_create_auto_ad_layout.*
 
-class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment() , View.OnClickListener{
+class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener {
 
     override fun getLayoutId(): Int {
         return R.layout.topads_autoads_create_auto_ad_layout
@@ -31,7 +32,7 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment() , View.OnClickListener
         tipBtn.setOnClickListener(this)
     }
 
-    override fun showLoading(){
+    override fun showLoading() {
         loading.visibility = View.VISIBLE
         btn_submit.isEnabled = false
     }
@@ -47,7 +48,7 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment() , View.OnClickListener
         val spannableText = SpannableString(MORE_INFO)
         val startIndex = 0
         val endIndex = spannableText.length
-        spannableText.setSpan(resources.getColor(com.tokopedia.design.R.color.tkpd_main_green), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableText.setSpan(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 RouteManager.route(context, getString(R.string.more_info))
@@ -76,10 +77,10 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment() , View.OnClickListener
     }
 
     override fun onClick(v: View?) {
-        if(v?.id == R.id.btn_submit){
+        if (v?.id == R.id.btn_submit) {
             activatedAds()
         }
-        if(v?.id == R.id.tip_btn){
+        if (v?.id == R.id.tip_btn) {
             AutoAdsCreateSheet.newInstance(context!!).show()
         }
     }

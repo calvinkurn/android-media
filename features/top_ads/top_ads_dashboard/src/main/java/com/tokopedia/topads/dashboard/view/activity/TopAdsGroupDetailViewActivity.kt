@@ -64,9 +64,6 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
     internal var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
-
-    @TopAdsStatisticsType
-
     private var groupId: Int? = 0
     private var priceSpent: String? = ""
     private var groupStatus: String? = ""
@@ -163,7 +160,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         header_toolbar.addRightIcon(R.drawable.topads_edit_pen_icon).setOnClickListener {
 
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                putExtra(TopAdsDashboardConstant.TAB_POSITION,2)
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                 putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
                 putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
             }
@@ -232,7 +229,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_GROUP_REQUEST_CODE) {
-            if(resultCode == Activity.RESULT_OK)
+            if (resultCode == Activity.RESULT_OK)
                 loadData()
         }
     }

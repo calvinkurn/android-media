@@ -70,6 +70,7 @@ object Utils {
         return periodRangeList
     }
 
+    @Throws(ParseException::class)
     fun String.stringToDate(format: String) : Date {
         val fromFormat = SimpleDateFormat(format, DEFAULT_LOCALE)
         try {
@@ -79,6 +80,7 @@ object Utils {
             throw RuntimeException("Date doesnt valid ($this) with format$format")
         }
     }
+
     fun dismissKeyboard(context: Context?, view: View?) {
         val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         if (inputMethodManager?.isAcceptingText == true)

@@ -22,6 +22,7 @@ class TopAdsTabAdapter(private val context: Context) : RecyclerView.Adapter<TabL
     var selectedTabPosition = 0
         private set
     private var listener: OnRecyclerTabItemClick? = null
+
     @TopAdsStatisticsType
     private var selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
 
@@ -52,11 +53,11 @@ class TopAdsTabAdapter(private val context: Context) : RecyclerView.Adapter<TabL
     }
 
     private fun getStringConversion(selectedStatisticType: Int): String = when (selectedStatisticType) {
-            TopAdsStatisticsType.SHOP_ADS ->  context.getString(R.string.label_top_ads_conversion_store)
-            TopAdsStatisticsType.PRODUCT_ADS ->  context.getString(R.string.label_top_ads_conversion_product)
-            TopAdsStatisticsType.ALL_ADS, TopAdsStatisticsType.HEADLINE_ADS ->  context.getString(R.string.label_top_ads_conversion)
-            else ->  context.getString(R.string.label_top_ads_conversion)
-        }
+        TopAdsStatisticsType.SHOP_ADS -> context.getString(R.string.label_top_ads_conversion_store)
+        TopAdsStatisticsType.PRODUCT_ADS -> context.getString(R.string.label_top_ads_conversion_product)
+        TopAdsStatisticsType.ALL_ADS, TopAdsStatisticsType.HEADLINE_ADS -> context.getString(R.string.label_top_ads_conversion)
+        else -> context.getString(R.string.label_top_ads_conversion)
+    }
 
     fun setItemLayout(@LayoutRes itemLayout: Int) {
         this.itemLayout = itemLayout

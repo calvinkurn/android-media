@@ -9,7 +9,7 @@ import com.tokopedia.topads.credit.history.view.fragment.TopAdsCreditHistoryFrag
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 
-class TopAdsCreditHistoryActivity: BaseSimpleActivity(), HasComponent<TopAdsDashboardComponent> {
+class TopAdsCreditHistoryActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardComponent> {
     override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
             (application as BaseMainApplication).baseAppComponent).build()
 

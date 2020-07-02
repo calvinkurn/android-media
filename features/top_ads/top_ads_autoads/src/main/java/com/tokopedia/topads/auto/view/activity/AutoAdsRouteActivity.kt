@@ -17,9 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
-import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
-import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

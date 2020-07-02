@@ -12,7 +12,7 @@ class TopAdsDashboardBasePagerAdapter(fm: FragmentManager, behavior: Int) : Frag
     private val itemTabList: MutableList<FragmentTabItem> = mutableListOf()
 
     override fun getItem(position: Int): Fragment {
-      return itemTabList[position].fragment
+        return itemTabList[position].fragment
     }
 
     override fun getCount(): Int {
@@ -27,9 +27,6 @@ class TopAdsDashboardBasePagerAdapter(fm: FragmentManager, behavior: Int) : Frag
         item.let {
             itemTabList.clear()
             itemTabList.addAll(item)
-
         }
-
     }
-
 }

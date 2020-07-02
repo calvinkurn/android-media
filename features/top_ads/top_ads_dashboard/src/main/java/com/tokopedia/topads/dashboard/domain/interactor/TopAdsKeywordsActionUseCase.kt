@@ -5,9 +5,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
+import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD_PRICE_BID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KEYWORDS
-import com.tokopedia.topads.dashboard.data.model.EditBulkKeyword
 import com.tokopedia.topads.dashboard.data.model.KeywordActionResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -17,15 +19,14 @@ import javax.inject.Inject
  */
 
 
-
 class TopAdsKeywordsActionUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<KeywordActionResponse>(graphqlRepository) {
-
 
     fun setParams(action: String, keywords: List<String>) {
 
-        val keyword = ArrayList<EditBulkKeyword>()
+        val keyword: ArrayList<Map<String, String?>> = arrayListOf()
         keywords.forEach {
-            keyword.add(EditBulkKeyword(it, null, null))
+            val map = mapOf(KEYWORD_ID to it, GROUPID to null, KEYWORD_PRICE_BID to null)
+            keyword.add(map)
         }
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_ID] = userSession.shopId
