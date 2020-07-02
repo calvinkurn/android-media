@@ -116,6 +116,7 @@ class CoverSetupPartialView(
 
     fun setLoading(isLoading: Boolean) {
         btnNext.isLoading = isLoading
+        etCoverTitle.isEnabled = !isLoading
     }
 
     fun setImage(uri: Uri?) {

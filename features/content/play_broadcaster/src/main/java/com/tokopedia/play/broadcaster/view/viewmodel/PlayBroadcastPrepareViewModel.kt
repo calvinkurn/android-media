@@ -7,11 +7,11 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveFollowersDataUseCase
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.FollowerDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.ui.model.result.map
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.user.session.UserSessionInterface
@@ -32,13 +32,8 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    var title: String
+    val title: String
         get() = mDataStore.getSetupDataStore().getSelectedCover()?.title ?: throw IllegalStateException("Cover / Cover Title is null")
-        set(value) {
-            val currentDataStore = mDataStore.getSetupDataStore()
-            currentDataStore.updateCoverTitle(value)
-            setDataFromSetupDataStore(currentDataStore)
-        }
 
     val observableFollowers: LiveData<FollowerDataUiModel>
         get() = _observableFollowers
@@ -59,22 +54,35 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         mDataStore.setFromSetupStore(setupDataStore)
     }
 
-    fun createLiveStream() {
+    fun createLiveStream(channelId: String) {
+        if (!isDataAlreadyValid()) {
+            _observableCreateLiveStream.value = NetworkResult.Fail(IllegalStateException("Oops tambah cover dulu sebelum mulai"))
+            return
+        }
+
         _observableCreateLiveStream.value = NetworkResult.Loading
         scope.launch {
-            delay(3000)
-            _observableCreateLiveStream.value =
-                    if (isDataAlreadyValid()) NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
-                    else NetworkResult.Fail(IllegalStateException("Oops tambah cover dulu sebelum mulai"))
+            val liveStream = doCreateLiveStream(channelId).map { PlayBroadcastUiMapper.mapLiveStream(channelId, it) }
+            _observableCreateLiveStream.value = liveStream
         }
     }
 
-    private suspend fun createLiveStream(channelId: String) = withContext(dispatcher.io) {
-        return@withContext createLiveStreamChannelUseCase.apply {
-            params = CreateLiveStreamChannelUseCase.createParams(
-                    channelId = channelId
-            )
-        }.executeOnBackground()
+    private suspend fun doCreateLiveStream(channelId: String) = withContext(dispatcher.io) {
+        return@withContext try {
+            NetworkResult.Success(createLiveStreamChannelUseCase.apply {
+                val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: throw IllegalStateException("Cover is not set")
+                val coverImage =
+                        if (cover.croppedCover !is CoverSetupState.Cropped) throw IllegalStateException("Cover image is not set")
+                        else cover.croppedCover.coverImage
+                params = CreateLiveStreamChannelUseCase.createParams(
+                        channelId = channelId,
+                        title = cover.title,
+                        thumbnail = coverImage.toString()
+                )
+            }.executeOnBackground())
+        } catch (e: Throwable) {
+            NetworkResult.Fail(e)
+        }
     }
 
     private suspend fun getLiveFollowers(): FollowerDataUiModel = withContext(dispatcher.io) {

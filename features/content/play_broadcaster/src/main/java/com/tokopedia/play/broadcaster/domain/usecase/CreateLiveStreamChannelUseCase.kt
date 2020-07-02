@@ -50,8 +50,8 @@ class CreateLiveStreamChannelUseCase @Inject constructor(
 
         fun createParams(
                 channelId: String,
-                title: String = "", // TODO("ask BE")
-                thumbnail: String = "" // TODO("ask BE")
+                title: String, // TODO("After MVP, confirm to BE that this should not be required")
+                thumbnail: String // TODO("After MVP, confirm to BE that this should not be required")
         ): Map<String, Any> = mapOf(
                 PARAMS_CHANNEL_ID to channelId,
                 PARAMS_TITLE to title,
