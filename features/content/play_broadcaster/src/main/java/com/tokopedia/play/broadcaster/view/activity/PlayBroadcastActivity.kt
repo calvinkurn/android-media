@@ -24,8 +24,10 @@ import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.*
+import com.tokopedia.play.broadcaster.util.channelNotFound
+import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
@@ -35,6 +37,9 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteraction
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject

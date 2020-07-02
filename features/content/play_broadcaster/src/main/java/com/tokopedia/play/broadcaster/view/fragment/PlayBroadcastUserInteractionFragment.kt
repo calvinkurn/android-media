@@ -21,7 +21,9 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.*
+import com.tokopedia.play.broadcaster.util.PlayShareWrapper
+import com.tokopedia.play.broadcaster.util.getDialog
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -32,6 +34,9 @@ import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 

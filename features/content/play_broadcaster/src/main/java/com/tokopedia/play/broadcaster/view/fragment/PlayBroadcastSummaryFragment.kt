@@ -15,12 +15,16 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.*
+import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
