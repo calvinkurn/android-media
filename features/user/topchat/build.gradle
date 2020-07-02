@@ -19,6 +19,12 @@ buildscript {
     }
 }
 
+android {
+    defaultConfig {
+        multiDexEnabled true
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.resourcesCommon)
