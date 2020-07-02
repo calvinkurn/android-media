@@ -177,7 +177,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
                     if (activeCategory == titleProduct && selectedProduct > 0) {
                         for (i in dataCollections.indices) {
-                            if (dataCollections[i].id.toIntOrZero() == selectedProduct) {
+                            if (dataCollections[i].id == selectedProduct.toString()) {
                                 dataCollections[i].attributes.selected = true
                                 position = i
                                 break
