@@ -61,19 +61,7 @@ class CategoryNavUseCaseModule {
     fun provideCategoryProductUseCase(context: Context,
                                       @Named("productGqlUseCaseObject") graphqlUseCase: GraphqlUseCase):
             CategoryProductUseCase {
-        return CategoryProductUseCase(context, graphqlUseCase)
-    }
-
-    @CategoryNavScope
-    @Provides
-    fun provideDynamicFilterUseCase(context: Context): DynamicFilterUseCase {
-        return DynamicFilterUseCase(context)
-    }
-
-    @CategoryNavScope
-    @Provides
-    fun provideQuickFilterUseCase(context: Context): QuickFilterUseCase {
-        return QuickFilterUseCase(context)
+        return CategoryProductUseCase(graphqlUseCase)
     }
 
     @CategoryNavScope
@@ -109,10 +97,10 @@ class CategoryNavUseCaseModule {
 
     @CategoryNavScope
     @Provides
-    fun getSubCategoryV3UseCase(context: Context, @Named("subCategoryV3GqlUseCaseObject") graphqlUseCase
-    : GraphqlUseCase)
+    fun getSubCategoryV3UseCase(@Named("subCategoryV3GqlUseCaseObject") graphqlUseCase
+                                : GraphqlUseCase)
             : SubCategoryV3UseCase {
-        return SubCategoryV3UseCase(context, graphqlUseCase)
+        return SubCategoryV3UseCase(graphqlUseCase)
     }
 
     @CategoryNavScope
