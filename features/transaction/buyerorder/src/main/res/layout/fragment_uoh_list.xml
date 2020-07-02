@@ -6,7 +6,8 @@
     android:layout_marginStart="@dimen/dp_12"
     android:layout_marginLeft="@dimen/dp_12"
     android:layout_marginEnd="@dimen/dp_12"
-    android:layout_marginRight="@dimen/dp_12">
+    android:layout_marginRight="@dimen/dp_12"
+    android:background="@color/white">
 
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/search_input_view"
@@ -25,8 +26,53 @@
         app:layout_constraintTop_toBottomOf="@id/search_input_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_12"/>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintTop_toBottomOf="@id/uoh_sort_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tickerShapeType="loose"
+        app:closeButtonVisibility="gone"/>
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/ticker_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_order_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <include
+                    android:id="@+id/empty_state_order_list"
+                    layout="@layout/uoh_empty_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+
+            </ScrollView>
+
+        </FrameLayout>
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

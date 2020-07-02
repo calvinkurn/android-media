@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.ticker.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 
 
@@ -29,6 +32,7 @@ class UohListFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderChipsFilter()
+        renderTicker()
     }
 
     private fun renderChipsFilter() {
@@ -74,6 +78,33 @@ class UohListFragment: BaseDaggerFragment() {
         filter1.refChipUnify.setChevronClickListener {  }
         filter2.refChipUnify.setChevronClickListener {  }
         filter3.refChipUnify.setChevronClickListener {  }
+    }
+
+    private fun renderTicker() {
+        val listTickerData = arrayListOf<TickerData>()
+        listTickerData.add(TickerData("Ini Testing Feature Flag 1", "This content can consists of Html Tags", Ticker.TYPE_ANNOUNCEMENT, true))
+        listTickerData.add(TickerData("Ini Testing Feature Flag 2", "This content can consists of Html Tags", Ticker.TYPE_ANNOUNCEMENT, true))
+        context?.let {
+            val adapter = TickerPagerAdapter(it, listTickerData)
+            adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                }
+            })
+            ticker_info?.setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                override fun onDismiss() {
+                }
+
+            })
+            ticker_info?.addPagerView(adapter, listTickerData)
+        }
+    }
+
+    private fun renderOrderList() {
+        empty_state_order_list?.visibility = View.GONE
+        rv_order_list?.visibility = View.VISIBLE
     }
 
     override fun getScreenName(): String = ""

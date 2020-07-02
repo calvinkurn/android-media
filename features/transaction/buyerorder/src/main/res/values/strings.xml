@@ -456,4 +456,12 @@ Anda di sini.</string>
 
     <string name="hint_cari_transaksi">Cari transaksi</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
+    <string name="uoh_filter_empty">Oops, nggak ada transaksi yang sesuai filter</string>
+    <string name="uoh_filter_empty_desc">Coba reset atau ubah filter kamu, ya.</string>
+    <string name="uoh_filter_empty_btn">Reset filter</string>
+    <string name="uoh_no_order">Kamu belum pernah bertransaksi</string>
+    <string name="uoh_no_order_desc">Yuk, mulai belanja dan penuhi berbagai kebutuhanmu di Tokopedia!</string>
+    <string name="uoh_no_order_btn">Mulai Belanja</string>
+    <string name="uoh_search_empty">Oops, nggak ada yang sesuai kata kuncimu</string>
+    <string name="uoh_search_empty_desc">Coba masukkan kata kunci lain, ya.</string>
 </resources>
