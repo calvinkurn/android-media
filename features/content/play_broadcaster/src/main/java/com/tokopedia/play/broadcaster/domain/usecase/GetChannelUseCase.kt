@@ -68,6 +68,7 @@ class GetChannelUseCase @Inject constructor(
                 applink
                 weblink
                 minQuantity
+                imageURL
                 isFreeShipping
               },
               pinMessages {

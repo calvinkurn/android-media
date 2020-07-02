@@ -8,7 +8,6 @@ import android.text.style.StyleSpan
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker.LOCAL_RTMP_URL
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -173,8 +172,8 @@ object PlayBroadcastUiMapper {
         ProductData(
                 id = it.id.toLongOrZero(),
                 name = it.productName,
-                imageUrl = "", // TODO("ask BE to return image url")
-                originalImageUrl = "", // TODO("ask BE to return image url")
+                imageUrl = it.imageUrl,
+                originalImageUrl = it.imageUrl,
                 stock = it.quantity
         )
     }
