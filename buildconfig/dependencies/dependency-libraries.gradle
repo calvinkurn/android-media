@@ -44,6 +44,7 @@ ext {
             coreNetwork             : ":libraries:core_network",
             datePickerRange         : ":libraries:date_picker_range",
             deviceInfo              : ":libraries:device_info",
+            devMonitoringTools      : ":libraries:dev_monitoring_tools",
             dynamicFeatures         : ":libraries:dynamic_features",
             encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",

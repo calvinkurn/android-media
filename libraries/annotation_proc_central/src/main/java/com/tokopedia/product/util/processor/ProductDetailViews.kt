@@ -78,6 +78,9 @@ data class ProductDetailViews(
         @Key("eventAction")
         val eventAction: String?,
         @DefaultValueString("")
+        @Key("eventLabel")
+        val eventLabel: String?,
+        @DefaultValueString("")
         @Key("businessUnit")
         val businessUnit: String?,
         @DefaultValueString("")
