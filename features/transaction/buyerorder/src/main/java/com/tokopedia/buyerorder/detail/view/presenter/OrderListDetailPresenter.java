@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -36,6 +37,7 @@ import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationR
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
+import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
@@ -101,6 +103,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     String fromPayment = null;
     String orderId;
     RequestCancelInfo requestCancelInfo;
+    @Inject
+    SendEventNotificationUseCase sendEventNotificationUseCase;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
@@ -227,6 +231,38 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
     }
 
+    @Override
+    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText, String email){
+        if (actionButton.getName().equalsIgnoreCase("customer_notification")){
+            HashMap<String, String> mapBody = new HashMap<String, String>();
+            mapBody.put("body", metadata);
+            sendEventNotificationUseCase.setPath(actionButton.getUri());
+            sendEventNotificationUseCase.setBody(mapBody);
+            sendEventNotificationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (getView() != null && getView().getAppContext() != null) {
+                        getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_fail));
+
+                    }
+                }
+
+                @Override
+                public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
+                    if (getView() != null && getView().getAppContext() != null) {
+                        actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_success));
+                        actionButtonText.setClickable(false);
+                        getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_copied)+email);
+                    }
+                }
+            });
+        }
+    }
 
     @Override
     public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.ActionInterface view, int position, boolean flag) {

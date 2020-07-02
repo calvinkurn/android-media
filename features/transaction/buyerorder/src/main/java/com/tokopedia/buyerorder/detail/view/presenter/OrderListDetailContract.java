@@ -2,6 +2,8 @@ package com.tokopedia.buyerorder.detail.view.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -110,6 +112,8 @@ public interface OrderListDetailContract {
         void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString);
 
         void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
+
+        void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText, String email);
 
         List<ActionButton> getActionList();
 

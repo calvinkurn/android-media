@@ -647,14 +647,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     @Override
                     public void onClick(View v) {
                         if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                            if (!TextUtils.isEmpty(item.getCategory()) && "Deal".equalsIgnoreCase(item.getCategory())) {
-                                Toaster.INSTANCE.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
-                                });
-                            } else {
-                                Toaster.INSTANCE.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
-                                });
-                            }
-                            presenter.setActionButton(item.getActionButtons(), null, 0, false);
+                            presenter.hitEventEmail(actionButton,orderDetails.getMetadata(), actionButtonText, metaDataInfo.getEmail());
                         } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                             RouteManager.route(getContext(), actionButton.getBody().getAppURL());
                         }

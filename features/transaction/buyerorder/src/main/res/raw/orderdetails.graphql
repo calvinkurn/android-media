@@ -16,6 +16,7 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
       backgroundColor
       imageUrl
     }
+    metadata
     invoice {
       invoiceRefNum
       invoiceUrl
