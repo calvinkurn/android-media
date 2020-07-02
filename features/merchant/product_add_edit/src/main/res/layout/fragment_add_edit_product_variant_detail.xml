@@ -130,7 +130,7 @@
         app:descriptionText="@string/label_variant_wholesale_warning"
         app:layout_constraintTop_toBottomOf="@+id/textViewVariantList"
         app:tickerShapeType="loose"
-        app:tickerType=" " />
+        app:tickerType="warning" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewVariantDetailFields"
