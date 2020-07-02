@@ -68,7 +68,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tips_bulb" />
+            app:srcCompat="@drawable/product_add_edit_ic_tips_bulb" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_variant_tips"
