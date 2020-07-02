@@ -17,6 +17,7 @@ import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.common.StatusbarHelper
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
@@ -137,7 +138,11 @@ class ContainerFragment : Fragment() {
                 }
             }
 
-            transaction.commitNowAllowingStateLoss()
+            if(remoteConfig.isImprovementDisabled()) {
+                transaction.commitNowAllowingStateLoss()
+            } else {
+                transaction.commit()
+            }
 
             view?.sahToolbar?.title = title
             if (fragment == homeFragment) {
