@@ -202,7 +202,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(String.format(getString(R.string.topads_dash_confirm_delete_group_title), adapter.getSelectedItems().size))
         dialog.setDescription(getString(R.string.topads_dash_confirm_delete_group_desc))
-        dialog.setPrimaryCTAText(getString(R.string.topads_common_cancel_btn))
+        dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_cancel_btn))
         dialog.setSecondaryCTAText(getString(R.string.topads_dash_ya_hapus))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()

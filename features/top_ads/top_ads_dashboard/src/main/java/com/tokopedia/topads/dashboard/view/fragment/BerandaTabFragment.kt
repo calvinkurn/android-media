@@ -175,7 +175,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     private fun setDateRangeText(position: Int) {
         when (position) {
             1 -> current_date.text = context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
-            0 -> current_date.text = context?.getString(R.string.hari_ini)
+            0 -> current_date.text = context?.getString(R.string.topads_dash_hari_ini)
             2 -> current_date.text = context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
                 val text = Utils.outputFormat.format(startDate) + " - " + Utils.outputFormat.format(endDate)

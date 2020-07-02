@@ -176,6 +176,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
         startDate = Utils.getStartDate()
         endDate = Utils.getEndDate()
+        topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
+        topAdsDashboardPresenter.saveSelectionDatePicker()
         loadData()
         hari_ini?.setOnClickListener {
             showBottomSheet()
@@ -623,7 +625,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private fun setDateRangeText(position: Int) {
         when (position) {
             1 -> current_date.text = context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
-            0 -> current_date.text = context?.getString(R.string.hari_ini)
+            0 -> current_date.text = context?.getString(R.string.topads_dash_hari_ini)
             2 -> current_date.text = context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
                 val text = outputFormat.format(startDate) + " - " + outputFormat.format(endDate)

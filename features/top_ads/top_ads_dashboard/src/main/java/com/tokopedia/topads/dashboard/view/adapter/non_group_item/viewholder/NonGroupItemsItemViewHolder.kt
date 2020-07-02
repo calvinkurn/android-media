@@ -49,7 +49,7 @@ class NonGroupItemsItemViewHolder(val view: View,
                 view.check_box.visibility = View.VISIBLE
                 view.label.visibility = View.INVISIBLE
             } else {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 view.img_menu.visibility = View.VISIBLE
                 view.check_box.visibility = View.GONE
                 view.label.visibility = View.VISIBLE
@@ -72,7 +72,7 @@ class NonGroupItemsItemViewHolder(val view: View,
             }
 
             if (!view.check_box.isChecked) {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             } else {
                 view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
@@ -85,7 +85,7 @@ class NonGroupItemsItemViewHolder(val view: View,
                 if (item.isChecked)
                     view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                 else
-                    view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                    view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             }
         }
 

@@ -25,7 +25,7 @@ class KeywordEmptyViewHolder(val view: View, private val addKeywords: (() -> Uni
                 view.btn_submit.visibility = View.VISIBLE
                 view.text_title.text = view.context.getString(R.string.topads_dash_empty_keyword_title)
                 view.text_desc.text = view.context.getString(R.string.topads_dash_empty_keyword_desc)
-                view.btn_submit.text = view.context.getString(R.string.add_keyword)
+                view.btn_submit.text = view.context.getString(com.tokopedia.topads.common.R.string.add_keyword)
 
             } else {
                 view.text_title.text = view.context.getString(R.string.topads_no_search_keyword_title)

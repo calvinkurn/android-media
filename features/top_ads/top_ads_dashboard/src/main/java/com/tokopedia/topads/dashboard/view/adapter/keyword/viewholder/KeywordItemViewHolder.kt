@@ -30,7 +30,7 @@ class KeywordItemViewHolder(val view: View,
                 view.btn_switch.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE
             } else {
-                view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 view.btn_switch.visibility = View.VISIBLE
                 view.check_box.visibility = View.GONE
             }
@@ -47,7 +47,7 @@ class KeywordItemViewHolder(val view: View,
             view.produk_terjual_count.text = it.result.statTotalSold
             view.price_bid.text = it.result.keywordPriceBidFmt
             if (!view.check_box.isChecked) {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             } else {
                 view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
@@ -62,7 +62,7 @@ class KeywordItemViewHolder(val view: View,
                     if (view.check_box.isChecked)
                         view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                     else
-                        view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                        view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 }
             }
 

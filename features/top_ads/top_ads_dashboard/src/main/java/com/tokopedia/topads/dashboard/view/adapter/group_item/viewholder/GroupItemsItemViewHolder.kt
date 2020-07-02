@@ -39,7 +39,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                 view.img_menu.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE
             } else {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 view.img_menu.visibility = View.VISIBLE
                 view.check_box.visibility = View.GONE
                 view.check_box.isChecked = false
@@ -47,7 +47,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             }
             view.check_box.isChecked = it.isChecked
             if (!view.check_box.isChecked) {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             } else {
                 view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
@@ -88,7 +88,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                     if (view.check_box.isChecked)
                         view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                     else
-                        view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                        view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 }
             }
             view.item_card.setOnLongClickListener {

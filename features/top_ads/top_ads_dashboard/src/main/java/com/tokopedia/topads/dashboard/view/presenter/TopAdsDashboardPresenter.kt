@@ -55,6 +55,7 @@ import javax.inject.Inject
 class TopAdsDashboardPresenter @Inject
 constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+            private val topAdsDatePickerInteractor: TopAdsDatePickerInteractor,
             private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
             private val topAdsAddSourceTaggingUseCase: TopAdsAddSourceTaggingUseCase,
             private val deleteTopAdsStatisticsUseCase: DeleteTopAdsStatisticsUseCase,
@@ -71,6 +72,8 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
     var expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
     val HIDDEN_TRIAL_FEATURE = 21
+    private var SELECTION_TYPE_DEF = 0
+    private var SELECTION_IND_DEF = 2
 
     fun getShopDeposit(onSuccess: ((dataDeposit: DataDeposit) -> Unit)) {
         topAdsGetShopDepositUseCase.execute(TopAdsGetShopDepositUseCase.createParams(userSession.shopId),
@@ -151,6 +154,13 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                 {
                     it.printStackTrace()
                 })
+    }
+
+    fun saveDate(startDate: Date, endDate: Date) {
+        topAdsDatePickerInteractor.saveDate(startDate, endDate)
+    }
+    fun saveSelectionDatePicker() {
+        topAdsDatePickerInteractor.saveSelectionDatePicker(SELECTION_TYPE_DEF, SELECTION_IND_DEF)
     }
 
     fun getGroupList(resources: Resources, search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {

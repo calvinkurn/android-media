@@ -157,7 +157,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
             showBottomSheet()
         }
 
-        header_toolbar.addRightIcon(R.drawable.topads_edit_pen_icon).setOnClickListener {
+        header_toolbar.addRightIcon(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon).setOnClickListener {
 
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
@@ -329,7 +329,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     private fun setDateRangeText(position: Int) {
         when (position) {
             1 -> current_date.text = getString(com.tokopedia.datepicker.range.R.string.yesterday)
-            0 -> current_date.text = getString(R.string.hari_ini)
+            0 -> current_date.text = getString(R.string.topads_dash_hari_ini)
             2 -> current_date.text = getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
                 val text = outputFormat.format(startDate) + " - " + outputFormat.format(endDate)

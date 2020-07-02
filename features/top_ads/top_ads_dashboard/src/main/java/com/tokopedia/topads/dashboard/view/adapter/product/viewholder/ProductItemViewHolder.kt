@@ -31,7 +31,7 @@ class ProductItemViewHolder(val view: View,
                 view.btn_switch.visibility = View.GONE
                 view.check_box.visibility = View.VISIBLE
             } else {
-                view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 view.btn_switch.visibility = View.VISIBLE
                 view.check_box.visibility = View.GONE
             }
@@ -54,7 +54,7 @@ class ProductItemViewHolder(val view: View,
                 onSwitchAction.invoke(adapterPosition, isChecked)
             }
             if (!view.check_box.isChecked) {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             } else {
                 view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
@@ -65,7 +65,7 @@ class ProductItemViewHolder(val view: View,
                     if (view.check_box.isChecked)
                         view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                     else
-                        view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+                        view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 }
             }
 
