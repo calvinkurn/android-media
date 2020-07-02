@@ -34,6 +34,8 @@ class ProductSearchViewHolder(private val view: View,
                             productSearchListener.onProductMoreClicked(product, adapterPosition)
                         }
                     }
+                } else {
+                    tvMoreResultProduct?.hide()
                 }
                 tvTitleResultProduct?.text = product.title
                 rvResultProduct?.apply {

@@ -34,6 +34,8 @@ class OrderSearchViewHolder(private val view: View,
                             orderSearchListener.onOrderMoreClicked(order, adapterPosition)
                         }
                     }
+                } else {
+                    tvMoreResultOrder?.hide()
                 }
                 tvTitleResultOrder?.text = order.title
                 rvResultOrder?.apply {

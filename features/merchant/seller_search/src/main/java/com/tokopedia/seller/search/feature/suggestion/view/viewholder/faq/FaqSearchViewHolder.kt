@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FAQ
@@ -32,6 +33,8 @@ class FaqSearchViewHolder(private val view: View,
                             faqSearchListener.onFaqMoreClicked(faq, adapterPosition)
                         }
                     }
+                } else {
+                    tvMoreResultFaq?.hide()
                 }
                 tvTitleResultFaq?.text = faq.title
                 rvResultFaq?.apply {
