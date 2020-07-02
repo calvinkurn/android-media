@@ -178,18 +178,6 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     }
 
     @Override
-    public void showProgressDialog() {
-//        progressDialog.show();
-//        containerView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-//        progressDialog.dismiss();
-//        containerView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public void emptyState() {
         scrollview.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
         containerView.setVisibility(View.GONE);

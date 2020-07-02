@@ -34,7 +34,6 @@ public class ShopScoreDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 return new ShopScoreDetailViewHolder(view);
             default:
                 return null;
-//                return super.onCreateViewHolder(parent, viewType);
         }
     }
 
@@ -44,14 +43,11 @@ public class ShopScoreDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             case SHOP_SCORE_DETAIL:
                 bindView((ShopScoreDetailViewHolder) viewHolder, data.get(position));
                 break;
-//            default:
-//                super.onBindViewHolder(viewHolder, position);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-//        if (data.isEmpty() || isLoading() || isRetry()) {
         if (data.isEmpty()) {
             return super.getItemViewType(position);
         } else {

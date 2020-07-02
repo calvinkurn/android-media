@@ -18,10 +18,6 @@ public interface ShopScoreDetailView extends CustomerView {
 
     void renderShopScoreState(ShopScoreDetailStateEnum shopScoreDetailStateEnum);
 
-    void showProgressDialog();
-
-    void dismissProgressDialog();
-
     void emptyState();
 
     void showLoading();
