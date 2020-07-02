@@ -5,13 +5,8 @@ import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstan
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_BACK_BUTTON
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_DELETE_ALL_SEARCH
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_DELETE_SELECTED_SEARCH
-import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_FILTER_ALL
-import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_FILTER_FEATURE
-import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_FILTER_ORDER
-import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_FILTER_PRODUCT
-import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_ON_SEARCH_RESULT_FEATURE
-import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_ON_SEARCH_RESULT_ORDER
-import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_ON_SEARCH_RESULT_PRODUCT
+import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_ON_SEARCH_RESULT
+import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_OTHER_RESULT
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_RECOMMEND_WORDING
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_SEARCH
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.CLICK_X_SEARCH_BOX
@@ -121,12 +116,12 @@ object SellerSearchTracking {
         ))
     }
 
-    fun clickAllFilterEvent(userId: String) {
+    fun clickOtherResult(userId: String, section: String) {
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
-                EVENT_ACTION, CLICK_FILTER_ALL,
-                EVENT_LABEL, "",
+                EVENT_ACTION, CLICK_OTHER_RESULT,
+                EVENT_LABEL, section,
                 SCREEN_NAME, GLOBAL_SEARCH_SCREEN,
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
@@ -134,77 +129,12 @@ object SellerSearchTracking {
         ))
     }
 
-    fun clickOrderFilterEvent(userId: String) {
+    fun clickOnSearchResult(userId: String, section: String) {
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
-                EVENT_ACTION, CLICK_FILTER_ORDER,
-                EVENT_LABEL, "",
-                SCREEN_NAME, GLOBAL_SEARCH_SCREEN,
-                CURRENT_SITE, TOKOPEDIA_SELLER,
-                USER_ID, userId,
-                BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
-    }
-
-    fun clickProductFilterEvent(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
-                EVENT, CLICK_SEARCH,
-                EVENT_CATEGORY, GLOBAL_SEARCH,
-                EVENT_ACTION, CLICK_FILTER_PRODUCT,
-                EVENT_LABEL, "",
-                SCREEN_NAME, GLOBAL_SEARCH_SCREEN,
-                CURRENT_SITE, TOKOPEDIA_SELLER,
-                USER_ID, userId,
-                BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
-    }
-
-    fun clickFeatureFilterEvent(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
-                EVENT, CLICK_SEARCH,
-                EVENT_CATEGORY, GLOBAL_SEARCH,
-                EVENT_ACTION, CLICK_FILTER_FEATURE,
-                EVENT_LABEL, "",
-                SCREEN_NAME, GLOBAL_SEARCH_SCREEN,
-                CURRENT_SITE, TOKOPEDIA_SELLER,
-                USER_ID, userId,
-                BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
-    }
-
-    fun clickOnSearchResultOrderEvent(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
-                EVENT, CLICK_SEARCH,
-                EVENT_CATEGORY, GLOBAL_SEARCH,
-                EVENT_ACTION, CLICK_ON_SEARCH_RESULT_ORDER,
-                EVENT_LABEL, "",
-                SCREEN_NAME, GLOBAL_SEARCH_SCREEN,
-                CURRENT_SITE, TOKOPEDIA_SELLER,
-                USER_ID, userId,
-                BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
-    }
-
-    fun clickOnSearchResultProductEvent(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
-                EVENT, CLICK_SEARCH,
-                EVENT_CATEGORY, GLOBAL_SEARCH,
-                EVENT_ACTION, CLICK_ON_SEARCH_RESULT_PRODUCT,
-                EVENT_LABEL, "",
-                SCREEN_NAME, GLOBAL_SEARCH_SCREEN,
-                CURRENT_SITE, TOKOPEDIA_SELLER,
-                USER_ID, userId,
-                BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
-    }
-
-    fun clickOnSearchResultFeatureEvent(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
-                EVENT, CLICK_SEARCH,
-                EVENT_CATEGORY, GLOBAL_SEARCH,
-                EVENT_ACTION, CLICK_ON_SEARCH_RESULT_FEATURE,
-                EVENT_LABEL, "",
+                EVENT_ACTION, CLICK_ON_SEARCH_RESULT,
+                EVENT_LABEL, section,
                 SCREEN_NAME, GLOBAL_SEARCH_SCREEN,
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,

@@ -24,11 +24,6 @@ object SellerSearchTrackingConstant {
     const val CLICK_DELETE_SELECTED_SEARCH = "click delete selected search"
     const val CLICK_RECOMMEND_WORDING = "click recommend wording"
     const val CLICK_X_SEARCH_BOX = "click x search box"
-    const val CLICK_FILTER_ALL = "click filter semua"
-    const val CLICK_FILTER_ORDER = "click filter pesanan"
-    const val CLICK_FILTER_PRODUCT = "click filter produk"
-    const val CLICK_FILTER_FEATURE = "click filter fitur"
-    const val CLICK_ON_SEARCH_RESULT_ORDER = "click on search result - pesanan"
-    const val CLICK_ON_SEARCH_RESULT_PRODUCT = "click on search result - produk"
-    const val CLICK_ON_SEARCH_RESULT_FEATURE = "click on search result - fitur"
+    const val CLICK_OTHER_RESULT = "click other result"
+    const val CLICK_ON_SEARCH_RESULT = "click on search result"
 }

@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.util.OnScrollListenerAutocomplete
+import com.tokopedia.seller.search.common.util.decodeString
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
@@ -152,45 +153,49 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
 
     override fun onNavigationItemClicked(data: ItemSellerSearchUiModel, position: Int) {
         viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
-        SellerSearchTracking.clickOnSearchResultFeatureEvent(userId)
+        SellerSearchTracking.clickOnSearchResult(userId, data.section.orEmpty())
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         dropKeyBoard()
     }
 
     override fun onOrderItemClicked(data: ItemSellerSearchUiModel, position: Int) {
         viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
-        SellerSearchTracking.clickOnSearchResultOrderEvent(userId)
+        SellerSearchTracking.clickOnSearchResult(userId, data.section.orEmpty())
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         dropKeyBoard()
     }
 
     override fun onOrderMoreClicked(element: SellerSearchUiModel, position: Int) {
-        SellerSearchTracking.clickOrderFilterEvent(userId)
+        SellerSearchTracking.clickOtherResult(userId, element.title.orEmpty())
         startActivityFromAutoComplete(element.appActionLink.orEmpty())
         dropKeyBoard()
     }
 
     override fun onProductItemClicked(data: ItemSellerSearchUiModel, position: Int) {
         viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
-        SellerSearchTracking.clickOnSearchResultProductEvent(userId)
+        SellerSearchTracking.clickOnSearchResult(userId, data.section.orEmpty())
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         dropKeyBoard()
     }
 
     override fun onProductMoreClicked(element: SellerSearchUiModel, position: Int) {
-        SellerSearchTracking.clickProductFilterEvent(userId)
+        SellerSearchTracking.clickOtherResult(userId, element.title.orEmpty())
         startActivityFromAutoComplete(element.appActionLink.orEmpty())
         dropKeyBoard()
     }
 
     override fun onFaqItemClicked(data: ItemSellerSearchUiModel, position: Int) {
+        SellerSearchTracking.clickOnSearchResult(userId, data.section.orEmpty())
+        val appUrl = decodeString(data.url.orEmpty())
         viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
-        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, data.appUrl))
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, appUrl))
         dropKeyBoard()
     }
 
     override fun onFaqMoreClicked(element: SellerSearchUiModel, position: Int) {
-        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, element.appActionLink))
+        SellerSearchTracking.clickOtherResult(userId, element.title.orEmpty())
+        val appUrl = decodeString(element.actionLink.orEmpty())
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, appUrl))
         dropKeyBoard()
     }
 }

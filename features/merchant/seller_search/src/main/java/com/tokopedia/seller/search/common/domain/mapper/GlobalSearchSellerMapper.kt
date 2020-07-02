@@ -34,7 +34,8 @@ object GlobalSearchSellerMapper {
                     searchSellerList.add(
                             ItemSellerSearchUiModel(id = itemSearch.id, title = itemSearch.title,
                                     desc = itemSearch.description, imageUrl = itemSearch.image_url,
-                                    url = itemSearch.url, appUrl = itemSearch.app_url, keyword = keyword))
+                                    url = itemSearch.url, appUrl = itemSearch.app_url, keyword = keyword,
+                                    section = it.title))
                 }
 
                 add(SellerSearchUiModel(
