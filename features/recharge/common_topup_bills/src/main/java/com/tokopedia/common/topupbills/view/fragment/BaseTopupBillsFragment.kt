@@ -281,7 +281,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
                 requestCode = REQUEST_CODE_PROMO_DETAIL
             } else {
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
                 intent.putExtra(EXTRA_PROMO_CODE, promoCode)
                 intent.putExtra(EXTRA_COUPON_ACTIVE, true)
                 intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
