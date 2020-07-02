@@ -505,7 +505,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
         val showTimer = gamiTapEggHome.timeRemaining?.isShow
         if (showTimer != null && timeLeftSeconds != null) {
-            startOneMinuteCounter(30)
+            startOneMinuteCounter(timeLeftSeconds)
         }
     }
 
@@ -551,7 +551,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 isGiftTapAble = true
             }
             animateTvTimerAndProgressBar()
-            startOneMinuteCounter(30)
+            startOneMinuteCounter(timeLeftSeconds)
         }
     }
 
