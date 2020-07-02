@@ -195,7 +195,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                     //BBO APPLY
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null) {
+                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
                         tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
@@ -338,9 +338,20 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {
         val shippingRecommendationData = preference.shipping?.shippingRecommendationData
         if (shippingRecommendationData != null) {
-            ShippingDurationOccBottomSheet().showBottomSheet(fragment, shippingRecommendationData.shippingDurationViewModels, object : ShippingDurationOccBottomSheetListener {
+            val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
+            if (shippingRecommendationData.logisticPromo != null) {
+                list.add(shippingRecommendationData.logisticPromo)
+                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                }
+            }
+            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
                 override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
                     listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+                }
+
+                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+                    listener.onLogisticPromoClick(data)
                 }
             })
         }

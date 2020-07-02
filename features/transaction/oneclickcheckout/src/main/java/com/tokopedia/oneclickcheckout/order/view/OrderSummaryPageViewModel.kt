@@ -297,6 +297,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                     serviceDuration = serviceDur,
                                                                     serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                                    isApplyLogisticPromo = false,
                                                                     shippingRecommendationData = shippingRecommendationData)
                                                         }
                                                     }
@@ -390,7 +391,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                         }
                                     }
 
-                                    if (shipping?.serviceErrorMessage?.isEmpty() == true) {
+                                    if (shipping != null) {
                                         val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                                         if (logisticPromo != null && !logisticPromo.disabled) {
                                             shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
@@ -406,18 +407,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     return
                                                 }
                                             } else {
-                                                shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
+                                                shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) null else "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
                                             }
                                         } else {
                                             shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null, isApplyLogisticPromo = false)
                                             if (currPromo.isNotEmpty()) {
                                                 clearOldLogisticPromo(currPromo)
                                             }
-                                        }
-                                    } else if (shipping != null) {
-                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null, isApplyLogisticPromo = false)
-                                        if (currPromo.isNotEmpty()) {
-                                            clearOldLogisticPromo(currPromo)
                                         }
                                     }
 
@@ -873,6 +869,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                 val shippingRecommendationData = _orderPreference?.shipping?.shippingRecommendationData
                                                 var logisticPromoShipping: ShippingCourierUiModel? = null
                                                 if (shippingRecommendationData != null) {
+                                                    val shouldEnableServicePicker = _orderPreference?.shipping?.isServicePickerEnable == true || !_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty()
                                                     for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
                                                         if (shippingDurationViewModel.isSelected) {
                                                             for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
@@ -887,14 +884,15 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                 }
                                                             }
                                                         }
-                                                        if (_orderPreference?.shipping?.isServicePickerEnable == true) {
+                                                        if (shouldEnableServicePicker) {
                                                             shippingDurationViewModel.isSelected = false
                                                         }
                                                     }
                                                     shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
-                                                    _orderPreference = _orderPreference?.copy(shipping = shipping.copy(shippingRecommendationData = shippingRecommendationData,
-                                                            insuranceData = logisticPromoShipping?.productData?.insurance,
-                                                            logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
+                                                    val needPinpoint = logisticPromoShipping?.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                                                    _orderPreference = _orderPreference?.copy(shipping = shipping.copy(shippingRecommendationData = shippingRecommendationData, isServicePickerEnable = shouldEnableServicePicker,
+                                                            insuranceData = logisticPromoShipping?.productData?.insurance, serviceErrorMessage = if (needPinpoint) NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping?.productData?.error?.errorMessage,
+                                                            needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
                                                     orderPreference.value = OccState.Success(_orderPreference!!)
                                                     globalEvent.value = OccGlobalEvent.Normal
                                                     updatePromoState(response.promoUiModel)
