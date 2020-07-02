@@ -66,7 +66,7 @@ class VoucherDetailActivity : BaseActivity(), MvcPerformanceMonitoringListener {
                 .commitNowAllowingStateLoss()
     }
 
-    private fun getPageFragment(): Fragment = VoucherDetailFragment.newInstance(voucherId, this)
+    private fun getPageFragment(): Fragment = VoucherDetailFragment.newInstance(voucherId)
 
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

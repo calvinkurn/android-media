@@ -139,7 +139,7 @@ class VoucherListActivity : BaseActivity(),
 
     private fun getFragment(isActiveVoucher: Boolean,
                             voucherId: Int? = successVoucherId): VoucherListFragment {
-        return VoucherListFragment.newInstance(isActiveVoucher, this).apply {
+        return VoucherListFragment.newInstance(isActiveVoucher).apply {
             setFragmentListener(this@VoucherListActivity)
             val willShowSuccessCreationDialog = !isSuccessDialogAlreadyShowed && isActiveVoucher && voucherId != 0
             if (willShowSuccessCreationDialog) {
