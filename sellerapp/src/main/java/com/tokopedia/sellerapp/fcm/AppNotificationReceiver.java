@@ -12,15 +12,15 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.moengage.push.PushManager;
 import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
@@ -28,7 +28,6 @@ import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.sellerapp.SellerMainApplication;
-import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
@@ -97,15 +96,28 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
 
     private void executeCrashlyticLog(Bundle data, String message) {
         if (!BuildConfig.DEBUG) {
-            StringBuilder logMessage = new StringBuilder(message + "\n");
-            for (String key : data.keySet()) {
-                logMessage.append(key);
-                logMessage.append(": ");
-                logMessage.append(data.get(key));
-                logMessage.append(", \n");
-            }
-            Crashlytics.logException(new Exception(logMessage.toString()));
+            String logMessage = generateLogMessage(data, message);
+            Crashlytics.logException(new Exception(logMessage));
         }
+    }
+
+    private String generateLogMessage(Bundle data, String message) {
+        StringBuilder logMessage = new StringBuilder(message + " \n");
+        String fcmToken = FirebaseMessagingManagerImpl.getFcmTokenFromPref(mContext);
+        addLogLine(logMessage, "fcmToken", fcmToken);
+        addLogLine(logMessage, "userId", userSession.getUserId());
+        addLogLine(logMessage, "isSellerApp", GlobalConfig.isSellerApp());
+        for (String key : data.keySet()) {
+            addLogLine(logMessage, key, data.get(key));
+        }
+        return logMessage.toString();
+    }
+
+    private void addLogLine(StringBuilder stringBuilder, String key, Object value) {
+        stringBuilder.append(key);
+        stringBuilder.append(": ");
+        stringBuilder.append(value);
+        stringBuilder.append(", \n");
     }
 
     private boolean isInExcludedActivity(Bundle data) {
