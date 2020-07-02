@@ -31,13 +31,6 @@ import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.util.FlightSearchCache
-import com.tokopedia.flight.search.util.select
-import com.tokopedia.flight.search.util.unselect
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.searchV4.di.FlightSearchComponent
@@ -46,6 +39,13 @@ import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnAct
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchAdapterTypeFactory
 import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
+import com.tokopedia.flight.searchV4.presentation.util.select
+import com.tokopedia.flight.searchV4.presentation.util.unselect
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
