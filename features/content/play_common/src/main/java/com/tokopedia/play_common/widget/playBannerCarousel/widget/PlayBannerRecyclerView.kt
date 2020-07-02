@@ -3,6 +3,7 @@ package com.tokopedia.play_common.widget.playBannerCarousel.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -98,7 +99,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     fun playVideos() {
         try{
             // check internet wifi or data available or auto play or video data is not empty
-            if(!PlayConnectionCommon.isInternetAvailable(context, checkWifi = true, checkCellular = true) || !isAutoPlay || mediaObjects.isEmpty()) return
+            if(!(PlayConnectionCommon.isConnectWifi(context) || PlayConnectionCommon.isConnectCellular(context)) || !isAutoPlay || mediaObjects.isEmpty()) return
 
             val targetPositions: MutableList<Int> = mutableListOf()
             var startPosition: Int = (Objects.requireNonNull(
@@ -276,6 +277,9 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         this.mediaObjectsLastPosition.addAll(list.map { 0 })
         resetVideoPlayer()
         coroutineContext.cancelChildren()
+        Handler().postDelayed({
+            playVideos()
+        }, 250)
     }
 
     /* in seconds */

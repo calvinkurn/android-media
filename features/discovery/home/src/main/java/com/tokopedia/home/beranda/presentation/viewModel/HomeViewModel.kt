@@ -156,7 +156,7 @@ open class HomeViewModel @Inject constructor(
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
     val errorEventLiveData: LiveData<Event<String>>
-            get() = _errorEventLiveData
+        get() = _errorEventLiveData
     private val _errorEventLiveData = MutableLiveData<Event<String>>()
 
     val isViewModelInitalized: LiveData<Event<Boolean>>
@@ -1061,7 +1061,7 @@ open class HomeViewModel @Inject constructor(
                 data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
                     homeDataModel = evaluateAvailableComponent(homeDataModel)
-                        _homeLiveData.value = homeDataModel
+                    _homeLiveData.value = homeDataModel
                 }
             } else {
                 val newList = _homeLiveData.value?.list?.toMutableList()

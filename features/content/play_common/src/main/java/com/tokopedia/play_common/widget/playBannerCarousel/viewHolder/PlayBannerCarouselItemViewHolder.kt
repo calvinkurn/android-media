@@ -36,6 +36,6 @@ class PlayBannerCarouselItemViewHolder (private val parent: View): BasePlayBanne
         parent.reminder.setImageDrawable(ContextCompat.getDrawable(itemView.context, if(dataModel.remindMe) R.drawable.ic_play_reminder else R.drawable.ic_play_reminder_non_active))
         parent.reminder?.setOnClickListener { listener?.onReminderClick(dataModel, adapterPosition) }
         parent.channel_up_coming_date?.showOrHideView(dataModel.widgetType == PlayBannerWidgetType.UPCOMING)
-        parent.channel_up_coming_date?.text = dataModel.startTime?.toFormattedString("dd MMMM yyyy - HH.MM") ?: ""
+        parent.channel_up_coming_date?.text = dataModel.startTime
     }
 }

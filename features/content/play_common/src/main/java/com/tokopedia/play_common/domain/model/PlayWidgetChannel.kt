@@ -43,9 +43,6 @@ data class PlayWidgetItem (
         @SerializedName("startTime")
         @Expose
         val startTime: String = "",
-        @SerializedName("endTime")
-        @Expose
-        val endTime: String = "",
         @SerializedName("widgetType")
         @Expose
         val widgetType: String = "",

@@ -15,7 +15,7 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
-import com.tokopedia.shop.common.graphql.data.shopinfo.BroadcasterConfig
+import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
@@ -160,10 +160,10 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             throw MessageErrorException(shopInfoError.mapNotNull { it.message }.joinToString(separator = ", "))
         }
 
-        val broadcasterConfigError = gqlResponse.getError(BroadcasterConfig.Response::class.java)
-        val broadcasterConfig = gqlResponse.getData<BroadcasterConfig.Response>(BroadcasterConfig.Response::class.java)
+        val broadcasterConfigError = gqlResponse.getError(Broadcaster.Config::class.java)
+        val broadcasterConfig = gqlResponse.getData<Broadcaster.Config>(Broadcaster.Config::class.java)
         if(broadcasterConfigError == null || broadcasterConfig != null){
-            shopInfoShopBadgeFeedWhitelist.broadcasterConfigAllowed = broadcasterConfig?.streamAllowed
+            shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = broadcasterConfig)
         } else {
             throw MessageErrorException(broadcasterConfigError.mapNotNull { it.message }.joinToString(separator = ", "))
         }
