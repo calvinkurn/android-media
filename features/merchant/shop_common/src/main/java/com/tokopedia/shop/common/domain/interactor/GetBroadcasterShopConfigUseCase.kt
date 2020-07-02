@@ -10,10 +10,10 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
-class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Broadcaster.Config>() {
+class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Broadcaster>() {
 
     var params: RequestParams = RequestParams.EMPTY
-    var isFromCacheFirst: Boolean = true
+    private var isFromCacheFirst: Boolean = true
     private val query = """
     query getBroadcasterConfig(${'$'}shopId: String!){
         broadcasterGetShopConfig(shopID: ${'$'}shopId)
@@ -26,7 +26,7 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
         GraphqlRequest(query, Broadcaster.Config::class.java, params.parameters)
     }
 
-    override suspend fun executeOnBackground(): Broadcaster.Config {
+    override suspend fun executeOnBackground(): Broadcaster {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
@@ -35,7 +35,7 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopInfo.Response::class.java)
         if (error == null || error.isEmpty()) {
-            return (gqlResponse.getData(Broadcaster.Config::class.java) as Broadcaster.Config)
+            return (gqlResponse.getData(Broadcaster::class.java) as Broadcaster)
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }

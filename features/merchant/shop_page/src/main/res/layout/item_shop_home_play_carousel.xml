@@ -7,3 +7,4 @@
     android:layout_marginLeft="@dimen/dp_minus12"
     android:layout_marginRight="@dimen/dp_minus12"
     xmlns:android="http://schemas.android.com/apk/res/android" />
+
