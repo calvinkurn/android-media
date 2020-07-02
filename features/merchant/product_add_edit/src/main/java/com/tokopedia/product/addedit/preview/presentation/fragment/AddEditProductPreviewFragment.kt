@@ -246,7 +246,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
+        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
