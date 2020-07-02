@@ -8,13 +8,16 @@ import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVariantEditSelectAdapter
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_select_bottom_sheet_content.view.*
 import java.math.BigInteger
+import javax.inject.Inject
 
 class MultipleVariantEditSelectBottomSheet(
         private val multipleVariantEditListener: MultipleVariantEditListener
@@ -24,6 +27,8 @@ class MultipleVariantEditSelectBottomSheet(
         const val TAG = "Tag Multiple Variant Edit Select"
     }
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private var contentView: View? = null
     private var selectAdapter: MultipleVariantEditSelectAdapter? = null
     private var enableEditSku = true
@@ -121,10 +126,16 @@ class MultipleVariantEditSelectBottomSheet(
             val multipleVariantEditSelectBottomSheet =
                     MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, this)
             multipleVariantEditSelectBottomSheet.show(fragmentManager)
+
+            // tracking
+            ProductAddVariantDetailTracking.continueManageAll(userSession.shopId)
         }
         contentView?.checkboxSelectAll?.setOnClickListener {
             val isSelected = (it as CheckboxUnify).isChecked
             selectAdapter?.setAllDataSelected(isSelected)
+
+            // tracking
+            ProductAddVariantDetailTracking.selectManageAll(userSession.shopId)
         }
         setChild(contentView)
     }

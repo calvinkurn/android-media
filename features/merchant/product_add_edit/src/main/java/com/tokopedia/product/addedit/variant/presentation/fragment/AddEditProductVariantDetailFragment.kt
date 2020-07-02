@@ -18,17 +18,21 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailFieldsAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailInputTypeFactoryImpl
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailFieldsViewHolder
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailHeaderViewHolder
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_TRACKER_OFF
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_TRACKER_ON
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
 import java.math.BigInteger
 import javax.inject.Inject
@@ -39,7 +43,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         VariantDetailFieldsViewHolder.OnPriceInputTextChangedListener,
         VariantDetailFieldsViewHolder.OnStockInputTextChangedListener,
         MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener,
-        SelectVariantMainBottomSheet.SelectVariantMainListener, VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener {
+        SelectVariantMainBottomSheet.SelectVariantMainListener,
+        VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener {
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -53,6 +58,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModel: AddEditProductVariantDetailViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var variantDetailFieldsAdapter: VariantDetailFieldsAdapter? = null
 
@@ -88,6 +96,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        ProductAddVariantDetailTracking.trackScreen(
+                userSession.isLoggedIn.toString(),
+                userSession.userId
+        )
+
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
@@ -104,6 +117,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         switchUnifySku.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateSkuVisibilityStatus(isVisible = isChecked)
             variantDetailFieldsAdapter?.updateSkuVisibilityStatus(viewModel.getAvailableFields(), isChecked)
+
+            // tracking
+            ProductAddVariantDetailTracking.clickSKUToggle(
+                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                    userSession.shopId
+            )
         }
 
         imageViewMultipleEdit.setOnClickListener {

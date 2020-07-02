@@ -11,10 +11,13 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
+import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
 import java.math.BigInteger
+import javax.inject.Inject
 
 class MultipleVariantEditInputBottomSheet(
         private var enableEditSku: Boolean,
@@ -26,6 +29,8 @@ class MultipleVariantEditInputBottomSheet(
         const val TAG = "Tag Multiple Variant Edit Input"
     }
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private var contentView: View? = null
     private var isPriceError = false
     private var isStockError = false
@@ -86,8 +91,20 @@ class MultipleVariantEditInputBottomSheet(
         contentView?.buttonApply?.setOnClickListener {
             submitInput()
             updateSubmitButtonInput()
+            sendTrackerData()
         }
         setChild(contentView)
+    }
+
+    private fun sendTrackerData() {
+        val price = contentView?.tfuPrice.getText()
+        val stock = contentView?.tfuStock.getText()
+        val sku = contentView?.tfuSku.getText()
+
+        // tracking
+        ProductAddVariantDetailTracking.trackManageAllPrice(price, userSession.shopId)
+        ProductAddVariantDetailTracking.trackManageAllStock(stock, userSession.shopId)
+        ProductAddVariantDetailTracking.trackManageAllSku(sku, userSession.shopId)
     }
 
     private fun validatePrice() {
