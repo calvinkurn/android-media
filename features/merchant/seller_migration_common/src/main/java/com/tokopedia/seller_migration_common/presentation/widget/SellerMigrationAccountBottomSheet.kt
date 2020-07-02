@@ -16,6 +16,7 @@ import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.KEY_SHOULD_DISMISS_AFTER_RESTORE
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -61,6 +62,23 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
             goToSellerApp()
         }
         setupWarningCard()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_SHOULD_DISMISS_AFTER_RESTORE, true)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState?.getBoolean(KEY_SHOULD_DISMISS_AFTER_RESTORE, false) == true) {
+            dismissOnRestore()
+        }
+    }
+
+    private fun dismissOnRestore() {
+        dismiss()
+        parentFragment?.childFragmentManager?.beginTransaction()?.remove(this)?.commit()
     }
 
     private fun setupWarningCard() {
