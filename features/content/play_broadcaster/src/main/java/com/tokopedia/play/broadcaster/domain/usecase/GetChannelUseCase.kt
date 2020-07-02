@@ -23,6 +23,7 @@ class GetChannelUseCase @Inject constructor(
                 channelID
                 title
                 slug
+                coverURL
                 description
                 activeMediaID
                 startTime
@@ -67,6 +68,7 @@ class GetChannelUseCase @Inject constructor(
                 applink
                 weblink
                 minQuantity
+                imageURL
                 isFreeShipping
               },
               pinMessages {

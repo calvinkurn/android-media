@@ -128,6 +128,8 @@ data class GetChannelResponse(
             val weblink: String = "",
             @SerializedName("minQuantity")
             val minQuantity: Int = 0,
+            @SerializedName("imageURL")
+            val imageUrl: String = "",
             @SerializedName("isFreeShipping")
             val isFreeShipping: Boolean = false
     )
