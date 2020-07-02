@@ -6,11 +6,13 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import androidx.core.app.NotificationManagerCompat;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
@@ -35,7 +37,7 @@ public class PushNotification {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
 
         if (ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel)) {
-            logEvent(applinkNotificationModel, data, "ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel) == true");
+            logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel) == true");
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
 
@@ -56,63 +58,53 @@ public class PushNotification {
             if (isNotificationEnabled(context)) {
                 NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
             } else {
-                logEvent(applinkNotificationModel, data, "isNotificationEnabled(context) == false");
-//                logUserManuallyDisabledNotification(applinkNotificationModel);
+                logEvent(context, applinkNotificationModel, data, "isNotificationEnabled(context) == false");
             }
         } else {
-            logEvent(applinkNotificationModel, data, "ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel) == false");
+            logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel) == false");
         }
     }
 
 
-    private static void logEvent(ApplinkNotificationModel model, Bundle data, String message) {
-        try {
-//            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
-            String userId = model.getToUserId();
-//            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
-            if (!userId.isEmpty()) {
-                executeCrashlyticLog(data,  message);
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private static void executeCrashlyticLog(Bundle data, String message) {
-//        if (!BuildConfig.DEBUG) {
-            StringBuilder logMessage = new StringBuilder(message + "\n");
-            for (String key : data.keySet()) {
-                logMessage.append(key);
-                logMessage.append(": ");
-                logMessage.append(data.get(key));
-                logMessage.append(", \n");
-            }
-            Crashlytics.logException(new Exception(logMessage.toString()));
-//        }
-    }
-
-    private static void logUserManuallyDisabledNotification(ApplinkNotificationModel applinkNotificationModel) {
+    private static void logEvent(Context context, ApplinkNotificationModel model, Bundle data, String message) {
         try {
             String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
-            String userId = applinkNotificationModel.getToUserId();
+            String userId = model.getToUserId();
             if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
-                executeLogOnMessageReceived(applinkNotificationModel);
+                executeCrashlyticLog(context, data,  message);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
 
-    private static void executeLogOnMessageReceived(ApplinkNotificationModel applinkNotificationModel) {
+    private static void executeCrashlyticLog(Context context, Bundle data, String message) {
         if (!BuildConfig.DEBUG) {
-            String errorMessage = "onNotification disabled, " +
-                    "userId: " + applinkNotificationModel.getToUserId() + ", " +
-                    "gId: " + applinkNotificationModel.getGId() + ", " +
-                    "createTime: " + applinkNotificationModel.getCreateTime() + ", " +
-                    "transactionId: " + applinkNotificationModel.getTransactionId() + ", " +
-                    "targetApp: " + applinkNotificationModel.getTargetApp();
-            Crashlytics.logException(new Exception(errorMessage));
+            String logMessage = generateLogMessage(context, data, message);
+            Crashlytics.logException(new Exception(logMessage));
         }
+    }
+
+    private static String generateLogMessage(Context context, Bundle data, String message) {
+        StringBuilder logMessage = new StringBuilder(message + " \n");
+        String fcmToken = getFcmTokenFromPref(context);
+        addLogLine(logMessage, "fcmToken", fcmToken);
+        addLogLine(logMessage, "isSellerApp", GlobalConfig.isSellerApp());
+        for (String key : data.keySet()) {
+            addLogLine(logMessage, key, data.get(key));
+        }
+        return logMessage.toString();
+    }
+
+    private static String getFcmTokenFromPref(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString("pref_fcm_token", "");
+    }
+
+    private static void addLogLine(StringBuilder stringBuilder, String key, Object value) {
+        stringBuilder.append(key);
+        stringBuilder.append(": ");
+        stringBuilder.append(value);
+        stringBuilder.append(", \n");
     }
 
     private static void notifyChatbot(Context context, ApplinkNotificationModel applinkNotificationModel, int notificationId, NotificationManagerCompat notificationManagerCompat) {
