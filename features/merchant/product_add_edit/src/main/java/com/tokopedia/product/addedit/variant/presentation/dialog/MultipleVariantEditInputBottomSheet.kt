@@ -10,18 +10,15 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
-import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PRICE_LIMIT
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
+import java.math.BigInteger
 
 class MultipleVariantEditInputBottomSheet(
         private var enableEditSku: Boolean,
+        private var enableEditPrice: Boolean,
         private val multipleVariantEditInputListener: MultipleVariantEditInputListener
 ): BottomSheetUnify() {
 
@@ -35,6 +32,8 @@ class MultipleVariantEditInputBottomSheet(
 
     interface MultipleVariantEditInputListener {
         fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
+        fun onMultipleEditInputValidatePrice(price: BigInteger): String
+        fun onMultipleEditInputValidateStock(stock: BigInteger): String
     }
 
     init {
@@ -74,9 +73,11 @@ class MultipleVariantEditInputBottomSheet(
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
         contentView?.tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
+        contentView?.tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
         contentView?.tfuPrice.setModeToNumberInput()
         contentView?.tfuPrice?.textFieldInput?.afterTextChanged {
-            validatePrice()
+            if (enableEditPrice) validatePrice()
+            updateSubmitButtonInput()
         }
         contentView?.tfuStock?.textFieldInput?.afterTextChanged {
             validateStock()
@@ -91,40 +92,22 @@ class MultipleVariantEditInputBottomSheet(
 
     private fun validatePrice() {
         val inputText = contentView?.tfuPrice.getTextBigIntegerOrZero()
-        when {
-            inputText >= MAX_PRODUCT_PRICE_LIMIT.toBigInteger() -> {
-                contentView?.tfuPrice?.setMessage(getString(R.string.error_product_price_exceeding_max_limit))
-                contentView?.tfuPrice?.setError(true)
-            }
-            inputText <= MIN_PRODUCT_PRICE_LIMIT.toBigInteger() -> {
-                contentView?.tfuPrice?.setMessage(getString(R.string.error_product_price_less_than_min_limit))
-                contentView?.tfuPrice?.setError(true)
-            }
-            else -> {
-                contentView?.tfuPrice?.setError(false)
-                contentView?.tfuPrice?.setMessage("")
-            }
-        }
-        isPriceError = contentView?.tfuPrice?.isTextFieldError ?: false
+        val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidatePrice(inputText)
+        val isErrorValidating = errorMessage.isNotEmpty()
+
+        contentView?.tfuPrice?.setMessage(errorMessage)
+        contentView?.tfuPrice?.setError(isErrorValidating)
+        isPriceError = isErrorValidating
     }
 
     private fun validateStock() {
         val inputText = contentView?.tfuStock.getTextBigIntegerOrZero()
-        when {
-            inputText >= MAX_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
-                contentView?.tfuStock?.setMessage(getString(R.string.error_available_stock_quantity_exceeding_max_limit))
-                contentView?.tfuStock?.setError(true)
-            }
-            inputText <= MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
-                contentView?.tfuStock?.setMessage(getString(R.string.error_minimum_stock_quantity_is_one))
-                contentView?.tfuStock?.setError(true)
-            }
-            else -> {
-                contentView?.tfuStock?.setError(false)
-                contentView?.tfuStock?.setMessage("")
-            }
-        }
-        isStockError = contentView?.tfuStock?.isTextFieldError ?: false
+        val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidateStock(inputText)
+        val isErrorValidating = errorMessage.isNotEmpty()
+
+        contentView?.tfuStock?.setMessage(errorMessage)
+        contentView?.tfuStock?.setError(isErrorValidating)
+        isStockError = isErrorValidating
     }
 
     private fun updateSubmitButtonInput() {
@@ -132,12 +115,12 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun submitInput() {
-        validatePrice()
+        if (enableEditPrice) validatePrice()
         validateStock()
         if (!isPriceError && !isStockError) {
             contentView?.apply {
-                val price = tfuPrice.getTextBigIntegerOrZero()
-                val stock = tfuStock.getTextIntOrZero()
+                val price = tfuPrice.getText().replace(".", "")
+                val stock = tfuStock.getTextBigIntegerOrZero()
                 val sku = tfuSku.getText()
                 val inputData = MultipleVariantEditInputModel(
                         price = price,

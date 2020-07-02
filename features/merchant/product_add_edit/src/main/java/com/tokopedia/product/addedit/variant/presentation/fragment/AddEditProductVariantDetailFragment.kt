@@ -30,6 +30,7 @@ import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMa
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
+import java.math.BigInteger
 import javax.inject.Inject
 
 class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
@@ -157,6 +158,14 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         viewModel.updateProductInputModel(multipleVariantEditInputModel)
     }
 
+    override fun onMultipleEditInputValidatePrice(price: BigInteger): String {
+        return viewModel.validateVariantPriceInput(price)
+    }
+
+    override fun onMultipleEditInputValidateStock(stock: BigInteger): String {
+        return viewModel.validateProductVariantStockInput(stock)
+    }
+
     override fun onSelectVariantMainFinished(combination: List<Int>) {
         viewModel.updatePrimaryVariant(combination)
     }
@@ -167,6 +176,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun observeSelectedVariantSize() {
         viewModel.selectedVariantSize.observe(this, Observer { size ->
+            // clear old elements before rendering new elements
+            variantDetailFieldsAdapter?.clearAllElements()
             // have 2 selected variant detail
             val hasVariantCombination = viewModel.hasVariantCombination(size)
             // with collapsible header
@@ -253,8 +264,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private fun showMultipleEditBottomSheet() {
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         val bottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        val hasWholesale = viewModel.hasWholesale.value ?: false
         bottomSheet.setData(variantInputModel)
         bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
+        bottomSheet.setEnableEditPrice(!hasWholesale)
         bottomSheet.show(fragmentManager)
     }
 

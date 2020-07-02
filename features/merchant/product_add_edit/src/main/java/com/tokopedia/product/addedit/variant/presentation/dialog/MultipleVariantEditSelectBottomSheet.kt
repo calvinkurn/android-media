@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.VariantInputMode
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_select_bottom_sheet_content.view.*
+import java.math.BigInteger
 
 class MultipleVariantEditSelectBottomSheet(
         private val multipleVariantEditListener: MultipleVariantEditListener
@@ -26,9 +27,12 @@ class MultipleVariantEditSelectBottomSheet(
     private var contentView: View? = null
     private var selectAdapter: MultipleVariantEditSelectAdapter? = null
     private var enableEditSku = true
+    private var enableEditPrice = true
 
     interface MultipleVariantEditListener {
         fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
+        fun onMultipleEditInputValidatePrice(price: BigInteger): String
+        fun onMultipleEditInputValidateStock(stock: BigInteger): String
     }
 
     init {
@@ -55,6 +59,14 @@ class MultipleVariantEditSelectBottomSheet(
         }
     }
 
+    override fun onMultipleEditInputValidatePrice(price: BigInteger): String {
+        return multipleVariantEditListener.onMultipleEditInputValidatePrice(price)
+    }
+
+    override fun onMultipleEditInputValidateStock(stock: BigInteger): String {
+        return multipleVariantEditListener.onMultipleEditInputValidateStock(stock)
+    }
+
     fun setData(items: VariantInputModel?) {
         items?.run {
             selectAdapter?.setData(this)
@@ -63,6 +75,10 @@ class MultipleVariantEditSelectBottomSheet(
 
     fun setEnableEditSku(enabled: Boolean) {
         enableEditSku = enabled
+    }
+
+    fun setEnableEditPrice(enabled: Boolean) {
+        enableEditPrice = enabled
     }
 
     fun show(manager: FragmentManager?) {
@@ -103,7 +119,7 @@ class MultipleVariantEditSelectBottomSheet(
         contentView?.buttonNext?.setOnClickListener {
             dismiss()
             val multipleVariantEditSelectBottomSheet =
-                    MultipleVariantEditInputBottomSheet(enableEditSku, this)
+                    MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, this)
             multipleVariantEditSelectBottomSheet.show(fragmentManager)
         }
         contentView?.checkboxSelectAll?.setOnClickListener {

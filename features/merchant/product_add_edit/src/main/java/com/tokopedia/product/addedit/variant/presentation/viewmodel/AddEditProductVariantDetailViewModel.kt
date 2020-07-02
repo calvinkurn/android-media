@@ -107,15 +107,23 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {
-        val variantInputModel = productInputModel.value?.variantInputModel?.products
-        inputModel.selection.forEach { selectedCombination ->
-            // search product variant by comparing combination
-            val productVariant = variantInputModel?.findLast { it.combination == selectedCombination }
-            // set value if found
-            productVariant?.let {
-                it.price = inputModel.price
-                it.stock = inputModel.stock
-                it.sku = inputModel.sku
+        productInputModel.value = productInputModel.value?.also {
+            inputModel.selection.forEach { selectedCombination ->
+                // search product variant by comparing combination
+                val productVariant = it.variantInputModel.products
+                        .find { it.combination == selectedCombination }
+                // set value if found
+                productVariant?.apply {
+                    // assign new value if input price is not empty
+                    if (inputModel.price.isNotEmpty()) {
+                        price = inputModel.price.toBigIntegerOrNull().orZero()
+                    }
+                    // assign new value if input sku is not empty
+                    if (inputModel.sku.isNotEmpty()) {
+                        sku = inputModel.sku
+                    }
+                    stock = inputModel.stock.toInt()
+                }
             }
         }
     }
@@ -211,6 +219,24 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val errorCounter = mErrorCounter.value ?: 0
         if (errorCounter > 0) mErrorCounter.value = -1
         return inputModel
+    }
+
+    fun validateVariantPriceInput(priceInput: BigInteger): String {
+        return when {
+            priceInput < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() -> {
+                provider.getMinLimitProductPriceErrorMessage().orEmpty()
+            }
+            else -> ""
+        }
+    }
+
+    fun validateProductVariantStockInput(stockInput: BigInteger): String {
+        return when {
+            stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
+                provider.getMinLimitProductStockErrorMessage().orEmpty()
+            }
+            else -> ""
+        }
     }
 
 }
