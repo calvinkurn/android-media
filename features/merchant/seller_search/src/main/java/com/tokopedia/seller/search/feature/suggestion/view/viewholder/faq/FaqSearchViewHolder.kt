@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
-import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FAQ
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.FaqSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.SellerSearchUiModel
 import kotlinx.android.synthetic.main.search_result_faq.view.*
@@ -23,27 +23,25 @@ class FaqSearchViewHolder(private val view: View,
 
     override fun bind(element: SellerSearchUiModel) {
         with(view) {
-            if(element.hasMore) {
-                tvMoreResultFaq?.apply {
-                    show()
-                    text = element.actionTitle.orEmpty()
-                    setOnClickListener {
-                        element.takeIf { it.id == GlobalSearchSellerConstant.FAQ }?.let {
-                            faqSearchListener.onFaqMoreClicked(it, adapterPosition)
+            element.takeIf { it.id == FAQ }?.let { faq ->
+                if (faq.hasMore) {
+                    tvMoreResultFaq?.apply {
+                        show()
+                        text = faq.actionTitle.orEmpty()
+                        setOnClickListener {
+                            faqSearchListener.onFaqMoreClicked(faq, adapterPosition)
                         }
                     }
                 }
-            }
-            tvTitleResultFaq?.text = element.title
-            rvResultFaq?.apply {
-                layoutManager = LinearLayoutManager(view.context)
-                adapter = adapterFaq
-            }
-        }
+                tvTitleResultFaq?.text = faq.title
+                rvResultFaq?.apply {
+                    layoutManager = LinearLayoutManager(view.context)
+                    adapter = adapterFaq
+                }
 
-        if (element.sellerSearchList.isNotEmpty()) {
-            element.takeIf { it.id == GlobalSearchSellerConstant.FAQ }?.sellerSearchList?.let {
-                adapterFaq.submitList(it)
+                if (faq.sellerSearchList.isNotEmpty()) {
+                    adapterFaq.submitList(faq.sellerSearchList)
+                }
             }
         }
     }

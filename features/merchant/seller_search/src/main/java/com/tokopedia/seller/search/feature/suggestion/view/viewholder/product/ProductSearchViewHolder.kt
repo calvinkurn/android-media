@@ -25,30 +25,29 @@ class ProductSearchViewHolder(private val view: View,
 
     override fun bind(element: SellerSearchUiModel) {
         with(view) {
-            if(element.hasMore) {
-                tvMoreResultProduct?.apply {
-                    show()
-                    text = element.actionTitle.orEmpty()
-                    setOnClickListener {
-                        element.takeIf { it.id == PRODUCT }?.let {
-                            productSearchListener.onProductMoreClicked(it, adapterPosition)
+            element.takeIf { it.id == PRODUCT }?.let { product ->
+                if (product.hasMore) {
+                    tvMoreResultProduct?.apply {
+                        show()
+                        text = product.actionTitle.orEmpty()
+                        setOnClickListener {
+                            productSearchListener.onProductMoreClicked(product, adapterPosition)
                         }
                     }
                 }
-            }
-            tvTitleResultProduct?.text = element.title
-            rvResultProduct?.apply {
-                layoutManager = LinearLayoutManager(view.context)
-                adapter = adapterProduct
-            }
-            if (adapterPosition == element.count.orZero() - 1) {
-                dividerProduct?.hide()
-            }
-        }
+                tvTitleResultProduct?.text = product.title
+                rvResultProduct?.apply {
+                    layoutManager = LinearLayoutManager(view.context)
+                    adapter = adapterProduct
+                }
 
-        if (element.sellerSearchList.isNotEmpty()) {
-            element.takeIf { it.id == PRODUCT }?.sellerSearchList?.let {
-                adapterProduct.submitList(it)
+                if (adapterPosition == element.count.orZero() - 1) {
+                    dividerProduct?.hide()
+                }
+
+                if (product.sellerSearchList.isNotEmpty()) {
+                    adapterProduct.submitList(product.sellerSearchList)
+                }
             }
         }
     }

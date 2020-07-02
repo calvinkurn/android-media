@@ -24,19 +24,20 @@ class NavigationSearchViewHolder(private val view: View,
 
     override fun bind(element: SellerSearchUiModel) {
         with(view) {
-            tvTitleResultNavigation?.text = element.title
-            rvResultNavigation?.apply {
-                layoutManager = LinearLayoutManager(view.context)
-                adapter = adapterNavigation
-            }
-            if (adapterPosition == element.count.orZero() - 1) {
-                dividerNavigation?.hide()
-            }
-        }
+            element.takeIf { it.id == NAVIGATION }?.let { feature ->
+                tvTitleResultNavigation?.text = feature.title
+                rvResultNavigation?.apply {
+                    layoutManager = LinearLayoutManager(view.context)
+                    adapter = adapterNavigation
+                }
 
-        if (element.sellerSearchList.isNotEmpty()) {
-            element.takeIf { it.id == NAVIGATION }?.sellerSearchList?.let {
-                adapterNavigation.submitList(it)
+                if (adapterPosition == element.count.orZero() - 1) {
+                    dividerNavigation?.hide()
+                }
+
+                if (feature.sellerSearchList.isNotEmpty()) {
+                    adapterNavigation.submitList(feature.sellerSearchList)
+                }
             }
         }
     }

@@ -25,30 +25,28 @@ class OrderSearchViewHolder(private val view: View,
 
     override fun bind(element: SellerSearchUiModel) {
         with(view) {
-            if(element.hasMore) {
-                tvMoreResultOrder?.apply {
-                    show()
-                    text = element.actionTitle.orEmpty()
-                    setOnClickListener {
-                        element.takeIf { it.id == ORDER }?.let {
-                            orderSearchListener.onOrderMoreClicked(it, adapterPosition)
+            element.takeIf { it.id == ORDER }?.let { order ->
+                if (order.hasMore) {
+                    tvMoreResultOrder?.apply {
+                        show()
+                        text = order.actionTitle.orEmpty()
+                        setOnClickListener {
+                            orderSearchListener.onOrderMoreClicked(order, adapterPosition)
                         }
                     }
                 }
-            }
-            tvTitleResultOrder?.text = element.title
-            rvResultOrder?.apply {
-                layoutManager = LinearLayoutManager(view.context)
-                adapter = adapterOrder
-            }
-            if (adapterPosition == element.count.orZero() - 1) {
-                dividerOrder?.hide()
-            }
-        }
+                tvTitleResultOrder?.text = order.title
+                rvResultOrder?.apply {
+                    layoutManager = LinearLayoutManager(view.context)
+                    adapter = adapterOrder
+                }
+                if (adapterPosition == element.count.orZero() - 1) {
+                    dividerOrder?.hide()
+                }
 
-        if (element.sellerSearchList.isNotEmpty()) {
-            element.takeIf { it.id == ORDER }?.sellerSearchList?.let {
-                adapterOrder.submitList(it)
+                if (order.sellerSearchList.isNotEmpty()) {
+                    adapterOrder.submitList(order.sellerSearchList)
+                }
             }
         }
     }
