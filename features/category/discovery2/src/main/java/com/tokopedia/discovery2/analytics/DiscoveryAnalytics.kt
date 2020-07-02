@@ -56,7 +56,6 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 val hashMap = HashMap<String, Any>()
                 banner.let {
                     hashMap[KEY_ID] = it.id ?: 0
-//                    hashMap[KEY_NAME] = "$eventDiscoveryCategory - ${banner.positionForParentItem + 1} - ${getTargetingType(banner.action ?: EMPTY_STRING)} - $componentName"
                     hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName"
                     hashMap[KEY_CREATIVE] = it.name ?: EMPTY_STRING
                     hashMap[KEY_POSITION] = ++index
@@ -78,7 +77,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         banner.let {
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
-                    KEY_NAME to "$eventDiscoveryCategory - ${banner.positionForParentItem + 1} - ${getTargetingType(banner.action ?: EMPTY_STRING)} - $componentName",
+                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName",
                     KEY_CREATIVE to it.persona.toString(),
                     KEY_POSITION to bannerPosition + 1
             ))
