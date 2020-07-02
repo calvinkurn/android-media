@@ -153,7 +153,7 @@ object PlayBroadcastUiMapper {
             description = channel.basic.description,
             ingestUrl = channel.medias.firstOrNull()?.ingestUrl.orEmpty(),
 //            ingestUrl = LOCAL_RTMP_URL, // TODO remove mock
-            coverUrl = channel.medias.firstOrNull()?.coverUrl.orEmpty(),
+            coverUrl = channel.basic.coverUrl,
             status = PlayChannelStatus.getByValue(channel.basic.status.id)
     )
 
@@ -200,7 +200,7 @@ object PlayBroadcastUiMapper {
             id = channel.basic.channelId,
             title = channel.share.metaTitle,
             description = channel.share.metaDescription,
-            imageUrl = channel.medias.firstOrNull()?.coverUrl.orEmpty(),
+            imageUrl = channel.basic.coverUrl,
             textContent = channel.share.text,
             redirectUrl = channel.share.redirectURL,
             shortenUrl = channel.share.useShortURL

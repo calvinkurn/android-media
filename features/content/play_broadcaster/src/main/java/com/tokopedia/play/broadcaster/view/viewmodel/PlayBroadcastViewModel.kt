@@ -155,8 +155,6 @@ class PlayBroadcastViewModel @Inject constructor(
                 return@withContext getConfigurationUseCase.executeOnBackground()
             }
             val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
-//            delay(2000)
-//            val configUiModel = PlayBroadcastMocker.getMockConfigurationDraftChannel() // TODO remove mock
             if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
@@ -189,8 +187,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 return@withContext getChannelUseCase.executeOnBackground()
             }
             _observableChannelInfo.value = NetworkResult.Success(PlayBroadcastUiMapper.mapChannelInfo(channel))
-//            _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
-            _observableShareInfo.value = PlayBroadcastMocker.getMockShare()
+            _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
 
             //TODO("Uncomment this if channel is not mocked anymore")
 //            setSelectedProduct(PlayBroadcastUiMapper.mapProductListToData(channel.productTags))

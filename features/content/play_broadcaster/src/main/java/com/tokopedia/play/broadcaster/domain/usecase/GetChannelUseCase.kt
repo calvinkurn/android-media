@@ -15,100 +15,101 @@ class GetChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : BaseUseCase<GetChannelResponse.Channel>() {
 
-    //TODO("Add coverURL field in basic")
     private val query = """
-            query GetChannel(${'$'}channelId: String){
-              broadcasterGetChannels(
-                req : {
-                  filter: {
-                    channelIDs: [${'$'}channelId]
-                  }
+        query GetChannel(${'$'}channelId: String!){
+          broadcasterGetChannels(req: {filter: {channelIDs: [${'$'}channelId]}, pager: {limit: 1, nextID: "0"}, additional: {author: true, product: true, voucher: true, quickReply: true, pinMessage: true}}) {
+            channels {
+              basic {
+                channelID
+                title
+                slug
+                description
+                activeMediaID
+                startTime
+                endTime
+                coverURL
+                enableChat
+                status {
+                  ID
+                  text
                 }
-              ) {
-                channels {
-                  basic {
-                    channelID
-                    title
-                    slug
-                    description
-                    activeMediaID
-                    startTime
-                    endTime
-                    enableChat
-                    status {
-                      ID
-                      text
-                    }
-                  },
-                  author {
-                    ID
-                    name
-                    thumbnailURL
-                    badge
-                  },
-                  medias {
-                    ID
-                    channelID
-                    coverURL
-                    source
-                    ingestURL
-                    livestreamID
-                  },
-                  productTags {
-                    ID
-                    channelID
-                    productID
-                    weight
-                    productName
-                    description
-                    originalPriceFmt
-                    originalPrice
-                    priceFmt
-                    price
-                    discount
-                    quantity
-                    isVariant
-                    isAvailable
-                    order
-                    applink
-                    weblink
-                    minQuantity
-                    isFreeShipping
-                  },
-                  pinMessages {
-                    ID
-                    channelID
-                    message
-                    appLink
-                    webLink
-                    imageURL
-                    weight
-                  },
-                  quickReplies {
-                    ID
-                    channelID
-                    message
-                    weight
-                  },
-                  publicVouchers {
-                    ID
-                    ShopID
-                    Name
-                    Title
-                    Subtitle
-                    Type
-                    Image
-                    ImageSquare
-                    Quota
-                    FinishTime
-                    Code
-                    QuotaAvailable
-                    UsedQuota
-                    TnC
-                  }
-                }
+              },
+              author {
+                ID
+                name
+                thumbnailURL
+                badge
+              },
+              medias {
+                ID
+                channelID
+                coverURL
+                source
+                ingestURL
+                livestreamID
+              },
+              productTags {
+                ID
+                channelID
+                productID
+                weight
+                productName
+                description
+                originalPriceFmt
+                originalPrice
+                priceFmt
+                price
+                discount
+                quantity
+                isVariant
+                isAvailable
+                order
+                applink
+                weblink
+                minQuantity
+                isFreeShipping
+              },
+              pinMessages {
+                ID
+                channelID
+                message
+                appLink
+                webLink
+                imageURL
+                weight
+              },
+              quickReplies {
+                ID
+                channelID
+                message
+                weight
+              },
+              publicVouchers {
+                ID
+                ShopID
+                Name
+                Title
+                Subtitle
+                Type
+                Image
+                ImageSquare
+                Quota
+                FinishTime
+                Code
+                QuotaAvailable
+                UsedQuota
+                TnC
+              },
+              share {
+                text,
+                redirectURL,
+                useShortURL,
+                metaTitle, 
+                metaDescription
               }
             }
+          }
+        }
         """
 
     var params: Map<String, Any> = emptyMap()
