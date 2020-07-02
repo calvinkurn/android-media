@@ -5,18 +5,18 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
-import com.tokopedia.flight.search.data.api.single.response.Amenity
-import com.tokopedia.flight.search.data.db.FlightJourneyTable
-import com.tokopedia.flight.search.data.db.JourneyAndRoutes
-import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
-import com.tokopedia.flight.search.presentation.model.FlightAirportModel
-import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.searchV4.data.FlightRouteDao
-import com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao
-import com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao
+import com.tokopedia.flight.searchV4.data.cache.db.FlightJourneyTable
+import com.tokopedia.flight.searchV4.data.cache.db.JourneyAndRoutes
+import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightComboDao
+import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightJourneyDao
+import com.tokopedia.flight.searchV4.data.cloud.single.Amenity
+import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightAirportModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
 import javax.inject.Inject
 
 /**

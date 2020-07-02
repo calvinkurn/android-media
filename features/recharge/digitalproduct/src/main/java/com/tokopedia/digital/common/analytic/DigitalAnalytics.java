@@ -257,10 +257,6 @@ public class DigitalAnalytics {
         );
     }
 
-    public void sendCategoryScreen(Activity activity, String name) {
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(DigitalEventTracking.Screen.DIGITAL_CATEGORY + name.toLowerCase());
-    }
-
     public void sendCartScreen(Activity activity) {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(DigitalEventTracking.Screen.DIGITAL_CHECKOUT);
     }

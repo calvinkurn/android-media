@@ -4,17 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dummy.*
-import com.tokopedia.flight.search.presentation.model.FlightFareModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.searchV4.domain.FlightComboKeyUseCase
 import com.tokopedia.flight.searchV4.domain.FlightSearchJouneyByIdUseCase
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.searchV4.presentation.model.SearchErrorEnum
+import com.tokopedia.flight.searchV4.presentation.model.*
+import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.shouldBe
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -90,7 +86,7 @@ class FlightSearchReturnViewModelTest {
         departureJourney.term shouldBe DEPARTURE_JOURNEY.term
         departureJourney.specialTagText shouldBe DEPARTURE_JOURNEY.specialTagText
         departureJourney.routeList.size shouldBe DEPARTURE_JOURNEY.routeList.size
-        departureJourney.isShowSpecialPriceTag shouldBe DEPARTURE_JOURNEY.isShowSpecialPriceTag
+        departureJourney.showSpecialPriceTag shouldBe DEPARTURE_JOURNEY.showSpecialPriceTag
         departureJourney.isReturning shouldBe DEPARTURE_JOURNEY.isReturning
         departureJourney.isRefundable shouldBe DEPARTURE_JOURNEY.isRefundable
         departureJourney.isBestPairing shouldBe DEPARTURE_JOURNEY.isBestPairing
@@ -159,7 +155,7 @@ class FlightSearchReturnViewModelTest {
         returnJourney.term shouldBe VALID_RETURN_JOURNEY.term
         returnJourney.specialTagText shouldBe VALID_RETURN_JOURNEY.specialTagText
         returnJourney.routeList.size shouldBe VALID_RETURN_JOURNEY.routeList.size
-        returnJourney.isShowSpecialPriceTag shouldBe VALID_RETURN_JOURNEY.isShowSpecialPriceTag
+        returnJourney.showSpecialPriceTag shouldBe VALID_RETURN_JOURNEY.showSpecialPriceTag
         returnJourney.isReturning shouldBe VALID_RETURN_JOURNEY.isReturning
         returnJourney.isRefundable shouldBe VALID_RETURN_JOURNEY.isRefundable
         returnJourney.isBestPairing shouldBe VALID_RETURN_JOURNEY.isBestPairing
@@ -285,7 +281,7 @@ class FlightSearchReturnViewModelTest {
                 "Rp1.500.000", 1500000, "", 0,
                 false, "", false, RefundableEnum.NOT_REFUNDABLE,
                 false, FlightFareModel("Rp1.500.000", "", "", "", "", "", 1500000, 0, 0, 0, 0, 0),
-                null, arrayListOf(), "", ""
+                arrayListOf(), arrayListOf(), "", ""
         ))
         coEvery { flightComboKeyUseCase.execute(any(), any()) } returns COMBO_KEY
         val flightSearchPassDataModel = FlightSearchPassDataModel(
@@ -437,7 +433,7 @@ class FlightSearchReturnViewModelTest {
         returnJourney.term shouldBe VALID_RETURN_JOURNEY.term
         returnJourney.specialTagText shouldBe VALID_RETURN_JOURNEY.specialTagText
         returnJourney.routeList.size shouldBe VALID_RETURN_JOURNEY.routeList.size
-        returnJourney.isShowSpecialPriceTag shouldBe VALID_RETURN_JOURNEY.isShowSpecialPriceTag
+        returnJourney.showSpecialPriceTag shouldBe VALID_RETURN_JOURNEY.showSpecialPriceTag
         returnJourney.isReturning shouldBe VALID_RETURN_JOURNEY.isReturning
         returnJourney.isRefundable shouldBe VALID_RETURN_JOURNEY.isRefundable
         returnJourney.isBestPairing shouldBe VALID_RETURN_JOURNEY.isBestPairing

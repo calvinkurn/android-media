@@ -6,13 +6,13 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
 import org.jetbrains.annotations.NotNull
+import java.util.regex.Pattern
 
 /**
  * Created by nabillasabbaha on 25/04/19.
@@ -23,9 +23,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     protected val hintInputNumber: TextView
     protected val imgOperator: ImageView
-    protected val btnClear: Button
+    protected val btnClear: ImageView
     protected val autoCompleteInputNumber: AutoCompleteTextView
-    protected val btnContactPicker: Button
+    protected val btnContactPicker: ImageView
     protected val errorInputNumber: TextView
     protected val view: View
     private lateinit var listener: ActionListener
@@ -36,7 +36,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         imgOperator = view.findViewById(R.id.img_operator)
         btnClear = view.findViewById(R.id.btn_clear_input_number)
         autoCompleteInputNumber = view.findViewById(R.id.ac_input_number)
-        btnContactPicker = view.findViewById(R.id.btn_copy_promo)
+        btnContactPicker = view.findViewById(R.id.btn_contact_picker)
         errorInputNumber = view.findViewById(R.id.error_input_number)
 
         autoCompleteInputNumber.clearFocus()
@@ -64,16 +64,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 } else {
                     btnClear.visibility = View.VISIBLE
                 }
-
-                when {
-                    count in 1..9 -> setErrorInputNumber(context.getString(R.string.digital_telco_error_min_phone_number))
-                    count in 10..14 -> {
-                        listener.onRenderOperator()
-                        imgOperator.visibility = View.VISIBLE
-                        hideErrorInputNumber()
-                    }
-                    count > 14 -> setErrorInputNumber(context.getString(R.string.digital_telco_error_max_phone_number))
-                }
+                listener.onRenderOperator()
             }
         })
 
@@ -101,7 +92,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         errorInputNumber.visibility = View.VISIBLE
     }
 
-    fun hideErrorInputNumber() {
+    private fun hideErrorInputNumber() {
         errorInputNumber.text = ""
         errorInputNumber.visibility = View.GONE
     }
@@ -116,9 +107,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun setIconOperator(url: String) {
         ImageHandler.LoadImage(imgOperator, url)
+        imgOperator.visibility = View.VISIBLE
+        hideErrorInputNumber()
     }
 
-    fun validatePrefixClientNumber(phoneNumber: String): String {
+    private fun validatePrefixClientNumber(phoneNumber: String): String {
         var phoneNumber = phoneNumber
         if (phoneNumber.startsWith("62")) {
             phoneNumber = phoneNumber.replaceFirst("62".toRegex(), "0")
@@ -131,7 +124,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         return phoneNumber.replace("[^0-9]+".toRegex(), "")
     }
 
-    fun formatPrefixClientNumber(phoneNumber: String?): String {
+    private fun formatPrefixClientNumber(phoneNumber: String?): String {
         phoneNumber?.run {
             if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
                 return phoneNumber

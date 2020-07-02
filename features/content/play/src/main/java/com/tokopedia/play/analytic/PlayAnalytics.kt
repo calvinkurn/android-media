@@ -13,16 +13,30 @@ import com.tokopedia.trackingoptimizer.model.EventModel
 
 object PlayAnalytics {
 
+    private const val KEY_EVENT = "event"
+    private const val KEY_EVENT_CATEGORY = "eventCategory"
+    private const val KEY_EVENT_ACTION = "eventAction"
+    private const val KEY_EVENT_LABEL = "eventLabel"
+    private const val KEY_SCREEN_NAME = "screenName"
+    private const val KEY_CURRENT_SITE = "currentSite"
+    private const val KEY_CLIENT_ID = "clientId"
+    private const val KEY_SESSION_IRIS = "sessionIris"
+    private const val KEY_USER_ID = "userId"
+    private const val KEY_BUSINESS_UNIT = "businessUnit"
+
+    private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
     private const val KEY_TRACK_CLICK_BACK = "clickBack"
     private const val KEY_TRACK_ADD_TO_CART = "addToCart"
     private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
     private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
+    private const val KEY_TRACK_CURRENT_SITE = "tokopediamarketplace"
+    private const val KEY_TRACK_BUSINESS_UNIT = "play"
 
     private const val KEY_TRACK_CLICK = "click"
     private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
 
     fun sendScreen(channelId: String, channelType: PlayChannelType) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated("/group-chat-room/$channelId/${channelType.value}")
+        TrackApp.getInstance().gtm.sendScreenAuthenticated("/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}")
     }
 
     fun clickLeaveRoom(channelId: String, duration: Long, channelType: PlayChannelType) {
@@ -52,12 +66,20 @@ object PlayAnalytics {
         )
     }
 
-    fun clickWatchArea(channelId: String, channelType: PlayChannelType) {
+    fun clickWatchArea(channelId: String, userId: String, channelType: PlayChannelType, screenOrientation: ScreenOrientation) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK watch area",
-                "$channelId - ${channelType.value}"
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "$KEY_TRACK_CLICK watch area",
+                        KEY_EVENT_LABEL to "$channelId - ${channelType.value} - ${screenOrientation.value}",
+                        KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
         )
     }
 
@@ -147,7 +169,7 @@ object PlayAnalytics {
                               channelId: String,
                               listOfProducts: List<ProductLineUiModel>,
                               channelType: PlayChannelType) {
-        if (listOfProducts.isNotEmpty())
+        if (listOfProducts.isNotEmpty()) {
             trackingQueue.putEETracking(
                     EventModel(
                             "productView",
@@ -162,11 +184,13 @@ object PlayAnalytics {
                             )
                     )
             )
+        }
     }
 
     fun clickProduct(trackingQueue: TrackingQueue,
                      channelId: String,
                      product: ProductLineUiModel,
+                     position: Int,
                      channelType: PlayChannelType) {
         trackingQueue.putEETracking(
                 EventModel(
@@ -179,7 +203,7 @@ object PlayAnalytics {
                         "ecommerce" to hashMapOf(
                                 "click" to hashMapOf(
                                         "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                                        "products" to convertProductsToListOfObject(listOf(product))
+                                        "products" to  listOf(convertProductToHashMapWithList(product, position))
                                 )
                         )
                 )
@@ -235,13 +259,64 @@ object PlayAnalytics {
 
     fun trackVideoBuffering(
             bufferCount: Int,
-            bufferDurationInSecond: Int
+            bufferDurationInSecond: Int,
+            channelId: String,
+            userId: String,
+            channelType: PlayChannelType
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_VIEW_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "buffer",
-                "$bufferCount - $bufferDurationInSecond"
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "buffer",
+                        KEY_EVENT_LABEL to "$bufferCount - $bufferDurationInSecond - $channelId - ${channelType.value}",
+                        KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
+    /**
+     * User click "full screen" CTA from portrait to landscape video (not triggered when user click from landscape to portrait)
+     */
+    fun clickCtaFullScreenFromPortraitToLandscape(userId: String, channelId: String, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "$KEY_TRACK_CLICK full screen to landscape",
+                        KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                        KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
+    /**
+     * User tilt/rotate their phone to see in full screen
+     */
+    fun userTiltFromPortraitToLandscape(userId: String, channelId: String, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "rotate phone to full screen",
+                        KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                        KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
         )
     }
 

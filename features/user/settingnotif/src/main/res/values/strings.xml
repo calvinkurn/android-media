@@ -39,5 +39,5 @@
     <string name="settingnotif_ticker_sms_desc">Notifikasi SMS sifatnya penting karena memberimu kabar soal keamanan akun dan status transaksi. Hati-hati saat terima SMS spam yang mengatasnamakan Tokopedia, ya.\n\nJika kamu menerima SMS tersebut,</string>
     <string name="settingnotif_ticker_sms_more">pelajari selengkapnya di sini.</string>
 
-    <string name="settingnotif_security_guide_link">https://www.tokopedia.com/help/browse/t-0142-panduan-keamanan</string>
+    <string name="settingnotif_security_guide_link">https://www.tokopedia.com/help/article/st-1030-jaga-keamanan-akun-tokopedia</string>
 </resources>

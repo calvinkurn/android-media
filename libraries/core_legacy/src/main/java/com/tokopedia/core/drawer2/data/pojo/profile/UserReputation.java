@@ -22,22 +22,6 @@ public class UserReputation {
     @Expose
     private String neutral;
 
-    public String getPositivePercentage() {
-        return positivePercentage;
-    }
-
-    public void setPositivePercentage(String positivePercentage) {
-        this.positivePercentage = positivePercentage;
-    }
-
-    public Integer getNoReputation() {
-        return noReputation;
-    }
-
-    public void setNoReputation(Integer noReputation) {
-        this.noReputation = noReputation;
-    }
-
     public String getNegative() {
         return negative;
     }

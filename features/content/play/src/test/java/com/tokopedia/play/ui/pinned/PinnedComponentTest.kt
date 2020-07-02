@@ -273,7 +273,7 @@ class PinnedComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class PinnedComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : PinnedComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class PinnedComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : PinnedComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): PinnedView {
             return mockk(relaxed = true)
         }

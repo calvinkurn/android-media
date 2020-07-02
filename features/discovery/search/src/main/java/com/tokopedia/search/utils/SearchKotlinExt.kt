@@ -1,5 +1,7 @@
 package com.tokopedia.search.utils
 
+import androidx.recyclerview.widget.RecyclerView
+
 fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
     if (this == null) return mapOf()
 
@@ -10,4 +12,9 @@ fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
     }
 
     return mapValuesInString
+}
+
+internal fun RecyclerView.addItemDecorationIfNotExists(itemDecoration: RecyclerView.ItemDecoration) {
+    val hasNoItemDecoration = itemDecorationCount == 0
+    if (hasNoItemDecoration) addItemDecoration(itemDecoration)
 }

@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
-import com.tokopedia.flight.search.util.FlightSearchCache;
+import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 

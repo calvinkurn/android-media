@@ -7,4 +7,5 @@
 
     <color name="topads_item_source_name">#31353b</color>
     <color name="topads_item_url">#A4AAB3</color>
+    <color name="topads_item_label">#73777E</color>
 </resources>

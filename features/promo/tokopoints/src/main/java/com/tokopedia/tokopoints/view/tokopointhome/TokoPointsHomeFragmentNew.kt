@@ -42,7 +42,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
@@ -421,7 +420,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     AnalyticsTrackerUtil.ActionKeys.CLICK_LOYALTY_SAYA,
                     "")
         } else if (source.id == R.id.text_failed_action) {
-            mPresenter!!.getTokoPointDetail()
+            mPresenter.getTokoPointDetail()
         } else if (source.id == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
                 if (mStartPurchaseBottomSheet != null) {
@@ -519,7 +518,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 mSumToken = tokenDetail.sumToken
                 textMessage.text = tokenDetail.floating.tokenClaimCustomText
                 if (tokenDetail.floating.tokenAsset.floatingImgUrl.endsWith(".gif")) {
-                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.floating.tokenAsset.floatingImgUrl, com.tokopedia.session.R.color.green_50)
+                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.floating.tokenAsset.floatingImgUrl, R.color.tp_green_token)
                 } else {
                     ImageHandler.loadImageFitCenter(context, imgToken, tokenDetail.floating.tokenAsset.floatingImgUrl)
                 }
@@ -668,7 +667,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
+                    startActivity(intent)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
@@ -949,7 +949,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
-        private const val REQUEST_CODE_LOGIN = 1
+        const val REQUEST_CODE_LOGIN = 1
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()
         }
@@ -1027,7 +1027,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                             stopPerformanceMonitoring()
                         }
                         pageLoadTimePerformanceMonitoring = null
-                        rv_dynamic_link.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        rv_dynamic_link?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
     }

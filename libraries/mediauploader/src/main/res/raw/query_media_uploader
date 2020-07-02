@@ -2,6 +2,7 @@ query uploader(source: String){
   uploadpedia_policy(source: $source){
     source_policy{
       host
+      timeout
       source_type
       image_policy{
         max_file_size
