@@ -4,7 +4,7 @@
     <application>
         <activity
             android:name=".feature.comment.view.activity.KolCommentActivity"
-            android:label="@string/title_comment_kol"
+            android:label="@string/title_kol_comment"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
