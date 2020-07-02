@@ -97,6 +97,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 sku = variantDetail.sku
                 stock = variantDetail.stock.toIntOrZero()
                 status = if (variantDetail.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
+                // the minimum product variant price will replace the main product price
+                if (price < productInputModel.value?.detailInputModel?.price ?: 0.toBigInteger()) {
+                    productInputModel.value?.detailInputModel?.price = price
+                }
             }
             index++
         }
