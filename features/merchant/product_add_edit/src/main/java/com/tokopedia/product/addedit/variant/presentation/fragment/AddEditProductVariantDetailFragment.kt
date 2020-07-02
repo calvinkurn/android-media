@@ -39,7 +39,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         VariantDetailFieldsViewHolder.OnPriceInputTextChangedListener,
         VariantDetailFieldsViewHolder.OnStockInputTextChangedListener,
         MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener,
-        SelectVariantMainBottomSheet.SelectVariantMainListener {
+        SelectVariantMainBottomSheet.SelectVariantMainListener, VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener {
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -93,6 +93,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
         variantDetailFieldsAdapter = VariantDetailFieldsAdapter(VariantDetailInputTypeFactoryImpl(
+                this,
                 this,
                 this,
                 this,
@@ -152,6 +153,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val validatedInputModel = viewModel.validateProductVariantStockInput(stockInput, adapterPosition)
         viewModel.editVariantDetailInputMap(adapterPosition, validatedInputModel)
         return validatedInputModel
+    }
+
+    override fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int) {
+        val updatedInputModel = viewModel.updateVariantSkuInput(skuInput, adapterPosition)
+        viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
     }
 
     override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {

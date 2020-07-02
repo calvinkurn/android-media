@@ -19,7 +19,8 @@ import java.util.*
 class VariantDetailFieldsViewHolder(itemView: View?,
                                     onStatusSwitchCheckedChangeListener: OnStatusSwitchCheckedChangeListener,
                                     onPriceInputTextChangedListener: OnPriceInputTextChangedListener,
-                                    onStockInputTextChangedListener: OnStockInputTextChangedListener) :
+                                    onStockInputTextChangedListener: OnStockInputTextChangedListener,
+                                    onSkuInputTextChangedListener: OnSkuInputTextChangedListener) :
         AbstractViewHolder<VariantDetailFieldsViewModel>(itemView) {
 
     interface OnStatusSwitchCheckedChangeListener {
@@ -32,6 +33,10 @@ class VariantDetailFieldsViewHolder(itemView: View?,
 
     interface OnStockInputTextChangedListener {
         fun onStockInputTextChanged(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
+    }
+
+    interface OnSkuInputTextChangedListener {
+        fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int)
     }
 
     private var unitValueLabel: AppCompatTextView? = null
@@ -124,6 +129,23 @@ class VariantDetailFieldsViewHolder(itemView: View?,
                         // reset the listener
                         it.addTextChangedListener(this)
                     }
+                }
+            }
+        })
+
+        skuField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                if (isRendered) {
+                    val skuInput = charSequence?.toString() ?: ""
+                    onSkuInputTextChangedListener.onSkuInputTextChanged(skuInput, adapterPosition)
                 }
             }
         })

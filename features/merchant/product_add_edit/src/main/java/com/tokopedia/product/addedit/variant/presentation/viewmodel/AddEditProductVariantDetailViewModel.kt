@@ -173,6 +173,13 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         return inputModel
     }
 
+    fun updateVariantSkuInput(sku: String, adapterPosition: Int): VariantDetailInputLayoutModel {
+        val inputModel = inputLayoutModelMap[adapterPosition]
+                ?: VariantDetailInputLayoutModel()
+        inputModel.sku = sku
+        return inputModel
+    }
+
     fun validateVariantPriceInput(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
         val inputModel = inputLayoutModelMap[adapterPosition]
                 ?: VariantDetailInputLayoutModel()
