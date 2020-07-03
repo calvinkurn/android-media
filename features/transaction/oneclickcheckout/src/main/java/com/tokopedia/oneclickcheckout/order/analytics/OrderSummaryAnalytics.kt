@@ -291,7 +291,7 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 EventAction.VIEW_PRESELECTED_COURIER_OPTION,
                 spId
         )
-        gtmData.put(Key.USER_ID, userId)
+        gtmData[ExtraKey.USER_ID] = userId
         sendGeneralEvent(gtmData)
     }
 
