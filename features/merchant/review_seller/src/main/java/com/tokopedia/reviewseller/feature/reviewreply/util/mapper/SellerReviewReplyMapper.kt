@@ -47,10 +47,10 @@ object SellerReviewReplyMapper {
     fun mapToInsertTemplateReplyUiModel(reviewReplyInsertTemplateResponse: ReviewReplyInsertTemplateResponse.InsertResponseTemplate): InsertTemplateReplyUiModel {
         return InsertTemplateReplyUiModel(
                 isSuccess = reviewReplyInsertTemplateResponse.success,
-                templateId = reviewReplyInsertTemplateResponse.data[0].templateId,
-                title = reviewReplyInsertTemplateResponse.data[0].title,
-                message = reviewReplyInsertTemplateResponse.data[0].message,
-                status = reviewReplyInsertTemplateResponse.data[0].status,
+                templateId = reviewReplyInsertTemplateResponse.data.templateId,
+                title = reviewReplyInsertTemplateResponse.data.title,
+                message = reviewReplyInsertTemplateResponse.data.message,
+                status = reviewReplyInsertTemplateResponse.data.status,
                 defaultTemplateID = reviewReplyInsertTemplateResponse.defaultTemplateID,
                 error = reviewReplyInsertTemplateResponse.error
         )

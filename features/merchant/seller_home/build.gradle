@@ -18,6 +18,7 @@ dependencies {
     //features
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.sellerActiveCommon)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -55,7 +56,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     implementation rootProject.ext.debugToolsDependencies.chuck
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -86,3 +86,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

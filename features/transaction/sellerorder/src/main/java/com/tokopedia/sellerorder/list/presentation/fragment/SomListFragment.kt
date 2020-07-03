@@ -35,6 +35,8 @@ import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.sellerorder.BuildConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -199,6 +201,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingFilter()
         observingStatusList()
         observingOrders()
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     private fun showSellerMigrationTicker() {

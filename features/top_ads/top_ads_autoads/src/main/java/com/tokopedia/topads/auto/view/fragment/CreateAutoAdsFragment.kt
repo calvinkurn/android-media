@@ -31,6 +31,7 @@ import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.TipSheetBudgetList
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_autoads_create_auto_ad_layout.*
 import java.lang.NumberFormatException
@@ -38,6 +39,9 @@ import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 
+
+private const val CLICK_TIP_SEPUTAR = "click-seputar anggaran harian"
+private const val CLICK_IKLANKAN_BUTTON = "click-iklankan"
 class CreateAutoAdsFragment : BaseDaggerFragment() {
 
     @Inject
@@ -85,6 +89,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
                     userSession.shopId.toInt(),
                     SOURCE
             )))
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, "")
         }
 
         budgetViewModel.topAdsDeposit.observe(this, Observer {
@@ -100,7 +105,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
 
         tip_btn.setOnClickListener {
             TipSheetBudgetList.newInstance(it.context).show()
-
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIP_SEPUTAR, "")
         }
         val spannableText = SpannableString(MORE_INFO)
         val startIndex = 0

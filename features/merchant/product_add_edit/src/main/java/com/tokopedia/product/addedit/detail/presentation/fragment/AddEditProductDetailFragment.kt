@@ -28,10 +28,7 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.*
@@ -113,7 +110,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     lateinit var viewModel: AddEditProductDetailViewModel
 
     private var selectedDurationPosition: Int = UNIT_DAY
-    private var isPreOrderFirstTime = false
+    private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
 
     // product photo
@@ -330,12 +327,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set input type no suggestion to prevent red underline on text
         preOrderDurationUnitField?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
+        // pre order checked change listener
         preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
+                // tracker
+                if (!isPreOrderFirstTime) {
+                    if (viewModel.isEditing && !viewModel.isAdding) {
+                        ProductEditMainTracking.clickPreorderButton(shopId)
+                    } else {
+                        ProductAddMainTracking.clickPreorderButton(shopId)
+                    }
+                }
+
                 preOrderInputLayout?.visibility = View.VISIBLE
             } else {
                 preOrderInputLayout?.visibility = View.GONE
             }
+
+            viewModel.isPreOrderActivated.value = isChecked
         }
 
         preOrderDurationUnitField?.apply {
@@ -418,7 +427,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         // do the validation first
                         viewModel.validateProductPriceInput(it)
                         productPriceField?.textFieldInput?.let { editText ->
-                            InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                            InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
+                                    charSequence.length, count,this)
                         }
                     }
                 }
@@ -472,11 +482,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productStockInput.let { viewModel.validateProductStockInput(it) }
             }
         })
-
-        // pre order checked change listener
-        preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.isPreOrderActivated.value = isChecked
-        }
 
         // product pre order duration text change listener
         preOrderDurationField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -672,6 +677,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
+        // validate when 1 photo item is removed
+        val photoCount = productPhotoAdapter?.itemCount ?: 0
+        viewModel.validateProductPhotoInput(photoCount - 1)
+
+        // tracking
         if (viewModel.isEditing && !viewModel.isAdding) {
             ProductEditMainTracking.trackRemovePhoto(shopId)
         } else {
@@ -747,20 +757,21 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun inputAllDataInProductInputModel() {
-        viewModel.productInputModel.detailInputModel.productName = productNameField.getText()
-        viewModel.productInputModel.detailInputModel.categoryId = viewModel.productInputModel.detailInputModel.categoryId
-        viewModel.productInputModel.detailInputModel.price = productPriceField.getTextBigIntegerOrZero()
-        viewModel.productInputModel.detailInputModel.stock = productStockField.getTextIntOrZero()
-        viewModel.productInputModel.detailInputModel.minOrder = productMinOrderField.getTextIntOrZero()
-        viewModel.productInputModel.detailInputModel.condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
-        viewModel.productInputModel.detailInputModel.sku = productSkuField.getText()
-        viewModel.productInputModel.detailInputModel.imageUrlOrPathList = viewModel.productPhotoPaths
-        viewModel.productInputModel.detailInputModel.preorder.apply {
-            duration = preOrderDurationField.getTextIntOrZero()
-            timeUnit = selectedDurationPosition
-            isActive = preOrderSwitch?.isChecked ?: false
+        viewModel.productInputModel.detailInputModel.apply {
+            productName = productNameField.getText()
+            price = productPriceField.getTextBigIntegerOrZero()
+            stock = productStockField.getTextIntOrZero()
+            minOrder = productMinOrderField.getTextIntOrZero()
+            condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
+            sku = productSkuField.getText()
+            imageUrlOrPathList = viewModel.productPhotoPaths
+            preorder.apply {
+                duration = preOrderDurationField.getTextIntOrZero()
+                timeUnit = selectedDurationPosition
+                isActive = preOrderSwitch?.isChecked ?: false
+            }
+            wholesaleList = getWholesaleInput()
         }
-        viewModel.productInputModel.detailInputModel.wholesaleList = getWholesaleInput()
     }
 
     private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
@@ -977,17 +988,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToPreOrderSwitchStatus() {
         viewModel.isPreOrderActivated.observe(this, Observer {
+            isPreOrderFirstTime = false
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
-
-            if (isPreOrderFirstTime) {
-                if (viewModel.isEditing && !viewModel.isAdding) {
-                    ProductEditMainTracking.clickPreorderButton(shopId)
-                } else {
-                    ProductAddMainTracking.clickPreorderButton(shopId)
-                }
-            }
-            isPreOrderFirstTime = true
         })
     }
 
@@ -1283,7 +1286,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     // do the validation first
                     viewModel.validateProductPriceInput(it)
                     productPriceBulkPriceEditBottomSheetContent.tfu_product_price?.textFieldInput?.let { editText ->
-                        InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                        InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
+                                charSequence.length, count, this)
                     }
                     viewModel.shouldUpdateVariant = true
                 }
@@ -1299,33 +1303,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitInput(cacheManagerId: String) {
-        val detailInputModel = DetailInputModel(
-                productNameField.getText(),
-                viewModel.productInputModel.detailInputModel.categoryName,
-                viewModel.productInputModel.detailInputModel.categoryId,
-                "",
-                productPriceField.getTextBigIntegerOrZero(),
-                productStockField.getTextIntOrZero(),
-                productMinOrderField.getTextIntOrZero(),
-                if (isProductConditionNew) CONDITION_NEW else CONDITION_USED,
-                productSkuField.getText(),
-                viewModel.productInputModel.detailInputModel.status,
-                viewModel.productPhotoPaths,
-                PreorderInputModel(
-                        preOrderDurationField.getTextIntOrZero(),
-                        selectedDurationPosition,
-                        preOrderSwitch?.isChecked ?: false
-                ),
-                getWholesaleInput()
-        )
-
-        updateImageList(detailInputModel)
+        inputAllDataInProductInputModel()
         SaveInstanceCacheManager(requireContext(), cacheManagerId).apply {
             val productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java, ProductInputModel())
-            productInputModel?.apply {
-                this.detailInputModel = detailInputModel
-            }
-            put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+            productInputModel?.let { viewModel.productInputModel = it }
+            put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
         }
         val intent = Intent()
         intent.putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)

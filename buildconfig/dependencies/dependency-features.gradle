@@ -22,8 +22,7 @@ ext {
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
 
-            broadcastMessage                : ":features:communication:broadcast_message",
-            broadcastMessageCommon          : ":features:communication:broadcast_message_common",
+//            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
 
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
@@ -138,6 +137,7 @@ ext {
 
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
+            sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerHome                      : ":features:merchant:seller_home",
             sellerOnboarding                : ":features:merchant:seller_onboarding",
             reviewSeller                    : ":features:merchant:review_seller",
@@ -149,6 +149,7 @@ ext {
             shopPage                        : ":features:merchant:shop_page",
             shopSettings                    : ":features:merchant:shop_settings",
             officialStore                  : ":features:merchant:official_store",
+            voucherCreation                 : ":features:merchant:voucher_creation",
             brandlist                       : ":features:merchant:brandlist",
             favorite                        : ":features:merchant:favorite",
             youtubeCommon                   : ":features:merchant:youtube_common",

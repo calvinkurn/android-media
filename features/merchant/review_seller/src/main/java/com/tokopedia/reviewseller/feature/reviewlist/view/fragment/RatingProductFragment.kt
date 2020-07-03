@@ -219,8 +219,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun loadInitialData() {
-        clearAllData()
-        rvRatingProduct?.visible()
+        isLoadingInitialData = true
+        reviewSellerAdapter.clearAllElements()
+        rvRatingProduct?.show()
         filter_and_sort_layout?.hide()
         search_bar_layout?.hide()
         globalError_reviewSeller?.hide()
@@ -234,6 +235,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 reviewSellerAdapter.showLoading()
                 loadNextPage(page)
+            }
+            override fun isDataEmpty(): Boolean {
+                return reviewSellerAdapter.list.isEmpty()
             }
         }
     }
@@ -389,11 +393,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
         reviewSellerAdapter.hideLoading()
         swipeToRefreshReviewSeller?.isRefreshing = false
-        if (reviewProductList.isEmpty() && isEmptyFilter) {
+        if ((reviewProductList.isEmpty() && reviewSellerAdapter.itemCount.isZero()) && isEmptyFilter) {
             showEmptyState()
             tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_filter)
             isEmptyFilter = false
-        } else if (reviewProductList.isEmpty() && !isEmptyFilter) {
+        } else if ((reviewProductList.isEmpty() && reviewSellerAdapter.itemCount.isZero()) && !isEmptyFilter) {
             showEmptyState()
             tvContentNoReviewsYet?.text = getString(R.string.content_no_reviews_yet)
         } else {

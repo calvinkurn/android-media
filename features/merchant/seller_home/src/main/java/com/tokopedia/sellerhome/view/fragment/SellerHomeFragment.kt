@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
@@ -109,7 +110,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private var performanceMonitoringSellerHomePostList: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeCarousel: PerformanceMonitoring? = null
 
-
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
     override fun initInjector() {
@@ -139,6 +139,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         observeWidgetData(sellerHomeViewModel.carouselWidgetData, WidgetType.CAROUSEL)
         observeTickerLiveData()
         observeShopStatusLiveData()
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun onResume() {
@@ -151,8 +152,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (userVisibleHint)
+        if (userVisibleHint) {
             SellerHomeTracking.sendScreen(screenName)
+            view?.post {
+                requestVisibleWidgetsData()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -415,15 +420,32 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
+            startHomeLayoutRenderMonitoring()
+
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
                 is Fail -> setOnErrorGetLayout(result.throwable)
             }
+
             stopPerformanceMonitoringSellerHomeLayout()
+            stopHomeLayoutRenderMonitoring()
         })
 
         setProgressBarVisibility(true)
+        startHomeLayoutNetworkMonitoring()
         sellerHomeViewModel.getWidgetLayout()
+    }
+
+    private fun startHomeLayoutNetworkMonitoring() {
+        (activity as? SellerHomeActivity)?.startHomeLayoutNetworkMonitoring()
+    }
+
+    private fun startHomeLayoutRenderMonitoring() {
+        (activity as? SellerHomeActivity)?.startHomeLayoutRenderMonitoring()
+    }
+
+    private fun stopHomeLayoutRenderMonitoring() {
+        (activity as? SellerHomeActivity)?.stopHomeLayoutRenderMonitoring()
     }
 
     private fun stopPerformanceMonitoringSellerHomeLayout() {

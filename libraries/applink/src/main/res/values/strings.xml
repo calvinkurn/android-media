@@ -64,4 +64,7 @@
     <!--Official Store -->
     <string name="title_brandlist">Brand List</string>
 
+    <!-- Voucher Creation -->
+    <string name="title_voucher_creation">Voucher Creation</string>
+
 </resources>

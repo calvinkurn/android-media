@@ -219,4 +219,8 @@
     <string name="topchat_title">Chat</string>
     <string name="title_inbox_chat">Chat</string>
     <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
+
+    <!-- Dynamic features Voucher Creation -->
+    <string name="title_voucher_creation">Voucher Create</string>
+
 </resources>

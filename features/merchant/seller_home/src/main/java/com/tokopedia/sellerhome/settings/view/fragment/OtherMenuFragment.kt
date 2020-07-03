@@ -24,6 +24,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
@@ -136,6 +138,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         setupOffset()
         setupView(view)
         observeLiveData()
+        observeFreeShippingStatus()
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
@@ -253,13 +257,29 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         with(otherMenuViewModel) {
             settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
-                    is Success -> showSettingShopInfoState(result.data)
+                    is Success -> {
+                        showSettingShopInfoState(result.data)
+                        otherMenuViewModel.getFreeShippingStatus()
+                    }
                     is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
                 }
             })
             isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
                 canShowErrorToaster = !isToasterAlreadyShown
             })
+        }
+    }
+
+    private fun observeFreeShippingStatus() {
+        observe(otherMenuViewModel.isFreeShippingActive) { freeShippingActive ->
+            if(freeShippingActive) {
+                otherMenuViewHolder?.setupFreeShippingLayout(
+                    fragmentManager,
+                    userSession
+                )
+            } else {
+                otherMenuViewHolder?.hideFreeShippingLayout()
+            }
         }
     }
 

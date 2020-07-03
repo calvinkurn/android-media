@@ -40,11 +40,6 @@ class ShopOpenRevampValidateDomainShopNameUseCase @Inject constructor(
         const val SHOP_NAME = "shopName"
         const val DOMAIN_NAME = "domain"
 
-        fun createRequestParams(domainName: String, shopName: String): RequestParams = RequestParams.create().apply {
-            putString(SHOP_NAME, shopName)
-            putString(DOMAIN_NAME, domainName)
-        }
-
         fun createRequestParam(domainName: String): RequestParams = RequestParams.create().apply {
             putString(DOMAIN_NAME, domainName)
         }

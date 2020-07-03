@@ -25,7 +25,8 @@ class GetChatBlastSellerMetadataUsecaseTest {
 
         private val successResult = ChatBlastSellerMetadataUiModel(
                 promo = 1000,
-                promoType = 2
+                promoType = 2,
+                url = "https://m.tokopedia.com/broadcast-chat"
         )
     }
 

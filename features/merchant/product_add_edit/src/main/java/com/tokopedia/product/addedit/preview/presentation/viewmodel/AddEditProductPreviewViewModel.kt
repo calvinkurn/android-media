@@ -10,10 +10,13 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantCombinationViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -27,12 +30,10 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE_LIMITED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_WAREHOUSE
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -154,7 +155,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
-                    is Fail -> ProductInputModel()
+                    is Fail -> {
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                        ProductInputModel()
+                    }
                 }
             }
             addSource(productAddResult) {

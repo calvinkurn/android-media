@@ -89,7 +89,7 @@ object ApplinkConstInternalMarketplace {
 
     // SetCashbackActivity
     @JvmField
-    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/{productName}/"
+    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
 
     // CreateReviewActivity
     @JvmField

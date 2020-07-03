@@ -7,6 +7,7 @@ import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -38,6 +39,7 @@ import kotlinx.android.synthetic.main.fragment_seller_seamless_login.*
 import kotlinx.android.synthetic.main.fragment_seller_seamless_login.view.*
 import kotlinx.android.synthetic.main.item_account_with_shop.*
 import kotlinx.android.synthetic.main.item_account_with_shop.view.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -101,22 +103,26 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     private fun handleIntentReceive(taskId: String, bundle: Bundle?) {
-        if(bundle != null) {
-            if(!bundle.containsKey(SeamlessSellerConstant.KEY_ERROR)) {
+        if (bundle != null) {
+            if (!bundle.containsKey(SeamlessSellerConstant.KEY_ERROR)) {
                 if (taskId == getUserTaskId
                         && bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME).isNotEmpty()
                         && bundle.getString(SeamlessSellerConstant.KEY_EMAIL).isNotEmpty()) {
-                            ImageHandler.loadImageCircle2(activity, seamless_fragment_avatar, bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
-                            seamless_fragment_shop_name.text = bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)
-                            seamless_fragment_name.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
-                            seamless_fragment_email.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL))
-                            hideProgressBar()
-                            if(autoLogin) { onPositiveBtnClick() }
+                    val drawableLeft = AppCompatResources.getDrawable(seamless_fragment_shop_name.context, R.drawable.ic_shop_dark_grey)
+                    ImageHandler.loadImageCircle2(activity, seamless_fragment_avatar, bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
+                    seamless_fragment_shop_name.text = bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)
+                    seamless_fragment_shop_name.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
+                    seamless_fragment_name.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
+                    seamless_fragment_email.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL))
+                    hideProgressBar()
+                    if (autoLogin) {
+                        onPositiveBtnClick()
+                    }
                 } else if (taskId == getKeyTaskId) {
                     seamlessViewModel.loginSeamless(bundle.getString(SeamlessSellerConstant.KEY_TOKEN))
                 } else moveToNormalLogin()
-            }  else moveToNormalLogin()
-        }else moveToNormalLogin()
+            } else moveToNormalLogin()
+        } else moveToNormalLogin()
     }
 
     private fun moveToNormalLogin(){
@@ -237,13 +243,14 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     private fun connectService() {
-        if(GlobalConfig.isSellerApp()) {
+        if(GlobalConfig.isSellerApp() && serviceConnection == null) {
             serviceConnection = RemoteServiceConnection()
             val i = Intent().apply {
                 component = ComponentName(SeamlessSellerConstant.MAINAPP_PACKAGE, SeamlessSellerConstant.SERVICE_PACKAGE)
             }
             val success = activity?.bindService(i, serviceConnection, Context.BIND_AUTO_CREATE)
             if(success == false)  {
+                Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Connect Service Failed';detail='Bind Service: $success'")
                 moveToNormalLogin()
             }
         }
@@ -288,6 +295,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
+            Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Service Disconnected';detail='$name'")
             service = null
             activity?.finish()
         }
