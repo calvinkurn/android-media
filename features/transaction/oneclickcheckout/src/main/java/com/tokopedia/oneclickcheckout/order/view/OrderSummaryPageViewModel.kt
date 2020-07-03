@@ -298,6 +298,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                     serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                                                                     isApplyLogisticPromo = false,
+                                                                    logisticPromoViewModel = null,
+                                                                    logisticPromoShipping = null,
                                                                     shippingRecommendationData = shippingRecommendationData)
                                                         }
                                                     }
@@ -407,7 +409,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     return
                                                 }
                                             } else {
-                                                shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) null else "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
+                                                shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromo.title}" else null, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
                                             }
                                         } else {
                                             shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null, isApplyLogisticPromo = false)
@@ -542,7 +544,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     globalEvent.value = OccGlobalEvent.Error(e)
                                     val shippingRecommendationData = shipping.shippingRecommendationData
                                     if (shippingRecommendationData != null) {
-                                        _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromoUiModel.title}", isApplyLogisticPromo = false, logisticPromoShipping = null))
+                                        _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = if(shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null))
                                         orderPreference.value = OccState.Success(_orderPreference!!)
                                     }
                                     orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
@@ -557,6 +559,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                 val shippingRecommendationData = shipping.shippingRecommendationData
                                                 var logisticPromoShipping: ShippingCourierUiModel? = null
                                                 if (shippingRecommendationData != null) {
+                                                    val shouldEnableServicePicker = _orderPreference?.shipping?.isServicePickerEnable == true || !_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty()
                                                     for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
                                                         if (shippingDurationViewModel.isSelected) {
                                                             for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
@@ -571,15 +574,16 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                 }
                                                             }
                                                         }
-                                                        if (shipping.isServicePickerEnable) {
+                                                        if (shouldEnableServicePicker) {
                                                             shippingDurationViewModel.isSelected = false
                                                         }
                                                     }
                                                     if (logisticPromoShipping != null) {
                                                         shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
-                                                        _orderPreference = _orderPreference?.copy(shipping = shipping.copy(shippingRecommendationData = shippingRecommendationData,
-                                                                insuranceData = logisticPromoShipping.productData?.insurance, logisticPromoTickerMessage = null,
-                                                                isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
+                                                        val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                                                        _orderPreference = _orderPreference?.copy(shipping = shipping.copy(shippingRecommendationData = shippingRecommendationData, isServicePickerEnable = shouldEnableServicePicker,
+                                                                insuranceData = logisticPromoShipping.productData?.insurance, serviceErrorMessage = if (needPinpoint) NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
+                                                                needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
                                                         orderPreference.value = OccState.Success(_orderPreference!!)
                                                         globalEvent.value = OccGlobalEvent.Normal
                                                         orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
@@ -590,7 +594,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                             }
                                         }
                                     }
-                                    _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromoUiModel.title}", isApplyLogisticPromo = false, logisticPromoShipping = null))
+                                    _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null))
+                                    orderPreference.value = OccState.Success(_orderPreference!!)
+                                    globalEvent.value = OccGlobalEvent.Normal
                                     orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                                     updatePromoState(response.promoUiModel)
                                 }
