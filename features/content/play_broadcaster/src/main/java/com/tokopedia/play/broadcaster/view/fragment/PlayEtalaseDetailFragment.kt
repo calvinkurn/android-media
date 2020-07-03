@@ -219,7 +219,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
             toasterBottomMargin = bottomActionView.rootView.height + offset8
         }
 
-        requireView().showToaster(
+        view?.showToaster(
                 message = message,
                 type = type,
                 duration = duration,

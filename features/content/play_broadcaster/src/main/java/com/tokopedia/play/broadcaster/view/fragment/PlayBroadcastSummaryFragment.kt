@@ -134,7 +134,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
             toasterBottomMargin = btnFinish.height + offset24
         }
 
-        requireView().showToaster(
+        view?.showToaster(
                 message = message,
                 duration = duration,
                 type = type,

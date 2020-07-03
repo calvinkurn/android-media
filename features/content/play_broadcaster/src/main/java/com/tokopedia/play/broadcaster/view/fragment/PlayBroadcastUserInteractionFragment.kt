@@ -308,7 +308,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             toasterBottomMargin = ivShareLink.height + offset24
         }
 
-        requireView().showToaster(
+        view?.showToaster(
                 message = message,
                 duration = duration,
                 type = type,
@@ -399,7 +399,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 }
                 is NetworkResult.Fail -> {
                     loadingView.hide()
-                    requireView().showToaster(
+                    view?.showToaster(
                             message = it.error.localizedMessage,
                             type = Toaster.TYPE_ERROR,
                             duration = Toaster.LENGTH_INDEFINITE

@@ -189,7 +189,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
             when (it) {
                 is NetworkResult.Success -> openFinalPreparationPage()
                 NetworkResult.Loading -> {} //showLoading(true)
-                is NetworkResult.Fail -> requireView().showToaster(it.error.localizedMessage)
+                is NetworkResult.Fail -> view?.showToaster(it.error.localizedMessage)
             }
         })
     }

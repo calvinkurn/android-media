@@ -252,7 +252,7 @@ class PlayCoverSetupFragment @Inject constructor(
             toasterBottomMargin = bottomActionHeight + offset8
         }
 
-        requireView().showToaster(
+        view?.showToaster(
                 message = message,
                 type = type,
                 duration = duration,

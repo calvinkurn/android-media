@@ -260,7 +260,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             toasterBottomMargin = btnStartLive.height + marginParams.bottomMargin + offset8
         }
 
-        requireView().showToaster(
+        view?.showToaster(
                 message = message,
                 actionLabel = actionLabel,
                 type = type,
