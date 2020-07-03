@@ -1070,12 +1070,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onVideoPlayerClicked(
             positionInFeed: Int,
             contentPosition: Int,
-            postId: String) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConstInternalContent.VIDEO_DETAIL,
-                postId
-        )
+            postId: String,
+            redirectUrl: String) {
+        onGoToLink(redirectUrl)
     }
 
     override fun onEmptyComponentClicked() {
