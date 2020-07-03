@@ -7,28 +7,31 @@ import android.os.Bundle;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.product.addedit.R;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 
 import java.util.ArrayList;
 
 public class SizechartPickerAddProductActivity extends ImagePickerActivity {
 
     UserSession userSession;
+    private static boolean isEdit = false;
+    public static final String EXTRA_IS_EDIT = "EXTRA_IS_EDIT";
 
-    public static Intent getIntent(Context context) {
+    public static Intent getIntent(Context context, Boolean isEdit) {
         Intent intent = new Intent(context, SizechartPickerAddProductActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, createSizechartImagePickerBuilder(context));
+        intent.putExtra(EXTRA_IS_EDIT, isEdit);
         intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, bundle);
         return intent;
     }
 
-    private static ImagePickerBuilder createSizechartImagePickerBuilder(Context context)  {
+    private static ImagePickerBuilder createSizechartImagePickerBuilder(Context context) {
         ImagePickerEditorBuilder imagePickerEditorBuilder = new ImagePickerEditorBuilder(
                 new int[]{ImageEditActionTypeDef.ACTION_BRIGHTNESS,
                         ImageEditActionTypeDef.ACTION_CONTRAST,
@@ -53,6 +56,7 @@ public class SizechartPickerAddProductActivity extends ImagePickerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getContext());
+        isEdit = getIntent().getBooleanExtra(EXTRA_IS_EDIT, false);
     }
 
     @Override
@@ -77,6 +81,7 @@ public class SizechartPickerAddProductActivity extends ImagePickerActivity {
         if (origin.getExtras() != null) {
             targetIntent.putExtras(origin.getExtras());
         }
+        targetIntent.putExtra(EXTRA_IS_EDIT, isEdit);
         return targetIntent;
     }
 }
