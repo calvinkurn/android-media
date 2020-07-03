@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.graphics.Paint
 import android.text.Editable
 import android.text.Html
 import android.text.TextUtils
@@ -39,6 +40,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvShopLocation by lazy { view.findViewById<Typography>(R.id.tv_shop_location) }
     private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
+    private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val ivFreeShipping by lazy { view.findViewById<ImageView>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
 
@@ -213,6 +215,14 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
         }
         tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false).removeDecimalSuffix()
+
+        if (product.originalPrice.isNotBlank()) {
+            tvProductSlashPrice.text = product.originalPrice
+            tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            tvProductSlashPrice.visible()
+        } else {
+            tvProductSlashPrice.gone()
+        }
 
         if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
             ivFreeShipping?.let {

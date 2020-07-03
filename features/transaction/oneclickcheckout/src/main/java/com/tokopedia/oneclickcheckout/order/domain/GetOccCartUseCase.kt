@@ -130,7 +130,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             productImageUrl = product.productImage.imageSrc
             maxOrderQuantity = product.productMaxOrder
             minOrderQuantity = product.productMinOrder
-            originalPrice = product.productOriginalPrice
+            originalPrice = product.productPriceOriginalFmt
             weight = product.productWeight
             isFreeOngkir = product.freeShipping.eligible
             freeOngkirImg = product.freeShipping.badgeUrl

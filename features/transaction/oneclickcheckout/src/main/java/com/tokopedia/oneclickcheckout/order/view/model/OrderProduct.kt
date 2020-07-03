@@ -11,7 +11,7 @@ data class OrderProduct(
         var productImageUrl: String = "",
         var maxOrderQuantity: Int = 0,
         var minOrderQuantity: Int = 0,
-        var originalPrice: Long = productPrice,
+        var originalPrice: String = "",
         var discountedPercentage: Float = 0f,
         var isFreeOngkir: Boolean = false,
         var freeOngkirImg: String = "",
