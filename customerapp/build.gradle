@@ -355,7 +355,6 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.playCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
@@ -420,7 +419,6 @@ dependencies {
     implementation project(rootProject.ext.features.agerestriction)
 
     implementation project(rootProject.ext.features.promotionsTarget)
-    implementation project(rootProject.ext.features.findNative)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
     if (rootProject.ext.debugToolsEnabled) {
