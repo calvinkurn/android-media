@@ -20,7 +20,6 @@ class TableColumnTextViewHolder(itemView: View?) : AbstractViewHolder<TableRowsU
     }
 
     override fun bind(element: TableRowsUiModel.RowColumnText) {
-        println("text -> text isLeftAlign : ${element.isLeftAlign} -> ${element.valueStr}")
         with(itemView) {
             tvTableColumnText.text = element.valueStr
             if (element.isLeftAlign) {

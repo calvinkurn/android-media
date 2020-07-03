@@ -21,8 +21,8 @@ class TableColumnImageViewHolder(itemView: View?) : AbstractViewHolder<TableRows
 
     override fun bind(element: TableRowsUiModel.RowColumnImage) {
         with(itemView) {
-            val dp8 = context.resources.getDimension(R.dimen.spacing_lvl2)
-            ImageHandler.loadImageRounded(context, imgTableColumn, element.valueStr, dp8)
+            val dp4 = context.resources.getDimension(R.dimen.spacing_lvl2)
+            ImageHandler.loadImageRounded(context, imgTableColumn, element.valueStr, dp4)
         }
     }
 }

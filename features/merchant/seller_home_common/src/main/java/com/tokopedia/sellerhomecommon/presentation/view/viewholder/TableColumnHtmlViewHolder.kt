@@ -21,7 +21,6 @@ class TableColumnHtmlViewHolder(itemView: View?) : AbstractViewHolder<TableRowsU
     }
 
     override fun bind(element: TableRowsUiModel.RowColumnHtml) {
-        println("text -> html isLeftAlign : ${element.isLeftAlign}")
         with(itemView) {
             tvTableColumnHtml.text = element.valueStr.parseAsHtml()
             if (element.isLeftAlign) {

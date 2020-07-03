@@ -20,7 +20,6 @@ class TableHeaderColumnViewHolder(itemView: View?) : AbstractViewHolder<TableHea
     }
 
     override fun bind(element: TableHeaderUiModel) {
-        println("text -> header isLeftAlign : ${element.isLeftAlign} -> ${element.title}")
         with(itemView) {
             tvTableHeader.text = element.title
             if (element.isLeftAlign) {
