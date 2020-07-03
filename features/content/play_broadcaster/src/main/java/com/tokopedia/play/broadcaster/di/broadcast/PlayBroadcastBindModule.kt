@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.di.broadcast
 
+import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
 import dagger.Binds
 import dagger.Module
@@ -25,4 +26,19 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @PlayBroadcastScope
     abstract fun bindCoverDataSource(dataStore: CoverDataStoreImpl): CoverDataStore
+
+    /**
+     * Config
+     */
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindChannelConfigStore(configStore: ChannelConfigStoreImpl): ChannelConfigStore
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindProductConfigStore(configStore: ProductConfigStoreImpl): ProductConfigStore
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
 }

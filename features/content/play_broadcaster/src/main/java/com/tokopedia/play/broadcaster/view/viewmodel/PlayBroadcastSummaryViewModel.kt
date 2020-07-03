@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
@@ -20,9 +21,13 @@ import javax.inject.Inject
  */
 
 class PlayBroadcastSummaryViewModel @Inject constructor(
+        private val channelConfigStore: ChannelConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase
 ) : ViewModel() {
+
+    private val channelId: String
+        get() = channelConfigStore.getChannelId()
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
@@ -31,7 +36,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     val observableTrafficMetrics: LiveData<NetworkResult<List<TrafficMetricUiModel>>>
         get() = _observableTrafficMetrics
 
-    fun fetchLiveTraffic(channelId: String) {
+    fun fetchLiveTraffic() {
         _observableTrafficMetrics.value = NetworkResult.Loading
         scope.launchCatchError(block = {
             val liveMetrics = withContext(dispatcher.io) {
@@ -40,7 +45,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
             }
             _observableTrafficMetrics.value = NetworkResult.Success(PlayBroadcastUiMapper.mapToLiveTrafficUiMetrics(liveMetrics))
         }) {
-            _observableTrafficMetrics.value = NetworkResult.Fail(it) { fetchLiveTraffic(channelId) }
+            _observableTrafficMetrics.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
         }
 
     }

@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.Manifest
 import androidx.lifecycle.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.ProductData
@@ -35,6 +36,7 @@ import javax.inject.Inject
  */
 class PlayBroadcastViewModel @Inject constructor(
         private val mDataStore: PlayBroadcastDataStore,
+        private val hydraConfigStore: HydraConfigStore,
         private val playPusher: PlayPusher,
         private val permissionUtil: PlayPermissionUtil,
         private val getConfigurationUseCase: GetConfigurationUseCase,
@@ -50,8 +52,8 @@ class PlayBroadcastViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    val channelId: String
-        get() = _observableChannelId.value?: throw IllegalStateException("Channel ID has not been retrieved")
+    private val channelId: String
+        get() = hydraConfigStore.getChannelId()
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
@@ -96,12 +98,12 @@ class PlayBroadcastViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-    private val _observableChannelId: MutableLiveData<String> = MediatorLiveData<String>().apply {
+    private val _observableChannelId: LiveData<String> = MediatorLiveData<String>().apply {
         addSource(_observableConfigInfo) {
-            if (it is NetworkResult.Success) value = it.data.channelId
+            if (it is NetworkResult.Success) setChannelId(it.data.channelId)
         }
         addSource(_observableChannelInfo) {
-            if (it is NetworkResult.Success) value = it.data.channelId
+            if (it is NetworkResult.Success) setChannelId(it.data.channelId)
         }
     }
 
@@ -161,6 +163,7 @@ class PlayBroadcastViewModel @Inject constructor(
             val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
             if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+            setMaxMinProduct(configUiModel.productTagConfig)
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
@@ -182,7 +185,7 @@ class PlayBroadcastViewModel @Inject constructor(
             )
             return@withContext createChannelUseCase.executeOnBackground()
         }
-        _observableChannelId.value = channelId.id
+        setChannelId(channelId.id)
     }
 
     private suspend fun getChannelById(channelId: String): Throwable? {
@@ -305,6 +308,15 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun setSelectedCover(cover: PlayCoverUiModel) {
         getCurrentSetupDataStore().setFullCover(cover)
+    }
+
+    private fun setChannelId(channelId: String) {
+        hydraConfigStore.setChannelId(channelId)
+    }
+
+    private fun setMaxMinProduct(configModel: ProductTagConfigUiModel) {
+        hydraConfigStore.setMaxProduct(configModel.maxProduct)
+        hydraConfigStore.setMinProduct(configModel.minProduct)
     }
 
     /**

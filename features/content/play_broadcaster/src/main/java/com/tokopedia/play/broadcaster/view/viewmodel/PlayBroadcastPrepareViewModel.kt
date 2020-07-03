@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
@@ -23,11 +24,15 @@ import javax.inject.Inject
  */
 class PlayBroadcastPrepareViewModel @Inject constructor(
         private val mDataStore: PlayBroadcastDataStore,
+        private val channelConfigStore: ChannelConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
         private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
         private val userSession: UserSessionInterface
 ) : ViewModel() {
+
+    private val channelId: String
+        get() = channelConfigStore.getChannelId()
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
@@ -54,7 +59,7 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         mDataStore.setFromSetupStore(setupDataStore)
     }
 
-    fun createLiveStream(channelId: String) {
+    fun createLiveStream() {
         if (!isDataAlreadyValid()) {
             _observableCreateLiveStream.value = NetworkResult.Fail(IllegalStateException("Oops tambah cover dulu sebelum mulai"))
             return
