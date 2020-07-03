@@ -48,7 +48,7 @@ class ProductItemViewHolder(val view: View,
                 view.produk_terjual_count.text = statsData[adapterPosition].statTotalSold
             }
             view.label.visibility = View.INVISIBLE
-            view.img_menu.visibility = View.GONE
+            view.img_menu.visibility = View.INVISIBLE
             view.progress_layout.visibility = View.GONE
             view.btn_switch.setOnCheckedChangeListener { buttonView, isChecked ->
                 onSwitchAction.invoke(adapterPosition, isChecked)

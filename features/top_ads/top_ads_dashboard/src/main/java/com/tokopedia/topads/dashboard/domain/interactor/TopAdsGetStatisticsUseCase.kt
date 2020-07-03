@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
@@ -27,9 +28,10 @@ constructor(private val topAdsDashboardRepository: TopAdsDashboardRepository) : 
 
         @Inject
         fun createRequestParams(startDate: Date, endDate: Date,
-                                @TopAdsStatisticsType type: Int, shopId: String): RequestParams {
+                                @TopAdsStatisticsType type: Int, shopId: String, groupId: String?): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(TopAdsCommonConstant.PARAM_SHOP_ID, shopId)
+            requestParams.putString(GROUP, groupId)
             requestParams.putString(TopAdsDashboardConstant.PARAM_TYPE, type.toString())
             requestParams.putObject(TopAdsDashboardConstant.PARAM_START_DATE,
                     SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate))
