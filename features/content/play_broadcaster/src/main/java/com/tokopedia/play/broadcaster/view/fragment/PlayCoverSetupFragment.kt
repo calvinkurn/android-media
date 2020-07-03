@@ -70,6 +70,8 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private var mListener: Listener? = null
 
+    private var toasterBottomMargin = 0
+
     private val isEditCoverMode: Boolean
         get() = arguments?.getBoolean(EXTRA_IS_EDIT_COVER_MODE, false) ?: false
 
@@ -84,7 +86,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 true
             }
             coverChangeState is NotChangeable -> {
-                requireView().showToaster(
+                showToaster(
                         message = coverChangeState.reason.localizedMessage,
                         type = Toaster.TYPE_NORMAL
                 )
@@ -242,6 +244,23 @@ class PlayCoverSetupFragment @Inject constructor(
         })
     }
 
+    private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "") {
+        if (toasterBottomMargin == 0) {
+            val coverSetupBottomActionHeight = coverSetupView.getBottomActionView().height
+            val bottomActionHeight = if (coverSetupBottomActionHeight != 0) coverSetupBottomActionHeight else coverCropView.getBottomActionView().height
+            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            toasterBottomMargin = bottomActionHeight + offset8
+        }
+
+        view?.showToaster(
+                message = message,
+                type = type,
+                duration = duration,
+                actionLabel = actionLabel,
+                bottomMargin = toasterBottomMargin
+        )
+    }
+
     private fun openCoverChooser(coverSource: CoverSource) {
         when (val coverChangeState = viewModel.coverChangeState()) {
             Changeable -> {
@@ -249,7 +268,7 @@ class PlayCoverSetupFragment @Inject constructor(
                         .show(coverSource)
             }
             is NotChangeable -> {
-                requireView().showToaster(
+                showToaster(
                         message = coverChangeState.reason.localizedMessage,
                         type = Toaster.TYPE_NORMAL
                 )
@@ -400,7 +419,7 @@ class PlayCoverSetupFragment @Inject constructor(
         coverSetupView.setLoading(false)
         coverCropView.setLoading(false)
 
-        requireView().showToaster(
+        showToaster(
                 message = e.localizedMessage,
                 type = Toaster.TYPE_ERROR
         )

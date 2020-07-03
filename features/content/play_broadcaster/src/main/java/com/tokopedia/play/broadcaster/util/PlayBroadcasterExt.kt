@@ -138,9 +138,11 @@ internal fun View.showToaster(
         type: Int = Toaster.TYPE_NORMAL,
         duration: Int = Toaster.LENGTH_LONG,
         actionLabel: String = "",
-        actionListener: View.OnClickListener = View.OnClickListener { }
+        actionListener: View.OnClickListener = View.OnClickListener { },
+        bottomMargin: Int? = null
 ) {
     if (actionLabel.isNotEmpty()) Toaster.toasterCustomCtaWidth = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+    if (bottomMargin != null) Toaster.toasterCustomBottomHeight = bottomMargin
     Toaster.make(this,
             text = message,
             duration = duration,

@@ -50,11 +50,10 @@ class PlaySearchResultFragment @Inject constructor(
         }
 
         override fun onProductSelectError(reason: Throwable) {
-            Toaster.make(
-                    view = requireView(),
-                    text = reason.localizedMessage,
+            etalaseSetupCoordinator.showToaster(
+                    message = reason.localizedMessage,
                     duration = Toaster.LENGTH_SHORT,
-                    actionText = getString(R.string.play_ok)
+                    actionLabel = getString(R.string.play_ok)
             )
         }
     })
