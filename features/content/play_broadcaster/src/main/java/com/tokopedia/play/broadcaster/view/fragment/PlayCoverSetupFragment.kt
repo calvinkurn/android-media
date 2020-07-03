@@ -287,8 +287,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun shouldUploadCover(coverTitle: String) {
-        val coverUri = viewModel.coverUri
-        if (coverUri != null && viewModel.isValidCoverTitle(coverTitle)) {
+        if (viewModel.isValidCoverTitle(coverTitle)) {
             if (isGalleryPermissionGranted()) viewModel.uploadCover(bottomSheetCoordinator.channelId, coverTitle)
             else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
         }
@@ -374,8 +373,6 @@ class PlayCoverSetupFragment @Inject constructor(
     private fun getOriginalProductImage(productCropping: CoverSetupState.Cropping.Product) {
         showCoverCropLayout(null)
         scope.launch {
-            //TODO("Remove delay")
-            delay(1200)
             val originalImageUrl = viewModel.getOriginalImageUrl(productCropping.productId, productCropping.imageUrl)
             Glide.with(requireContext())
                     .asBitmap()
@@ -416,15 +413,14 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     private fun observeCropState() {
         viewModel.observableCropState.observe(viewLifecycleOwner, Observer {
-            @Suppress("IMPLICIT_CAST_TO_ANY")
             when (it) {
                 CoverSetupState.Blank -> showInitCoverLayout(null)
                 is CoverSetupState.Cropping -> handleCroppingState(it)
                 is CoverSetupState.Cropped -> {
-                    if (isEditCoverMode && it.state != SetupDataState.Uploaded) shouldUploadCover(coverTitle = viewModel.savedCoverTitle)
-                    else showInitCoverLayout(it.coverImage)
+                    if (!isEditCoverMode) showInitCoverLayout(it.coverImage)
+                    else if (it.state != SetupDataState.Uploaded) shouldUploadCover(coverTitle = viewModel.savedCoverTitle)
                 }
-            }.exhaustive
+            }
         })
     }
 

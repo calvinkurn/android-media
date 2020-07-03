@@ -76,6 +76,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         }
 
     val observableCropState: LiveData<CoverSetupState> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
+        println("Latest Crop State: $it")
         it.croppedCover
     }
 
