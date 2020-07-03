@@ -134,7 +134,7 @@ object PlayBroadcastUiMapper {
                 channelType =  channelStatus.second,
                 durationConfig = DurationConfigUiModel(
                         duration = config.maxDuration,
-                        pauseDuration = config.maxPauseDuration,
+                        pauseDuration = config.maxPauseDuration * 1000,
                         errorMessage = config.maxDurationDesc),
                 productTagConfig = ProductTagConfigUiModel(
                         maxProduct = config.maxTaggedProduct,

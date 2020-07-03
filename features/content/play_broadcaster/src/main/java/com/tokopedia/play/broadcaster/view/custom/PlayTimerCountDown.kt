@@ -75,6 +75,17 @@ class PlayTimerCountDown @JvmOverloads constructor(
         if (::timer.isInitialized) timer.cancel()
     }
 
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+        if (visibility == View.GONE) {
+            textAnimatorOut.end()
+            textAnimatorIn.end()
+            textAnimatorSet.end()
+            animatorProgressCircularOut.end()
+            animatorInfoOut.end()
+        }
+    }
+
     fun startCountDown(property: AnimationProperty, listener: Listener? = null){
         val textInterval = property.textCountDownInterval
 
