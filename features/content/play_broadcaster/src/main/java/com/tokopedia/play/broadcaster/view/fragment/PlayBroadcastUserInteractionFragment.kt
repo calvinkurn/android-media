@@ -86,6 +86,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         observeChannelInfo()
         observeLiveInfo()
+        observeLiveDuration()
         observeTotalViews()
         observeTotalLikes()
         observeChatList()
@@ -200,12 +201,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * render to ui
      */
-    private fun showTimeLeft(timeLeft: String) {
-        viewTimer.showTimeLeft(timeLeft)
+    private fun showCounterDuration(timeLeft: String) {
+        viewTimer.showCounterDuration(timeLeft)
     }
 
-    private fun showTimeRunOut(minutesUntilFinished: Long) {
-        viewTimer.showTimeRunOut(minutesUntilFinished)
+    private fun showTimeRemaining(minutesUntilFinished: Long) {
+        viewTimer.showTimeRemaining(minutesUntilFinished)
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {
@@ -344,18 +345,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun handleLiveInfo(pusherInfoState: PlayPusherInfoState) {
-        when (pusherInfoState) {
-            is PlayPusherInfoState.TimerActive -> showTimeLeft(pusherInfoState.timeRemaining)
-            is PlayPusherInfoState.TimerAlmostFinish -> showTimeRunOut(pusherInfoState.minutesUntilFinished)
-            is PlayPusherInfoState.TimerFinish -> {
-                stopLiveStreaming()
-                showDialogWhenTimeout()
-            }
-            is PlayPusherInfoState.Error -> handleLiveError(pusherInfoState.errorType)
-        }
-    }
-
     private fun handleLiveNetworkInfo(pusherNetworkState: PlayPusherNetworkState) {
         when(pusherNetworkState) {
             is PlayPusherNetworkState.Recover -> {
@@ -416,7 +405,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveInfo() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver(::handleLiveInfo))
+        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
+           if (it is PlayPusherInfoState.Error) handleLiveError(it.errorType)
+        })
     }
 
     private fun observeTotalViews() {
@@ -425,6 +416,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeTotalLikes() {
         parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
+    }
+
+    private fun observeLiveDuration() {
+        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, Observer {
+            it.handleLiveDuration(
+                    onActive = { duration -> showCounterDuration(duration) },
+                    onAlmostFinish = { remaining -> showTimeRemaining(remaining) },
+                    onFinish = {
+                        stopLiveStreaming()
+                        showDialogWhenTimeout()
+                    }
+            )
+        })
     }
 
     private fun observeChatList() {

@@ -11,7 +11,6 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -156,18 +155,6 @@ object PlayBroadcastUiMapper {
             status = PlayChannelStatus.getByValue(channel.basic.status.id)
     )
 
-    fun mapProductList(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
-        ProductContentUiModel(
-                id = it.id.toLongOrZero(),
-                name = it.productName,
-                imageUrl = "", // TODO("ask BE to return image url")
-                originalImageUrl = "", // TODO("ask BE to return image url")
-                stock = it.quantity,
-                isSelectedHandler = { false },
-                isSelectable = { NotSelectable(Throwable("should not be selectable")) }
-        )
-    }
-
     fun mapProductListToData(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
         ProductData(
                 id = it.id.toLongOrZero(),
@@ -203,5 +190,11 @@ object PlayBroadcastUiMapper {
             textContent = channel.share.text,
             redirectUrl = channel.share.redirectURL,
             shortenUrl = channel.share.useShortURL
+    )
+
+    fun mapLiveDuration(duration: LiveDuration): DurationUiModel = DurationUiModel(
+            duration = duration.duration,
+            remaining = duration.remaining,
+            maxDuration = duration.maxDuration
     )
 }
