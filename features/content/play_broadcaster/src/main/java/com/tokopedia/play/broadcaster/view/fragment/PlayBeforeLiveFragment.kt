@@ -59,6 +59,8 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private lateinit var exitDialog: DialogUnify
 
+    private var toasterBottomMargin = 0
+
     private val setupResultListener = object : SetupResultListener {
         override fun onSetupCanceled() {
         }
@@ -174,7 +176,10 @@ class PlayBeforeLiveFragment @Inject constructor(
                     btnStartLive.setLoading(false)
                 }
                 is NetworkResult.Fail -> {
-                    requireView().showToaster(it.error.localizedMessage, Toaster.TYPE_ERROR)
+                    showToaster(
+                            message = it.error.localizedMessage,
+                            type = Toaster.TYPE_ERROR
+                    )
                     btnStartLive.setLoading(false)
                 }
             }
@@ -214,7 +219,8 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun doCopyShareLink() {
         parentViewModel.shareInfo?.let { shareInfo ->
             PlayShareWrapper.doCopyShareLink(requireContext(), shareInfo) {
-                requireView().showToaster(message = getString(R.string.play_live_broadcast_share_link_copied),
+                showToaster(
+                        message = getString(R.string.play_live_broadcast_share_link_copied),
                         actionLabel = getString(R.string.play_ok))
             }
         }
@@ -241,6 +247,25 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun showDialogWhenActionClose() {
         getExitDialog().show()
+    }
+
+    private fun showToaster(
+            message: String,
+            type: Int = Toaster.TYPE_NORMAL,
+            actionLabel: String = ""
+    ) {
+        if (toasterBottomMargin == 0) {
+            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val marginParams = btnStartLive.layoutParams as ViewGroup.MarginLayoutParams
+            toasterBottomMargin = btnStartLive.height + marginParams.bottomMargin + offset8
+        }
+
+        requireView().showToaster(
+                message = message,
+                actionLabel = actionLabel,
+                type = type,
+                bottomMargin = toasterBottomMargin
+        )
     }
 
     private fun getEditTitleBottomSheet(): EditCoverTitleBottomSheet {
