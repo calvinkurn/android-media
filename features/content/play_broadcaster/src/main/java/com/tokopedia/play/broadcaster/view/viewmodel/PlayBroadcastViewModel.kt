@@ -195,7 +195,7 @@ class PlayBroadcastViewModel @Inject constructor(
             _observableChannelInfo.value = NetworkResult.Success(PlayBroadcastUiMapper.mapChannelInfo(channel))
             _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
 
-            setSelectedProduct(PlayBroadcastUiMapper.mapProductListToData(channel.productTags))
+            setSelectedProduct(PlayBroadcastUiMapper.mapChannelProductTags(channel.productTags))
             setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
 
             null
