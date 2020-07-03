@@ -359,18 +359,18 @@ class AddEditProductDescriptionFragment:
             val position = result.first
             val isItemStillTheSame: Boolean
             descriptionViewModel.isFetchingVideoData[position] = false
-            when (val requestResult = result.second) {
+            isItemStillTheSame = when (val requestResult = result.second) {
                 is Success -> {
                     val id = requestResult.data.id
                     if (id == null) {
-                        isItemStillTheSame = displayErrorOnSelectedVideo(position)
+                        displayErrorOnSelectedVideo(position)
                     } else {
-                        isItemStillTheSame = setDataOnSelectedVideo(requestResult.data, position)
+                        setDataOnSelectedVideo(requestResult.data, position)
                     }
                 }
                 is Fail -> {
-                    isItemStillTheSame = displayErrorOnSelectedVideo(position)
                     AddEditProductErrorHandler.logExceptionToCrashlytics(requestResult.throwable)
+                    displayErrorOnSelectedVideo(position)
                 }
             }
             adapter.notifyItemChanged(position)
