@@ -18,6 +18,7 @@ object OtpModeListQuery {
                 message
                 errorMessage
                 otpDigit
+                linkType
                 modeLists {
                     modeCode
                     modeText

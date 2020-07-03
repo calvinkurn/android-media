@@ -28,7 +28,10 @@ data class OtpModeListData(
         var errorMessage: String = "",
         @SerializedName("otpDigit")
         @Expose
-        var otpDigit: String = "",
+        var otpDigit: Int = 0,
+        @SerializedName("linkType")
+        @Expose
+        var linkType: Int = 0,
         @SerializedName("modeLists")
         @Expose
         var modeList: ArrayList<ModeListData> = arrayListOf()

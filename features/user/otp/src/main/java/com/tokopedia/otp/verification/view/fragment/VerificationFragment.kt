@@ -15,6 +15,7 @@ import android.text.style.ClickableSpan
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -47,6 +48,7 @@ import com.tokopedia.pin.PinUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.image.ImageUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -77,7 +79,7 @@ class VerificationFragment : BaseVerificationFragment() {
 
     override val viewBound = VerificationViewBinding()
 
-    override fun getScreenName() = TrackingValidatorConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
+    override fun getScreenName() = TrackingValidatorConstant.Screen.SCREEN_COTP + modeListData.modeText
 
     override fun initInjector() = getComponent(VerificationComponent::class.java).inject(this)
 
@@ -97,7 +99,7 @@ class VerificationFragment : BaseVerificationFragment() {
     override fun onStart() {
         super.onStart()
         sendOtp()
-//        analytics.sendScreen(activity, screenName)
+        analytics.trackScreen(screenName)
     }
 
     override fun onResume() {
@@ -161,7 +163,7 @@ class VerificationFragment : BaseVerificationFragment() {
             if (otpRequestData.success) {
                 analytics.trackSuccessClickResendButton()
                 hideLoading()
-                setPrefixMiscall(otpRequestData.message)
+                setPrefixMiscall(otpRequestData.prefixMisscall)
                 startCountDown()
                 showKeyboard()
                 viewBound.containerView?.let {
@@ -280,13 +282,14 @@ class VerificationFragment : BaseVerificationFragment() {
             val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 270f, resources.displayMetrics)
             viewBound.methodIcon?.layoutParams.apply {
                 this?.height = height.toInt()
+                this?.width = WRAP_CONTENT
                 viewBound.methodIcon?.layoutParams = this
             }
             viewBound.methodIcon?.setMargin(0,0,0,0)
-            viewBound.methodIcon?.setImageUrl(MISSCALL_IMAGE_URL)
+            viewBound.methodIcon?.let { ImageUtils.loadImage(it, MISSCALL_IMAGE_URL) }
         } else {
             if (modeListData.otpListImgUrl.isNotEmpty()) {
-                viewBound.methodIcon?.setImageUrl(modeListData.otpListImgUrl)
+                viewBound.methodIcon?.let { ImageUtils.loadImage(it, modeListData.otpListImgUrl) }
             }
         }
 
@@ -296,10 +299,7 @@ class VerificationFragment : BaseVerificationFragment() {
 
         viewBound.pin?.pinCount = modeListData.otpDigit
 
-        viewBound.pin?.pinPrimaryActionView?.setOnClickListener {
-            analytics.trackClickActivationButton()
-            validate(viewBound.pin?.value.toString())
-        }
+        viewBound.pin?.pinPrimaryActionView?.hide()
 
         viewBound.pin?.onPinChangedListener = object : PinUnify.OnPinChangedListener {
             override fun onFinish(value: CharSequence?) {
@@ -393,6 +393,7 @@ class VerificationFragment : BaseVerificationFragment() {
 
     private fun setPrefixMiscall(prefix: String = DEFAULT_PREFIX_MISCALL) {
         if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
+            viewBound.prefixTextMethodIcon?.text = prefix
             viewBound.pin?.pinPrefixText = prefix
         }
     }

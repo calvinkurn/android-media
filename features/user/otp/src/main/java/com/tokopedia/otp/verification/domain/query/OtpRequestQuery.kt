@@ -18,6 +18,7 @@ object OtpRequestQuery {
                 success
                 message
                 errorMessage
+                prefixMisscall
             }
         }
     """.trimIndent()

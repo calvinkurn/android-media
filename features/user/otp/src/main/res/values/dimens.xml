@@ -3,6 +3,8 @@
     <dimen name="verification_icon">48dp</dimen>
     <dimen name="dp_38">38dp</dimen>
 
+
+    <dimen name="prefix_miscall_margin_left">55dp</dimen>
     <dimen name="img_miscall_onboarding_height">288dp</dimen>
     <dimen name="img_miscall_verification_width">288dp</dimen>
     <dimen name="img_miscall_verification_height">245dp</dimen>

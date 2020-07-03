@@ -1,17 +1,23 @@
 package com.tokopedia.otp.common.analytics
 
+import android.os.Build
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_KIRIM_ULANG
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_OK_KIRIM_ULANG
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_BUTTON_AKTIVASI
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_BUTTON_INACTIVE_PHONE_NUMBER
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_OTP_METHOD
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_UBAH_EMAIL_ACTIVATION
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Category.CATEGORY_ACTIVATION_PAGE
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Category.CATEGORY_CHOOSE_OTP_PAGE
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Event.EVENT_CLICK_ACTIVATION
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Event.EVENT_CLICK_OTP
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Label.LABEL_CLICK
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Label.LABEL_EMPTY
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Label.LABEL_FAILED
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Label.LABEL_SUCCESS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -20,6 +26,28 @@ import javax.inject.Inject
  */
 
 class TrackingValidatorUtil @Inject constructor(){
+
+    fun trackScreen(screenName: String) {
+        Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    fun trackClickMethodOtpButton(otpType: Int, modeName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_OTP,
+                CATEGORY_CHOOSE_OTP_PAGE,
+                ACTION_CLICK_ON_OTP_METHOD,
+                String.format("%s - %s", otpType.toString(), modeName)))
+    }
+
+    fun trackClickInactivePhoneNumber(otpType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_OTP,
+                otpType,
+                ACTION_CLICK_ON_BUTTON_INACTIVE_PHONE_NUMBER,
+                LABEL_EMPTY
+        ))
+    }
 
     fun trackClickActivationButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(

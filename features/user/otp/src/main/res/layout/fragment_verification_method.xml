@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/spacing_lvl6"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:gravity="center_horizontal"
                 android:text="@string/choose_verification_method"
                 android:textColor="@color/Neutral_N700"
@@ -38,10 +38,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="@dimen/spacing_lvl5"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl2"
                 android:layout_marginEnd="@dimen/spacing_lvl5"
                 android:gravity="center_horizontal"
                 android:text="@string/pick_one_of_these_method_to_get_verification_code"
+                android:textColor="@color/Neutral_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title"
@@ -59,15 +60,14 @@
                 android:id="@+id/phone_inactive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:gravity="center_horizontal"
-                android:padding="@dimen/spacing_lvl4"
+                android:padding="@dimen/spacing_lvl5"
                 android:text="@string/my_phone_number_is_inactive"
-                android:textColor="@color/Green_G400"
+                android:textColor="@color/Green_G500"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/method_list"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler" />
+                app:typographyWeight="bold" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
