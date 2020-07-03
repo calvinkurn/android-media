@@ -26,6 +26,17 @@ object WithdrawConstant {
         else -> "https://tokopedia.com/payment/rekening-premium"
     }
 
+    private val bankRekeningPageURL = when (TokopediaUrl.getInstance().TYPE) {
+        Env.STAGING -> "https://29-staging-feature.tokopedia.com/payment/rekening-premium?bank=%s"
+        else -> "https://m.tokopedia.com/payment/rekening-premium?bank=%s"
+    }
+
+    fun openBankRekeningPage(context: Context?, bankId: Long) {
+        context?.let {
+            openSessionBaseURL(context, String.format(bankRekeningPageURL, bankId.toString()))
+        }
+    }
+
     fun openRekeningAccountInfoPage(context: Context?) {
         context?.let {
             openSessionBaseURL(context, rekeningPageURL)

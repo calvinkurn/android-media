@@ -16,6 +16,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.di.component.DaggerWithdrawComponent
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
 import com.tokopedia.withdraw.saldowithdrawal.helper.BulletPointSpan
 import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
@@ -30,6 +31,7 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
     private lateinit var bulletPointSpan: BulletPointSpan
 
     private lateinit var checkEligible: CheckEligible
+    private lateinit var bankAccount: BankAccount
 
     @Inject
     lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
@@ -38,6 +40,7 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_CHECK_ELIGIBLE_DATA)) {
+                bankAccount = it.getParcelable(ARG_BANK_ACCOUNT)
                 checkEligible = it.getParcelable(ARG_CHECK_ELIGIBLE_DATA)
                 initInjector()
                 addChildView()
@@ -74,7 +77,7 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
                 childView.findViewById<View>(R.id.btnJoinPremiumAccount).visible()
                 childView.findViewById<View>(R.id.btnJoinPremiumAccount).setOnClickListener {
                     dismiss()
-                    WithdrawConstant.openRekeningAccountInfoPage(context)
+                    WithdrawConstant.openBankRekeningPage(context, bankAccount.bankID)
                     analytics.get().onClickJoinRekeningProgram()
                 }
             } else
@@ -112,11 +115,13 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
     companion object {
 
         private const val ARG_CHECK_ELIGIBLE_DATA = "arg_check_eligible_data"
+        private const val ARG_BANK_ACCOUNT = "arg_bank_account"
 
-        fun getInstance(checkEligible: CheckEligible): RekPremBankAccountInfoBottomSheet {
+        fun getInstance(checkEligible: CheckEligible, bankAccount: BankAccount): RekPremBankAccountInfoBottomSheet {
             return RekPremBankAccountInfoBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putParcelable(ARG_CHECK_ELIGIBLE_DATA, checkEligible)
+                bundle.putParcelable(ARG_BANK_ACCOUNT, bankAccount)
                 arguments = bundle
             }
         }
