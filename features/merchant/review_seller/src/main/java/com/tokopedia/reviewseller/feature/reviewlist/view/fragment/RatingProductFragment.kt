@@ -107,9 +107,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var bottomSheetFilter: BottomSheetUnify? = null
     private var bottomSheetSort: BottomSheetUnify? = null
-
-    private var firstTabItem: View? = null
-
+    
     private var itemViewSummary: View? = null
 
     private var productItemList: List<ProductReviewUiModel>? = null
