@@ -64,7 +64,6 @@ class AddEditProductVariantViewModel @Inject constructor(
     val isVariantSizechartVisible: LiveData<Boolean> get() = mIsVariantSizechartVisible
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
-
         addSource(mSelectedVariantUnitValuesLevel1) {
             val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
                     ?: true

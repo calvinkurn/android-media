@@ -55,21 +55,20 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
             variantUnitData.add(data)
         }
 
-        val selectedVariantUnitData = variantUnitData.find { listItemUnify ->
-            listItemUnify.listTitleText == selectedVariantUnit?.unitName
-        }
-
-        selectedVariantUnitData?.listRightRadiobtn?.isChecked = true
-
         listUnifyVariantUnits.setData(variantUnitData)
         listUnifyVariantUnits.onLoadFinish {
 
             selectedVariantUnit?.let {
                 val unitName = it.unitName
-                val selectedListItemUnify = variantUnitData.find { listItemUnify ->
-                    listItemUnify.listTitleText == unitName
+
+                if (unitName.isNotBlank()) {
+                    val selectedListItemUnify = variantUnitData.find { listItemUnify ->
+                        listItemUnify.listTitleText == unitName
+                    }
+                    selectedListItemUnify?.listRightRadiobtn?.isChecked = true
+                } else {
+                    variantUnitData.firstOrNull()?.listRightRadiobtn?.isChecked = true
                 }
-                selectedListItemUnify?.listRightRadiobtn?.isChecked = true
             }
 
             listUnifyVariantUnits.setOnItemClickListener { _, _, position, _ ->

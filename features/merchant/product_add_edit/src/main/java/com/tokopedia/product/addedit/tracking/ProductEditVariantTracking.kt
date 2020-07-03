@@ -40,7 +40,7 @@ object ProductEditVariantTracking {
         sendEditProductVariantClick("click select variant type value", label, shopId, SCREEN_NAME)
     }
 
-    // 2.5 label = variant type - variant unit value
+    // 2.5 label = variant type - variant unit values counter
     fun saveVariantUnitValues(label: String, shopId: String) {
         sendEditProductVariantClick("click simpan variant", label, shopId, SCREEN_NAME)
     }

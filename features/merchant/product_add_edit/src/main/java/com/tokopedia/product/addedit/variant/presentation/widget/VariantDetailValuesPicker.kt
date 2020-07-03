@@ -17,18 +17,26 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
 
     private var layoutPosition: Int? = null
 
+    private var variantDetail: VariantDetail? = null
+
     private var selectedVariantUnit: Unit = Unit()
 
     private var selectedVariantUnitValues = mutableListOf<UnitValue>()
 
     private var onVariantUnitPickerClickListener: OnVariantUnitPickerClickListener? = null
 
+    private var onVariantUnitValuePickListener: OnVariantUnitValuePickListener? = null
+
     private var onAddCustomVariantUnitValueListener: OnAddCustomVariantUnitValueListener? = null
 
     private var onButtonSaveClickListener: OnButtonSaveClickListener? = null
 
     interface OnVariantUnitPickerClickListener {
-        fun onVariantUnitSelected(selectedVariantUnit: Unit, layoutPosition: Int)
+        fun onVariantUnitPickerClicked(selectedVariantUnit: Unit, layoutPosition: Int)
+    }
+
+    interface OnVariantUnitValuePickListener {
+        fun onVariantUnitValuePickListener(variantType: String, variantUnitValue: String)
     }
 
     interface OnAddCustomVariantUnitValueListener {
@@ -36,7 +44,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
     }
 
     interface OnButtonSaveClickListener {
-        fun onVariantUnitValueSaveButtonClicked(selectedVariantUnitValues: List<UnitValue>, layoutPosition: Int, variantId: Int)
+        fun onVariantUnitValueSaveButtonClicked(selectedVariantUnitValues: List<UnitValue>, layoutPosition: Int, variantId: Int, variantTypeName: String)
     }
 
     init {
@@ -61,6 +69,10 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
         this.onVariantUnitPickerClickListener = onVariantUnitPickerClickListener
     }
 
+    fun setOnVariantUnitValuePickListener(onVariantUnitValuePickListener: OnVariantUnitValuePickListener) {
+        this.onVariantUnitValuePickListener = onVariantUnitValuePickListener
+    }
+
     fun setOnAddCustomVariantUnitValueListener(onAddCustomVariantUnitValueListener: OnAddCustomVariantUnitValueListener) {
         this.onAddCustomVariantUnitValueListener = onAddCustomVariantUnitValueListener
     }
@@ -74,18 +86,22 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
     }
 
     fun setupVariantDetailValuesPicker(variantDetail: VariantDetail) {
+        this.variantDetail = variantDetail
         var selectedUnit = variantDetail.units[0]
-        if(selectedVariantUnit.unitValues.isNotEmpty()) selectedUnit = this.selectedVariantUnit
+        if (selectedVariantUnit.unitName.isNotBlank()) selectedUnit = this.selectedVariantUnit
+        // setup unit picker
         setupVariantUnitPicker(variantDetail.name, variantDetail.units)
+        // setup unit value picker
         setupVariantUnitValuePicker(variantDetail.variantID, variantDetail.name, selectedUnit.unitValues)
-        setupSaveButton(selectedVariantUnitValues, layoutPosition, variantDetail.variantID)
+        // setup and configure save button
+        setupSaveButton(selectedVariantUnitValues, layoutPosition, variantDetail.variantID, variantDetail.name)
         configureSaveButton(selectedVariantUnitValues)
     }
 
     private fun setupVariantUnitPicker(unitName: String, variantUnits: List<Unit>) {
         if (variantUnits.size > 1) {
             var selectedUnit = variantUnits[0]
-            if (selectedVariantUnit.unitName.isBlank()) selectedUnit = this.selectedVariantUnit
+            if (selectedVariantUnit.unitName.isNotBlank()) selectedUnit = this.selectedVariantUnit
             variantUnitLayout.show()
             textFieldUnifyVariantUnit.textFiedlLabelText.text = unitName
             textFieldUnifyVariantUnit.textFieldInput.setText(selectedUnit.unitName)
@@ -93,7 +109,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
             textFieldUnifyVariantUnit.textFieldInput.isActivated = false
             textFieldUnifyVariantUnit.textFieldInput.setOnClickListener {
                 layoutPosition?.let {
-                    onVariantUnitPickerClickListener?.onVariantUnitSelected(selectedVariantUnit, it)
+                    onVariantUnitPickerClickListener?.onVariantUnitPickerClicked(selectedVariantUnit, it)
                 }
             }
         } else variantUnitLayout.hide()
@@ -133,6 +149,9 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
                     isChecked?.run {
                         selectedItem.listRightCheckbox?.isChecked = !this
                     }
+                    // track select variant unit value event
+                    onVariantUnitValuePickListener?.onVariantUnitValuePickListener(variantDetail?.name
+                            ?: "", selectedItem.listTitleText)
                 } else {
                     // add custom variant unit value
                     layoutPosition?.run {
@@ -158,10 +177,10 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
         }
     }
 
-    private fun setupSaveButton(selectedVariantUnitValues: List<UnitValue>, layoutPosition: Int?, variantId: Int) {
+    private fun setupSaveButton(selectedVariantUnitValues: List<UnitValue>, layoutPosition: Int?, variantId: Int, variantTypeName: String) {
         buttonSave.setOnClickListener {
             layoutPosition?.let {
-                onButtonSaveClickListener?.onVariantUnitValueSaveButtonClicked(selectedVariantUnitValues, it, variantId)
+                onButtonSaveClickListener?.onVariantUnitValueSaveButtonClicked(selectedVariantUnitValues, it, variantId, variantTypeName)
             }
         }
     }
