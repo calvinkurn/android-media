@@ -31,10 +31,7 @@ import kotlinx.android.synthetic.main.mvc_create_promo_code_bottom_sheet_view.*
 import javax.inject.Inject
 
 
-class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
-                                         val onNextClick: (String) -> Unit = {},
-                                         val getPromoCode: () -> String,
-                                         val getPromoCodePrefix: () -> String) : BottomSheetUnify(), VoucherBottomView {
+class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
     companion object {
         private val TEXFIELD_ALERT_MINIMUM = R.string.mvc_create_alert_minimum
@@ -47,18 +44,24 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                            onNextClick: (String) -> Unit,
                            getPromoCode: () -> String = {""},
                            getPromoCodePrefix: () -> String) : CreatePromoCodeBottomSheetFragment {
-            return CreatePromoCodeBottomSheetFragment(context, onNextClick, getPromoCode, getPromoCodePrefix).apply {
+            return CreatePromoCodeBottomSheetFragment().apply {
                 context?.run {
                     val view = View.inflate(this, R.layout.mvc_create_promo_code_bottom_sheet_view, null)
                     setChild(view)
                     setTitle(context.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title).toBlankOrString())
                     setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+
+
+                    this@apply.onNextClick = onNextClick
+                    this@apply.getPromoCode = getPromoCode
+                    this@apply.getPromoCodePrefix = getPromoCodePrefix
+                    bottomSheetViewTitle = getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
                 }
             }
         }
     }
 
-    override var bottomSheetViewTitle: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
+    override var bottomSheetViewTitle: String? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -74,8 +77,17 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
         viewModelProvider.get(CreatePromoCodeViewModel::class.java)
     }
 
-    private var alertMinimumMessage = bottomSheetContext?.resources?.getString(TEXFIELD_ALERT_MINIMUM).toBlankOrString()
-    private var easyRememberMessage = bottomSheetContext?.resources?.getString(TEXTFIELD_MESSAGE_EASY_REMEMBER).toBlankOrString()
+    private var bottomSheetContext: Context? = context
+    private var onNextClick: (String) -> Unit = {}
+    private var getPromoCode: () -> String = { "" }
+    private var getPromoCodePrefix: () -> String = { "" }
+
+    private val alertMinimumMessage by lazy {
+        bottomSheetContext?.resources?.getString(TEXFIELD_ALERT_MINIMUM).toBlankOrString()
+    }
+    private val easyRememberMessage by lazy {
+        bottomSheetContext?.resources?.getString(TEXTFIELD_MESSAGE_EASY_REMEMBER).toBlankOrString()
+    }
 
     private var isWaitingForValidation = false
 

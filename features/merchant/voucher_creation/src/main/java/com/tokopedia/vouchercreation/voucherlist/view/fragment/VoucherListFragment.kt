@@ -117,16 +117,13 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         ViewModelProvider(this, viewModelFactory).get(VoucherListViewModel::class.java)
     }
     private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
-        val parent = view as? ViewGroup ?: return@lazy null
-        return@lazy MoreMenuBottomSheet(parent)
+        return@lazy MoreMenuBottomSheet.createInstance(isActiveVoucher)
     }
     private val sortBottomSheet: SortBottomSheet? by lazy {
-        val parent = view as? ViewGroup ?: return@lazy null
-        return@lazy SortBottomSheet(parent)
+        return@lazy SortBottomSheet.createInstance()
     }
     private val filterBottomSheet: FilterBottomSheet? by lazy {
-        val parent = view as? ViewGroup ?: return@lazy null
-        return@lazy FilterBottomSheet(parent)
+        return@lazy FilterBottomSheet.createInstance()
     }
 
     private val sortItems: MutableList<SortUiModel> by lazy {
@@ -310,7 +307,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             it.setOnModeClickListener(voucher) { menu ->
                 onMoreMenuItemClickListener(menu, voucher)
             }
-            it.show(isActiveVoucher, childFragmentManager)
+            it.show(childFragmentManager)
         }
     }
 
@@ -555,8 +552,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        VoucherPeriodBottomSheet.createInstance(parent, voucher)
+        VoucherPeriodBottomSheet.createInstance(voucher)
                 .setOnSuccessClickListener {
                     onSuccessUpdateVoucherPeriod()
                 }
@@ -574,7 +570,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        ShareVoucherBottomSheet(parent)
+        ShareVoucherBottomSheet.createInstance()
                 .setOnItemClickListener { socmedType ->
                     context?.run {
                         if (socmedType != SocmedType.COPY_LINK || socmedType != SocmedType.LAINNYA) {
@@ -651,8 +647,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(parent, voucher.image, voucher.imageSquare, userSession)
+        DownloadVoucherBottomSheet.createInstance(voucher.image, voucher.imageSquare, userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
                     voucherList.forEach {
                         activity?.run {
@@ -698,7 +693,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        EditQuotaBottomSheet.createInstance(parent, voucher)
+        EditQuotaBottomSheet.createInstance(voucher)
                 .setOnSuccessUpdateVoucher {
                     view?.run {
                         Toaster.make(this,
@@ -1073,8 +1068,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                     View.OnClickListener {})
                         }
                     } else {
-                        val parent = view as? ViewGroup ?: return@Observer
-                        SuccessCreateBottomSheet.createInstance(parent, uiModel)
+                        SuccessCreateBottomSheet.createInstance(uiModel)
                                 .setOnShareClickListener {
                                     VoucherCreationTracking.sendCreateVoucherClickTracking(
                                             step = VoucherCreationStep.REVIEW,

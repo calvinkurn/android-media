@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet
 import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Rect
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,10 +21,23 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_sort.view.*
  * Created By @ilhamsuaib on 20/04/20
  */
 
-class SortBottomSheet(
-        parent: ViewGroup
-) : BottomSheetUnify() {
+class SortBottomSheet : BottomSheetUnify() {
 
+    companion object {
+        @JvmStatic
+        fun createInstance(): SortBottomSheet = SortBottomSheet().apply {
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        }
+
+        val TAG: String = SortBottomSheet::class.java.simpleName
+
+        fun getMvcSortItems(context: Context): MutableList<SortUiModel> {
+            return mutableListOf(
+                    SortUiModel(context.getString(R.string.mvc_newest_done_date), SortBy.NEWEST_DONE_DATE, true),
+                    SortUiModel(context.getString(R.string.mvc_oldest_done_date), SortBy.OLDEST_DONE_DATE)
+            )
+        }
+    }
     private val sortAdapter by lazy { SortAdapter(this::onSortItemClick) }
 
     private var onSortClicked: (SortUiModel?) -> Unit = {}
@@ -32,14 +46,30 @@ class SortBottomSheet(
     private var applySort = false
     private var tmpSortList = listOf<SortUiModel>()
 
-    init {
-        setTitle(parent.context.getString(R.string.mvc_sort))
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-        val childView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.bottomsheet_mvc_sort, parent, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView(view)
+    }
 
-        setupView(childView)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if (!applySort) {
+            onCancelApplySort(tmpSortList)
+        }
+    }
+
+    private fun initBottomSheet() {
+        context?.run {
+            setTitle(getString(R.string.mvc_sort))
+
+            val childView = View.inflate(this, R.layout.bottomsheet_mvc_sort, null)
+            setChild(childView)
+        }
     }
 
     private fun setupView(view: View) = with(view) {
@@ -51,8 +81,6 @@ class SortBottomSheet(
             applySort = true
             applySort()
         }
-
-        setChild(view)
     }
 
     private fun getSortItemDecoration() = object : RecyclerView.ItemDecoration() {
@@ -89,13 +117,6 @@ class SortBottomSheet(
         return this.map { it.copy() }
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        if (!applySort) {
-            onCancelApplySort(tmpSortList)
-        }
-    }
-
     fun setOnSortClickedListener(callback: (SortUiModel?) -> Unit): SortBottomSheet {
         onSortClicked = callback
         return this
@@ -118,16 +139,5 @@ class SortBottomSheet(
         sortAdapter.clearAllElements()
         sortAdapter.addElement(sortItems)
         show(fm, TAG)
-    }
-
-    companion object {
-        val TAG: String = SortBottomSheet::class.java.simpleName
-
-        fun getMvcSortItems(context: Context): MutableList<SortUiModel> {
-            return mutableListOf(
-                    SortUiModel(context.getString(R.string.mvc_newest_done_date), SortBy.NEWEST_DONE_DATE, true),
-                    SortUiModel(context.getString(R.string.mvc_oldest_done_date), SortBy.OLDEST_DONE_DATE)
-            )
-        }
     }
 }

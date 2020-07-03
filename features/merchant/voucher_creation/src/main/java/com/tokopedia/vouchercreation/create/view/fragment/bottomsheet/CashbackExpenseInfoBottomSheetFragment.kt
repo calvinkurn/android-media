@@ -11,8 +11,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackPercentageInfoUiModel
 import kotlinx.android.synthetic.main.mvc_cashback_expense_info.*
 
-class CashbackExpenseInfoBottomSheetFragment(private val bottomSheetContext: Context,
-                                             private val getCashbackInfo: () -> CashbackPercentageInfoUiModel) : BottomSheetUnify(), VoucherBottomView {
+class CashbackExpenseInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
     override var bottomSheetViewTitle: String? = ""
 
@@ -20,13 +19,19 @@ class CashbackExpenseInfoBottomSheetFragment(private val bottomSheetContext: Con
         @JvmStatic
         fun createInstance(context: Context,
                            getCashbackInfo: () -> CashbackPercentageInfoUiModel) : CashbackExpenseInfoBottomSheetFragment {
-            return CashbackExpenseInfoBottomSheetFragment(context, getCashbackInfo).apply {
+            return CashbackExpenseInfoBottomSheetFragment().apply {
                 val view = View.inflate(context, R.layout.mvc_cashback_expense_info, null)
                 setChild(view)
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                this.getCashbackInfo = getCashbackInfo
             }
         }
     }
+    private var getCashbackInfo: () -> CashbackPercentageInfoUiModel = {
+        CashbackPercentageInfoUiModel(0,0,0,0)
+    }
+
+    private var onEditButtonClicked: () -> Unit = {}
 
     override fun onResume() {
         super.onResume()
@@ -34,8 +39,6 @@ class CashbackExpenseInfoBottomSheetFragment(private val bottomSheetContext: Con
             initView()
         }
     }
-
-    private var onEditButtonClicked: () -> Unit = {}
 
     fun setEditNowButtonClicked(action: () -> Unit): CashbackExpenseInfoBottomSheetFragment {
         onEditButtonClicked = action
@@ -45,11 +48,11 @@ class CashbackExpenseInfoBottomSheetFragment(private val bottomSheetContext: Con
     private fun initView() {
         getCashbackInfo().run {
             minimumPurchaseInfo?.infoValueString = String.format(
-                    bottomSheetContext.getString(R.string.mvc_rp_value),
+                    context?.getString(R.string.mvc_rp_value).toBlankOrString(),
                     CurrencyFormatHelper.convertToRupiah(minimumPurchase.toString())).toBlankOrString()
             percentageInfo?.infoValueString = "$cashbackPercentage%"
-            infoDiscountValue?.text = String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_discount_value).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(minimumDiscount.toString()))
-            val description = String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_desc).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(minimumDiscount.toString())).parseAsHtml()
+            infoDiscountValue?.text = String.format(context?.getString(R.string.mvc_create_promo_type_bottomsheet_discount_value).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(minimumDiscount.toString()))
+            val description = String.format(context?.getString(R.string.mvc_create_promo_type_bottomsheet_desc).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(minimumDiscount.toString())).parseAsHtml()
             cashbackExpenseDescription?.text = description
             cashbackExpenseButton?.setOnClickListener {
                 onEditButtonClicked()

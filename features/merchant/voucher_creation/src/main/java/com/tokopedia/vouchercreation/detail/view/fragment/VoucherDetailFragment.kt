@@ -109,6 +109,10 @@ class VoucherDetailFragment : BaseDetailFragment() {
         GeneralExpensesInfoBottomSheetFragment.createInstance(context)
     }
 
+    private val shareVoucherBottomSheet by lazy {
+        ShareVoucherBottomSheet.createInstance()
+    }
+
     private val impressHolder = ImpressHolder()
 
     private var shopBasicData: ShopBasicDataResult? = null
@@ -257,7 +261,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 userId = userSession.userId
         )
         if (!isAdded) return
-        TipsTrickBottomSheet(context ?: return, !(voucherUiModel?.isPublic ?: true))
+        TipsTrickBottomSheet.createInstance(!(voucherUiModel?.isPublic ?: true))
                 .setOnDownloadClickListener {
                     VoucherCreationTracking.sendVoucherDetailClickTracking(
                             status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
@@ -281,12 +285,10 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     override fun showDownloadBottomSheet() {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(
-                parent,
+        DownloadVoucherBottomSheet.createInstance(
                 voucherUiModel?.image.toBlankOrString(),
                 voucherUiModel?.imageSquare.toBlankOrString(),
-                userSession)
+                userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
                     voucherList.forEach {
                         if (activity?.let { it1 -> ActivityCompat.checkSelfPermission(it1, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
@@ -380,8 +382,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        ShareVoucherBottomSheet(parent)
+        shareVoucherBottomSheet
                 .setOnItemClickListener { socmedType ->
                     context?.run {
                         if (socmedType != SocmedType.COPY_LINK || socmedType != SocmedType.LAINNYA) {
