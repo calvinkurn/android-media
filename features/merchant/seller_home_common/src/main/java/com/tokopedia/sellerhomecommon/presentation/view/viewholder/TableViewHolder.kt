@@ -12,6 +12,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_widget_table.view.*
+import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
 
 /**
  * Created By @ilhamsuaib on 10/06/20
@@ -51,6 +52,7 @@ class TableViewHolder(
             shcTableView.visible()
             tvTableWidgetTitle.visible()
             commonWidgetErrorState.gone()
+            shimmerTableWidgetWidget.gone()
 
             shcTableView.showTable(element.data?.dataSet.orEmpty())
         }
@@ -58,11 +60,15 @@ class TableViewHolder(
         setupCta(element)
     }
 
-    private fun showLoadingState() {
-
+    private fun showLoadingState() = with(itemView) {
+        btnTableInformation.gone()
+        shimmerTableWidgetWidget.visible()
+        tvTableWidgetTitle.gone()
+        shcTableView.gone()
     }
 
-    private fun showErrorState() = with(itemView){
+    private fun showErrorState() = with(itemView) {
+        shimmerTableWidgetWidget.gone()
         commonWidgetErrorState.visible()
         tvTableWidgetTitle.visible()
         shcTableView.gone()
