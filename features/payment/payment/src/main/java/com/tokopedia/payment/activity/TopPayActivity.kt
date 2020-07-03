@@ -481,15 +481,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
                 //applink for link aja...
-                if (url.contains(LINK_AJA_APP_LINK)) {
-                    val uri = Uri.parse(url)
-                    val linkAjaIntent = Intent(Intent.ACTION_VIEW, uri)
-                    val activities = packageManager
-                            .queryIntentActivities(linkAjaIntent, 0)
-                    val isIntentSafe: Boolean = activities.isNotEmpty()
-                    if (isIntentSafe) {
-                        startActivity(linkAjaIntent)
-                    }
+                if (isLinkAjaAppLink(url)) {
+                    redirectToLinkAjaApp(url)
                     return true
                 }
 
@@ -632,6 +625,21 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     fun getEnableFingerprintPayment(): Boolean {
         return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP)
+    }
+
+    private fun isLinkAjaAppLink(url: String): Boolean {
+        return url.contains(LINK_AJA_APP_LINK)
+    }
+
+    private fun redirectToLinkAjaApp(url: String) {
+        val uri = Uri.parse(url)
+        val linkAjaIntent = Intent(Intent.ACTION_VIEW, uri)
+        val activities = packageManager
+                .queryIntentActivities(linkAjaIntent, 0)
+        val isIntentSafe: Boolean = activities.isNotEmpty()
+        if (isIntentSafe) {
+            startActivity(linkAjaIntent)
+        }
     }
 
     companion object {
