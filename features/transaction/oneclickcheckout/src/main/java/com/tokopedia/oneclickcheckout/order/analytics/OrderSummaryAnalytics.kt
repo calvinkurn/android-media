@@ -302,7 +302,7 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 EventAction.CLICK_UBAH_WHEN_DURATION_ERROR,
                 ""
         )
-        gtmData[Key.USER_ID] = userId
+        gtmData[ExtraKey.USER_ID] = userId
         sendGeneralEvent(gtmData)
     }
 
@@ -313,7 +313,7 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 EventAction.CLICK_SELECTED_DURATION_OPTION,
                 serviceId
         )
-        gtmData[Key.USER_ID] = userId
+        gtmData[ExtraKey.USER_ID] = userId
         sendGeneralEvent(gtmData)
     }
 

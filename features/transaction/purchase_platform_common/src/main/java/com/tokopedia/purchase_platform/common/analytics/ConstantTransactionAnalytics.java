@@ -21,7 +21,6 @@ public interface ConstantTransactionAnalytics {
         String POSITION = "position";
         String PROMO_ID_ = "promo_id";
         String PROMO_CODE = "promo_code";
-        String USER_ID = "userId";
     }
 
 
