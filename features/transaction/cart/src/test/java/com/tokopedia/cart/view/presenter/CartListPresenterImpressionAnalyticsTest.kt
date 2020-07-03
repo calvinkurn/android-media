@@ -89,7 +89,7 @@ object CartListPresenterImpressionAnalyticsTest : Spek({
             }
 
             When("generate recommendation data analytics") {
-                result = cartListPresenter.generateRecommendationImpressionDataAnalytics(recommendationDataList, false)
+                result = cartListPresenter.generateRecommendationImpressionDataAnalytics(0, recommendationDataList, false)
             }
 
             Then("should be containing 1 product") {
@@ -113,7 +113,7 @@ object CartListPresenterImpressionAnalyticsTest : Spek({
             }
 
             When("generate recommendation data analytics") {
-                result = cartListPresenter.generateRecommendationImpressionDataAnalytics(recommendationDataList, true)
+                result = cartListPresenter.generateRecommendationImpressionDataAnalytics(0, recommendationDataList, true)
             }
 
             Then("should be containing 1 product") {

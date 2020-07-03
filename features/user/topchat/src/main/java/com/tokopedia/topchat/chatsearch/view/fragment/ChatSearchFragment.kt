@@ -156,7 +156,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     private fun observeSearchResult() {
-        viewModel.searchResult.observe(viewLifecycleOwner, Observer {
+        viewModel.searchResults.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             renderList(it, viewModel.hasNext)
         })
