@@ -141,6 +141,9 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableChannelId.observeForever(channelIdObserver)
 
         _observableChatList.value = mutableListOf()
+
+        mockChatList()
+        mockMetrics()
     }
 
     override fun onCleared() {
@@ -347,7 +350,7 @@ class PlayBroadcastViewModel @Inject constructor(
     /**
      * mock
      */
-    fun mockChatList() {
+    private fun mockChatList() {
         scope.launch(dispatcher.io) {
             while(isActive) {
                 delay(3000)
@@ -358,7 +361,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun mockMetrics() {
+    private fun mockMetrics() {
         scope.launch(dispatcher.io) {
             while(isActive) {
                 delay(3000)

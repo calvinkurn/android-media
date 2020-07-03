@@ -191,9 +191,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun startLiveStreaming(ingestUrl: String) {
         parentViewModel.startPushStream(ingestUrl)
-        // TODO remove mock
-        parentViewModel.mockChatList()
-        parentViewModel.mockMetrics()
     }
 
     private fun stopLiveStreaming() {
