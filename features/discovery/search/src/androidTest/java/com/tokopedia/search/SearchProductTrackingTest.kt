@@ -33,6 +33,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -54,6 +55,12 @@ internal class SearchProductTrackingTest {
     fun testTrackingUsingMockData() {
         setupGraphqlMockResponse()
 
+        testTracking()
+    }
+
+    @Test
+    @Ignore("Ignore for testing with real data.")
+    fun testTrackingUsingRealData() {
         testTracking()
     }
 
@@ -80,11 +87,6 @@ internal class SearchProductTrackingTest {
     private fun createMapOfMockResponse() = mapOf(
             "SearchProduct" to getRawString(context, com.tokopedia.search.test.R.raw.search_product_common_response)
     )
-
-    @Test
-    fun testTrackingUsingRealData() {
-        testTracking()
-    }
 
     private fun testTracking() {
         setUp()
