@@ -48,6 +48,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val selectedFilter: LiveData<ArrayList<HashMap<String, Any>>>
         get() = _selectedFilter
 
+    private val _loadingProductList = MutableLiveData<Boolean>()
+    val loadingProductList: LiveData<Boolean>
+        get() = _loadingProductList
+
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
         _productCatalogItem.postValue(productCatalogItem)
     }
@@ -68,6 +72,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
                               filterData: ArrayList<HashMap<String, Any>>?) {
         launchCatchError(block = {
+            _loadingProductList.postValue(true)
             val mapParam = HashMap<String, Any>()
             mapParam[KEY_MENU_ID] = menuId
             mapParam[KEY_OPERATOR_ID] = operatorId
@@ -82,12 +87,14 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
             }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
+            _loadingProductList.postValue(false)
             if (data.rechargeCatalogProductDataData.productInputList.isEmpty()) {
                 _productList.postValue(Fail(MessageErrorException()))
             } else {
                 _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
             }
         }) {
+            _loadingProductList.postValue(false)
             _productList.postValue(Fail(it))
         }
     }

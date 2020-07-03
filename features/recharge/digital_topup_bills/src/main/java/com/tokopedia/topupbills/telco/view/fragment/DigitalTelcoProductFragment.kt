@@ -106,18 +106,21 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.let {
+        arguments?.let { it ->
             titleProduct = it.getString(TITLE_PAGE)
             productType = it.getInt(PRODUCT_TYPE)
             selectedProduct = it.getInt(SELECTED_PRODUCT)
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
-            showShimmering()
             sharedModelPrepaid.productList.observe(this, Observer {
                 when (it) {
                     is Success -> onSuccessProductList()
                     is Fail -> onErrorProductList()
                 }
+            })
+
+            sharedModelPrepaid.loadingProductList.observe(this, Observer {
+                if (it) showShimmering() else hideShimmering()
             })
         }
 
@@ -200,7 +203,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessProductList() {
-        hideShimmering()
         val productInputList = (sharedModelPrepaid.productList.value as Success).data
 
         productInputList.map {
@@ -249,7 +251,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorProductList() {
-        hideShimmering()
         titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
         descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct)
         emptyStateProductView.show()
@@ -272,11 +273,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private fun hideShimmering() {
         shimmeringGridLayout.hide()
         shimmeringListLayout.hide()
-    }
-
-    override fun onDestroy() {
-        sharedModelPrepaid.flush()
-        super.onDestroy()
     }
 
     companion object {
