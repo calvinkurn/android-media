@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
+import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
@@ -66,6 +68,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onCreate")
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
@@ -75,6 +78,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onViewCreated")
         initView(view)
         setupView()
         setupInsets(view)
@@ -92,6 +96,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeNetworkConnectionDuringLive()
+        observePermissionStateEvent()
     }
 
     override fun onStart() {
@@ -141,6 +146,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupContent() {
+        if (!parentViewModel.allPermissionGranted()) {
+            parentViewModel.checkPermission()
+            return
+        }
         val ingestUrl = arguments?.getString(KEY_INGEST_URL)
         if (ingestUrl != null && ingestUrl.isNotEmpty()) {
             startCountDown(ingestUrl)
@@ -169,15 +178,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onResume")
         parentViewModel.resumePushStream()
     }
 
     override fun onPause() {
         super.onPause()
+        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onPause")
         parentViewModel.pausePushStream()
     }
 
     override fun onDestroy() {
+        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onDestroy")
         parentViewModel.getPlayPusher().destroy()
         try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         super.onDestroy()
@@ -248,7 +260,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun getExitDialog(): DialogUnify {
         if (!::exitDialog.isInitialized) {
-           exitDialog =  requireContext().getDialog(
+           exitDialog = requireContext().getDialog(
                    actionType = DialogUnify.HORIZONTAL_ACTION,
                    title = getString(R.string.play_live_broadcast_dialog_end_title),
                    desc = getString(R.string.play_live_broadcast_dialog_end_desc),
@@ -339,7 +351,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun handleChannelInfo(channelInfo: ChannelInfoUiModel) {
         when (channelInfo.status) {
             PlayChannelStatus.Active, PlayChannelStatus.Live -> startLiveStreaming(channelInfo.ingestUrl)
-            PlayChannelStatus.Pause -> showDialogContinueLiveStreaming(channelInfo.ingestUrl)
+            PlayChannelStatus.Pause -> {
+                Log.d("Meyta", "PlayBroadcastUserInteractionFragment showDialogContinueLiveStreaming")
+                showDialogContinueLiveStreaming(channelInfo.ingestUrl)
+            }
             PlayChannelStatus.Stop -> doEndStreaming()
             else -> {}
         }
@@ -448,6 +463,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeNetworkConnectionDuringLive() {
         parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver(::handleLiveNetworkInfo))
+    }
+
+    private fun observePermissionStateEvent() {
+        parentViewModel.observablePermissionState.observe(this, Observer {
+           if (it is PlayPermissionState.Granted) setupContent()
+        })
     }
     //endregion
 

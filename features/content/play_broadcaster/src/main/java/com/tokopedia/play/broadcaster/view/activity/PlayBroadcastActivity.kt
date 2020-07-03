@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -77,6 +78,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         setFragmentFactory()
 
         super.onCreate(savedInstanceState)
+        Log.d("Meyta", "PlayBroadcastActivity onCreate")
         setContentView(R.layout.activity_play_broadcast)
         viewModel.initPushStream()
         setupContent()
@@ -109,6 +111,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun checkPermission() {
+        Log.d("Meyta", "PlayBroadcastActivity checkPermission")
         viewModel.checkPermission()
     }
 

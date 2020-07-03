@@ -243,7 +243,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun startPushStream(ingestUrl: String) {
-        if (ingestUrl.isEmpty() || !allPermissionGranted()) return
+        if (ingestUrl.isEmpty()) return
         scope.launch {
 //            startWebSocket()
             playPusher.startPush(ingestUrl) {
@@ -253,7 +253,6 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun resumePushStream() {
-        if (!allPermissionGranted()) return
         scope.launch {
             playPusher.resume {
                 launch { updateChannelStatus(PlayChannelStatus.Live) }
