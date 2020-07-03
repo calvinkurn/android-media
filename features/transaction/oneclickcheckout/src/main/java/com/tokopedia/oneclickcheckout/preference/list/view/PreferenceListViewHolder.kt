@@ -97,7 +97,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         tvAddressDetail.text = addressModel.fullAddress
 
         val shipmentModel = preference.shipmentModel
-        tvShippingName.text = "Pengiriman ${shipmentModel.serviceName.capitalize()}"
+        tvShippingName.text = itemView.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
         val tempServiceDuration = shipmentModel.serviceDuration
         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
             "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"

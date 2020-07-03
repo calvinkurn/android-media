@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
@@ -160,10 +161,10 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         view?.let { view ->
                             if (failure.throwable is MessageErrorException) {
                                 Toaster.make(view, failure.throwable.message
-                                        ?: "Failed", type = Toaster.TYPE_ERROR)
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                             } else {
                                 Toaster.make(view, failure.throwable?.localizedMessage
-                                        ?: "Failed", type = Toaster.TYPE_ERROR)
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                             }
                         }
                     }
@@ -217,8 +218,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         tvAddressDetail?.text = addressModel.fullAddress
 
         val shipmentModel = data.shipmentModel
-        tvShippingName?.text = "Pengiriman ${shipmentModel.serviceName.capitalize()}"
-        tvShippingDuration?.text = "Durasi ${shipmentModel.serviceDuration}"
+        tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
+        tvShippingDuration?.text = getString(R.string.lbl_shipping_duration_prefix, shipmentModel.serviceDuration)
 
         val paymentModel = data.paymentModel
         ImageHandler.loadImageFitCenter(context, ivPayment, paymentModel.image)

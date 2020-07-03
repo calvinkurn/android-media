@@ -99,7 +99,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         val shipmentModel = preference.preference.shipment
 
         val shipping = preference.shipping
-        tvShippingName?.text = "Pengiriman ${shipmentModel.serviceName.capitalize()}"
+        tvShippingName?.text = view.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
         val tempServiceDuration = shipping?.serviceDuration ?: shipmentModel.serviceDuration
         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
             "Durasi " + tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
@@ -165,7 +165,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                 } else {
-                    tvShippingName?.text = "Pengiriman"
+                    tvShippingName?.text = view.context.getString(R.string.lbl_shipping)
                     tvShippingDuration?.text = shipping.serviceName
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     tvShippingDuration?.setOnClickListener {

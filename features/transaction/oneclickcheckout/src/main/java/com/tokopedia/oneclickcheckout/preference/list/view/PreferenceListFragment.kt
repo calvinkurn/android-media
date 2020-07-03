@@ -30,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
@@ -163,10 +164,10 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                         view?.let { view ->
                             if (failure.throwable is MessageErrorException) {
                                 Toaster.make(view, failure.throwable.message
-                                        ?: "Failed", type = Toaster.TYPE_ERROR)
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                             } else {
                                 Toaster.make(view, failure.throwable?.localizedMessage
-                                        ?: "Failed", type = Toaster.TYPE_ERROR)
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                             }
                         }
                     }
