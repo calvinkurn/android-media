@@ -296,7 +296,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ).show()
     }
 
-    private fun showToast(
+    private fun showToaster(
             message: String,
             type: Int,
             duration: Int = Toaster.LENGTH_LONG,
@@ -321,7 +321,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun doCopyShareLink() {
         parentViewModel.shareInfo?.let { shareInfo ->
             PlayShareWrapper.doCopyShareLink(requireContext(), shareInfo) {
-                showToast(message = getString(R.string.play_live_broadcast_share_link_copied),
+                showToaster(message = getString(R.string.play_live_broadcast_share_link_copied),
                         type = Toaster.TYPE_NORMAL,
                         actionLabel = getString(R.string.play_ok))
             }
@@ -353,15 +353,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun handleLiveNetworkInfo(pusherNetworkState: PlayPusherNetworkState) {
         when(pusherNetworkState) {
             is PlayPusherNetworkState.Recover -> {
-                showToast(message = getString(R.string.play_live_broadcast_network_recover),
+                showToaster(message = getString(R.string.play_live_broadcast_network_recover),
                         type = Toaster.TYPE_NORMAL)
             }
             is PlayPusherNetworkState.Poor -> {
-                showToast(message = getString(R.string.play_live_broadcast_network_loss),
+                showToaster(message = getString(R.string.play_live_broadcast_network_loss),
                         type = Toaster.TYPE_ERROR)
             }
             is PlayPusherNetworkState.Loss -> {
-                showToast(message = getString(R.string.play_live_broadcast_network_loss),
+                showToaster(message = getString(R.string.play_live_broadcast_network_loss),
                         type = Toaster.TYPE_ERROR,
                         duration = Toaster.LENGTH_INDEFINITE,
                         actionLabel = getString(R.string.play_broadcast_try_again),
@@ -381,7 +381,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 // showDialogWhenUnSupportedDevices()
             }
             is PlayPusherErrorType.ReachMaximumPauseDuration -> doEndStreaming()
-            is PlayPusherErrorType.Throwable -> if (GlobalConfig.DEBUG) showToast(errorType.message, type = Toaster.TYPE_ERROR)
+            is PlayPusherErrorType.Throwable -> if (GlobalConfig.DEBUG) showToaster(errorType.message, type = Toaster.TYPE_ERROR)
         }
     }
 

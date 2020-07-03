@@ -42,6 +42,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     private lateinit var btnFinish: UnifyButton
     private lateinit var loaderView: LoaderUnify
 
+    private var toasterBottomMargin = 0
+
     override fun getScreenName(): String = "Play Summary Page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,11 +122,39 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         summaryInfoView.setLiveDuration(timeElapsed)
     }
 
+    private fun showToaster(
+            message: String,
+            type: Int = Toaster.TYPE_NORMAL,
+            duration: Int = Toaster.LENGTH_LONG,
+            actionLabel: String = "",
+            actionListener: View.OnClickListener = View.OnClickListener { }
+    ) {
+        if (toasterBottomMargin == 0) {
+            val offset24 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
+            toasterBottomMargin = btnFinish.height + offset24
+        }
+
+        requireView().showToaster(
+                message = message,
+                duration = duration,
+                type = type,
+                actionLabel = actionLabel,
+                actionListener = actionListener,
+                bottomMargin = toasterBottomMargin
+        )
+    }
+
+    /**
+     * Observe
+     */
     private fun observeChannelInfo() {
         parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer{
             when (it) {
                 is NetworkResult.Success -> setChannelInfo(it.data)
-                is NetworkResult.Fail -> requireView().showToaster(it.error.localizedMessage)
+                is NetworkResult.Fail -> showToaster(
+                        it.error.localizedMessage,
+                        type = Toaster.TYPE_ERROR
+                )
             }
         })
     }
@@ -143,7 +173,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
                 }
                 is NetworkResult.Fail -> {
                     loaderView.gone()
-                    if (GlobalConfig.DEBUG) requireView().showToaster(it.error.localizedMessage, type = Toaster.TYPE_ERROR)
+                    if (GlobalConfig.DEBUG) showToaster(
+                            it.error.localizedMessage,
+                            type = Toaster.TYPE_ERROR
+                    )
                     summaryInfoView.showError { it.onRetry() }
                 }
             }
