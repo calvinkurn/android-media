@@ -20,11 +20,16 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.Status
 import com.tokopedia.analyticsdebugger.validator.core.Validator
 import com.tokopedia.analyticsdebugger.validator.core.assertAnalyticWithValidator
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_LOCAL_CACHE_NAME
+import com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN
+import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN
+import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
@@ -103,11 +108,25 @@ internal class SearchProductTrackingTest {
     private fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
 
+        disableOnBoarding()
+
         activityRule.launchActivity(createIntent())
 
         setupIdlingResource()
 
         intending(isInternal()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    private fun disableOnBoarding() {
+        LocalCacheHandler(context, FREE_ONGKIR_LOCAL_CACHE_NAME).also {
+            it.putBoolean(FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN, true)
+            it.applyEditor()
+        }
+
+        LocalCacheHandler(context, LOCAL_CACHE_NAME).also {
+            it.putBoolean(FILTER_ONBOARDING_SHOWN, true)
+            it.applyEditor()
+        }
     }
 
     private fun createIntent(): Intent {
