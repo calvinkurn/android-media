@@ -26,6 +26,7 @@ class EventPDPTicketItemPackageAdapter(
     private var listItemPackage = emptyList<PackageItem>()
     private var isError = false
     private var idPackage = ""
+    private var packageName = ""
 
     lateinit var eventPDPTracking: EventPDPTracking
 
@@ -58,7 +59,7 @@ class EventPDPTicketItemPackageAdapter(
                     onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id, items,
                             items.salesPrice.toInt()*newValue, newValue.toString(),
                             isError, items.name, items.productId,items.salesPrice,
-                            getDate(items.dates, onBindItemTicketListener.getSelectedDate()))
+                            getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
                     eventPDPTracking.onClickQuantity()
                 }
 
@@ -98,7 +99,7 @@ class EventPDPTicketItemPackageAdapter(
 
                         onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id,items,items.salesPrice.toInt()*getDigit(txtTotal.toString()),
                                 getDigit(txtTotal.toString()).toString(), isError, items.name, items.productId,items.salesPrice,
-                                getDate(items.dates, onBindItemTicketListener.getSelectedDate()))
+                                getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
                     }
                 })
 
@@ -127,9 +128,10 @@ class EventPDPTicketItemPackageAdapter(
         return EventPDPTicketItemPackageViewHolder(itemView)
     }
 
-    fun setList(list: List<PackageItem>, idPackage : String) {
+    fun setList(list: List<PackageItem>, idPackage : String, packageName:String) {
         listItemPackage = list
         this.idPackage = idPackage
+        this.packageName = packageName
         notifyDataSetChanged()
     }
 

@@ -14,7 +14,7 @@ object EventMetaDataMapper {
 
     fun getPassengerMetaData(metaDataResponse: MetaDataResponse, forms: List<Form>): MetaDataResponse {
         val passengerInformation = forms.map {
-            PassengerInformation(it.name, it.value)
+            PassengerInformation(it.name, it.value, it.title)
         }
         val passengerForm = PassengerForm(passengerInformation)
 

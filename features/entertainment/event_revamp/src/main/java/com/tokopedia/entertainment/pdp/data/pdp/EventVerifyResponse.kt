@@ -359,16 +359,21 @@ data class PassengerInformation(
         var name : String = "",
         @SerializedName("value")
         @Expose
-        var value : String = ""
+        var value : String = "",
+        @SerializedName("title")
+        @Expose
+        var title : String = ""
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readString(),
             parcel.readString(),
             parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeString(value)
+        parcel.writeString(title)
     }
 
     override fun describeContents(): Int {

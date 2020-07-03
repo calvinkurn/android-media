@@ -30,7 +30,7 @@ class PackageParentViewHolder (view: View,
             if(!element.isChoosen){
                 expand_event_pdp_ticket.setExpand(false)
             }
-            eventPDPTicketAdapter.setList(element.packageItems, element.id)
+            eventPDPTicketAdapter.setList(element.packageItems, element.id, element.name)
             eventPDPTicketAdapter.eventPDPTracking = eventPDPTracking
             tg_event_pdp_expand_title.text = element.name
             tg_event_pdp_expand_price.text = Html.fromHtml(context.resources.getString(R.string.ent_checkout_price_expand,

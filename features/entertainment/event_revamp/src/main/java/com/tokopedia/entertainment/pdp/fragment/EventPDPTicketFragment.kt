@@ -125,12 +125,12 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     override fun quantityEditorValueButtonClicked(idPackages: String, idPackagesItem: String, packageItem: PackageItem, totalPrice: Int,
                                                   qty: String, isError: Boolean, product_name: String,
-                                                  product_id: String, price: String, selectedDate: String) {
+                                                  product_id: String, price: String, selectedDate: String, packageName:String) {
         if (!idPackageActive.equals(idPackages)) {
             hashItemMap.clear()
             idPackageActive = idPackages
         }
-        hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toInt(), totalPrice, selectedDate))
+        hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toInt(), totalPrice, selectedDate,idPackageActive, packageName))
 
         this.PACKAGES_ID = idPackagesItem
         this.AMOUNT_TICKET = getTotalQuantity(hashItemMap)
