@@ -220,6 +220,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun loadInitialData() {
         isLoadingInitialData = true
+        endlessRecyclerViewScrollListener?.resetState()
         reviewSellerAdapter.clearAllElements()
         rvRatingProduct?.show()
         filter_and_sort_layout?.hide()
