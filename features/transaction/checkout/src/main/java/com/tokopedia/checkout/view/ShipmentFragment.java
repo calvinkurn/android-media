@@ -469,7 +469,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
         shipmentAdapter.setCartIds(cartIdsStringBuilder.toString());
 
-        shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
+        if (shipmentDonationModel != null) {
+            shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
+            if (shipmentDonationModel.isChecked()) {
+                checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
+            }
+        }
+
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             shipmentAdapter.updateEgold(false);
             shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);

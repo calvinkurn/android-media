@@ -2,7 +2,6 @@ package com.tokopedia.phoneverification.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -10,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -20,9 +21,9 @@ import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.phoneverification.R;
 import com.tokopedia.phoneverification.di.DaggerPhoneVerificationComponent;
 import com.tokopedia.phoneverification.di.PhoneVerificationComponent;
-import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.listener.ChangePhoneNumber;
 import com.tokopedia.phoneverification.view.presenter.ChangePhoneNumberPresenter;
+import com.tokopedia.utils.phonenumber.PhoneNumberUtil;
 
 import javax.inject.Inject;
 
@@ -110,7 +111,7 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
-                String phone = CustomPhoneNumberUtil.transform(s.toString());
+                String phone = PhoneNumberUtil.transform(s.toString());
                 if (s.toString().length() != phone.length()) {
                     editText.removeTextChangedListener(this);
                     editText.setText(phone);
