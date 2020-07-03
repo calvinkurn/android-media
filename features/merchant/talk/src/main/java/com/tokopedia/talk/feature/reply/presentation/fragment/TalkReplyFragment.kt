@@ -76,13 +76,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val MINIMUM_TEXT_LENGTH = 5
 
         @JvmStatic
-        fun createNewInstance(questionId: String, shopId: String, productId: String, source: String): TalkReplyFragment =
+        fun createNewInstance(questionId: String, shopId: String, source: String): TalkReplyFragment =
                 TalkReplyFragment().apply {
                     arguments = Bundle()
                     arguments?.apply {
                         putString(QUESTION_ID, questionId)
                         putString(PARAM_SHOP_ID, shopId)
-                        putString(PARAM_PRODUCT_ID, productId)
                         putString(PARAM_SOURCE, source)
                     }
                 }
@@ -492,6 +491,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         }
                         setIsFollowing(discussionDataByQuestionID.question.questionState.isFollowed)
                         initTextBox(discussionDataByQuestionID.maxAnswerLength)
+                        setProductId(it.data.discussionDataByQuestionID.productId)
                         hidePageError()
                         hidePageLoading()
                         replySwipeRefresh.isRefreshing = false
@@ -670,7 +670,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         arguments?.let {
             questionId = it.getString(QUESTION_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
-            productId = it.getString(PARAM_PRODUCT_ID, "")
             source = it.getString(PARAM_SOURCE, "")
         }
         viewModel.setIsMyShop(shopId)
@@ -712,5 +711,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         return source == TalkConstants.NOTIFICATION_SOURCE
     }
 
-
+    private fun setProductId(productId: String) {
+        this.productId = productId
+    }
 }

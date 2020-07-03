@@ -671,7 +671,6 @@ open class InboxTalkFragment : BaseDaggerFragment(),
                         context,
                         Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, talkId))
                                 .buildUpon()
-                                .appendQueryParameter(PARAM_PRODUCT_ID, productId)
                                 .appendQueryParameter(PARAM_SHOP_ID, shopId)
                                 .appendQueryParameter(TalkConstants.PARAM_SOURCE, SOURCE_INBOX)
                                 .build().toString()

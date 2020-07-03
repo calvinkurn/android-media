@@ -24,7 +24,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     private var questionId = ""
     private var shopId = ""
     private var source = ""
-    private var productId = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +39,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkReplyFragment.createNewInstance(questionId, shopId, productId, source)
+        return TalkReplyFragment.createNewInstance(questionId, shopId, source)
     }
 
     override fun getComponent(): TalkComponent {
@@ -57,10 +56,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         val questionIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
         if (questionIdString.isNotEmpty()) {
             this.questionId = questionIdString
-        }
-        val productIdString = uri.getQueryParameter(TalkConstants.PARAM_PRODUCT_ID) ?: ""
-        if (productIdString.isNotEmpty()) {
-            this.productId = productIdString
         }
         val shopId = uri.getQueryParameter(TalkConstants.PARAM_SHOP_ID) ?: ""
         if (shopId.isNotEmpty()) {
