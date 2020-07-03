@@ -13,7 +13,8 @@ class VariantDetailInputTypeFactoryImpl(
         private val onCollapsibleHeaderClickListener: VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
         private val onStatusSwitchCheckedChangeListener: VariantDetailFieldsViewHolder.OnStatusSwitchCheckedChangeListener,
         private val onPriceInputTextChangedListener: VariantDetailFieldsViewHolder.OnPriceInputTextChangedListener,
-        private val onStockInputTextChangedListener: VariantDetailFieldsViewHolder.OnStockInputTextChangedListener) :
+        private val onStockInputTextChangedListener: VariantDetailFieldsViewHolder.OnStockInputTextChangedListener,
+        private val onSkuInputTextChangedListener: VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener) :
         BaseAdapterTypeFactory(), VariantDetailInputTypeFactory {
 
     override fun type(variantDetailHeaderViewModel: VariantDetailHeaderViewModel): Int {
@@ -30,7 +31,8 @@ class VariantDetailInputTypeFactoryImpl(
             VariantDetailFieldsViewHolder.LAYOUT -> VariantDetailFieldsViewHolder(parent,
                     onStatusSwitchCheckedChangeListener,
                     onPriceInputTextChangedListener,
-                    onStockInputTextChangedListener)
+                    onStockInputTextChangedListener,
+                    onSkuInputTextChangedListener)
             else -> return super.createViewHolder(parent, type)
         }
     }
