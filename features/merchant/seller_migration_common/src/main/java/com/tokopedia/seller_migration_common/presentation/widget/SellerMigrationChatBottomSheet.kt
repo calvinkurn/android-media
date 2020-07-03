@@ -1,8 +1,8 @@
 package com.tokopedia.seller_migration_common.presentation.widget
 
 import android.content.Context
-import android.os.Bundle
 import android.view.View
+import android.os.Bundle
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
@@ -43,4 +43,6 @@ class SellerMigrationChatBottomSheet(titles: List<String>,
     override fun trackGoToPlayStore() {
         SellerMigrationTracking.eventGoToPlayStore(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_CHAT)
     }
+
+    override fun trackLearnMore() { /* noop */ }
 }

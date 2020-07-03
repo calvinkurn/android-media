@@ -66,6 +66,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
@@ -223,7 +224,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var shouldFireVariantTracker = true
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mapOf())
     private var enableCheckImeiRemoteConfig = false
-    private var shouldTrackStickyLogin = true
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -683,6 +683,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         startActivity(WholesaleActivity.getIntent(this, ArrayList(data)))
                     }
                 }
+            }
+            ProductDetailConstant.BY_ME -> {
+                onAffiliateClick()
+                DynamicProductDetailTracking.Click.eventClickByMe(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
         }
     }
@@ -1236,6 +1240,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeP2Login() {
         viewLifecycleOwner.observe(viewModel.p2Login) {
             topAdsGetProductManage = it.topAdsGetProductManage
+            if(it.pdpAffiliate == null) {
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productByMeMap)
+            } else {
+                pdpUiUpdater?.updateByMeData(context)
+            }
             it.pdpAffiliate?.let { renderAffiliate(it) }
             actionButtonView.setTopAdsButton(hasTopAds())
             pdpUiUpdater?.updateWishlistData(it.isWishlisted)
@@ -1457,7 +1466,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             setupTickerOcc()
 
             trackProductView(viewModel.tradeInParams.isEligible == 1)
-
 
             viewModel.shopInfo?.let { shopInfo ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
@@ -1932,7 +1940,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (productId != null || (productKey != null && shopDomain != null)) {
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh)
+            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate)
         }
     }
 
@@ -2028,23 +2036,24 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             getCommissionPdp.visible()
             commissionPdp.visible()
             commissionPdp.text = pdpAffiliate.commissionValueDisplay
-            btn_affiliate_pdp.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
+            btn_affiliate_pdp.setOnClickListener {
+                viewModel.getDynamicProductInfoP1?.let { productInfo ->
+                    DynamicProductDetailTracking.Click.eventClickAffiliate(viewModel.userId, productInfo.basic.getShopId(), false,
+                            viewModel.getDynamicProductInfoP1)
+                }
+                onAffiliateClick()
+            }
             actionButtonView.gone()
             ticker_occ_layout.gone()
         } else if (!GlobalConfig.isSellerApp()) {
             base_btn_affiliate_dynamic.gone()
-            actionButtonView.byMeClick = this::onAffiliateClick
-            actionButtonView.showByMe(true, pdpAffiliate)
         }
     }
 
-    private fun onAffiliateClick(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate,
-                                 isRegularPdp: Boolean) {
-        viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            activity?.let {
-                DynamicProductDetailTracking.Click.eventClickAffiliate(viewModel.userId, productInfo.basic.getShopId(), isRegularPdp,
-                        viewModel.getDynamicProductInfoP1)
-                doActionOrLogin({
+    private fun onAffiliateClick() {
+        activity?.let {
+            doActionOrLogin({
+                viewModel.p2Login.value?.pdpAffiliate?.let{ pdpAffiliate ->
                     RouteManager.getIntent(it,
                             ApplinkConst.AFFILIATE_CREATE_POST,
                             pdpAffiliate.productId.toString(),
@@ -2053,19 +2062,30 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             .let(::startActivity)
                     it.setResult(Activity.RESULT_OK)
                     it.finish()
-                })
-            }
+                }
+            })
         }
-        return
     }
 
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
-                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListNamePdp, productInfo, shopInfo, trackerAttributionPdp,
-                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment, deeplinkUrl,
-                        viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString())
-                                ?: "0")
+
+                val sentBundle = DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(
+                        irisSessionId,
+                        trackerListNamePdp,
+                        productInfo,
+                        shopInfo,
+                        trackerAttributionPdp,
+                        isElligible,
+                        viewModel.tradeInParams.usedPrice > 0,
+                        viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment,
+                        deeplinkUrl,
+                        viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString()) ?: "0"
+                )
+                context?.let {
+                    getInstance(it).saveEvent(sentBundle)
+                }
                 return
             }
         }
@@ -2168,17 +2188,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
-        stickyLoginView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateStickyState()
-        }
         updateActionButtonShadow()
         stickyLoginView.setOnClickListener {
             goToLogin()
-            stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.PDP)
+            } else {
+                stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
+            }
         }
         stickyLoginView.setOnDismissListener(View.OnClickListener {
             stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
-            stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            } else {
+                stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            }
             updateStickyState()
         })
 
@@ -2186,13 +2211,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun updateStickyState() {
-        if (this.tickerDetail == null) {
-            stickyLoginView.visibility = View.GONE
-            return
-        }
-
-        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
-        if (!isCanShowing) {
+        if (tickerDetail == null) {
             stickyLoginView.visibility = View.GONE
             return
         }
@@ -2202,11 +2221,24 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             return
         }
 
-        this.tickerDetail?.let { stickyLoginView.setContent(it) }
-        stickyLoginView.show(StickyLoginConstant.Page.PDP)
-        if (shouldTrackStickyLogin || stickyLoginView.isShowing()) {
-            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
-            shouldTrackStickyLogin = false
+        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true)
+        if (stickyLoginView.isLoginReminder() && isCanShowing) {
+            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isShowing()) {
+                stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.PDP)
+            }
+        } else {
+            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true)
+            if (!isCanShowing) {
+                stickyLoginView.visibility = View.GONE
+                return
+            }
+
+            this.tickerDetail?.let { stickyLoginView.setContent(it) }
+            stickyLoginView.show(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isShowing()) {
+                stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+            }
         }
     }
 
@@ -2463,7 +2495,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         RouteManager.route(context, webViewUrl)
     }
 
-    private fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {
+    override fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
             val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: return
             DynamicProductDetailTracking.Click.eventImageShopClicked(viewModel.getDynamicProductInfoP1, shopId, componentTrackDataModel)

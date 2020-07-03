@@ -193,7 +193,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     companion object {
 
-        private const val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
@@ -311,19 +310,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
             val displayMetrics = DisplayMetrics()
-            val windowManager = context?.applicationContext?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            windowManager.defaultDisplay.getMetrics(displayMetrics)
-            val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
-            if (heightDiffInDp > 100) {
-                if (!isKeyboardOpened) {
-                    bottomLayout.gone()
-                    llPromoCheckout.gone()
+            val windowManager = context?.applicationContext?.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+            windowManager?.let {
+                windowManager.defaultDisplay.getMetrics(displayMetrics)
+                val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
+                if (heightDiffInDp > 100) {
+                    if (!isKeyboardOpened) {
+                        bottomLayout.gone()
+                        llPromoCheckout.gone()
+                    }
+                    isKeyboardOpened = true
+                } else if (isKeyboardOpened) {
+                    bottomLayout.show()
+                    llPromoCheckout.show()
+                    isKeyboardOpened = false
                 }
-                isKeyboardOpened = true
-            } else if (isKeyboardOpened) {
-                bottomLayout.show()
-                llPromoCheckout.show()
-                isKeyboardOpened = false
             }
         }
 
@@ -383,7 +384,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDestroy() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         showPromoButtonJob?.cancel()
         super.onDestroy()
@@ -1224,13 +1225,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartShopNameClicked(cartShopHolderData: CartShopHolderData) {
-        sendAnalyticsOnClickShopCartItem(cartShopHolderData.shopGroupAvailableData.shopId
-                ?: "", cartShopHolderData.shopGroupAvailableData.shopName ?: "")
+    override fun onCartShopNameClicked(shopId: String?, shopName: String?) {
+        if (shopId != null && shopName != null) {
+            sendAnalyticsOnClickShopCartItem(shopId, shopName)
 
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, cartShopHolderData.shopGroupAvailableData.shopId)
-            it.startActivity(intent)
+            activity?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, shopId)
+                it.startActivity(intent)
+            }
         }
     }
 
@@ -1640,7 +1642,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
                     var countListItem = 0
                     cartItemHolderData.cartItemDataList?.let { countListItem = it.size }
-                    if (i == (parentPosition - 2)) {
+                    val countAdapterItemBeforeCartItem = cartAdapter.getItemCountBeforeCartItem()
+                    val parentPositionDifference = countAdapterItemBeforeCartItem + 1
+                    if (i == (parentPosition - parentPositionDifference)) {
                         val listProductDetail = arrayListOf<ProductDetailsItem>()
                         for (j in 0 until countListItem) {
                             if (position != -1 && j == position) {
@@ -2069,7 +2073,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun clearRecyclerView() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         cartRecyclerView.removeAllViews()
         cartRecyclerView.recycledViewPool.clear()
     }
@@ -2859,6 +2863,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun sendATCTrackingURL(clickurl: String) {
         var url = "$clickurl&click_source=ATC_direct_click";
-        ImpresionTask(userSession).execute(url);
+        activity?.let { ImpresionTask(it::class.qualifiedName, userSession).execute(url) }
     }
 }

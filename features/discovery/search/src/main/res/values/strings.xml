@@ -63,7 +63,7 @@
     <string name="btn_following_text">Following</string>
     <string name="btn_follow_text">Follow</string>
     <string name="sort">Sort</string>
-    <string name="filter">Filter</string>
+    <string name="search_filter">Filter</string>
     <string name="list">List</string>
     <string name="msg_empty_search_with_filter_2">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba kurangi filter pencarian Anda :</string>
     <string name="related_search_title">Mungkin maksud Anda :</string>
@@ -85,4 +85,10 @@
 
     <string name="broad_match_title">Pot tanaman alumunium IKEA</string>
     <string name="broad_match_see_more">Lihat Semua</string>
+
+    <string name="search_product_filter_onboarding_title">Cari barang yang gimana?</string>
+    <string name="search_product_filter_onboarding_description">Yuk, temukan barang lebih cepat dengan mengurutkan dan memilih lokasi, harga, atau kategori lainnya disini.</string>
+
+    <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
+    <string name="search_inspiration_card_option">putih</string>
 </resources>

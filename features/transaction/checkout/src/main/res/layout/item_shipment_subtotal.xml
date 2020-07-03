@@ -34,7 +34,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginStart="@dimen/dp_5"
-            app:srcCompat="@drawable/ic_down"
+            app:srcCompat="@drawable/checkout_module_ic_down"
             tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifyprinciples.Typography

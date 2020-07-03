@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
@@ -32,9 +33,8 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
             return
         setViewSpanType(holder)
-
         holder.bindView(viewHolderListModel.getViewHolderModel(
-                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position],position),parentComponent)
+                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position), parentComponent)
     }
 
 
@@ -43,6 +43,13 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
             return 0
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
         return id ?: 0
+    }
+
+    override fun getItemId(position: Int): Long {
+        if (componentList.isNullOrEmpty() || position >= componentList.size || componentList[position].data.isNullOrEmpty()) {
+            return super.getItemId(position)
+        }
+        return componentList[position].data?.get(0)?.productId?.toLong()!!
     }
 
     fun addDataList(dataList: List<ComponentsItem>) {
@@ -54,7 +61,9 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
-        addDataList(dataList as List<ComponentsItem>)
+        dataList?.let { componentItemsList ->
+            addDataList(componentItemsList as List<ComponentsItem>)
+        }
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
@@ -82,6 +91,10 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     fun clearListViewModel() {
         viewHolderListModel.clearList()
+    }
+
+    fun getViewModelAtPosition(position: Int): DiscoveryBaseViewModel? {
+        return viewHolderListModel.getViewModelAtPosition(position)
     }
 }
 

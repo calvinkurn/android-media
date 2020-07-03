@@ -31,6 +31,7 @@ import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
@@ -373,7 +374,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                             subTotalWholesalePrice = (itemQty * wholesalePriceData.prdPrc).toDouble()
                             hasCalculateWholesalePrice = true
                             val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                    wholesalePriceData.prdPrc, false)
+                                    wholesalePriceData.prdPrc, false).removeDecimalSuffix()
                             it.wholesalePriceFormatted = wholesalePriceFormatted
                             break
                         }
@@ -382,7 +383,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         if (itemQty > wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc) {
                             subTotalWholesalePrice = (itemQty * wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc).toDouble()
                             val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                    wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc, false)
+                                    wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc, false).removeDecimalSuffix()
                             it.wholesalePriceFormatted = wholesalePriceFormatted
                         } else {
                             subTotalWholesalePrice = itemQty * it.pricePlan
@@ -469,7 +470,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         var totalPriceString = "-"
         if (totalPrice > 0) {
-            totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice.toLong(), false)
+            totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice.toLong(), false).removeDecimalSuffix()
         }
         view?.updateCashback(totalCashback)
         val selectAllItem = view?.getAllAvailableCartDataList()?.size == allCartItemDataList.size + errorProductCount &&
@@ -1148,9 +1149,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     }
 
-    override fun doValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
+    override fun doValidateUse(promoRequest: ValidateUsePromoRequest) {
         val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequestValidateUse)
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
         validateUsePromoRevampUseCase.createObservable(requestParams)
                 .subscribeOn(schedulers.io)
                 .unsubscribeOn(schedulers.io)
@@ -1158,7 +1159,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 .subscribe(ValidateUseSubscriber(view, this))
     }
 
-    override fun doUpdateCartAndValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
+    override fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemData>()
             cartListView.getAllSelectedCartDataList()?.let { listCartItemData ->
@@ -1172,7 +1173,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
-            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequestValidateUse)
+            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
 
             compositeSubscription.add(
                     updateCartAndValidateUseUseCase.createObservable(requestParams)

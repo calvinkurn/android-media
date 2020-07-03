@@ -94,7 +94,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
-                android:gravity="end"
+                android:gravity="end|center_vertical"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/dp_topchat_12"
                 app:layout_constraintEnd_toEndOf="parent"

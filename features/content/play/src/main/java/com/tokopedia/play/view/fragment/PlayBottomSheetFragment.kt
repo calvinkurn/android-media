@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -313,7 +312,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
                             is ProductSheetInteractionEvent.OnBuyProduct -> shouldCheckProductVariant(it.product, ProductAction.Buy)
                             is ProductSheetInteractionEvent.OnAtcProduct -> shouldCheckProductVariant(it.product, ProductAction.AddToCart)
-                            is ProductSheetInteractionEvent.OnProductCardClicked -> shouldOpenProductDetail(it.product)
+                            is ProductSheetInteractionEvent.OnProductCardClicked -> shouldOpenProductDetail(it.product, it.position)
                             is ProductSheetInteractionEvent.OnVoucherScrolled -> onVoucherScrolled(it.lastPositionViewed)
                             is ProductSheetInteractionEvent.OnEmptyButtonClicked -> openShopPage(it.partnerId)
                         }
@@ -385,8 +384,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
         viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, action, type))
     }
 
-    private fun shouldOpenProductDetail(product: ProductLineUiModel) {
-        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product))
+    private fun shouldOpenProductDetail(product: ProductLineUiModel, position: Int) {
+        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
     }
 
     private fun doShowToaster(
@@ -398,11 +397,13 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     ) {
         when (bottomSheetType) {
             BottomInsetsType.ProductSheet ->
-                Toaster.make(requireView(),
-                        message,
-                        toasterType,
+                Toaster.make(
+                        view = requireView(),
+                        text = message,
+                        type = toasterType,
                         actionText = actionText,
-                        clickListener = actionClickListener)
+                        clickListener = actionClickListener
+                )
             BottomInsetsType.VariantSheet ->
                 sendVariantToaster(toasterType, message, actionText, actionClickListener)
             else -> {
@@ -447,13 +448,13 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
             is InteractionEvent.DoActionProduct -> doActionProduct(event.product, event.action, event.type)
-            is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product)
+            is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
         }
     }
 
-    private fun doOpenProductDetail(product: ProductLineUiModel) {
+    private fun doOpenProductDetail(product: ProductLineUiModel, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
-            PlayAnalytics.clickProduct(trackingQueue, channelId, product, playViewModel.channelType)
+            PlayAnalytics.clickProduct(trackingQueue, channelId, product, position, playViewModel.channelType)
             openPageByApplink(product.applink)
         }
     }

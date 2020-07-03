@@ -181,7 +181,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         CookieManager.getInstance().setAcceptCookie(true);
 
         webView.clearCache(true);
-        webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
+        webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -330,7 +330,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onPermissionRequest(PermissionRequest request) {
-            for (String resource :
+            for (String resource:
                     request.getResources()) {
                 if (resource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
                     permissionCheckerHelper = new PermissionCheckerHelper();
@@ -339,12 +339,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         public void onPermissionDenied(String permissionText) {
                             request.deny();
                         }
-
                         @Override
                         public void onNeverAskAgain(String permissionText) {
                             request.deny();
                         }
-
                         @Override
                         public void onPermissionGranted() {
                             request.grant(request.getResources());
@@ -353,7 +351,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             }
         }
-
         @Override
         public void onPermissionRequestCanceled(PermissionRequest request) {
             super.onPermissionRequestCanceled(request);
@@ -572,15 +569,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         Uri uri = Uri.parse(url);
+        if (uri.isOpaque()) {
+            return false;
+        }
         if (goToLoginGoogle(uri)) return true;
         String queryParam = null;
         String headerText = null;
 
         try {
-            if (uri.isHierarchical()) {
-                queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
-                headerText = uri.getQueryParameter(CUST_HEADER);
-            }
+            queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+            headerText = uri.getQueryParameter(CUST_HEADER);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -596,7 +594,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
             if (queryParam != null)
                 intent.putExtra(CUST_OVERLAY_URL, queryParam);
-            if (headerText != null)
+            if(headerText != null)
                 intent.putExtra(CUST_HEADER, headerText);
             startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
@@ -629,7 +627,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         }
-        if (url.contains(LOGIN_APPLINK) || url.contains(REGISTER_APPLINK)) {
+        if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
             startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
             return true;
         }
@@ -656,7 +654,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void logApplinkErrorOpen(String url) {
         String referrer = getPreviousUri();
-        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s'",
+        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s';journey='-'",
                 getClass().getSimpleName(), referrer, url);
     }
 

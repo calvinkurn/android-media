@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -19,12 +20,13 @@ import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.partial_seller_migration_warning.*
-import kotlinx.android.synthetic.main.widget_seller_migration_account_bottom_sheet.*
+import com.tokopedia.unifyprinciples.Typography
 
 class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
+
     companion object {
         fun createNewInstance(context: Context) : SellerMigrationAccountBottomSheet {
             return SellerMigrationAccountBottomSheet().apply{
@@ -39,13 +41,23 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         userId = UserSession(context).userId
         setupPadding()
-        sellerMigrationAccountBottomSheetImage.loadImage(SellerMigrationConstants.SELLER_MIGRATION_ACCOUNT_IMAGE_LINK)
-        sellerMigrationBottomSheetContent.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_content)).spannedString }
-        sellerMigrationAccountBottomSheetLink.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_footer)).spannedString }
-        sellerMigrationAccountBottomSheetLink.setOnTouchListener(SellerMigrationTouchListener {
-            goToInformationWebview(it)
-        })
-        sellerMigrationAccountBottomSheetButton.setOnClickListener {
+        val sellerMigrationAccountBottomSheetImage: ImageView? = view.findViewById(R.id.sellerMigrationAccountBottomSheetImage)
+        val sellerMigrationBottomSheetContent: Typography? = view.findViewById(R.id.sellerMigrationBottomSheetContent)
+        val sellerMigrationAccountBottomSheetLink: Typography? = view.findViewById(R.id.sellerMigrationAccountBottomSheetLink)
+        val sellerMigrationAccountBottomSheetButton: UnifyButton? = view.findViewById(R.id.sellerMigrationAccountBottomSheetButton)
+        if(listOf(sellerMigrationAccountBottomSheetImage, sellerMigrationBottomSheetContent, sellerMigrationAccountBottomSheetLink, sellerMigrationAccountBottomSheetButton).any { it == null }) {
+            this.dismiss()
+            return
+        }
+        sellerMigrationAccountBottomSheetImage?.loadImage(SellerMigrationConstants.SELLER_MIGRATION_ACCOUNT_IMAGE_LINK)
+        sellerMigrationBottomSheetContent?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_content)).spannedString }
+        sellerMigrationAccountBottomSheetLink?.apply {
+            text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_footer)).spannedString }
+            setOnTouchListener(SellerMigrationTouchListener {
+                goToInformationWebview(it)
+            })
+        }
+        sellerMigrationAccountBottomSheetButton?.setOnClickListener {
             goToSellerApp()
         }
         setupWarningCard()
@@ -54,8 +66,10 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
     private fun setupWarningCard() {
         val remoteConfigDate = getSellerMigrationDate(context)
         if(remoteConfigDate.isNotBlank()) {
-            sellerMigrationAccountWarning.show()
-            sellerMigrationWarningDate.text = remoteConfigDate
+            val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
+            val sellerMigrationAccountWarning: View? = view?.findViewById(R.id.sellerMigrationAccountWarning)
+            sellerMigrationAccountWarning?.show()
+            sellerMigrationWarningDate?.text = remoteConfigDate
         }
     }
 

@@ -178,7 +178,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     context?.let { ctx ->
                         if (progressDialog == null) {
                             progressDialog = AlertDialog.Builder(ctx)
-                                    .setView(R.layout.purchase_platform_progress_dialog_view)
+                                    .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
                                     .setCancelable(false)
                                     .create()
                         }
@@ -244,10 +244,10 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         preferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.left = context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
-                outRect.right = context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
-                outRect.top = context?.resources?.getDimension(R.dimen.dp_8)?.toInt() ?: 0
-                outRect.bottom = context?.resources?.getDimension(R.dimen.dp_8)?.toInt() ?: 0
+                outRect.left = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt() ?: 0
+                outRect.right = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt() ?: 0
+                outRect.top = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt() ?: 0
+                outRect.bottom = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt() ?: 0
             }
         })
     }

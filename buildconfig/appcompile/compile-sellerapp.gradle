@@ -5,6 +5,7 @@ include "features:category:tradein_common"
 include "features:category:tradein"
 
 include "features:common:developer_options"
+include "features:common:developer_options_noop"
 include "features:common:nps"
 include "features:common:resources_common"
 include "features:category:common_tradein"
@@ -41,7 +42,7 @@ include "features:fintech:common_wallet"
 include "features:fintech:instant_loan"
 include "features:fintech:layanan_finansial"
 
-include "features:fcm_common"
+include "features:user:fcm_common"
 
 include "features:im:common_promo"
 include "features:im:referral"
@@ -121,11 +122,11 @@ include "features:user:chat_common"
 include "features:user:attachinvoice"
 include "features:user:attachvoucher"
 include "features:user:chatbot"
-include "features:user:changepassword"
 include "features:user:changephonenumber"
 include "features:user:loginregister"
 include "features:user:loginphone"
 include "features:user:logout"
+include "features:user:managepassword"
 include "features:user:notifcenter"
 include "features:user:otp"
 include "features:user:phoneverification"
@@ -151,8 +152,6 @@ include "features:fintech:merchant_lending_widget"
 
 include 'tkpdloyalty'
 include 'tkpdcore'
-include 'tkpdinbox'
-include 'tkpdsession'
 include 'tkpddesign'
 include 'tkpdseller'
 include 'tkpdabstraction'

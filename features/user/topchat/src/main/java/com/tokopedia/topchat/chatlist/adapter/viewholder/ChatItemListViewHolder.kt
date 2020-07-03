@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 
 import android.graphics.Typeface.ITALIC
 import android.graphics.Typeface.NORMAL
-import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,19 +14,18 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.common.util.ChatHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
 
 /**
  * @author : Steven 2019-08-07
@@ -44,19 +42,30 @@ class ChatItemListViewHolder(
     private val time: Typography = itemView.findViewById(R.id.time)
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
+    private val smartReplyIndicator: View? = itemView.findViewById(R.id.view_smart_reply_indicator)
 
     private val menu = LongClickMenu()
 
     override fun bind(element: ItemChatListPojo) {
         bindItemChatClick(element)
         bindItemChatLongClick(element)
-        bindReadState(element)
         bindName(element)
         bindProfilePicture(element)
         bindMessageState(element)
         bindTimeStamp(element)
         bindLabel(element)
         bindPin(element)
+        bindSmartReplyIndicator(element)
+    }
+
+    private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
+        if (element.isReplyTopBot() && element.isUnread() && listener.isTabSeller()) {
+            smartReplyIndicator?.show()
+            unreadCounter.hide()
+        } else {
+            smartReplyIndicator?.hide()
+            bindReadState(element)
+        }
     }
 
     override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
@@ -89,6 +98,7 @@ class ChatItemListViewHolder(
 
     private fun bindName(chat: ItemChatListPojo) {
         userName.text = MethodChecker.fromHtml(chat.name)
+        userName.setWeight(Typography.REGULAR)
     }
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {
@@ -105,7 +115,7 @@ class ChatItemListViewHolder(
         if (chat.isUnread() && attributes != null) {
             chat.markAsRead()
             listener.decreaseNotificationCounter()
-            bindReadState(chat)
+            bindSmartReplyIndicator(chat)
         }
 
         listener.chatItemClicked(chat, adapterPosition)
@@ -244,7 +254,7 @@ class ChatItemListViewHolder(
     }
 
     private fun bindTimeStamp(chat: ItemChatListPojo) {
-        time.text = convertToRelativeDate(chat.lastReplyTimeStr)
+        time.text = ChatHelper.convertToRelativeDate(chat.lastReplyTimeStr)
     }
 
     private fun bindLabel(chat: ItemChatListPojo) {
@@ -260,29 +270,6 @@ class ChatItemListViewHolder(
                 label.show()
             }
             else -> label.hide()
-        }
-    }
-
-    private fun convertToRelativeDate(timeStamp: String): String {
-        val smsTime = Calendar.getInstance()
-        smsTime.timeInMillis = timeStamp.toLongOrZero()
-
-        val now = Calendar.getInstance()
-
-        val timeFormatString = "HH:mm"
-        val dateTimeFormatString = "dd MMM"
-        val dateTimeYearFormatString = "dd MMM yy"
-        val HOURS = (60 * 60 * 60).toLong()
-        return if ((now.get(Calendar.DATE) == smsTime.get(Calendar.DATE))
-                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))) {
-            DateFormat.format(timeFormatString, smsTime).toString()
-        } else if ((now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1)
-                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))) {
-            "Kemarin"
-        } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
-            DateFormat.format(dateTimeFormatString, smsTime).toString()
-        } else {
-            DateFormat.format(dateTimeYearFormatString, smsTime).toString()
         }
     }
 

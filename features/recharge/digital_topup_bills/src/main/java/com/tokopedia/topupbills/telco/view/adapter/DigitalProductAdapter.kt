@@ -86,7 +86,7 @@ class DigitalProductAdapter(private val productList: List<TelcoProduct>, private
     }
 
     interface ActionListener {
-        fun onClickItemProduct(itemProduct: TelcoProduct, position: Int)
+        fun onClickItemProduct(itemProduct: TelcoProduct, position: Int, labelList: String)
         fun onClickSeeMoreProduct(itemProduct: TelcoProduct)
         fun notifyItemChanged(position: Int)
     }

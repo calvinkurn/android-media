@@ -142,7 +142,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 pojo.attachment?.type.toString(),
                 pojo.replyTime,
                 list,
-                pojo.msg
+                pojo.msg,
+                pojo.source
         )
     }
 

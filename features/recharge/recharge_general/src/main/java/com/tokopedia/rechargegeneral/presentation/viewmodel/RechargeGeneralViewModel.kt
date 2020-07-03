@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
-import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.util.RechargeGeneralDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,7 +25,7 @@ class RechargeGeneralViewModel @Inject constructor(
         private val rechargeGeneralMapper: RechargeGeneralMapper,
         private val graphqlRepository: GraphqlRepository,
         private val dispatcher: RechargeGeneralDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+    : BaseViewModel(dispatcher.IO) {
 
     private val mutableOperatorCluster = MutableLiveData<Result<RechargeGeneralOperatorCluster>>()
     val operatorCluster: LiveData<Result<RechargeGeneralOperatorCluster>>
@@ -42,7 +41,7 @@ class RechargeGeneralViewModel @Inject constructor(
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
             if (data.response.operatorGroups == null) {
@@ -61,7 +60,7 @@ class RechargeGeneralViewModel @Inject constructor(
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeGeneralDynamicInput.Response>()
 
             val foundProduct = data.response.enquiryFields.find { it.name == PARAM_PRODUCT }

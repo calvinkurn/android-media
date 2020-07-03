@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
@@ -35,6 +36,7 @@ class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragme
         lifecycleOwner?.let {
             productCardSprintSaleCarouselViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
                 discoveryRecycleAdapter.setDataList(item)
+                sendProductCardImpressionEvent(item)
             })
             productCardSprintSaleCarouselViewModel.syncData.observe(it, Observer { sync ->
                 if (sync) {
@@ -42,6 +44,10 @@ class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragme
                 }
             })
         }
+    }
+
+    private fun sendProductCardImpressionEvent(item: ArrayList<ComponentsItem>?) {
+        item?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventImpressionProductCard(it, productCardSprintSaleCarouselViewModel.isUserLoggedIn()) }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
