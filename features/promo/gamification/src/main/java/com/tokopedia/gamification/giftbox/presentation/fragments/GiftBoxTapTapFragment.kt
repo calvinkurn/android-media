@@ -790,7 +790,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         MAX_REWARD_LIMIT = (totalSeconds.toInt() / CAPPING.toFloat()).roundToInt()
 
         fun onTimeUp() {
-            (giftBoxDailyView as GiftBoxTapTapView).isTimeOut = true
+            isTimeOut = true
             minuteTimerState = FINISHED
             rewardSummary.visibility = View.VISIBLE
             lottieTimeUp.visible()
