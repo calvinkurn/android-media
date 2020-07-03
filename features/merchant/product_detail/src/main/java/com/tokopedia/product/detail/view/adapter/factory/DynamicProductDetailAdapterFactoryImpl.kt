@@ -17,10 +17,6 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductLastSeenViewHolder.LAYOUT
     }
 
-    override fun type(data: ProductOpenShopDataModel): Int {
-        return ProductOpenShopViewHolder.LAYOUT
-    }
-
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
     }
