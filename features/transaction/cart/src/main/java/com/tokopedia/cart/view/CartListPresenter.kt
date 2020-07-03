@@ -1149,9 +1149,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     }
 
-    override fun doValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
+    override fun doValidateUse(promoRequest: ValidateUsePromoRequest) {
         val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequestValidateUse)
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
         validateUsePromoRevampUseCase.createObservable(requestParams)
                 .subscribeOn(schedulers.io)
                 .unsubscribeOn(schedulers.io)
@@ -1159,7 +1159,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 .subscribe(ValidateUseSubscriber(view, this))
     }
 
-    override fun doUpdateCartAndValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
+    override fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemData>()
             cartListView.getAllSelectedCartDataList()?.let { listCartItemData ->
@@ -1173,7 +1173,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
-            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequestValidateUse)
+            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
 
             compositeSubscription.add(
                     updateCartAndValidateUseUseCase.createObservable(requestParams)

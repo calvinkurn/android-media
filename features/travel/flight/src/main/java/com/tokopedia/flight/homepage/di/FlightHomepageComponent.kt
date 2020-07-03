@@ -2,6 +2,7 @@ package com.tokopedia.flight.homepage.di
 
 import com.tokopedia.flight.common.di.component.FlightComponent
 import com.tokopedia.flight.homepage.presentation.fragment.FlightHomepageFragment
+import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
 import dagger.Component
 
 /**
@@ -12,4 +13,5 @@ import dagger.Component
         dependencies = [FlightComponent::class])
 interface FlightHomepageComponent {
     fun inject(flightHomepageFragment: FlightHomepageFragment)
+    fun inject(flightCalendarOneWayWidget: FlightCalendarOneWayWidget)
 }
