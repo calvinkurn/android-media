@@ -62,6 +62,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private lateinit var exitDialog: DialogUnify
 
+    private var toasterBottomMargin = 0
+
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -301,16 +303,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             actionLabel: String = "",
             actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
-        view?.let{ view ->
-            Toaster.toasterCustomBottomHeight =  ivShareLink.height + resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-            view.showToaster(
-                    message = message,
-                    duration = duration,
-                    type = type,
-                    actionLabel = actionLabel,
-                    actionListener = actionListener
-            )
+        if (toasterBottomMargin == 0) {
+            val offset24 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
+            toasterBottomMargin = ivShareLink.height + offset24
         }
+
+        requireView().showToaster(
+                message = message,
+                duration = duration,
+                type = type,
+                actionLabel = actionLabel,
+                actionListener = actionListener,
+                bottomMargin = toasterBottomMargin
+        )
     }
 
     private fun doCopyShareLink() {
