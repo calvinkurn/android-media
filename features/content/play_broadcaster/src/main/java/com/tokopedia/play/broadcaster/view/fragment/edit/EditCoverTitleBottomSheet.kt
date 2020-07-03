@@ -181,7 +181,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupSaveButton() {
-        btnSave.isEnabled = title.isNotEmpty() &&
+        btnSave.isEnabled = title.isNotBlank() &&
                 title.length <= PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE
     }
 

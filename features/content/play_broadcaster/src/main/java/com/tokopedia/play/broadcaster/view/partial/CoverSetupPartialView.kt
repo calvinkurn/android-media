@@ -157,7 +157,7 @@ class CoverSetupPartialView(
     }
 
     fun updateButtonState() {
-        btnNext.isEnabled = coverTitle.isNotEmpty() && dataSource.getCurrentCoverUri() != null
+        btnNext.isEnabled = coverTitle.isNotBlank() && dataSource.getCurrentCoverUri() != null
     }
 
     fun clickNext() {
