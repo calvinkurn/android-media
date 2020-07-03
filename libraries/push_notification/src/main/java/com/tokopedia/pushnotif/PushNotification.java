@@ -21,6 +21,8 @@ import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.util.NotificationTracker;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import timber.log.Timber;
 
@@ -38,7 +40,7 @@ public class PushNotification {
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
 
-        if (ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel)) {
+        if (allowToShowNotification(context, applinkNotificationModel, data)) {
             logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel) == true");
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
@@ -65,6 +67,22 @@ public class PushNotification {
         } else {
             logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel) == false");
         }
+    }
+
+    private static boolean allowToShowNotification(
+            Context context,
+            ApplinkNotificationModel applinkNotificationModel,
+            Bundle data
+    ) {
+        UserSessionInterface userSession = new UserSession(context);
+        String loginId = userSession.getUserId();
+        Boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
+        logEvent(context, applinkNotificationModel, data, "applinkNotificationModel.getToUserId().equals(loginId) == " + sameUserId.toString());
+        Boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
+        logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode()) == " + allowInLocalNotificationSetting.toString());
+        Boolean isTargetApp = ApplinkNotificationHelper.isTargetApp(applinkNotificationModel);
+        logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.isTargetApp(applinkNotificationModel) == " + isTargetApp.toString());
+        return sameUserId && allowInLocalNotificationSetting && isTargetApp;
     }
 
 
