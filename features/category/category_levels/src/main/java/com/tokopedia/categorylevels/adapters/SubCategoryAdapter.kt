@@ -35,7 +35,7 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
             ImageHandler.loadImage(holder.itemView.context,
                     holder.img_sub_category,
                     item.thumbnailImage,
-                    R.drawable.loading_page)
+                    com.tokopedia.topads.sdk.R.drawable.loading_page)
         }
         holder.txt_sub_category.text = item.name
 

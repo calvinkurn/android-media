@@ -1,0 +1,247 @@
+{
+  "searchByName": {
+    "contact": {
+      "hasNext": false,
+      "count": "10+",
+      "data": [
+        {
+          "contact": {
+            "id": 394674,
+            "role": "shop",
+            "attributes": {
+              "domain": "qc45",
+              "name": "Evelyn's Shopp \u0026 bl\u003cb\u003ea\u003c/b\u003e#$",
+              "tag": "",
+              "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/s/394674/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592369437000",
+          "lastMessage": "",
+          "msgId": 4011832,
+          "oppositeId": 394674,
+          "oppositeType": 2
+        },
+        {
+          "contact": {
+            "id": 479824,
+            "role": "shop",
+            "attributes": {
+              "domain": "lindadelapan",
+              "name": "lind\u003cb\u003ea\u003c/b\u003e del\u003cb\u003ea\u003c/b\u003ep\u003cb\u003ea\u003c/b\u003en",
+              "tag": "",
+              "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/s/479824/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592368286000",
+          "lastMessage": "",
+          "msgId": 4011831,
+          "oppositeId": 479824,
+          "oppositeType": 2
+        },
+        {
+          "contact": {
+            "id": 35359,
+            "role": "Tokopedia Administrator",
+            "attributes": {
+              "domain": "",
+              "name": "Tokopedi\u003cb\u003ea\u003c/b\u003e",
+              "tag": "Official",
+              "thumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/35359/user_thumbnail/desktop"
+            }
+          },
+          "createBy": 35359,
+          "createTimeStr": "1592360664000",
+          "lastMessage": "",
+          "msgId": 3181441,
+          "oppositeId": 35359,
+          "oppositeType": 4
+        },
+        {
+          "contact": {
+            "id": 5511960,
+            "role": "Tokopedia Administrator",
+            "attributes": {
+              "domain": "",
+              "name": "Tokopedi\u003cb\u003ea\u003c/b\u003e Seller",
+              "tag": "Official",
+              "thumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/5511960/user_thumbnail/desktop"
+            }
+          },
+          "createBy": 5511960,
+          "createTimeStr": "1592296457000",
+          "lastMessage": "",
+          "msgId": 3383844,
+          "oppositeId": 5511960,
+          "oppositeType": 4
+        },
+        {
+          "contact": {
+            "id": 5512709,
+            "role": "user",
+            "attributes": {
+              "domain": "",
+              "name": "K\u003cb\u003ea\u003c/b\u003etherine",
+              "tag": "",
+              "thumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/5512709/user_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592289355000",
+          "lastMessage": "",
+          "msgId": 4003437,
+          "oppositeId": 5512709,
+          "oppositeType": 1
+        },
+        {
+          "contact": {
+            "id": 9015405,
+            "role": "user",
+            "attributes": {
+              "domain": "",
+              "name": "F\u003cb\u003ea\u003c/b\u003ej\u003cb\u003ea\u003c/b\u003er",
+              "tag": "",
+              "thumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/9015405/user_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592289209000",
+          "lastMessage": "",
+          "msgId": 4011655,
+          "oppositeId": 9015405,
+          "oppositeType": 1
+        }
+      ]
+    }
+  },
+  "searchByReply": {
+    "replies": {
+      "hasNext": true,
+      "count": "99+",
+      "data": [
+        {
+          "contact": {
+            "id": 394674,
+            "role": "shop",
+            "attributes": {
+              "domain": "qc45",
+              "name": "Evelyn's Shopp \u0026 bla#$",
+              "tag": "",
+              "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/s/394674/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592369437000",
+          "lastMessage": "b<b>a</b>jukkk 123",
+          "msgId": 4011832,
+          "oppositeId": 394674,
+          "oppositeType": 2,
+          "replyId": 0,
+          "roomId": "",
+          "productId": "123123"
+        },
+        {
+          "contact": {
+            "id": 394674,
+            "role": "shop",
+            "attributes": {
+              "domain": "qc45",
+              "name": "Evelyn's Shopp \u0026 bla#$",
+              "tag": "",
+              "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/s/394674/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592369163000",
+          "lastMessage": "<b>a</b>sd",
+          "msgId": 4011832,
+          "oppositeId": 394674,
+          "oppositeType": 2,
+          "replyId": 0,
+          "roomId": ""
+        },
+        {
+          "contact": {
+            "id": 479824,
+            "role": "shop",
+            "attributes": {
+              "domain": "lindadelapan",
+              "name": "linda delapan",
+              "tag": "",
+              "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/s/479824/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592368286000",
+          "lastMessage": "Barang Test 42",
+          "msgId": 4011831,
+          "oppositeId": 479824,
+          "oppositeType": 2,
+          "replyId": 0,
+          "roomId": ""
+        },
+        {
+          "contact": {
+            "id": 9015405,
+            "role": "user",
+            "attributes": {
+              "domain": "",
+              "name": "Fajar",
+              "tag": "",
+              "thumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/9015405/user_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592289209000",
+          "lastMessage": "a",
+          "msgId": 4011655,
+          "oppositeId": 9015405,
+          "oppositeType": 1,
+          "replyId": 0,
+          "roomId": ""
+        },
+        {
+          "contact": {
+            "id": 9015405,
+            "role": "user",
+            "attributes": {
+              "domain": "",
+              "name": "Fajar",
+              "tag": "",
+              "thumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/9015405/user_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592283513000",
+          "lastMessage": "jar",
+          "msgId": 4011655,
+          "oppositeId": 9015405,
+          "oppositeType": 1,
+          "replyId": 0,
+          "roomId": ""
+        },
+        {
+          "contact": {
+            "id": 479085,
+            "role": "shop",
+            "attributes": {
+              "domain": "smartfren-qc",
+              "name": "\"Smartfren Official\"",
+              "tag": "",
+              "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/s/479085/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592274575000",
+          "lastMessage": "halooo",
+          "msgId": 4004560,
+          "oppositeId": 479085,
+          "oppositeType": 2,
+          "replyId": 0,
+          "roomId": ""
+        }
+      ]
+    }
+  }
+}

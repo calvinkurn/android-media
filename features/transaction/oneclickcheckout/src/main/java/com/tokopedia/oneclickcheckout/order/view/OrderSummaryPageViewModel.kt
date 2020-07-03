@@ -155,6 +155,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 getRates()
             } else {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
+                if (!hasSentViewOspEe) {
+                    orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+                    hasSentViewOspEe = true
+                }
             }
         }, { throwable: Throwable ->
             _orderPreference = null
@@ -230,6 +234,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     val curShip = value.preference.shipment
                                     var shipping = value.shipping
                                     var shippingErrorId: String? = null
+                                    var preselectedSpId: String? = null
 
                                     if (!shippingRecommendationData.errorId.isNullOrEmpty() && !shippingRecommendationData.errorMessage.isNullOrEmpty()) {
                                         shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = shippingRecommendationData.errorMessage, shippingRecommendationData = null)
@@ -375,6 +380,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                     serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                                                                     shippingRecommendationData = shippingRecommendationData)
+
+                                                            if (shipping.serviceErrorMessage.isNullOrEmpty()) {
+                                                                preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
+                                                            }
                                                         }
                                                     }
                                                 } else {
@@ -438,6 +447,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     if (!hasSentViewOspEe) {
                                         orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
                                         hasSentViewOspEe = true
+                                    }
+                                    if (preselectedSpId != null) {
+                                        orderSummaryAnalytics.eventViewPreselectedCourierOption(preselectedSpId, userSessionInterface.userId)
                                     }
                                     calculateTotal()
                                 }
@@ -762,6 +774,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
             _orderPreference = _orderPreference?.copy(shipping = shipping1)
             orderPreference.value = OccState.Success(_orderPreference!!)
+            orderSummaryAnalytics.eventViewPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSessionInterface.userId)
             if (shipping1.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
