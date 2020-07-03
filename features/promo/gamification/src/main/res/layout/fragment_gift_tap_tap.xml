@@ -105,7 +105,6 @@
                 android:id="@+id/lottie_timeup"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:lottie_rawRes="@raw/gami_timeup"
                  />
 
             <com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView

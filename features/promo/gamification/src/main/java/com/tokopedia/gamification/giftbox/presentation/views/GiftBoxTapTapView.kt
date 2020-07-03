@@ -7,14 +7,19 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieTask
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
+import java.util.zip.ZipInputStream
 
 class GiftBoxTapTapView : GiftBoxDailyView {
 
@@ -57,6 +62,9 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         imageBoxWhite = findViewById(R.id.image_box_white)
         imageBoxGlow = findViewById(R.id.image_box_glow)
         super.initViews()
+        val task = prepareLoaderLottieTask(Constants.CONFETTI_ZIP_FILE)
+        if (task != null)
+            addLottieAnimationToView(confettiView, task)
     }
 
     override fun handleTapOnGiftBox() {}
@@ -234,6 +242,22 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                 lidImages.addAll(images)
                 loadOriginalImages(images[0], imageCallback)
 
+            }
+        }
+    }
+
+    private fun prepareLoaderLottieTask(fileName: String): LottieTask<LottieComposition>? {
+        context?.let { c ->
+            val lottieFileZipStream = ZipInputStream(c.assets.open(fileName))
+            return LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+        }
+        return null
+    }
+
+    private fun addLottieAnimationToView(lottie: LottieAnimationView, task: LottieTask<LottieComposition>) {
+        task.addListener { result: LottieComposition? ->
+            result?.let {
+                lottie.setComposition(result)
             }
         }
     }

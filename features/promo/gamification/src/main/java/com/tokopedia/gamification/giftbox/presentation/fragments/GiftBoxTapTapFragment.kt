@@ -20,11 +20,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieTask
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.data.entity.CrackButtonEntity
 import com.tokopedia.gamification.di.ActivityContextModule
+import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.InactiveImageLoader
 import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
@@ -56,6 +60,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import java.util.zip.ZipInputStream
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -636,7 +641,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val ratio = 3 //coming from R.layout.list_item_coupons
                 if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
                     rewardContainer.rvCoupons.translationY = (translationY + (2 * sideMargin / ratio)) - fmGiftBox.context.resources.getDimension(R.dimen.gami_box_coupon_padding)
-                    tvTapHint.doOnLayout {tapHint->
+                    tvTapHint.doOnLayout { tapHint ->
                         tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin) - tapHint.height
                     }
 
@@ -794,7 +799,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             minuteTimerState = FINISHED
             rewardSummary.visibility = View.VISIBLE
             lottieTimeUp.visible()
-            lottieTimeUp.playAnimation()
+            showTimeupAnimation()
             dimBackground()
             playTimeOutSound()
             toggleInActiveHint(false)
@@ -983,6 +988,29 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 dialog.dismiss()
             }
             dialog.show()
+        }
+    }
+
+    fun showTimeupAnimation(){
+        val task = prepareLoaderLottieTask(Constants.TIME_UP_ZIP_FILE)
+        if(task!=null)
+            addLottieAnimationToView(task)
+    }
+
+    private fun prepareLoaderLottieTask(fileName: String): LottieTask<LottieComposition>? {
+        context?.let { c ->
+            val lottieFileZipStream = ZipInputStream(c.assets.open(fileName))
+            return LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+        }
+        return null
+    }
+
+    private fun addLottieAnimationToView(task: LottieTask<LottieComposition>) {
+        task.addListener { result: LottieComposition? ->
+            result?.let {
+                lottieTimeUp.setComposition(result)
+                lottieTimeUp.playAnimation()
+            }
         }
     }
 
