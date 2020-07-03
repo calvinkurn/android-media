@@ -38,7 +38,6 @@ import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
 import com.tokopedia.play.broadcaster.view.state.Changeable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.NotChangeable
-import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -287,8 +286,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun shouldUploadCover(coverTitle: String) {
-        val coverUri = viewModel.coverUri
-        if (coverUri != null && viewModel.isValidCoverTitle(coverTitle)) {
+        if (viewModel.isValidCoverTitle(coverTitle)) {
             if (isGalleryPermissionGranted()) viewModel.uploadCover(bottomSheetCoordinator.channelId, coverTitle)
             else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
         }
@@ -374,8 +372,6 @@ class PlayCoverSetupFragment @Inject constructor(
     private fun getOriginalProductImage(productCropping: CoverSetupState.Cropping.Product) {
         showCoverCropLayout(null)
         scope.launch {
-            //TODO("Remove delay")
-            delay(1200)
             val originalImageUrl = viewModel.getOriginalImageUrl(productCropping.productId, productCropping.imageUrl)
             Glide.with(requireContext())
                     .asBitmap()
@@ -416,15 +412,17 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     private fun observeCropState() {
         viewModel.observableCropState.observe(viewLifecycleOwner, Observer {
-            @Suppress("IMPLICIT_CAST_TO_ANY")
             when (it) {
                 CoverSetupState.Blank -> showInitCoverLayout(null)
                 is CoverSetupState.Cropping -> handleCroppingState(it)
-                is CoverSetupState.Cropped -> {
-                    if (isEditCoverMode && it.state != SetupDataState.Uploaded) shouldUploadCover(coverTitle = viewModel.savedCoverTitle)
-                    else showInitCoverLayout(it.coverImage)
+                is CoverSetupState.Cropped.Draft -> {
+                    if (!isEditCoverMode) showInitCoverLayout(it.coverImage)
+                    else shouldUploadCover(coverTitle = viewModel.savedCoverTitle)
                 }
-            }.exhaustive
+                is CoverSetupState.Cropped.Uploaded -> {
+                    if (!isEditCoverMode) showInitCoverLayout(it.localImage)
+                }
+            }
         })
     }
 

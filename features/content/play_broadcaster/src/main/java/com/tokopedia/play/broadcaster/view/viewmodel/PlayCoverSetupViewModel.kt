@@ -55,7 +55,8 @@ class PlayCoverSetupViewModel @Inject constructor(
     val coverUri: Uri?
         get() {
             return when(val cropState = observableCropState.value) {
-                is CoverSetupState.Cropped -> cropState.coverImage
+                is CoverSetupState.Cropped.Draft -> cropState.coverImage
+                is CoverSetupState.Cropped.Uploaded -> cropState.localImage
                 is CoverSetupState.Cropping -> if (cropState is CoverSetupState.Cropping.Image) cropState.coverImage else null
                 else -> null
             }
@@ -76,6 +77,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         }
 
     val observableCropState: LiveData<CoverSetupState> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
+        println("Latest Crop State: $it")
         it.croppedCover
     }
 
@@ -120,21 +122,20 @@ class PlayCoverSetupViewModel @Inject constructor(
         _observableUploadCoverEvent.value = NetworkResult.Loading
         launchCatchError(block = {
             val currentCropState = cropState
-            if (currentCropState is CoverSetupState.Cropped) {
-                if (currentCropState.state != SetupDataState.Uploaded) {
-                    val validatedImagePath = validateImageMinSize(currentCropState.coverImage).path
-                    if (validatedImagePath != null) {
-                        val finalUrl = Uri.parse(uploadCoverToCloud(validatedImagePath))
-                        setupDataStore.setFullCover(
-                                PlayCoverUiModel(
-                                        croppedCover = CoverSetupState.Cropped(finalUrl, source, SetupDataState.Uploaded),
-                                        title = coverTitle,
-                                        state = SetupDataState.Draft
-                                )
-                        )
-                    }
-                    else throw IllegalStateException("Error in validating image")
+            if (currentCropState is CoverSetupState.Cropped.Draft) {
+                val validatedImageUri = validateImageMinSize(currentCropState.coverImage)
+                val validatedImagePath = validatedImageUri.path
+                if (validatedImagePath != null) {
+                    val finalUrl = Uri.parse(uploadCoverToCloud(validatedImagePath))
+                    setupDataStore.setFullCover(
+                            PlayCoverUiModel(
+                                    croppedCover = CoverSetupState.Cropped.Uploaded(validatedImageUri, finalUrl, source),
+                                    title = coverTitle,
+                                    state = SetupDataState.Draft
+                            )
+                    )
                 }
+                else throw IllegalStateException("Error in validating image")
             } else {
                 throw IllegalStateException("Cover is not cropped yet")
             }
@@ -174,7 +175,7 @@ class PlayCoverSetupViewModel @Inject constructor(
 
     fun setCroppedCover(coverUri: Uri) {
         setupDataStore.updateCoverState(
-                CoverSetupState.Cropped(coverUri, source, SetupDataState.Draft)
+                CoverSetupState.Cropped.Draft(coverUri, source)
         )
     }
 
