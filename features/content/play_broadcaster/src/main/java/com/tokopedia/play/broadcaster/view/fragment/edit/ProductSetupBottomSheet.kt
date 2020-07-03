@@ -56,9 +56,6 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
     private lateinit var parentViewModel: PlayBroadcastViewModel
     private lateinit var dataStoreViewModel: DataStoreViewModel
 
-    override val channelId: String
-        get() = parentViewModel.channelId
-
     private var mListener: SetupResultListener? = null
 
     private val currentFragment: Fragment?

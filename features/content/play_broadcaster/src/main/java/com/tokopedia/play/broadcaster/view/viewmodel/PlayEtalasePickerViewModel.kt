@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
@@ -35,12 +36,16 @@ import kotlin.math.min
  * Created by jegul on 26/05/20
  */
 class PlayEtalasePickerViewModel @Inject constructor(
+        private val channelConfigStore: ChannelConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
         private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
         private val userSession: UserSessionInterface
 ) : ViewModel() {
+
+    private val channelId: String
+        get() = channelConfigStore.getChannelId()
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
@@ -110,7 +115,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
-    fun uploadProduct(channelId: String) {
+    fun uploadProduct() {
         _observableUploadProductEvent.value = NetworkResult.Loading
         scope.launch {
             val result = setupDataStore.uploadSelectedProducts(channelId).map { Event(Unit) }

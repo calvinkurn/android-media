@@ -52,7 +52,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    val channelId: String
+    private val channelId: String
         get() = hydraConfigStore.getChannelId()
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>

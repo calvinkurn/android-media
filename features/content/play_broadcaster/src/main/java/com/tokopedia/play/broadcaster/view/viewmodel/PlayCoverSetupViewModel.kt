@@ -8,6 +8,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
@@ -38,6 +39,7 @@ import kotlin.coroutines.resumeWithException
  * @author by furqan on 09/06/2020
  */
 class PlayCoverSetupViewModel @Inject constructor(
+        private val channelConfigStore: ChannelConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val uploadImageUseCase: UploadImageUseCase<PlayCoverUploadEntity>,
@@ -46,6 +48,9 @@ class PlayCoverSetupViewModel @Inject constructor(
         private val coverImageUtil: PlayCoverImageUtil,
         private val coverImageTransformer: ImageTransformer
 ) : BaseViewModel(dispatcher.main) {
+
+    private val channelId: String
+        get() = channelConfigStore.getChannelId()
 
     val cropState: CoverSetupState
         get() {
@@ -118,7 +123,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         }
     }
 
-    fun uploadCover(channelId: String, coverTitle: String) {
+    fun uploadCover(coverTitle: String) {
         _observableUploadCoverEvent.value = NetworkResult.Loading
         launchCatchError(block = {
             val currentCropState = cropState
