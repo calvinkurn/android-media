@@ -22,13 +22,6 @@ class FakeGetPreferenceListUseCase : GetPreferenceListUseCase(TestCoroutineDispa
             } else {
                 continuation = it
             }
-//            onWait?.invoke()
-//            try {
-//                val response = onFinish.invoke()
-//                it.resume(response)
-//            } catch (e: Exception) {
-//                it.resumeWithException(e)
-//            }
         }
     }
 

@@ -253,7 +253,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                     if (durationError.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
                                                         val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                                                            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                                                            tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                         } else {
                                                             NO_EXACT_DURATION_MESSAGE
                                                         }
@@ -288,7 +288,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                             }
                                                             val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                                                                "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                                                                tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                             } else {
                                                                 NO_EXACT_DURATION_MESSAGE
                                                             }
@@ -329,7 +329,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                     if (durationError?.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
                                                         val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                                                            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                                                            tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                         } else {
                                                             NO_EXACT_DURATION_MESSAGE
                                                         }
@@ -365,7 +365,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                             }
                                                             val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                                                                "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                                                                tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                             } else {
                                                                 NO_EXACT_DURATION_MESSAGE
                                                             }
@@ -713,7 +713,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             val tempServiceDuration = selectedShippingDurationViewModel.serviceData.serviceName
             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
             } else {
                 NO_EXACT_DURATION_MESSAGE
             }
@@ -1434,8 +1434,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
         val totalProductPrice = quantity.orderQuantity * productPrice
         val shipping = _orderPreference?.shipping
-        val totalShippingPrice: Double = if (shipping?.logisticPromoShipping != null && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null) {
-            shipping.logisticPromoViewModel.shippingRate.toDouble()
+        val totalShippingPrice: Double = if (shipping?.logisticPromoShipping != null && shipping.isApplyLogisticPromo) {
+            shipping.logisticPromoShipping.productData.price.price.toDouble()
         } else if (shipping?.shippingPrice != null) {
             shipping.shippingPrice.toDouble()
         } else 0.0
