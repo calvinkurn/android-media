@@ -1,5 +1,5 @@
 query getProfile {
-  profile {
+  profile(skipCache:true) {
     phone_verified
   }
 }
