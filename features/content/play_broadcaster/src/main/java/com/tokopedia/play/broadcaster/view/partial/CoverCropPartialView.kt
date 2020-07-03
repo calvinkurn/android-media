@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,6 +26,7 @@ class CoverCropPartialView(
     private val llImageContainer: LinearLayout = findViewById(R.id.ll_image_container)
     private val loaderImage: LoaderUnify = findViewById(R.id.loader_image)
     private val ivCropOverlay: PlayRectCropImageOverlay = findViewById(R.id.iv_crop_overlay)
+    private val clCropAction: ConstraintLayout = findViewById(R.id.cl_crop_action)
     private val btnCropChange: UnifyButton = findViewById(R.id.btn_crop_change)
     private val btnCropAdd: UnifyButton = findViewById(R.id.btn_crop_add)
 
@@ -101,6 +103,8 @@ class CoverCropPartialView(
             listener.onChangeButtonClicked(this)
         }
     }
+
+    fun getBottomActionView() = clCropAction
 
     interface Listener {
 
