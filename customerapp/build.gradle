@@ -405,7 +405,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.commonTradein)
-    implementation project(rootProject.ext.features.categoryLevels)
     implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
@@ -419,7 +418,6 @@ dependencies {
     implementation project(rootProject.ext.features.agerestriction)
 
     implementation project(rootProject.ext.features.promotionsTarget)
-    implementation project(rootProject.ext.features.findNative)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
     if (rootProject.ext.debugToolsEnabled) {

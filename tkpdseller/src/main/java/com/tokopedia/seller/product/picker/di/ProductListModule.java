@@ -15,7 +15,6 @@ import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.picker.view.mapper.GetProductListMapper;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenter;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenterImpl;
@@ -48,16 +47,6 @@ public class ProductListModule {
                                                                       GetProductListMapper getProductListMapper,
                                                                       UserSessionInterface userSession){
         return new ProductListPickerSearchPresenterImpl(getProductListUseCase, getProductListMapper, userSession);
-    }
-
-    @ProductListScope
-    @Provides
-    SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
-        if(context instanceof SellerModuleRouter){
-            return ((SellerModuleRouter)context);
-        }else{
-            return null;
-        }
     }
 
     @ProductListScope

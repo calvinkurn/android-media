@@ -87,4 +87,8 @@
 
     <string name="lbl_try_again">Coba Lagi</string>
     <string name="lbl_go_to_home">Ke Homepage</string>
+
+    <string name="lbl_shipping">Pengiriman</string>
+    <string name="lbl_shipping_with_name">Pengiriman %1$s</string>
+    <string name="lbl_shipping_duration_prefix">Durasi %1$s</string>
 </resources>

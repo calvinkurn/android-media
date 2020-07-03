@@ -104,7 +104,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             visitableList: List<Visitable<*>>,
             searchProductModel: SearchProductModel
     ) {
-        val otherRelated = searchProductModel.searchProduct.related.otherRelated
+        val otherRelated = searchProductModel.searchProduct.data.related.otherRelatedList
         visitableList.filterIsInstance<BroadMatchViewModel>().size shouldBe otherRelated.size
 
         var index = visitableList.indexOfFirst { it is BroadMatchViewModel }
@@ -124,9 +124,9 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     private fun BroadMatchViewModel.assertBroadMatchViewModel(otherRelated: SearchProductModel.OtherRelated) {
         keyword shouldBe otherRelated.keyword
         applink shouldBe otherRelated.applink
-        broadMatchItemViewModelList.size shouldBe otherRelated.otherRelatedProductList.size
+        broadMatchItemViewModelList.size shouldBe otherRelated.productList.size
 
-        otherRelated.otherRelatedProductList.forEachIndexed { index, otherRelatedProduct ->
+        otherRelated.productList.forEachIndexed { index, otherRelatedProduct ->
             broadMatchItemViewModelList[index].assertBroadMatchItemViewModel(
                     otherRelatedProduct, index + 1, otherRelated.keyword
             )
