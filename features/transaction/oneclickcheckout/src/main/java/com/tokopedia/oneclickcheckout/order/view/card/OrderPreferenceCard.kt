@@ -100,22 +100,22 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         val shipping = preference.shipping
         tvShippingName?.text = "Pengiriman ${shipmentModel.serviceName.capitalize()}"
-        val tempServiceDuration = shipping?.serviceDuration ?: shipmentModel.serviceDuration
-        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-            "Durasi " + tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
-        } else {
-            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
-        }
-        tvShippingDuration?.text = serviceDur
 
         if (shipping == null) {
+            val tempServiceDuration = shipmentModel.serviceDuration
+            val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+                "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+            } else {
+                OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
+            }
+            tvShippingDuration?.text = serviceDur
             tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tickerShippingPromo?.gone()
             tvShippingPrice?.gone()
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
-                    tvShippingDuration?.text = "Durasi ${shipping.serviceDuration} - ${shipping.shipperName}"
+                    tvShippingDuration?.text = "${shipping.serviceDuration} - ${shipping.shipperName}"
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     tvShippingDuration?.setOnClickListener { }
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
@@ -146,7 +146,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+                            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
                         } else {
                             OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
                         }
@@ -199,7 +199,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+                            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
                         } else {
                             OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
                         }
@@ -219,6 +219,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 }
             } else {
                 if (!shipping.isServicePickerEnable) {
+                    tvShippingDuration?.text = shipping.serviceDuration
                     tvShippingCourierLbl?.gone()
                     tvShippingCourier?.gone()
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
