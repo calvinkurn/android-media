@@ -2,6 +2,7 @@
 includeDynamicFeatureIfEnabled("customerapp")
 
 include "features:common:developer_options"
+include "features:common:developer_options_noop"
 include "features:common:nps"
 include "features:common:resources_common"
 include "features:common:qr_scanner"
@@ -219,7 +220,7 @@ include "features:user:seamless_login"
 
 include "features:user:vote"
 
-include "features:fcm_common"
+include "features:user:fcm_common"
 
 include "tkpdcore"
 include "tkpddesign"

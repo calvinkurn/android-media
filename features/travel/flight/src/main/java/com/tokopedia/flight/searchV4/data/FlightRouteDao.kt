@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.tokopedia.flight.search.data.db.FlightRouteTable
+import com.tokopedia.flight.searchV4.data.cache.db.FlightRouteTable
 
 /**
  * @author by furqan on 13/04/2020

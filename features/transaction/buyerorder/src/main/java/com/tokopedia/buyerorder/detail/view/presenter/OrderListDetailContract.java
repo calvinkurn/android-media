@@ -90,6 +90,8 @@ public interface OrderListDetailContract {
 
         void setShopInfo(ShopInfo shopInfo);
 
+        void setBoughtDate(String boughtDate);
+
         void showReplacementView(List<String> reasons);
 
         void finishOrderDetail();

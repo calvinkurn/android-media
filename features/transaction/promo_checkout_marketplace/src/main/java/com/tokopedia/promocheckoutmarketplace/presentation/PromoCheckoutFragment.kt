@@ -473,9 +473,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeApplyPromoResult() {
         viewModel.applyPromoResponse.observe(this, Observer {
-            buttonApplyPromo?.let {
-                setButtonLoading(it, false)
-            }
             when {
                 it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART -> {
                     val intent = Intent()
@@ -489,12 +486,18 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.finish()
                 }
                 it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
+                    buttonApplyPromo?.let {
+                        setButtonLoading(it, false)
+                    }
                     it.exception?.let {
                         showToastMessage(it)
                     }
                     reloadData()
                 }
                 it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
+                    buttonApplyPromo?.let {
+                        setButtonLoading(it, false)
+                    }
                     it.exception?.let {
                         showToastMessage(it)
                         viewModel.sendAnalyticsClickPakaiPromoFailed(getErrorMessage(it))

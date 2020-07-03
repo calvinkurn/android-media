@@ -645,7 +645,11 @@ class TopChatRoomPresenter @Inject constructor(
         attachmentsPreview.clear()
     }
 
-    override fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
+    override fun getAtcPageIntent(
+            context: Context?,
+            element: ProductAttachmentViewModel,
+            sourcePage: String
+    ): Intent {
         val quantity = element.minOrder
         val atcOnly = ATC_ONLY
         val needRefresh = true
@@ -663,11 +667,16 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
             putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
     }
 
-    override fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
+    override fun getBuyPageIntent(
+            context: Context?,
+            element: ProductAttachmentViewModel,
+            sourcePage: String
+    ): Intent {
         val quantity = element.minOrder
         val atcAndBuyAction = ATC_AND_BUY
         val needRefresh = true
@@ -688,6 +697,7 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
             putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
     }

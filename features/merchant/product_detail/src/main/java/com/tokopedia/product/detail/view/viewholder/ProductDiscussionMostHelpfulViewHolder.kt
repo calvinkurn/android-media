@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -30,7 +29,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
     override fun bind(element: ProductDiscussionMostHelpfulDataModel) {
         with(element) {
             return when {
-                questions == null -> {
+                questions == null && !isShimmering-> {
                     showLocalLoad()
                     hideSingleQuestionLayout()
                     hideEmptyState()

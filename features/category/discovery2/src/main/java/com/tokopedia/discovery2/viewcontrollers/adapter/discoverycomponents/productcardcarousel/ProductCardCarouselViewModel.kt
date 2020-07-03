@@ -43,8 +43,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         productCarouselComponentData.value = components
-        components.getComponentsItem()?.let {
-            productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
+        getProductList()?.let {
+            productCarouselList.value = it
         }
         fetchProductCarouselData()
     }
@@ -54,8 +54,10 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
             if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
-                productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
-                syncData.value = true
+                getProductList()?.let {
+                    productCarouselList.value = it
+                    syncData.value = true
+                }
             }
         }, onError = {
             it.printStackTrace()
@@ -64,6 +66,14 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
+    }
+
+
+    private fun getProductList(): ArrayList<ComponentsItem>? {
+        components.getComponentsItem()?.let { productList ->
+            return productList as ArrayList<ComponentsItem>
+        }
+        return null
     }
 
 }
