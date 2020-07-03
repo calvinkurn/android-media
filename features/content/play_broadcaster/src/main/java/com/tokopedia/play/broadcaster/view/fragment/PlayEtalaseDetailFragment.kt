@@ -68,6 +68,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private var mListener: ProductSetupListener? = null
 
+    private var toasterBottomMargin = 0
+
     private lateinit var selectableProductAdapter: ProductSelectableAdapter
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
@@ -155,12 +157,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
             }
 
             override fun onProductSelectError(reason: Throwable) {
-                //TODO("Increase distance from bottom")
-                Toaster.make(
-                        view = requireView(),
-                        text = reason.localizedMessage,
-                        duration = Toaster.LENGTH_SHORT,
-                        actionText = getString(R.string.play_ok)
+                showToaster(
+                        message = reason.localizedMessage,
+                        actionLabel = getString(R.string.play_ok)
                 )
             }
         })
@@ -214,6 +213,21 @@ class PlayEtalaseDetailFragment @Inject constructor(
         selectedProductPage.show()
     }
 
+    private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "") {
+        if (toasterBottomMargin == 0) {
+            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            toasterBottomMargin = bottomActionView.rootView.height + offset8
+        }
+
+        requireView().showToaster(
+                message = message,
+                type = type,
+                duration = duration,
+                actionLabel = actionLabel,
+                bottomMargin = toasterBottomMargin
+        )
+    }
+
     private fun showProductEmptyError(shouldShow: Boolean) {
         if (shouldShow) {
             errorEmptyProduct.show()
@@ -241,7 +255,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private fun onUploadFailed(e: Throwable?) {
         bottomActionView.setLoading(false)
         e?.localizedMessage?.let {
-            errMessage -> requireView().showToaster(errMessage, type = Toaster.TYPE_ERROR)
+            errMessage -> showToaster(errMessage, type = Toaster.TYPE_ERROR)
         }
     }
 

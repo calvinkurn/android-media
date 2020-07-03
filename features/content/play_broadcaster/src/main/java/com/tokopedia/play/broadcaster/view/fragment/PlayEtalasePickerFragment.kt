@@ -277,6 +277,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         requireView().showToaster(
                 message = message,
                 type = type,
+                duration = duration,
                 actionLabel = actionLabel,
                 bottomMargin = toasterBottomMargin
         )
