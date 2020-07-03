@@ -14,10 +14,8 @@ import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantE
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_select_bottom_sheet_content.view.*
 import java.math.BigInteger
-import javax.inject.Inject
 
 class MultipleVariantEditSelectBottomSheet(
         private val multipleVariantEditListener: MultipleVariantEditListener
@@ -27,12 +25,11 @@ class MultipleVariantEditSelectBottomSheet(
         const val TAG = "Tag Multiple Variant Edit Select"
     }
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
     private var contentView: View? = null
     private var selectAdapter: MultipleVariantEditSelectAdapter? = null
     private var enableEditSku = true
     private var enableEditPrice = true
+    private var trackerShopId = ""
 
     interface MultipleVariantEditListener {
         fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
@@ -86,6 +83,10 @@ class MultipleVariantEditSelectBottomSheet(
         enableEditPrice = enabled
     }
 
+    fun setTrackerShopId(shopId: String) {
+        trackerShopId = shopId
+    }
+
     fun show(manager: FragmentManager?) {
         manager?.run {
             super.show(this , MultipleVariantEditInputBottomSheet.TAG)
@@ -125,17 +126,18 @@ class MultipleVariantEditSelectBottomSheet(
             dismiss()
             val multipleVariantEditSelectBottomSheet =
                     MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, this)
+            multipleVariantEditSelectBottomSheet.setTrackerShopId(trackerShopId)
             multipleVariantEditSelectBottomSheet.show(fragmentManager)
 
             // tracking
-            ProductAddVariantDetailTracking.continueManageAll(userSession.shopId)
+            ProductAddVariantDetailTracking.continueManageAll(trackerShopId)
         }
         contentView?.checkboxSelectAll?.setOnClickListener {
             val isSelected = (it as CheckboxUnify).isChecked
             selectAdapter?.setAllDataSelected(isSelected)
 
             // tracking
-            ProductAddVariantDetailTracking.selectManageAll(userSession.shopId)
+            ProductAddVariantDetailTracking.selectManageAll(trackerShopId)
         }
         setChild(contentView)
     }

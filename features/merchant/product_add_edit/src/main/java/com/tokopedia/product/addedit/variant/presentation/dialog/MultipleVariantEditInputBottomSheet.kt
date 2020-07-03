@@ -14,10 +14,8 @@ import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
 import java.math.BigInteger
-import javax.inject.Inject
 
 class MultipleVariantEditInputBottomSheet(
         private var enableEditSku: Boolean,
@@ -29,11 +27,10 @@ class MultipleVariantEditInputBottomSheet(
         const val TAG = "Tag Multiple Variant Edit Input"
     }
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
     private var contentView: View? = null
     private var isPriceError = false
     private var isStockError = false
+    private var trackerShopId = ""
 
     interface MultipleVariantEditInputListener {
         fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
@@ -55,6 +52,10 @@ class MultipleVariantEditInputBottomSheet(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         addMarginCloseButton()
+    }
+
+    fun setTrackerShopId(shopId: String) {
+        trackerShopId = shopId
     }
 
     fun show(manager: FragmentManager?) {
@@ -102,9 +103,9 @@ class MultipleVariantEditInputBottomSheet(
         val sku = contentView?.tfuSku.getText()
 
         // tracking
-        ProductAddVariantDetailTracking.trackManageAllPrice(price, userSession.shopId)
-        ProductAddVariantDetailTracking.trackManageAllStock(stock, userSession.shopId)
-        ProductAddVariantDetailTracking.trackManageAllSku(sku, userSession.shopId)
+        ProductAddVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
+        ProductAddVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
+        ProductAddVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
     }
 
     private fun validatePrice() {

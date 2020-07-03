@@ -135,6 +135,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         buttonSave.setOnClickListener {
             submitVariantInput()
+
+            // tracking
+            ProductAddVariantDetailTracking.saveVariantDetail(userSession.shopId)
         }
 
         observeSelectedVariantSize()
@@ -160,6 +163,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
+
+        // tracking
+        ProductAddVariantDetailTracking.clickVariantStatusToggle(
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+        )
     }
 
     override fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
@@ -193,6 +202,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {
         viewModel.updatePrimaryVariant(combination)
+
+        // tracking
+        ProductAddVariantDetailTracking.saveVariantDetail(userSession.shopId)
     }
 
     fun onBackPressed() {
@@ -293,6 +305,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         bottomSheet.setData(variantInputModel)
         bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
         bottomSheet.setEnableEditPrice(!hasWholesale)
+        bottomSheet.setTrackerShopId(userSession.shopId)
         bottomSheet.show(fragmentManager)
     }
 
