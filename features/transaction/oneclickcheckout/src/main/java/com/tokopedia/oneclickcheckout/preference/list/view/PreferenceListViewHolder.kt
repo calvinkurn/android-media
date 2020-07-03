@@ -100,7 +100,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         tvShippingName.text = itemView.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
         val tempServiceDuration = shipmentModel.serviceDuration
         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+            itemView.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
         } else {
             OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
         }

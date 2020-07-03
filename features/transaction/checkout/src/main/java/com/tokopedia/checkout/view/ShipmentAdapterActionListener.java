@@ -87,8 +87,6 @@ public interface ShipmentAdapterActionListener {
 
     void onCourierPromoCanceled(String shipperName, String promoCode);
 
-    boolean isToogleYearEndPromoOn();
-
     void onPurchaseProtectionLogicError();
 
     void onPurchaseProtectionChangeListener(int position);
