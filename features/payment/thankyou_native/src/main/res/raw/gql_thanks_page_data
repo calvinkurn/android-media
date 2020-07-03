@@ -84,6 +84,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
         }
         tax
         coupon
+        revenue
     }
     additional_info{
         account_number
@@ -106,6 +107,15 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     push_gtm
     new_user
     is_mub
+    custom_data{
+       tracking_data
+       custom_order_url_app
+       custom_home_url_app
+       custom_title
+       custom_subtitle
+       custom_title_order_button
+       custom_wtv_text
+    }
   }
 }
 

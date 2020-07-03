@@ -1,0 +1,2485 @@
+{
+  "data": {
+    "filter": [
+      {
+        "title": "Kategori",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "template_category",
+        "options": [
+          {
+            "name": "Handphone & Tablet",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_hp.png",
+            "Description": "",
+            "value": "65",
+            "inputType": "checkbox",
+            "totalData": "2.180",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "65",
+                "name": "Semua Handphone & Tablet",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_hp.png",
+                "inputType": "checkbox",
+                "totalData": "2.180",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "114213",
+                "name": "Semua Handphone & Tablet 2",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_hp.png",
+                "inputType": "checkbox",
+                "totalData": "2.180",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "66",
+                "name": "Aksesoris Handphone",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "1.759",
+                "isPopular": true,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "66",
+                    "name": "Semua Aksesoris Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "1.759",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "69",
+                    "name": "Soft Case Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "973",
+                    "isPopular": true
+                  },
+                  {
+                    "key": "sc",
+                    "value": "76",
+                    "name": "Screen Protector Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "183",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "70",
+                    "name": "Charger Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "183",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3063",
+                    "name": "Hard Case Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "125",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3062",
+                    "name": "Flip Cover Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "125",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3071",
+                    "name": "Kabel Data",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "98",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3072",
+                    "name": "Kabel OTG",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "24",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "68",
+                    "name": "Charger Mobil",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "11",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3059",
+                    "name": "I-Ring",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "7",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3065",
+                    "name": "Tongsis",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "7",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "599",
+                    "name": "Skin Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "6",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "600",
+                    "name": "Docking Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "73",
+                    "name": "Mount Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3070",
+                    "name": "Lensa Kamera Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3069",
+                    "name": "Tripod Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3061",
+                    "name": "Holder Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3089",
+                "name": "Komponen Handphone",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "273",
+                "isPopular": true,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3089",
+                    "name": "Semua Komponen Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "273",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3098",
+                    "name": "Baterai Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "223",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3105",
+                    "name": "Spare Part Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "38",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3100",
+                    "name": "LCD Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "10",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3101",
+                    "name": "IC Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "277",
+                "name": "Aksesoris Tablet",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "66",
+                "isPopular": true,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "277",
+                    "name": "Semua Aksesoris Tablet",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "66",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "280",
+                    "name": "Casing & Cover Tablet",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "53",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3080",
+                    "name": "Stylus Tablet",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "7",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "281",
+                    "name": "Charger Tablet",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "283",
+                    "name": "Keyboard Bluetooth",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "286",
+                    "name": "Screen Guard Tablet",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "24",
+                "name": "Handphone",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "34",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "24",
+                    "name": "Semua Handphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "34",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3054",
+                    "name": "Android OS",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "29",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3058",
+                    "name": "Feature Phone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "615",
+                "name": "Power Bank",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "33",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "615",
+                    "name": "Semua Power Bank",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "33",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3086",
+                    "name": "Portable Power Bank",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "29",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3087",
+                    "name": "Solar Power Bank",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3081",
+                "name": "Wearable Devices",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "12",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3081",
+                    "name": "Semua Wearable Devices",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "12",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3091",
+                    "name": "Smart Watch",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "8",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3092",
+                    "name": "Aksesoris Wearable Devices",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "276",
+                "name": "Tablet",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "3",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "276",
+                    "name": "Semua Tablet",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3073",
+                    "name": "Android OS",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Kesehatan",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_kesehatan.png",
+            "Description": "",
+            "value": "715",
+            "inputType": "checkbox",
+            "totalData": "254",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "715",
+                "name": "Semua Kesehatan",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_kesehatan.png",
+                "inputType": "checkbox",
+                "totalData": "254",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "2279",
+                "name": "Obat - Obatan",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "181",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "2279",
+                    "name": "Semua Obat - Obatan",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "181",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "2289",
+                    "name": "Obat Herbal",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "174",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "2301",
+                    "name": "Obat Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "7",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "1129",
+                "name": "Kesehatan Lainnya",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "62",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1129",
+                    "name": "Semua Kesehatan Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "62",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "1742",
+                "name": "Perlengkapan Medis",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "8",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1742",
+                    "name": "Semua Perlengkapan Medis",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "8",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1745",
+                    "name": "Alat Terapi",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "2520",
+                    "name": "Disposable & Consumable",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "2272",
+                "name": "Essential Oil",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "3",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "2272",
+                    "name": "Semua Essential Oil",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Elektronik",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_elektronik.png",
+            "Description": "",
+            "value": "60",
+            "inputType": "checkbox",
+            "totalData": "150",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "60",
+                "name": "Semua Elektronik",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_elektronik.png",
+                "inputType": "checkbox",
+                "totalData": "150",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "25",
+                "name": "Audio",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "62",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "25",
+                    "name": "Semua Audio",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "62",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "565",
+                    "name": "Earphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "58",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "564",
+                    "name": "Headphone",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "548",
+                "name": "Kamera Pengintai",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "30",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "548",
+                    "name": "Semua Kamera Pengintai",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "30",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "551",
+                    "name": "IP Camera",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "30",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "50",
+                "name": "Perangkat Elektronik Lainnya",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "27",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "50",
+                    "name": "Semua Perangkat Elektronik Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "27",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "577",
+                    "name": "Perangkat Elektronik Lainnya Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "27",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3884",
+                "name": "Printer",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "17",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3884",
+                    "name": "Semua Printer",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "17",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "4001",
+                    "name": "Spare part Printer",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "17",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "560",
+                "name": "Telepon",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "5",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "560",
+                    "name": "Semua Telepon",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "572",
+                    "name": "Telepon Wireless",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "655",
+                "name": "TV & Aksesoris",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "4",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "655",
+                    "name": "Semua TV & Aksesoris",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3918",
+                    "name": "Televisi",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3883",
+                "name": "Elektronik Rumah Tangga",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "3",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3883",
+                    "name": "Semua Elektronik Rumah Tangga",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3964",
+                    "name": "Mesin Cuci",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "2090",
+                "name": "Vaporizer",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "2090",
+                    "name": "Semua Vaporizer",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "2094",
+                    "name": "Coil Vape",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Buku",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_buku.png",
+            "Description": "",
+            "value": "8",
+            "inputType": "checkbox",
+            "totalData": "92",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "8",
+                "name": "Semua Buku",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_buku.png",
+                "inputType": "checkbox",
+                "totalData": "92",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "845",
+                "name": "Kedokteran",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "42",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "845",
+                    "name": "Semua Kedokteran",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "42",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "846",
+                    "name": "Buku Farmasi",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "34",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "850",
+                    "name": "Buku Psikiatri",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "848",
+                    "name": "Buku Kedokteran Spesialis",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "863",
+                "name": "Pendidikan",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "14",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "863",
+                    "name": "Semua Pendidikan",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "14",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "4360",
+                    "name": "Ensiklopedia",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "10",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "864",
+                    "name": "Buku Bimbingan Belajar",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "902",
+                "name": "Buku Lainnya",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "10",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "902",
+                    "name": "Semua Buku Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "10",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3312",
+                "name": "Kamus",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "6",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3312",
+                    "name": "Semua Kamus",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "6",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3371",
+                    "name": "Kamus Bahasa Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "6",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "859",
+                "name": "Pengembangan Diri & Karir",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "5",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "859",
+                    "name": "Semua Pengembangan Diri & Karir",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "860",
+                    "name": "Buku Leadership Kepemimpinan",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3318",
+                "name": "Teknik & Sains",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "5",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3318",
+                    "name": "Semua Teknik & Sains",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "4367",
+                    "name": "Buku Ilmiah",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "825",
+                "name": "Religi dan Spiritual",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "4",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "825",
+                    "name": "Semua Religi dan Spiritual",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "826",
+                    "name": "Buku Agama Islam",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "761",
+                "name": "Sosial Politik",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "4",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "761",
+                    "name": "Semua Sosial Politik",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "766",
+                    "name": "Buku Sosial Budaya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3317",
+                "name": "Pertanian",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3317",
+                    "name": "Semua Pertanian",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3402",
+                    "name": "Pengembangan Pertanian",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Produk Lainnya",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_barang.png",
+            "Description": "",
+            "value": "36",
+            "inputType": "checkbox",
+            "totalData": "68",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "36",
+                "name": "Semua Produk Lainnya",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_barang.png",
+                "inputType": "checkbox",
+                "totalData": "68",
+                "isPopular": false,
+                "child": []
+              }
+            ]
+          },
+          {
+            "name": "Komputer & Laptop",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_computer.png",
+            "Description": "",
+            "value": "297",
+            "inputType": "checkbox",
+            "totalData": "62",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "297",
+                "name": "Semua Komputer & Laptop",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_computer.png",
+                "inputType": "checkbox",
+                "totalData": "62",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "338",
+                "name": "Aksesoris Komputer & Laptop",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "36",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "338",
+                    "name": "Semua Aksesoris Komputer & Laptop",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "36",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3903",
+                    "name": "Skin Laptop",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "22",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "347",
+                    "name": "Peripheral & Aksesoris Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "7",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "613",
+                    "name": "Mouse & Keyboard Bundle",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3901",
+                    "name": "Adaptor Laptop",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "339",
+                    "name": "Mouse",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "320",
+                "name": "Media Penyimpanan Data",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "14",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "320",
+                    "name": "Semua Media Penyimpanan Data",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "14",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "342",
+                    "name": "USB Flash Disk",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "7",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "363",
+                    "name": "Storage Cases & Docking",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "345",
+                    "name": "Storage Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3885",
+                "name": "Kabel & Adaptor",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "8",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3885",
+                    "name": "Semua Kabel & Adaptor",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "8",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3890",
+                    "name": "Kabel USB",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "6",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3889",
+                    "name": "Kabel HDMI",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "299",
+                "name": "Komponen Komputer",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "299",
+                    "name": "Semua Komponen Komputer",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3943",
+                    "name": "RAM Komputer",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3864",
+                "name": "Memory Card",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3864",
+                    "name": "Semua Memory Card",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3876",
+                    "name": "SD Card",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Olahraga",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_sepakbola.png",
+            "Description": "",
+            "value": "62",
+            "inputType": "checkbox",
+            "totalData": "35",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "62",
+                "name": "Semua Olahraga",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_sepakbola.png",
+                "inputType": "checkbox",
+                "totalData": "35",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "1452",
+                "name": "Alat Pancing",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "15",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1452",
+                    "name": "Semua Alat Pancing",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "15",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1457",
+                    "name": "Umpan Pancing",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "15",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "1404",
+                "name": "Sepeda",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "11",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1404",
+                    "name": "Semua Sepeda",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "11",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3509",
+                    "name": "Tas Sepeda",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "11",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "1460",
+                "name": "Aksesoris Olahraga",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "7",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1460",
+                    "name": "Semua Aksesoris Olahraga",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "7",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1466",
+                    "name": "Aksesoris Olahraga Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "7",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "1465",
+                "name": "Olahraga Lainnya",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1465",
+                    "name": "Semua Olahraga Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Perlengkapan Pesta & Craft",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_kado.png",
+            "Description": "",
+            "value": "54",
+            "inputType": "checkbox",
+            "totalData": "19",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "54",
+                "name": "Semua Perlengkapan Pesta & Craft",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_kado.png",
+                "inputType": "checkbox",
+                "totalData": "19",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "11",
+                "name": "Lainnya",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "19",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "11",
+                    "name": "Semua Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "19",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Fashion Pria",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_fashion_man.png",
+            "Description": "",
+            "value": "1759",
+            "inputType": "checkbox",
+            "totalData": "15",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "1759",
+                "name": "Semua Fashion Pria",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_fashion_man.png",
+                "inputType": "checkbox",
+                "totalData": "15",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "1804",
+                "name": "Jam Tangan Pria",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "10",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1804",
+                    "name": "Semua Jam Tangan Pria",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "10",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1872",
+                    "name": "Jam Tangan Digital Pria",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "8",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1873",
+                    "name": "Jam Tangan Analog Pria",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "1784",
+                "name": "Atasan Pria",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "5",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1784",
+                    "name": "Semua Atasan Pria",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1808",
+                    "name": "Kaos Pria",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Otomotif",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_otomotif.png",
+            "Description": "",
+            "value": "63",
+            "inputType": "checkbox",
+            "totalData": "12",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "63",
+                "name": "Semua Otomotif",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_otomotif.png",
+                "inputType": "checkbox",
+                "totalData": "12",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "40",
+                "name": "Interior Mobil",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "10",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "40",
+                    "name": "Semua Interior Mobil",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "10",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "2824",
+                    "name": "Karpet Mobil",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "2828",
+                    "name": "Car Seat Organizer",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "2833",
+                    "name": "Cover Dashboard Mobil",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "1316",
+                "name": "Aksesoris Pengendara Motor",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1316",
+                    "name": "Semua Aksesoris Pengendara Motor",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1380",
+                    "name": "Rompi Motor",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Kamera",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_kamera.png",
+            "Description": "",
+            "value": "578",
+            "inputType": "checkbox",
+            "totalData": "12",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "578",
+                "name": "Semua Kamera",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_kamera.png",
+                "inputType": "checkbox",
+                "totalData": "12",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "581",
+                "name": "Aksesoris Kamera",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "9",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "581",
+                    "name": "Semua Aksesoris Kamera",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "9",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "596",
+                    "name": "Aksesoris Kamera Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "592",
+                    "name": "Tripod Kamera",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "4",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "2319",
+                "name": "Kamera Digital",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "3",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "2319",
+                    "name": "Semua Kamera Digital",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "2325",
+                    "name": "Action Camera",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Rumah Tangga",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_rumah.png",
+            "Description": "",
+            "value": "984",
+            "inputType": "checkbox",
+            "totalData": "11",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "984",
+                "name": "Semua Rumah Tangga",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_rumah.png",
+                "inputType": "checkbox",
+                "totalData": "11",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "995",
+                "name": "Rumah Tangga Lainnya",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "7",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "995",
+                    "name": "Semua Rumah Tangga Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "7",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "3698",
+                "name": "Travel",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "3698",
+                    "name": "Semua Travel",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3799",
+                    "name": "Travel Bag",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "1654",
+                "name": "Taman",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1654",
+                    "name": "Semua Taman",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1655",
+                    "name": "Benih Bibit Tanaman",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Pertukangan",
+            "key": "sc",
+            "icon": "",
+            "Description": "",
+            "value": "4029",
+            "inputType": "checkbox",
+            "totalData": "10",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "4029",
+                "name": "Semua Pertukangan",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "10",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "4075",
+                "name": "Hand Tools",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "10",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "4075",
+                    "name": "Semua Hand Tools",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "10",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "4107",
+                    "name": "Tool Kit Set",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "10",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Fashion Wanita",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_fashion_woman.png",
+            "Description": "",
+            "value": "1758",
+            "inputType": "checkbox",
+            "totalData": "6",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "1758",
+                "name": "Semua Fashion Wanita",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_fashion_woman.png",
+                "inputType": "checkbox",
+                "totalData": "6",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "1916",
+                "name": "Tas Wanita",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "3",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1916",
+                    "name": "Semua Tas Wanita",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3022",
+                    "name": "Dompet Wanita",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  }
+                ]
+              },
+              {
+                "key": "sc",
+                "value": "1905",
+                "name": "Sepatu Wanita",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "3",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1905",
+                    "name": "Semua Sepatu Wanita",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1908",
+                    "name": "Sneakers Wanita",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Kecantikan",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_kecantikan.png",
+            "Description": "",
+            "value": "61",
+            "inputType": "checkbox",
+            "totalData": "5",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "61",
+                "name": "Semua Kecantikan",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_kecantikan.png",
+                "inputType": "checkbox",
+                "totalData": "5",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "416",
+                "name": "Perawatan Wajah",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "5",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "416",
+                    "name": "Semua Perawatan Wajah",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "425",
+                    "name": "Paket Perawatan Wajah",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Perawatan Hewan",
+            "key": "sc",
+            "icon": "",
+            "Description": "",
+            "value": "4030",
+            "inputType": "checkbox",
+            "totalData": "5",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "4030",
+                "name": "Semua Perawatan Hewan",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "5",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "4035",
+                "name": "Perawatan Ikan",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "5",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "4035",
+                    "name": "Semua Perawatan Ikan",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "4130",
+                    "name": "Pelet Ikan",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "5",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Makanan & Minuman",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_minuman.png",
+            "Description": "",
+            "value": "35",
+            "inputType": "checkbox",
+            "totalData": "3",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "35",
+                "name": "Semua Makanan & Minuman",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_minuman.png",
+                "inputType": "checkbox",
+                "totalData": "3",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "1159",
+                "name": "Bumbu & Bahan Masakan",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "3",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1159",
+                    "name": "Semua Bumbu & Bahan Masakan",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1162",
+                    "name": "Saus & Dressing",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "3",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Perawatan Tubuh",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v2/icon_personal_care.png",
+            "Description": "",
+            "value": "2133",
+            "inputType": "checkbox",
+            "totalData": "2",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "2133",
+                "name": "Semua Perawatan Tubuh",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v2/icon_personal_care.png",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "2134",
+                "name": "Perawatan Kulit",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "2134",
+                    "name": "Semua Perawatan Kulit",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "3114",
+                    "name": "Stretchmark Cream",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Fashion Muslim",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_fashion_muslim.png",
+            "Description": "",
+            "value": "1760",
+            "inputType": "checkbox",
+            "totalData": "2",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "1760",
+                "name": "Semua Fashion Muslim",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_fashion_muslim.png",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "1876",
+                "name": "Atasan Muslim Wanita",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1876",
+                    "name": "Semua Atasan Muslim Wanita",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  },
+                  {
+                    "key": "sc",
+                    "value": "1882",
+                    "name": "Manset Muslim Wanita",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Office & Stationery",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_stationary.png",
+            "Description": "",
+            "value": "642",
+            "inputType": "checkbox",
+            "totalData": "2",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": [
+              {
+                "key": "sc",
+                "value": "642",
+                "name": "Semua Office & Stationery",
+                "icon": "https://ecs7.tokopedia.net/img/category/new/v1/icon_stationary.png",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": []
+              },
+              {
+                "key": "sc",
+                "value": "1122",
+                "name": "Office & Stationery Lainnya",
+                "icon": "",
+                "inputType": "checkbox",
+                "totalData": "2",
+                "isPopular": false,
+                "child": [
+                  {
+                    "key": "sc",
+                    "value": "1122",
+                    "name": "Semua Office & Stationery Lainnya",
+                    "icon": "",
+                    "inputType": "checkbox",
+                    "totalData": "2",
+                    "isPopular": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+    ]
+  }
+}

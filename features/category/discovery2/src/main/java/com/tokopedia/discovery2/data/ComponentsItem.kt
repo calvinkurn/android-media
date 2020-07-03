@@ -27,6 +27,8 @@ data class ComponentsItem(
         @SerializedName("properties")
         var properties: Properties? = null,
 
+        var isApplicable: Boolean = true,
+
         var topAdsTrackingStatus: Boolean = false,
 
         var shimmerHeight: Int = 0,
@@ -39,10 +41,15 @@ data class ComponentsItem(
         var noOfPagesLoaded: Int = 0,
         var componentsPerPage: Int = 20,
         var pageEndPoint: String = "",
+        var pagePath: String = "",
         var parentComponentId: String = "",
         var cpmData: DiscoveryDataMapper.CpmTopAdsData? = null,
         var chipSelectionData: DataItem? = null,
-        var chipSelectionChange: Boolean = false) {
+        var chipSelectionChange: Boolean = false,
+        var couponDetailClicked: Boolean = false,
+        var couponAppliedClicked: Boolean = false,
+        var position: Int = 0,
+        var couponViewImpression: Boolean = false) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

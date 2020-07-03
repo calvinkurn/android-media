@@ -2,6 +2,7 @@
 includeDynamicFeatureIfEnabled("customerapp")
 
 include "features:common:developer_options"
+include "features:common:developer_options_noop"
 include "features:common:nps"
 include "features:common:resources_common"
 include "features:common:qr_scanner"
@@ -60,7 +61,6 @@ include "features:travel:flight_orderlist"
 include "features:travel:hotel"
 include "features:travel:common_travel"
 
-include "features:entertainment:event"
 include "features:entertainment:event_home"
 include "features:entertainment:event_search"
 include "features:entertainment:event_pdp"
@@ -224,8 +224,6 @@ include "features:user:vote"
 include "features:fcm_common"
 
 include "tkpdcore"
-include "tkpdinbox"
-include "tkpdsession"
 include "tkpddesign"
 include "tkpdseller"
 include "tkpdabstraction"

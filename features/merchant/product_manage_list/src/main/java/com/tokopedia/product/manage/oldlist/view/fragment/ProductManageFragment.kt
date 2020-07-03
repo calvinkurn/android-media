@@ -195,12 +195,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 ProductManageTracking.eventProductManageTopNav(item.title.toString())
                 true
             }
-            item.subMenu.findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener { item ->
-                val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
-                startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
-                ProductManageTracking.eventProductManageTopNav(item.title.toString())
-                false
-            }
         }
         return super.onOptionsItemSelected(item)
     }

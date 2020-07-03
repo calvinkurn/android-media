@@ -43,7 +43,10 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             intent.putExtra(END_POINT, endpoint)
             return intent
         }
+    }
 
+    override fun sendScreenAnalytics() {
+        //Empty to remove double open screen events
     }
 
     override fun initView() {
@@ -111,5 +114,9 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         this.javaClass.canonicalName?.let { className ->
             if (!GlobalConfig.DEBUG) Crashlytics.log(className + " " + intent?.data?.lastPathSegment)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

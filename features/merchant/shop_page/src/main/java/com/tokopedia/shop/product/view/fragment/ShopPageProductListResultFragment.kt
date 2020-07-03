@@ -91,6 +91,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopInfo: ShopInfo? = null
     private var selectedEtalaseId: String = ""
     private var selectedEtalaseName: String = ""
+    private var defaultEtalaseName = ""
     private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
     private var shopPageProductListResultFragmentListener: ShopPageProductListResultFragmentListener? = null
     private var needReloadData: Boolean = false
@@ -336,7 +337,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopPageTracking?.clickProductSearchResult(
                 isMyShop,
                 isLogin,
-                selectedEtalaseName,
+                getSelectedEtalaseChip(),
                 "",
                 CustomDimensionShopPageAttribution.create(
                         shopInfo!!.shopCore.shopID,
@@ -352,7 +353,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         )
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
-                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, selectedEtalaseName)
+                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, getSelectedEtalaseChip())
                         ?: ""))
     }
 
@@ -360,7 +361,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopPageTracking?.impressionProductListSearchResult(
                 isMyShop,
                 isLogin,
-                selectedEtalaseName,
+                getSelectedEtalaseChip(),
                 "",
                 CustomDimensionShopPageAttribution.create(
                         shopInfo!!.shopCore.shopID,
@@ -459,7 +460,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun onSuccessGetSortFilterData(shopStickySortFilter: ShopStickySortFilter) {
         val etalaseList = shopStickySortFilter.etalaseList
-        selectedEtalaseId = shopStickySortFilter.etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.etalaseId
+        defaultEtalaseName = etalaseList.firstOrNull()?.etalaseName.orEmpty()
+        selectedEtalaseId = shopStickySortFilter.etalaseList.firstOrNull { isEtalaseMatch(it) }?.etalaseId
                 ?: ""
         sortValue = shopStickySortFilter.sortList.firstOrNull { it.value == sortValue }?.value ?: ""
         selectedEtalaseName = etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.etalaseName
@@ -482,6 +484,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 keyword,
                 isNeedToReloadData
         )
+    }
+
+    private fun isEtalaseMatch(model: ShopEtalaseItemDataModel): Boolean {
+        return (model.etalaseId.toLowerCase() == selectedEtalaseId.toLowerCase() ||
+                model.etalaseName.toLowerCase() == selectedEtalaseId.toLowerCase() ||
+                model.alias.toLowerCase() == selectedEtalaseId.toLowerCase()) && selectedEtalaseId.isNotEmpty()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -545,7 +553,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopPageTracking?.clickWishlistProductResultPage(
                     !productCardOptionsModel.isWishlisted,
                     isLogin,
-                    selectedEtalaseName,
+                    getSelectedEtalaseChip(),
                     CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1, productCardOptionsModel.productId, shopRef))
         }
@@ -655,6 +663,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             val intent = ShopProductSortActivity.createIntent(activity, sortValue)
             startActivityForResult(intent, REQUEST_CODE_SORT)
         }
+    }
+
+    private fun getSelectedEtalaseChip(): String{
+        return selectedEtalaseName.takeIf { it.isNotEmpty() } ?: defaultEtalaseName
     }
 
     companion object {

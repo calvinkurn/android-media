@@ -52,7 +52,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
-import com.tokopedia.user_identification_common.KYCConstant.STATUS_VERIFIED
 import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
@@ -91,7 +90,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         const val ACTIVATE_INTENT_CODE = 123
         const val AUTOEXTEND_INTENT_CODE = 321
         const val TURN_OFF_AUTOEXTEND_INTENT_CODE = 322
-        const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
 
         private const val APPLINK_PARAMS_KYC = "${PARAM_PROJECT_ID}=${MERCHANT_KYC_PROJECT_ID}"
         const val APPLINK_POWER_MERCHANT_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC"
@@ -109,29 +107,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         renderInitialLayout()
         button_activate_root.setOnClickListener {
             powerMerchantTracking.eventUpgradeShopPm()
-            if (getApprovalStatusPojo.kycProjectInfo.status == STATUS_VERIFIED) {
-                if (shopStatusModel.isPowerMerchantInactive()) {
-                    context?.let {
-                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
-                        } else {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE)
-                        }
-                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                    }
-                } else {
-                    context?.let {
-                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
-                        } else {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_AUTO_EXTEND)
-                        }
-                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                    }
-                }
-            } else {
-                openTermsAndConditionKYC()
-            }
+            openTermsAndCondition()
         }
 
         observeActivatePowerMerchant()
@@ -393,9 +369,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun openTermsAndConditionKYC() {
-        val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_KYC) }
-        startActivity(intent)
+    private fun openTermsAndCondition() {
+        val intent = context?.let { PowerMerchantTermsActivity.createIntent(it) }
+        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
     }
 
     private fun showEmptyState(throwable: Throwable) {

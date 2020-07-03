@@ -40,9 +40,7 @@ class TalkReplyViewHolder(view: View,
             showDate(createTimeFormatted)
             showSellerLabelWithCondition(isSeller)
             showAnswer(content, state.isMasked, maskedContent)
-            if(attachedProductCount > 0) {
-                showAttachedProducts(attachedProducts.toMutableList())
-            }
+            showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
         }
     }
