@@ -89,8 +89,6 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
                 is Success -> {
                     setSuggestionSearch(it.data)
                 }
-                is Fail -> {
-                }
             }
         })
 
