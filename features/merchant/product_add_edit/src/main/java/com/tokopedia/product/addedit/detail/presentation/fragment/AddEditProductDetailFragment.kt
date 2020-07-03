@@ -1012,7 +1012,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productCategoryRecommendationLiveData.observe(this, Observer {
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
-                is Fail -> onGetCategoryRecommendationFailed()
+                is Fail -> {
+                    onGetCategoryRecommendationFailed()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         })
     }
@@ -1185,6 +1188,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productNameRecLoader?.hide()
                     productNameRecShimmering?.hide()
                     productNameRecView?.hide()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }

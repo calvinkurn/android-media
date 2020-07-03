@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.CATEGORY_HEADER
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.ETALASE_HEADER
@@ -206,6 +207,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
                 }
                 is Fail -> {
                     this.dismiss()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })

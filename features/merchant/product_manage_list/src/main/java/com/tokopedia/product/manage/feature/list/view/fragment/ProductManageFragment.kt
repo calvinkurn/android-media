@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
@@ -1340,7 +1341,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.setFeaturedProductResult) {
             when (it) {
                 is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
-                is Fail -> onFailedChangeFeaturedProduct(it.throwable)
+                is Fail -> {
+                    onFailedChangeFeaturedProduct(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1349,7 +1353,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.getPopUpResult) {
             when (it) {
                 is Success -> onSuccessGetPopUp(it.data.isSuccess, it.data.productId)
-                is Fail -> onErrorGetPopUp()
+                is Fail -> {
+                    onErrorGetPopUp()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1358,7 +1365,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.getFreeClaimResult) {
             when (it) {
                 is Success -> onSuccessGetFreeClaim(it.data)
-                is Fail -> onErrorGetFreeClaim()
+                is Fail -> {
+                    onErrorGetFreeClaim()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1369,6 +1379,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> onSuccessEditPrice(it.data.productId, it.data.price, it.data.productName)
                 is Fail -> {
                     onErrorEditPrice(it.throwable as EditPriceResult)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
@@ -1380,6 +1391,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> onSuccessEditStock(it.data.productId, it.data.stock, it.data.productName, it.data.status)
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
@@ -1389,8 +1401,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.multiEditProductResult) {
             when(it) {
                 is Success -> onSuccessMultiEditProducts(it.data)
-                is Fail -> showErrorToast()
-
+                is Fail -> {
+                    showErrorToast()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1438,7 +1452,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     enableMultiSelect()
                     renderMultiSelectProduct()
                 }
-                is Fail -> showErrorToast()
+                is Fail -> {
+                    showErrorToast()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
             hidePageLoading()
             stopPerformanceMonitoring()
@@ -1531,7 +1548,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.deleteProductResult) {
             when (it) {
                 is Success -> onSuccessDeleteProduct(it.data.productName, it.data.productId)
-                is Fail -> onErrorDeleteProduct(it.throwable as DeleteProductResult)
+                is Fail -> {
+                    onErrorDeleteProduct(it.throwable as DeleteProductResult)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1576,7 +1596,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     ).orEmpty()
                     showMessageToast(message)
                 }
-                is Fail -> showErrorMessageToast(it)
+                is Fail -> {
+                    showErrorMessageToast(it)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1592,7 +1615,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     updateVariantStock(it.data)
                     showMessageToast(message)
                 }
-                is Fail -> showErrorMessageToast(it)
+                is Fail -> {
+                    showErrorMessageToast(it)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
