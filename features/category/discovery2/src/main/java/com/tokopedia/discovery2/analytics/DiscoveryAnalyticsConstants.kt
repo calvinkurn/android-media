@@ -107,4 +107,8 @@ const val PRODUCT_CARD_REVAMP_ITEM  = "product_card_revamp_item"
 const val PRODUCT_CARD_CAROUSEL_ITEM  = "product_card_carousel_item"
 const val CATEGORY_LEVEL_1  = 1
 const val CATEGORY_LEVEL_2  = 2
+const val CURRENT_SITE  = "currentSite"
+const val BUSINESS_UNIT  = "businessUnit"
+const val DISCOVERY  = "discovery"
+const val TOKOPEDIA_MARKET_PLACE  = "tokopediamarketplace"
 
