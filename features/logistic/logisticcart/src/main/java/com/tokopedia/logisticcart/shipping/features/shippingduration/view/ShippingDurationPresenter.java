@@ -39,6 +39,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     private final GetRatesApiUseCase ratesApiUseCase;
     private final RatesResponseStateConverter stateConverter;
     private final ShippingCourierConverter shippingCourierConverter;
+    private ShippingDurationContract.View view;
 
     @Inject
     public ShippingDurationPresenter(GetRatesUseCase ratesUseCase,
@@ -54,6 +55,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     @Override
     public void attachView(ShippingDurationContract.View view) {
         super.attachView(view);
+        this.view = view;
     }
 
     @Override
@@ -129,7 +131,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                         new Subscriber<ShippingRecommendationData>() {
                             @Override
                             public void onCompleted() {
-
+                                //no-op
                             }
 
                             @Override
@@ -149,7 +151,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                         getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
                                         getView().stopTrace();
                                     } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
-                                            shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
+                                            !shippingRecommendationData.getShippingDurationViewModels().isEmpty()) {
                                         if (getView().isDisableCourierPromo()) {
                                             for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
                                                 shippingDurationUiModel.getServiceData().setIsPromo(0);
