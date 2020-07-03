@@ -155,6 +155,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 getRates()
             } else {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
+                if (!hasSentViewOspEe) {
+                    orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+                    hasSentViewOspEe = true
+                }
             }
         }, { throwable: Throwable ->
             _orderPreference = null
