@@ -213,7 +213,7 @@ object CartListPresenterAddToCartTest : Spek({
 
         Scenario("success add to cart recommendation item") {
 
-            val productModel = CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0))
+            val productModel = CartRecommendationItemHolderData(false, RecommendationItem(productId = 0, shopId = 0))
             val addToCartDataModel = AddToCartDataModel().apply {
                 status = AddToCartDataModel.STATUS_OK
                 data = DataModel().apply {
@@ -244,7 +244,7 @@ object CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart recommendation item") {
 
-            val productModel = CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0))
+            val productModel = CartRecommendationItemHolderData(false, RecommendationItem(productId = 0, shopId = 0))
             val addToCartDataModel = AddToCartDataModel().apply {
                 status = AddToCartDataModel.STATUS_ERROR
                 data = DataModel().apply {
