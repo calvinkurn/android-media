@@ -163,6 +163,7 @@ class PlayBroadcastViewModel @Inject constructor(
             val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
             if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+            setMaxMinProduct(configUiModel.productTagConfig)
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
@@ -311,6 +312,11 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun setChannelId(channelId: String) {
         hydraConfigStore.setChannelId(channelId)
+    }
+
+    private fun setMaxMinProduct(configModel: ProductTagConfigUiModel) {
+        hydraConfigStore.setMaxProduct(configModel.maxProduct)
+        hydraConfigStore.setMinProduct(configModel.minProduct)
     }
 
     /**
