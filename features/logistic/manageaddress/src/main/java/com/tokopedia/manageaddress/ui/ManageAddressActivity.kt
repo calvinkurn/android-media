@@ -9,7 +9,7 @@ import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import kotlinx.android.synthetic.main.activity_manage_address.*
 
-class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent> {
+class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>{
 
     override fun getComponent(): ManageAddressComponent {
         return DaggerManageAddressComponent.builder()

@@ -3,7 +3,6 @@ package com.tokopedia.manageaddress.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,13 +24,13 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity
 import com.tokopedia.logisticdata.data.entity.address.AddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
 import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE
@@ -64,8 +63,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var searchInputView: SearchInputView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var bottomSheetLainnya: BottomSheetUnify? = null
-    private var maxItemPosition: Int = 0
-
     private var emptySearchLayout: LinearLayout? = null
 
     private var buttonAddEmpty: UnifyButton? = null
@@ -155,8 +152,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
-
-
     }
 
     private fun initViewModel() {
@@ -184,7 +179,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun setEmptyState(isEmpty: Boolean, isFirstLoad: Boolean) {
-        Log.d("SAVED_QUERY", viewModel.savedQuery)
         if(!isEmpty) {
             emptyStateLayout?.gone()
             searchAddress.visible()
@@ -261,9 +255,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 intent.putExtra(KERO_TOKEN, token)
                 startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
             } else {
-                startActivityForResult(activity?.let {
-                    AddAddressActivity.createInstanceEditAddress(it, data, token)
-                }, REQUEST_CODE_PARAM_EDIT)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
+                intent.putExtra(EDIT_PARAM, data)
+                intent.putExtra(KERO_TOKEN, token)
+                startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
             }
     }
 

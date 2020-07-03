@@ -75,14 +75,6 @@ public class AddAddressActivity extends BaseSimpleActivity {
                 INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS);
     }
 
-    public static Intent createInstanceEditAddress(@NonNull Activity activity,
-                                                   @Nullable AddressModel addressModel,
-                                                   @Nullable Token token) {
-        return createInstance(
-                activity, addressModel, token,
-                INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS);
-    }
-
     public static Intent createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(@NonNull Activity activity,
                                                                                             @Nullable Token token) {
         return createInstance(
