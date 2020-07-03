@@ -107,9 +107,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var bottomSheetFilter: BottomSheetUnify? = null
     private var bottomSheetSort: BottomSheetUnify? = null
-
-    private var firstTabItem: View? = null
-
+    
     private var itemViewSummary: View? = null
 
     private var productItemList: List<ProductReviewUiModel>? = null
@@ -220,6 +218,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun loadInitialData() {
         isLoadingInitialData = true
+        endlessRecyclerViewScrollListener?.resetState()
         reviewSellerAdapter.clearAllElements()
         rvRatingProduct?.show()
         filter_and_sort_layout?.hide()
