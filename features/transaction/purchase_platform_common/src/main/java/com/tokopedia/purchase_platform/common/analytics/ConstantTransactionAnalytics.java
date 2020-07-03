@@ -213,6 +213,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PRODUCT_WISHLIST_ON_CART_LIST = "click product wishlist on cart list";
         String CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST = "click product last seen on cart list";
         String CLICK_DONATION = "click donation";
+        String VIEW_AUTO_CHECK_ON_DONATION = "view autocheck on donation";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -440,7 +441,7 @@ public interface ConstantTransactionAnalytics {
         String CHOOSE_COURIER_FROM_COURIER_SELECTION_OSP = "courier - click selected courier option";
         String CLICK_RINGKASAN_BELANJA_OSP = "click arrow on ringkasan belanja";
         String CLICK_GEAR_LOGO_IN_PREFERENCE_FROM_GANTI_PILIHAN_OSP = "preference - click gear logo from ganti pilihan";
-        String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP  = "preference -  click gunakan pilihan ini from ganti pilihan";
+        String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP = "preference -  click gunakan pilihan ini from ganti pilihan";
         String CLICK_BACK_FROM_OSP = "click back in order summary page";
         String CLICK_BUTTON_INFO_ON_OSP = "click button info on order summary page";
         String CLICK_YUK_COBA_LAGI_IN_ONBOARDING_TICKER = "click yuk coba lagi in onboarding ticker";

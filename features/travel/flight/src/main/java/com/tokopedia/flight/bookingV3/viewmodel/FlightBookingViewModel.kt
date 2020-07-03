@@ -6,6 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.R
@@ -34,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -43,6 +48,7 @@ import javax.inject.Inject
  */
 
 class FlightBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                 private val travelTickerUseCase: TravelTickerCoroutineUseCase,
                                                  private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -74,6 +80,10 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     val errorToastMessageData: LiveData<Int>
         get() = _errorToastMessageData
 
+    private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
+    val tickerData: LiveData<Result<TravelTickerModel>>
+        get() = mutableTickerData
+
     //priceListData
     private val _flightPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
     val flightPriceData: LiveData<List<FlightCart.PriceDetail>>
@@ -103,6 +113,13 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         _flightAmenityPriceData.value = listOf()
         _flightPromoResult.value = FlightPromoViewEntity()
         _flightPassengersData.value = listOf()
+    }
+
+    fun fetchTickerData() {
+        launch(dispatcherProvider.ui()) {
+            val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.BOOK)
+            mutableTickerData.postValue(tickerData)
+        }
     }
 
     fun getCart(rawQuery: String, cartId: String, autoVerify: Boolean = false, bookingVerifyParam: FlightVerifyParam? = null,
