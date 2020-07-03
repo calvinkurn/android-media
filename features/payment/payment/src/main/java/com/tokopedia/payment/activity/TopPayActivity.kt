@@ -480,6 +480,18 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     navigateToActivity(intent)
                     return true
                 }
+                //applink for link aja...
+                if (url.contains(LINK_AJA_APP_LINK)) {
+                    val uri = Uri.parse(url)
+                    val linkAjaIntent = Intent(Intent.ACTION_VIEW, uri)
+                    val activities = packageManager
+                            .queryIntentActivities(linkAjaIntent, 0)
+                    val isIntentSafe: Boolean = activities.isNotEmpty()
+                    if (isIntentSafe) {
+                        startActivity(linkAjaIntent)
+                    }
+                    return true
+                }
 
                 val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
                 if (urlFinal.isNotEmpty()) {
@@ -630,6 +642,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         const val HCI_CAMERA_REQUEST_CODE = 978
         const val FORCE_TIMEOUT = 90000L
 
+        private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
