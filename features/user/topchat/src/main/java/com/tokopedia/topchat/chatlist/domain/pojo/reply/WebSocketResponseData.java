@@ -45,6 +45,13 @@ public class  WebSocketResponseData {
     @SerializedName("is_opposite")
     @Expose
     private boolean isOpposite;
+    @SerializedName("is_auto_reply")
+    @Expose
+    private boolean isAutoReply;
+
+    public boolean isAutoReply() {
+        return isAutoReply;
+    }
 
     public int getMsgId() {
         return msgId;

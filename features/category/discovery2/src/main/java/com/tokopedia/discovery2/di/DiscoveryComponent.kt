@@ -15,6 +15,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import dagger.Component
@@ -39,4 +40,5 @@ interface DiscoveryComponent {
     fun inject(loadMoreViewModel: LoadMoreViewModel)
     fun inject(cpmTopadsShopItemViewModel: CpmTopadsShopItemViewModel)
     fun inject(cpmTopadsProductItemViewModel: CpmTopadsProductItemViewModel)
+    fun inject(quickCouponViewModel: QuickCouponViewModel)
 }

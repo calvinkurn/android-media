@@ -1,6 +1,0 @@
-mutation closeChannel($channelID: Int!){
-  close_channel(channelID: $channelID){
-    success
-    message
-  }
-}

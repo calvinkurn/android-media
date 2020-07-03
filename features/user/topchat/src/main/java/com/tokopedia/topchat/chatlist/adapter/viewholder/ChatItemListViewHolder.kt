@@ -42,19 +42,30 @@ class ChatItemListViewHolder(
     private val time: Typography = itemView.findViewById(R.id.time)
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
+    private val smartReplyIndicator: View? = itemView.findViewById(R.id.view_smart_reply_indicator)
 
     private val menu = LongClickMenu()
 
     override fun bind(element: ItemChatListPojo) {
         bindItemChatClick(element)
         bindItemChatLongClick(element)
-        bindReadState(element)
         bindName(element)
         bindProfilePicture(element)
         bindMessageState(element)
         bindTimeStamp(element)
         bindLabel(element)
         bindPin(element)
+        bindSmartReplyIndicator(element)
+    }
+
+    private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
+        if (element.isReplyTopBot() && element.isUnread() && listener.isTabSeller()) {
+            smartReplyIndicator?.show()
+            unreadCounter.hide()
+        } else {
+            smartReplyIndicator?.hide()
+            bindReadState(element)
+        }
     }
 
     override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
@@ -87,6 +98,7 @@ class ChatItemListViewHolder(
 
     private fun bindName(chat: ItemChatListPojo) {
         userName.text = MethodChecker.fromHtml(chat.name)
+        userName.setWeight(Typography.REGULAR)
     }
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {
@@ -103,7 +115,7 @@ class ChatItemListViewHolder(
         if (chat.isUnread() && attributes != null) {
             chat.markAsRead()
             listener.decreaseNotificationCounter()
-            bindReadState(chat)
+            bindSmartReplyIndicator(chat)
         }
 
         listener.chatItemClicked(chat, adapterPosition)
