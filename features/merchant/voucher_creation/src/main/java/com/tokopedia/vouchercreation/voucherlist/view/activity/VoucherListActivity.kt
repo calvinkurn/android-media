@@ -12,6 +12,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
 import timber.log.Timber
 
@@ -19,7 +23,8 @@ import timber.log.Timber
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
+class VoucherListActivity : BaseActivity(),
+        VoucherListFragment.Listener, MvcPerformanceMonitoringListener {
 
     companion object {
         @JvmStatic
@@ -38,6 +43,10 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
         const val HISTORY = "history"
     }
 
+    private val voucherListPerformanceMonitoring: MvcPerformanceMonitoringInterface by lazy {
+        MvcPerformanceMonitoring(MvcPerformanceMonitoringType.List)
+    }
+
     private var isSuccessDialogAlreadyShowed = false
 
     private var isActiveVoucher = true
@@ -46,6 +55,8 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
     private val isUpdateVoucherSuccess by lazy { intent?.extras?.getBoolean(UPDATE_VOUCHER_KEY) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        voucherListPerformanceMonitoring.initMvcPerformanceMonitoring()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_list)
 
@@ -54,11 +65,9 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
         setWhiteStatusBar()
 
         var isActive = true
-
         intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
             isActive = it
         }
-
         intent?.data?.lastPathSegment?.let { status ->
             if (status.isNotEmpty()) {
                 isActive =
@@ -78,11 +87,9 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
 
         var isActive = true
         val voucherId = intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY)
-
         intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
             isActive = it
         }
-
         intent?.data?.lastPathSegment?.let { status ->
             if (status.isNotEmpty()) {
                 isActive =
@@ -108,6 +115,18 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
     override fun switchFragment(isActiveVoucher: Boolean) {
         this.isActiveVoucher = isActiveVoucher
         showFragment(getFragment(isActiveVoucher))
+    }
+
+    override fun startNetworkPerformanceMonitoring() {
+        voucherListPerformanceMonitoring.startNetworkMvcPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        voucherListPerformanceMonitoring.startRenderMvcPerformanceMonitoring()
+    }
+
+    override fun finishMonitoring() {
+        voucherListPerformanceMonitoring.stopPerformanceMonitoring()
     }
 
     private fun showFragment(fragment: Fragment) {

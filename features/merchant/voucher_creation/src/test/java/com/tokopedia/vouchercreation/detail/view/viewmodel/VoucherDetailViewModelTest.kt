@@ -117,6 +117,8 @@ class VoucherDetailViewModelTest {
 
             getVoucherDetail(anyInt())
 
+            coroutineContext[Job]?.children?.forEach { it.join() }
+
             coVerify {
                 voucherDetailUseCase.executeOnBackground()
                 shopBasicDataUseCase.executeOnBackground()
@@ -139,6 +141,8 @@ class VoucherDetailViewModelTest {
             } throws dummyThrowable
 
             getVoucherDetail(anyInt())
+
+            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 voucherDetailUseCase.executeOnBackground()
