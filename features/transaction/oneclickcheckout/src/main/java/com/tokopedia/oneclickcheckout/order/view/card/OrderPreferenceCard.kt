@@ -104,7 +104,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         if (shipping == null) {
             val tempServiceDuration = shipmentModel.serviceDuration
             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
             } else {
                 OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
             }
@@ -146,7 +146,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                            view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
                         } else {
                             OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
                         }
@@ -199,7 +199,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                            view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
                         } else {
                             OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
                         }
