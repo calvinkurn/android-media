@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.R
+import com.tokopedia.otp.verification.common.IOnBackPressed
 import com.tokopedia.otp.verification.common.di.VerificationComponent
 import com.tokopedia.otp.verification.common.di.VerificationComponentBuilder
 import com.tokopedia.otp.verification.data.OtpData
@@ -61,10 +62,15 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
 
     override fun onBackPressed() {
         KeyboardHandler.hideSoftKeyboard(this)
-        if (supportFragmentManager.backStackEntryCount > 1) {
-            supportFragmentManager.popBackStack()
-        } else {
-            finish()
+        val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
+        (fragment as? IOnBackPressed)?.onBackPressed()?.let { isBackPressed ->
+            if(isBackPressed) {
+                if (supportFragmentManager.backStackEntryCount > 1) {
+                    supportFragmentManager.popBackStack()
+                } else {
+                    finish()
+                }
+            }
         }
     }
 

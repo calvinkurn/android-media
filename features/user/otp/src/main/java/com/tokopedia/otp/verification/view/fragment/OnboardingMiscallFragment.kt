@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.otp.common.analytics.OTPAnalytics
+import com.tokopedia.otp.verification.common.IOnBackPressed
 import com.tokopedia.otp.verification.common.di.VerificationComponent
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.ModeListData
@@ -16,7 +17,7 @@ import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBin
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingMiscallFragment : BaseVerificationFragment() {
+class OnboardingMiscallFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private lateinit var otpData: OtpData
     private lateinit var modeListData: ModeListData
@@ -51,6 +52,8 @@ class OnboardingMiscallFragment : BaseVerificationFragment() {
         super.onPause()
         stopAnimation()
     }
+
+    override fun onBackPressed(): Boolean = true
 
     private fun initView() {
         startAnimation()

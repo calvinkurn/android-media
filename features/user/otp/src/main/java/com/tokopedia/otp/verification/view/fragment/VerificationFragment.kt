@@ -14,11 +14,9 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,14 +24,17 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
 import com.tokopedia.otp.common.util.SmsBroadcastReceiver
 import com.tokopedia.otp.common.util.SmsBroadcastReceiver.ReceiveSMSListener
+import com.tokopedia.otp.verification.common.IOnBackPressed
 import com.tokopedia.otp.verification.common.VerificationPref
 import com.tokopedia.otp.verification.common.di.VerificationComponent
 import com.tokopedia.otp.verification.data.OtpData
@@ -56,7 +57,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationFragment : BaseVerificationFragment() {
+class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingValidatorUtil
@@ -72,6 +73,7 @@ class VerificationFragment : BaseVerificationFragment() {
     private lateinit var countDownTimer: CountDownTimer
 
     private var isRunningCountDown = false
+    private var isFirstSendOtp = true
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
@@ -79,7 +81,10 @@ class VerificationFragment : BaseVerificationFragment() {
 
     override val viewBound = VerificationViewBinding()
 
-    override fun getScreenName() = TrackingValidatorConstant.Screen.SCREEN_COTP + modeListData.modeText
+    override fun getScreenName() = when (otpData.otpType) {
+        OtpConstant.OtpType.REGISTER_EMAIL -> SCREEN_ACCOUNT_ACTIVATION
+        else -> TrackingValidatorConstant.Screen.SCREEN_COTP + modeListData.modeText
+    }
 
     override fun initInjector() = getComponent(VerificationComponent::class.java).inject(this)
 
@@ -116,6 +121,14 @@ class VerificationFragment : BaseVerificationFragment() {
         }
     }
 
+    override fun onBackPressed(): Boolean {
+        analytics.trackClickBackOtpPage(otpData.otpType)
+        if (otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
+            analytics.trackClickBackRegisterPhoneOtp()
+        }
+        return true
+    }
+
     private fun sendOtp() {
         if (isCountdownFinished()) {
             viewModel.sendOtp(
@@ -131,6 +144,18 @@ class VerificationFragment : BaseVerificationFragment() {
     }
 
     private fun validate(code: String) {
+        when (otpData.otpType) {
+            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                analytics.trackClickVerificationRegisterPhoneButton()
+            }
+            OtpConstant.OtpType.REGISTER_EMAIL -> {
+                analytics.trackClickVerificationRegisterEmailButton()
+            }
+            else -> {
+                analytics.trackClickVerificationButton(otpData.otpType)
+            }
+        }
+
         KeyboardHandler.hideSoftKeyboard(activity)
         showLoading()
         viewModel.otpValidate(
@@ -161,7 +186,16 @@ class VerificationFragment : BaseVerificationFragment() {
     private fun onSuccessSendOtp(): (OtpRequestData) -> Unit {
         return { otpRequestData ->
             if (otpRequestData.success) {
-                analytics.trackSuccessClickResendButton()
+                if(!isFirstSendOtp) {
+                    when (otpData.otpType) {
+                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                            analytics.trackSuccessClickResendRegisterPhoneOtpButton()
+                        }
+                        OtpConstant.OtpType.REGISTER_EMAIL -> {
+                            analytics.trackSuccessClickResendRegisterEmailOtpButton()
+                        }
+                    }
+                }
                 hideLoading()
                 setPrefixMiscall(otpRequestData.prefixMisscall)
                 startCountDown()
@@ -174,6 +208,8 @@ class VerificationFragment : BaseVerificationFragment() {
             } else {
                 onFailedSendOtp().invoke(Throwable())
             }
+
+            isFirstSendOtp = false
         }
     }
 
@@ -184,9 +220,20 @@ class VerificationFragment : BaseVerificationFragment() {
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                analytics.trackFailedClickOkResendButton(message)
-                analytics.trackFailedClickResendButton(message)
+
+                if(!isFirstSendOtp) {
+                    when (otpData.otpType) {
+                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                            analytics.trackFailedClickResendRegisterPhoneOtpButton(message)
+                        }
+                        OtpConstant.OtpType.REGISTER_EMAIL -> {
+                            analytics.trackFailedClickResendRegisterEmailOtpButton(message)
+                        }
+                    }
+                }
             }
+
+            isFirstSendOtp = false
         }
     }
 
@@ -194,7 +241,14 @@ class VerificationFragment : BaseVerificationFragment() {
         return { otpValidateData ->
             when {
                 otpValidateData.success -> {
-                    analytics.trackSuccessClickActivationButton()
+                    when (otpData.otpType) {
+                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                            analytics.trackSuccessClickVerificationRegisterPhoneButton()
+                        }
+                        OtpConstant.OtpType.REGISTER_EMAIL -> {
+                            analytics.trackSuccessClickVerificationRegisterEmailButton()
+                        }
+                    }
                     hideLoading()
                     resetCountDown()
 
@@ -227,7 +281,15 @@ class VerificationFragment : BaseVerificationFragment() {
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                analytics.trackFailedClickActivationButton(message)
+
+                when (otpData.otpType) {
+                    OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                        analytics.trackFailedClickVerificationRegisterPhoneButton(message)
+                    }
+                    OtpConstant.OtpType.REGISTER_EMAIL -> {
+                        analytics.trackFailedClickVerificationRegisterEmailButton(message)
+                    }
+                }
             }
         }
     }
@@ -259,7 +321,7 @@ class VerificationFragment : BaseVerificationFragment() {
                 }
 
                 override fun onTick(millisUntilFinished: Long) {
-                    if(isAdded){
+                    if (isAdded) {
                         isRunningCountDown = true
                         setRunningCountdownText(TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished).toInt())
                     }
@@ -277,7 +339,7 @@ class VerificationFragment : BaseVerificationFragment() {
 
         setPrefixMiscall()
 
-        if(modeListData.modeText == OtpConstant.OtpMode.MISCALL){
+        if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
             viewBound.prefixTextMethodIcon?.visible()
             val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 270f, resources.displayMetrics)
             viewBound.methodIcon?.layoutParams.apply {
@@ -285,7 +347,7 @@ class VerificationFragment : BaseVerificationFragment() {
                 this?.width = WRAP_CONTENT
                 viewBound.methodIcon?.layoutParams = this
             }
-            viewBound.methodIcon?.setMargin(0,0,0,0)
+            viewBound.methodIcon?.setMargin(0, 0, 0, 0)
             viewBound.methodIcon?.let { ImageUtils.loadImage(it, MISSCALL_IMAGE_URL) }
         } else {
             if (modeListData.otpListImgUrl.isNotEmpty()) {
@@ -352,8 +414,21 @@ class VerificationFragment : BaseVerificationFragment() {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
-                        analytics.trackClickResendButton()
+                        when (otpData.otpType) {
+                            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                                analytics.trackClickResendRegisterPhoneOtpButton()
+                            }
+                            OtpConstant.OtpType.REGISTER_EMAIL -> {
+                                analytics.trackClickResendRegisterEmailOtpButton()
+                            }
+                            else -> {
+                                analytics.trackClickResendOtpButton(otpData.otpType)
+                            }
+                        }
+
                         sendOtp()
+                        viewBound.pin?.value = ""
+                        showKeyboard()
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
@@ -370,6 +445,7 @@ class VerificationFragment : BaseVerificationFragment() {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
+                        analytics.trackClickUseOtherMethod(otpData.otpType)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
 

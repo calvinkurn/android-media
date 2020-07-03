@@ -26,6 +26,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
+import com.tokopedia.otp.verification.common.IOnBackPressed
 import com.tokopedia.otp.verification.common.di.VerificationComponent
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.ModeListData
@@ -44,7 +45,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationMethodFragment : BaseVerificationFragment() {
+class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingValidatorUtil
@@ -89,6 +90,8 @@ class VerificationMethodFragment : BaseVerificationFragment() {
         viewmodel.flush()
         super.onDestroy()
     }
+
+    override fun onBackPressed(): Boolean = true
 
     private fun initView() {
         (activity as VerificationActivity).title = "Verifikasi"

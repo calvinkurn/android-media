@@ -1,16 +1,25 @@
 package com.tokopedia.otp.common.analytics
 
 import android.os.Build
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_BACK_BUTTON
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_KIRIM_ULANG
-import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_OK_KIRIM_ULANG
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_BUTTON_AKTIVASI
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_BUTTON_BACK
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_BUTTON_INACTIVE_PHONE_NUMBER
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_BUTTON_VERIFIKASI
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_GUNAKAN_METODE_LAIN
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_KIRIM_ULANG
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_OTP_METHOD
-import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_UBAH_EMAIL_ACTIVATION
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Action.ACTION_CLICK_ON_VERIFIKASI
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Category.CATEGORY_ACTIVATION_PAGE
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Category.CATEGORY_CHOOSE_OTP_PAGE
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Category.CATEGORY_INPUT_OTP_PAGE
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Category.CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Event.EVENT_CLICK_ACTIVATION
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Event.EVENT_CLICK_BACK
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Event.EVENT_CLICK_CONFIRM
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Event.EVENT_CLICK_OTP
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Event.EVENT_CLICK_REGISTER
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Label.LABEL_CLICK
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Label.LABEL_EMPTY
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Label.LABEL_FAILED
@@ -49,7 +58,42 @@ class TrackingValidatorUtil @Inject constructor(){
         ))
     }
 
-    fun trackClickActivationButton() {
+    fun trackClickVerificationButton(otpType: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_CONFIRM,
+                CATEGORY_INPUT_OTP_PAGE,
+                ACTION_CLICK_ON_VERIFIKASI,
+                otpType.toString()))
+    }
+
+    fun trackClickVerificationRegisterPhoneButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_ON_BUTTON_VERIFIKASI,
+                LABEL_CLICK
+        ))
+    }
+
+    fun trackSuccessClickVerificationRegisterPhoneButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_ON_BUTTON_VERIFIKASI,
+                LABEL_SUCCESS
+        ))
+    }
+
+    fun trackFailedClickVerificationRegisterPhoneButton(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_ON_BUTTON_VERIFIKASI,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    fun trackClickVerificationRegisterEmailButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
@@ -58,52 +102,7 @@ class TrackingValidatorUtil @Inject constructor(){
         ))
     }
 
-    fun trackClickResendButton() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_KIRIM_ULANG,
-                LABEL_CLICK
-        ))
-    }
-
-    fun trackSuccessClickOkResendButton() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_OK_KIRIM_ULANG,
-                LABEL_SUCCESS
-        ))
-    }
-
-    fun trackSuccessClickResendButton() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_KIRIM_ULANG,
-                LABEL_SUCCESS
-        ))
-    }
-
-    fun trackFailedClickOkResendButton(failedMessage: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_OK_KIRIM_ULANG,
-                LABEL_FAILED + failedMessage
-        ))
-    }
-
-    fun trackFailedClickResendButton(failedMessage: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_KIRIM_ULANG,
-                LABEL_FAILED + failedMessage
-        ))
-    }
-
-    fun trackSuccessClickActivationButton() {
+    fun trackSuccessClickVerificationRegisterEmailButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
@@ -112,7 +111,7 @@ class TrackingValidatorUtil @Inject constructor(){
         ))
     }
 
-    fun trackFailedClickActivationButton(failedMessage: String) {
+    fun trackFailedClickVerificationRegisterEmailButton(failedMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
@@ -121,20 +120,90 @@ class TrackingValidatorUtil @Inject constructor(){
         ))
     }
 
-    fun trackClickOkResendButton() {
+    fun trackClickUseOtherMethod(otpType: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_OK_KIRIM_ULANG,
+                EVENT_CLICK_OTP,
+                CATEGORY_INPUT_OTP_PAGE,
+                ACTION_CLICK_ON_GUNAKAN_METODE_LAIN,
+                otpType.toString()
+        ))
+    }
+
+    fun trackClickResendOtpButton(otpType: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_OTP,
+                CATEGORY_INPUT_OTP_PAGE,
+                ACTION_CLICK_ON_KIRIM_ULANG,
+                otpType.toString()))
+    }
+
+    fun trackClickResendRegisterPhoneOtpButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_KIRIM_ULANG,
                 LABEL_CLICK
         ))
     }
 
-    fun trackClickChangeEmail() {
+    fun trackSuccessClickResendRegisterPhoneOtpButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_SUCCESS
+        ))
+    }
+
+    fun trackFailedClickResendRegisterPhoneOtpButton(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    fun trackClickResendRegisterEmailOtpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_UBAH_EMAIL_ACTIVATION,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_CLICK
+        ))
+    }
+
+    fun trackSuccessClickResendRegisterEmailOtpButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_SUCCESS
+        ))
+    }
+
+    fun trackFailedClickResendRegisterEmailOtpButton(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    fun trackClickBackOtpPage(otpType: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_BACK,
+                CATEGORY_INPUT_OTP_PAGE,
+                ACTION_CLICK_BACK_BUTTON,
+                otpType.toString()))
+    }
+
+    fun trackClickBackRegisterPhoneOtp() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_ON_BUTTON_BACK,
                 LABEL_EMPTY
         ))
     }
