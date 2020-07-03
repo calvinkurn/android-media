@@ -1000,6 +1000,17 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventViewAutoCheckDonation(String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_AUTO_CHECK_ON_DONATION,
+                ""
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
     public void eventViewCampaignDialog(int productId, String userId) {
         Map<String, Object> gtmMap = TrackAppUtils.gtmData(
                 EventName.VIEW_COURIER_IRIS,

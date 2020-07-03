@@ -75,6 +75,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     private var parentName: String? = null
 
     private var categoryUrl: String? = null
+    private var addCatalog: Boolean = true
 
     private lateinit var categoryNavComponent: com.tokopedia.categorylevels.di.CategoryNavComponent
 
@@ -245,6 +246,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 }
             }
         })
+
+        categoryNavViewModel.getHasCatalogLiveData().observe(this, Observer {
+            if (!it) {
+                removeCatalogTab()
+            }
+            container.show()
+        })
+    }
+
+    private fun removeCatalogTab() {
+        tabs.hide()
+        addCatalog = false
     }
 
     private fun handleCategoryDetailSuccess() {
@@ -362,7 +375,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>) {
         searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName, categoryUrl)))
-        searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
+        if(addCatalog)
+            searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
     }
 
     private fun setActiveTab() {

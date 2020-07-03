@@ -27,7 +27,7 @@ import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
@@ -189,7 +189,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                         flightOrderDetailPassData
                 );
                 getView().updateFlightList(transformToDetailJourneyList(flightOrderJourneyList));
-                getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
+                getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerModels()));
                 getView().updatePrice(transformToSimpleModelPrice(flightOrder), FlightCurrencyFormatUtil.Companion.convertToIdrPrice(totalPrice, true));
                 getView().setTransactionDate(
                         FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
@@ -198,7 +198,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().updateOrderData(
                         generateTicketLink(flightOrder.getId(), flightOrder.getPdf(), userSession.getUserId()),
                         generateInvoiceLink(flightOrder.getId()),
-                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels())
+                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerModels())
                 );
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
                 renderPaymentInfo(flightOrder);
@@ -213,7 +213,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     getView().hideCancellationContainer();
                 }
 
-                if (isShouldHideCancelButton(flightOrder.getJourneys().size(), flightOrder.getPassengerViewModels(),
+                if (isShouldHideCancelButton(flightOrder.getJourneys().size(), flightOrder.getPassengerModels(),
                         flightOrder.getCancelledPassengerCount())) {
                     getView().hideCancelButton();
                 }
@@ -363,7 +363,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return text;
     }
 
-    private String generateCancelMessage(List<FlightOrderJourney> flightOrder, List<FlightOrderPassengerViewModel> passengerViewModels) {
+    private String generateCancelMessage(List<FlightOrderJourney> flightOrder, List<FlightOrderPassengerModel> passengerViewModels) {
         String newLine = "\n";
         StringBuilder result = new StringBuilder();
         result.append(newLine);
@@ -371,8 +371,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             String item = flightOrderJourney.getDepartureAiportId() + "-" + flightOrderJourney.getArrivalAirportId() + " ";
             item += newLine;
             ArrayList<String> passengers = new ArrayList<>();
-            for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : passengerViewModels) {
-                passengers.add(flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName());
+            for (FlightOrderPassengerModel flightOrderPassengerModel : passengerViewModels) {
+                passengers.add(flightOrderPassengerModel.getPassengerFirstName() + " " + flightOrderPassengerModel.getPassengerLastName());
             }
             item += TextUtils.join(newLine, passengers);
             item += newLine;
@@ -455,9 +455,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         int passengerChildCount = 0;
         int passengerInfantCount = 0;
 
-        for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
+        for (FlightOrderPassengerModel flightOrderPassengerModel : flightOrder.getPassengerModels()) {
             // add to passenger count
-            switch (flightOrderPassengerViewModel.getType()) {
+            switch (flightOrderPassengerModel.getType()) {
                 case FlightBookingPassenger.ADULT:
                     passengerAdultCount++;
                     break;
@@ -469,7 +469,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     break;
             }
 
-            for (FlightOrderAmenityViewModel amenityViewModel : flightOrderPassengerViewModel.getAmenities()) {
+            for (FlightOrderAmenityViewModel amenityViewModel : flightOrderPassengerModel.getAmenities()) {
                 switch (Integer.toString(amenityViewModel.getAmenityType())) {
                     case FlightAmenityType.LUGGAGE:
                         String key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
@@ -549,18 +549,18 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 FlightCurrencyFormatUtil.Companion.convertToIdrPrice(price, true));
     }
 
-    private List<FlightDetailPassenger> transformToListPassenger(List<FlightOrderPassengerViewModel> passengerViewModels) {
+    private List<FlightDetailPassenger> transformToListPassenger(List<FlightOrderPassengerModel> passengerViewModels) {
         List<FlightDetailPassenger> flightDetailPassengers = new ArrayList<>();
-        for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : passengerViewModels) {
+        for (FlightOrderPassengerModel flightOrderPassengerModel : passengerViewModels) {
             FlightDetailPassenger flightDetailPassenger = new FlightDetailPassenger();
-            flightDetailPassenger.setPassengerName(String.format("%s %s %s", generateSalutation(flightOrderPassengerViewModel.getPassengerTitleId()),
-                    flightOrderPassengerViewModel.getPassengerFirstName(), flightOrderPassengerViewModel.getPassengerLastName()));
-            flightDetailPassenger.setPassengerType(flightOrderPassengerViewModel.getType());
-            flightDetailPassenger.setInfoPassengerList(transformToSimpleModelPassenger(flightOrderPassengerViewModel.getAmenities()));
-            flightDetailPassenger.setPassengerStatus(flightOrderPassengerViewModel.getStatus());
-            flightDetailPassenger.setPassengerCancellationStr(flightOrderPassengerViewModel.getCancellationStatusStr());
-            flightDetailPassenger.setSecondPassengerStatus(flightOrderPassengerViewModel.getSecondStatus());
-            flightDetailPassenger.setSecondPassengerCancellationStr(flightOrderPassengerViewModel.getSecondCancellationStatusStr());
+            flightDetailPassenger.setPassengerName(String.format("%s %s %s", generateSalutation(flightOrderPassengerModel.getPassengerTitleId()),
+                    flightOrderPassengerModel.getPassengerFirstName(), flightOrderPassengerModel.getPassengerLastName()));
+            flightDetailPassenger.setPassengerType(flightOrderPassengerModel.getType());
+            flightDetailPassenger.setInfoPassengerList(transformToSimpleModelPassenger(flightOrderPassengerModel.getAmenities()));
+            flightDetailPassenger.setPassengerStatus(flightOrderPassengerModel.getStatus());
+            flightDetailPassenger.setPassengerCancellationStr(flightOrderPassengerModel.getCancellationStatusStr());
+            flightDetailPassenger.setSecondPassengerStatus(flightOrderPassengerModel.getSecondStatus());
+            flightDetailPassenger.setSecondPassengerCancellationStr(flightOrderPassengerModel.getSecondCancellationStatusStr());
             flightDetailPassengers.add(flightDetailPassenger);
         }
         return flightDetailPassengers;
@@ -631,7 +631,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         super.detachView();
     }
 
-    private boolean isShouldHideCancelButton(int journeyCount, List<FlightOrderPassengerViewModel> passengerViewModels,
+    private boolean isShouldHideCancelButton(int journeyCount, List<FlightOrderPassengerModel> passengerViewModels,
                                              int cancelledPassengerCount) {
         int allPassengerCount = passengerViewModels.size() * journeyCount;
         return (allPassengerCount <= cancelledPassengerCount);
