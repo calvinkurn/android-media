@@ -42,7 +42,7 @@ import javax.inject.Inject
  */
 class PlayEtalasePickerFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider
+        dispatcher: CoroutineDispatcherProvider
 ) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator {
 
     private val job = SupervisorJob()
@@ -62,6 +62,8 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var bottomActionView: BottomActionPartialView
 
     private var mListener: Listener? = null
+
+    private var toasterBottomMargin = 0
 
     private val fragmentFactory: FragmentFactory
         get() = childFragmentManager.fragmentFactory
@@ -266,6 +268,20 @@ class PlayEtalasePickerFragment @Inject constructor(
         flEtalaseFlow.show()
     }
 
+    override fun showToaster(message: String, type: Int, duration: Int, actionLabel: String) {
+        if (toasterBottomMargin == 0) {
+            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            toasterBottomMargin = bottomActionView.rootView.height + offset8
+        }
+
+        requireView().showToaster(
+                message = message,
+                type = type,
+                actionLabel = actionLabel,
+                bottomMargin = toasterBottomMargin
+        )
+    }
+
     private fun onSelectedProductChanged() {
         (currentFragment as? PlayBaseEtalaseSetupFragment)?.refresh()
     }
@@ -287,7 +303,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun onUploadFailed(e: Throwable?) {
         bottomActionView.setLoading(false)
         e?.localizedMessage?.let {
-            errMessage -> requireView().showToaster(errMessage, type = Toaster.TYPE_ERROR)
+            errMessage -> showToaster(errMessage, type = Toaster.TYPE_ERROR)
         }
     }
 
