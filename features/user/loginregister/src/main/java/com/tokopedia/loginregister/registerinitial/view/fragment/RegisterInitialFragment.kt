@@ -558,7 +558,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
         if(profileInfoData.isCreatePin) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
             startActivityForResult(intent, REQUEST_ADD_PIN)
         } else {
