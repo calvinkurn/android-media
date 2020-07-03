@@ -73,8 +73,8 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     @Override
     public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId,
                                           List<ShopShipment> shopShipmentList) {
-        if (getView() != null) {
-            getView().showLoading();
+        if (view != null) {
+            view.showLoading();
             loadDuration(0, selectedServiceId, -1, false, false,
                     shopShipmentList, false, shippingParam, "");
         }
@@ -92,8 +92,8 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                           List<Product> products, String cartString,
                                           boolean isTradeInDropOff,
                                           RecipientAddressModel recipientAddressModel) {
-        if (getView() != null) {
-            getView().showLoading();
+        if (view != null) {
+            view.showLoading();
             ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString,
                     isTradeInDropOff, recipientAddressModel);
             int selectedSpId = 0;
@@ -136,23 +136,23 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
 
                             @Override
                             public void onError(Throwable e) {
-                                if (getView() != null) {
-                                    getView().showErrorPage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
-                                    getView().stopTrace();
+                                if (view != null) {
+                                    view.showErrorPage(ErrorHandler.getErrorMessage(view.getActivity(), e));
+                                    view.stopTrace();
                                 }
                             }
 
                             @Override
                             public void onNext(ShippingRecommendationData shippingRecommendationData) {
-                                if (getView() != null) {
-                                    getView().hideLoading();
+                                if (view != null) {
+                                    view.hideLoading();
                                     if (shippingRecommendationData.getErrorId() != null &&
                                             shippingRecommendationData.getErrorId().equals(ErrorProductData.ERROR_RATES_NOT_AVAILABLE)) {
-                                        getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
-                                        getView().stopTrace();
+                                        view.showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
+                                        view.stopTrace();
                                     } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
                                             !shippingRecommendationData.getShippingDurationViewModels().isEmpty()) {
-                                        if (getView().isDisableCourierPromo()) {
+                                        if (view.isDisableCourierPromo()) {
                                             for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
                                                 shippingDurationUiModel.getServiceData().setIsPromo(0);
                                                 for (ProductData productData : shippingDurationUiModel.getServiceData().getProducts()) {
@@ -160,11 +160,11 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                                 }
                                             }
                                         }
-                                        getView().showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
-                                        getView().stopTrace();
+                                        view.showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
+                                        view.stopTrace();
                                     } else {
-                                        getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
-                                        getView().stopTrace();
+                                        view.showNoCourierAvailable(view.getActivity().getString(R.string.label_no_courier_bottomsheet_message));
+                                        view.stopTrace();
                                     }
                                 }
                             }
