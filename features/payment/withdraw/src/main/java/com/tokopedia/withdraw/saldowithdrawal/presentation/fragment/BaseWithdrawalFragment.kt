@@ -338,11 +338,12 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         analytics.get().onDisableAccountClick(bankAccount.bankName)
     }
 
-    override fun showPremiumAccountDialog() {
-        activity?.let {
-            val premiumAccountBottomSheet = RekPremBankAccountInfoBottomSheet.getInstance(checkEligible)
+    override fun showPremiumAccountDialog(bankAccount: BankAccount) {
+        activity?.let { activity ->
+            val premiumAccountBottomSheet = RekPremBankAccountInfoBottomSheet
+                    .getInstance(checkEligible, bankAccount)
             premiumAccountBottomSheet.isFullpage = false
-            premiumAccountBottomSheet.show(it.supportFragmentManager, "")
+            premiumAccountBottomSheet.show(activity.supportFragmentManager, "")
             analytics.get().onRekeningPremiumLogoClick()
         }
     }

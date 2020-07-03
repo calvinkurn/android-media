@@ -129,7 +129,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
 
         fun showCoachMarkOnRPIcon(iconView: View)
 
-        fun showPremiumAccountDialog()
+        fun showPremiumAccountDialog(bankAccount: BankAccount)
 
         fun onDisabledBankClick(bankAccount: BankAccount)
     }

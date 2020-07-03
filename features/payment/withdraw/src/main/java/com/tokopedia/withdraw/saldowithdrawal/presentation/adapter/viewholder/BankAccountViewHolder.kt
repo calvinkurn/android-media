@@ -87,7 +87,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             bankAccountNumber.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
             bankAdminFee.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
             itemView.setOnClickListener { onBankAccountSelected(bankAccount) }
-            ivPremiumAccount.setOnClickListener { listener.showPremiumAccountDialog() }
+            ivPremiumAccount.setOnClickListener { listener.showPremiumAccountDialog(bankAccount) }
         }
 
     }
