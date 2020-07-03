@@ -245,7 +245,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     if (durationError.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
                                                         val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                                                            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                                                            "$LABEL_DURATION_PREFIX ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
                                                         } else {
                                                             NO_EXACT_DURATION_MESSAGE
                                                         }
@@ -280,7 +280,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                             }
                                                             val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                                                                "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                                                                "$LABEL_DURATION_PREFIX ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
                                                             } else {
                                                                 NO_EXACT_DURATION_MESSAGE
                                                             }
@@ -321,7 +321,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     if (durationError?.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
                                                         val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                                                            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                                                            "$LABEL_DURATION_PREFIX ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
                                                         } else {
                                                             NO_EXACT_DURATION_MESSAGE
                                                         }
@@ -357,7 +357,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                             }
                                                             val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                                                                "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                                                                "$LABEL_DURATION_PREFIX ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
                                                             } else {
                                                                 NO_EXACT_DURATION_MESSAGE
                                                             }
@@ -705,7 +705,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
             val tempServiceDuration = selectedShippingDurationViewModel.serviceData.serviceName
             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+                "$LABEL_DURATION_PREFIX ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
             } else {
                 NO_EXACT_DURATION_MESSAGE
             }
@@ -1542,6 +1542,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     companion object {
+        const val LABEL_DURATION_PREFIX = "Durasi"
         const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
         const val NO_EXACT_DURATION_MESSAGE = "Durasi tergantung kurir"
         const val NO_DURATION_AVAILABLE = "Durasi pengiriman tidak tersedia"
