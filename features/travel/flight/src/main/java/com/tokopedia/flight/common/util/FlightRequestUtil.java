@@ -41,14 +41,14 @@ public class FlightRequestUtil {
     private static String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
-        if (model.startsWith(manufacturer)) {
+        if (manufacturer != null && model != null && model.startsWith(manufacturer)) {
             return capitalize(model);
         }
         return capitalize(manufacturer) + " " + model;
     }
 
     private static String capitalize(String str) {
-        if (TextUtils.isEmpty(str)) {
+        if (str == null || TextUtils.isEmpty(str)) {
             return str;
         }
         char[] arr = str.toCharArray();

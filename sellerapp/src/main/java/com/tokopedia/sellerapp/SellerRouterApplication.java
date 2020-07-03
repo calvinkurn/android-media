@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -19,7 +18,6 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
@@ -39,7 +37,7 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
+import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.GMModuleRouter;
@@ -49,7 +47,6 @@ import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
-import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
@@ -57,12 +54,10 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
-import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller.LogisticRouter;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
@@ -98,7 +93,6 @@ import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachP
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -121,7 +115,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, GMModuleRouter, TopAdsModuleRouter,
+        implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
         ReputationRouter, LogisticRouter,
         AbstractionRouter,
         ShopModuleRouter,
@@ -187,14 +181,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public ShopComponent getShopComponent() {
-        if (shopComponent == null) {
-            shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return shopComponent;
-    }
-
-    @Override
     public void resetAddProductCache(Context context) {
         EtalaseUtils.clearEtalaseCache(context);
         EtalaseUtils.clearDepartementCache(context);
@@ -241,11 +227,6 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             return intent;
         }
-    }
-
-    @Override
-    public Intent getPhoneVerificationActivityIntent(Context context) {
-        return PhoneVerificationActivationActivity.getIntent(context, true, false);
     }
 
     @Override
@@ -488,8 +469,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
-        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
-        return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
+        return DevOptConfig.isChuckNotifEnabled(this);
     }
 
     @Override

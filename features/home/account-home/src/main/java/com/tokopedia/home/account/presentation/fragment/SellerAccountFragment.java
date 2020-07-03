@@ -33,6 +33,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking;
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationVoucherTokoBottomSheet;
 import com.tokopedia.track.TrackApp;
@@ -312,7 +313,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     private void openSellerMigrationBottomSheet() {
         if (getContext() != null) {
             BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationAccountBottomSheet.Companion.createNewInstance(getContext());
-            sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
+            sellerMigrationBottomSheet.show(getChildFragmentManager(), SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET);
         }
     }
 
@@ -321,7 +322,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             if (sellerMigrationVoucherTokoBottomSheet == null) {
                 sellerMigrationVoucherTokoBottomSheet = SellerMigrationVoucherTokoBottomSheet.Companion.createNewInstance(getContext());
             }
-            sellerMigrationVoucherTokoBottomSheet.show(getChildFragmentManager(), "");
+            sellerMigrationVoucherTokoBottomSheet.show(getChildFragmentManager(), SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET);
         }
     }
 }

@@ -1174,12 +1174,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     partialRegisterInputView.setAdapterInputEmailPhone(
                             ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers)
                     ) { v, hasFocus ->
-                        activity?.isFinishing?.let { isFinishing ->
-                            if(!isFinishing) {
-                                if (hasFocus && this::emailPhoneEditText.isInitialized) {
-                                    emailPhoneEditText.showDropDown()
-                                } else {
-                                    emailPhoneEditText.dismissDropDown()
+                        if(v.windowVisibility == View.VISIBLE) {
+                            activity?.isFinishing?.let { isFinishing ->
+                                if (!isFinishing) {
+                                    if (hasFocus && this::emailPhoneEditText.isInitialized && emailPhoneEditText.hasFocus()) {
+                                        emailPhoneEditText.showDropDown()
+                                    } else {
+                                        emailPhoneEditText.dismissDropDown()
+                                    }
                                 }
                             }
                         }

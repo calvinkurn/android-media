@@ -7,7 +7,19 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
  * @author by nisie on 5/16/18.
  */
 class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
-    constructor(messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String, attachmentType: String, replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String) : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, startTime, isRead, isDummy, isSender, message) {}
+
+    constructor(
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
+            isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String,
+            source: String
+    ) : super(
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, startTime,
+            isRead, isDummy, isSender, message,
+            source
+    ) {
+    }
 
     /**
      * Constructor for WebSocketResponse / API Response
@@ -27,11 +39,16 @@ class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
      * @param isRead         is message already read by opponent
      * @param isSender       is own sender
      */
-    constructor(messageId: String, fromUid: String, from: String, fromRole: String,
-                attachmentId: String, attachmentType: String,
-                replyTime: String, startTime: String, message: String, isRead: Boolean, isDummy: Boolean,
-                isSender: Boolean)
-            : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, startTime, isRead, isDummy, isSender, message) {
+    constructor(
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
+            message: String, isRead: Boolean, isDummy: Boolean, isSender: Boolean,
+            source: String
+    ) : super(
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, startTime,
+            isRead, isDummy, isSender, message, source
+    ) {
     }
 
     /**
@@ -44,13 +61,25 @@ class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
      * message
      * @param message   censored reply
      */
-    constructor(messageId: String, fromUid: String, from: String, startTime: String,
-                message: String) : super(messageId, fromUid, from, "", "", "",
-            BaseChatViewModel.SENDING_TEXT, startTime,
-            false, true, true, message) {
+    constructor(
+            messageId: String, fromUid: String, from: String, startTime: String,
+            message: String
+    ) : super(
+            messageId, fromUid, from, "",
+            "", "", BaseChatViewModel.SENDING_TEXT, startTime,
+            false, true, true, message, ""
+    ) {
     }
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun isFromAutoReply(): Boolean {
+        return source == SOURCE_AUTO_REPLY
+    }
+
+    fun isFromSmartReply(): Boolean {
+        return source == SOURCE_TOPBOT
     }
 }

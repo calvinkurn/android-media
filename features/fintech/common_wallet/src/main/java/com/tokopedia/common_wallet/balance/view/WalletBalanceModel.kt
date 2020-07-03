@@ -31,7 +31,10 @@ class WalletBalanceModel(
         var amountPendingCashback: Int = 0,
         var helpApplink: String = "",
         var tncApplink: String = "",
-        var isShowAnnouncement: Boolean = false)
+        var isShowAnnouncement: Boolean = false,
+        var isShowTopup: Boolean = false,
+        var topupUrl: String = "",
+        var topupLimit: Long = 0)
 
     : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -58,7 +61,10 @@ class WalletBalanceModel(
             parcel.readInt(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readByte() != 0.toByte())
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readLong())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(titleText)
@@ -85,6 +91,9 @@ class WalletBalanceModel(
         parcel.writeString(helpApplink)
         parcel.writeString(tncApplink)
         parcel.writeByte(if (isShowAnnouncement) 1 else 0)
+        parcel.writeByte(if (isShowTopup) 1 else 0)
+        parcel.writeString(topupUrl)
+        parcel.writeLong(topupLimit)
     }
 
     override fun describeContents(): Int {
