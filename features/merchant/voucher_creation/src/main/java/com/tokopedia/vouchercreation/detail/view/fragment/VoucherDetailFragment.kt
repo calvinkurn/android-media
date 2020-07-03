@@ -249,7 +249,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     override fun showTipsAndTrickBottomSheet() {
         VoucherCreationTracking.sendVoucherDetailClickTracking(
                 status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
-                action = Click.COPY_PROMO_CODE,
+                action = Click.TIPS_TRICKS,
                 userId = userSession.userId
         )
         if (!isAdded) return
@@ -284,11 +284,15 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 voucherUiModel?.imageSquare.toBlankOrString(),
                 userSession)
                 .setOnDownloadClickListener { voucherList ->
-                    voucherList.forEach {
-                        if (activity?.let { it1 -> ActivityCompat.checkSelfPermission(it1, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
-                            downloadFiles(it.downloadVoucherType.imageUrl)
+                    activity?.run {
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            requestPermissions(missingPermissions, DOWNLOAD_REQUEST_CODE)
                         } else {
-                            downloadFiles(it.downloadVoucherType.imageUrl)
+                            voucherList.forEach {
+                                downloadFiles(it.downloadVoucherType.imageUrl)
+                            }
                         }
                     }
                 }
@@ -302,7 +306,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     override fun onImpression(dataKey: String) {
         when(dataKey) {
             PERIOD_DATA_KEY -> {
-                VoucherCreationTracking.sendVoucherDetailClickTracking(
+                VoucherCreationTracking.sendVoucherDetailImpressionTracking(
                         status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
                         action = VoucherCreationAnalyticConstant.EventAction.Impression.DISPLAY_PERIOD,
                         userId = userSession.userId
@@ -444,7 +448,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
             VoucherCreationTracking.sendShareClickTracking(
                     socmedType = socmedType,
                     userId = userSession.userId,
-                    isDetail = false
+                    isDetail = true
             )
         }
     }
@@ -516,7 +520,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                         getVoucherInfoSection(voucherTargetType, name, code, voucherInfoHasCta).apply {
                             onPromoCodeCopied = {
                                 VoucherCreationTracking.sendVoucherDetailClickTracking(
-                                        isDetailEvent = status == VoucherStatusConst.NOT_STARTED,
+                                        isDetailEvent = status != VoucherStatusConst.NOT_STARTED,
                                         status = voucherUiModel.status,
                                         action = Click.COPY_PROMO_CODE,
                                         userId = userSession.userId

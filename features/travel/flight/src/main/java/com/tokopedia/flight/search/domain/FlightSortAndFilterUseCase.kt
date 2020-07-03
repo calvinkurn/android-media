@@ -9,8 +9,8 @@ import com.tokopedia.flight.search.data.api.single.response.Route
 import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
 import com.tokopedia.flight.search.data.repository.FlightSearchRepository
-import com.tokopedia.flight.search.presentation.model.FlightFareViewModel
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
+import com.tokopedia.flight.search.presentation.model.FlightFareModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -21,12 +21,12 @@ import javax.inject.Inject
  * Created by Rizky on 26/09/18.
  */
 class FlightSortAndFilterUseCase @Inject constructor(
-        private val flightSearchRepository: FlightSearchRepository) : UseCase<List<@JvmSuppressWildcards FlightJourneyViewModel>>() {
+        private val flightSearchRepository: FlightSearchRepository) : UseCase<List<@JvmSuppressWildcards FlightJourneyModel>>() {
 
     private val PARAM_SORT = "PARAM_SORT"
     private val PARAM_FILTER_MODEL = "PARAM_FILTER_MODEL"
 
-    override fun createObservable(requestParams: RequestParams): Observable<List<@JvmSuppressWildcards FlightJourneyViewModel>> {
+    override fun createObservable(requestParams: RequestParams): Observable<List<@JvmSuppressWildcards FlightJourneyModel>> {
         val sortOption = requestParams.getInt(PARAM_SORT, TravelSortOption.CHEAPEST)
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
 
@@ -34,7 +34,7 @@ class FlightSortAndFilterUseCase @Inject constructor(
                 .map { mapToFlightJourneyViewModel(it.journeyAndRoutes, it.specialTag) }
     }
 
-    private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>, specialTag: String): List<FlightJourneyViewModel> {
+    private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>, specialTag: String): List<FlightJourneyModel> {
         val gson = Gson()
         return it.map { journeyAndRoutes ->
             val routes = journeyAndRoutes.routes.map {
@@ -74,7 +74,7 @@ class FlightSortAndFilterUseCase @Inject constructor(
                 )
             }
             with(journeyAndRoutes.flightJourneyTable) {
-                val fare = FlightFareViewModel(
+                val fare = FlightFareModel(
                         adult,
                         adultCombo,
                         child,
@@ -88,7 +88,7 @@ class FlightSortAndFilterUseCase @Inject constructor(
                         infantNumeric,
                         infantNumericCombo
                 )
-                FlightJourneyViewModel(
+                FlightJourneyModel(
                         term,
                         id,
                         departureAirport,

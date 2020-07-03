@@ -19,9 +19,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
-import com.tokopedia.power_merchant.subscribe.ACTION_KYC
-import com.tokopedia.power_merchant.subscribe.ACTION_SHOP_SCORE
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
@@ -41,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
-import com.tokopedia.user_identification_common.KYCConstant.STATUS_VERIFIED
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
 
@@ -343,7 +339,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun showMembershipView(powerMerchantStatus: PowerMerchantStatus) {
         membershipLayout.show(powerMerchantStatus) {
-            onClickRegister(powerMerchantStatus)
+            onClickRegister()
         }
         featureLayout.show(powerMerchantStatus)
         freeShippingLayout.show()
@@ -363,17 +359,17 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 
         when {
-            shopStatus.isPowerMerchantInactive() -> showRegisterBtn(powerMerchantStatus)
+            shopStatus.isPowerMerchantInactive() -> showRegisterBtn()
             shopStatus.isPowerMerchantRegistered() -> showCancelMembershipBtn()
             else -> btnCallToAction.hide()
         }
     }
 
-    private fun showRegisterBtn(powerMerchantStatus: PowerMerchantStatus) {
+    private fun showRegisterBtn() {
         btnRegister.text = getString(R.string.power_merchant_register_now)
 
         btnCallToAction.setOnClickListener {
-            onClickRegister(powerMerchantStatus)
+            onClickRegister()
         }
 
         btnRegister.show()
@@ -395,26 +391,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         textCancelMembership.show()
     }
 
-    private fun onClickRegister(powerMerchantStatus: PowerMerchantStatus) {
+    private fun onClickRegister() {
         powerMerchantTracking.eventUpgradeShopPm()
-        goToTermsAndConditionPage(powerMerchantStatus)
+        goToTermsAndConditionPage()
     }
 
-    private fun goToTermsAndConditionPage(powerMerchantStatus: PowerMerchantStatus) {
+    private fun goToTermsAndConditionPage() {
         context?.let {
-            val kycUserProject = powerMerchantStatus.kycUserProjectInfoPojo
-            val kycNotVerified = kycUserProject.kycProjectInfo.status != STATUS_VERIFIED
-            val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
-            val shopScore = powerMerchantStatus.shopScore.data.value
-            val shopScoreNotEligible = shopScore < shopStatus.getMinimumShopScore()
-
-            val action = when {
-                kycNotVerified -> ACTION_KYC
-                shopScoreNotEligible ->  ACTION_SHOP_SCORE
-                else -> ACTION_ACTIVATE
-            }
-
-            val intent = PowerMerchantTermsActivity.createIntent(it, action)
+            val intent = PowerMerchantTermsActivity.createIntent(it)
             startActivityForResult(intent, ACTIVATE_INTENT_CODE)
         }
     }

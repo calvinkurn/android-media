@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
+import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,7 +14,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FLOW
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -61,9 +63,19 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private val mCompositeSubs: CompositeSubscription = CompositeSubscription()
     val handler = Handler()
     private lateinit var actionListener: ActionListener
+    private var isFullFlow: Boolean = true
+    private var isLogisticLabel: Boolean = true
 
     @Inject
     lateinit var presenter: DiscomContract.Presenter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
+            isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
+        }
+    }
 
     override fun getLayoutResourceId(): Int {
         return R.layout.bottomsheet_district_recommendation
@@ -131,7 +143,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(isFullFlow, isLogisticLabel)
             onCloseButtonClick()
         }
     }
@@ -183,7 +195,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     override fun onCityChipClicked(city: String) {
         etSearch.setText(city)
         etSearch.setSelection(city.length)
-        AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+        AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
     }
 
     fun setActionListener(actionListener: ActionListener) {
@@ -225,7 +237,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         context?.let {
             districtModel.run {
                 actionListener.onGetDistrict(districtModel)
-                AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+                AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
                 dismiss()
             }
         }
@@ -260,8 +272,12 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
     companion object {
         @JvmStatic
-        fun newInstance(): DiscomBottomSheetFragment {
-            return DiscomBottomSheetFragment()
+        fun newInstance(isLogisticLabel: Boolean): DiscomBottomSheetFragment {
+            return DiscomBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
+                }
+            }
         }
     }
 }

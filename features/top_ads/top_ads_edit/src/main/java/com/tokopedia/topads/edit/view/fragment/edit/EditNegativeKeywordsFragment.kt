@@ -189,7 +189,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun addKeywords(data: ArrayList<GetKeywordResponse.KeywordsItem>?) {
-        if (adapter.items[0] is EditNegKeywordEmptyViewModel) {
+        if (adapter.items.isNotEmpty() && adapter.items[0] is EditNegKeywordEmptyViewModel) {
             adapter.items.clear()
         }
         data?.forEach {

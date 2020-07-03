@@ -48,13 +48,8 @@ class DailyBudgetViewModel @Inject constructor(
                         mapOf(SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
-            val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
-                    TopAdsShopInfo.Response::class.java, mapOf(SHOP_ID to shopId))
-            val shopInfo = repository.getReseponse(listOf(request), cacheStrategy)
-                    .getSuccessData<TopAdsShopInfo.Response>().shopInfo
 
             data.getSuccessData<TopadsBidInfo.Response>().bidInfo.data.let {
-                it.forEach { it.shopStatus = shopInfo.data.category }
                 budgetInfoData.postValue(it)
             }
         }) {

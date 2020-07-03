@@ -16,6 +16,7 @@ class ErrorHandlerHotel {
         private const val ERROR_VERIFIED_PHONE_CODE = "68"
         private const val ERROR_GET_FAILED_ROOM_CODE_2 = 362
         private const val ERROR_GET_FAILED_ROOM_CODE = 206
+        private const val ERROR_EMAIL_NOT_VERIFIED = 34
 
         fun isPhoneNotVerfiedError(t: Throwable): Boolean {
             return t.message?.isNotEmpty() ?: false && (t.message == ERROR_VERIFIED_PHONE_MESSAGE || t.message == ERROR_VERIFIED_PHONE_CODE)
@@ -24,6 +25,12 @@ class ErrorHandlerHotel {
         fun isGetFailedRoomError(t: Throwable): Boolean {
             return if (t is HotelErrorException) {
                 (t.errorCode == ERROR_GET_FAILED_ROOM_CODE || t.errorCode == ERROR_GET_FAILED_ROOM_CODE_2)
+            } else false
+        }
+
+        fun isEmailNotVerifiedError(t: Throwable): Boolean {
+            return if (t is HotelErrorException) {
+                (t.errorCode == ERROR_EMAIL_NOT_VERIFIED)
             } else false
         }
 

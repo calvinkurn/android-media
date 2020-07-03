@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -22,8 +23,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
 import com.tokopedia.graphql.data.GraphqlClient
@@ -39,6 +38,7 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFacto
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder
 import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -312,12 +312,12 @@ class ShopSettingsEtalaseListFragment :
             REQUEST_CODE_EDIT_ETALASE,
             REQUEST_CODE_ADD_ETALASE -> if (resultCode == Activity.RESULT_OK) {
                 needReload = true
-                if (requestCode == REQUEST_CODE_ADD_ETALASE) {
-                    ToasterNormal.showClose(activity!!,
-                            getString(R.string.success_add_etalase))
-                } else if (requestCode == REQUEST_CODE_EDIT_ETALASE) {
-                    ToasterNormal.showClose(activity!!,
-                            getString(R.string.success_edit_etalase))
+                view?.let {
+                    if (requestCode == REQUEST_CODE_ADD_ETALASE) {
+                        Toaster.make(it, getString(R.string.success_add_etalase), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                    } else if (requestCode == REQUEST_CODE_EDIT_ETALASE) {
+                        Toaster.make(it, getString(R.string.success_edit_etalase), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                    }
                 }
             }
         }
@@ -337,8 +337,9 @@ class ShopSettingsEtalaseListFragment :
             getString(R.string.etalase_success_delete)
         else
             getString(R.string.etalase_x_success_delete, shopEtalaseNameToDelete)
-        ToasterNormal.showClose(activity!!,
-                deleteMessage)
+        view?.let {
+            Toaster.make(it, deleteMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        }
         loadInitialData()
     }
 
@@ -349,7 +350,9 @@ class ShopSettingsEtalaseListFragment :
     override fun onErrorDeleteShopEtalase(throwable: Throwable) {
         hideSubmitLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
-        ToasterError.showClose(activity!!, message)
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     fun showSubmitLoading(message: String) {

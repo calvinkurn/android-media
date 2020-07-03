@@ -47,7 +47,7 @@ class DeleteBankAccountViewModel @Inject constructor(private val graphqlReposito
         deleteBankAccountResponse.deleteBankAccount.data?.let { data ->
             when (data.isSuccess) {
                 true -> deleteAccountState.value = OnDeleteAccountRequestSuccess(data.messages)
-                else -> deleteAccountState.value = OnDeleteAccountRequestFailed(Exception(data.messages))
+                else -> deleteAccountState.value = OnDeleteAccountRequestFailedWithMessage(data.messages)
             }
         }
     }

@@ -3,6 +3,7 @@ package com.tokopedia.brandlist.brandlist_page.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
@@ -10,7 +11,8 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 
 class BrandlistPageAdapterTypeFactory(
-        private val trackingListener: BrandlistPageTrackingListener
+        private val trackingListener: BrandlistPageTrackingListener,
+        private val searchListener: AllBrandNotFoundViewHolder.Listener
 ) : BaseAdapterTypeFactory(), BrandlistPageTypeFactory {
 
     override fun type(featuredBrandViewModel: FeaturedBrandViewModel): Int {
@@ -41,6 +43,14 @@ class BrandlistPageAdapterTypeFactory(
         return AllBrandViewHolder.LAYOUT
     }
 
+    override fun type(allbrandNotFoundViewModel: AllbrandNotFoundViewModel): Int {
+        return AllBrandNotFoundViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: LoadingModel): Int {
+        return AllBrandLoadingRecomViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(parent, trackingListener)
@@ -49,6 +59,8 @@ class BrandlistPageAdapterTypeFactory(
             AllBrandHeaderViewHolder.LAYOUT -> AllBrandHeaderViewHolder(parent)
             AllBrandGroupHeaderViewHolder.LAYOUT -> AllBrandGroupHeaderViewHolder(parent)
             AllBrandViewHolder.LAYOUT -> AllBrandViewHolder(parent)
+            AllBrandNotFoundViewHolder.LAYOUT -> AllBrandNotFoundViewHolder(parent, searchListener)
+            AllBrandLoadingRecomViewHolder.LAYOUT -> AllBrandLoadingRecomViewHolder(parent)
             HideViewHolder.LAYOUT -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

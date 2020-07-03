@@ -22,6 +22,7 @@ import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
+import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
@@ -45,6 +46,8 @@ import javax.inject.Inject
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     companion object {
+        private const val KEY_LAST_PAGE = "last_page"
+
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 
@@ -80,6 +83,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private var statusBarCallback: StatusBarCallback? = null
     private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -122,8 +126,33 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         homeViewModel.getShopInfo()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_LAST_PAGE, sharedViewModel.currentSelectedPage.value?.type ?: FragmentType.HOME)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        savedInstanceState?.run {
+            val lastPage = getInt(KEY_LAST_PAGE, FragmentType.HOME)
+            sharedViewModel.setCurrentSelectedPage(PageFragment(lastPage))
+        }
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
+    }
+
+    fun startHomeLayoutNetworkMonitoring() {
+        performanceMonitoringSellerHomeLayoutPlt?.startNetworkPerformanceMonitoring()
+    }
+
+    fun startHomeLayoutRenderMonitoring() {
+        performanceMonitoringSellerHomeLayoutPlt?.startRenderPerformanceMonitoring()
+    }
+
+    fun stopHomeLayoutRenderMonitoring() {
+        performanceMonitoringSellerHomeLayoutPlt?.stopRenderPerformanceMonitoring()
     }
 
     private fun setupDefaultPage() {
@@ -297,6 +326,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private fun initPerformanceMonitoring(){
         performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
+        performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
+        performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
     }
 
     fun stopPerformanceMonitoringSellerHomeLayout() {

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.track.TrackApp;

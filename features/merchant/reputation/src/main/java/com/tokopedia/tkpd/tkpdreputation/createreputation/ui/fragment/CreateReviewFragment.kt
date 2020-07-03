@@ -45,6 +45,7 @@ import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevIncentiveOvo
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.listener.OnAddImageClickListener
@@ -53,8 +54,12 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Success
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.IncentiveOvoMapper
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity.ARGS_RATING
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
@@ -120,6 +125,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     private var productId: Int = 0
     private var currentBackground: Drawable? = null
     private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
+    private var productRevIncentiveOvo: ProductRevIncentiveOvo = ProductRevIncentiveOvo()
     private var shopId: String = ""
     private var orderId: String = ""
     private var utmSource: String = ""
@@ -189,6 +195,13 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
                 }
             }
         })
+
+        createReviewViewModel.incentiveOvo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is CoroutineSuccess -> onSuccessGetIncentiveOvo(it.data)
+                is CoroutineFail -> onErrorGetIncentiveOvo()
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -197,6 +210,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         isLowDevice = DevicePerformanceInfo.isLow(context)
 
         getReviewData()
+        getIncentiveOvoData()
         anonymous_text.text = generateAnonymousText()
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
@@ -286,6 +300,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         btn_submit_review.setOnClickListener {
             submitReview()
         }
+
     }
 
     override fun onDestroy() {
@@ -317,6 +332,10 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     private fun getReviewData() {
         showShimmering()
         createReviewViewModel.getProductReputation(productId, reviewId)
+    }
+
+    private fun getIncentiveOvoData() {
+        createReviewViewModel.getProductIncentiveOvo()
     }
 
     private fun submitReview() {
@@ -357,6 +376,38 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             orderId = orderID
             txt_create.text = productData.productName
         }
+    }
+
+    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvo) {
+        productRevIncentiveOvo = data
+        with(data.productrevIncentiveOvo) {
+            ovoPointsTicker.apply {
+                visibility = View.VISIBLE
+                tickerTitle = ticker.title
+                setHtmlDescription(ticker.subtitle)
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data), "")
+                        bottomSheet.isFullpage = true
+                        fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
+                        bottomSheet.setCloseClickListener {
+                            reviewTracker.onClickDismissIncentiveOvoBottomSheetTracker("")
+                            bottomSheet.dismiss()
+                        }
+                        reviewTracker.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
+                    }
+
+                    override fun onDismiss() {
+                        reviewTracker.onClickDismissIncentiveOvoTracker(tickerTitle, "")
+                    }
+                })
+                reviewTracker.onSuccessGetIncentiveOvoTracker(tickerTitle, "")
+            }
+        }
+    }
+
+    private fun onErrorGetIncentiveOvo() {
+        ovoPointsTicker.visibility = View.GONE
     }
 
     private fun generateReviewBackground(position: Int) {

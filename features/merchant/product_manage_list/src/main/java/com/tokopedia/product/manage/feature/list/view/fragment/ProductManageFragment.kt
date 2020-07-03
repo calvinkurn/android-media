@@ -158,6 +158,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setHasOptionsMenu(true)
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.run {
+            val bottomSheet = childFragmentManager.findFragmentByTag(BOTTOM_SHEET_TAG)
+            when (bottomSheet) {
+                is ProductManageFilterFragment -> bottomSheet.setOnFinishedListener(this@ProductManageFragment)
+                is ProductManageQuickEditStockFragment -> bottomSheet.setOnFinishedListener(this@ProductManageFragment)
+                is ProductManageQuickEditPriceFragment -> bottomSheet.setOnFinishedListener(this@ProductManageFragment)
+            }
+        }
+    }
+
     open fun getLayoutRes(): Int = R.layout.fragment_product_manage
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -221,7 +233,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         if (item.itemId == R.id.add_product_menu) {
             val subMenu = item.subMenu
             val addProductMenu = subMenu.findItem(R.id.label_view_add_image)
-            val importFromInstagramMenu = subMenu.findItem(R.id.label_view_import_from_instagram)
 
             addProductMenu.setOnMenuItemClickListener {
                 val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
@@ -229,16 +240,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 true
             }
 
-            importFromInstagramMenu.setOnMenuItemClickListener {
-                val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
-                startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
-                false
-            }
-
             ProductManageTracking.eventAddProduct()
         }
         else if (item.itemId == R.id.action_more_menu) {
             showMoreMenuBottomSheet()
+            ProductManageTracking.eventClickMoreMenuEllipses()
         }
 
         return super.onOptionsItemSelected(item)
@@ -249,6 +255,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             // goto showcase list
             RouteManager.route(requireContext(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             productManageMoreMenuBottomSheet?.dismiss()
+            ProductManageTracking.eventClickMoreMenuShopShowcase()
         }
     }
 
@@ -294,7 +301,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onFinishEditPrice(product: ProductViewModel) {
-        product.title?.let { product.price?.let { price -> viewModel.editPrice(product.id, price, it) } }
+        product.title?.let { product.minPrice?.price?.let { price -> viewModel.editPrice(product.id, price, it) } }
     }
 
     override fun onFinishEditStock(modifiedProduct: ProductViewModel) {
@@ -418,9 +425,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun showFilterBottomSheet() {
         filterProductBottomSheet = context?.let {
-            ProductManageFilterFragment.createInstance(it, viewModel.selectedFilterAndSort.value,this)
+            ProductManageFilterFragment.createInstance(viewModel.selectedFilterAndSort.value, this)
         }
-        this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
+        this.childFragmentManager.let { filterProductBottomSheet?.show(it, BOTTOM_SHEET_TAG) }
     }
 
     private fun showMoreMenuBottomSheet() {
@@ -946,8 +953,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditStockButton(product: ProductViewModel) {
-        val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(it, product, this) }
-        editStockBottomSheet?.show(childFragmentManager, "quick_edit_stock")
+        val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(product, this) }
+        editStockBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
         ProductManageTracking.eventEditStock(product.id)
     }
 
@@ -985,8 +992,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditPriceButton(product: ProductViewModel) {
-        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it, product, this) }
-        editPriceBottomSheet?.show(childFragmentManager, "quick_edit_price")
+        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(product, this) }
+        editPriceBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
         ProductManageTracking.eventEditPrice(product.id)
     }
 
@@ -1142,7 +1149,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun onSetCashbackClicked(productManageViewModel: ProductViewModel) {
         with(productManageViewModel) {
             context?.let {
-                val intent = ProductManageSetCashbackActivity.createIntent(it, id, title, cashBack, price)
+                val intent = ProductManageSetCashbackActivity.createIntent(it, id, title, cashBack, minPrice?.price)
                 startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
             }
         }
@@ -1567,6 +1574,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.editVariantPriceResult) {
             when (it) {
                 is Success -> {
+                    productManageListAdapter.updatePrice(it.data)
                     val message = context?.getString(
                         R.string.product_manage_quick_edit_price_success,
                         it.data.productName
@@ -1606,6 +1614,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             filterProductListByStatus(it)
             renderMultiSelectProduct()
         }
+
+        getFiltersTab(withDelay = true)
     }
 
     private fun showErrorMessageToast(result: Fail) {
@@ -1668,8 +1678,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
 
+        private const val BOTTOM_SHEET_TAG = "BottomSheetTag"
+
         private const val MIN_FEATURED_PRODUCT = 0
         private const val MAX_FEATURED_PRODUCT = 5
 
     }
+
 }

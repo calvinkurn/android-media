@@ -13,12 +13,13 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
@@ -27,7 +28,6 @@ import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.addedit.tracking.ProductAddEditDraftListPageTracking;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
@@ -203,14 +203,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     return true;
                 }
             });
-            item.getSubMenu().findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    Intent intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(getContext());
-                    startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE);
-                    return false;
-                }
-            });
         }
         return super.onOptionsItemSelected(item);
     }
@@ -378,7 +370,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             ProductDraftAddActivity.Companion.createInstance(getActivity(), draftProductIdList.get(0));
         } else {
             resetPageAndSearch();
-            CommonUtils.UniversalToast(getActivity(), getString(R.string.product_draft_instagram_save_success, draftProductIdList.size()));
+            Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.product_draft_instagram_save_success, draftProductIdList.size())), Toast.LENGTH_LONG).show();
         }
     }
 

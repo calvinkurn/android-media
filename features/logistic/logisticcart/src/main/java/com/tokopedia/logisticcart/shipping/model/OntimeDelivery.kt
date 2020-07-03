@@ -5,27 +5,30 @@ import android.os.Parcelable
 
 data class OntimeDelivery(
         var available: Boolean = false,
-        val text_label: String,
-        val text_detail: String,
-        val url_detail: String,
-        var value: Int = 0
+        val textLabel: String,
+        val textDetail: String,
+        val urlDetail: String,
+        var value: Int = 0,
+        var iconUrl: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
             1 == source.readInt(),
             source.readString(),
             source.readString(),
             source.readString(),
-            source.readInt()
+            source.readInt(),
+            source.readString()
     )
 
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt((if (available) 1 else 0))
-        writeString(text_label)
-        writeString(text_detail)
-        writeString(url_detail)
+        writeString(textLabel)
+        writeString(textDetail)
+        writeString(urlDetail)
         writeInt(value)
+        writeString(iconUrl)
     }
 
     companion object {

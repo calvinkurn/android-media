@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationAttachmentButtonViewHolder;
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationAttachmentViewHolder;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentButtonViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentButtonModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
 
 /**
  * @author  by alvarisi on 3/26/18.
@@ -18,7 +18,7 @@ public class FlightCancellationAttachementAdapterTypeFactory extends BaseAdapter
     public interface OnAdapterInteractionListener{
         void onUploadAttachmentButtonClicked(int positionIndex);
 
-        void deleteAttachement(FlightCancellationAttachmentViewModel element);
+        void deleteAttachement(FlightCancellationAttachmentModel element);
 
         void viewImage(String filePath);
     }
@@ -32,12 +32,12 @@ public class FlightCancellationAttachementAdapterTypeFactory extends BaseAdapter
     }
 
     @Override
-    public int type(FlightCancellationAttachmentViewModel flightCancellationAttachmentViewModel) {
+    public int type(FlightCancellationAttachmentModel flightCancellationAttachmentViewModel) {
         return FlightCancellationAttachmentViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(FlightCancellationAttachmentButtonViewModel flightCancellationAttachmentButtonViewModel) {
+    public int type(FlightCancellationAttachmentButtonModel flightCancellationAttachmentButtonViewModel) {
         return FlightCancellationAttachmentButtonViewHolder.LAYOUT;
     }
 

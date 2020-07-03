@@ -50,6 +50,7 @@ import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTarge
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
+import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.model.ui.*
@@ -513,6 +514,13 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                         userId = userSession.userId
                 )
             }
+            EmptyStateUiModel.DATA_KEY -> {
+                VoucherCreationTracking.sendVoucherListImpressionTracking(
+                        action = Impression.NO_RESULT,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
+            }
             else -> {}
         }
     }
@@ -640,22 +648,17 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         val parent = view as? ViewGroup ?: return
         DownloadVoucherBottomSheet(parent, voucher.image, voucher.imageSquare, userSession)
                 .setOnDownloadClickListener { voucherList ->
-                    voucherList.forEach {
-                        activity?.run {
-                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                    requestPermissions(missingPermissions, DOWNLOAD_REQUEST_CODE)
-                                    setupDowloadAction(it.downloadVoucherType.imageUrl)
-                                } else {
-                                    downloadFiles(it.downloadVoucherType.imageUrl)
-                                }
-                            } else {
+                    activity?.run {
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            requestPermissions(missingPermissions, VoucherDetailFragment.DOWNLOAD_REQUEST_CODE)
+                        } else {
+                            voucherList.forEach {
                                 downloadFiles(it.downloadVoucherType.imageUrl)
                             }
                         }
                     }
-
                     VoucherCreationTracking.sendVoucherListClickTracking(
                             action = Click.DOWNLOAD_VOUCHER,
                             isActive = isActiveVoucher,
@@ -748,12 +751,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun setupSearchBar() {
         searchBarMvc?.run {
-            setOnClickListener {
-                VoucherCreationTracking.sendVoucherListClickTracking(
-                        action = Click.SEARCH_BAR,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
-                )
+            searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    VoucherCreationTracking.sendVoucherListClickTracking(
+                            action = Click.SEARCH_BAR,
+                            isActive = isActiveVoucher,
+                            userId = userSession.userId
+                    )
+                }
             }
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -1078,6 +1083,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                                 action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
                                                 userId = userSession.userId
                                         )
+                                        dismiss()
                                     }
                                 }
                                 .show(childFragmentManager)

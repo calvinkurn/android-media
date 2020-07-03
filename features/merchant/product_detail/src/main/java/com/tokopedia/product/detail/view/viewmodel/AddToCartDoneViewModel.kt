@@ -1,12 +1,20 @@
 package com.tokopedia.product.detail.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.view.util.asFail
+import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,27 +30,20 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class AddToCartDoneViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
         private val userSessionInterface: UserSessionInterface,
-        private val rawQueries: Map<String, String>,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val addToCartUseCase: AddToCartUseCase,
         @Named("Main")
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher
 ) {
     val recommendationProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
-
+    private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
+    val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
+        get() = _addToCartLiveData
     companion object {
         object TopAdsDisplay {
-            const val KEY_USER_ID = "userID"
-            const val KEY_PAGE_NAME = "pageName"
-            const val KEY_XDEVICE = "xDevice"
-            const val DEFAULT_DEVICE = "android"
-            const val DEFAULT_SRC_PAGE = "pdp_after_atc"
-            const val KEY_PRODUCT_ID = "productIDs"
-            const val KEY_XSOURCE = "xSource"
-            const val KEY_PAGE_NUMBER = "pageNumber"
             const val DEFAULT_PAGE_NUMBER = 1
             const val DEFAULT_PAGE_NAME = "pdp_atc_1,pdp_atc_2"
         }
@@ -76,10 +77,7 @@ class AddToCartDoneViewModel @Inject constructor(
         }
     }
 
-    fun addWishList(
-            productId: String,
-            callback: (Boolean, Throwable?) -> Unit
-    ) {
+    fun addWishList(productId: String, callback: (Boolean, Throwable?) -> Unit) {
         addWishListUseCase.createObservable(productId,
                 userSessionInterface.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
@@ -100,10 +98,7 @@ class AddToCartDoneViewModel @Inject constructor(
         })
     }
 
-    fun removeWishList(
-            productId: String,
-            callback: (Boolean, Throwable?) -> Unit
-    ) {
+    fun removeWishList(productId: String, callback: (Boolean, Throwable?) -> Unit) {
         removeWishlistUseCase.createObservable(productId,
                 userSessionInterface.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
@@ -126,5 +121,25 @@ class AddToCartDoneViewModel @Inject constructor(
 
     fun isLoggedIn(): Boolean = userSessionInterface.isLoggedIn
 
-
+    fun addToCart(recommendationItem: RecommendationItem) {
+        launchCatchError(Dispatchers.IO, block = {
+            val requestParams = RequestParams.create()
+            val addToCartRequestParams = AddToCartRequestParams().apply {
+                productId = recommendationItem.productId.toLong()
+                shopId = recommendationItem.shopId
+                quantity = if(recommendationItem.minOrder > 0) recommendationItem.minOrder else 1
+                notes = ""
+            }
+            requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
+            val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
+            if (result.isDataError()) {
+                _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull()
+                        ?: "").asFail())
+            } else {
+                _addToCartLiveData.postValue(result.asSuccess())
+            }
+        }) {
+            _addToCartLiveData.postValue(it.asFail())
+        }
+    }
 }

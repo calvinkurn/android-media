@@ -8,7 +8,8 @@ import com.tokopedia.flight.search.data.api.single.response.Route
 import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
 import com.tokopedia.flight.search.data.repository.FlightSearchRepository
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
+import com.tokopedia.flight.search.presentation.model.FlightFareModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -18,16 +19,16 @@ import javax.inject.Inject
  * Created by Rizky on 15/10/18.
  */
 class FlightSearchJourneyByIdUseCase @Inject constructor(
-        private val flightSearchRepository: FlightSearchRepository) : UseCase<FlightJourneyViewModel>() {
+        private val flightSearchRepository: FlightSearchRepository) : UseCase<FlightJourneyModel>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<FlightJourneyViewModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<FlightJourneyModel> {
         val journeyId = requestParams.getString("PARAM_JOURNEY_ID", "")
 
         return flightSearchRepository.getSearchJourneyById(journeyId)
                 .map { mapToFlightJourneyViewModel(it) }
     }
 
-    private fun mapToFlightJourneyViewModel(journeyAndRoutes: JourneyAndRoutes): FlightJourneyViewModel {
+    private fun mapToFlightJourneyViewModel(journeyAndRoutes: JourneyAndRoutes): FlightJourneyModel {
         val gson = Gson()
         val routes = journeyAndRoutes.routes.map {
             val stopDetailJsonString = it.stopDetail
@@ -66,7 +67,7 @@ class FlightSearchJourneyByIdUseCase @Inject constructor(
             )
         }
         with(journeyAndRoutes.flightJourneyTable) {
-            val fare = com.tokopedia.flight.search.presentation.model.FlightFareViewModel(
+            val fare = FlightFareModel(
                     adult,
                     adultCombo,
                     child,
@@ -80,7 +81,7 @@ class FlightSearchJourneyByIdUseCase @Inject constructor(
                     infantNumeric,
                     infantNumericCombo
             )
-            return FlightJourneyViewModel(
+            return FlightJourneyModel(
                     term,
                     id,
                     departureAirport,

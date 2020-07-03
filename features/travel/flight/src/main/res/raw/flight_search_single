@@ -1,0 +1,83 @@
+query Searching($data: SearchSingleArgs) {
+  flightSearch(input: $data) {
+    data {
+      id
+      term
+      departureAirportID
+      departureTime
+      departureTimeInt
+      arrivalAirportID
+      arrivalTime
+      arrivalTimeInt
+      totalTransit
+      addDayArrival
+      totalStop
+      duration
+      durationMinute
+      durationLong
+      total
+      totalNumeric
+      beforeTotal
+      showSpecialPriceTag
+      routes {
+        airlineID
+        departureAirportID
+        departureTime
+        arrivalAirportID
+        arrivalTime
+        duration
+        layover
+        flightNumber
+        refundable
+        stop
+        operatingAirlineID
+        amenities {
+          icon
+          label
+        }
+        stopDetail {
+          code
+          city
+        }
+        infos {
+          label
+          value
+        }
+      }
+      fare {
+        adult
+        child
+        infant
+        adultNumeric
+        childNumeric
+        infantNumeric
+      }
+    }
+    error {
+      id
+      status
+      title
+    }
+    included {
+      type
+      id
+      attributes {
+        name
+        shortName
+        logo
+        city
+      }
+    }
+    meta {
+      needRefresh
+      refreshTime
+      maxRetry
+      adult
+      child
+      infant
+      requestID
+      internationalTransitTag
+      backgroundRefreshTime
+    }
+  }
+}
