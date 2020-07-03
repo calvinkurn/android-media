@@ -90,10 +90,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         }
     }
 
-    override fun saveEvent(bundle: Bundle) {
-        saveEvent(Utils.bundleToMap(bundle))
-    }
-
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
