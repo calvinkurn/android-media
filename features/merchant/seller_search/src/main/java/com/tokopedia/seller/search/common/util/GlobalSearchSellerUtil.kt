@@ -25,6 +25,7 @@ val String.addWWWPrefix: String
         return try {
             this.replace(HTTPS_APP_LINK_PREFIX, WWW_APP_LINK_PREFIX)
         } catch (e: NullPointerException) {
+            e.printStackTrace()
             this
         }
     }
