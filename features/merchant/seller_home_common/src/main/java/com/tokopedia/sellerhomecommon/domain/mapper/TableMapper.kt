@@ -24,7 +24,7 @@ class TableMapper @Inject constructor() {
         private const val COLUMN_IMAGE = 2
         private const val COLUMN_HTML = 4
 
-        private const val MAX_ROWS_PER_PAGE = 5
+        private const val MAX_ROWS_PER_PAGE = 2
     }
 
     fun mapRemoteModelToUiModel(tableData: List<TableDataModel>): List<TableDataUiModel> {
@@ -67,7 +67,7 @@ class TableMapper @Inject constructor() {
             }
         }
 
-        return tablePages.reversed()
+        return tablePages
     }
 
     private fun getHeaders(headers: List<HeaderModel>): List<TableHeaderUiModel> {
