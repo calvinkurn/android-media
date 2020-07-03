@@ -127,7 +127,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
         btnAction.setOnClickListener {
             if (btnAction.isLoading) return@setOnClickListener
-            viewModel.uploadProduct(parentViewModel.channelId)
+            viewModel.uploadProduct()
         }
         tvChooseOver.setOnClickListener { mListener?.onChooseOver() }
 

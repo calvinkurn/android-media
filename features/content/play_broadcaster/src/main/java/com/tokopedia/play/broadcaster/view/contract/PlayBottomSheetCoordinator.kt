@@ -5,7 +5,5 @@ package com.tokopedia.play.broadcaster.view.contract
  */
 interface PlayBottomSheetCoordinator : PlayBaseCoordinator {
 
-    val channelId: String
-
     fun goBack()
 }

@@ -11,7 +11,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -31,13 +30,8 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 26/05/20
@@ -58,23 +52,12 @@ class PlayBroadcastSetupBottomSheet(
     @Inject
     lateinit var dispatcher: CoroutineDispatcherProvider
 
-    private val job = SupervisorJob()
-    private val scope = object : CoroutineScope {
-        override val coroutineContext: CoroutineContext
-            get() = dispatcher.main + job
-    }
-
-    private lateinit var broadcastViewModel: PlayBroadcastViewModel
-
     private lateinit var flFragment: FrameLayout
     private lateinit var flOverlay: FrameLayout
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
-
-    override val channelId: String
-        get() = broadcastViewModel.channelId
 
     private var mListener: SetupResultListener? = null
 
@@ -104,7 +87,6 @@ class PlayBroadcastSetupBottomSheet(
 
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheet_Setup_Pinned)
-        broadcastViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -117,11 +99,6 @@ class PlayBroadcastSetupBottomSheet(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job.cancelChildren()
     }
 
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {

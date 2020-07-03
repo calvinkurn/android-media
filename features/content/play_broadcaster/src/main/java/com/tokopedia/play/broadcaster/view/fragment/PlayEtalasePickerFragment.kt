@@ -271,7 +271,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun uploadProduct() {
-        viewModel.uploadProduct(bottomSheetCoordinator.channelId)
+        viewModel.uploadProduct()
     }
 
     private fun onUploadSuccess() {

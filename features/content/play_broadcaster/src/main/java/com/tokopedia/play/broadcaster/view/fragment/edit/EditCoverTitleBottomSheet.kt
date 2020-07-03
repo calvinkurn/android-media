@@ -165,7 +165,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
         btnSave.setOnClickListener {
             if (btnSave.isLoading) return@setOnClickListener
-            viewModel.editTitle(title, parentViewModel.channelId)
+            viewModel.editTitle(title)
             etCoverTitle.clearFocus()
         }
     }

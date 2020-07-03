@@ -3,6 +3,9 @@ package com.tokopedia.play.broadcaster.di.broadcast
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
@@ -31,4 +34,13 @@ interface PlayBroadcastComponent {
     fun playPusher(): PlayPusher
 
     fun inject(broadcastActivity: PlayBroadcastActivity)
+
+    /**
+     * Config
+     */
+    fun channelConfigStore(): ChannelConfigStore
+
+    fun productConfigStore(): ProductConfigStore
+
+    fun hydraConfigStore(): HydraConfigStore
 }

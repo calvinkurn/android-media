@@ -104,7 +104,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     }
 
     private fun setupContent() {
-        viewModel.fetchLiveTraffic(parentViewModel.channelId)
+        viewModel.fetchLiveTraffic()
     }
 
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {

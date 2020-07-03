@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.map
@@ -18,9 +19,13 @@ import javax.inject.Inject
  * Created by jegul on 01/07/20
  */
 class EditCoverTitleViewModel @Inject constructor(
+        private val channelConfigStore: ChannelConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore
 ) : ViewModel() {
+
+    private val channelId: String
+        get() = channelConfigStore.getChannelId()
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -33,7 +38,7 @@ class EditCoverTitleViewModel @Inject constructor(
         get() = _observableUpdateTitle
     private val _observableUpdateTitle = MutableLiveData<NetworkResult<Unit>>()
 
-    fun editTitle(title: String, channelId: String) {
+    fun editTitle(title: String) {
         setupDataStore.updateCoverTitle(title)
 
         scope.launch {

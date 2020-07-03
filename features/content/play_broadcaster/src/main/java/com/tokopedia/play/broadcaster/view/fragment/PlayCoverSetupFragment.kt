@@ -287,7 +287,7 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private fun shouldUploadCover(coverTitle: String) {
         if (viewModel.isValidCoverTitle(coverTitle)) {
-            if (isGalleryPermissionGranted()) viewModel.uploadCover(bottomSheetCoordinator.channelId, coverTitle)
+            if (isGalleryPermissionGranted()) viewModel.uploadCover(coverTitle)
             else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
         }
     }

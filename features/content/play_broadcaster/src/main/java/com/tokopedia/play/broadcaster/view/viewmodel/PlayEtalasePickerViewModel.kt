@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.error.EventException
 import com.tokopedia.play.broadcaster.error.SelectForbiddenException
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
@@ -35,12 +35,16 @@ import kotlin.math.min
  * Created by jegul on 26/05/20
  */
 class PlayEtalasePickerViewModel @Inject constructor(
+        private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
         private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
         private val userSession: UserSessionInterface
 ) : ViewModel() {
+
+    private val channelId: String
+        get() = hydraConfigStore.getChannelId()
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
@@ -65,7 +69,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableUploadProductEvent
     private val _observableUploadProductEvent = MutableLiveData<NetworkResult<Event<Unit>>>()
 
-    val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
+    val maxProduct = hydraConfigStore.getMaxProduct()
 
     val selectedProductList: List<ProductContentUiModel>
         get() = setupDataStore.getSelectedProducts().map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
@@ -110,7 +114,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
-    fun uploadProduct(channelId: String) {
+    fun uploadProduct() {
         _observableUploadProductEvent.value = NetworkResult.Loading
         scope.launch {
             val result = setupDataStore.uploadSelectedProducts(channelId).map { Event(Unit) }
