@@ -155,9 +155,9 @@ object PlayBroadcastUiMapper {
             status = PlayChannelStatus.getByValue(channel.basic.status.id)
     )
 
-    fun mapProductListToData(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
+    fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
         ProductData(
-                id = it.id.toLongOrZero(),
+                id = it.productID.toLongOrZero(),
                 name = it.productName,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
