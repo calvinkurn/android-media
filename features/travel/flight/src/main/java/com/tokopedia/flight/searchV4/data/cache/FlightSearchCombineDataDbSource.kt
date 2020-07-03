@@ -1,7 +1,7 @@
 package com.tokopedia.flight.searchV4.data.cache
 
-import com.tokopedia.flight.search.data.db.FlightComboTable
-import com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao
+import com.tokopedia.flight.searchV4.data.cache.db.FlightComboTable
+import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightComboDao
 import javax.inject.Inject
 
 /**
