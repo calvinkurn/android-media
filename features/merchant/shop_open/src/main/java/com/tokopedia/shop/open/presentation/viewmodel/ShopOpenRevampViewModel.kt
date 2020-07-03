@@ -3,7 +3,7 @@ package com.tokopedia.shop.open.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.shop.open.shop_open_revamp.common.ShopOpenDispatcherProvider
+import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
 import com.tokopedia.usecase.coroutines.Fail

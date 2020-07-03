@@ -1,4 +1,4 @@
-package com.tokopedia.shop.open.shop_open_revamp.common
+package com.tokopedia.shop.open.common
 
 import kotlinx.coroutines.CoroutineDispatcher
 
