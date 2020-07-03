@@ -78,7 +78,7 @@ internal class SearchProductTrackingTest {
     }
 
     private fun createMapOfMockResponse() = mapOf(
-            "searchProduct" to getRawString(context, com.tokopedia.search.test.R.raw.search_product_common_response)
+            "SearchProduct" to getRawString(context, com.tokopedia.search.test.R.raw.search_product_common_response)
     )
 
     @Test
