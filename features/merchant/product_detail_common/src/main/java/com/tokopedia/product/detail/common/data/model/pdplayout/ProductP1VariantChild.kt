@@ -44,7 +44,7 @@ data class ProductP1VariantChild(
         @Expose
         val picture: Picture? = null,
 
-        @SerializedName("campaignInfo")
+        @SerializedName("campaign")
         @Expose
         val campaign: ProductP1VariantCampaign? = null,
 

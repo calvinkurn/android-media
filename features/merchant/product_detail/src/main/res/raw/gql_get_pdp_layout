@@ -215,6 +215,10 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
               variantUnitValueID
               value
               hex
+              picture{
+                url
+                url200
+              }
             }
           }
           children {
