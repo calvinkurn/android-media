@@ -1,13 +1,14 @@
 package com.tokopedia.notifications.database.pushRuleEngine
 
 import android.content.Context
-import com.tokopedia.notifications.database.RoomDB
+import com.tokopedia.notifications.database.RoomNotificationDB
 import com.tokopedia.notifications.model.BaseNotificationModel
+import kotlin.LazyThreadSafetyMode.NONE as NONE
 
 class PushRepository private constructor(val context: Context) {
 
-    private val roomDB: RoomDB by lazy {
-        RoomDB.getDatabase(context)
+    private val roomDB: RoomNotificationDB by lazy(NONE) {
+        RoomNotificationDB.getDatabase(context)
     }
 
     val pushDataStore: IPushDataStore by lazy {

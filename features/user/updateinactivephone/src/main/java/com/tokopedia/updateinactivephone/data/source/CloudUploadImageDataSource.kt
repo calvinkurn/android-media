@@ -10,8 +10,8 @@ import retrofit2.Retrofit
 class CloudUploadImageDataSource(private val retrofit: Retrofit,
                                  private val uploadImageMapper: UploadImageMapper) {
     suspend fun uploadImage(url: String,
-                    params: Map<String, String>,
+                    userId: RequestBody,
                     imageFile: RequestBody): UploadImageModel {
-        return uploadImageMapper.call(retrofit.create(UploadImageApi::class.java).uploadImage(url, params, imageFile))
+        return uploadImageMapper.call(retrofit.create(UploadImageApi::class.java).uploadImage(url, userId, imageFile))
     }
 }

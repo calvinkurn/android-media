@@ -42,37 +42,16 @@ class AttachInvoiceSentViewModel : SendableViewModel,
      * @param totalAmount    total amount
      */
     constructor(
-            msgId: String,
-            fromUid: String,
-            from: String,
-            fromRole: String,
-            attachmentId: String,
-            attachmentType: String,
-            replyTime: String,
-            startTime: String,
-            message: String,
-            description: String,
-            imageUrl: String,
-            totalAmount: String,
-            isSender: Boolean,
-            statusId: Int,
-            status: String,
-            invoiceId: String,
-            invoiceUrl: String,
-            createTime: String
+            msgId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
+            message: String, description: String, imageUrl: String, totalAmount: String,
+            isSender: Boolean, statusId: Int, status: String, invoiceId: String,
+            invoiceUrl: String, createTime: String, source: String
     ) : super(
-            msgId,
-            fromUid,
-            from,
-            fromRole,
-            attachmentId,
-            attachmentType,
-            replyTime,
-            startTime,
-            false,
-            false,
-            isSender,
-            message
+            msgId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, startTime,
+            false, false, isSender, message,
+            source
     ) {
         this.description = description
         this.imageUrl = imageUrl
@@ -102,37 +81,15 @@ class AttachInvoiceSentViewModel : SendableViewModel,
      * !! startTime is not returned from API
      */
     constructor(
-            msgId: String,
-            fromUid: String,
-            from: String,
-            fromRole: String,
-            attachmentId: String,
-            attachmentType: String,
-            replyTime: String,
-            message: String,
-            description: String,
-            imageUrl: String,
-            totalAmount: String,
-            isSender: Boolean,
-            isRead: Boolean,
-            statusId: Int,
-            status: String,
-            invoiceId: String,
-            invoiceUrl: String,
-            createTime: String
+            msgId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, message: String,
+            description: String, imageUrl: String, totalAmount: String, isSender: Boolean,
+            isRead: Boolean, statusId: Int, status: String, invoiceId: String,
+            invoiceUrl: String, createTime: String, source: String
     ) : super(
-            msgId,
-            fromUid,
-            from,
-            fromRole,
-            attachmentId,
-            attachmentType,
-            replyTime,
-            "",
-            isRead,
-            false,
-            isSender,
-            message
+            msgId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, "",
+            isRead, false, isSender, message, source
     ) {
         this.description = description
         this.imageUrl = imageUrl
@@ -156,16 +113,15 @@ class AttachInvoiceSentViewModel : SendableViewModel,
      * @param startTime   starttime to remove dummy sent message after successful send. Check
      * [SendableViewModel]
      */
-    constructor(fromUid: String,
-                from: String,
-                message: String,
-                description: String,
-                imageUrl: String,
-                totalAmount: String,
-                startTime: String) : super("", fromUid, from, "",
-            "", AttachmentType.Companion.TYPE_INVOICE_SEND,
-            SendableViewModel.SENDING_TEXT, startTime, false,
-            true, true, message) {
+    constructor(
+            fromUid: String, from: String, message: String, description: String,
+            imageUrl: String, totalAmount: String, startTime: String
+    ) : super(
+            "", fromUid, from, "",
+            "", AttachmentType.Companion.TYPE_INVOICE_SEND, SendableViewModel.SENDING_TEXT, startTime,
+            false, true, true, message,
+            ""
+    ) {
         this.description = description
         this.imageUrl = imageUrl
         this.totalAmount = totalAmount
