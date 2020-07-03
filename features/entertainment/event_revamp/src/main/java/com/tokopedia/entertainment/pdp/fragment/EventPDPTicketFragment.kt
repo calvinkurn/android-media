@@ -268,7 +268,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         })
 
         viewModel.error.observe(this, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(resources.getString(R.string.ent_error_network_message))) {
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(it)) {
                 showViewTop(false)
                 showViewBottom(false)
                 loadInitialData()
