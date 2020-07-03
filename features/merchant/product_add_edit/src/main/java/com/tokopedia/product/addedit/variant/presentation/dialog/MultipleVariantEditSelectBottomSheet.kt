@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
+import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVariantEditSelectAdapter
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
@@ -30,6 +31,7 @@ class MultipleVariantEditSelectBottomSheet(
     private var enableEditSku = true
     private var enableEditPrice = true
     private var trackerShopId = ""
+    private var trackerIsEditMode = false
 
     interface MultipleVariantEditListener {
         fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
@@ -87,6 +89,10 @@ class MultipleVariantEditSelectBottomSheet(
         trackerShopId = shopId
     }
 
+    fun setTrackerIsEditMode(isEditMode: Boolean) {
+        trackerIsEditMode = isEditMode
+    }
+
     fun show(manager: FragmentManager?) {
         manager?.run {
             super.show(this , MultipleVariantEditInputBottomSheet.TAG)
@@ -127,18 +133,31 @@ class MultipleVariantEditSelectBottomSheet(
             val multipleVariantEditSelectBottomSheet =
                     MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, this)
             multipleVariantEditSelectBottomSheet.setTrackerShopId(trackerShopId)
+            multipleVariantEditSelectBottomSheet.setTrackerIsEditMode(trackerIsEditMode)
             multipleVariantEditSelectBottomSheet.show(fragmentManager)
-
-            // tracking
-            ProductAddVariantDetailTracking.continueManageAll(trackerShopId)
+            sendTrackerContinueManageAllData()
         }
         contentView?.checkboxSelectAll?.setOnClickListener {
             val isSelected = (it as CheckboxUnify).isChecked
             selectAdapter?.setAllDataSelected(isSelected)
-
-            // tracking
-            ProductAddVariantDetailTracking.selectManageAll(trackerShopId)
+            sendTrackerSelectManageAllData()
         }
         setChild(contentView)
+    }
+
+    private fun sendTrackerContinueManageAllData() {
+        if (trackerIsEditMode) {
+            ProductEditVariantDetailTracking.continueManageAll(trackerShopId)
+        } else {
+            ProductAddVariantDetailTracking.continueManageAll(trackerShopId)
+        }
+    }
+
+    private fun sendTrackerSelectManageAllData() {
+        if (trackerIsEditMode) {
+            ProductEditVariantDetailTracking.selectManageAll(trackerShopId)
+        } else {
+            ProductAddVariantDetailTracking.selectManageAll(trackerShopId)
+        }
     }
 }

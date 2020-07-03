@@ -19,6 +19,7 @@ import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPri
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
+import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailFieldsAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailInputTypeFactoryImpl
@@ -95,11 +96,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        ProductAddVariantDetailTracking.trackScreen(
-                userSession.isLoggedIn.toString(),
-                userSession.userId
-        )
+        sendTrackerTrackScreenData()
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
@@ -117,12 +114,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         switchUnifySku.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateSkuVisibilityStatus(isVisible = isChecked)
             variantDetailFieldsAdapter?.updateSkuVisibilityStatus(viewModel.getAvailableFields(), isChecked)
-
-            // tracking
-            ProductAddVariantDetailTracking.clickSKUToggle(
-                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                    userSession.shopId
-            )
+            sendTrackerClickSKUToggleData(isChecked)
         }
 
         imageViewMultipleEdit.setOnClickListener {
@@ -135,9 +127,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         buttonSave.setOnClickListener {
             submitVariantInput()
-
-            // tracking
-            ProductAddVariantDetailTracking.saveVariantDetail(userSession.shopId)
+            sendTrackerSaveVariantDetailData()
         }
 
         observeSelectedVariantSize()
@@ -308,6 +298,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
         bottomSheet.setEnableEditPrice(!hasWholesale)
         bottomSheet.setTrackerShopId(userSession.shopId)
+        bottomSheet.setTrackerIsEditMode(viewModel.isEditMode)
         bottomSheet.show(fragmentManager)
     }
 
@@ -327,6 +318,40 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
+        }
+    }
+
+    private fun sendTrackerSaveVariantDetailData() {
+        if (viewModel.isEditMode) {
+            ProductEditVariantDetailTracking.saveVariantDetail(userSession.shopId)
+        } else {
+            ProductAddVariantDetailTracking.saveVariantDetail(userSession.shopId)
+        }
+    }
+
+    private fun sendTrackerClickSKUToggleData(isChecked: Boolean) {
+        if (viewModel.isEditMode) {
+            ProductEditVariantDetailTracking.clickSKUToggle(
+                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                    userSession.shopId)
+        } else {
+            ProductAddVariantDetailTracking.clickSKUToggle(
+                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                    userSession.shopId)
+        }
+    }
+
+    private fun sendTrackerTrackScreenData() {
+        if (viewModel.isEditMode) {
+            ProductEditVariantDetailTracking.trackScreen(
+                    userSession.isLoggedIn.toString(),
+                    userSession.userId
+            )
+        } else {
+            ProductAddVariantDetailTracking.trackScreen(
+                    userSession.isLoggedIn.toString(),
+                    userSession.userId
+            )
         }
     }
 }

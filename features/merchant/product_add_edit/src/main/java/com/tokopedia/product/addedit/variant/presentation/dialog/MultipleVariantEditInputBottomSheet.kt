@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
+import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
@@ -31,6 +32,7 @@ class MultipleVariantEditInputBottomSheet(
     private var isPriceError = false
     private var isStockError = false
     private var trackerShopId = ""
+    private var trackerIsEditMode = false
 
     interface MultipleVariantEditInputListener {
         fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
@@ -56,6 +58,10 @@ class MultipleVariantEditInputBottomSheet(
 
     fun setTrackerShopId(shopId: String) {
         trackerShopId = shopId
+    }
+
+    fun setTrackerIsEditMode(isEditMode: Boolean) {
+        trackerIsEditMode = isEditMode
     }
 
     fun show(manager: FragmentManager?) {
@@ -92,20 +98,25 @@ class MultipleVariantEditInputBottomSheet(
         contentView?.buttonApply?.setOnClickListener {
             submitInput()
             updateSubmitButtonInput()
-            sendTrackerData()
+            sendTrackerTrackManageAllPriceData()
         }
         setChild(contentView)
     }
 
-    private fun sendTrackerData() {
-        val price = contentView?.tfuPrice.getText()
+    private fun sendTrackerTrackManageAllPriceData() {
+        val price = contentView?.tfuPrice.getTextBigIntegerOrZero().toString()
         val stock = contentView?.tfuStock.getText()
         val sku = contentView?.tfuSku.getText()
 
-        // tracking
-        ProductAddVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
-        ProductAddVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
-        ProductAddVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
+        if (trackerIsEditMode) {
+            ProductEditVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
+            ProductEditVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
+            ProductEditVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
+        } else {
+            ProductAddVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
+            ProductAddVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
+            ProductAddVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
+        }
     }
 
     private fun validatePrice() {

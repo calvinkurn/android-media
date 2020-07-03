@@ -28,10 +28,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     var productInputModel = MutableLiveData<ProductInputModel>()
 
-    val isEditMode: LiveData<Boolean> = Transformations.map(productInputModel) {
-        it.productId > 0
-    }
-
     val selectedVariantSize = MediatorLiveData<Int>().apply {
         addSource(productInputModel) {
             productInputModel.value?.run {
@@ -43,6 +39,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     val hasWholesale = Transformations.map(productInputModel) {
         it.detailInputModel.wholesaleList.isNotEmpty()
     }
+
+    val isEditMode: Boolean get() = productInputModel.value?.productId.orZero() > 0
 
     private val mErrorCounter = MutableLiveData(0)
     val errorCounter: LiveData<Int> get() = mErrorCounter
