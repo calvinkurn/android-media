@@ -96,6 +96,11 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         if (!BuildConfig.DEBUG) {
             String logMessage = generateLogMessage(data);
             Crashlytics.logException(new Exception(logMessage));
+            Timber.w(
+                    "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
+                    "BaseMessagingService::onMessageReceived",
+                    logMessage
+            );
         }
     }
 
