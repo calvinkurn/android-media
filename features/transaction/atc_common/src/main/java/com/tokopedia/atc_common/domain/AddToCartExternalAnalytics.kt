@@ -88,8 +88,12 @@ class AddToCartExternalAnalytics @Inject constructor() {
     }
 
     fun sendAppsFlyerTracking(data: AddToCartExternalDataModel) {
+        val jsonArrayAfContent = JSONArray()
+                .put(JSONObject()
+                        .put(AF_PARAM_CONTENT_ID, data.productId.toString())
+                        .put(AF_PARAM_CONTENT_QUANTITY, data.quantity));
         TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
-                mutableMapOf(
+                mutableMapOf<String, Any>(
                         AFInAppEventParameterName.CONTENT_ID to data.productId.toString(),
                         AFInAppEventParameterName.CONTENT_TYPE to AF_VALUE_CONTENT_TYPE,
                         AFInAppEventParameterName.DESCRIPTION to data.productName,
@@ -97,11 +101,7 @@ class AddToCartExternalAnalytics @Inject constructor() {
                         AFInAppEventParameterName.QUANTITY to data.quantity,
                         AFInAppEventParameterName.PRICE to data.price,
                         AF_PARAM_CATEGORY to data.category,
-                        AFInAppEventParameterName.CONTENT to JSONArray().put(JSONObject()
-                                .put(AF_PARAM_CONTENT_ID, data.productId.toString())
-                                .put(AF_PARAM_CONTENT_QUANTITY, data.quantity))
-                )
+                        AFInAppEventParameterName.CONTENT to jsonArrayAfContent.toString())
         )
     }
-
 }
