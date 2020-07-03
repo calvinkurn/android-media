@@ -15,5 +15,7 @@ class AddEditProductVariantConstants {
         const val VARIANT_VALUE_LEVEL_TWO_COUNT = 2
         const val VARIANT_IDENTIFIER_HAS_SIZECHART = "size"
         const val VARIANT_CUSTOM_UNIT_VALUE_ID = 0
+        const val VARIANT_TRACKER_ON = "on"
+        const val VARIANT_TRACKER_OFF = "off"
     }
 }

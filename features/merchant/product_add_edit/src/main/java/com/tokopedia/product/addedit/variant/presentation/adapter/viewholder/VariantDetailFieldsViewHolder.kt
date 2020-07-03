@@ -55,7 +55,8 @@ class VariantDetailFieldsViewHolder(itemView: View?,
         stockField = itemView?.findViewById(R.id.tfu_stock_field)
         skuField = itemView?.findViewById(R.id.tfu_sku_field)
 
-        statusSwitch?.setOnCheckedChangeListener { _, isChecked ->
+        statusSwitch?.setOnClickListener {
+            val isChecked = statusSwitch?.isChecked ?: false
             onStatusSwitchCheckedChangeListener.onCheckedChanged(isChecked, adapterPosition)
         }
 
