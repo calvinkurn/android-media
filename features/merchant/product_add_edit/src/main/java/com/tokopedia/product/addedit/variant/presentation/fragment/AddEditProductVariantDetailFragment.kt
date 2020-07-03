@@ -204,7 +204,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         viewModel.updatePrimaryVariant(combination)
 
         // tracking
-        ProductAddVariantDetailTracking.saveVariantDetail(userSession.shopId)
+        ProductAddVariantDetailTracking.saveMainVariant(
+                viewModel.getPrimaryVariantTitle(combination),
+                userSession.shopId)
     }
 
     fun onBackPressed() {

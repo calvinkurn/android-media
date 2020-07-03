@@ -14,6 +14,8 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,6 +27,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 ) : BaseViewModel(coroutineDispatcher) {
 
     var productInputModel = MutableLiveData<ProductInputModel>()
+
+    val isEditMode: LiveData<Boolean> = Transformations.map(productInputModel) {
+        it.productId > 0
+    }
 
     val selectedVariantSize = MediatorLiveData<Int>().apply {
         addSource(productInputModel) {
@@ -133,6 +139,21 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         variantInputModel?.forEach {
             it.isPrimary = it.combination == combination
         }
+    }
+
+    fun getPrimaryVariantTitle(combination: List<Int>): String {
+        val selections = productInputModel.value?.variantInputModel?.selections ?: emptyList()
+        val level1OptionIndex = combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION).orZero()
+        val level2OptionIndex = combination.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION).orZero()
+
+        val level1Title = selections
+                .getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.options?.
+                getOrNull(level1OptionIndex)?.value.orEmpty()
+
+        val level2Title = selections
+                .getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)?.options?.
+                getOrNull(level2OptionIndex)?.value.orEmpty()
+        return "${level1Title}-${level2Title}"
     }
 
     fun updateSkuVisibilityStatus(isVisible: Boolean) {
