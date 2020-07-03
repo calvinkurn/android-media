@@ -22,6 +22,8 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.util.NotificationTracker;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
+import timber.log.Timber;
+
 /**
  * @author ricoharisin .
  */
@@ -82,6 +84,11 @@ public class PushNotification {
         if (!BuildConfig.DEBUG) {
             String logMessage = generateLogMessage(context, data, message);
             Crashlytics.logException(new Exception(logMessage));
+            Timber.w(
+                    "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
+                    "PushNotification::notify(Context context, Bundle data)",
+                    logMessage
+            );
         }
     }
 
