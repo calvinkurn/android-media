@@ -51,7 +51,7 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     }
 
     private fun changeCloseButtonSize() {
-        val fontSize = resources.getDimension(R.dimen.fontSize_lvl5).toDp()
+        val fontSize = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl5).toDp()
         bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
         context?.also { context ->
             bottomSheetClose.apply {
