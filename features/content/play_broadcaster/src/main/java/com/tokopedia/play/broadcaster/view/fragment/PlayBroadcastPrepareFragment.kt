@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -52,9 +53,9 @@ class PlayBroadcastPrepareFragment @Inject constructor(
 
         }
 
-        override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
+        override suspend fun onSetupCompletedWithData(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable? {
             viewModel.setDataFromSetupDataStore(dataStore)
-            parentViewModel.fetchChannelData()
+            return parentViewModel.getChannelDetail()
         }
     }
 
@@ -187,7 +188,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is NetworkResult.Success -> openFinalPreparationPage()
-                NetworkResult.Loading -> showLoading(true)
+                NetworkResult.Loading -> {} //showLoading(true)
                 is NetworkResult.Fail -> requireView().showToaster(it.error.localizedMessage)
             }
         })

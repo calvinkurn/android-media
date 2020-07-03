@@ -165,9 +165,11 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun fetchChannelData() {
         scope.launch {
-            getChannel(channelId)
+            getChannelById(channelId)
         }
     }
+
+    suspend fun getChannelDetail() = getChannelById(channelId)
 
     private suspend fun createChannel() {
         val channelId = withContext(dispatcher.io) {
@@ -179,9 +181,9 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableChannelId.value = channelId.id
     }
 
-    private suspend fun getChannel(channelId: String) {
+    private suspend fun getChannelById(channelId: String): Throwable? {
         _observableChannelInfo.value = NetworkResult.Loading
-        try {
+        return try {
             val channel =  withContext(dispatcher.io) {
                 getChannelUseCase.params = GetChannelUseCase.createParams(channelId)
                 return@withContext getChannelUseCase.executeOnBackground()
@@ -192,8 +194,10 @@ class PlayBroadcastViewModel @Inject constructor(
             setSelectedProduct(PlayBroadcastUiMapper.mapProductListToData(channel.productTags))
             setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
 
-        } catch (e: Throwable) {
-            _observableChannelInfo.value = NetworkResult.Fail(e)
+            null
+        } catch (err: Throwable) {
+            _observableChannelInfo.value = NetworkResult.Fail(err)
+            err
         }
     }
 

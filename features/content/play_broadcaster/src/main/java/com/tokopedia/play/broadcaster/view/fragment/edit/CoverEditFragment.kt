@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
@@ -130,8 +131,8 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
                 mListener?.onSetupCanceled()
             }
 
-            override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
-                mListener?.onSetupCompletedWithData(dataStore)
+            override suspend fun onSetupCompletedWithData(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable? {
+                return mListener?.onSetupCompletedWithData(bottomSheet, dataStore)
             }
         })
         fragmentInstance.show(childFragmentManager)

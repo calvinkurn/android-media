@@ -79,16 +79,20 @@ class PlayCoverSetupFragment @Inject constructor(
     override fun onInterceptBackPressed(): Boolean {
         val state = viewModel.cropState
         val coverChangeState = viewModel.coverChangeState()
-        return if (state is CoverSetupState.Cropping) {
-            onChangeCoverFromCropping(state.coverSource)
-            true
-        } else if (coverChangeState is NotChangeable) {
-            requireView().showToaster(
-                    message = coverChangeState.reason.localizedMessage,
-                    type = Toaster.TYPE_NORMAL
-            )
-            true
-        }else false
+        return when {
+            state is CoverSetupState.Cropping -> {
+                onChangeCoverFromCropping(state.coverSource)
+                true
+            }
+            coverChangeState is NotChangeable -> {
+                requireView().showToaster(
+                        message = coverChangeState.reason.localizedMessage,
+                        type = Toaster.TYPE_NORMAL
+                )
+                true
+            }
+            else -> false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,8 +139,8 @@ class PlayCoverSetupFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        job.cancelChildren()
         viewModel.saveCover(coverSetupView.coverTitle)
+        job.cancelChildren()
     }
 
     fun setListener(listener: Listener) {
@@ -386,8 +390,24 @@ class PlayCoverSetupFragment @Inject constructor(
         }
     }
 
-    private fun finishSetup() {
-        mListener?.onCoverSetupFinished(dataStoreViewModel.getDataStore())
+    private fun onUploadSuccess() {
+        scope.launch {
+            val error = mListener?.onCoverSetupFinished(dataStoreViewModel.getDataStore())
+            error?.let {
+                yield()
+                onUploadFailed(it)
+            }
+        }
+    }
+
+    private fun onUploadFailed(e: Throwable) {
+        coverSetupView.setLoading(false)
+        coverCropView.setLoading(false)
+
+        requireView().showToaster(
+                message = e.localizedMessage,
+                type = Toaster.TYPE_ERROR
+        )
     }
 
     //region observe
@@ -421,18 +441,10 @@ class PlayCoverSetupFragment @Inject constructor(
                     coverSetupView.setLoading(true)
                     coverCropView.setLoading(true)
                 }
-                is NetworkResult.Fail -> {
-                    coverSetupView.setLoading(false)
-                    coverCropView.setLoading(false)
-                    Toaster.make(requireView(), it.error.localizedMessage)
-                }
+                is NetworkResult.Fail -> onUploadFailed(it.error)
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
-                    if (data != null) {
-                        coverSetupView.setLoading(false)
-                        coverCropView.setLoading(false)
-                        finishSetup()
-                    }
+                    if (data != null) onUploadSuccess()
                 }
             }
         })
@@ -489,6 +501,6 @@ class PlayCoverSetupFragment @Inject constructor(
          * @return true means cancel has been handled by the listener
          */
         fun onCancelCropping(coverSource: CoverSource): Boolean = false
-        fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore)
+        suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable?
     }
 }

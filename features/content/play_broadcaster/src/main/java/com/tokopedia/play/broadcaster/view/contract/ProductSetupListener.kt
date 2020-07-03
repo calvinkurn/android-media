@@ -7,5 +7,6 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
  * Created by jegul on 23/06/20
  */
 interface ProductSetupListener {
-    fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore)
+
+    suspend fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore) : Throwable?
 }

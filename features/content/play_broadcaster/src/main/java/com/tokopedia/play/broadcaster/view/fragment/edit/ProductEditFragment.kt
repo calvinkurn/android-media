@@ -101,9 +101,8 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
                     getSimpleEditProductBottomSheet().dismiss()
                 }
 
-                override fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore) {
-                    mListener?.onSetupCompletedWithData(dataStore)
-                    getSimpleEditProductBottomSheet().dismiss()
+                override suspend fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore): Throwable? {
+                    return mListener?.onSetupCompletedWithData(simpleEditProductBottomSheet, dataStore)
                 }
             })
         }

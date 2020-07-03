@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.productEtalaseEmpty
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
@@ -35,14 +36,19 @@ import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialVie
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
  * Created by jegul on 27/05/20
  */
 class PlayEtalaseDetailFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val dispatcher: CoroutineDispatcherProvider
 ) : PlayBaseSetupFragment() {
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatcher.main + job)
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
     private lateinit var dataStoreViewModel: DataStoreViewModel
@@ -92,6 +98,11 @@ class PlayEtalaseDetailFragment @Inject constructor(
         observeProductsInSelectedEtalase()
         observeSelectedProducts()
         observeUploadProduct()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
     override fun onInterceptBackPressed(): Boolean {
@@ -203,10 +214,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
         selectedProductPage.show()
     }
 
-    private fun finishSetupProduct(nextBtnView: View) {
-        mListener?.onProductSetupFinished(listOf(nextBtnView), dataStoreViewModel.getDataStore())
-    }
-
     private fun showProductEmptyError(shouldShow: Boolean) {
         if (shouldShow) {
             errorEmptyProduct.show()
@@ -218,6 +225,23 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
             tvInfo.show()
             rvProduct.show()
+        }
+    }
+
+    private fun onUploadSuccess() {
+        scope.launch {
+            val error = mListener?.onProductSetupFinished(listOf(bottomActionView.getButtonView()), dataStoreViewModel.getDataStore())
+            if (error != null) {
+                yield()
+                onUploadFailed(error)
+            }
+        }
+    }
+
+    private fun onUploadFailed(e: Throwable?) {
+        bottomActionView.setLoading(false)
+        e?.localizedMessage?.let {
+            errMessage -> requireView().showToaster(errMessage, type = Toaster.TYPE_ERROR)
         }
     }
 
@@ -266,18 +290,10 @@ class PlayEtalaseDetailFragment @Inject constructor(
         viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
                 NetworkResult.Loading -> bottomActionView.setLoading(true)
-                is NetworkResult.Fail -> {
-                    bottomActionView.setLoading(false)
-                    it.error.localizedMessage?.let {
-                        errMessage -> requireView().showToaster(errMessage, type = Toaster.TYPE_ERROR)
-                    }
-                }
+                is NetworkResult.Fail -> onUploadFailed(it.error)
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
-                    if (data != null) {
-                        bottomActionView.setLoading(false)
-                        finishSetupProduct(bottomActionView.getButtonView())
-                    }
+                    if (data != null) onUploadSuccess()
                 }
             }
         })
