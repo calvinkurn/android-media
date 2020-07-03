@@ -2,8 +2,8 @@ package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.view.View
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.domain.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutErrorData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_error_checkout.view.*
 
@@ -11,13 +11,13 @@ class ErrorCheckoutBottomSheet {
 
     var listener: Listener? = null
 
-    fun show(view: OrderSummaryPageFragment, error: OccGlobalEvent.CheckoutError, listener: Listener) {
+    fun show(view: OrderSummaryPageFragment, error: CheckoutErrorData, listener: Listener) {
         this.listener = listener
         view.fragmentManager?.let {
             BottomSheetUnify().apply {
                 showCloseIcon = true
                 showHeader = true
-                setTitle(if (error.error.code == ERROR_CODE_PRODUCT_STOCK_EMPTY) TITLE_PRODUCT_STOCK_EMPTY else TITLE_SHOP_CLOSED)
+                setTitle(if (error.code == ERROR_CODE_PRODUCT_STOCK_EMPTY) TITLE_PRODUCT_STOCK_EMPTY else TITLE_SHOP_CLOSED)
                 val child = View.inflate(view.context, R.layout.bottom_sheet_error_checkout, null)
                 setupView(child, error)
                 setChild(child)
@@ -26,13 +26,13 @@ class ErrorCheckoutBottomSheet {
         }
     }
 
-    private fun setupView(child: View, error: OccGlobalEvent.CheckoutError) {
+    private fun setupView(child: View, error: CheckoutErrorData) {
         val esCheckout = child.es_checkout
-        esCheckout.setImageUrl(if (error.error.code == ERROR_CODE_PRODUCT_STOCK_EMPTY) IMAGE_PRODUCT_STOCK_EMPTY else IMAGE_SHOP_CLOSED)
-        esCheckout.setDescription(error.error.message)
+        esCheckout.setImageUrl(if (error.code == ERROR_CODE_PRODUCT_STOCK_EMPTY) IMAGE_PRODUCT_STOCK_EMPTY else IMAGE_SHOP_CLOSED)
+        esCheckout.setDescription(error.message)
         esCheckout.setPrimaryCTAText(ACTION_MESSAGE)
         esCheckout.setPrimaryCTAClickListener {
-            listener?.onClickSimilarProduct(error.error.code)
+            listener?.onClickSimilarProduct(error.code)
         }
     }
 

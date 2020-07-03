@@ -30,7 +30,7 @@ import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.domain.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
@@ -349,7 +349,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                 shippingParam.destinationLatitude = viewModel.destinationLatitude
                 shippingParam.destinationLongitude = viewModel.destinationLongitude
                 shippingParam.destinationPostalCode = viewModel.destinationPostalCode
-                shippingParam?.let { parent.setShippingParam(it) }
+                shippingParam.let { parent.setShippingParam(it) }
             }
         }
     }
