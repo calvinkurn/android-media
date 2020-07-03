@@ -98,6 +98,11 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
         if (!BuildConfig.DEBUG) {
             String logMessage = generateLogMessage(data, message);
             Crashlytics.logException(new Exception(logMessage));
+            Timber.w(
+                    "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
+                    "AppNotificationReceiver::onNotificationReceived(String from, Bundle data)",
+                    logMessage
+            );
         }
     }
 
