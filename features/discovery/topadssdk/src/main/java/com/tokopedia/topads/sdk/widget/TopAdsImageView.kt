@@ -35,7 +35,6 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
     private var topAdsImageViewClickListener: TopAdsImageViewClickListener? = null
     private var topAdsImageViewImpressionListener: TopAdsImageViewImpressionListener? = null
     private var topAdsImageVieWApiResponseListener: TopAdsImageVieWApiResponseListener? = null
-    private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsImageView"
 
     constructor(context: Context) : super(context) {
         init()
@@ -141,7 +140,7 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
             this.setOnClickListener {
                 topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
                 Timber.d("TopAdsImageView is clicked")
-                ImpresionTask(className).execute(imageData.adClickUrl)
+                ImpresionTask(this.javaClass.canonicalName).execute(imageData.adClickUrl)
             }
         } else {
             this.hide()

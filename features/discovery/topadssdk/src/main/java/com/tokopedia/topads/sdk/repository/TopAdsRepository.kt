@@ -1,16 +1,24 @@
 package com.tokopedia.topads.sdk.repository
 
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.network.data.model.RequestType
+import com.tokopedia.common.network.data.model.RestCacheStrategy
+import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.topads.sdk.domain.interactor.DIMEN_ID
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
+import com.tokopedia.usecase.RequestParams
+import java.lang.reflect.Type
 
 import javax.inject.Inject
 
 private const val BASE_URL = "https://ta-staging.tokopedia.com/v1.3/display"
 
-class TopAdsRepository @Inject constructor() : BaseRepository() {
+class TopAdsRepository @Inject constructor() {
+
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
     suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
 
@@ -20,6 +28,23 @@ class TopAdsRepository @Inject constructor() : BaseRepository() {
 
         return mapToListOfTopAdsImageViewModel(response, queryParams)
 
+    }
+
+    private suspend fun <T : Any> getRestData(url: String,
+                                              typeOf: Type,
+                                              requestType: RequestType = RequestType.GET,
+                                              queryMap: MutableMap<String, Any> = RequestParams.EMPTY.parameters,
+                                              cacheType: com.tokopedia.common.network.data.model.CacheType = com.tokopedia.common.network.data.model.CacheType.ALWAYS_CLOUD): T {
+        try {
+            val restRequest = RestRequest.Builder(url, typeOf)
+                    .setRequestType(requestType)
+                    .setQueryParams(queryMap)
+                    .setCacheStrategy(RestCacheStrategy.Builder(cacheType).build())
+                    .build()
+            return restRepository.getResponse(restRequest).getData()
+        } catch (t: Throwable) {
+            throw t
+        }
     }
 
     private fun mapToListOfTopAdsImageViewModel(response: TopAdsmageViewResponse, queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
