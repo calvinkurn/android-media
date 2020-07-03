@@ -139,6 +139,8 @@ class PlayBroadcastViewModel @Inject constructor(
     init {
         socketResponseHandler.observeForever(socketResponseHandlerObserver)
         _observableChannelId.observeForever(channelIdObserver)
+
+        _observableChatList.value = mutableListOf()
     }
 
     override fun onCleared() {
@@ -348,7 +350,7 @@ class PlayBroadcastViewModel @Inject constructor(
     fun mockChatList() {
         scope.launch(dispatcher.io) {
             while(isActive) {
-                delay(1000)
+                delay(3000)
                 onRetrievedNewChat(
                     PlayBroadcastMocker.getMockChat()
                 )
