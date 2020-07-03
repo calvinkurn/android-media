@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -16,17 +15,22 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sortfilter.SortFilter
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
+import com.tokopedia.topupbills.telco.data.TelcoFilterTagComponent
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
+import com.tokopedia.topupbills.telco.view.model.TelcoFilterData
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -45,16 +49,20 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var selectedOperatorName: String
     private lateinit var shimmeringGridLayout: LinearLayout
     private lateinit var shimmeringListLayout: LinearLayout
+    private lateinit var sortFilter: SortFilter
 
     private var titleProduct: String = ""
     private var selectedProduct: Int = 0
     private var hasTitle = false
+    private var telcoFilterData = TelcoFilterData()
     private var productType = TelcoProductType.PRODUCT_LIST
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -91,6 +99,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         descEmptyState = view.findViewById(R.id.desc_empty_product)
         shimmeringGridLayout = view.findViewById(R.id.shimmering_product_grid)
         shimmeringListLayout = view.findViewById(R.id.shimmering_product_list)
+        sortFilter = view.findViewById(R.id.sort_filter)
         return view
     }
 
@@ -154,6 +163,42 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun renderSortFilter(filters: List<TelcoFilterTagComponent>) {
+        if (telcoFilterData.getFilterTags().isEmpty()) {
+            telcoFilterData.setFilterTags(filters)
+
+            val filterData = arrayListOf<SortFilterItem>()
+
+            telcoFilterData.getFilterTags().map { filterTag ->
+                val sortFilter = SortFilterItem(filterTag.text)
+                sortFilter.listener = {
+                    val listTag = ArrayList<String>()
+                    val listKey = ArrayList<String>()
+                    filterTag.dataCollections.map { dataCollection ->
+                        listTag.add(dataCollection.value)
+                        listKey.add(dataCollection.key)
+                    }
+
+                    //TODO make bottom sheet here
+                    if (sortFilter.type == ChipsUnify.TYPE_NORMAL) {
+                        sortFilter.type = ChipsUnify.TYPE_SELECTED
+                        telcoFilterData.addFilter(filterTag.paramName, listKey)
+                    } else {
+                        sortFilter.type = ChipsUnify.TYPE_NORMAL
+                        telcoFilterData.removeFilter(filterTag.paramName)
+                    }
+                    sortFilter.selectedItem = listTag
+                    sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
+                }
+                filterData.add(sortFilter)
+            }
+            sortFilter.addItem(filterData)
+            sortFilter.chipItems.map {
+                it.refChipUnify.setChevronClickListener {}
+            }
+        }
+    }
+
     private fun onSuccessProductList() {
         hideShimmering()
         val productInputList = (sharedModelPrepaid.productList.value as Success).data
@@ -165,11 +210,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     telcoTelcoProductView.show()
 
                     val dataCollections = wrapDataCollections(it)
-                    if (hasTitle) {
-                        setMarginProductList(MARGIN_0,  telcoTelcoProductView)
-                    } else {
-                        setMarginProductList(MARGIN_18, telcoTelcoProductView)
-                    }
 
                     //set true on selected product datacollection list
                     var position = -1
@@ -183,18 +223,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                             }
                         }
                     }
-                    telcoTelcoProductView.renderProductList(productType, dataCollections, position)
+                    renderSortFilter(it.filterTagComponents)
+                    telcoTelcoProductView.renderProductList(productType, dataCollections)
                 } else {
                     onErrorProductList()
                 }
             }
         }
-    }
-
-    private fun setMarginProductList(spaceTop: Int, view: View) {
-        val params =  RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT)
-        params.setMargins(MARGIN_0, spaceTop, MARGIN_0, MARGIN_16)
-        view.layoutParams = params
     }
 
     private fun wrapDataCollections(productInput: TelcoCatalogProductInput): List<TelcoProduct> {
@@ -250,10 +285,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         const val TITLE_PAGE = "title_page"
         const val SELECTED_PRODUCT = "selected_product"
         const val OPERATOR_NAME = "operator_name"
-
-        const val MARGIN_18 = 18
-        const val MARGIN_16 = 16
-        const val MARGIN_0 = 0
 
         fun newInstance(titlePage: String, operatorName: String, productType: Int,
                         selectedProduct: Int): Fragment {

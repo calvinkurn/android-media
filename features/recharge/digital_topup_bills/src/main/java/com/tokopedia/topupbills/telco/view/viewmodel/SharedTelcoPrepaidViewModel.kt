@@ -44,6 +44,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val selectedCategoryViewPager: LiveData<String>
         get() = _selectedCategoryViewPager
 
+    private val _selectedFilter = MutableLiveData<ArrayList<HashMap<String, Any>>>()
+    val selectedFilter: LiveData<ArrayList<HashMap<String, Any>>>
+        get() = _selectedFilter
+
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
         _productCatalogItem.postValue(productCatalogItem)
     }
@@ -56,12 +60,20 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _selectedCategoryViewPager.postValue(categoryName)
     }
 
+    fun setSelectedFilter(filter: ArrayList<HashMap<String, Any>>) {
+        _selectedFilter.postValue(filter)
+    }
+
     // cache in 10 minutes
-    fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String) {
+    fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
+                              filterData: ArrayList<HashMap<String, Any>>?) {
         launchCatchError(block = {
             val mapParam = HashMap<String, Any>()
             mapParam[KEY_MENU_ID] = menuId
             mapParam[KEY_OPERATOR_ID] = operatorId
+            filterData?.let {
+                mapParam[KEY_FILTER_DATA] = it
+            }
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
@@ -83,5 +95,6 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     companion object {
         const val KEY_MENU_ID = "menuID"
         const val KEY_OPERATOR_ID = "operatorID"
+        const val KEY_FILTER_DATA = "filterData"
     }
 }
