@@ -475,7 +475,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             simpleSearchView.setVisibility(View.VISIBLE);
         }
         if (isPulledToRefresh && getActivity() != null) {
-            ((OrderListActivity)getActivity()).getInitialData();
+            ((OrderListActivity)getActivity()).getInitialData(mOrderCategory);
             isPulledToRefresh = false;
         }
         presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);

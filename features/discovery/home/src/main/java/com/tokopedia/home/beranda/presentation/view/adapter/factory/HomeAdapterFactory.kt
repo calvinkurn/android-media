@@ -16,7 +16,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
@@ -28,16 +31,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.*
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
-import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
-import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
-import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.visitable.*
 import java.util.*
 
 /**
@@ -55,7 +50,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val recommendationListCarouselListener: RecommendationListCarouselListener,
                          private val mixLeftComponentListener: MixLeftComponentListener,
                          private val mixTopComponentListener: MixTopComponentListener,
-                         private val reminderWidgetListener: ReminderWidgetListener
+                         private val reminderWidgetListener: ReminderWidgetListener,
+                         private val productHighlightListener: ProductHighlightListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -168,6 +164,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(mixTopDataModel: MixTopDataModel): Int {
         return MixTopComponentViewHolder.LAYOUT
+    }
+
+    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
+        return ProductHighlightComponentViewHolder.LAYOUT
     }
     //end of Home-Component section
 
@@ -283,6 +283,11 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
             ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
+            ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
+                    view,
+                    homeComponentListener,
+                    productHighlightListener
+            )
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder =
                     DynamicLegoBannerViewHolder(
                             view,

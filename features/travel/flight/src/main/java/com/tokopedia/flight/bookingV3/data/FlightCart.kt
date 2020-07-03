@@ -650,7 +650,7 @@ data class FlightCart(
 
             @SerializedName("amenities")
             @Expose
-            val amenities: List<com.tokopedia.flight.search.data.api.single.response.Amenity> = listOf()
+            val amenities: List<com.tokopedia.flight.searchV4.data.cloud.single.Amenity> = listOf()
     )
 
     data class StopDetail(
