@@ -195,7 +195,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                     //BBO APPLY
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null) {
+                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
                         tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
