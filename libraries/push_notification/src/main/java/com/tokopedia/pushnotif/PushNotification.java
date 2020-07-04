@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
@@ -41,9 +42,14 @@ public class PushNotification {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
 
         if (allowToShowNotification(context, applinkNotificationModel, data)) {
-            logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel) == true");
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
+            logEvent(context, applinkNotificationModel, data,
+                    "ApplinkNotificationHelper.allowToShow == true"
+                    + "; id " + notificationId
+                    + "; v " + Build.VERSION.SDK_INT
+                    + "; en " + isNotificationEnabled(context)
+                    + "; bl " + isAllowBell(context));
 
             if (notificationId == Constant.NotificationId.TALK) {
                 notifyTalk(context, applinkNotificationModel, notificationId, notificationManagerCompat);
@@ -61,11 +67,17 @@ public class PushNotification {
             }
             if (isNotificationEnabled(context)) {
                 NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
-            } else {
-                logEvent(context, applinkNotificationModel, data, "isNotificationEnabled(context) == false");
             }
         } else {
-            logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel) == false");
+            UserSessionInterface userSession = new UserSession(context);
+            String loginId = userSession.getUserId();
+            logEvent(context, applinkNotificationModel, data,
+                    "ApplinkNotificationHelper.allowToShow == false"
+                            + "; sam " + applinkNotificationModel.getToUserId().equals(loginId)
+                            + "; loc " + ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode())
+                            + "; app " + ApplinkNotificationHelper.isTargetApp(applinkNotificationModel)
+                            + "; uid " + loginId
+            );
         }
     }
 
@@ -77,11 +89,8 @@ public class PushNotification {
         UserSessionInterface userSession = new UserSession(context);
         String loginId = userSession.getUserId();
         Boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
-        logEvent(context, applinkNotificationModel, data, "applinkNotificationModel.getToUserId().equals(loginId) == " + sameUserId.toString());
         Boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
-        logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode()) == " + allowInLocalNotificationSetting.toString());
         Boolean isTargetApp = ApplinkNotificationHelper.isTargetApp(applinkNotificationModel);
-        logEvent(context, applinkNotificationModel, data, "ApplinkNotificationHelper.isTargetApp(applinkNotificationModel) == " + isTargetApp.toString());
         return sameUserId && allowInLocalNotificationSetting && isTargetApp;
     }
 
@@ -225,5 +234,17 @@ public class PushNotification {
             return isAllNotificationEnabled;
         }
 
+    }
+
+    private static Boolean isAllowBell(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, Constant.CACHE_DELAY);
+        long prevTime = cache.getLong(Constant.PREV_TIME);
+        long currTIme = System.currentTimeMillis();
+        if (currTIme - prevTime > 15000) {
+            cache.putLong(Constant.PREV_TIME, currTIme);
+            cache.applyEditor();
+            return true;
+        }
+        return false;
     }
 }
