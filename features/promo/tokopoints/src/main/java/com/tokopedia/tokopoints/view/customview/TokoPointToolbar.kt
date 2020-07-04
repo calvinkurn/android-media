@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.ImageUtil
 import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
@@ -45,6 +46,7 @@ class TokoPointToolbar : Toolbar {
     var mContext: Context? = null
     var backArrowWhite: Drawable? = null
     var view: View? = null
+    val dynamicItem = "dynamicItem"
     private var clickListener: OnTokoPointToolbarClickListener? = null
 
     constructor(context: Context) : super(context) {
@@ -192,6 +194,12 @@ class TokoPointToolbar : Toolbar {
                     viewCntainer.setOnClickListener {
                         RouteManager.route(context, item?.cta?.appLink)
                         viewCntainer.notif_dynamic.visibility = View.GONE
+
+                        AnalyticsTrackerUtil.sendEvent(context,
+                                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                                item?.cta?.text?.let { it1 -> AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, it1) },
+                                "")
                     }
                     it.container_scrolledState.addView(viewCntainer, param)
                 }

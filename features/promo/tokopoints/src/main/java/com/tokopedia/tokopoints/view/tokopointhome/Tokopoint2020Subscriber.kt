@@ -17,7 +17,7 @@ class Tokopoint2020Subscriber(val view: TokoPointsHomeContract.View) : Subscribe
 
         val tokoPointDetailEntity = graphqlResponse.getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java)
         tokoPointDetailEntity?.let {
-            view.showTokopoint2020(it.tokoPoints.popupNotif)
+           // view.showTokopoint2020(it.tokoPoints.popupNotif)
         }
     }
 }

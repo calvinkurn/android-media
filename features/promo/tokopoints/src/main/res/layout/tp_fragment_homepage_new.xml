@@ -117,8 +117,7 @@
                                 android:layout_marginLeft="@dimen/tp_margin_medium"
                                 android:layout_marginTop="@dimen/dp_9"
                                 android:layout_marginEnd="@dimen/tp_margin_medium"
-                                android:layout_marginRight="@dimen/tp_margin_medium"
-                                android:minHeight="@dimen/dp_60">
+                                android:layout_marginRight="@dimen/tp_margin_medium">
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/container_target"
@@ -141,7 +140,8 @@
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"
                                         tools:text="Transact 6x more or as much as Rp1.754.000 to become Platinum Member by 31 Des 2020
- much as Rp1.754.000 to become Platinum Member by 31 Des 2020" />
+ much as Rp1.754.000 to become Platinum Member by 31 DTransact 6x more or as much as Rp1.754.000 to become Platinum Member by 31 Des 2020
+ much as Rp1.754.000 to become Platinum Member by 31 Des 2020es 2020" />
 
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -172,7 +172,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/card_point"
-                                android:layout_marginTop="@dimen/dp_20"
+                                android:layout_marginTop="@dimen/dp_12"
                                 android:background="@color/white"
                                 android:orientation="vertical">
 

@@ -65,9 +65,9 @@
             android:padding="@dimen/tp_padding_medium"
             android:text="@string/tp_label_exchange_point"
             android:textColor="@color/white"
-            android:textSize="@dimen/tp_text_size_xsmall"
-            android:textStyle="normal"
-            android:visibility="gone" />
+            android:textSize="@dimen/tp_text_size_small"
+            android:textStyle="bold"
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/text_empty_action"

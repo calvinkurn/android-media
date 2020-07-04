@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
-import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 
 import java.util.List;
 
@@ -31,7 +29,7 @@ public interface CouponCatalogContract {
 
         Resources getResources();
 
-        void redeemCoupon(String cta, String code, String title);
+        void redeemCoupon(String cta, String code, String title, String description);
 
         void checkValidation(CatalogsValueEntity item, String title, String message, int resCode);
 

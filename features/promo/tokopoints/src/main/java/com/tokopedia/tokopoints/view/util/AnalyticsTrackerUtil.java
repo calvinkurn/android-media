@@ -118,9 +118,7 @@ public class AnalyticsTrackerUtil {
         String CLICK_COUPON_ON_CATALOG = "view coupon on catalog";
         String KEY_EVENT_ACTION_PROFILE_VALUE = "click on button verifikasi";
         String KEY_EVENT_ACTION_PROFILE_VALUE_BATAL = "click on button batal";
-        String Key_EVENT_CLICK_TOKOMEMBER="click entry point to tokomember";
-        String Key_EVENT_CLICK_QUEST="click entry point to quest";
-        String Key_EVENT_CLICK_COUPON="click entry point to coupon";
+        String KEY_EVENT_CLICK_DYNAMICITEM="click entry point to dynamicItem";
     }
 
     public interface EcommerceKeys {

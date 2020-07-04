@@ -64,7 +64,6 @@ import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
-import com.tokopedia.tokopoints.view.model.section.Text
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -224,7 +223,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         tokoPointToolbar?.setTitle(R.string.tp_title_tokopoints)
         tokoPointToolbar?.setOnTokoPointToolbarClickListener(this)
-        TokoPointsNotificationManager.fetchNotification(activity, "main", childFragmentManager)
+        //Will remove safely later
+        //TokoPointsNotificationManager.fetchNotification(activity, "main", childFragmentManager)
         //mPresenter.tokopointOnboarding2020(this)
         initObserver()
     }
@@ -635,11 +635,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         if (content.sectionTitle.isNotEmpty()) {
             tvSectionTitleCategory.show()
+            categorySeeAll.show()
             tvSectionTitleCategory.text = content.sectionTitle
-        } else if (content.sectionTitle.isEmpty()) {
+        }/* else if (content.sectionTitle.isEmpty()) {
             tvSectionTitleCategory.show()
+            categorySeeAll.show()
             tvSectionTitleCategory.text = "Eksplor kupon hemat di sini"
-        }
+        }*/
         if (content.sectionSubTitle.isNotEmpty()) {
             tvSectionSubtitleCateory.show()
             tvSectionSubtitleCateory.text = content.sectionSubTitle
@@ -675,10 +677,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         ImageHandler.loadImageCircle2(activityContext, mImgEgg, data?.profilePicture)
         mTextMembershipValueBottom?.text = mValueMembershipDescription
         collapsingToolbarLayout?.title = data?.title
-
+        data?.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
-            data.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         }
 
         renderDynamicActionList(data?.dynamicActionList)
@@ -694,7 +695,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dataList[0]?.counter?.counterStr?.let { dynamicAction?.setFirstLayoutNotification(it) }
             }
             dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
-                dataList[0]?.cta?.appLink?.let { dynamicAction?.setLayoutClickListener(it) }
+                dataList[0]?.cta?.let { dynamicAction?.setLayoutClickListener(it.appLink, it.text) }
             }
             if (dataList.size > 1) {
                 dynamicAction?.setCenterLayoutVisibility(1)
@@ -704,7 +705,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     dataList[1]?.counter?.counterStr?.let { dynamicAction?.setCenterLayoutNotification(it) }
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
-                    dataList[1]?.cta?.appLink?.let { dynamicAction?.setCenterLayoutClickListener(it) }
+                    dataList[1]?.cta?.let { dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text) }
                 }
                 dynamicAction?.setVisibilityDividerOne(1)
             }
@@ -716,7 +717,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     dataList[2]?.counter?.counterStr?.let { dynamicAction?.setRightLayoutNotification(it) }
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
-                    dataList[2]?.cta?.appLink?.let { dynamicAction?.setRightLayoutClickListener(it) }
+                    dataList[2]?.cta?.let { dynamicAction?.setRightLayoutClickListener(it.appLink, it.text) }
                 }
                 dynamicAction?.setVisibilityDividerTwo(1)
             }

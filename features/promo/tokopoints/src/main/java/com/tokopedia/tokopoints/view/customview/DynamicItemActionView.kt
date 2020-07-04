@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.unifycomponents.NotificationUnify
-import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 
 class DynamicItemActionView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -34,6 +33,7 @@ class DynamicItemActionView @JvmOverloads constructor(
     lateinit var notifRightLayout: NotificationUnify
     lateinit var dividerOne: View
     lateinit var dividerTwo: View
+    private val dynamicItem = "dynamicItem"
 
     init {
         setUpUI()
@@ -75,16 +75,18 @@ class DynamicItemActionView @JvmOverloads constructor(
         holderFirstLayout.visibility = visibility
     }
 
-    fun setLayoutClickListener(applink: String) {
+    fun setLayoutClickListener(applink: String?, text: String?) {
         RouteManager.route(context, applink)
         notifFirstLayout.hide()
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                AnalyticsTrackerUtil.ActionKeys.Key_EVENT_CLICK_TOKOMEMBER,
-                "")
-    }
 
+        text?.let {
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, text),
+                    "")
+        }
+    }
 
     fun setCenterLayoutText(title: String) {
         tvCenterLayout.text = title
@@ -104,14 +106,16 @@ class DynamicItemActionView @JvmOverloads constructor(
         holderCenterLayout.visibility = visibility
     }
 
-    fun setCenterLayoutClickListener(applink: String) {
+    fun setCenterLayoutClickListener(applink: String?, text: String?) {
         RouteManager.route(context, applink)
         notifCenterLayout.hide()
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                AnalyticsTrackerUtil.ActionKeys.Key_EVENT_CLICK_QUEST,
-                "")
+        text?.let {
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, text),
+                    "")
+        }
     }
 
     fun setRightLayoutText(title: String) {
@@ -132,14 +136,16 @@ class DynamicItemActionView @JvmOverloads constructor(
         holderRightLayout.visibility = visibility
     }
 
-    fun setRightLayoutClickListener(applink: String) {
+    fun setRightLayoutClickListener(applink: String?, text: String?) {
         RouteManager.route(context, applink)
         notifRightLayout.hide()
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                AnalyticsTrackerUtil.ActionKeys.Key_EVENT_CLICK_COUPON,
-                "")
+        text?.let {
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, text),
+                    "")
+        }
     }
 
     fun setVisibilityDividerOne(visibility: Int) {

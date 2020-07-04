@@ -238,7 +238,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 buyerCardViewModel.setTokomemberImageUrl(shortcutListItems.get(2).getIconImageURL());
             }
         }
-        buyerCardViewModel.setEggImageUrl(accountModel.getTokopoints().getStatus().getTier().getEggImageURL());
+        buyerCardViewModel.setEggImageUrl(accountModel.getTokopoints().getStatus().getTier().getImageUrl());
         buyerCardViewModel.setMemberStatus(accountModel.getTokopoints().getStatus().getTier().getNameDesc());
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());

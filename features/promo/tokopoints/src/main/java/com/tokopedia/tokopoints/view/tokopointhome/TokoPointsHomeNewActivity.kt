@@ -22,7 +22,6 @@ import com.tokopedia.user.session.UserSession
 class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
     lateinit var mUserSession: UserSession
-    private var initialLoggedInState = false
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserSession = UserSession(applicationContext)
         super.onCreate(savedInstanceState)

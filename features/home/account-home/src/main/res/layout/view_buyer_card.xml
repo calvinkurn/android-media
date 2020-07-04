@@ -73,8 +73,8 @@
 
                 <ImageView
                     android:id="@+id/image_tokopoint"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
                     android:layout_gravity="center"
                     android:clickable="false"
                     android:focusable="false"
@@ -137,8 +137,8 @@
 
                 <ImageView
                     android:id="@+id/image_voucher"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
                     android:layout_gravity="center"
                     android:clickable="false"
                     android:focusable="false"
@@ -200,8 +200,8 @@
 
                 <ImageView
                     android:id="@+id/image_tokomember"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
                     android:layout_gravity="center"
                     android:clickable="false"
                     android:focusable="false"
@@ -318,7 +318,7 @@
         app:layout_constraintStart_toEndOf="@+id/ic_affiliate_byme"
         app:layout_constraintTop_toTopOf="@id/image_profile_completed"
         app:layout_goneMarginStart="@dimen/dp_8"
-        app:typographyType="heading_5"
+        app:typographyType="heading_3"
         tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -342,7 +342,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/image_profile_completed"
         app:layout_constraintStart_toEndOf="@+id/ivMemberBadge"
         app:layout_constraintTop_toBottomOf="@+id/text_username"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="Kelengkapan Profile 75%" />
 
 

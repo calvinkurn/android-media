@@ -30,7 +30,7 @@
     <string name="tp_label_my_coupon_new_card">Lihat Semua\nKupon Saya</string>
     <string name="tp_label_my_coupon_space">Kupon Milik Saya \u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
     <string name="tp_label_see_all">Lihat Semua</string>
-    <string name="tp_label_help_with_storepoints">Bantuan TokoPoints</string>
+    <string name="tp_label_help_with_storepoints">Info Selengkapnya</string>
     <string name="tp_label_valid_for">Berlaku selama</string>
     <string name="tp_label_applies_to">Berlaku pada:</string>
     <string name="tp_label_prepare_catalog">Kamu tidak memiliki kupon untuk kategori ini</string>

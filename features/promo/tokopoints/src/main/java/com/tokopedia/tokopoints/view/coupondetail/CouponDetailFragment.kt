@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.show
@@ -61,6 +62,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
+import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
 import kotlinx.android.synthetic.main.tp_layout_swipe_coupon_code.*
@@ -180,6 +182,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     val internetStatus = NetworkDetector.isConnectedToInternet(context)
                     if (!internetStatus) {
                         showError(internetStatus)
+                    } else {
+                        showCouponError()
                     }
                 }
                 is Success -> {
@@ -226,6 +230,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     private fun showCouponError() {
         container?.displayedChild = CONTAINER_COUPON_ERROR
+        btnError.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
     }
 
     override fun hideLoader() {
@@ -402,7 +409,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     private fun setCouponToUi(data: CouponValueEntity) {
-        if (view == null || data.isEmpty) {
+        if (view == null) {
+            return
+        }
+        if (data.isEmpty) {
+            showCouponError()
             return
         }
         hideLoader()

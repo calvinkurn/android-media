@@ -20,8 +20,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
@@ -92,26 +94,26 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         return view
     }
 
- /*   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.tp_menu_catalog_listing, menu)
-        menuItemFilter = menu.findItem(R.id.filter_menu_item)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
+    /*   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+           inflater.inflate(R.menu.tp_menu_catalog_listing, menu)
+           menuItemFilter = menu.findItem(R.id.filter_menu_item)
+           super.onCreateOptionsMenu(menu, inflater)
+       }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.filter_menu_item) {
-            if (filtersBottomSheet != null) {
-                filtersBottomSheet!!.show(childFragmentManager, "Filters")
-                AnalyticsTrackerUtil.sendEvent(activity,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_FILTER,
-                        "")
-            }
-            return true
-        }
-        return false
-    }*/
+       override fun onOptionsItemSelected(item: MenuItem): Boolean {
+           if (item.itemId == R.id.filter_menu_item) {
+               if (filtersBottomSheet != null) {
+                   filtersBottomSheet!!.show(childFragmentManager, "Filters")
+                   AnalyticsTrackerUtil.sendEvent(activity,
+                           AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                           AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                           AnalyticsTrackerUtil.ActionKeys.CLICK_FILTER,
+                           "")
+               }
+               return true
+           }
+           return false
+       }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -204,9 +206,11 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun onErrorBanners(errorMessage: String) {}
     override fun onSuccessBanners(banners: List<CatalogBanner>) {
         hideLoader()
-        if (banners == null || banners.isEmpty()) {
+        if (banners.isEmpty()) {
+            showEmptyCatalogUI()
             return
         }
+
         val pager: ViewPager = view!!.findViewById(R.id.view_pager_banner)
         pager.adapter = CatalogBannerPagerAdapter(context, banners, this)
         //adding bottom dots(Page Indicator)
@@ -215,6 +219,19 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         pageIndicator?.setIndicator(banners.size)
         view!!.findViewById<View>(R.id.container_pager).visibility = View.VISIBLE
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
+    }
+
+    private fun showEmptyCatalogUI() {
+        mContainerMain?.displayedChild = CONTAINER_EMPTY
+        view?.findViewById<TextView>(R.id.text_title_error2)?.text = "Kupon kategori ini sedang disiapkan"
+        view?.findViewById<TextView>(R.id.text_label_error2)?.text = "Sabar! Kami punya banyak kupon spesial buatmu yang menunggu saatnya dikeluarkan."
+        val btnCOntinue = view?.findViewById<Button>(R.id.button_continue)
+        btnCOntinue?.text = "Lihat Kupon Tersedia"
+        btnCOntinue?.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
+        view?.findViewById<Button>(R.id.text_empty_action)?.hide()
+
     }
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
@@ -504,6 +521,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
+        private const val CONTAINER_EMPTY = 3
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = CatalogListingFragment()
             fragment.arguments = extras

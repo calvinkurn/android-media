@@ -43,6 +43,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -143,7 +144,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
         when (it) {
-            is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title)
+            is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description)
             is ValidationError<*, *> -> {
                 if (it.data is ValidateMessageDialog) {
                     checkValidation(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
@@ -287,15 +288,51 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    override fun redeemCoupon(cta: String, code: String, title: String) {
-
+    override fun redeemCoupon(cta: String, code: String, title: String, description: String) {
         //Call api to validate the coupon
-        mViewModel.redeemCoupon(code, cta)
 
+        val btn1: UnifyButton
+        val btn2: UnifyButton
+        val titleDialog: TextView
+        val descDialog: Typography
+        val adb = AlertDialog.Builder(context!!)
+        val altTitle = "Kupon berhasil diklaim"
+        val altDescription = "Selamat! Kamu berhasil klaim kupon ini. Yuk pakai kuponnya supaya belanjamu lebih hemat."
+        val view = LayoutInflater.from(context).inflate(R.layout.tp_upcoming_feature_dialog, null)
+        adb.setView(view)
+        btn1 = view.findViewById(R.id.btn_route)
+        btn2 = view.findViewById(R.id.btn_route_kupon)
+        titleDialog = view.findViewById(R.id.tv_dialogTitle)
+        descDialog = view.findViewById(R.id.tv_dialogDesc)
+        titleDialog.text = altTitle
+        descDialog.text = altDescription
+        /*    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                descDialog.text = Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY)
+            } else {
+                descDialog.text = Html.fromHtml(description)
+            }*/
+        val alertDialog = adb.create()
+        alertDialog.window?.setGravity(Gravity.TOP)
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val params: WindowManager.LayoutParams? = alertDialog.window?.attributes // change this to your dialog.
+        params?.y = 200
+        alertDialog.window?.attributes = params
+        alertDialog.setCancelable(true)
+        alertDialog.setCanceledOnTouchOutside(true)
+        btn1.setOnClickListener { v: View? ->
+            mViewModel.redeemCoupon(code, cta)
+            alertDialog.dismiss()
+        }
+        btn2.setOnClickListener {
+            startActivity(getCallingIntent(activityContext))
+            alertDialog.dismiss()
+        }
+        alertDialog.show()
     }
 
-
     override fun checkValidation(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+
+
         when (resCode) {
 
             CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
