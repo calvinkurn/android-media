@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".view.activity.ShopScoreDetailActivity"
-            android:label="@string/title_shop_score"
+            android:label="@string/title_shop_score_seller"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
