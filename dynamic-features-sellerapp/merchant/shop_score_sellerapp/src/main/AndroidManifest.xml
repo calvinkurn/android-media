@@ -4,7 +4,7 @@
 
     <dist:module
         dist:onDemand="true"
-        dist:title="@string/title_shop_showcase">
+        dist:title="@string/title_shop_score_seller">
         <dist:fusing dist:include="true" />
     </dist:module>
 
