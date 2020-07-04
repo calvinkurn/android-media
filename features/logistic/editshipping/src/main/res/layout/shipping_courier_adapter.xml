@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/img_courier"
             android:layout_width="0dp"
-            android:layout_height="@dimen/img_thumb"
+            android:layout_height="@dimen/dp_35"
             app:srcCompat="@drawable/ic_14_google"
             android:layout_weight="0.1"
             android:layout_marginLeft="@dimen/dp_5"
@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="@dimen/fonts"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
@@ -75,7 +75,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dp_3"
                 android:text="@string/shop_shipping_additional_option"
-                android:textSize="@dimen/fontm"
+                android:textSize="@dimen/dp_16"
                 android:textStyle="bold"
                 android:textColor="@color/tkpd_light_green"/>
         </LinearLayout>

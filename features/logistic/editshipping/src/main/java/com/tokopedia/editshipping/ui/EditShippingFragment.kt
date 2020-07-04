@@ -2,6 +2,7 @@ package com.tokopedia.editshipping.ui
 
 import android.app.Activity
 import android.app.Fragment
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,9 +14,9 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics
 import com.tokopedia.editshipping.model.editshipping.Courier
@@ -39,8 +40,8 @@ import com.tokopedia.editshipping.ui.customview.CourierView
 import com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
 import com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
 import com.tokopedia.editshipping.ui.customview.ShippingInfoBottomSheet
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity
+import com.tokopedia.editshipping.util.ARGUMENT_DATA_TOKEN
+import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
@@ -66,8 +67,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     var submitButtonCreateShop: TextView? = null
     private var chargeBoTicker: Ticker? = null
     private var editShippingPresenter: EditShippingPresenter? = null
-    private var mainProgressDialog: TkpdProgressDialog? = null
-    private var progressDialog: TkpdProgressDialog? = null
+    private var mainProgressDialog: ProgressDialog? = null
+    private var progressDialog: ProgressDialog? = null
     private var inputMethodManager: InputMethodManager? = null
     private var userSession: UserSessionInterface? = null
     private var mapMode = 0
@@ -122,9 +123,9 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     private fun initiateVariables(mainView: View) {
         mapMode = arguments.getInt(MAP_MODE)
-        mainProgressDialog = TkpdProgressDialog(activity, TkpdProgressDialog.MAIN_PROGRESS)
-        mainProgressDialog?.cancelable = true
-        progressDialog = TkpdProgressDialog(activity, TkpdProgressDialog.NORMAL_PROGRESS)
+        mainProgressDialog = ProgressDialog(activity)
+        mainProgressDialog?.cancel()
+        progressDialog = ProgressDialog(activity)
         editShippingPresenter = EditShippingPresenterImpl(this)
         inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         userSession = UserSession(activity)
@@ -141,7 +142,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     private val shippingData: Unit
         private get() {
-            mainProgressDialog?.showDialog()
+            mainProgressDialog?.show()
             editShippingPresenter?.fetchData()
         }
 
@@ -149,7 +150,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         private get() {
             editShippingPresenter?.fetchDataOpenShop()
             fragmentShippingHeader?.visibility = View.GONE
-            mainProgressDialog?.showDialog()
+            mainProgressDialog?.show()
         }
 
     override fun onDestroyView() {
@@ -249,7 +250,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     override fun onFragmentTimeout() {
         NetworkErrorHelper.showEmptyState(activity, view, object : NetworkErrorHelper.RetryClickedListener {
             override fun onRetryClicked() {
-                mainProgressDialog?.showDialog()
+                mainProgressDialog?.show()
                 if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter?.fetchDataOpenShop() else editShippingPresenter?.fetchData()
             }
         })
@@ -278,7 +279,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun showLoading() {
-        progressDialog?.showDialog()
+        progressDialog?.show()
     }
 
     override fun openDataWebViewResources(courierIndex: Int) {
@@ -327,7 +328,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     private fun changeLocationRequest(originId: Int) {
-        progressDialog?.showDialog()
+        progressDialog?.show()
         if (arguments.getInt(MAP_MODE) == CREATE_SHOP_PAGE || arguments.containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
             editShippingPresenter?.fetchDataByLocationOpenShop(originId.toString())
         } else {
@@ -475,11 +476,19 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     private fun getDistrictRecommendationIntent(activity: Activity, token: Token): Intent? {
-        return DiscomActivity.newInstance(activity, token)
+        //ToDo::
+        val  intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
+        intent.putExtra(ARGUMENT_DATA_TOKEN, token)
+        return intent
     }
 
-    private fun getGeoLocationActivityIntent(context: Context, locationPass: LocationPass): Intent? {
-        return GeolocationActivity.createInstance(context, locationPass, false)
+    private fun getGeoLocationActivityIntent(activity: Activity, locationPass: LocationPass): Intent? {
+        val intent  = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+        intent.apply {
+            putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            putExtra(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, false)
+        }
+        return intent
     }
 
     companion object {

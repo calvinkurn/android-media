@@ -14,7 +14,7 @@
         android:layout_marginStart="@dimen/dp_5"
         android:text="@string/title_shop_location"
         android:textColor="@color/label_color"
-        android:textSize="@dimen/fonts" />
+        android:textSize="@dimen/sp_14" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/city_text_input_layout"
@@ -26,13 +26,13 @@
         android:hint="@string/title_city">
 
         <EditText
-            android:id="@id/text_edit_shipping_city"
+            android:id="@+id/text_edit_shipping_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="false"
             android:textColor="@color/black"
-            android:textSize="@dimen/fontm" />
+            android:textSize="@dimen/sp_16" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout

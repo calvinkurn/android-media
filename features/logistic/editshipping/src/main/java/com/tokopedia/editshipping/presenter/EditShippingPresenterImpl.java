@@ -4,12 +4,11 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics;
-import com.tokopedia.editshipping.data.network.ShippingNetworkParam;
 import com.tokopedia.editshipping.data.interactor.EditShippingInteractorImpl;
 import com.tokopedia.editshipping.data.interactor.EditShippingRetrofitInteractor;
+import com.tokopedia.editshipping.data.network.ShippingNetworkParam;
 import com.tokopedia.editshipping.model.editshipping.Courier;
 import com.tokopedia.editshipping.model.editshipping.EditShippingCouriers;
 import com.tokopedia.editshipping.model.editshipping.ProvinceCitiesDistrict;
@@ -22,6 +21,8 @@ import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddr
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,10 +75,13 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private DistrictRecommendationAddress selectedAddress;
 
+    private UserSessionInterface userSession;
+
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
         editShippingRetrofitInteractor = new EditShippingInteractorImpl();
         revGeocodeUseCase = new RevGeocodeUseCase(view.getMainContext(), new GraphqlUseCase());
+        userSession = new UserSession(view.getMainContext());
     }
 
     @Override
@@ -439,7 +443,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         shippingParams.put(SHIPMENT_IDS, compiledShippingId());
         shippingParams.put(POSTAL, view.getZipCode());
         shippingParams.put(ADDR_STREET, view.getStreetAddress());
-        shippingParams.put(SHOP_ID, SessionHandler.getShopID(view.getMainContext()));
+        shippingParams.put(SHOP_ID, userSession.getShopId());
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
         if (selectedAddress != null) {
@@ -457,7 +461,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         shippingParams.put(SHIPMENT_IDS, compiledShippingId());
         shippingParams.put(SHOP_POSTAL, view.getZipCode());
         shippingParams.put(ADDR_STREET, view.getStreetAddress());
-        shippingParams.put(SHOP_ID, SessionHandler.getShopID(view.getMainContext()));
+        shippingParams.put(SHOP_ID, userSession.getShopId());
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
         if (selectedAddress != null) {
@@ -572,7 +576,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public void dataWebViewResource(final int courierIndex, String webViewUrl) {
         HashMap<String, String> params = new HashMap<>();
-        params.put(USER_ID, SessionHandler.getLoginID(view.getMainContext()));
+        params.put(USER_ID, userSession.getUserId());
         params.put(OS_TYPE, "1");
         params.put(SERVICE_ID, compiledSelectedServicesString(courierIndex));
         editShippingRetrofitInteractor.getShippingDetailWebView(view.getMainContext(),

@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/shop_phone_number_title"
         android:layout_marginLeft="@dimen/dp_10"
-        android:textSize="@dimen/fontl"
+        android:textSize="@dimen/sp_18"
         android:visibility="gone" />
 
     <TextView
@@ -35,9 +35,9 @@
         android:layout_toEndOf="@id/shop_phone_number"
         android:layout_toRightOf="@id/shop_phone_number"
         android:gravity="end"
-        android:text="@string/action_edit"
+        android:text="@string/title_edit"
         android:textColor="@color/green_500"
-        android:textSize="@dimen/fontm"
+        android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         android:visibility="gone" />
 
@@ -49,7 +49,8 @@
         android:text="@string/title_delivery_location"
         android:textColor="@color/label_color"
         android:layout_marginStart="@dimen/dp_5"
-        android:textSize="@dimen/fonts" />
+        android:textSize="@dimen/sp_14"
+        android:layout_marginLeft="@dimen/dp_5" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/address_text_input_layout"

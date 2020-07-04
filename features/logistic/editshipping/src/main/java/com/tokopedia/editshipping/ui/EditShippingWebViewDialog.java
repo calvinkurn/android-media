@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
 import com.tokopedia.editshipping.R;
 
 /**
