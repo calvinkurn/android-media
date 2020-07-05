@@ -86,9 +86,9 @@ class PlayPermissionUtil(private val mContext: Context) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun defineGrantedPermission(permissionList: Array<out String>) {
+        this.mPermission.clear()
         permissionList.forEach {
             val permissionResult = ActivityCompat.checkSelfPermission(mContext, it)
-            this.mPermission.clear()
             this.mPermission.add(Permission(
                     name = it,
                     granted = permissionResult == PackageManager.PERMISSION_GRANTED,

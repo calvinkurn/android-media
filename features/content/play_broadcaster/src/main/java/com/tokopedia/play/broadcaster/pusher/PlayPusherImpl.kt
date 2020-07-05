@@ -135,6 +135,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun stopPush(onStop: () -> Unit) {
         // TODO remove
+        Log.d("Meyta", "${this::class.java} stopPush")
         mPlayPusherStatus = PlayPusherStatus.Stop
         onStop()
 
@@ -188,6 +189,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun pause(onPause: () -> Unit) {
         // TODO remove
         if (mPlayPusherStatus != PlayPusherStatus.Active) return
+        Log.d("Meyta", "${this::class.java} pause")
         mTimerDuration?.pause()
         mPlayPusherStatus = PlayPusherStatus.Paused
         onPause()

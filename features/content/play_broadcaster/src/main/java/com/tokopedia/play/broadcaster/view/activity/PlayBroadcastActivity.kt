@@ -77,8 +77,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         initViewModel()
         setFragmentFactory()
 
+        Log.d("Meyta", "${this::class.java} onCreate")
         super.onCreate(savedInstanceState)
-        Log.d("Meyta", "PlayBroadcastActivity onCreate")
         setContentView(R.layout.activity_play_broadcast)
         viewModel.initPushStream()
         setupContent()
@@ -111,7 +111,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun checkPermission() {
-        Log.d("Meyta", "PlayBroadcastActivity checkPermission")
+        Log.d("Meyta", "${this::class.java} checkPermission")
         viewModel.checkPermission()
     }
 

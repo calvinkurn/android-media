@@ -68,7 +68,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onCreate")
+        Log.d("Meyta", "${this::class.java} onCreate")
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
@@ -78,11 +78,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onViewCreated")
+        Log.d("Meyta", "${this::class.java} onViewCreated")
         initView(view)
         setupView()
         setupInsets(view)
-        setupContent()
+        if (parentViewModel.allPermissionGranted()) setupContent()
+        else parentViewModel.checkPermission()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -146,16 +147,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupContent() {
-        if (!parentViewModel.allPermissionGranted()) {
-            parentViewModel.checkPermission()
-            return
-        }
         val ingestUrl = arguments?.getString(KEY_INGEST_URL)
-        if (ingestUrl != null && ingestUrl.isNotEmpty()) {
+        if (ingestUrl != null && ingestUrl.isNotEmpty())
             startCountDown(ingestUrl)
-        } else {
-            parentViewModel.fetchChannelData()
-        }
+        else parentViewModel.fetchChannelData()
     }
 
     private fun startCountDown(ingestUrl: String) {
@@ -178,18 +173,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onResume")
+        Log.d("Meyta", "${this::class.java} onResume")
         parentViewModel.resumePushStream()
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onPause")
+        Log.d("Meyta", "${this::class.java} onPause")
         parentViewModel.pausePushStream()
     }
 
     override fun onDestroy() {
-        Log.d("Meyta", "PlayBroadcastUserInteractionFragment onDestroy")
+        Log.d("Meyta", "${this::class.java} onDestroy")
         parentViewModel.getPlayPusher().destroy()
         try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         super.onDestroy()
@@ -352,7 +347,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (channelInfo.status) {
             PlayChannelStatus.Active, PlayChannelStatus.Live -> startLiveStreaming(channelInfo.ingestUrl)
             PlayChannelStatus.Pause -> {
-                Log.d("Meyta", "PlayBroadcastUserInteractionFragment showDialogContinueLiveStreaming")
+                Log.d("Meyta", "${this::class.java} showDialogContinueLiveStreaming")
                 showDialogContinueLiveStreaming(channelInfo.ingestUrl)
             }
             PlayChannelStatus.Stop -> doEndStreaming()
@@ -466,9 +461,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observePermissionStateEvent() {
-        parentViewModel.observablePermissionState.observe(this, Observer {
-           if (it is PlayPermissionState.Granted) setupContent()
-        })
+//        parentViewModel.observablePermissionState.observe(this, Observer {
+//           if (it is PlayPermissionState.Granted) setupContent()
+//        })
     }
     //endregion
 
