@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.manageaddress.R
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -26,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticdata.data.entity.address.AddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
@@ -69,6 +69,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var emptyStateLayout: LinearLayout? = null
 
     private var globalErrorLayout: GlobalError? = null
+
+    private var manageAddressListener: ManageAddressListener? = null
 
     companion object {
 
@@ -133,12 +135,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initHeader() {
-        val parent = activity
-        if (parent is ManageAddressActivity) {
-            parent.setAddButtonOnClickListener {
-               openFormAddressView(null)
-            }
-        }
+       manageAddressListener?.setAddButtonOnClickListener {
+           openFormAddressView(null)
+       }
     }
 
     private fun initView() {
@@ -329,5 +328,13 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         emptyStateLayout?.gone()
         globalErrorLayout?.visible()
         emptySearchLayout?.gone()
+    }
+
+    fun setListener(listener: ManageAddressListener) {
+        this.manageAddressListener = listener
+    }
+
+    interface ManageAddressListener{
+        fun setAddButtonOnClickListener(onClick: () -> Unit)
     }
 }
