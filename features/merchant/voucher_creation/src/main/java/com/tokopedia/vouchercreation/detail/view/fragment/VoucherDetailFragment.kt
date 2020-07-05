@@ -41,6 +41,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.common.utils.Socmed
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -627,12 +628,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 }
         val errorMessage = context?.getString(errorMessageRes).toBlankOrString()
 
-        view?.run {
-            Toaster.make(this,
-                    errorMessage,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR)
-        }
+        view?.showErrorToaster(errorMessage)
     }
 
     private fun sendOpenScreenTracking() {

@@ -48,6 +48,7 @@ import com.tokopedia.vouchercreation.common.exception.VoucherCancellationExcepti
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.common.utils.Socmed
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -481,12 +482,15 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             when (resultCode) {
                 Activity.RESULT_CANCELED -> {
                     view?.run {
-                        val errorMessage = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE)
-                        errorMessage?.let { message ->
-                            Toaster.make(this,
-                                    message,
-                                    Toaster.LENGTH_SHORT,
-                                    Toaster.TYPE_ERROR)
+                        val errorString = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE)
+                        errorString?.let { message ->
+                            val errorMessage =
+                                    if (message.isNotBlank()) {
+                                        message
+                                    } else {
+                                        context?.getString(R.string.mvc_general_error).toBlankOrString()
+                                    }
+                            showErrorToaster(errorMessage)
                         }
                     }
                 }
@@ -557,20 +561,20 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 .setOnSuccessClickListener {
                     onSuccessUpdateVoucherPeriod()
                 }
-                .setOnFailClickListener { errorMessage ->
-                    view?.run {
-                        Toaster.make(this,
-                                errorMessage,
-                                Snackbar.LENGTH_SHORT,
-                                Toaster.TYPE_ERROR)
-                    }
+                .setOnFailClickListener { message ->
+                    val errorMessage =
+                            if (message.isNotBlank()) {
+                                message
+                            } else {
+                                context?.getString(R.string.mvc_general_error).toBlankOrString()
+                            }
+                    view?.showErrorToaster(errorMessage)
                 }
                 .show(childFragmentManager)
     }
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
         ShareVoucherBottomSheet.createInstance()
                 .setOnItemClickListener { socmedType ->
                     context?.run {
@@ -693,7 +697,6 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
         EditQuotaBottomSheet.createInstance(voucher)
                 .setOnSuccessUpdateVoucher {
                     view?.run {
@@ -705,13 +708,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     }
                     loadInitialData()
                 }
-                .setOnFailUpdateVoucher { errorMessage ->
-                    view?.run {
-                        Toaster.make(this,
-                                errorMessage,
-                                Toaster.LENGTH_SHORT,
-                                Toaster.TYPE_ERROR)
-                    }
+                .setOnFailUpdateVoucher { message ->
+                    val errorMessage =
+                            if (message.isNotBlank()) {
+                                message
+                            } else {
+                                context?.getString(R.string.mvc_general_error).toBlankOrString()
+                            }
+                    view?.showErrorToaster(errorMessage)
                 }.show(childFragmentManager)
     }
 

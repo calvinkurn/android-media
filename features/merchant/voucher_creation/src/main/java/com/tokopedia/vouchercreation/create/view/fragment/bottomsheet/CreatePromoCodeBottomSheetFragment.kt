@@ -11,13 +11,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,6 +23,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreatePromoCodeViewModel
 import kotlinx.android.synthetic.main.mvc_create_promo_code_bottom_sheet_view.*
@@ -223,12 +222,7 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
     }
 
     private fun showErrorToaster(errorMessage: String) {
-        view?.run {
-            Toaster.make(this,
-                    errorMessage,
-                    Snackbar.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR)
-        }
+        view?.showErrorToaster(errorMessage)
     }
 
     private fun View.showKeyboard() {
