@@ -1,0 +1,15 @@
+query{
+   RichieGetWDBanner{
+           status
+           message
+           data{
+              IMGURL
+              BGURL
+              Title
+              Text1
+              Text2
+              CTA
+              Status
+          }
+   }
+}
