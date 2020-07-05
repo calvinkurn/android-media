@@ -137,6 +137,7 @@
     <string name="title_activity_catalog">Katalog</string>
     <string name="catalog_host">catalog</string>
     <string name="label_kategori">Belanja di Tokopedia</string>
+    <string name="label_category">category</string>
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>

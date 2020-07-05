@@ -584,6 +584,7 @@ final class ProductListPresenter
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     item.setFreeOngkirViewModel(mapFreeOngkir(topAds.getProduct().getFreeOngkir()));
                     item.setPosition(topAdsCount);
+                    item.setCategoryBreadcrumb(topAds.getProduct().getCategoryBreadcrumb());
                     list.add(i, item);
                     j++;
                     topAdsCount++;

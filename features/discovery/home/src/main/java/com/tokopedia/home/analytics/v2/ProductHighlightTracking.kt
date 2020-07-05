@@ -8,11 +8,12 @@ object ProductHighlightTracking : BaseTracking() {
 
     private const val PRODUCT_DYNAMIC_CHANNEL_HERO = "dynamic channel hero"
 
-    fun getProductHighlightImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
+    fun getProductHighlightImpression(channel: DynamicHomeChannel.Channels, userId: String = "", isToIris: Boolean = false) = getBasicProductChannelView(
             event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO,
             eventLabel = Label.NONE,
+            userId = userId,
             products = channel.grids.mapIndexed { index, grid ->
                 Product(
                         name = grid.name,
@@ -34,34 +35,55 @@ object ProductHighlightTracking : BaseTracking() {
             channelId = channel.id
     )
 
-    private fun getProductHighlightClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+    private fun getProductHighlightClick(
+        channelId: String,
+        headerName: String,
+        campaignCode: String,
+        persoType: String,
+        categoryId: String,
+        gridId: String,
+        gridName: String,
+        gridPrice: String,
+        gridFreeOngkirIsActive: Boolean,
+        position: Int) = getBasicProductChannelClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = EVENT_ACTION_CLICK_PRODUCT_DYNAMIC_CHANNEL_HERO,
-            eventLabel = channel.header.name,
-            channelId = channel.id,
-            campaignCode = channel.campaignCode,
+            eventLabel = "$channelId - $headerName",
+            channelId = channelId,
+            campaignCode = campaignCode,
             products = listOf(
                     Product(
-                            name = grid.name,
-                            id = grid.id,
-                            productPrice = convertRupiahToInt(grid.price).toString(),
+                            id = gridId,
+                            name = gridName,
+                            productPrice = convertRupiahToInt(gridPrice).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
                             variant = Value.NONE_OTHER,
                             productPosition = (position + 1).toString(),
-                            channelId = channel.id,
-                            isFreeOngkir = grid.freeOngkir.isActive,
-                            persoType = channel.persoType,
-                            categoryId = channel.categoryID
+                            channelId = channelId,
+                            isFreeOngkir = gridFreeOngkirIsActive,
+                            persoType = persoType,
+                            categoryId = categoryId
                     )
             ),
             list = String.format(
-                    Value.LIST_WITH_HEADER, "1", PRODUCT_DYNAMIC_CHANNEL_HERO, channel.header.name
+                    Value.LIST_WITH_HEADER, "1", PRODUCT_DYNAMIC_CHANNEL_HERO, headerName
             )
     )
 
-    fun sendRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(getProductHighlightClick(channel, grid, position))
+    fun sendRecommendationListClick(
+            channelId: String,
+            headerName: String,
+            campaignCode: String,
+            persoType: String,
+            categoryId: String,
+            gridId: String,
+            gridName: String,
+            gridPrice: String,
+            gridFreeOngkirIsActive: Boolean,
+            position: Int) {
+        getTracker().sendEnhanceEcommerceEvent(getProductHighlightClick(
+                channelId, headerName, campaignCode, persoType, categoryId, gridId, gridName, gridPrice, gridFreeOngkirIsActive, position))
     }
 }
