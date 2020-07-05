@@ -32,11 +32,11 @@
         <item name="colorAccent">@color/medium_green</item>
     </style>
 
-    <style name="TransparentBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/TransparentBottomSheetStyle</item>
+    <style name="TokopointTransparentBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/TokopointTransparentBottomSheetStyle</item>
     </style>
 
-    <style name="TransparentBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+    <style name="TokopointTransparentBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
 
     </style>
