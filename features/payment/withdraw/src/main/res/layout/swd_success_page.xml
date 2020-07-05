@@ -90,15 +90,16 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="withdrawalSuccessTicker,cardUnifyJoinRekeningProgram" />
 
-        <ImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/ivWithdrawalSuccess"
             android:layout_width="@dimen/swd_success_image_size"
             android:layout_height="@dimen/swd_success_image_size"
             android:layout_marginTop="@dimen/spacing_lvl4"
+            app:remoteFileName="swd_img_sucs_page.png"
+            app:imageDpiSupportType="singleDpi"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barrier"
-            app:srcCompat="@drawable/swd_img_sucs_page" />
+            app:layout_constraintTop_toBottomOf="@+id/barrier" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvWithdrawalNote"
