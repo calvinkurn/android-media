@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -721,6 +722,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         headerChipMvc.init {
             setOnChipListener(it)
         }
+        toolbarMvcList?.setBackgroundColor(Color.TRANSPARENT)
     }
 
     private fun setupRecyclerViewVoucherList() {
@@ -738,10 +740,12 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun showAppBarElevation(isShown: Boolean) = view?.run {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val elevation: Float = if (isShown) context.dpToPx(4) else 0f
-            appBarMvc?.elevation = elevation
-        }
+        dividerMvcList?.visibility =
+                if (isShown) {
+                    View.VISIBLE
+                } else {
+                    View.INVISIBLE
+                }
     }
 
     private fun setupActionBar() = view?.run {

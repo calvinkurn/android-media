@@ -8,7 +8,7 @@
     <View
         android:id="@+id/typeBudgetTickerDividerTop"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/mvc_create_divider_height"
+        android:layout_height="@dimen/mvc_divider_height"
         android:background="@color/Neutral_N75"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -55,7 +55,7 @@
     <View
         android:id="@+id/typeBudgetTickerDividerBottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/mvc_create_divider_height"
+        android:layout_height="@dimen/mvc_divider_height"
         android:background="@color/Neutral_N75"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
