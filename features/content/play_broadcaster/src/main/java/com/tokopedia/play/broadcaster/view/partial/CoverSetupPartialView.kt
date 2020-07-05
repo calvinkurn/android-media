@@ -114,6 +114,8 @@ class CoverSetupPartialView(
         rootView.hide()
     }
 
+    fun getBottomActionView() = clCropButton
+
     fun setLoading(isLoading: Boolean) {
         btnNext.isLoading = isLoading
         etCoverTitle.isEnabled = !isLoading
@@ -155,7 +157,7 @@ class CoverSetupPartialView(
     }
 
     fun updateButtonState() {
-        btnNext.isEnabled = coverTitle.isNotEmpty() && dataSource.getCurrentCoverUri() != null
+        btnNext.isEnabled = coverTitle.isNotBlank() && dataSource.getCurrentCoverUri() != null
     }
 
     fun clickNext() {

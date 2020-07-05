@@ -177,7 +177,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     private fun onUploadFailed(e: Throwable) {
         btnAction.isLoading = false
-        requireView().showToaster(
+        view?.showToaster(
                 message = e.localizedMessage,
                 type = Toaster.TYPE_ERROR
         )

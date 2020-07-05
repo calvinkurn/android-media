@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
@@ -54,12 +55,15 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
     private var mListener: SetupResultListener? = null
 
+    private var toasterBottomMargin = 0
+
     private val title: String
         get() = etCoverTitle.text.toString()
 
     private lateinit var containerEdit: CoordinatorLayout
     private lateinit var etCoverTitle: EditText
     private lateinit var tvTitleCounter: TextView
+    private lateinit var llContainerSave: LinearLayout
     private lateinit var btnSave: UnifyButton
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -125,6 +129,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
             etCoverTitle = findViewById(R.id.et_cover_title)
             tvTitleCounter = findViewById(R.id.tv_title_counter)
             btnSave = findViewById(R.id.btn_save)
+            llContainerSave = findViewById(R.id.ll_container_save)
         }
     }
 
@@ -176,7 +181,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupSaveButton() {
-        btnSave.isEnabled = title.isNotEmpty() &&
+        btnSave.isEnabled = title.isNotBlank() &&
                 title.length <= PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE
     }
 
@@ -196,9 +201,27 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
     private fun onUpdateFail(error: Throwable) {
         etCoverTitle.isEnabled = true
         btnSave.isLoading = false
-        containerEdit.showToaster(
+        showToaster(
                 message = error.localizedMessage,
                 type = Toaster.TYPE_ERROR
+        )
+    }
+
+    private fun showToaster(
+            message: String,
+            type: Int = Toaster.TYPE_NORMAL,
+            actionLabel: String = ""
+    ) {
+        if (toasterBottomMargin == 0) {
+            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            toasterBottomMargin = llContainerSave.height + offset8
+        }
+
+        containerEdit.showToaster(
+                message = message,
+                type = type,
+                actionLabel = actionLabel,
+                bottomMargin = toasterBottomMargin
         )
     }
 
