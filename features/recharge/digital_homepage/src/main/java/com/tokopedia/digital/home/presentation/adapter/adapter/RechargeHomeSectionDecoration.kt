@@ -7,7 +7,7 @@ import android.view.View
 /**
  * Created by resakemal on 24/06/20.
  */
-class RechargeHomeSectionDecorator(private val space: Int) : RecyclerView.ItemDecoration() {
+class RechargeHomeSectionDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val adapter = parent.adapter

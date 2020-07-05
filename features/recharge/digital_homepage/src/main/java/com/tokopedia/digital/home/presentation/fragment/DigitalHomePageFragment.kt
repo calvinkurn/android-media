@@ -33,7 +33,7 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActio
 import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
-import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeHomeSectionDecorator
+import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeHomeSectionDecoration
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
@@ -90,7 +90,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         calculateToolbarView(0)
 
         while (recycler_view.itemDecorationCount > 0) recycler_view.removeItemDecorationAt(0)
-        recycler_view.addItemDecoration(RechargeHomeSectionDecorator(
+        recycler_view.addItemDecoration(RechargeHomeSectionDecoration(
                 SECTION_SPACING_DP.dpToPx(resources.displayMetrics)
         ))
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {

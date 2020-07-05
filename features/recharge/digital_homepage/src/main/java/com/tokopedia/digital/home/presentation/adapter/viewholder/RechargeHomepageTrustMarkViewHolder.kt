@@ -1,15 +1,14 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemTrustMarkAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_trustmark.view.*
 
@@ -32,7 +31,6 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
                 while (rv_recharge_home_trust_mark.itemDecorationCount > 0) {
                     rv_recharge_home_trust_mark.removeItemDecorationAt(0)
                 }
-                // TODO: Hide decoration on last item
                 rv_recharge_home_trust_mark.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
 
                 // Only use first 3 items or less
