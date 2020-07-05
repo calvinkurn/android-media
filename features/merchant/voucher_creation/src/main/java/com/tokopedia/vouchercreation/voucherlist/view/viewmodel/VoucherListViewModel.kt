@@ -20,6 +20,7 @@ import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUse
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -29,6 +30,7 @@ import javax.inject.Inject
 
 class VoucherListViewModel @Inject constructor(
         private val getVoucherListUseCase: GetVoucherListUseCase,
+        private val getNotStartedVoucherListUseCase: GetVoucherListUseCase,
         private val cancelVoucherUseCase: CancelVoucherUseCase,
         private val shopBasicDataUseCase: ShopBasicDataUseCase,
         private val voucherDetailUseCase: VoucherDetailUseCase,
@@ -129,12 +131,11 @@ class VoucherListViewModel @Inject constructor(
                 })
             }
             _voucherList.value = Success(withContext(Dispatchers.IO) {
-                mutableListOf<VoucherUiModel>().apply {
-                    getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)
-                    addAll(getVoucherListUseCase.executeOnBackground())
-                    getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(notStartedVoucherRequestParam)
-                    addAll(getVoucherListUseCase.executeOnBackground())
-                }
+                getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)
+                getNotStartedVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(notStartedVoucherRequestParam)
+                val ongoingVoucherList = async { getVoucherListUseCase.executeOnBackground() }
+                val notStartedVoucherList = async { getNotStartedVoucherListUseCase.executeOnBackground() }
+                ongoingVoucherList.await() + notStartedVoucherList.await()
             })
         }, onError = {
             _voucherList.value = Fail(it)

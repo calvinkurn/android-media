@@ -31,6 +31,9 @@ class VoucherListViewModelTest {
     lateinit var getVoucherListUseCase: GetVoucherListUseCase
 
     @RelaxedMockK
+    lateinit var getNotStartedVoucherListUseCase: GetVoucherListUseCase
+
+    @RelaxedMockK
     lateinit var cancelVoucherUseCase: CancelVoucherUseCase
 
     @RelaxedMockK
@@ -84,7 +87,7 @@ class VoucherListViewModelTest {
     }
 
     private val mViewModel by lazy {
-        VoucherListViewModel(getVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testDispatcher)
+        VoucherListViewModel(getVoucherListUseCase, getNotStartedVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testDispatcher)
     }
 
     @Test
@@ -97,6 +100,9 @@ class VoucherListViewModelTest {
             } returns dummySuccessShopBasicData
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
+            } returns listOf(voucherUiModel)
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
 
             getActiveVoucherList(true)
@@ -125,6 +131,9 @@ class VoucherListViewModelTest {
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
             } throws dummyThrowable
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
+            } throws dummyThrowable
 
             getActiveVoucherList(true)
 
@@ -150,6 +159,9 @@ class VoucherListViewModelTest {
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
+            } returns  listOf(voucherUiModel)
 
             getActiveVoucherList(true)
 
@@ -168,6 +180,9 @@ class VoucherListViewModelTest {
         with(mViewModel) {
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
+            } returns listOf(voucherUiModel)
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
 
             getActiveVoucherList(false)
@@ -190,6 +205,9 @@ class VoucherListViewModelTest {
 
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
+            } throws dummyThrowable
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
             } throws dummyThrowable
 
             getActiveVoucherList(false)
