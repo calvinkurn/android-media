@@ -149,7 +149,7 @@ class VoucherDetailViewModelTest {
                 shopBasicDataUseCase.executeOnBackground()
             }
 
-            assert(shopBasicLiveData.value is Fail)
+            assert(merchantVoucherModelLiveData.value is Fail)
         }
     }
 
