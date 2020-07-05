@@ -1025,10 +1025,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             }
         })
         mViewModel.localVoucherListLiveData.observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
-                is Success -> setOnSuccessGetVoucherList(result.data)
-                is Fail -> setOnErrorGetVoucherList(result.throwable)
-            }
+            setOnSuccessGetVoucherList(result)
         })
         mViewModel.cancelVoucherResponseLiveData.observe(viewLifecycleOwner, Observer { result ->
             when(result) {

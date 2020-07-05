@@ -55,12 +55,12 @@ class VoucherListViewModel @Inject constructor(
     val voucherList: LiveData<Result<List<VoucherUiModel>>>
         get() = _voucherList
 
-    private val _localVoucherListLiveData = MediatorLiveData<Result<List<VoucherUiModel>>>().apply {
+    private val _localVoucherListLiveData = MediatorLiveData<List<VoucherUiModel>>().apply {
         addSource(_keywordLiveData) { keyword ->
             searchVoucherByKeyword(keyword)
         }
     }
-    val localVoucherListLiveData: LiveData<Result<List<VoucherUiModel>>>
+    val localVoucherListLiveData: LiveData<List<VoucherUiModel>>
         get() = _localVoucherListLiveData
 
     private val _fullVoucherListLiveData = MutableLiveData<MutableList<VoucherUiModel>>().apply { value = mutableListOf() }
@@ -188,12 +188,7 @@ class VoucherListViewModel @Inject constructor(
     }
 
     private fun searchVoucherByKeyword(keyword: String) {
-        launchCatchError(block = {
-            _localVoucherListLiveData.value = Success(
-                    _fullVoucherListLiveData.value?.filter {
-                        it.name.contains(keyword, true) } ?: listOf())
-        }, onError = {
-            _localVoucherListLiveData.value = Fail(it)
-        })
+        _localVoucherListLiveData.value = _fullVoucherListLiveData.value?.filter {
+            it.name.contains(keyword, true) } ?: listOf()
     }
 }
