@@ -708,10 +708,10 @@ public class ProductListFragment
             }
         }
         if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
                     irisSession.getSessionId());
         }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
         }
     }
 
@@ -728,10 +728,10 @@ public class ProductListFragment
         productItemViewModels.add(item);
 
         if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
                     irisSession.getSessionId());
         }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
         }
     }
 
@@ -881,6 +881,7 @@ public class ProductListFragment
         product.setPriceFormat(item.getPrice());
         product.setCategory(new Category(item.getCategoryID()));
         product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
+        product.setCategoryBreadcrumb(item.getCategoryBreadcrumb());
 
         return product;
     }
@@ -937,14 +938,13 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId) {
+    public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId) {
         String filterSortParams
                 = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
         String searchRef = getSearchRef();
         SearchTracking.trackEventClickSearchResultProduct(
-                item,
                 item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
-                item.getPageNumber(),
+                item.isOrganicAds(),
                 getQueryKey(),
                 filterSortParams
         );
@@ -1037,7 +1037,7 @@ public class ProductListFragment
         productCardOptionsModel.setWishlisted(item.isWishlisted());
         productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
         productCardOptionsModel.setProductId(item.getProductID() == null ? "" : item.getProductID());
-        productCardOptionsModel.setTopAds(item.isTopAds());
+        productCardOptionsModel.setTopAds(item.isTopAds() || item.isOrganicAds());
         productCardOptionsModel.setTopAdsWishlistUrl(item.getTopadsWishlistUrl() == null ? "" : item.getTopadsWishlistUrl());
         productCardOptionsModel.setRecommendation(false);
         productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);

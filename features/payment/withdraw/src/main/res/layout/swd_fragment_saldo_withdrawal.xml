@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/saldoLockTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:closeButtonVisibility="visible"
+        app:descriptionText="description"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerShapeType="full"
+        tools:visibility="visible"
+        app:tickerType="warning"
+        app:titleText="title" />
+
+    <com.tokopedia.carousel.CarouselUnify
+        android:id="@+id/withdrawalRekeningCarouselView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saldoLockTicker"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/tabSaldoWithdrawal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_lvl1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/withdrawalRekeningCarouselView"
+        app:tabIndicatorColor="@color/tkpd_main_green"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/tkpd_main_green"
+        app:tabTextColor="@color/black_38" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPagerSaldoWithdrawal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabSaldoWithdrawal" />
+
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/swdGlobalError"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <RelativeLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/spacing_lvl8"
+            android:layout_height="@dimen/spacing_lvl8"
+            android:layout_centerInParent="true"
+            app:loader_corner_radius="3dp"
+            app:loader_type="circular" />
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

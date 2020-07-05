@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_lvl5">
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPremiumAccountInfoTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:text="@string/swd_premium_account_info_title"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toBottomOf="@id/ivRpIcon"
+        app:layout_constraintEnd_toStartOf="@id/ivRpIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivRpIcon"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold" />
+
+
+    <ImageView
+        android:id="@+id/ivRpIcon"
+        android:layout_width="@dimen/swd_rp_icon_width"
+        android:layout_height="@dimen/swd_rp_icon_width"
+        android:background="@drawable/swd_ic_rp_bg"
+        android:padding="@dimen/swp_dp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/swd_ic_power_merchant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPremiumAccountInfoLineOne"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/swd_premium_account_info_line_one"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPremiumAccountInfoTitle"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPremiumAccountInfoLineTwo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/swd_premium_account_info_line_Two"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPremiumAccountInfoLineOne"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPremiumAccountInfoLineThree"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/swd_premium_account_info_line_Three"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPremiumAccountInfoLineTwo"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMoreInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/swd_more_info"
+        android:textColor="@color/Green_G500"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPremiumAccountInfoLineThree"
+        app:typographyType="body_2" />
+
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnJoinPremiumAccount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/swd_join_premium_account"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMoreInfo"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
