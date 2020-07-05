@@ -128,7 +128,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::getBannerBaseUiModel,
                             ::onSuccessGetSquareBitmap,
                             ::getVoucherReviewUiModel,
-                            isCreateNew))
+                            isCreateNew,
+                            isEditVoucher))
             put(VoucherCreationStepInfo.STEP_FOUR,
                     ReviewVoucherFragment.createInstance(
                             ::getVoucherReviewUiModel,
@@ -471,8 +472,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             setVoucherName(targetType, name, promoCode)
 
             if (isEdit && startTime.isNotEmpty() && finishTime.isNotEmpty()) {
-                val startDate = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.DATE_FORMAT)
-                val endDate = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.DATE_FORMAT)
+                val startDate = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.DASH_DATE_FORMAT)
+                val endDate = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.DASH_DATE_FORMAT)
                 val startHour = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.HOUR_FORMAT)
                 val endHour = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.HOUR_FORMAT)
                 setVoucherPeriod(startDate, endDate, startHour, endHour)
@@ -505,7 +506,11 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private fun onNextStep() {
-        viewModel.setNextStep()
+        if (isEditVoucher) {
+            viewModel.setStepPosition(VoucherCreationStep.REVIEW)
+        } else {
+            viewModel.setNextStep()
+        }
     }
 
     private fun setVoucherName(@VoucherTargetType targetType: Int, voucherName: String, promoCode: String) {
@@ -515,7 +520,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             this.voucherName = voucherName
             this.promoCode = promoCode
         }
-        viewModel.setNextStep()
+        onNextStep()
     }
 
     private fun setVoucherBenefit(imageType: VoucherImageType, minPurchase: Int, quota: Int) {

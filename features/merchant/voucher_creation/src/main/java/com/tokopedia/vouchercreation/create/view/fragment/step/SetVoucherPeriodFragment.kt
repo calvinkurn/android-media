@@ -60,13 +60,15 @@ class SetVoucherPeriodFragment : Fragment() {
                            getBannerBaseUiModel: () -> BannerBaseUiModel,
                            onSuccessGetBannerBitmap: (Bitmap) -> Unit,
                            getVoucherReviewData: () -> VoucherReviewUiModel,
-                           isCreateNew: Boolean) = SetVoucherPeriodFragment().apply {
+                           isCreateNew: Boolean,
+                           isEdit: Boolean) = SetVoucherPeriodFragment().apply {
             this.onNext = onNext
             this.getVoucherBanner = getVoucherBanner
             this.getBannerBaseUiModel = getBannerBaseUiModel
             this.onSuccessGetBannerBitmap = onSuccessGetBannerBitmap
             this.getVoucherReviewData = getVoucherReviewData
             this.isCreateNew = isCreateNew
+            this.isEdit = isEdit
         }
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
@@ -82,6 +84,7 @@ class SetVoucherPeriodFragment : Fragment() {
         private const val DATE_OF_WEEK_FORMAT = "EEE, dd MMM yyyy"
 
         private const val COMBINED_DATE = "dd MMM yyyy HH:mm"
+        private const val COMBINED_DASHED_DATE = "yyyy-MM-dd HH:mm"
     }
 
     private var onNext: (String, String, String, String) -> Unit = { _,_,_,_ -> }
@@ -102,6 +105,7 @@ class SetVoucherPeriodFragment : Fragment() {
     private var onSuccessGetBannerBitmap: (Bitmap) -> Unit = { _ -> }
     private var getVoucherReviewData: () -> VoucherReviewUiModel? = { null }
     private var isCreateNew: Boolean = true
+    private var isEdit: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -317,8 +321,14 @@ class SetVoucherPeriodFragment : Fragment() {
                     if (uiModel.startDate.isNotEmpty() && uiModel.endDate.isNotEmpty()) {
                         val startTime = "${uiModel.startDate} ${uiModel.startHour}"
                         val endTime = "${uiModel.endDate} ${uiModel.endHour}"
-                        startCalendar = getGregorianDate(startTime, COMBINED_DATE)
-                        endCalendar = getGregorianDate(endTime, COMBINED_DATE)
+                        val dateFormat =
+                                if (isEdit) {
+                                    COMBINED_DASHED_DATE
+                                } else {
+                                    COMBINED_DATE
+                                }
+                        startCalendar = getGregorianDate(startTime, dateFormat)
+                        endCalendar = getGregorianDate(endTime, dateFormat)
                         startCalendar?.run {
                             viewModel.setStartDateCalendar(this)
                         }
