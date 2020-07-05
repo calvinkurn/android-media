@@ -33,7 +33,7 @@ public class PaymentOption implements Parcelable {
         paymentName = in.readString();
     }
 
-    public static final Creator<PaymentOption> CREATOR = new Creator<PaymentOption>() {
+    public static final Parcelable.Creator<PaymentOption> CREATOR = new Parcelable.Creator<PaymentOption>() {
         @Override
         public PaymentOption createFromParcel(Parcel in) {
             return new PaymentOption(in);

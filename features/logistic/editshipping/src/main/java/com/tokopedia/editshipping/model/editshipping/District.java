@@ -37,7 +37,7 @@ public class District implements Parcelable {
         this.districtName = in.readString();
     }
 
-    public static final Creator<District> CREATOR = new Creator<District>() {
+    public static final Parcelable.Creator<District> CREATOR = new Parcelable.Creator<District>() {
         @Override
         public District createFromParcel(Parcel source) {
             return new District(source);

@@ -161,7 +161,7 @@ public class ShopShipping implements Parcelable{
     }
 
     @SuppressWarnings("unused")
-    public static final Creator<ShopShipping> CREATOR = new Creator<ShopShipping>() {
+    public static final Parcelable.Creator<ShopShipping> CREATOR = new Parcelable.Creator<ShopShipping>() {
         @Override
         public ShopShipping createFromParcel(Parcel in) {
             return new ShopShipping(in);

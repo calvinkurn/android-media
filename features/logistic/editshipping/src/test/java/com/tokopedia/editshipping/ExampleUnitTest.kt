@@ -1,4 +1,4 @@
-package com.example.editshipping
+package com.tokopedia.editshipping
 
 import org.junit.Test
 

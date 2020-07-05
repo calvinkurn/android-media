@@ -73,7 +73,7 @@ public class CannotCreate implements Parcelable {
         this.shopName = in.readString();
     }
 
-    public static final Creator<CannotCreate> CREATOR = new Creator<CannotCreate>() {
+    public static final Parcelable.Creator<CannotCreate> CREATOR = new Parcelable.Creator<CannotCreate>() {
         @Override
         public CannotCreate createFromParcel(Parcel source) {
             return new CannotCreate(source);

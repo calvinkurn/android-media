@@ -17,7 +17,7 @@ import java.util.List;
 
 public class OpenShopData implements Parcelable {
 
-    public static final Creator<OpenShopData> CREATOR = new Creator<OpenShopData>() {
+    public static final Parcelable.Creator<OpenShopData> CREATOR = new Parcelable.Creator<OpenShopData>() {
         @Override
         public OpenShopData createFromParcel(Parcel source) {
             return new OpenShopData(source);

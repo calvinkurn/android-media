@@ -46,7 +46,7 @@ public class ProvinceCitiesDistrict implements Parcelable {
         this.provinceName = in.readString();
     }
 
-    public static final Creator<ProvinceCitiesDistrict> CREATOR = new Creator<ProvinceCitiesDistrict>() {
+    public static final Parcelable.Creator<ProvinceCitiesDistrict> CREATOR = new Parcelable.Creator<ProvinceCitiesDistrict>() {
         @Override
         public ProvinceCitiesDistrict createFromParcel(Parcel source) {
             return new ProvinceCitiesDistrict(source);
