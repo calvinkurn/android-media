@@ -19,11 +19,11 @@
             android:layout_height="match_parent"
             android:measureAllChildren="false">
 
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:theme="@style/TPProgressBar" />
+              <ProgressBar
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:theme="@style/TPProgressBar" />
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/col_header"
@@ -111,7 +111,7 @@
                             <com.tokopedia.unifycomponents.CardUnify
                                 android:id="@+id/card_hightier_info"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/dp_80"
+                                android:layout_height="@dimen/dp_100"
                                 android:layout_below="@id/img_egg"
                                 android:layout_marginStart="@dimen/tp_margin_medium"
                                 android:layout_marginLeft="@dimen/tp_margin_medium"
@@ -122,26 +122,39 @@
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/container_target"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:padding="@dimen/dp_10">
+                                    android:layout_height="match_parent">
 
                                     <TextView
                                         android:id="@+id/tv_targetText"
-                                        android:layout_width="wrap_content"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginTop="@dimen/dp_4"
-                                        android:layout_marginBottom="@dimen/tp_margin_normal"
-                                        android:drawableEnd="@drawable/ic_right_arrow_white"
-                                        android:drawableRight="@drawable/ic_right_arrow_white"
-                                        android:drawablePadding="@dimen/dp_8"
-                                        android:textColor="@color/grey_560"
+                                        android:layout_marginStart="@dimen/dp_12"
+                                        android:layout_marginLeft="@dimen/dp_12"
+                                        android:layout_marginTop="@dimen/dp_12"
+                                        android:layout_marginBottom="@dimen/dp_12"
+                                        android:lineSpacingExtra="4sp"
+                                        android:textColor="@color/red_30"
                                         android:textSize="@dimen/sp_14"
+                                        android:translationY="-1.84sp"
                                         app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toStartOf="@+id/ic_arrow_icon"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"
-                                        tools:text="Transact 6x more or as much as Rp1.754.000 to become Platinum Member by 31 Des 2020
- much as Rp1.754.000 to become Platinum Member by 31 DTransact 6x more or as much as Rp1.754.000 to become Platinum Member by 31 Des 2020
- much as Rp1.754.000 to become Platinum Member by 31 Des 2020es 2020" />
+                                        tools:text="Transact 6x more or as much as Rp1.754.000 to become Platinum Member by 31 Des e or as much as Rp1.754.000 to become Platinum Member by 31 Des " />
+
+                                    <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/ic_arrow_icon"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/dp_16"
+                                        android:layout_marginLeft="@dimen/dp_16"
+                                        android:layout_marginEnd="@dimen/dp_32"
+                                        android:layout_marginRight="@dimen/dp_32"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@id/tv_targetText"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:srcCompat="@drawable/ic_right_arrow_white" />
 
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>

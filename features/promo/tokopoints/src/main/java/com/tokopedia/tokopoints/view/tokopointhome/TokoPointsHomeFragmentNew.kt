@@ -39,8 +39,6 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
-import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
@@ -66,10 +64,8 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSe
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tp_fragment_homepage_new.*
 import javax.inject.Inject
 
@@ -120,6 +116,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     lateinit var tvSectionSubtitleCateory: TextView
     lateinit var appBarHeader: AppBarLayout
     lateinit var categorySeeAll: TextView
+    lateinit var cardTierInfo: CardUnify
+    private var cardTierInfoHeight = 0
     private var visited = false
     private var introVisitedCheck: IntroVisitedCheck = IntroVisitedCheck()
 
@@ -170,6 +168,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         imageBigLp.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height)).toInt()
         mImgBackground!!.layoutParams = imageBigLp
     }
+
+    /*  private fun cardHighTierInfoHeight() {
+          cardTierInfo.post {
+              cardTierInfoHeight=cardTierInfo.height //height is ready
+          }
+      }*/
 
     private fun hideStatusBar() {
         coordinatorLayout!!.fitsSystemWindows = false
@@ -223,9 +227,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         tokoPointToolbar?.setTitle(R.string.tp_title_tokopoints)
         tokoPointToolbar?.setOnTokoPointToolbarClickListener(this)
-        //Will remove safely later
-        //TokoPointsNotificationManager.fetchNotification(activity, "main", childFragmentManager)
-        //mPresenter.tokopointOnboarding2020(this)
         initObserver()
     }
 
@@ -371,6 +372,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         ivLoyaltyStack = view.findViewById(R.id.img_loyalty_stack)
         dynamicAction = view.findViewById(R.id.dynamic_widget)
         tvLoyaltyLabel = view.findViewById(R.id.text_loyalty_label)
+        cardTierInfo = view.findViewById(R.id.card_hightier_info)
 
         setStatusBarViewHeight()
     }
@@ -788,36 +790,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mContainerMain?.displayedChild = CONTAINER_DATA
         renderToolbarWithHeader(data)
         renderSections(sections)
-    }
-
-    override fun showTokopoint2020(data: PopupNotification) {
-        if (data.title.isEmpty() || data.title == null || data.appLink.isEmpty() || data.appLink == null) {
-            return
-        }
-        val btn: UnifyButton
-        val titleDialog: Typography
-        val descDialog: Typography
-        val boxImageView: ImageView
-        val adb = AlertDialog.Builder(context!!)
-        val view = LayoutInflater.from(context).inflate(R.layout.tp_upcoming_feature_dialog, null)
-        adb.setView(view)
-        btn = view.findViewById(R.id.btn_route)
-        titleDialog = view.findViewById(R.id.tv_dialogTitle)
-        descDialog = view.findViewById(R.id.tv_dialogDesc)
-        boxImageView = view.findViewById(R.id.iv_banner)
-        titleDialog.text = data.title
-        descDialog.text = data.text
-        btn.text = data.buttonText
-        ImageHandler.loadImageFitCenter(context, boxImageView, data.imageURL)
-        val alertDialog = adb.create()
-        alertDialog.window.setBackgroundDrawableResource(android.R.color.transparent)
-        alertDialog.setCancelable(false)
-        alertDialog.setCanceledOnTouchOutside(false)
-        btn.setOnClickListener { v: View? ->
-            RouteManager.route(context, data.appLink)
-            alertDialog.dismiss()
-        }
-        alertDialog.show()
     }
 
     override fun onToolbarMyCouponClick() {

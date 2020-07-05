@@ -206,11 +206,9 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun onErrorBanners(errorMessage: String) {}
     override fun onSuccessBanners(banners: List<CatalogBanner>) {
         hideLoader()
-        if (banners.isEmpty()) {
-            showEmptyCatalogUI()
+        if (banners == null || banners.isEmpty()) {
             return
         }
-
         val pager: ViewPager = view!!.findViewById(R.id.view_pager_banner)
         pager.adapter = CatalogBannerPagerAdapter(context, banners, this)
         //adding bottom dots(Page Indicator)
@@ -219,19 +217,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         pageIndicator?.setIndicator(banners.size)
         view!!.findViewById<View>(R.id.container_pager).visibility = View.VISIBLE
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
-    }
-
-    private fun showEmptyCatalogUI() {
-        mContainerMain?.displayedChild = CONTAINER_EMPTY
-        view?.findViewById<TextView>(R.id.text_title_error2)?.text = "Kupon kategori ini sedang disiapkan"
-        view?.findViewById<TextView>(R.id.text_label_error2)?.text = "Sabar! Kami punya banyak kupon spesial buatmu yang menunggu saatnya dikeluarkan."
-        val btnCOntinue = view?.findViewById<Button>(R.id.button_continue)
-        btnCOntinue?.text = "Lihat Kupon Tersedia"
-        btnCOntinue?.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
-        }
-        view?.findViewById<Button>(R.id.text_empty_action)?.hide()
-
     }
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
@@ -248,7 +233,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         //Setting up filters
         setUpFilters(filters.pointRanges)
         //Setting up subcategories types tabs
-        if (filters == null || filters.categories == null || filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
+        if (filters.categories == null || filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
             mViewPagerAdapter!!.setPointsAvailable(isPointsAvailable)
             //TODO please replace with

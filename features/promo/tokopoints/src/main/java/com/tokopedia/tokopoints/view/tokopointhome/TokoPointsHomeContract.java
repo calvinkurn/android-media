@@ -56,7 +56,6 @@ public interface TokoPointsHomeContract {
 
         void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections);
 
-        void showTokopoint2020(PopupNotification data);
     }
 
     interface Presenter{

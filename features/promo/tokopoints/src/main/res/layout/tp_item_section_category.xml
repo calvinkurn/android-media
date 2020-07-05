@@ -16,7 +16,8 @@
         android:layout_height="@dimen/dp_48"
         android:background="@drawable/ic_squircle"
         android:padding="@dimen/dp_10"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
