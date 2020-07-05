@@ -55,7 +55,7 @@ class VoucherListViewModelTest {
     lateinit var cancelVoucherResponseObserver: Observer<in Result<Int>>
 
     @RelaxedMockK
-    lateinit var localVoucherListObserver: Observer<in Result<List<VoucherUiModel>>>
+    lateinit var localVoucherListObserver: Observer<in List<VoucherUiModel>>
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -268,7 +268,7 @@ class VoucherListViewModelTest {
         with(mViewModel) {
             setSearchKeyword(anyString())
 
-            assert(localVoucherListLiveData.value is Success)
+            assert(localVoucherListLiveData.value != null)
         }
     }
 
@@ -295,7 +295,7 @@ class VoucherListViewModelTest {
 
             setSearchKeyword(dummyKeyword)
 
-            assert((localVoucherListLiveData.value as? Success)?.data == dummySuccessVoucherHistory)
+            assert(localVoucherListLiveData.value  == dummySuccessVoucherHistory)
         }
     }
 
