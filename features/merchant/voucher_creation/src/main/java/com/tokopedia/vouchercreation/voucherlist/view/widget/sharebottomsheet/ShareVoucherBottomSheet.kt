@@ -55,6 +55,7 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView(view: View) = with(view) {
+        mAdapter.clearAllElements()
         mAdapter.addElement(getSocmedList())
         rvMvcShareVoucher.run {
             layoutManager = LinearLayoutManager(view.context)
