@@ -295,7 +295,6 @@ class PlayBroadcastViewModel @Inject constructor(
             }
             _observableLiveInfoState.value = Event(BroadcastState.Start)
         }) {
-            _observableLiveInfoState.value = Event(BroadcastState.Error(it))
         }
     }
 
@@ -307,7 +306,6 @@ class PlayBroadcastViewModel @Inject constructor(
             }
             _observableLiveInfoState.value = Event(BroadcastState.Pause)
         }) {
-            _observableLiveInfoState.value = Event(BroadcastState.Error(it))
         }
     }
 
