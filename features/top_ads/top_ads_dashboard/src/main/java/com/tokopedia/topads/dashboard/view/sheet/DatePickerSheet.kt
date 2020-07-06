@@ -23,7 +23,7 @@ class DatePickerSheet {
             val listUnify = getListData(context, range, dateModel)
             dateList?.setData(listUnify)
             dateList?.run {
-                this.onLoadFinish {
+                dateList?.onLoadFinish {
                     this.setOnItemClickListener { parent, view, position, id ->
                         setSelected(listUnify, position) {
                             setSelectedPos(position, dateModel)
