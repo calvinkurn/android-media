@@ -37,7 +37,7 @@ class DatePickerSheet {
             dateList?.run {
                 this.onLoadFinish {
                     this.setOnItemClickListener { parent, view, position, id ->
-                        setSelected(listUnify, position) {
+                        this.setSelected(listUnify, position) {
                             if (position != CUSTOM_DATE) {
                                 onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
                                 dialog.dismiss()
@@ -61,28 +61,13 @@ class DatePickerSheet {
                         }
                     }
 
-                    setSelected(listUnify, index) {}
+                    this?.setSelected(listUnify, index) {}
                 }
             }
             btnClose?.setOnClickListener {
                 dismissDialog()
             }
         }
-    }
-
-    private fun ListUnify.setSelected(items: List<ListItemUnify>, position: Int, onChecked: (selectedItem: ListItemUnify) -> Any) = run {
-        val selectedItem = this.getItemAtPosition(position) as ListItemUnify
-        items.filter { it.getShownRadioButton()?.isChecked ?: false }
-                .filterNot { it == selectedItem }
-                .onEach { it.getShownRadioButton()?.isChecked = false }
-        selectedItem.getShownRadioButton()?.isChecked = true
-        onChecked(selectedItem)
-    }
-
-    private fun ListItemUnify.getShownRadioButton() = run {
-        if (listLeftRadiobtn?.visibility == View.VISIBLE) listLeftRadiobtn
-        else if (listRightRadiobtn?.visibility == View.VISIBLE) listRightRadiobtn
-        else null
     }
 
     fun show() {
@@ -105,4 +90,19 @@ class DatePickerSheet {
             return fragment
         }
     }
+}
+
+fun ListUnify.setSelected(items: List<ListItemUnify>, position: Int, onChecked: (selectedItem: ListItemUnify) -> Any) = run {
+    val selectedItem = this.getItemAtPosition(position) as ListItemUnify
+    items.filter { it.getShownRadioButton()?.isChecked ?: false }
+            .filterNot { it == selectedItem }
+            .onEach { it.getShownRadioButton()?.isChecked = false }
+    selectedItem.getShownRadioButton()?.isChecked = true
+    onChecked(selectedItem)
+}
+
+fun ListItemUnify.getShownRadioButton() = run {
+    if (listLeftRadiobtn?.visibility == View.VISIBLE) listLeftRadiobtn
+    else if (listRightRadiobtn?.visibility == View.VISIBLE) listRightRadiobtn
+    else null
 }
