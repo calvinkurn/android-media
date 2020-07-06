@@ -57,13 +57,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
             mAliVcLivePusher?.setLivePushErrorListener(mAliVcLivePushErrorListener)
             mAliVcLivePusher?.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
-            }
-        } catch (e: IllegalStateException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
+                throw IllegalStateException(e)
             }
         }
     }
@@ -71,7 +69,9 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override suspend fun startPreview(surfaceView: SurfaceView) {
         if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED) {
-            throw IllegalStateException("android.permission.CAMERA not granted")
+            if (GlobalConfig.DEBUG)
+                throw IllegalStateException("android.permission.CAMERA not granted")
+            return
         }
         mAliVcLivePusher?.startPreview(surfaceView)
     }
@@ -80,6 +80,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             mAliVcLivePusher?.stopPreview()
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -101,10 +102,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mTimerDuration?.start()
             mPlayPusherStatus = PlayPusherStatus.Active
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
+                throw IllegalStateException(e)
             }
-            throw IllegalStateException(e)
         }
     }
 
@@ -112,10 +114,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             mAliVcLivePusher?.restartPushAync()
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
+                throw IllegalStateException(e)
             }
-            throw IllegalStateException(e)
         }
     }
 
@@ -126,6 +129,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mTimerDuration?.stop()
             mPlayPusherStatus = PlayPusherStatus.Stop
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -133,14 +137,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override suspend fun switchCamera() {
-        try {
-            mAliVcLivePusher?.switchCamera()
-        } catch (e: Exception) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
-            throw IllegalStateException(e)
-        }
+        mAliVcLivePusher?.switchCamera()
     }
 
     override suspend fun resume() {
@@ -150,10 +147,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mTimerDuration?.resume()
             mPlayPusherStatus = PlayPusherStatus.Active
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
+                throw IllegalStateException(e)
             }
-            throw IllegalStateException(e)
         }
     }
 
@@ -164,10 +162,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
                 mTimerDuration?.pause()
                 mPlayPusherStatus = PlayPusherStatus.Paused
             } catch (e: Exception) {
+                // crashlytics
                 if (GlobalConfig.DEBUG) {
                     e.printStackTrace()
+                    throw IllegalStateException(e)
                 }
-                throw IllegalStateException(e)
             }
     }
 
@@ -176,10 +175,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mAliVcLivePusher?.destroy()
             mTimerDuration?.destroy()
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
+                throw IllegalStateException(e)
             }
-            throw IllegalStateException(e)
         }
     }
 

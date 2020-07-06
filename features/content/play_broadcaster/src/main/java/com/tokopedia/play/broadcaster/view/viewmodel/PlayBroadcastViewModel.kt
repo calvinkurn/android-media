@@ -335,6 +335,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun destroyPushStream() {
         scope.launchCatchError(dispatcher.io, block = {
+            playPusher.destroy()
             playSocket.destroy()
         }) {
             _observableLiveInfoState.value = Event(BroadcastState.Error(it))
