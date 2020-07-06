@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
@@ -294,6 +295,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
         return if (productVariant == null) {
             ProductVariantInputModel(
+                    price = productInputModel.value?.detailInputModel?.price.orZero(),
                     stock = MIN_PRODUCT_STOCK_LIMIT,
                     pictures = variantPicture,
                     combination = combination,

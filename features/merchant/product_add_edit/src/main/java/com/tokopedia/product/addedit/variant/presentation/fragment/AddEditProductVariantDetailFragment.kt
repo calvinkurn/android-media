@@ -231,7 +231,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun observeInputStatus() {
         viewModel.errorCounter.observe(this, Observer {
-            updateSubmitButtonEnabledStatus(it)
+            buttonSave.isEnabled = it.orZero() <= 0
         })
     }
 
@@ -309,22 +309,15 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         bottomSheet.show(fragmentManager)
     }
 
-    private fun updateSubmitButtonEnabledStatus(errorCount: Int?) {
-        buttonSave.isEnabled = errorCount.orZero() <= 0
-    }
-
     private fun submitVariantInput() {
         viewModel.updateProductInputModel()
-        updateSubmitButtonEnabledStatus(viewModel.errorCounter.value)
-        if (buttonSave.isEnabled) {
-            viewModel.productInputModel.value?.apply {
-                val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
-                SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+        viewModel.productInputModel.value?.apply {
+            val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
-                val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
-                activity?.setResult(Activity.RESULT_OK, intent)
-                activity?.finish()
-            }
+            val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
         }
     }
 
