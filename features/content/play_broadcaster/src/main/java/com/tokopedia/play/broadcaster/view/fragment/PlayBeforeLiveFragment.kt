@@ -62,6 +62,8 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private lateinit var exitDialog: DialogUnify
 
+    private lateinit var cacheManager: SaveInstanceCacheManager
+
     private var toasterBottomMargin = 0
 
     private val setupResultListener = object : SetupResultListener {
@@ -80,6 +82,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         prepareViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        cacheManager = SaveInstanceCacheManager(requireContext(), savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -125,7 +128,6 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val cacheManager = SaveInstanceCacheManager(requireContext(), true)
         cacheManager.onSave(outState)
         cacheManager.put("a", "aaa")
         cacheManager.put(KEY_SETUP_DATA, parentViewModel.getHydraSetupData())
@@ -212,7 +214,6 @@ class PlayBeforeLiveFragment @Inject constructor(
     //endregion
 
     private fun populateSavedData(savedInstanceState: Bundle) {
-        val cacheManager = SaveInstanceCacheManager(requireContext(), savedInstanceState)
         val savedSetupData = cacheManager.get<HydraSetupData>(KEY_SETUP_DATA, HydraSetupData::class.java)
         val a = cacheManager.get<String>("a", String::class.java)
         println("Cache Manager a: $a")
