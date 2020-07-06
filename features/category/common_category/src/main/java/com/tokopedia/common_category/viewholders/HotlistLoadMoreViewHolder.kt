@@ -12,6 +12,6 @@ class HotlistLoadMoreViewHolder(itemView: View?) : AbstractViewHolder<LoadingMor
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.loading_layout
+        val LAYOUT = com.tokopedia.baselist.R.layout.loading_layout
     }
 }

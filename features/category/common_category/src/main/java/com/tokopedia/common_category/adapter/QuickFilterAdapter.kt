@@ -97,9 +97,9 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
 
     private fun setBackgroundResource(holderQuickFilter: QuickFilterViewHolder, option: Option) {
         if (quickFilterListener != null && quickFilterListener.isQuickFilterSelected(option)) {
-            holderQuickFilter.itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_selected)
+            holderQuickFilter.itemContainer.setBackgroundResource(com.tokopedia.filter.R.drawable.quick_filter_item_background_selected)
         } else {
-            holderQuickFilter.itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_neutral)
+            holderQuickFilter.itemContainer.setBackgroundResource(com.tokopedia.filter.R.drawable.quick_filter_item_background_neutral)
         }
     }
 
