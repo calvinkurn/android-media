@@ -40,7 +40,6 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         android:layout_marginTop="@dimen/dp_12"
-        app:layout_constraintBottom_toTopOf="@+id/recycleList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
