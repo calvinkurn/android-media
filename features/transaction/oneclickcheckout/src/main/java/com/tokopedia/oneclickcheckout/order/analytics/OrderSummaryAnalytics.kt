@@ -284,6 +284,39 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
+    fun eventViewPreselectedCourierOption(spId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_PRESELECTED_COURIER_OPTION,
+                spId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickUbahWhenDurationError(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_UBAH_WHEN_DURATION_ERROR,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickSelectedDurationOption(serviceId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_SELECTED_DURATION_OPTION,
+                serviceId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
 

@@ -50,7 +50,6 @@ import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewMode
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.*
@@ -407,16 +406,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
         TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, getFlightSearchTicker())
-        getFlightSearchTicker().setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (linkUrl.isNotEmpty()) {
-                    RouteManager.route(context, linkUrl.toString())
-                }
-            }
-
-            override fun onDismiss() {}
-
-        })
         if (travelTickerModel.url.isNotEmpty()) {
             getFlightSearchTicker().setOnClickListener {
                 RouteManager.route(requireContext(), travelTickerModel.url)

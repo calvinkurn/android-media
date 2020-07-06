@@ -60,13 +60,23 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
 }
 
 project.ext {
-    artifactId = 'change-password'
+    artifactId = 'managepassword'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.2"
-    artifactName = "changepassword-release"
+    versionName = "0.0.1"
+    artifactName = "managepassword-release"
 }
 
 apply from: '../../../publish_local.gradle'
+
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
