@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -109,6 +110,15 @@ class PlayBeforeLiveFragment @Inject constructor(
         return true
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ProductEditFragment -> childFragment.setListener(setupResultListener)
+            is EditCoverTitleBottomSheet -> childFragment.setListener(setupResultListener)
+            is CoverEditFragment -> childFragment.setListener(setupResultListener)
+        }
+    }
+
     private fun initView(view: View) {
         with(view) {
             ivImagePreview = findViewById(R.id.iv_image_preview)
@@ -198,7 +208,6 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun openEditCoverImagePage() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val editCoverFragment = fragmentFactory.instantiate(requireContext().classLoader, CoverEditFragment::class.java.name) as CoverEditFragment
-        editCoverFragment.setListener(setupResultListener)
         childFragmentManager.beginTransaction()
                 .replace(flEdit.id, editCoverFragment)
                 .commit()
@@ -207,7 +216,6 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun openEditProductPage() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val editProductFragment = fragmentFactory.instantiate(requireContext().classLoader, ProductEditFragment::class.java.name) as ProductEditFragment
-        editProductFragment.setListener(setupResultListener)
         childFragmentManager.beginTransaction()
                 .replace(flEdit.id, editProductFragment)
                 .commit()
@@ -271,7 +279,6 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun getEditTitleBottomSheet(): EditCoverTitleBottomSheet {
         val editTitleBottomSheet = EditCoverTitleBottomSheet()
-        editTitleBottomSheet.setListener(setupResultListener)
         editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         return editTitleBottomSheet
     }
