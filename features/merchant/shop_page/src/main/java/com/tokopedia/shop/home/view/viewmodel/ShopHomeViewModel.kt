@@ -100,6 +100,7 @@ class ShopHomeViewModel @Inject constructor(
             )
 
             shopLayoutWidget.await()?.let {
+
                 val newShopPageHomeLayoutUiModel = asyncCatchError(
                         dispatcherProvider.io(),
                         block = { getPlayWidgetCarousel(shopId, it) },

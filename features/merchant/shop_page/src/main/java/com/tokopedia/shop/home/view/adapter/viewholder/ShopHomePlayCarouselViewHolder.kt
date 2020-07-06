@@ -9,6 +9,7 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
 import kotlinx.android.synthetic.main.item_shop_home_play_carousel.view.*
@@ -38,9 +39,15 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun bind(element: ShopHomePlayCarouselUiModel?, payloads: MutableList<Any>) {
-        playCarouselCardDataModel = element
-        itemView.play_banner_carousel.visibility = if(element == null) View.GONE else View.VISIBLE
-        element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
+        if(payloads.isNotEmpty()){
+            if(payloads.contains(ShopHomeAdapter.ON_DESTROY)){
+                itemView.play_banner_carousel?.onDestroy()
+            } else if(payloads.contains(ShopHomeAdapter.ON_RESUME)){
+                itemView.play_banner_carousel?.onResume()
+            } else if(payloads.contains(ShopHomeAdapter.ON_PAUSE)){
+                itemView.play_banner_carousel?.onPause()
+            }
+        }
     }
 
     override fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {

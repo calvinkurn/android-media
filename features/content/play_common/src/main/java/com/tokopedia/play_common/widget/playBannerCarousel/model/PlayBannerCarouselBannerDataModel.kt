@@ -10,4 +10,12 @@ class PlayBannerCarouselBannerDataModel(
     override fun type(typeFactory: PlayBannerCarouselTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun getId(): Any {
+        return applink
+    }
+
+    override fun equalsWith(other: BasePlayBannerCarouselModel): Boolean {
+        return other is PlayBannerCarouselBannerDataModel && other.applink == applink && other.imageUrl == imageUrl
+    }
 }

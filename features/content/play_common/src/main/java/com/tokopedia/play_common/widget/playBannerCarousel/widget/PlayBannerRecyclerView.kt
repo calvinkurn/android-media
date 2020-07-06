@@ -184,6 +184,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             val exoPlayer = videoPlayer.videoPlayer
             val mediaUrl: String = (mediaObjects[playPosition] as PlayBannerCarouselItemDataModel).videoUrl
             val videoSource: MediaSource = getMediaSourceBySource(context, Uri.parse(mediaUrl), "Tokopedia Android $playPosition")
+            exoPlayer.volume = 0f
             videoPlayer.position = playPosition
             videoPlayer.viewHolderParent = holder.itemView
             videoPlayer.autoPlayJob = launch {
@@ -254,6 +255,18 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                     return
                 }
             }
+        }
+    }
+
+    fun pausePlayers(){
+        for(videoPlayer in videoPlayers){
+            videoPlayer.videoPlayer.playWhenReady = false
+        }
+    }
+
+    fun resumePlayers(){
+        for(videoPlayer in videoPlayers){
+            videoPlayer.videoPlayer.playWhenReady = true
         }
     }
 

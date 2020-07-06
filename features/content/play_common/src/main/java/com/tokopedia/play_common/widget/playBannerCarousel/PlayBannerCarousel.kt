@@ -92,6 +92,14 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         recyclerView.playVideos()
     }
 
+    fun onPause(){
+        recyclerView.pausePlayers()
+    }
+
+    fun onResume(){
+        recyclerView.resumePlayers()
+    }
+
     fun onDestroy(){
         recyclerView.releasePlayer()
         stopTimer()
@@ -146,7 +154,6 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
                     playBannerCarouselDataModel?.let {
                         recyclerView.resetVideoPlayer()
                         listener?.onRefreshView(it)
-                        showRefreshShimmer()
                     }
                 }
 

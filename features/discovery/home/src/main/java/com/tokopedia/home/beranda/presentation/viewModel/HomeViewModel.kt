@@ -284,10 +284,12 @@ open class HomeViewModel @Inject constructor(
                 }
             }
         }){
-            val newList = mutableListOf<Visitable<*>>()
-            newList.addAll(_homeLiveData.value?.list ?: listOf())
-            val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+            if(playCarouselCardDataModel.playBannerCarouselDataModel.channelList.isEmpty()) {
+                val newList = mutableListOf<Visitable<*>>()
+                newList.addAll(_homeLiveData.value?.list ?: listOf())
+                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+            }
         }
     }
 

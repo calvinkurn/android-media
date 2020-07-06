@@ -32,4 +32,25 @@ data class PlayBannerCarouselItemDataModel(
     override fun type(typeFactory: PlayBannerCarouselTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun getId(): Any {
+        return channelId
+    }
+
+    override fun equalsWith(other: BasePlayBannerCarouselModel): Boolean {
+        return other is PlayBannerCarouselItemDataModel
+                && other.channelTitle == channelTitle
+                && other.remindMe == remindMe
+                && other.isLive == isLive
+                && other.isPromo == isPromo
+                && other.isShowTotalView == isShowTotalView
+                && other.applink == applink
+                && other.channelCreator == channelCreator
+                && other.countView == countView
+                && other.videoType == videoType
+                && other.videoId == videoId
+                && other.coverUrl == coverUrl
+                && other.videoUrl == videoUrl
+                && other.startTime == startTime
+    }
 }
