@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
@@ -59,6 +59,7 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
+import com.tokopedia.vouchercreation.voucherlist.view.adapter.VoucherListAdapter
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
@@ -81,7 +82,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFactoryImpl>(),
+class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>(),
         VoucherViewHolder.Listener, DownloadHelper.DownloadHelperListener {
 
     companion object {
@@ -201,6 +202,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl> =
+            VoucherListAdapter(adapterTypeFactory).apply {
+                setOnAdapterInteractionListener(this@VoucherListFragment)
+            }
+
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeMvcList
@@ -225,7 +231,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun hasInitialSwipeRefresh(): Boolean = true
 
-    override fun onItemClicked(t: Visitable<*>?) {
+    override fun onItemClicked(t: BaseVoucherListUiModel?) {
 
     }
 
