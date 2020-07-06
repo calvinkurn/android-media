@@ -37,7 +37,7 @@ class DatePickerSheet {
             dateList?.run {
                 this.onLoadFinish {
                     this.setOnItemClickListener { parent, view, position, id ->
-                        this.setSelected(listUnify, position) {
+                        setSelected(listUnify, position) {
                             if (position != CUSTOM_DATE) {
                                 onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
                                 dialog.dismiss()
@@ -61,7 +61,7 @@ class DatePickerSheet {
                         }
                     }
 
-                    this?.setSelected(listUnify, index) {}
+                    setSelected(listUnify, index) {}
                 }
             }
             btnClose?.setOnClickListener {
