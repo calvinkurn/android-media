@@ -277,4 +277,12 @@
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
+    <!-- Content -->
+    <string name="title_kol_comment">Comments</string>
+    <string name="title_kol_post_detail">Post Detail</string>
+    <string name="title_kol_media_preview">Media Preview</string>
+    <string name="title_kol_video_detail">Video Detail</string>
+    <string name="title_kol_post_youtube">Post Youtube</string>
+    <string name="title_kol_report">Laporan Konten</string>
+
 </resources>
