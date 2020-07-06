@@ -233,7 +233,6 @@
     <string name="title_voucher_creation">Voucher Create</string>
 
     <!-- Dynamic features Shop Score / Performa Toko -->
-    <string name="title_shop_score_seller">Performa Toko</string>
-    <string name="title_shop_score_sellerapp">Performa Toko</string>
+    <string name="title_shop_score_seller">Skor Performa Toko</string>
 
 </resources>
