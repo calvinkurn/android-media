@@ -298,7 +298,8 @@ public class TopChatAnalytics {
                 product.getPriceInt(),
                 null,
                 getItemDimension40(product),
-                PRODUCT_INDEX
+                PRODUCT_INDEX,
+                new HashMap<>()
         );
         products.add(topChatProduct);
 
@@ -335,7 +336,9 @@ public class TopChatAnalytics {
                 null,
                 PRODUCT_INDEX,
                 getItemList(product),
-                getItemDimension40(product)
+                getItemDimension40(product),
+                null,
+                null
         );
         products.add(product1);
 
