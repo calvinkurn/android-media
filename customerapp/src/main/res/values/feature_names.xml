@@ -138,6 +138,8 @@
     <string name="catalog_host">catalog</string>
     <string name="label_kategori">Belanja di Tokopedia</string>
     <string name="label_category">category</string>
+    <string name="hotlist_label">hotlist</string>
+
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
