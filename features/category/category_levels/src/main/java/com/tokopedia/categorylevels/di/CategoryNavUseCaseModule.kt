@@ -64,13 +64,6 @@ class CategoryNavUseCaseModule {
         return CategoryProductUseCase(graphqlUseCase)
     }
 
-    @CategoryNavScope
-    @Named("topAdsProductListing")
-    @Provides
-    fun provideTopAdsUseCase(): TopAdsProductsUseCase {
-        return TopAdsProductsUseCase()
-    }
-
 
     @CategoryNavScope
     @Provides
