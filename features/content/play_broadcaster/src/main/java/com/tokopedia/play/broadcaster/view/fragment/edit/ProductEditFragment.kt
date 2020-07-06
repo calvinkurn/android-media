@@ -65,7 +65,7 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        setupView(view)
+        setupView(view, savedInstanceState)
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -95,10 +95,10 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
     private fun initView(view: View) {
     }
 
-    private fun setupView(view: View) {
+    private fun setupView(view: View, savedInstanceState: Bundle?) {
         viewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
 
-        openEditProductBottomSheet()
+        if (savedInstanceState == null) openEditProductBottomSheet()
     }
 
     private fun openProductSetupBottomSheet() {

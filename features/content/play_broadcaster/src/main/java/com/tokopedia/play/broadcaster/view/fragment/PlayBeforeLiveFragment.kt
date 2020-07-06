@@ -223,21 +223,17 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun openEditCoverImagePage() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val editCoverFragment = fragmentFactory.instantiate(requireContext().classLoader, CoverEditFragment::class.java.name) as CoverEditFragment
-        if (childFragmentManager.findFragmentByTag(TAG_COVER_EDIT) == null) {
-            childFragmentManager.beginTransaction()
-                    .replace(flEdit.id, editCoverFragment, TAG_COVER_EDIT)
-                    .commit()
-        }
+        childFragmentManager.beginTransaction()
+                .replace(flEdit.id, editCoverFragment, TAG_COVER_EDIT)
+                .commit()
     }
 
     private fun openEditProductPage() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val editProductFragment = fragmentFactory.instantiate(requireContext().classLoader, ProductEditFragment::class.java.name) as ProductEditFragment
-        if (childFragmentManager.findFragmentByTag(TAG_PRODUCT_EDIT) == null) {
-            childFragmentManager.beginTransaction()
-                    .replace(flEdit.id, editProductFragment, TAG_PRODUCT_EDIT)
-                    .commit()
-        }
+        childFragmentManager.beginTransaction()
+                .replace(flEdit.id, editProductFragment, TAG_PRODUCT_EDIT)
+                .commit()
     }
 
     private fun openEditCoverTitlePage() {

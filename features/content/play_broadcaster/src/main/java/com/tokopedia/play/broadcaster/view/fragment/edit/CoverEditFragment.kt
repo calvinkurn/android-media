@@ -76,7 +76,7 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        setupView(view)
+        setupView(view, savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -108,11 +108,13 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
     private fun initView(view: View) {
     }
 
-    private fun setupView(view: View) {
+    private fun setupView(view: View, savedInstanceState: Bundle?) {
         dataStoreViewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
 
-        getImagePickerHelper()
-                .show()
+        if (savedInstanceState == null) {
+            getImagePickerHelper()
+                    .show()
+        }
     }
 
     private fun getImagePickerHelper(): CoverImagePickerHelper {
