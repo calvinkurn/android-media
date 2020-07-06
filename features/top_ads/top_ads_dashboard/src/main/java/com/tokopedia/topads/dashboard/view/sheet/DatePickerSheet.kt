@@ -2,13 +2,13 @@ package com.tokopedia.topads.dashboard.view.sheet
 
 import android.content.Context
 import android.view.View
-import android.widget.ImageView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
+import kotlinx.android.synthetic.main.topads_dash_datepicker_bottomsheet_layout.*
 
 class DatePickerSheet {
 
@@ -16,7 +16,7 @@ class DatePickerSheet {
     var onItemClick: ((startDate: Long, endDate: Long, position: Int) -> Unit)? = null
     var customDatepicker: (() -> Unit)? = null
 
-    private fun setupView(context: Context, index: Int, range: String, dateList: ListUnify?, btnClose: ImageView?) {
+    private fun setupView(context: Context, index: Int, range: String) {
         dialog?.let { dialog ->
             val listUnify = ArrayList<ListItemUnify>()
             val dateModel = Utils.getPeriodRangeList(context)
@@ -32,31 +32,29 @@ class DatePickerSheet {
                 data.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
                 listUnify.add(data)
             }
-            dateList?.setData(listUnify)
+            dialog.date_list.setData(listUnify)
 
-            dateList?.run {
+            fun onSelect(position: Int) {
+                if (position != CUSTOM_DATE) {
+                    onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
+                    dialog.dismiss()
+                } else {
+                    customDatepicker?.invoke()
+                    dialog.dismiss()
+                }
+            }
+
+            dialog.date_list.run {
                 this.onLoadFinish {
                     this.setOnItemClickListener { parent, view, position, id ->
                         setSelected(listUnify, position) {
-                            if (position != CUSTOM_DATE) {
-                                onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
-                                dialog.dismiss()
-                            } else {
-                                customDatepicker?.invoke()
-                                dialog.dismiss()
-                            }
+                            onSelect(position)
                         }
                     }
                     listUnify.forEachIndexed { position, it ->
                         it.listRightRadiobtn?.setOnClickListener {
                             this.setSelected(listUnify, position) {
-                                if (position != CUSTOM_DATE) {
-                                    onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
-                                    dialog.dismiss()
-                                } else {
-                                    customDatepicker?.invoke()
-                                    dialog.dismiss()
-                                }
+                                onSelect(position)
                             }
                         }
                     }
@@ -64,7 +62,7 @@ class DatePickerSheet {
                     this?.setSelected(listUnify, index) {}
                 }
             }
-            btnClose?.setOnClickListener {
+            dialog.btn_close.setOnClickListener {
                 dismissDialog()
             }
         }
@@ -99,9 +97,7 @@ class DatePickerSheet {
             val fragment = DatePickerSheet()
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_dash_datepicker_bottomsheet_layout)
-            val dateList: ListUnify? = fragment.dialog?.findViewById(R.id.date_list)
-            val btnClose: ImageView? = fragment.dialog?.findViewById(R.id.btn_close)
-            fragment.setupView(context, index, range, dateList, btnClose)
+            fragment.setupView(context, index,range)
             return fragment
         }
     }
