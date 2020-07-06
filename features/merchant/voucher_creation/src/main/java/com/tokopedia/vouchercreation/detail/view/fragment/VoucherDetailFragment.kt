@@ -4,10 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -38,6 +35,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
@@ -55,6 +53,7 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
+import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.*
 import javax.inject.Inject
 
 /**
@@ -124,6 +123,11 @@ class VoucherDetailFragment : BaseDetailFragment() {
         setHasOptionsMenu(true)
 
         setupView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.flush()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -249,7 +253,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     override fun showTipsAndTrickBottomSheet() {
         VoucherCreationTracking.sendVoucherDetailClickTracking(
                 status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
-                action = Click.COPY_PROMO_CODE,
+                action = Click.TIPS_TRICKS,
                 userId = userSession.userId
         )
         if (!isAdded) return
@@ -302,7 +306,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     override fun onImpression(dataKey: String) {
         when(dataKey) {
             PERIOD_DATA_KEY -> {
-                VoucherCreationTracking.sendVoucherDetailClickTracking(
+                VoucherCreationTracking.sendVoucherDetailImpressionTracking(
                         status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
                         action = VoucherCreationAnalyticConstant.EventAction.Impression.DISPLAY_PERIOD,
                         userId = userSession.userId
@@ -315,12 +319,14 @@ class VoucherDetailFragment : BaseDetailFragment() {
     private fun observeLiveData() {
         viewLifecycleOwner.run {
             observe(viewModel.merchantVoucherModelLiveData) { result ->
+                (activity as? MvcPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
                 when(result) {
                     is Success -> {
                         adapter.clearAllElements()
                         voucherUiModel = result.data
                         sendOpenScreenTracking()
                         renderVoucherDetailInformation(result.data)
+                        rvMvcVoucherDetail?.setOnLayoutListenerReady()
                     }
                     is Fail -> {
                         clearAllData()
@@ -360,6 +366,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     private fun setupView() = view?.run {
         showLoadingState()
         voucherId?.run {
+            (activity as? MvcPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
             viewModel.getVoucherDetail(this)
         }
     }
@@ -444,7 +451,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
             VoucherCreationTracking.sendShareClickTracking(
                     socmedType = socmedType,
                     userId = userSession.userId,
-                    isDetail = false
+                    isDetail = true
             )
         }
     }
@@ -516,7 +523,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                         getVoucherInfoSection(voucherTargetType, name, code, voucherInfoHasCta).apply {
                             onPromoCodeCopied = {
                                 VoucherCreationTracking.sendVoucherDetailClickTracking(
-                                        isDetailEvent = status == VoucherStatusConst.NOT_STARTED,
+                                        isDetailEvent = status != VoucherStatusConst.NOT_STARTED,
                                         status = voucherUiModel.status,
                                         action = Click.COPY_PROMO_CODE,
                                         userId = userSession.userId
@@ -649,6 +656,17 @@ class VoucherDetailFragment : BaseDetailFragment() {
             ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
             val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
             helper.downloadFile { true }
+        }
+    }
+
+    private fun View.setOnLayoutListenerReady() {
+        viewTreeObserver?.run {
+            addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    (activity as? MvcPerformanceMonitoringListener)?.finishMonitoring()
+                    removeOnGlobalLayoutListener(this)
+                }
+            })
         }
     }
 }

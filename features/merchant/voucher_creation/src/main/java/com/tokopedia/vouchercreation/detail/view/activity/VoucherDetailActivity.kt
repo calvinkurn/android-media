@@ -11,13 +11,17 @@ import com.tokopedia.kotlin.extensions.view.getIntIntentExtra
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
 
 /**
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class VoucherDetailActivity : BaseActivity() {
+class VoucherDetailActivity : BaseActivity(), MvcPerformanceMonitoringListener {
 
     companion object {
         const val VOUCHER_ID = "voucher_id"
@@ -27,16 +31,33 @@ class VoucherDetailActivity : BaseActivity() {
         }
     }
 
+    private val performanceMonitoring: MvcPerformanceMonitoringInterface by lazy {
+        MvcPerformanceMonitoring(MvcPerformanceMonitoringType.Detail)
+    }
+
     private val voucherId by getIntIntentExtra(VOUCHER_ID, 0)
 
     override fun getScreenName(): String = this::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring.initMvcPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_detail)
 
         showFragment()
         setWhiteStatusBar()
+    }
+
+    override fun startNetworkPerformanceMonitoring() {
+        performanceMonitoring.startNetworkMvcPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        performanceMonitoring.startRenderMvcPerformanceMonitoring()
+    }
+
+    override fun finishMonitoring() {
+        performanceMonitoring.stopPerformanceMonitoring()
     }
 
     private fun showFragment() {

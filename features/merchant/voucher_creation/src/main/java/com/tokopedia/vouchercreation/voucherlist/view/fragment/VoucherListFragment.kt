@@ -44,6 +44,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.common.utils.Socmed
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
@@ -164,6 +165,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? MvcPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
         setHasOptionsMenu(true)
 
         if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
@@ -183,6 +185,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
         setupView()
         observeLiveData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mViewModel.flush()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -449,7 +456,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 userId = userSession.userId
         )
         clearAllData()
-        loadData(1)
+        loadInitialData()
     }
 
     override fun onDownloadComplete() {}
@@ -472,13 +479,26 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_CANCELED && requestCode == CreateMerchantVoucherStepsActivity.REQUEST_CODE) {
-            view?.run {
-                val errorMessage = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE).toBlankOrString()
-                Toaster.make(this,
-                        errorMessage,
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_ERROR)
+        if (requestCode == CreateMerchantVoucherStepsActivity.REQUEST_CODE) {
+            when (resultCode) {
+                Activity.RESULT_CANCELED -> {
+                    view?.run {
+                        val errorMessage = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE)
+                        errorMessage?.let { message ->
+                            Toaster.make(this,
+                                    message,
+                                    Toaster.LENGTH_SHORT,
+                                    Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+                Activity.RESULT_OK -> {
+                    if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
+                        showSuccessCreateBottomSheet(successVoucherId)
+                    } else if (isNeedToShowSuccessUpdateDialog) {
+                        showSuccessUpdateToaster()
+                    }
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -494,6 +514,13 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 )
             }
             NoResultStateUiModel.DATA_KEY -> {
+                VoucherCreationTracking.sendVoucherListImpressionTracking(
+                        action = Impression.NO_RESULT,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
+            }
+            EmptyStateUiModel.DATA_KEY -> {
                 VoucherCreationTracking.sendVoucherListImpressionTracking(
                         action = Impression.NO_RESULT,
                         isActive = isActiveVoucher,
@@ -680,7 +707,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                 Toaster.TYPE_NORMAL,
                                 context?.getString(R.string.mvc_oke).toBlankOrString())
                     }
-                    loadData(1)
+                    loadInitialData()
                 }
                 .setOnFailUpdateVoucher { errorMessage ->
                     view?.run {
@@ -735,12 +762,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun setupSearchBar() {
         searchBarMvc?.run {
-            setOnClickListener {
-                VoucherCreationTracking.sendVoucherListClickTracking(
-                        action = Click.SEARCH_BAR,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
-                )
+            searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    VoucherCreationTracking.sendVoucherListClickTracking(
+                            action = Click.SEARCH_BAR,
+                            isActive = isActiveVoucher,
+                            userId = userSession.userId
+                    )
+                }
             }
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -749,7 +778,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     if (keyword.isNotEmpty()) {
                         mViewModel.setSearchKeyword(keyword)
                     } else {
-                        loadData(1)
+                        loadInitialData()
                     }
 
                     return@setOnEditorActionListener true
@@ -758,7 +787,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             }
             clearListener = {
                 clearAllData()
-                loadData(1)
+                loadInitialData()
             }
         }
     }
@@ -804,7 +833,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         isSortApplied = false
 
         clearAllData()
-        loadData(1)
+        loadInitialData()
     }
 
     private fun showSortBottomSheet() {
@@ -821,7 +850,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 ?.setOnSortClickedListener {
                     VoucherCreationTracking.sendVoucherListClickTracking(
                             action = Click.APPLY,
-                            label = 
+                            label =
                                     when(it?.key) {
                                         SortBy.NEWEST_DONE_DATE -> EventLabel.NEWEST
                                         SortBy.OLDEST_DONE_DATE -> EventLabel.OLDEST
@@ -883,15 +912,17 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
         voucherSort = VoucherSort.FINISH_TIME
 
-        val activeSort = sortItems.first { it.isSelected }
-        view?.headerChipMvc?.run {
-            setActiveSort(activeSort)
-            showResetButton()
+        val activeSort = sortItems.firstOrNull { it.isSelected }
+        activeSort?.let { sort ->
+            view?.headerChipMvc?.run {
+                setActiveSort(sort)
+                showResetButton()
+            }
+
+            isInverted = sort.key == SortBy.OLDEST_DONE_DATE
         }
 
-        isInverted = activeSort.key == SortBy.OLDEST_DONE_DATE
-
-        loadData(1)
+        loadInitialData()
     }
 
     private fun applyFilter() {
@@ -930,7 +961,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     null
                 }
 
-        loadData(1)
+        loadInitialData()
     }
 
     private inline fun <reified T : BottomSheetUnify> dismissBottomSheet(tag: String) {
@@ -976,13 +1007,17 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     Toaster.TYPE_NORMAL,
                     context?.getString(R.string.mvc_oke).toBlankOrString())
         }
-        loadData(1)
+        loadInitialData()
     }
 
     private fun observeLiveData() {
         mViewModel.voucherList.observe(viewLifecycleOwner, Observer {
+            (activity as? MvcPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
-                is Success -> setOnSuccessGetVoucherList(it.data)
+                is Success -> {
+                    setOnSuccessGetVoucherList(it.data)
+                    rvVoucherList?.setOnLayoutListenerReady()
+                }
                 is Fail -> setOnErrorGetVoucherList(it.throwable)
             }
         })
@@ -996,7 +1031,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             when(result) {
                 is Success -> {
                     val voucherId = result.data
-                    loadData(1)
+                    loadInitialData()
                     showCancellationSuccessToaster(true, voucherId)
                 }
                 is Fail -> {
@@ -1010,7 +1045,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             when(result) {
                 is Success -> {
                     val voucherId = result.data
-                    loadData(1)
+                    loadInitialData()
                     showCancellationSuccessToaster(false, voucherId)
                 }
                 is Fail -> {
@@ -1063,6 +1098,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                                 action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
                                                 userId = userSession.userId
                                         )
+                                        dismiss()
                                     }
                                 }
                                 .show(childFragmentManager)
@@ -1171,6 +1207,17 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 }
                 helper.downloadFile { true }
             }
+        }
+    }
+
+    private fun View.setOnLayoutListenerReady() {
+        viewTreeObserver?.run {
+            addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    (activity as? MvcPerformanceMonitoringListener)?.finishMonitoring()
+                    removeOnGlobalLayoutListener(this)
+                }
+            })
         }
     }
 
