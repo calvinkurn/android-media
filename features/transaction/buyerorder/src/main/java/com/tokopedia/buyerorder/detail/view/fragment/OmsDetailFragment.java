@@ -671,15 +671,17 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 dividerUserInfo.setVisibility(View.VISIBLE);
                 userInfo.removeAllViews();
                 for (PassengerForm passengerForm : metaDataInfo.getPassengerForms()) {
-                    for (PassengerInformation passengerInformation : passengerForm.getPassengerInformations()) {
-                        DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
-                        doubleTextView.setTopText(passengerInformation.getTitle());
-                        doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.subtitle_gray_color));
-                        doubleTextView.setBottomText(passengerInformation.getValue());
-                        doubleTextView.setBottomTextColor(ContextCompat.getColor(getContext(), R.color.title_gray_color));
-                        doubleTextView.setBottomTextStyle("bold");
+                    if(!passengerForm.isEmpty()) {
+                        for (PassengerInformation passengerInformation : passengerForm.getPassengerInformations()) {
+                            DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
+                            doubleTextView.setTopText(passengerInformation.getTitle());
+                            doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.subtitle_gray_color));
+                            doubleTextView.setBottomText(passengerInformation.getValue());
+                            doubleTextView.setBottomTextColor(ContextCompat.getColor(getContext(), R.color.title_gray_color));
+                            doubleTextView.setBottomTextStyle("bold");
 
-                        userInfo.addView(doubleTextView);
+                            userInfo.addView(doubleTextView);
+                        }
                     }
                 }
             } else {
