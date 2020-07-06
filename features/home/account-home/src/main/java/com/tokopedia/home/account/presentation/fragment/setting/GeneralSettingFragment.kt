@@ -24,13 +24,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.core.gcm.FCMCacheManager
+import com.tokopedia.core.gcm.NotificationModHandler
+import com.tokopedia.core.util.AppWidgetUtil
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.dialog.AccessRequestDialogFragment
 import com.tokopedia.home.account.AccountConstants.Analytics.*
@@ -53,12 +60,14 @@ import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
 import com.tokopedia.navigation_common.model.WalletPref
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import java.util.*
@@ -81,7 +90,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
-
+    private lateinit var tetraDebugger: TetraDebugger
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,6 +100,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         context?.let {
             notifPreference = NotifPreference(it)
         }
+        initTetraDebugger()
 
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(GOOGLE_API_KEY)
@@ -164,7 +174,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay))
         activity?.let {
             if (it.application is AccountHomeRouter
-                    && (it.application as AccountHomeRouter).getBooleanRemoteConfig(
+                    && remoteConfig.getBoolean(
                             RemoteConfigKey.CHECKOUT_TEMPLATE_SETTING_TOGGLE, false)
             ) {
                 settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
@@ -440,9 +450,21 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     override fun onSuccessLogout() {
         showLoading(false)
         activity?.let {
-            if (it.application is AccountHomeRouter) {
-                (it.application as AccountHomeRouter).doLogoutAccount(activity)
-            }
+            PersistentCacheManager.instance.delete()
+            clearEtalaseCache(it.applicationContext)
+            TrackApp.getInstance().moEngage.logoutEvent()
+            userSession.logoutSession()
+            val notify = NotificationModHandler(activity)
+            notify.dismissAllActivedNotifications()
+            NotificationModHandler.clearCacheAllNotification(activity)
+
+            val intent: Intent = getHomeIntent(activity)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            it.startActivity(intent)
+            AppWidgetUtil.sendBroadcastToAppWidget(it)
+            CMPushNotificationManager.instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(it), true)
+
+            if(this::tetraDebugger.isInitialized) tetraDebugger.setUserId("")
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
@@ -453,6 +475,24 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
         val stickyPref = activity!!.getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE)
         stickyPref.edit().clear().apply()
+    }
+
+    private fun initTetraDebugger() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            context?.let{
+                tetraDebugger = instance(it)
+                tetraDebugger.init()
+            }
+        }
+    }
+
+    private fun getHomeIntent(context: Context?): Intent {
+        return RouteManager.getIntent(context, ApplinkConst.HOME)
+    }
+
+    private fun clearEtalaseCache(context: Context?) {
+        val fetchEtalaseTimer = LocalCacheHandler(context, FETCH_ETALASE)
+        fetchEtalaseTimer.setExpire(0)
     }
 
     override fun onDestroyView() {
@@ -505,7 +545,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
     companion object {
 
-        private val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
+        private const val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
+        private const val FETCH_ETALASE = "fetch_etalase"
 
         @JvmStatic
         fun createInstance(): Fragment {

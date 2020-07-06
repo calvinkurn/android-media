@@ -397,30 +397,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToCreateMerchantRedirect(Context context) {
-        Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
-        context.startActivity(intent);
-    }
-
-    @Override
     public Interceptor getChuckerInterceptor() {
         return getAppComponent().ChuckerInterceptor();
-    }
-
-
-    @Override
-    public Intent getTrainOrderListIntent(Context context) {
-        String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getTIKET();
-        String KAI_WEBVIEW = WEB_DOMAIN + "kereta-api";
-        String PATH_USER_BOOKING_LIST = "/user/bookings";
-        String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
-        String TRAIN_ORDER_LIST = KAI_WEBVIEW + PATH_USER_BOOKING_LIST + PARAM_DIGITAL_ISPULSA;
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, TRAIN_ORDER_LIST);
-    }
-
-    @Override
-    public void sendAnalyticsUserAttribute(UserAttributeData userAttributeData) {
-        HomeAnalytics.setUserAttribute(this, userAttributeData);
     }
 
     @Override
@@ -720,40 +698,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToManageShopShipping(Context context) {
-        UnifyTracking.eventManageShopShipping(context);
-        context.startActivity(new Intent(context, EditShippingActivity.class));
-    }
-
-    @Override
-    public void goToManageShopProduct(Context context) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goToSaldo(Context context) {
-
-        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
-        } else {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                    ApplinkConst.WebViewUrl.SALDO_DETAIL));
-        }
-
-        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(),
-                "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
-    }
-
-    @Override
     public ApplicationUpdate getAppUpdate(Context context) {
         return new FirebaseRemoteAppUpdate(context);
-    }
-
-    @Override
-    public String getStringRemoteConfig(String key, String defaultValue) {
-        return remoteConfig.getString(key, defaultValue);
     }
 
     @Override
@@ -776,37 +722,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public AccountHomeInjection getAccountHomeInjection() {
-        return new AccountHomeInjectionImpl();
-    }
-
-    public void doLogoutAccount(Context activity) {
-        new GlobalCacheManager().deleteAll();
-        PersistentCacheManager.instance.delete();
-        EtalaseUtils.clearEtalaseCache(getApplicationContext());
-        TrackApp.getInstance().getMoEngage().logoutEvent();
-        SessionHandler.clearUserData(activity);
-        NotificationModHandler notif = new NotificationModHandler(activity);
-        notif.dismissAllActivedNotifications();
-        NotificationModHandler.clearCacheAllNotification(activity);
-
-        Intent intent = getHomeIntent(activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        activity.startActivity(intent);
-        AppWidgetUtil.sendBroadcastToAppWidget(activity);
-        refreshFCMTokenFromForegroundToCM();
-
-        setTetraUserId("");
-    }
-
-    @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
-    }
-
-    @Override
-    public boolean isEnableInterestPick() {
-        return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
     }
 
     @Override

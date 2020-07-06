@@ -74,8 +74,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         String cdnUrl = AccountHomeUrl.CDN_URL;
         if (context.getApplicationContext() instanceof AccountHomeRouter) {
-            cdnUrl = ((AccountHomeRouter) context.getApplicationContext())
-                    .getStringRemoteConfig(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
+            cdnUrl = remoteConfig
+                    .getString(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
         }
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();

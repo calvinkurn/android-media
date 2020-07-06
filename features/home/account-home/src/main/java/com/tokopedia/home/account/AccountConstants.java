@@ -28,8 +28,12 @@ public class AccountConstants {
         public static final String CLICK_HOME_PAGE = "clickHomePage";
         public static final String CLICK_SETTING = "clickSetting";
         public static final String CLICK_ACCOUNT = "clickAccount";
+        public static final String SHOP_MANAGE = "clickManageShop";
+        public static final String CATEGORY_SHOP_MANAGE = "Manage Shop";
+        public static final String SHOP_SHIPPING = "Shop Shipping";
         public static final String AKUN_SAYA = "akun saya";
         public static final String CLICK = "click";
+        public static final String SHOP_CLICK = "Click";
         public static final String PROFILE = "profile";
         public static final String TOKOPOINTS = "tokopoints";
         public static final String MY_COUPON = "kupon saya";
@@ -173,6 +177,17 @@ public class AccountConstants {
         public static final String NOTIF_CENTER_ACTION = "click on bell on global nav";
     }
 
+    public static class MOENGAGE {
+        public static final String SHOP_ID = "shop_id";
+        public static final String SHOP_NAME = "shop_name";
+
+        public static final String TOTAL_SOLD_ITEM = "total_sold_item";
+
+        public static final String TOPADS_AMT = "topads_amt";
+        public static final String HAS_PURCHASED_MARKETPLACE = "has_purchased_marketplace";
+        public static final String LAST_TRANSACT_DATE = "last_transaction_date";
+    }
+
     public interface VccStatus {
         String ELIGIBLE = "eligible";
         String NOT_ELIGIBLE = "not_eligible";
@@ -190,6 +205,5 @@ public class AccountConstants {
         String ERROR_CODE_ACCOUNT_SETTING_CONFIG = "ASC001";
         String ERROR_CODE_BUYER_ACCOUNT = "ACB001";
         String ERROR_CODE_SELLER_ACCOUNT = "ACS001";
-
     }
 }

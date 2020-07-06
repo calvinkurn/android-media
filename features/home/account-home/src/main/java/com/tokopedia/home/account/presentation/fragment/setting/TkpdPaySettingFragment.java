@@ -138,7 +138,15 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
                     if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
                         if (pvtUserSession.hasShownSaldoIntroScreen()) {
-                            router.goToSaldo(getActivity());
+                            if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
+                                RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_DEPOSIT);
+                            } else {
+                                RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                                        ApplinkConst.WebViewUrl.SALDO_DETAIL));
+                            }
+
+                            accountAnalytics.homepageSaldoClick(getContext(),
+                                    "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
                         } else {
                             pvtUserSession.setSaldoIntroPageStatus(true);
                             RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_INTRO);

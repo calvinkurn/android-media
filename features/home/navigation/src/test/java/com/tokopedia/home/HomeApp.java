@@ -34,37 +34,7 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void doLogoutAccount(Context activity) {
-
-    }
-
-    @Override
     public Intent getManageAddressIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public void goToManageShopShipping(Context context) {
-
-    }
-
-    @Override
-    public void goToManageShopProduct(Context context) {
-
-    }
-
-    @Override
-    public void goToSaldo(Context context) {
-
-    }
-
-    @Override
-    public AccountHomeInjection getAccountHomeInjection() {
-        return null;
-    }
-
-    @Override
-    public String getStringRemoteConfig(String key, String defaultValue) {
         return null;
     }
 
@@ -76,26 +46,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     @Override
     public void sendOpenHomeEvent() {
 
-    }
-
-    @Override
-    public Intent getTrainOrderListIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public void sendAnalyticsUserAttribute(UserAttributeData userAttributeData) {
-
-    }
-
-    @Override
-    public void goToCreateMerchantRedirect(Context context) {
-
-    }
-
-    @Override
-    public boolean isEnableInterestPick() {
-        return false;
     }
 
     @Override

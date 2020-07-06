@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
@@ -89,7 +91,8 @@ public class StoreSettingFragment extends BaseGeneralSettingFragment{
                     break;
                 case SettingConstant.SETTING_SHOP_SHIPMENT_ID:
                     accountAnalytics.eventClickShopSetting(SHIPPING);
-                    router.goToManageShopShipping(getActivity());
+                    accountAnalytics.eventManageShopShipping();
+                    RouteManager.route(getContext(), ApplinkConst.SELLER_SHIPPING_EDITOR);
                     break;
                 case SettingConstant.SETTING_SHOP_NOTE_ID:
                     accountAnalytics.eventClickShopSetting(NOTES);
@@ -101,7 +104,9 @@ public class StoreSettingFragment extends BaseGeneralSettingFragment{
                     break;
                 case SettingConstant.SETTING_SHOP_PRODUCT_ID:
                     accountAnalytics.eventClickShopSetting(PRODUCT);
-                    router.goToManageShopProduct(getActivity());
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.PRODUCT_MANAGE);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
                     break;
                 default:
                     break;

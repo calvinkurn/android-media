@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.listener
 
 import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
@@ -82,4 +83,6 @@ interface AccountItemListener {
     fun getTrackingQueue(): TrackingQueue
 
     fun openRekeningPremiumWebLink(rekeningPremiumViewModel: RekeningPremiumViewModel)
+
+    fun getRemoteConfig(): RemoteConfig
 }

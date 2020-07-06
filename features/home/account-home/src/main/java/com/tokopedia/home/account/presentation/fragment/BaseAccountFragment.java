@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -46,6 +47,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
@@ -54,7 +56,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -89,6 +90,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     UserSession userSession;
     private AffiliatePreference affiliatePreference;
     private TrackingQueue trackingQueue;
+    private RemoteConfig remoteConfig;
 
     abstract void notifyItemChanged(int position);
 
@@ -99,6 +101,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         userSession = new UserSession(getContext());
         affiliatePreference = new AffiliatePreference(getContext());
         trackingQueue = new TrackingQueue(getActivity());
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Override
@@ -131,8 +134,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER);
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
-                    (getContext()));
+            goToTrainOrderListIntent();
         } else if (applink.equals(AccountConstants.Navigation.FEATURED_PRODUCT)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             Intent launchIntent = getContext().getPackageManager()
@@ -140,7 +142,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             if (launchIntent != null) {
                 getContext().startActivity(launchIntent);
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-                ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
+                RouteManager.route(getContext(), ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP);
             }
         }else if(applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)){
             return true;
@@ -479,6 +481,15 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         );
     }
 
+    private void goToTrainOrderListIntent(){
+        String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getTIKET();
+        String KAI_WEBVIEW = WEB_DOMAIN + "kereta-api";
+        String PATH_USER_BOOKING_LIST = "/user/bookings";
+        String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
+        String TRAIN_ORDER_LIST = KAI_WEBVIEW + PATH_USER_BOOKING_LIST + PARAM_DIGITAL_ISPULSA;
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, TRAIN_ORDER_LIST);
+    }
+
     private void sendTrackingOvoActivation() {
         if (accountAnalytics == null)
             return;
@@ -553,5 +564,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         RouteManager.route(getContext(), resultGenerateUrl);
         sendTracking(rekeningPremiumViewModel.getTitleTrack(), rekeningPremiumViewModel.getSectionTrack(),
                 rekeningPremiumViewModel.getMenu());
+    }
+
+    @NotNull
+    @Override
+    public RemoteConfig getRemoteConfig() {
+        return remoteConfig;
     }
 }
