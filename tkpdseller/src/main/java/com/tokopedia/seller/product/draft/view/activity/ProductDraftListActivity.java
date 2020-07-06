@@ -25,7 +25,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
