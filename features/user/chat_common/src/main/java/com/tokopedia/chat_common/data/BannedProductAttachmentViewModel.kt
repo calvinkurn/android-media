@@ -2,6 +2,7 @@ package com.tokopedia.chat_common.data
 
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
+import com.tokopedia.chat_common.domain.pojo.productattachment.TopchatProductRating
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
@@ -34,7 +35,8 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             blastId: Int, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
-            status: Int, wishList: Boolean, images: List<String>, source: String
+            status: Int, wishList: Boolean, images: List<String>, source: String,
+            rating: TopchatProductRating
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, isRead,
@@ -43,7 +45,8 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             blastId, productPriceInt, category, variant,
             dropPercentage, priceBefore, shopId, freeShipping,
             categoryId, playStoreData, minOrder, remainingStock,
-            status, wishList, images, source
+            status, wishList, images, source,
+            rating
     )
 
 

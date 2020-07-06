@@ -146,7 +146,8 @@ open class ProductAttachmentViewModel : SendableViewModel,
             blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
-            status: Int, wishList: Boolean, images: List<String>, source: String
+            status: Int, wishList: Boolean, images: List<String>, source: String,
+            rating: TopchatProductRating
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, "",
@@ -172,6 +173,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         this.minOrder = minOrder
         this.remainingStock = remainingStock
         this.status = status
+        this.rating = rating
         if (variants.isNotEmpty()) {
             this.variants = variants
             setupVariantsField()
