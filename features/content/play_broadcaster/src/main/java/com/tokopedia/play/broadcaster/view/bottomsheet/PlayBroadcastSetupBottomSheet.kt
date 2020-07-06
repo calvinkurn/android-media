@@ -86,6 +86,7 @@ class PlayBroadcastSetupBottomSheet(
         childFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
+        cleanBackStack()
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheet_Setup_Pinned)
     }
 
@@ -193,6 +194,13 @@ class PlayBroadcastSetupBottomSheet(
         navigateToFragment(
                 PlayEtalasePickerFragment::class.java
         )
+    }
+
+    private fun cleanBackStack() {
+        val backStackCount = childFragmentManager.backStackEntryCount
+        for (i in 0 until backStackCount) {
+            childFragmentManager.popBackStackImmediate()
+        }
     }
 
     private fun maxHeight(): Int = getScreenHeight()
