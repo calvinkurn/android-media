@@ -305,6 +305,7 @@ object DeeplinkMapper {
                         UriUtil.buildUri(ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO_WITH_ID,
                                 uri.pathSegments.first())
                     }),
+            DLP.exact(ApplinkConst.POWER_MERCHANT_SUBSCRIBE, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE),
             DLP.exact(ApplinkConst.SETTING_PROFILE, ApplinkConstInternalGlobal.SETTING_PROFILE),
             DLP.exact(ApplinkConst.ADD_CREDIT_CARD, ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD),
             DLP.exact(ApplinkConst.SETTING_NOTIFICATION, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING),
@@ -432,6 +433,7 @@ object DeeplinkMapper {
         return when (trimDeeplink) {
             ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+            ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
