@@ -14,6 +14,17 @@ class SmartBillsAnalytics {
 
     var userId: String = ""
 
+    fun eventOpenScreen() {
+        val loginStatus = if (userId.isEmpty()) "false" else "true"
+        val mapOpenScreen = mutableMapOf(
+                Key.IS_LOGIN_STATUS to loginStatus,
+                Key.USER_ID to userId
+        )
+        mapOpenScreen.putAll(ADDITIONAL_INFO_MAP)
+
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME_INITAL, mapOpenScreen)
+    }
+
     fun clickSubscription() {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_SMART_BILLS,

@@ -232,6 +232,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             )
         } else {
             smartBillsAnalytics.userId = userSession.userId
+            smartBillsAnalytics.eventOpenScreen()
 
             context?.let { context ->
                 // Setup ticker

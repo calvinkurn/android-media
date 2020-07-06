@@ -718,8 +718,6 @@ open class HomeViewModel @Inject constructor(
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
-                    getRechargeRecommendation()
-                    getSalamWidget()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {

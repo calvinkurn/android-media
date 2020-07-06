@@ -17,7 +17,7 @@ class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Ad
 
     var addressList = mutableListOf<RecipientAddressModel>()
 
-    interface onSelectedListener{
+    interface onSelectedListener {
         fun onSelect(addressId: String)
     }
 
@@ -40,18 +40,17 @@ class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Ad
         val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
 
         fun bind(data: RecipientAddressModel) {
-            with(itemView){
+            with(itemView) {
                 setVisibility(data)
                 setPrimary(data)
                 address_type.text = data.addressName
                 address_name.text = data.recipientName
                 address_number.text = data.recipientPhoneNumber
-                address_detail.text = data.street + ", " + data.destinationDistrictName + ", " + data.cityName + " " + data.postalCode
+                address_detail.text = "${data.street}, ${data.destinationDistrictName}, ${data.cityName} ${data.postalCode}"
 
                 item_address_radio.isChecked = data.isSelected
 
                 card_address_list.setOnClickListener {
-
                     listener.onSelect(data.id)
                 }
             }
@@ -66,8 +65,7 @@ class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Ad
         }
 
         private fun setVisibility(recipientAddressModel: RecipientAddressModel) {
-            if((recipientAddressModel.latitude == null || recipientAddressModel.latitude.isEmpty())
-                    || recipientAddressModel.longitude == null || recipientAddressModel.longitude.isEmpty()) {
+            if (recipientAddressModel.latitude.isNullOrEmpty() || recipientAddressModel.longitude.isNullOrEmpty()) {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pin_map_address)
                 imageLocation.setImageDrawable(icon)
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)

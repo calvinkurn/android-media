@@ -1,6 +1,8 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
+import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
@@ -11,6 +13,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.model.GraphqlError
+import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
 import kotlin.Exception
@@ -87,6 +90,9 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 if (error != null && !error.isJsonNull) {
                     errors.put(typeOfT, mGson.fromJson(error, Array<GraphqlError>::class.java).toList())
                 }
+            } catch (jse: JsonSyntaxException) {
+                Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
+                jse.printStackTrace()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -126,6 +132,9 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 mRefreshRequests.add(requests[i])
                 requests.remove(requests[i])
             }
+        } catch (jse: JsonSyntaxException) {
+            Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
+            jse.printStackTrace()
         } catch (e: Exception) {
             e.printStackTrace()
         }

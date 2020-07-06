@@ -92,6 +92,9 @@ public class MyApplication extends BaseMainApplication
         PersistentCacheManager.init(this);
         RemoteConfigInstance.initAbTestPlatform(this);
         FpmLogger.init(this);
+
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
+
         super.onCreate();
         initCacheApi();
 

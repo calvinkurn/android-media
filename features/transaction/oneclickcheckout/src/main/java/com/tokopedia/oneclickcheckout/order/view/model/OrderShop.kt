@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.oneclickcheckout.order.data.CartDataResponse
 
 data class OrderShop(
         var shopId: Int = 0,
@@ -9,11 +8,8 @@ data class OrderShop(
         var shopName: String = "",
         var shopImage: String = "",
         var shopUrl: String = "",
-        var shopStatus: Int = 0,
         var isGold: Int = 0,
-        var isGoldBadge: Boolean = false,
         var isOfficial: Int = 0,
-        var isFreeReturns: Int = 0,
         var addressId: Int = 0,
         var postalCode: String = "",
         var latitude: String = "",
@@ -26,6 +22,5 @@ data class OrderShop(
         var cityId: Int = 0,
         var cityName: String = "",
         var shopShipment: List<ShopShipment> = emptyList(),
-        var cartResponse: CartDataResponse = CartDataResponse(),
         var errors: List<String> = emptyList()
 )

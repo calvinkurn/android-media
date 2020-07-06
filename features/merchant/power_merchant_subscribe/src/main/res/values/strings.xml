@@ -7,6 +7,15 @@
     <string name="pm_label_kyc_verification_desc_1">Toko dengan Power Merchant terbukti dapat tingkatkan penjualan dan lebih dipercaya calon pembeli.</string>
 
     <string name="pm_label_button_close">Tutup</string>
+
+    <string name="pm_label_score_verification_header">Yaah, pengajuan kamu belum berhasil</string>
+    <string name="pm_label_score_verification_desc">Skor performa tokomu kurang dari 75. Segera tingkatkan performa toko untuk menjadi Power Merchant.</string>
+
+    <string name="pm_label_bs_success_header_transition">Yay, kamu berhasil jadi Power Merchant</string>
+    <string name="pm_label_bs_success_header">Selamat! Kamu sudah menjadi Power Merchant</string>
+    <string name="pm_label_bs_success_desc_transition">Semua fitur terbaru akan aktif serentak pada 1 Juli 2019. Yuk, pelajari keuntungannya.</string>
+    <string name="pm_label_bs_success_desc">Tingkatkan penjualan tokomu dengan menggunakan fitur eksklusif Power Merchant.</string>
+    <string name="pm_label_bs_success_button_transition">Pelajari Power Merchant</string>
     <string name="pm_label_bs_success_button">Mulai</string>
 
     <string name="pm_label_transition_period_header">Upload KTP agar tokomu tetap jadi Power Merchant tepercaya</string>

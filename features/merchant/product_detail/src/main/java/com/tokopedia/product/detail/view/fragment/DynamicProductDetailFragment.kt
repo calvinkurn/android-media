@@ -750,19 +750,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     /**
-     * ProductOpenShopViewHolder Listener
-     */
-    override fun openShopClicked() {
-        activity?.let {
-            doActionOrLogin({
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.OPEN_SHOP)
-                        ?: return@doActionOrLogin
-                startActivity(intent)
-            })
-        }
-    }
-
-    /**
      * ProductReviewViewHolder
      */
     override fun onSeeAllReviewClick(componentTrackDataModel: ComponentTrackDataModel?) {

@@ -83,7 +83,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
             lateinit var result: Map<String, Any>
 
             When("generate add to cart recommendation data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(RecommendationItem()), AddToCartDataModel(), false)
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, RecommendationItem()), AddToCartDataModel(), false)
             }
 
             Then("should be containing 1 product") {
@@ -105,7 +105,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
             lateinit var result: Map<String, Any>
 
             When("generate add to cart recommendation data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(RecommendationItem()), AddToCartDataModel(), true)
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, RecommendationItem()), AddToCartDataModel(), true)
             }
 
             Then("should be containing 1 product") {
