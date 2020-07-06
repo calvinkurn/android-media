@@ -49,7 +49,7 @@ class DatePickerSheet {
                     }
                     listUnify.forEachIndexed { position, it ->
                         it.listRightRadiobtn?.setOnClickListener {
-                            this.setSelected(listUnify, position) {
+                            setSelected(listUnify, position) {
                                 if (position != CUSTOM_DATE) {
                                     onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
                                     dialog.dismiss()
