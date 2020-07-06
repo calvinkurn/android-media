@@ -1,5 +1,5 @@
 {
-  "readme": "Search Product Top Nav Tracking",
+  "readme": "Search Top Nav Tracking",
   "query" : [
     {
       "event": "clickTopNav",
