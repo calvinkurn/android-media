@@ -84,48 +84,29 @@
                 android:id="@+id/rv_preference_list"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:clipToPadding="false"
-                android:paddingBottom="@dimen/dp_76"
+                android:paddingBottom="@dimen/dp_72"
                 android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@id/bottom_layout_preference"
+                app:layout_constraintBottom_toTopOf="@+id/btn_preference_list_action"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_preference_list_action"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:text="@string/add_first_preference"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <FrameLayout
-                android:id="@+id/bottom_layout_preference"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/btn_preference_list_action"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:text="@string/add_first_preference"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-            </FrameLayout>
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
