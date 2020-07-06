@@ -27,11 +27,7 @@
       }
       iconImageURL
       iconImageURLScrolled
-      iconImageURLOptimized
-      iconImageURLOptimizedScrolled
     }
-    backgroundImageURL
-    backgroundImageURLMobile
     backgroundImageURLMobileV2
   }
 }

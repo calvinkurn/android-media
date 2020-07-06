@@ -10,7 +10,6 @@
           appLink
         }
         iconImageURL
-        iconImageURLOptimized
         description
       }
     }
