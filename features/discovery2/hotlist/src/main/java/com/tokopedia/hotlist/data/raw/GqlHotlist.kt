@@ -1,6 +1,8 @@
 package com.tokopedia.hotlist.data.raw
 
-const val GQL_HOTLIST: String = """query hotlistDetail(${'$'}productKey: String!) {
+object GqlHotlist {
+
+    const val GQL_HOTLIST: String = """query hotlistDetail(${'$'}productKey: String!) {
             hotlistDetail(productKey: ${'$'}productKey) {
                 id
                 aliasKey
@@ -81,3 +83,4 @@ const val GQL_HOTLIST: String = """query hotlistDetail(${'$'}productKey: String!
                 cityID
             }
         }"""
+}

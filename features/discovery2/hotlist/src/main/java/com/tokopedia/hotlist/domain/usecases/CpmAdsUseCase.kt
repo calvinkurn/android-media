@@ -6,7 +6,7 @@ import com.tokopedia.hotlist.data.cpmAds.CpmTopAdsResponse
 import com.tokopedia.hotlist.domain.mapper.CpmItemMapper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.hotlist.data.raw.GQL_CPM_TOP_ADS
+import com.tokopedia.hotlist.data.raw.GqlCpmTopAds
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -16,7 +16,7 @@ class CpmAdsUseCase @Inject constructor() : UseCase<List<CpmItem>>() {
     override fun createObservable(requestParams: RequestParams?): Observable<List<CpmItem>> {
         val graphqlUseCase = GraphqlUseCase()
         val graphqlRequest = GraphqlRequest(
-                GQL_CPM_TOP_ADS, CpmTopAdsResponse::class.java, requestParams?.parameters)
+                GqlCpmTopAds.GQL_CPM_TOP_ADS, CpmTopAdsResponse::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

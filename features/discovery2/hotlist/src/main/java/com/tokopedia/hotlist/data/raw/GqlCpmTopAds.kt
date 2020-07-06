@@ -1,7 +1,7 @@
 package com.tokopedia.hotlist.data.raw
 
-
-const val GQL_CPM_TOP_ADS: String = """
+object GqlCpmTopAds {
+    const val GQL_CPM_TOP_ADS: String = """
    query (${'$'}params: String) {
   displayAdsV3(displayParams: ${'$'}params) {
     data {
@@ -54,3 +54,4 @@ const val GQL_CPM_TOP_ADS: String = """
 }
 
 """
+}
