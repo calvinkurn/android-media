@@ -37,6 +37,12 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         holder.bindData(addressList[position])
     }
 
+    fun addList(data: List<AddressModel>) {
+        addressList.clear()
+        addressList.addAll(data)
+        notifyDataSetChanged()
+    }
+
     inner class ManageAddressViewHolder(itemView: View, private val listener: ManageAddressItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
         val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
         val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
@@ -49,18 +55,17 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 val addressStreet = data.addressStreet
                 val postalCode = data.postalCode
                 val tokopediaNoteCondition = context.getString(R.string.tokopedia_note_delimeter)
-                val tokopediaNote = tokopediaNoteCondition + addressStreet.substringAfterLast(tokopediaNoteCondition)
                 setVisibility(data)
                 setPrimary(data)
                 address_name.text = data.addressName
                 receiver_name.text = data.receiverName
                 receiver_phone.text = data.receiverPhone
-                if(addressStreet.contains(tokopediaNoteCondition)) {
+                if (addressStreet.contains(tokopediaNoteCondition)) {
+                    val tokopediaNote = tokopediaNoteCondition + addressStreet.substringAfterLast(tokopediaNoteCondition)
                     val newAddress = addressStreet.replace(tokopediaNote, "")
                     tokopedia_note.visible()
                     tokopedia_note.text = tokopediaNote
-                    if(addressStreet.contains(postalCode)) address_detail.text = newAddress
-                    else address_detail.text = newAddress + ", " + data.postalCode
+                    address_detail.text = if (addressStreet.contains(postalCode)) newAddress else newAddress + ", " + data.postalCode
                 } else {
                     address_detail.text = data.addressStreet + ", " + data.postalCode
                 }
@@ -78,7 +83,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         }
 
         private fun setVisibility(peopleAddress: AddressModel) {
-            if(( peopleAddress.latitude.isNullOrEmpty())|| peopleAddress.longitude.isNullOrEmpty()) {
+            if(peopleAddress.latitude.isNullOrEmpty()|| peopleAddress.longitude.isNullOrEmpty()) {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pinpoint)
                 imageLocation.setImageDrawable(icon)
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)

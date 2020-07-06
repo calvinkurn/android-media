@@ -40,7 +40,7 @@ class ManageAddressViewModel @Inject constructor(
 
                 },
                 {
-                    _addressList.value = ManageAddressState.Fail(false, it, "")
+                    _addressList.value = ManageAddressState.Fail(it, "")
                 })
     }
 
@@ -52,13 +52,6 @@ class ManageAddressViewModel @Inject constructor(
         return token
     }
 
-    fun consumeSearchAddressFail() {
-        val value = _addressList.value
-        if (value is ManageAddressState.Fail) {
-            _addressList.value = value.copy(isConsumed = true)
-        }
-    }
-
     fun deletePeopleAddress(id: String) {
         val value = _addressList.value
         if (value is ManageAddressState.Success) {
@@ -67,7 +60,7 @@ class ManageAddressViewModel @Inject constructor(
                 _result.value = ManageAddressState.Success("Success")
                 searchAddress("")
             },  {
-                _addressList.value  = ManageAddressState.Fail(false, it, "")
+                _addressList.value  = ManageAddressState.Fail(it, "")
             })
         }
     }
@@ -80,7 +73,7 @@ class ManageAddressViewModel @Inject constructor(
                 _result.value = ManageAddressState.Success("Success")
                 searchAddress("")
             },  {
-                _addressList.value  = ManageAddressState.Fail(false, it, "")
+                _addressList.value  = ManageAddressState.Fail(it, "")
             })
         }
     }

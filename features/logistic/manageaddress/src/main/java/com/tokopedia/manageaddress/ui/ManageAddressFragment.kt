@@ -72,16 +72,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private var manageAddressListener: ManageAddressListener? = null
 
-    companion object {
-
-        private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
-        private const val EMPTY_SEARCH_PICT_URL = "https://ecs7.tokopedia.net/android/others/address_not_found3x.png"
-
-        fun newInstance() : ManageAddressFragment{
-            return ManageAddressFragment()
-        }
-    }
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -164,11 +154,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
 
                 is ManageAddressState.Fail -> {
-                    if(!it.isConsumed) {
-                        swipeRefreshLayout?.isRefreshing = false
-                        if(it.throwable != null) {
-                            handleError(it.throwable)
-                        }
+                    swipeRefreshLayout?.isRefreshing = false
+                    if(it.throwable != null) {
+                        handleError(it.throwable)
                     }
                 }
 
@@ -233,9 +221,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun renderData(data: List<AddressModel>) {
-        adapter.addressList.clear()
-        adapter.addressList.addAll(data)
-        adapter.notifyDataSetChanged()
+        adapter.addList(data)
     }
 
     override fun onManageAddressEditClicked(peopleAddress: AddressModel) {
@@ -315,7 +301,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
         }
-        viewModel.consumeSearchAddressFail()
     }
 
     private fun showGlobalError(type: Int) {
@@ -336,5 +321,15 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     interface ManageAddressListener{
         fun setAddButtonOnClickListener(onClick: () -> Unit)
+    }
+
+    companion object {
+
+        private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
+        private const val EMPTY_SEARCH_PICT_URL = "https://ecs7.tokopedia.net/android/others/address_not_found3x.png"
+
+        fun newInstance() : ManageAddressFragment{
+            return ManageAddressFragment()
+        }
     }
 }
