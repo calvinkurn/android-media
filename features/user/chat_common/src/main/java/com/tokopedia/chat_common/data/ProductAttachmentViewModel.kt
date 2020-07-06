@@ -208,7 +208,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
-            source: String
+            source: String, rating: TopchatProductRating
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, startTime,
@@ -233,6 +233,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         this.playStoreData = playStoreData
         this.remainingStock = remainingStock
         this.status = status
+        this.rating = rating
         if (variants.isNotEmpty()) {
             this.variants = variants
             setupVariantsField()

@@ -76,7 +76,7 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             blastId: Int, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
-            source: String
+            source: String, rating: TopchatProductRating
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, productId,
@@ -85,7 +85,7 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             blastId, productPriceInt, category, variant,
             dropPercentage, priceBefore, shopId, freeShipping,
             categoryId, playStoreData, remainingStock, status,
-            source
+            source, rating
     )
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
