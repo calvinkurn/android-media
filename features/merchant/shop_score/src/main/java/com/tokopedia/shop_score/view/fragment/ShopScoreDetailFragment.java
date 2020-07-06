@@ -189,7 +189,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
                         getString(R.string.error_title_shop_score_failed),
                         getString(R.string.error_subtitle_shop_score_failed),
                         getString(R.string.label_try_again),
-                        R.drawable.unify_globalerrors_connection,
+                        com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection,
                         retryLoadShopScore
                 );
     }
