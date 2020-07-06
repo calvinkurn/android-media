@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     app:cardCornerRadius="@dimen/layout_lvl1">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/shc_large_widget_height">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvLineGraphTitle"
+            android:id="@+id/tvTableWidgetTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
@@ -20,87 +19,54 @@
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl3"
             android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl2"
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="Total Pendapatan" />
 
         <ImageView
-            android:id="@+id/btnLineGraphInformation"
+            android:id="@+id/btnTableInformation"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:background="@android:color/transparent"
             android:focusable="true"
             android:padding="7dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTableWidgetTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/tvLineGraphTitle"
-            app:layout_constraintTop_toTopOf="@+id/tvLineGraphTitle"
+            app:layout_constraintStart_toEndOf="@+id/tvTableWidgetTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvTableWidgetTitle"
             app:srcCompat="@drawable/ic_info"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvLineGraphValue"
-            android:layout_width="wrap_content"
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.tableview.TableView
+            android:id="@+id/shcTableView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:textColor="@color/Neutral_N700_96"
-            android:textSize="@dimen/fontSize_lvl4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphTitle"
-            app:typographyWeight="bold"
-            tools:text="Rp2.000.000" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvLineGraphSubValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl1"
-            android:ellipsize="end"
-            android:textSize="@dimen/fontSize_lvl2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/tvLineGraphValue"
-            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphValue"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            tools:text="Sub Title" />
-
-        <com.tokopedia.charts.view.LineChartView
-            android:id="@+id/lineGraphView"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/layout_lvl0"
-            android:layout_marginStart="@dimen/shc_dimen_12dp"
-            android:layout_marginLeft="@dimen/shc_dimen_12dp"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/shc_dimen_12dp"
-            android:layout_marginRight="@dimen/shc_dimen_12dp"
-            android:layout_marginBottom="@dimen/layout_lvl2"
-            app:layout_constraintBottom_toTopOf="@+id/btnLineGraphMore"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphSubValue"
+            app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
             app:layout_constraintVertical_bias="0.0"
-            app:lcvFillColor="@color/shc_line_chart_fill_color"
-            app:lcvLineColor="@color/shc_line_chart_line_color"
-            app:lcvLineWidth="1.8"
-            app:lcvShowChartDot="false"
-            app:lcvShowChartValue="false"
-            app:lcvShowVerticalGrid="false"
-            app:lcvXAxisTextColor="@color/Neutral_N700_96"
-            app:lcvYAxisTextColor="@color/Neutral_N700_96" />
+            tools:layout_height="@dimen/shc_large_widget_height" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/btnLineGraphMore"
+            android:id="@+id/btnTableCta"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
@@ -116,40 +82,43 @@
             android:textSize="@dimen/fontSize_lvl3"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnLineGraphNext"
+            app:layout_constraintEnd_toStartOf="@+id/icTableCta"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shcTableView"
             app:typographyType="body_2"
             app:typographyWeight="reguler" />
 
         <ImageView
-            android:id="@+id/btnLineGraphNext"
+            android:id="@+id/icTableCta"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@id/btnLineGraphMore"
+            app:layout_constraintBottom_toBottomOf="@id/btnTableCta"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btnLineGraphMore"
+            app:layout_constraintTop_toTopOf="@id/btnTableCta"
             app:srcCompat="@drawable/ic_arrow_right_default" />
 
         <include
             layout="@layout/shc_partial_common_widget_state_error"
             android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/shc_large_widget_height"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <include
+            layout="@layout/shc_partial_widget_table_loading"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle" />
 
-        <include
-            layout="@layout/shc_partial_line_graph_widget_loading"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

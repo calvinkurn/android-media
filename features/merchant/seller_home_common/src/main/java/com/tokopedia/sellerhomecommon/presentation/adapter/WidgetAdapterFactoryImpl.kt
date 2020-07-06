@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
+import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
 
@@ -30,6 +31,8 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(progressWidgetWidget: ProgressWidgetUiModel): Int = ProgressViewHolder.RES_LAYOUT
 
+    override fun type(tableWidgetUiModel: TableWidgetUiModel): Int = TableViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
@@ -39,6 +42,7 @@ class WidgetAdapterFactoryImpl(
             DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent, listener)
             ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, listener)
             PostListViewHolder.RES_LAYOUT -> PostListViewHolder(parent, listener)
+            TableViewHolder.RES_LAYOUT -> TableViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
