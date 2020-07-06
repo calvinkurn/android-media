@@ -182,10 +182,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
-        destFragment.arguments = extras
-        fragmentTransaction
-                .replace(R.id.fl_setup, destFragment, fragmentClass.name)
-                .commit()
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_setup)
+        if (currentFragment == null || currentFragment::class.java != fragmentClass) {
+            destFragment.arguments = extras
+            fragmentTransaction
+                    .replace(R.id.fl_setup, destFragment, fragmentClass.name)
+                    .commit()
+        }
     }
 
     override fun setupTitle(title: String) {
