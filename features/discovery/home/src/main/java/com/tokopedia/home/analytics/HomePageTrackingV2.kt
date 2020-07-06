@@ -607,7 +607,7 @@ object HomePageTrackingV2 : BaseTracking() {
                             id = channel.id,
                             creative = it.attribution,
                             name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
-                            position = position.toString()
+                            position = (position+1).toString()
                     )
 
                 })
@@ -623,7 +623,7 @@ object HomePageTrackingV2 : BaseTracking() {
                             id = channel.id,
                             creative = it.attribution,
                             name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
-                            position = position.toString()
+                            position = (position+1).toString()
                     )
 
                 })
@@ -644,7 +644,7 @@ object HomePageTrackingV2 : BaseTracking() {
                             id = channel.id,
                             creative = it.attribution,
                             name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
-                            position = position.toString()
+                            position = (position+1).toString()
                     )
 
                 })
