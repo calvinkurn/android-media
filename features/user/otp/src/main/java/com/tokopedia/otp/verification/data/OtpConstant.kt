@@ -15,6 +15,8 @@ object OtpConstant {
         const val CALL = "call"
         const val EMAIL = "email"
         const val MISCALL = "misscall"
+        const val PIN = "PIN"
+        const val GOOGLE_AUTH = "google_authenticator"
     }
 
     object OtpType {

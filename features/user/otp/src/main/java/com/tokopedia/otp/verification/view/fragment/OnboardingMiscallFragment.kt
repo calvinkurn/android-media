@@ -3,7 +3,7 @@ package com.tokopedia.otp.verification.view.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.tokopedia.otp.common.analytics.OTPAnalytics
+import com.tokopedia.otp.common.analytics.TrackingValidatorConstant
 import com.tokopedia.otp.verification.common.IOnBackPressed
 import com.tokopedia.otp.verification.common.di.VerificationComponent
 import com.tokopedia.otp.verification.data.OtpData
@@ -24,7 +24,7 @@ class OnboardingMiscallFragment : BaseVerificationFragment(), IOnBackPressed {
 
     override val viewBound = OnboardingMisscallViewBinding()
 
-    override fun getScreenName(): String = OTPAnalytics.Screen.SCREEN_COTP_MISCALL
+    override fun getScreenName(): String = TrackingValidatorConstant.Screen.SCREEN_COTP_MISSCALL
 
     override fun initInjector() = getComponent(VerificationComponent::class.java).inject(this)
 

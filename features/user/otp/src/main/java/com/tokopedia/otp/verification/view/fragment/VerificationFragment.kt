@@ -16,6 +16,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -50,6 +51,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.image.ImageUtils
+import kotlinx.android.synthetic.main.item_verification_method.view.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -103,7 +105,10 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     override fun onStart() {
         super.onStart()
-        sendOtp()
+        if (modeListData.modeText != OtpConstant.OtpMode.PIN &&
+                modeListData.modeText != OtpConstant.OtpMode.GOOGLE_AUTH) {
+            sendOtp()
+        }
         analytics.trackScreen(screenName)
     }
 
@@ -186,7 +191,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     private fun onSuccessSendOtp(): (OtpRequestData) -> Unit {
         return { otpRequestData ->
             if (otpRequestData.success) {
-                if(!isFirstSendOtp) {
+                if (!isFirstSendOtp) {
                     when (otpData.otpType) {
                         OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                             analytics.trackSuccessClickResendRegisterPhoneOtpButton()
@@ -221,7 +226,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
 
-                if(!isFirstSendOtp) {
+                if (!isFirstSendOtp) {
                     when (otpData.otpType) {
                         OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                             analytics.trackFailedClickResendRegisterPhoneOtpButton(message)
@@ -348,10 +353,12 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                 viewBound.methodIcon?.layoutParams = this
             }
             viewBound.methodIcon?.setMargin(0, 0, 0, 0)
-            viewBound.methodIcon?.let { ImageUtils.loadImage(it, MISSCALL_IMAGE_URL) }
+            viewBound.methodIcon?.setImageUrl(MISSCALL_IMAGE_URL)
+            viewBound.methodIcon?.scaleType = ImageView.ScaleType.FIT_CENTER
         } else {
             if (modeListData.otpListImgUrl.isNotEmpty()) {
-                viewBound.methodIcon?.let { ImageUtils.loadImage(it, modeListData.otpListImgUrl) }
+                viewBound.methodIcon?.setImageUrl(modeListData.otpListImgUrl)
+                viewBound.methodIcon?.scaleType = ImageView.ScaleType.FIT_CENTER
             }
         }
 
@@ -360,6 +367,10 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         }
 
         viewBound.pin?.pinCount = modeListData.otpDigit
+
+        if (modeListData.modeText == OtpConstant.OtpMode.PIN) {
+            viewBound.pin?.type = PinUnify.TYPE_HIDDEN
+        }
 
         viewBound.pin?.pinPrimaryActionView?.hide()
 
@@ -395,7 +406,12 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun setFooterText() {
         val spannable: Spannable
-        if (otpData.canUseOtherMethod) {
+        if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
+                modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH) {
+            val message = getString(R.string.login_with_other_method)
+            spannable = SpannableString(message)
+            setOtherMethodPinFooterSpan(message, spannable)
+        } else if (otpData.canUseOtherMethod) {
             val message = getString(R.string.validation_resend_email_or_with_other_method)
             spannable = SpannableString(message)
             setResendOtpFooterSpan(message, spannable)
@@ -455,6 +471,24 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                 },
                 message.indexOf(getString(R.string.with_other_method)),
                 message.indexOf(getString(R.string.with_other_method)) + getString(R.string.with_other_method).length,
+                0
+        )
+    }
+
+    private fun setOtherMethodPinFooterSpan(message: String, spannable: Spannable) {
+        spannable.setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(view: View) {
+                        analytics.trackClickUseOtherMethod(otpData.otpType)
+                        (activity as VerificationActivity).goToVerificationMethodPage()
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                    }
+                },
+                message.indexOf(getString(R.string.login_with_other_method)),
+                message.indexOf(getString(R.string.login_with_other_method)) + getString(R.string.login_with_other_method).length,
                 0
         )
     }

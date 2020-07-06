@@ -3,6 +3,7 @@ package com.tokopedia.otp.verification.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -43,7 +44,8 @@ class VerificationMethodAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(modeList: ModeListData, listener: ClickListener?, position: Int) {
-            ImageHandler.LoadImage(itemView.method_icon, modeList.otpListImgUrl)
+            itemView.method_icon.setImageUrl(modeList.otpListImgUrl)
+            itemView.method_icon.scaleType = ImageView.ScaleType.FIT_CENTER
             itemView.method_text.text = MethodChecker.fromHtml(modeList.otpListText)
             itemView.setOnClickListener {
                 listener?.onModeListClick(modeList, position)
