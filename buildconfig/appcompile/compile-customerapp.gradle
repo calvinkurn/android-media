@@ -126,6 +126,7 @@ include "features:merchant:product_manage_list"
 include "features:merchant:product_manage_common"
 include "features:merchant:product_share"
 include "features:merchant:report"
+include "features:merchant:review_seller"
 include "features:merchant:seller_active_common"
 include "features:merchant:seller_home_drawer"
 include ':features:merchant:seller_migration_common'
