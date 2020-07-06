@@ -1,4 +1,10 @@
 NAME                             ,TYPE    ,VERSION,IS_USED_ANYWHERE
+ic_star_1.png                    ,multiDpi,       ,
+ic_star_2.png                    ,multiDpi,       ,
+ic_star_3.png                    ,multiDpi,       ,
+ic_star_4.png                    ,multiDpi,       ,
+ic_ovo_large.png                 ,multiDpi,       ,
+ic_box_stage_glow.png            ,multiDpi,       ,
 ic_empty_cart.png                ,multiDpi,       ,n
 cat_ic_banned_item.png           ,multiDpi,       ,
 swd_no_saldo_copy.png            ,multiDpi,       ,
@@ -20,3 +26,5 @@ swd_img_sucs_page.png            ,singleDpi,      ,
 imagecouponerror.png             ,singleDpi,      ,
 coupon_emptylistimage.png        ,multiDpi,       ,
 claim_successfull.png            ,multiDpi,       ,
+swd_img_sucs_page.png            ,singleDpi,      ,
+user_no_reward.webp              ,multiDpi,       ,
