@@ -69,22 +69,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override suspend fun startPreview(surfaceView: SurfaceView) {
-        try {
-            if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_GRANTED) {
-                mAliVcLivePusher?.startPreview(surfaceView)
-            } else {
-                throw IllegalStateException("android.permission.CAMERA not granted")
-            }
-        } catch (e: IllegalArgumentException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
-        } catch (e: IllegalStateException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
+        if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+            throw IllegalStateException("android.permission.CAMERA not granted")
         }
+        mAliVcLivePusher?.startPreview(surfaceView)
     }
 
     override fun stopPreview() {
@@ -131,9 +120,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override suspend fun stopPush() {
-        if (!isPushing())  {
-            throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
-        }
+        if (!isPushing()) return
         try {
             mAliVcLivePusher?.stopPush()
             mTimerDuration?.stop()
@@ -142,7 +129,6 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
-            throw IllegalStateException(e)
         }
     }
 
@@ -153,13 +139,12 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
+            throw IllegalStateException(e)
         }
     }
 
     override suspend fun resume() {
-        if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Paused) {
-            throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
-        }
+        if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Paused) return
         try {
             mAliVcLivePusher?.resumeAsync()
             mTimerDuration?.resume()
@@ -173,9 +158,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override suspend fun pause() {
-        if (!isPushing() || mPlayPusherStatus != PlayPusherStatus.Active) {
-            throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
-        }
+        if (!isPushing() || mPlayPusherStatus != PlayPusherStatus.Active) return
         try {
                 mAliVcLivePusher?.pause()
                 mTimerDuration?.pause()
