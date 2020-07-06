@@ -29,6 +29,7 @@ import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
+import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.btn_apply
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import javax.inject.Inject
 
@@ -36,7 +37,8 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 29/06/20.
  */
-class UohListFragment: BaseDaggerFragment(), UohBottomSheetOptionAdapter.ActionListener {
+class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
+        UohBottomSheetOptionAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -75,11 +77,14 @@ class UohListFragment: BaseDaggerFragment(), UohBottomSheetOptionAdapter.ActionL
         observingOrderHistory()
     }
 
+    override fun onRefresh(view: View?) {
+        loadOrderHistoryList()
+    }
+
     private fun prepareLayout() {
-        // refreshHandler = RefreshHandler(swipe_refresh_layout, this)
-        // refreshHandler?.setPullEnabled(true)
+        refreshHandler = RefreshHandler(swipe_refresh_layout, this)
+        refreshHandler?.setPullEnabled(true)
         uohListItemAdapter = UohListItemAdapter()
-        // .setActionListener(this)
 
         rv_order_list?.apply {
             layoutManager = LinearLayoutManager(activity)
@@ -103,6 +108,8 @@ class UohListFragment: BaseDaggerFragment(), UohBottomSheetOptionAdapter.ActionL
 
                     if (orderList.orders.isNotEmpty()) {
                         renderOrderList()
+                    } else {
+                        renderEmptyList()
                     }
 
                     if (orderList.tickers.isNotEmpty()) {
@@ -166,6 +173,7 @@ class UohListFragment: BaseDaggerFragment(), UohBottomSheetOptionAdapter.ActionL
                 mapKey[option] = option
             }
             uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
+            uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
         chips.add(filter2)
@@ -184,6 +192,7 @@ class UohListFragment: BaseDaggerFragment(), UohBottomSheetOptionAdapter.ActionL
                 mapKey[category.value] = category.label
             }
             uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
+            uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
         chips.add(filter3)
@@ -220,9 +229,17 @@ class UohListFragment: BaseDaggerFragment(), UohBottomSheetOptionAdapter.ActionL
     }
 
     private fun renderOrderList() {
+        refreshHandler?.finishRefresh()
         empty_state_order_list?.visibility = View.GONE
         rv_order_list?.visibility = View.VISIBLE
         uohListItemAdapter.addList(orderList.orders)
+    }
+
+    private fun renderEmptyList() {
+        refreshHandler?.finishRefresh()
+        rv_order_list?.visibility = View.GONE
+        empty_state_order_list?.visibility = View.VISIBLE
+
     }
 
     override fun getScreenName(): String = ""
@@ -242,6 +259,11 @@ class UohListFragment: BaseDaggerFragment(), UohBottomSheetOptionAdapter.ActionL
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
                 adapter = uohBottomSheetOptionAdapter
             }
+
+            btn_apply?.setOnClickListener {
+                bottomSheetOption?.dismiss()
+                refreshHandler?.startRefresh()
+            }
         }
 
         bottomSheetOption = BottomSheetUnify().apply {
@@ -254,6 +276,20 @@ class UohListFragment: BaseDaggerFragment(), UohBottomSheetOptionAdapter.ActionL
     }
 
     override fun onOptionItemClick(option: String, filterType: Int) {
-        println("++ option = $option")
+        println("++ option = $option, filter type = $filterType")
+        currOption = option
+        currType = filterType
+
+        when (filterType) {
+            UohConsts.TYPE_FILTER_DATE -> {
+
+            }
+            UohConsts.TYPE_FILTER_STATUS -> {
+                paramUohOrder.input.status = option
+            }
+            UohConsts.TYPE_FILTER_CATEGORY -> {
+                paramUohOrder.input.verticalCategory = option
+            }
+        }
     }
 }

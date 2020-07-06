@@ -5,43 +5,43 @@ import com.google.gson.annotations.SerializedName
 
 data class UohListParam(
     @SerializedName("input")
-    val input: Input = Input()
+    var input: Input = Input()
 ) {
     data class Input(
         @SerializedName("UUID")
-        val uUID: String = "",
+        var uUID: String = "",
 
         @SerializedName("VerticalID")
-        val verticalID: String = "",
+        var verticalID: String = "",
 
         @SerializedName("VerticalCategory")
-        val verticalCategory: String = "",
+        var verticalCategory: String = "",
 
         @SerializedName("Status")
-        val status: String = "",
+        var status: String = "",
 
         @SerializedName("SearchableText")
-        val searchableText: String = "",
+        var searchableText: String = "",
 
         @SerializedName("CreateTime")
-        val createTime: String = "",
+        var createTime: String = "",
 
         @SerializedName("CreateTimeStart")
-        val createTimeStart: String = "",
+        var createTimeStart: String = "",
 
         @SerializedName("CreateTimeEnd")
-        val createTimeEnd: String = "",
+        var createTimeEnd: String = "",
 
         @SerializedName("Page")
-        val page: Int = 0,
+        var page: Int = 0,
 
         @SerializedName("Limit")
-        val limit: Int = 0,
+        var limit: Int = 0,
 
         @SerializedName("SortBy")
-        val sortBy: String = "",
+        var sortBy: String = "",
 
         @SerializedName("IsSortAsc")
-        val isSortAsc: Boolean = false
+        var isSortAsc: Boolean = false
     )
 }

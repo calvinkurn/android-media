@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.bottomsheet_option_uoh_item.view.*
 class UohBottomSheetOptionAdapter(private var listener: ActionListener): RecyclerView.Adapter<UohBottomSheetOptionAdapter.ViewHolder>()  {
     var uohItemMapKeyList = HashMap<String, String>()
     var filterType = -1
+    var selectedRadio = -1
 
     interface ActionListener {
         fun onOptionItemClick(option: String, filterType: Int)
@@ -23,7 +24,6 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
     }
 
     override fun getItemCount(): Int {
-        println("++ size uohItemMapKeyList = "+{uohItemMapKeyList.values.size})
         return uohItemMapKeyList.size
     }
 
@@ -32,9 +32,20 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
         val arrayKeys = uohItemMapKeyList.keys.toMutableList()
         holder.itemView.label_option.text = arrayValues[position]
         holder.itemView.setOnClickListener {
-            holder.itemView.rb_option.isSelected = !holder.itemView.rb_option.isSelected
-            listener.onOptionItemClick(arrayKeys[position], filterType)
+            selectItem(position, arrayKeys)
         }
+
+        holder.itemView.rb_option.setOnCheckedChangeListener(null)
+        holder.itemView.rb_option.isChecked = position == selectedRadio
+        holder.itemView.rb_option.setOnCheckedChangeListener { _, _ ->
+            selectItem(position, arrayKeys)
+        }
+    }
+
+    private fun selectItem(position: Int, arrayKeys: MutableList<String>) {
+        selectedRadio = position
+        listener.onOptionItemClick(arrayKeys[position], filterType)
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
