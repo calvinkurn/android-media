@@ -206,7 +206,10 @@ object DeeplinkMapper {
     }
 
     private val deeplinkPatternTokopediaSchemeList: MutableList<DLP> = listOf(
-            DLP.startWith(ApplinkConst.HOME) { _, _, deeplink -> getRegisteredNavigationHome(deeplink) },
+            DLP(logic = { _, _, deeplink -> !GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) },
+                    targetDeeplink = { _, _, deeplink -> getRegisteredNavigationHome(deeplink) }),
+            DLP(logic = { _, _, deeplink -> GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) },
+                    targetDeeplink = { _, _, _ -> ApplinkConstInternalSellerapp.SELLER_HOME }),
             DLP.startWith(ApplinkConst.INBOX, ApplinkConsInternalHome.HOME_INBOX),
             DLP.startWith(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER),
             DLP.startWith(ApplinkConst.SALAM_UMRAH_SHOP) { ctx, _, deeplink -> getRegisteredNavigationSalamUmrahShop(deeplink, ctx) },
@@ -230,8 +233,6 @@ object DeeplinkMapper {
             DLP.startWithPattern(ApplinkConst.HOME_HOTLIST) { _, _, deeplink -> getRegisteredHotlist(deeplink) },
             DLP.startWithPattern(ApplinkConst.PRODUCT_EDIT) { _, _, deeplink -> DeepLinkMapperProductManage.getEditProductInternalAppLink(deeplink) },
             DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
-            DLP(logic = { _, _, deeplink -> GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) },
-                    targetDeeplink = { _, _, _ -> ApplinkConstInternalSellerapp.SELLER_HOME }),
             DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, _, deeplink -> getRegisteredNavigationProductReview(deeplink) },
             DLP.startWith(ApplinkConst.REPUTATION) { _, _, deeplink -> getRegisteredNavigationReputation(deeplink) },
             DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
@@ -373,7 +374,9 @@ object DeeplinkMapper {
 
     // mechanism to bring most frequent deeplink to top of the list
     private fun putToTop(index: Int) {
-        deeplinkPatternTokopediaSchemeList.add(0, deeplinkPatternTokopediaSchemeList.removeAt(index))
+        // Uncomment this for performance for RouteManager. Currently disabled in production
+        // Requirement: deeplinkPatternTokopediaSchemeList should be order-independent
+        // deeplinkPatternTokopediaSchemeList.add(0, deeplinkPatternTokopediaSchemeList.removeAt(index))
     }
 
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {

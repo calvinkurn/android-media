@@ -569,13 +569,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     // ANALYTICS IMPRESSION
-    override fun generateRecommendationImpressionDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
+    override fun generateRecommendationImpressionDataAnalytics(position: Int, cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
         val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
-            var position = 1
+            var tmpPosition = position
+            if (cartRecommendationItemHolderDataList.size == 1) tmpPosition += 1
             for (cartRecommendationItemHolderData in cartRecommendationItemHolderDataList) {
-                val enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationMapData(cartRecommendationItemHolderData.recommendationItem, isEmptyCart, position)
+                val enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationMapData(cartRecommendationItemHolderData.recommendationItem, isEmptyCart, tmpPosition)
                 addImpression(enhancedECommerceProductCartMapData.getProduct())
-                position++
+                tmpPosition++
             }
 
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
@@ -729,7 +730,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
             setActionField(enhancedECommerceActionField.actionFieldMap)
-                addProduct(enhancedECommerceProductCartMapData.getProduct())
+            addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
         stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
@@ -1059,7 +1060,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productPrice = productModel.price
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
         } else if (productModel is CartRecommendationItemHolderData) {
-            val (recommendationItem) = productModel
+            val (_, recommendationItem) = productModel
             productId = recommendationItem.productId
             shopId = recommendationItem.shopId
             productName = recommendationItem.name
@@ -1069,7 +1070,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             clickUrl = recommendationItem.clickUrl
         }
 
-        if(!clickUrl.isEmpty())
+        if (!clickUrl.isEmpty())
             view?.sendATCTrackingURL(clickUrl)
 
         val addToCartRequestParams = AddToCartRequestParams().apply {

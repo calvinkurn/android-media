@@ -112,6 +112,8 @@ include "features:logistic:logisticaddaddress"
 include "features:logistic:dropoff"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
+include "features:logistic:manageaddress"
+include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
@@ -201,6 +203,7 @@ include "features:user:loginregister"
 include "features:user:logout"
 include "features:user:managename"
 include "features:user:managepassword"
+include 'features:user:notif-troubleshooter'
 include "features:user:notifcenter"
 include "features:user:onboarding"
 include "features:user:otp"
@@ -229,4 +232,5 @@ include "tkpddesign"
 include "tkpdseller"
 include "tkpdabstraction"
 
+include 'testapp-features:user:logintestapp'
 include "customerapp"

@@ -9,7 +9,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@PreferenceListScope
 @Module
 abstract class PreferenceListViewModelModule {
 
@@ -17,6 +16,7 @@ abstract class PreferenceListViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
+    @PreferenceListScope
     @Binds
     @IntoMap
     @ViewModelKey(PreferenceListViewModel::class)

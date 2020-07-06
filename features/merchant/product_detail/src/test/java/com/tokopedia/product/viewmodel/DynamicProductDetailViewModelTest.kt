@@ -23,7 +23,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.AddressModel
@@ -827,10 +826,6 @@ class DynamicProductDetailViewModelTest {
         coVerify(inverse = true) {
             getProductInfoP3RateEstimateUseCase.executeOnBackground()
         }
-
-        Assert.assertTrue((viewModel.productLayout.value as Success).data.none {
-            it is ProductOpenShopDataModel
-        })
     }
 
     /**
