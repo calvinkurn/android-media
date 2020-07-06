@@ -3,22 +3,20 @@ package com.tokopedia.play.ui.quickreply.adapter.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.R
-import com.tokopedia.play_common.ui.chat.viewholder.PlayChatViewHolder
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.play.ui.quickreply.viewholder.QuickReplyViewHolder
 
 /**
  * Created by jegul on 13/12/19
  */
 class QuickReplyAdapterDelegate(
         private val onQuickReplyClicked: (String) -> Unit
-) : TypedAdapterDelegate<String, String, PlayChatViewHolder>(R.layout.item_play_quick_reply) {
+) : TypedAdapterDelegate<String, String, QuickReplyViewHolder>(QuickReplyViewHolder.LAYOUT) {
 
-    override fun onBindViewHolder(item: String, holder: PlayChatViewHolder) {
+    override fun onBindViewHolder(item: String, holder: QuickReplyViewHolder) {
         holder.bind(item, onQuickReplyClicked)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayChatViewHolder {
-        return PlayChatViewHolder(basicView, Typography.BODY_3)
+    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): QuickReplyViewHolder {
+        return QuickReplyViewHolder(basicView)
     }
 }
