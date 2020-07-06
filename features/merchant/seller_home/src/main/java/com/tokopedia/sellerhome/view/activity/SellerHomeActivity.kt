@@ -36,7 +36,6 @@ import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
-import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -126,19 +125,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     override fun getShopInfo() {
         homeViewModel.getShopInfo()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(KEY_LAST_PAGE, sharedViewModel.currentSelectedPage.value?.type ?: FragmentType.HOME)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState?.run {
-            val lastPage = getInt(KEY_LAST_PAGE, FragmentType.HOME)
-            sharedViewModel.setCurrentSelectedPage(PageFragment(lastPage))
-        }
     }
 
     fun attachCallback(callback: StatusBarCallback) {
