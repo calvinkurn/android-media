@@ -4,7 +4,7 @@
     <application>
         <activity
             android:name=".activity.HotlistNavActivity"
-            android:label="@string/label_hotlist"
+            android:label="@string/hotlist_label"
             android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
