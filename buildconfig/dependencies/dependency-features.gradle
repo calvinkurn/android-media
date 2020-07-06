@@ -210,6 +210,7 @@ ext {
             loginregister                   : ":features:user:loginregister",
             loginfingerprint                : ":features:user:loginfingerprint",
             sessioncommon                   : ":features:user:sessioncommon",
+            notifTroubleshooter             : ":features:user:notif-troubleshooter",
             notifCenter                     : ":features:user:notifcenter",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
@@ -233,6 +234,7 @@ ext {
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
-            recharge_slice                  : ":features:recharge:recharge_slice"
+            recharge_slice                  : ":features:recharge:recharge_slice",
+            logintestapp                    : ":testapp-features:user:logintestapp"
     ]
 }

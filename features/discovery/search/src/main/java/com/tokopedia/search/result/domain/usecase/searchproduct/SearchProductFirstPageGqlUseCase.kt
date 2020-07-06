@@ -216,6 +216,7 @@ class SearchProductFirstPageGqlUseCase(
                         product {
                             id
                             name
+                            category_breadcrumb
                             wishlist
                             image {
                                 m_url

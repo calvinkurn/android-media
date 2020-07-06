@@ -7,6 +7,7 @@ import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
@@ -85,7 +86,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
     }
 
     override fun onPromoClicked() {
-        RouteManager.route(this, ApplinkConst.PROMO_LIST)
+        RouteManager.route(this, ApplinkConstInternalTravel.HOTEL_PROMO_LIST)
     }
 
     override fun onHelpClicked() {
