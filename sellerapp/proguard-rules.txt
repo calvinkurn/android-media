@@ -426,3 +426,5 @@
 -keep class com.tokopedia.abstraction.processor.** { *; }
 -keep class com.tokopedia.product.util.processor.** { *; }
 -dontwarn com.squareup.javapoet.**
+
+-keep class com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet.** { *; }
