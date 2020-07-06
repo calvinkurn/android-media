@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -27,8 +28,15 @@ class ReviewViewHolder(
         private const val FPM_REVIEW = "home_review"
         private const val cardBg = "https://ecs7.tokopedia.net/android/others/review_home_bg.png"
     }
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private val performanceTraceName = "mp_home_review_widget_load_time"
+
+    init {
+        performanceMonitoring = PerformanceMonitoring()
+    }
 
     override fun bind(element: ReviewDataModel) {
+        performanceMonitoring?.startTrace(performanceTraceName)
         itemView.review_card_bg?.loadImage(cardBg)
         element.suggestedProductReview.let { suggestedProductReview ->
             if (suggestedProductReview.suggestedProductReview.linkURL.isEmpty()) {
@@ -106,5 +114,7 @@ class ReviewViewHolder(
                 }
             }
         }
+        performanceMonitoring?.stopTrace()
+        performanceMonitoring = null
     }
 }

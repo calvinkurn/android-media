@@ -43,6 +43,8 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)
 
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {

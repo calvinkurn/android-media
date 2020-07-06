@@ -17,7 +17,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import kotlinx.android.synthetic.main.home_dc_deals.view.*
-import kotlinx.android.synthetic.main.home_dc_deals.view.imageFreeOngkirPromo
 
 class ProductHighlightViewHolder(
         val view: View,
@@ -112,7 +111,18 @@ class ProductHighlightViewHolder(
     private fun setDealsProductCard(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
         itemView.deals_product_card.setOnClickListener {
             listener.onSectionItemClicked(grid.applink)
-            ProductHighlightTracking.sendRecommendationListClick(channel, grid, adapterPosition)
+            ProductHighlightTracking.sendRecommendationListClick(
+                    channelId = channel.id,
+                    headerName = channel.header.name,
+                    campaignCode = channel.campaignCode,
+                    persoType = channel.persoType,
+                    categoryId = channel.categoryID,
+                    gridFreeOngkirIsActive = grid.freeOngkir.isActive,
+                    gridId = grid.id,
+                    gridName = grid.name,
+                    gridPrice = grid.price,
+                    position = adapterPosition
+            )
         }
     }
 

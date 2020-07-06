@@ -21,6 +21,7 @@
     <string name="title_sort_but">Urutkan</string>
     <string name="title_close">Tutup</string>
     <string name="see_all">Lihat Semua</string>
+    <string name="filter">Filters</string> <!-- Don't rename this, can break other module using "filter" string -->
     <string name="discovery_filter">Filter</string>
     <string name="sort">Sort</string>
     <string name="search_icon">search icon</string>

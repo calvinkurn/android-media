@@ -10,8 +10,6 @@ public interface AccountHomeRouter {
 
     void doLogoutAccount(Context activity);
 
-    Intent getManageAddressIntent(Context context);
-
     void goToManageShopShipping(Context context);
 
     void goToManageShopProduct(Context context);
