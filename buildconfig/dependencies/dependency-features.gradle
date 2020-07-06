@@ -62,7 +62,6 @@ ext {
             travelPassenger                 : ":features:travel:travel_passenger",
 
             digitalDeals                    : ":features:entertainment:digital_deals",
-            event                           : ":features:entertainment:event",
             eventRevamp                     : ":features:entertainment:event_revamp",
             digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
