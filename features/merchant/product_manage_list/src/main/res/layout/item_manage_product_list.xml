@@ -167,9 +167,24 @@
         app:labelTitle="@string/product_manage_inactive"
         app:labelType="general_light_grey"
         app:layout_constraintLeft_toRightOf="@id/labelDraft"
-        app:layout_constraintRight_toLeftOf="@id/labelInactive"
+        app:layout_constraintRight_toLeftOf="@id/labelCampaign"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
         tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelCampaign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:labelTitle="@string/product_manage_campaign"
+        app:labelType="general_light_red"
+        app:layout_constraintLeft_toRightOf="@id/labelInactive"
+        app:layout_constraintRight_toLeftOf="@id/labelCampaign"
+        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        tools:visibility="visible"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageStockInformation"

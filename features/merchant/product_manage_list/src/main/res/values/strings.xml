@@ -126,6 +126,7 @@
     <string name="product_manage_banned">Pelanggaran</string>
     <string name="product_manage_draft">Draf</string>
     <string name="product_manage_inactive">Nonaktif</string>
+    <string name="product_manage_campaign">Campaign</string>
     <string name="product_manage_count_format">%d Produk</string>
     <string name="product_manage_multiple_select">Pilih Sekaligus</string>
     <string name="product_manage_filter">Filter</string>
