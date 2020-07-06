@@ -222,6 +222,9 @@ data class ItemMapResponse(
         @SerializedName("web_app_url")
         @Expose
         val webAppUrl:String = "",
+        @SerializedName("product_web_url")
+        @Expose
+        val productWebUrl:String = "",
         @SerializedName("passenger_forms")
         @Expose
         var passengerForms : MutableList<PassengerForm> = arrayListOf()
@@ -266,6 +269,7 @@ data class ItemMapResponse(
             parcel.readString(),
             parcel.readInt(),
             parcel.readString(),
+            parcel.readString(),
             parcel.createTypedArrayList(PassengerForm))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -308,6 +312,7 @@ data class ItemMapResponse(
         parcel.writeString(startTime)
         parcel.writeInt(totalPrice)
         parcel.writeString(webAppUrl)
+        parcel.writeString(productWebUrl)
         parcel.writeTypedList(passengerForms)
     }
 

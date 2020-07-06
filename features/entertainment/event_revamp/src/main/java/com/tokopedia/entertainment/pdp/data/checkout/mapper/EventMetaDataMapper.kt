@@ -90,7 +90,7 @@ object EventMetaDataMapper {
                     scheduleTimestamp = it.scheduleTimestamp.toInt(),
                     startTime = it.startTime,
                     totalPrice = it.totalPrice,
-                    webAppUrl = it.webAppUrl,
+                    productWebUrl = it.productWebUrl,
                     providerId = it.providerId.toInt(),
                     passengerForms = it.passengerForms
             )
