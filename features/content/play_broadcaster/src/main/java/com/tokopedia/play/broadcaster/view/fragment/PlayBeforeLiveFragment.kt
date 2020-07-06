@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
@@ -62,8 +62,6 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private lateinit var exitDialog: DialogUnify
 
-    private lateinit var cacheManager: SaveInstanceCacheManager
-
     private var toasterBottomMargin = 0
 
     private val setupResultListener = object : SetupResultListener {
@@ -82,7 +80,6 @@ class PlayBeforeLiveFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         prepareViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        cacheManager = SaveInstanceCacheManager(requireContext(), savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -128,10 +125,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        cacheManager.onSave(outState)
-        cacheManager.put("a", "aaa")
-        cacheManager.put(KEY_SETUP_DATA, parentViewModel.getHydraSetupData())
-        println("Cache Manager id save: ${cacheManager.id}")
+        outState.putString(KEY_SETUP_DATA, GsonSingleton.instance.toJson(parentViewModel.getHydraSetupData()))
     }
 
     private fun initView(view: View) {
@@ -214,11 +208,9 @@ class PlayBeforeLiveFragment @Inject constructor(
     //endregion
 
     private fun populateSavedData(savedInstanceState: Bundle) {
-        val savedSetupData = cacheManager.get<HydraSetupData>(KEY_SETUP_DATA, HydraSetupData::class.java)
-        val a = cacheManager.get<String>("a", String::class.java)
-        println("Cache Manager a: $a")
-        println("Saved Setup Data: $savedSetupData")
-        savedSetupData?.let { parentViewModel.setHydraSetupData(it) }
+        val setupDataString = savedInstanceState.getString(KEY_SETUP_DATA)
+        val setupData = GsonSingleton.instance.fromJson<HydraSetupData>(setupDataString, HydraSetupData::class.java)
+        setupData?.let { parentViewModel.setHydraSetupData(setupData) }
     }
 
     private fun openBroadcastLivePage(liveStreamInfo: LiveStreamInfoUiModel) {
@@ -231,17 +223,21 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun openEditCoverImagePage() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val editCoverFragment = fragmentFactory.instantiate(requireContext().classLoader, CoverEditFragment::class.java.name) as CoverEditFragment
-        childFragmentManager.beginTransaction()
-                .replace(flEdit.id, editCoverFragment)
-                .commit()
+        if (childFragmentManager.findFragmentByTag(TAG_COVER_EDIT) == null) {
+            childFragmentManager.beginTransaction()
+                    .replace(flEdit.id, editCoverFragment, TAG_COVER_EDIT)
+                    .commit()
+        }
     }
 
     private fun openEditProductPage() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val editProductFragment = fragmentFactory.instantiate(requireContext().classLoader, ProductEditFragment::class.java.name) as ProductEditFragment
-        childFragmentManager.beginTransaction()
-                .replace(flEdit.id, editProductFragment)
-                .commit()
+        if (childFragmentManager.findFragmentByTag(TAG_PRODUCT_EDIT) == null) {
+            childFragmentManager.beginTransaction()
+                    .replace(flEdit.id, editProductFragment, TAG_PRODUCT_EDIT)
+                    .commit()
+        }
     }
 
     private fun openEditCoverTitlePage() {
@@ -309,5 +305,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     companion object {
 
         private const val KEY_SETUP_DATA = "setup_data"
+        private const val TAG_COVER_EDIT = "cover_edit"
+        private const val TAG_PRODUCT_EDIT = "product_edit"
     }
 }

@@ -6,5 +6,6 @@ package com.tokopedia.play.broadcaster.data.model
 data class SerializableCoverData(
         val coverImageUriString: String,
         val coverTitle: String,
-        val coverSource: String
+        val coverSource: String,
+        val productId: Long?
 )

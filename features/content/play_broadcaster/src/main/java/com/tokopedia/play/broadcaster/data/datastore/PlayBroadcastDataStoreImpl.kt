@@ -28,16 +28,17 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
         val cover = mSetupDataStore.getSelectedCover()
         requireNotNull(cover)
         val (coverImage, coverSource) = when(val cropState = cover.croppedCover) {
-            is CoverSetupState.Cropped -> cropState.coverImage.toString() to cropState.coverSource.sourceString
+            is CoverSetupState.Cropped -> cropState.coverImage to cropState.coverSource
             else -> throw IllegalStateException("Cover in this state should have been cropped")
         }
 
         return HydraSetupData(
                 selectedProduct = mSetupDataStore.getSelectedProducts(),
                 selectedCoverData = SerializableCoverData(
-                        coverImageUriString = coverImage,
+                        coverImageUriString = coverImage.toString(),
                         coverTitle = cover.title,
-                        coverSource = coverSource
+                        coverSource = coverSource.sourceString,
+                        productId = if (coverSource is CoverSource.Product) coverSource.id else null
                 )
         )
     }
@@ -49,7 +50,7 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                         croppedCover = CoverSetupState.Cropped.Uploaded(
                                 localImage = null,
                                 coverImage = Uri.parse(data.selectedCoverData.coverImageUriString),
-                                coverSource = CoverSource.getFromSourceString(data.selectedCoverData.coverSource)
+                                coverSource = CoverSource.getFromSourceString(data.selectedCoverData.coverSource, data.selectedCoverData.productId)
                         ),
                         title = data.selectedCoverData.coverTitle,
                         state = SetupDataState.Uploaded
