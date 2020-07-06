@@ -18,7 +18,7 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
                     productrevWaitForFeedback(limit: ${'$'}limit, page: ${'$'}page) {
                       list {
                         reputationID
-                        productInboxID
+                        inboxReviewID
                         product {
                           productID
                           productName
@@ -33,7 +33,6 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
                           seen
                         }
                       }
-                      searchQuery
                       page
                       limit
                       hasNext

@@ -30,6 +30,8 @@
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:visibility="gone"
             android:textColor="@color/Neutral_N700_96"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:typographyWeight="bold"
             app:typographyType="body_2"
             app:layout_constraintStart_toEndOf="@id/reviewPendingProductImage"
