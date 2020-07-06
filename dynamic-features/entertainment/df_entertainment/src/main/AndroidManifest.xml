@@ -3,7 +3,7 @@
     package="com.tokopedia.df.entertainment.event_revamp">
 
     <dist:module
-        dist:title="@string/df_title_event_revamp">
+        dist:title="@string/df_title_entertainment">
         <dist:delivery>
             <dist:on-demand/>
         </dist:delivery>
