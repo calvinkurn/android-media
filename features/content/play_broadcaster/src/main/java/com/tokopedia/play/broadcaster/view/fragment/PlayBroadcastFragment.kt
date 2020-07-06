@@ -72,7 +72,7 @@ class PlayBroadcastFragment @Inject constructor(
     private fun startPreview() {
         if (surfaceStatus != SurfaceStatus.UNINITED &&
                 surfaceStatus != SurfaceStatus.DESTROYED) {
-            parentViewModel.getPlayPusher().startPreview(surfaceView)
+            parentViewModel.startPreview(surfaceView)
         }
     }
 

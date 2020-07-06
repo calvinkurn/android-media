@@ -10,6 +10,7 @@ class ChannelConfigStoreImpl @Inject constructor(
 ): ChannelConfigStore {
 
     private lateinit var mChannelId: String
+    private lateinit var mIngestUrl: String
 
     override fun setChannelId(id: String) {
         mChannelId = id
@@ -18,5 +19,14 @@ class ChannelConfigStoreImpl @Inject constructor(
     override fun getChannelId(): String {
         return if (::mChannelId.isInitialized) mChannelId
         else throw IllegalStateException("Channel ID has not been set")
+    }
+
+    override fun setIngestUrl(ingestUrl: String) {
+        mIngestUrl = ingestUrl
+    }
+
+    override fun getIngestUrl(): String {
+        return if (::mIngestUrl.isInitialized) mIngestUrl
+        else throw IllegalStateException("ingest URL has not been set")
     }
 }

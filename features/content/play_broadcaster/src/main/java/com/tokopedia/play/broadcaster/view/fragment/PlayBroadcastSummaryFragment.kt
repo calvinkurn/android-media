@@ -56,7 +56,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         val view = inflater.inflate(R.layout.fragment_play_broadcast_summary, container, false)
 
         observeChannelInfo()
-        observeLiveDuration()
+//        observeLiveDuration()
         observeLiveTrafficMetrics()
 
         return view
@@ -183,9 +183,9 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         })
     }
 
-    private fun observeLiveDuration() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
-            if (it is PlayPusherInfoState.TimerFinish) setLiveDuration(it.timeElapsed)
-        })
-    }
+//    private fun observeLiveDuration() {
+//        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
+//            if (it is PlayPusherInfoState.TimerFinish) setLiveDuration(it.timeElapsed)
+//        })
+//    }
 }

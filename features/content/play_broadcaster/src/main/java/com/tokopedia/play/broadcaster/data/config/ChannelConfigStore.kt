@@ -8,4 +8,8 @@ interface ChannelConfigStore {
     fun setChannelId(id: String)
 
     fun getChannelId(): String
+
+    fun setIngestUrl(ingestUrl: String)
+
+    fun getIngestUrl(): String
 }

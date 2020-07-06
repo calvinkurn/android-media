@@ -7,5 +7,4 @@ package com.tokopedia.play.broadcaster.pusher.state
 sealed class PlayPusherErrorType {
     object UnSupportedDevice: PlayPusherErrorType()
     object ReachMaximumPauseDuration: PlayPusherErrorType()
-    data class Throwable(val message: String): PlayPusherErrorType()
 }
