@@ -1,7 +1,7 @@
-package com.tokopedia.buyerorder.unifiedhistory.view.activity
+package com.tokopedia.buyerorder.unifiedhistory.list.view.activity
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.buyerorder.unifiedhistory.view.fragment.UohListFragment
+import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 
 /**
  * Created by fwidjaja on 29/06/20.

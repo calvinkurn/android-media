@@ -1,0 +1,108 @@
+query GetOrderHistory($input:UOHOrdersRequest!){
+  uohOrders(input:$input) {
+    orders {
+      orderUUID
+      verticalID
+      verticalCategory
+      userID
+      status
+      verticalStatus
+      searchableText
+      metadata {
+        upstream
+        verticalLogo
+        verticalLabel
+        paymentDate
+        paymentDateStr
+        status {
+          label
+          textColor
+          bgColor
+        }
+        products {
+          title
+          imageURL
+          inline1 {
+            label
+            textColor
+            bgColor
+          }
+          inline2 {
+            label
+            textColor
+            bgColor
+          }
+        }
+        otherInfo {
+          actionType
+          appURL
+          webURL
+          label
+          textColor
+          bgColor
+        }
+        totalPrice {
+          value
+          label
+          textColor
+          bgColor
+        }
+        tickers {
+          action {
+            actionType
+            appURL
+            webURL
+            label
+            textColor
+            bgColor
+          }
+          title
+          text
+          type
+          isFull
+        }
+        buttons {
+          Label
+          variantColor
+          type
+          actionType
+          appURL
+          webURL
+        }
+        dotMenus {
+          actionType
+          appURL
+          webURL
+          label
+          textColor
+          bgColor
+        }
+      }
+      createTime
+      createBy
+      updateTime
+      updateBy
+    }
+    filters
+    categories {
+      value
+      label
+    }
+    next
+    dateLimit
+    tickers {
+      action {
+        actionType
+        appURL
+        webURL
+        label
+        textColor
+        bgColor
+      }
+      title
+      text
+      type
+      isFull
+    }
+  }
+}

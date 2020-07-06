@@ -71,7 +71,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".unifiedhistory.view.activity.UohListActivity"
+            android:name="com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity"
             android:label="@string/title_som_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
