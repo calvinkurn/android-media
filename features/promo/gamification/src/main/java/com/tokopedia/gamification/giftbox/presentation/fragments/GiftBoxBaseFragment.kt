@@ -30,6 +30,7 @@ import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
 
 
@@ -210,15 +211,23 @@ open class GiftBoxBaseFragment : Fragment() {
     }
 
     fun showRedError(view: View, message: String, actionText: String, method: (() -> Unit)?) {
-        Toaster.make(view,
+        Toaster.toasterCustomBottomHeight = 30.toPx()
+        val snackbar = Toaster.build(
+                view,
                 message,
-                Snackbar.LENGTH_LONG,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
                 actionText = actionText,
                 clickListener = View.OnClickListener {
                     GtmEvents.clickToaster(userSession?.userId)
                     method?.invoke()
-                },
-                type = Toaster.TYPE_ERROR)
+                }
+        )
+        snackbar.show()
+        val params = snackbar.view.layoutParams as FrameLayout.LayoutParams
+        params.gravity = Gravity.BOTTOM
+        params.width = FrameLayout.LayoutParams.MATCH_PARENT
+        snackbar.view.layoutParams = params
     }
 
     fun showNoInterNetDialog(method: (() -> Unit), context: Context) {

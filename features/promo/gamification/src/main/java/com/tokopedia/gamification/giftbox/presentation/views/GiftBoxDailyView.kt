@@ -15,6 +15,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.presentation.LidImagesDownloader
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState
@@ -28,7 +29,7 @@ open class GiftBoxDailyView : FrameLayout {
 
     lateinit var imageGiftBoxLid: AppCompatImageView
     lateinit var fmGiftBox: FrameLayout
-    lateinit var imageFlatGlow: AppCompatImageView
+    lateinit var imageFlatGlow: DeferredImageView
     lateinit var imageBoxFront: AppCompatImageView
     lateinit var imageBg: AppCompatImageView
     lateinit var imageShadow: AppCompatImageView

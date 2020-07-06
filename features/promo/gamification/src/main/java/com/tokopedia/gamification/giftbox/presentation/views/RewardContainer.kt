@@ -15,6 +15,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.CouponType
@@ -31,13 +32,13 @@ import com.tokopedia.utils.image.ImageUtils
 class RewardContainer : FrameLayout {
 
     lateinit var tvSmallReward: AppCompatTextView
-    lateinit var imageSmallReward: AppCompatImageView
+    lateinit var imageSmallReward: DeferredImageView
     lateinit var llRewardTextLayout: RelativeLayout
     lateinit var rvCoupons: RecyclerView
     lateinit var imageGreenGlow: AppCompatImageView
     lateinit var imageGlowCircleSmall: AppCompatImageView
     lateinit var imageGlowCircleLarge: AppCompatImageView
-    lateinit var imageCircleReward: AppCompatImageView
+    lateinit var imageCircleReward: DeferredImageView
 
     lateinit var couponAdapter: CouponAdapter
 

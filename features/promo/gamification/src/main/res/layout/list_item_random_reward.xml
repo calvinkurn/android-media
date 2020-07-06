@@ -18,7 +18,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp_8">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/image"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"

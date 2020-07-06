@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tvTapHint"
-    android:layout_width="wrap_content"
+    android:layout_width="340dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:layout_marginStart="@dimen/dp_60"
@@ -20,8 +20,7 @@
     android:paddingRight="@dimen/gami_dp_55"
     android:paddingBottom="@dimen/dp_10"
     android:textColor="@color/gf_box_hint_color"
-    android:translationY="@dimen/gami_dp_108"
     app:typographyType="heading_2"
     app:typographyWeight="bold"
     tools:alpha="1"
-    tools:text="Tap kotak ini untuk \nbuka hadiahmu!" />
+    tools:text="Tap kotak ini untuk buka hadiahmu!" />

@@ -23,6 +23,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieTask
+import com.tkpd.remoteresourcerequest.view.ImageDensityType
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
@@ -639,11 +640,18 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
                 val sideMargin = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_top_margin).toInt()
                 val ratio = 3 //coming from R.layout.list_item_coupons
-                if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
-                    rewardContainer.rvCoupons.translationY = (translationY + (2 * sideMargin / ratio)) - fmGiftBox.context.resources.getDimension(R.dimen.gami_box_coupon_padding)
-                    tvTapHint.doOnLayout { tapHint ->
+
+                tvTapHint.doOnLayout { tapHint ->
+                    if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
                         tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin) - tapHint.height
                     }
+
+                    if (isTablet) {
+                        tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin_tablet) - tapHint.height
+                    }
+                }
+                if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
+                    rewardContainer.rvCoupons.translationY = (translationY + (2 * sideMargin / ratio)) - fmGiftBox.context.resources.getDimension(R.dimen.gami_box_coupon_padding)
 
                 } else {
                     rewardContainer.rvCoupons.translationY = translationY + (2 * sideMargin / ratio)
@@ -651,6 +659,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
                 val distanceFromLidTop = fmGiftBox.context.resources.getDimension(R.dimen.gami_lid_top_distance_for_reward_text)
                 rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
+
+                if (isTablet) {
+                    val rewardContainer = rewardSummary.findViewById<FrameLayout>(R.id.container_gami_gift_result)
+                    val REWARD_TABLET_DIMEN_PERCENT = 0.3
+                    val lp = rewardContainer.layoutParams as FrameLayout.LayoutParams
+                    lp.height = (giftBoxDailyView.height - giftBoxDailyView.height * REWARD_TABLET_DIMEN_PERCENT).toInt()
+                    lp.width = (giftBoxDailyView.width - giftBoxDailyView.width * REWARD_TABLET_DIMEN_PERCENT).toInt()
+                }
 
             }
         }
@@ -741,6 +757,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     private fun setDynamicSize() {
         tvProgressCount.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40.toPx().toFloat())
         tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24.toPx().toFloat())
+        if (isTablet) {
+            rewardSummary.tvSummary.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24.toPx().toFloat())
+        }
     }
 
     private fun setShadows() {
@@ -949,14 +968,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         if (hasPoints && hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_WITH_POINTS
-            rewardContainer.imageSmallReward.setImageResource(R.drawable.gami_ic_ovo)
+            rewardContainer.imageSmallReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
 
         } else if (hasPoints) {
             //only points
 
             rewardState = RewardContainer.RewardState.POINTS_ONLY
-            rewardContainer.imageSmallReward.setImageResource(R.drawable.gami_ic_ovo)
-            rewardContainer.imageCircleReward.setImageResource(R.drawable.gami_ic_ovo)
+            rewardContainer.imageSmallReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
+            rewardContainer.imageCircleReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
 
         } else if (hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_ONLY
@@ -987,13 +1006,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 GtmGiftTapTap.clickExitButton(userSession?.userId)
                 dialog.dismiss()
             }
+            val layoutParams = dialog.findViewById<View>(com.tokopedia.dialog.R.id.dialog_bg).layoutParams
+            layoutParams.width = (giftBoxDailyView.width - giftBoxDailyView.width * 0.3).toInt()
             dialog.show()
         }
     }
 
-    fun showTimeupAnimation(){
+    fun showTimeupAnimation() {
         val task = prepareLoaderLottieTask(Constants.TIME_UP_ZIP_FILE)
-        if(task!=null)
+        if (task != null)
             addLottieAnimationToView(task)
     }
 

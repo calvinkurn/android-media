@@ -80,4 +80,8 @@
     <dimen name="gami_box_glow_top_margin">14dp</dimen>
     <dimen name="gami_box_coupon_padding">30dp</dimen>
     <dimen name="gami_tap_hint_margin">58dp</dimen>
+    <dimen name="gami_tap_hint_margin_tablet">58dp</dimen>
+    <dimen name="gami_reward_summary_box_w">102dp</dimen>
+    <dimen name="gami_reward_summary_box_h">79dp</dimen>
+    <dimen name="gami_reward_summary_margin_top">44dp</dimen>
 </resources>

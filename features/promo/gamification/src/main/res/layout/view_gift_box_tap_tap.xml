@@ -60,7 +60,7 @@
 
         </RelativeLayout>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/image_flat_glow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
             tools:alpha="0.3"
             android:translationY="@dimen/gami_dp_75_n"
             tools:background="@color/red_30"
-            app:srcCompat="@drawable/gf_ic_box_stage_glow" />
+            app:remoteFileName="ic_box_stage_glow.png" />
 
     </FrameLayout>
 

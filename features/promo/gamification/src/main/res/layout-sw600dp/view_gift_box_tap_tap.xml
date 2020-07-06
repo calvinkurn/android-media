@@ -24,7 +24,7 @@
             android:id="@+id/imageShadow"
             android:layout_width="@dimen/dp_350"
             android:layout_height="wrap_content"
-            android:translationY="@dimen/gami_dp_108"
+            android:translationY="@dimen/gami_dp_170"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/gf_ic_box_shadow" />
 
@@ -60,7 +60,7 @@
 
         </RelativeLayout>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/image_flat_glow"
             android:layout_width="@dimen/gami_dp_373"
             android:layout_height="@dimen/gami_dp_251"
@@ -71,7 +71,7 @@
             tools:alpha="0.6"
             android:translationY="@dimen/gami_dp_120_n"
             tools:background="@color/red_30"
-            app:srcCompat="@drawable/gf_ic_box_stage_glow" />
+            app:remoteFileName="ic_box_stage_glow.png" />
 
     </FrameLayout>
 
