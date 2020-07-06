@@ -357,6 +357,11 @@ open class ProductAttachmentViewModel : SendableViewModel,
         }
     }
 
+    fun hasReview(): Boolean {
+        // TODO: Impl later
+        return false
+    }
+
     companion object {
         const val statusDeleted = 0
         const val statusActive = 1

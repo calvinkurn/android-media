@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -28,6 +29,7 @@ import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContain
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
 open class TopchatProductAttachmentViewHolder(
@@ -41,6 +43,10 @@ open class TopchatProductAttachmentViewHolder(
     private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
     private var loadView: LoaderUnify? = itemView?.findViewById(R.id.iv_attachment_shimmer)
     private var freeShippingImage: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
+    private var statusContainer: LinearLayout? = itemView?.findViewById(R.id.ll_status_container)
+    private var reviewStar: ImageView? = itemView?.findViewById(R.id.iv_review_star)
+    private var reviewScore: Typography? = itemView?.findViewById(R.id.tv_review_score)
+    private var reviewCount: Typography? = itemView?.findViewById(R.id.tv_review_count)
 
     private val white = "#ffffff"
     private val white2 = "#fff"
@@ -74,6 +80,7 @@ open class TopchatProductAttachmentViewHolder(
             bindVariant(product)
             bindCampaign(product)
             bindPrice(product)
+            bindStatusContainer(product)
             bindFreeShipping(product)
             bindFooter(product)
             bindEmptyStockLabel(product)
@@ -224,6 +231,14 @@ open class TopchatProductAttachmentViewHolder(
 
     private fun bindPrice(product: ProductAttachmentViewModel) {
         itemView.tv_price?.text = product.productPrice
+    }
+
+    private fun bindStatusContainer(product: ProductAttachmentViewModel) {
+        if (product.hasFreeShipping() || product.hasReview()) {
+            statusContainer?.show()
+        } else {
+            statusContainer?.hide()
+        }
     }
 
     private fun bindFreeShipping(product: ProductAttachmentViewModel) {
