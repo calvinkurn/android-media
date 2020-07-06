@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.model.HydraSetupData
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
 import com.tokopedia.play.broadcaster.domain.model.LiveDuration
@@ -31,7 +32,6 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /**
@@ -55,7 +55,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    private val channelId: String
+    val channelId: String
         get() = hydraConfigStore.getChannelId()
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
@@ -179,6 +179,14 @@ class PlayBroadcastViewModel @Inject constructor(
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
         }
+    }
+
+    fun getHydraSetupData(): HydraSetupData {
+        return mDataStore.getAllData()
+    }
+
+    fun setHydraSetupData(setupData: HydraSetupData) {
+        mDataStore.setAllData(setupData)
     }
 
     suspend fun getChannelDetail() = getChannelById(channelId)
@@ -342,6 +350,10 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    fun setChannelId(channelId: String) {
+        hydraConfigStore.setChannelId(channelId)
+    }
+
     private suspend fun startWebSocket() {
         val socketCredential = getSocketCredential()
         playSocket.config(socketCredential.setting.minReconnectDelay, socketCredential.setting.maxRetries, socketCredential.setting.pingInterval)
@@ -363,10 +375,6 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun setSelectedCover(cover: PlayCoverUiModel) {
         getCurrentSetupDataStore().setFullCover(cover)
-    }
-
-    private fun setChannelId(channelId: String) {
-        hydraConfigStore.setChannelId(channelId)
     }
 
     private fun setIngestUrl(ingestUrl: String) {

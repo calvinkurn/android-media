@@ -115,9 +115,6 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
                 sharedElements = sharedElements,
                 extras = Bundle().apply {
                     putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, id)
-                },
-                onFragment = {
-                    it.setListener(this)
                 }
         )
     }
@@ -128,6 +125,15 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
             dismiss()
             null
         } else error
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        when (childFragment) {
+            is PlayEtalasePickerFragment -> childFragment.setListener(this)
+            is PlayEtalaseDetailFragment -> childFragment.setListener(this)
+        }
     }
 
     fun setListener(listener: SetupResultListener) {
@@ -162,10 +168,7 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
 
     private fun openEtalasePickerFragment() {
         navigateToFragment(
-                fragmentClass = PlayEtalasePickerFragment::class.java,
-                onFragment = {
-                    it.setListener(this)
-                }
+                fragmentClass = PlayEtalasePickerFragment::class.java
         )
     }
 

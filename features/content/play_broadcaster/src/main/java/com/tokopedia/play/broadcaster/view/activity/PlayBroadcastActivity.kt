@@ -66,6 +66,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
+    private var isRecreated = false
+
     private var systemUiVisibility: Int
         get() = window.decorView.systemUiVisibility
         set(value) {
@@ -79,6 +81,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
+        isRecreated = (savedInstanceState != null)
+
+        if (savedInstanceState != null) populateSavedState(savedInstanceState)
+
         viewModel.initPushStream()
         setupContent()
         initView()
@@ -94,6 +100,64 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     override fun onStart() {
         super.onStart()
         viewActionBar.rootView.requestApplyInsetsWhenAttached()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(CHANNEL_ID, viewModel.channelId)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (!viewModel.getPermissionUtil().onRequestPermissionsResult(requestCode, permissions, grantResults))
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        viewModel.getPermissionUtil().onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val destFragment = getFragmentByClassName(fragmentClass)
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_setup)
+        if (currentFragment == null || currentFragment::class.java != fragmentClass) {
+            destFragment.arguments = extras
+            fragmentTransaction
+                    .replace(R.id.fl_setup, destFragment, fragmentClass.name)
+                    .commit()
+        }
+    }
+
+    override fun setupTitle(title: String) {
+        viewActionBar.setTitle(title)
+    }
+
+    override fun setupCloseButton(actionTitle: String) {
+        viewActionBar.setupCloseButton(actionTitle)
+    }
+
+    override fun showActionBar(shouldShow: Boolean) {
+        if (shouldShow) viewActionBar.show() else viewActionBar.hide()
+    }
+
+    override fun getBroadcastComponent(): PlayBroadcastComponent {
+        return playBroadcastComponent
+    }
+
+    override fun onBackPressed() {
+        if (shouldClosePage()) return
+        super.onBackPressed()
     }
 
     private fun inject() {
@@ -159,49 +223,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewModel.getConfiguration()
     }
 
-    override fun onResume() {
-        super.onResume()
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (!viewModel.getPermissionUtil().onRequestPermissionsResult(requestCode, permissions, grantResults))
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        viewModel.getPermissionUtil().onActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        val destFragment = getFragmentByClassName(fragmentClass)
-        destFragment.arguments = extras
-        fragmentTransaction
-                .replace(R.id.fl_setup, destFragment, fragmentClass.name)
-                .commit()
-    }
-
-    override fun setupTitle(title: String) {
-        viewActionBar.setTitle(title)
-    }
-
-    override fun setupCloseButton(actionTitle: String) {
-        viewActionBar.setupCloseButton(actionTitle)
-    }
-
-    override fun showActionBar(shouldShow: Boolean) {
-        if (shouldShow) viewActionBar.show() else viewActionBar.hide()
-    }
-
-    override fun getBroadcastComponent(): PlayBroadcastComponent {
-        return playBroadcastComponent
+    private fun populateSavedState(savedInstanceState: Bundle) {
+        val channelId = savedInstanceState.getString(CHANNEL_ID)
+        viewModel.setChannelId(channelId)
     }
 
     private fun getParentFragment() = getFragmentByClassName(PlayBroadcastFragment::class.java)
@@ -220,11 +244,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         return false
     }
 
-    override fun onBackPressed() {
-        if (shouldClosePage()) return
-        super.onBackPressed()
-    }
-
     //region observe
     /**
      * Observe
@@ -235,7 +254,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 is NetworkResult.Loading -> loaderView.show()
                 is NetworkResult.Success -> {
                     loaderView.hide()
-                    handleChannelConfiguration(result.data)
+                    if (!isRecreated) handleChannelConfiguration(result.data)
                 }
                 is NetworkResult.Fail -> {
                     loaderView.hide()
@@ -335,5 +354,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                     viewModel.stopPushStream()
                 }
         ).show()
+    }
+
+    companion object {
+
+        private const val CHANNEL_ID = "channel_id"
     }
 }

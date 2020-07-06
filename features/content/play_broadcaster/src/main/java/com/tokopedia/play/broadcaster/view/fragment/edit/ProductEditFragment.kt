@@ -37,6 +37,17 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
 
     private var mListener: SetupResultListener? = null
 
+    private val editProductListener = object: SimpleEditProductBottomSheet.Listener {
+        override fun onChooseOver() {
+            openProductSetupBottomSheet()
+            getSimpleEditProductBottomSheet().dismiss()
+        }
+
+        override suspend fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore): Throwable? {
+            return mListener?.onSetupCompletedWithData(simpleEditProductBottomSheet, dataStore)
+        }
+    }
+
     override fun getScreenName(): String = "Product Edit Fragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +65,20 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        setupView(view)
+        setupView(view, savedInstanceState)
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        when (childFragment) {
+            is ProductSetupBottomSheet -> {
+                mListener?.let { childFragment.setListener(it) }
+            }
+            is SimpleEditProductBottomSheet -> {
+                childFragment.setListener(editProductListener)
+            }
+        }
     }
 
     fun setListener(listener: SetupResultListener) {
@@ -71,10 +95,10 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
     private fun initView(view: View) {
     }
 
-    private fun setupView(view: View) {
+    private fun setupView(view: View, savedInstanceState: Bundle?) {
         viewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
 
-        openEditProductBottomSheet()
+        if (savedInstanceState == null) openEditProductBottomSheet()
     }
 
     private fun openProductSetupBottomSheet() {
@@ -95,16 +119,6 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
         if (!::simpleEditProductBottomSheet.isInitialized) {
             simpleEditProductBottomSheet =
                     getFragmentByClassName(SimpleEditProductBottomSheet::class.java) as SimpleEditProductBottomSheet
-            simpleEditProductBottomSheet.setListener(object: SimpleEditProductBottomSheet.Listener {
-                override fun onChooseOver() {
-                    openProductSetupBottomSheet()
-                    getSimpleEditProductBottomSheet().dismiss()
-                }
-
-                override suspend fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore): Throwable? {
-                    return mListener?.onSetupCompletedWithData(simpleEditProductBottomSheet, dataStore)
-                }
-            })
         }
         return simpleEditProductBottomSheet
     }
@@ -113,7 +127,6 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
         if (!::productSetupBottomSheet.isInitialized) {
             productSetupBottomSheet =
                     getFragmentByClassName(ProductSetupBottomSheet::class.java) as ProductSetupBottomSheet
-            mListener?.let { productSetupBottomSheet.setListener(it) }
         }
         return productSetupBottomSheet
     }

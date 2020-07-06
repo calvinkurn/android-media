@@ -8,15 +8,18 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.model.HydraSetupData
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
@@ -88,6 +91,8 @@ class PlayBeforeLiveFragment @Inject constructor(
         initView(view)
         setupView(view)
         setupInsets(view)
+
+        if (savedInstanceState != null) populateSavedData(savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -107,6 +112,20 @@ class PlayBeforeLiveFragment @Inject constructor(
     override fun onBackPressed(): Boolean {
         showDialogWhenActionClose()
         return true
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ProductEditFragment -> childFragment.setListener(setupResultListener)
+            is EditCoverTitleBottomSheet -> childFragment.setListener(setupResultListener)
+            is CoverEditFragment -> childFragment.setListener(setupResultListener)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_SETUP_DATA, GsonSingleton.instance.toJson(parentViewModel.getHydraSetupData()))
     }
 
     private fun initView(view: View) {
@@ -188,6 +207,12 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
     //endregion
 
+    private fun populateSavedData(savedInstanceState: Bundle) {
+        val setupDataString = savedInstanceState.getString(KEY_SETUP_DATA)
+        val setupData = GsonSingleton.instance.fromJson<HydraSetupData>(setupDataString, HydraSetupData::class.java)
+        setupData?.let { parentViewModel.setHydraSetupData(setupData) }
+    }
+
     private fun openBroadcastLivePage(liveStreamInfo: LiveStreamInfoUiModel) {
         broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                 Bundle().apply {
@@ -198,18 +223,16 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun openEditCoverImagePage() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val editCoverFragment = fragmentFactory.instantiate(requireContext().classLoader, CoverEditFragment::class.java.name) as CoverEditFragment
-        editCoverFragment.setListener(setupResultListener)
         childFragmentManager.beginTransaction()
-                .replace(flEdit.id, editCoverFragment)
+                .replace(flEdit.id, editCoverFragment, TAG_COVER_EDIT)
                 .commit()
     }
 
     private fun openEditProductPage() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val editProductFragment = fragmentFactory.instantiate(requireContext().classLoader, ProductEditFragment::class.java.name) as ProductEditFragment
-        editProductFragment.setListener(setupResultListener)
         childFragmentManager.beginTransaction()
-                .replace(flEdit.id, editProductFragment)
+                .replace(flEdit.id, editProductFragment, TAG_PRODUCT_EDIT)
                 .commit()
     }
 
@@ -271,8 +294,14 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun getEditTitleBottomSheet(): EditCoverTitleBottomSheet {
         val editTitleBottomSheet = EditCoverTitleBottomSheet()
-        editTitleBottomSheet.setListener(setupResultListener)
         editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         return editTitleBottomSheet
+    }
+
+    companion object {
+
+        private const val KEY_SETUP_DATA = "setup_data"
+        private const val TAG_COVER_EDIT = "cover_edit"
+        private const val TAG_PRODUCT_EDIT = "product_edit"
     }
 }
