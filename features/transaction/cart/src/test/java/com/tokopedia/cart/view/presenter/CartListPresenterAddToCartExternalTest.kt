@@ -117,7 +117,7 @@ object CartListPresenterAddToCartExternalTest : Spek({
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(exception)
                     view.refreshCart()
