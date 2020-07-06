@@ -22,6 +22,10 @@ class TkpdAuthenticator(
     private fun isNeedRefresh() = userSession.isLoggedIn
 
     override fun authenticate(route: Route?, response: Response): Request? {
+        if (responseCount(response) >= 3) {
+            return null // If we've failed 3 times, give up
+        }
+
         if(isNeedRefresh()) {
             return try {
                 val originalRequest = response.request()
@@ -34,6 +38,15 @@ class TkpdAuthenticator(
             }
         }
         return response.request()
+    }
+
+    private fun responseCount(response: Response): Int {
+        var mResponse = response
+        var result = 1
+        while (response.priorResponse()?.also { mResponse = it } != null) {
+            result++
+        }
+        return result
     }
 
     private fun updateRequestWithNewToken(request: Request): Request{
@@ -54,6 +67,7 @@ class TkpdAuthenticator(
         private const val AUTHORIZATION = "authorization"
         private const val BEARER = "Bearer"
         private const val HEADER_PARAM_AUTHORIZATION = "authorization"
+        private const val MAX_RETRY_COUNT = 3
         const val BYTE_COUNT = 512L
     }
 }
