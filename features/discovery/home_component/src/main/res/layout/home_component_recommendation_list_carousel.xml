@@ -7,7 +7,8 @@
     app:layout_constraintTop_toBottomOf="@+id/channel_title"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="@dimen/dp_12">
 
     <View
         android:id="@+id/list_carousel_view"
@@ -38,7 +39,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
