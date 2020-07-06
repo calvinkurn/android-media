@@ -194,6 +194,10 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 
+    override fun restartStreamDuration(millis: Long) {
+        this.mTimerDuration?.restart(millis)
+    }
+
     override fun addMaxPauseDuration(millis: Long) {
         if (this.mTimerDuration == null)
             this.mTimerDuration = PlayPusherTimer(builder.context)

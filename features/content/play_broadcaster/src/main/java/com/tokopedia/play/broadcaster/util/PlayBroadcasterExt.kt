@@ -21,7 +21,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.Toaster
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by jegul on 26/05/20
@@ -174,19 +173,4 @@ internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestLis
             .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
             .addListener(requestListener)
             .into(this)
-}
-
-internal fun Long.durationFormatted() = String.format("%02d:%02d",
-        this.secondToMinute(),
-        this.remainingSecond()
-)
-
-internal fun Long.secondToMinute(): Long {
-    return TimeUnit.SECONDS.toMinutes(this)
-}
-
-internal fun Long.minuteToSecond(): Long = (this*60)
-
-internal fun Long.remainingSecond(): Long {
-    return this - TimeUnit.MINUTES.toSeconds(this.secondToMinute())
 }

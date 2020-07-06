@@ -31,6 +31,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
 import com.tokopedia.play.broadcaster.view.state.BroadcastState
+import com.tokopedia.play.broadcaster.view.state.BroadcastTimerState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
@@ -406,15 +407,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, Observer {
-            it.handleLiveDuration(
-                    onActive = { duration -> showCounterDuration(duration) },
-                    onAlmostFinish = { remaining -> showTimeRemaining(remaining) },
-                    onFinish = {
-                        stopLiveStreaming()
-                        showDialogWhenTimeout()
-                    }
-            )
+        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, EventObserver {
+            when(it)  {
+                is BroadcastTimerState.Active -> showCounterDuration(it.remainingTime)
+                is BroadcastTimerState.AlmostFinish -> showTimeRemaining(it.minutesLeft)
+                is BroadcastTimerState.Finish -> {
+                    stopLiveStreaming()
+                    showDialogWhenTimeout()
+                }
+            }
         })
     }
 

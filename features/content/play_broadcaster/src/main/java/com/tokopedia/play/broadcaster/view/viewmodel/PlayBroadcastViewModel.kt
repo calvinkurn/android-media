@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.util.error.PusherErrorThrowable
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.play.broadcaster.view.state.BroadcastState
+import com.tokopedia.play.broadcaster.view.state.BroadcastTimerState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,7 +65,7 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
         get() = _observableTotalLike
-    val observableLiveDuration: LiveData<DurationUiModel>
+    val observableLiveDuration: LiveData<Event<BroadcastTimerState>>
         get() = _observableLiveDuration
     val observableLiveInfoState: LiveData<Event<BroadcastState>>
         get() = _observableLiveInfoState
@@ -90,7 +91,6 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
-    private val _observableLiveDuration = MutableLiveData<DurationUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
     private val _observableShareInfo = MutableLiveData<ShareUiModel>()
@@ -107,7 +107,6 @@ class PlayBroadcastViewModel @Inject constructor(
             if (it is NetworkResult.Success) setChannelId(it.data.channelId)
         }
     }
-
     private val _observableLiveNetworkState = MediatorLiveData<Event<PlayPusherNetworkState>>().apply {
         addSource(playPusher.getObservablePlayPusherNetworkState()) {
             value = Event(it)
@@ -125,10 +124,11 @@ class PlayBroadcastViewModel @Inject constructor(
                 is Metric -> onRetrievedNewMetric(PlayBroadcastUiMapper.mapMetricList(it))
                 is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(it)
                 is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(it)
-                is LiveDuration -> _observableLiveDuration.value = PlayBroadcastUiMapper.mapLiveDuration(it)
+                is LiveDuration -> restartLiveDuration(it)
             }
         }
     }
+
     private val socketResponseHandlerObserver = object : Observer<Unit> {
         override fun onChanged(t: Unit?) {}
     }
@@ -168,6 +168,7 @@ class PlayBroadcastViewModel @Inject constructor(
             else if (configUiModel.channelType == ChannelType.Pause) getChannelById(configUiModel.channelId) // get channel when channel status is paused
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
             setMaxMinProduct(configUiModel.productTagConfig)
+            playPusher.addMaxStreamDuration(configUiModel.durationConfig.duration) // configure maximum live streaming duration
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
@@ -367,6 +368,13 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun setMaxMinProduct(configModel: ProductTagConfigUiModel) {
         hydraConfigStore.setMaxProduct(configModel.maxProduct)
         hydraConfigStore.setMinProduct(configModel.minProduct)
+    }
+
+    private fun restartLiveDuration(duration: LiveDuration) {
+        scope.launchCatchError(block = {
+            val durationUiModel = PlayBroadcastUiMapper.mapLiveDuration(duration)
+            playPusher.restartStreamDuration(durationUiModel.duration)
+        }) { }
     }
 
     /**

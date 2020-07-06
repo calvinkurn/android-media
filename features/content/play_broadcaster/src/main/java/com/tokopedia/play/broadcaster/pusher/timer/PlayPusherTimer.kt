@@ -13,30 +13,37 @@ class PlayPusherTimer(val context: Context) {
 
     constructor(context: Context,
                 duration: Long) : this(context) {
-        this.duration = duration
+        this.mDuration = duration
     }
 
     var callback: PlayPusherTimerListener? = null
     var timeoutList: List<Timeout> = Timeout.Default()
     var pauseDuration: Long? = null
 
-    private var duration: Long = 0
-    private var lastTimeLeftInMillis: Long = 0
+    private var mDuration: Long = 0
+    private var mLastTimeLeftInMillis: Long = 0
 
-    private var countDownTimer: PlayCountDownTimer? = null
-    private var localStorage: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
+    private var mCountDownTimer: PlayCountDownTimer? = null
+    private var mLocalStorage: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun start() {
-        if (countDownTimer != null)
-            countDownTimer = null
+        if (mCountDownTimer != null){
+            mCountDownTimer?.cancel()
+            mCountDownTimer = null
+        }
 
-        countDownTimer = getCountDownTimer(duration)
-        countDownTimer?.start()
+        mCountDownTimer = getCountDownTimer(mDuration)
+        mCountDownTimer?.start()
     }
 
     fun stop() {
         callback?.onCountDownFinish(getTimeElapsed())
-        countDownTimer?.cancel()
+        mCountDownTimer?.cancel()
+    }
+
+    fun restart(duration: Long) {
+        this.mDuration = duration
+        start()
     }
 
     fun resume() {
@@ -48,16 +55,16 @@ class PlayPusherTimer(val context: Context) {
                 }
             }
         }
-        countDownTimer?.resume()
+        mCountDownTimer?.resume()
     }
 
     fun pause() {
-        countDownTimer?.pause()
+        mCountDownTimer?.pause()
         saveLongValue(PLAY_TIMER_LAST_MILLIS, System.currentTimeMillis())
     }
 
     fun destroy() {
-        countDownTimer?.cancel()
+        mCountDownTimer?.cancel()
     }
 
     private fun getCountDownTimer(liveStreamDuration: Long): PlayCountDownTimer {
@@ -67,7 +74,7 @@ class PlayPusherTimer(val context: Context) {
             }
 
             override fun onTick(millisUntilFinished: Long) {
-                lastTimeLeftInMillis = millisUntilFinished
+                mLastTimeLeftInMillis = millisUntilFinished
                 val timeout = timeoutList.firstOrNull { millisUntilFinished in it.minMillis..it.maxMillis }
                 if (timeout != null) callback?.onCountDownAlmostFinish(timeout.minute)
                 else callback?.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
@@ -78,7 +85,7 @@ class PlayPusherTimer(val context: Context) {
     private fun getTimeElapsed(): String = millisToMinuteSecond(
             getTimeElapsedInMillis()
     )
-    private fun getTimeElapsedInMillis(): Long = duration - lastTimeLeftInMillis
+    private fun getTimeElapsedInMillis(): Long = mDuration - mLastTimeLeftInMillis
 
     private fun millisToMinuteSecond(millis: Long) = String.format("%02d:%02d",
             millisToMinute(millis),
@@ -98,14 +105,14 @@ class PlayPusherTimer(val context: Context) {
      * Store
      */
     private fun saveLongValue(key: String, value: Long) {
-        localStorage?.edit()?.putLong(key, value)?.apply()
+        mLocalStorage?.edit()?.putLong(key, value)?.apply()
     }
 
     private fun getLongValue(key: String, defaultValue: Long = 0L): Long? =
-            localStorage?.getLong(key, defaultValue)
+            mLocalStorage?.getLong(key, defaultValue)
 
     private fun removeValue(key: String) {
-        localStorage?.edit()?.remove(key)?.apply()
+        mLocalStorage?.edit()?.remove(key)?.apply()
     }
 
 

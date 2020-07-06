@@ -78,6 +78,11 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     //TODO("for testing only")
+    override fun restartStreamDuration(millis: Long) {
+        this.mTimer?.restart(millis)
+    }
+
+    //TODO("for testing only")
     override fun addMaxPauseDuration(millis: Long) {
         if (this.mTimer == null)
             this.mTimer = PlayPusherTimer(builder.context)

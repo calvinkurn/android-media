@@ -133,7 +133,7 @@ object PlayBroadcastUiMapper {
                 channelId = channelStatus.first,
                 channelType =  channelStatus.second,
                 durationConfig = DurationConfigUiModel(
-                        duration = config.maxDuration,
+                        duration = config.maxDuration * 1000,
                         pauseDuration = config.maxPauseDuration * 1000,
                         errorMessage = config.maxDurationDesc),
                 productTagConfig = ProductTagConfigUiModel(
@@ -194,7 +194,7 @@ object PlayBroadcastUiMapper {
 
     fun mapLiveDuration(duration: LiveDuration): DurationUiModel = DurationUiModel(
             duration = duration.duration,
-            remaining = duration.remaining,
+            remaining = duration.remaining * 1000,
             maxDuration = duration.maxDuration
     )
 }
