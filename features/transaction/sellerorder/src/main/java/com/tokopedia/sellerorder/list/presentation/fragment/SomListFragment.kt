@@ -33,9 +33,9 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerorder.BuildConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
@@ -749,9 +749,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun refreshThenShowToasterOk(message: String) {
         refreshHandler?.startRefresh()
-        val toasterSuccess = Toaster
         view?.let { v ->
-            toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, SomConsts.ACTION_OK)
+            val toasterSuccess = Toaster.build(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, SomConsts.ACTION_OK)
+            toasterSuccess.show()
         }
     }
 
