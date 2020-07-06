@@ -169,7 +169,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingDuration?.text = shipping.serviceName
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     tvShippingDuration?.setOnClickListener {
-                        listener.chooseDuration()
+                        listener.chooseDuration(false)
                     }
                     tvShippingPrice?.gone()
                     tvShippingSlashPrice?.gone()
@@ -228,7 +228,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingMessage?.text = shipping.serviceErrorMessage
                     if (shipping.shippingRecommendationData != null) {
                         tvShippingChangeDuration?.setOnClickListener {
-                            listener.chooseDuration()
+                            listener.chooseDuration(true)
                         }
                         tvShippingChangeDuration?.visible()
                     } else {
@@ -339,9 +339,20 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {
         val shippingRecommendationData = preference.shipping?.shippingRecommendationData
         if (shippingRecommendationData != null) {
-            ShippingDurationOccBottomSheet().showBottomSheet(fragment, shippingRecommendationData.shippingDurationViewModels, object : ShippingDurationOccBottomSheetListener {
+            val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
+            if (shippingRecommendationData.logisticPromo != null) {
+                list.add(shippingRecommendationData.logisticPromo)
+                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                }
+            }
+            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
                 override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
                     listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+                }
+
+                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+                    listener.onLogisticPromoClick(data)
                 }
             })
         }
@@ -363,7 +374,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         fun chooseCourier()
 
-        fun chooseDuration()
+        fun chooseDuration(isDurationError: Boolean)
 
         fun onPreferenceEditClicked(preference: OrderPreference)
     }
