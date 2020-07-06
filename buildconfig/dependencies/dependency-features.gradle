@@ -210,6 +210,7 @@ ext {
             loginregister                   : ":features:user:loginregister",
             loginfingerprint                : ":features:user:loginfingerprint",
             sessioncommon                   : ":features:user:sessioncommon",
+            notifTroubleshooter             : ":features:user:notif-troubleshooter",
             notifCenter                     : ":features:user:notifcenter",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
