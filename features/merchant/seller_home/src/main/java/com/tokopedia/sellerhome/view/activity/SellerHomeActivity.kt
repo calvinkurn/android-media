@@ -36,8 +36,8 @@ import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
-import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
@@ -60,9 +60,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var remoteConfig: SellerHomeRemoteConfig
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
-    private val sharedViewModel by lazy { viewModelProvider.get(SharedViewModel::class.java) }
 
     private val handler = Handler() //create handler to make sure when showing fragment is on UI thread
     private val containerFragment by lazy {
@@ -96,7 +98,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
-        observeCurrentSelectedPageLiveData()
         setupStatusBar()
     }
 
@@ -126,19 +127,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         homeViewModel.getShopInfo()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(KEY_LAST_PAGE, sharedViewModel.currentSelectedPage.value?.type ?: FragmentType.HOME)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState?.run {
-            val lastPage = getInt(KEY_LAST_PAGE, FragmentType.HOME)
-            sharedViewModel.setCurrentSelectedPage(PageFragment(lastPage))
-        }
-    }
-
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
@@ -157,8 +145,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private fun setupDefaultPage() {
         if (intent?.data == null) {
-            val homePage = PageFragment(FragmentType.HOME)
-            sharedViewModel.setCurrentSelectedPage(homePage)
             showFragment(containerFragment)
         } else {
             handleAppLink(intent)
@@ -171,7 +157,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
                 FragmentType.ORDER -> lastSomTab = page
                 FragmentType.PRODUCT -> lastProductMangePage = page
             }
-            sharedViewModel.setCurrentSelectedPage(page)
+            showSelectedPage(page)
         }
     }
 
@@ -201,19 +187,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             when (menu.itemId) {
                 R.id.menu_sah_home -> {
                     UpdateShopActiveService.startService(this)
-                    showContainerFragment(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
+                    onClickBottomNav(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
                 }
                 R.id.menu_sah_product -> {
                     UpdateShopActiveService.startService(this)
-                    showContainerFragment(lastProductMangePage, TrackingConstant.CLICK_PRODUCT)
+                    onClickBottomNav(lastProductMangePage, TrackingConstant.CLICK_PRODUCT)
                 }
                 R.id.menu_sah_chat -> {
                     UpdateShopActiveService.startService(this)
-                    showContainerFragment(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
+                    onClickBottomNav(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
                 }
                 R.id.menu_sah_order -> {
                     UpdateShopActiveService.startService(this)
-                    showContainerFragment(lastSomTab, TrackingConstant.CLICK_ORDER)
+                    onClickBottomNav(lastSomTab, TrackingConstant.CLICK_ORDER)
                 }
                 R.id.menu_sah_other -> {
                     UpdateShopActiveService.startService(this)
@@ -224,12 +210,17 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         }
     }
 
+    private fun onClickBottomNav(page: PageFragment, trackingAction: String) {
+        showContainerFragment(page, trackingAction)
+        setCurrentFragmentType(page.type)
+        containerFragment.showSelectedPage(page)
+    }
+
     private fun showContainerFragment(page: PageFragment, trackingAction: String) {
         if (currentSelectedMenu == page.type) return
         currentSelectedMenu = page.type
 
         setupStatusBar()
-        sharedViewModel.setCurrentSelectedPage(page)
         showFragment(containerFragment)
         resetPages(page)
 
@@ -252,7 +243,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         currentSelectedMenu = type
 
         showFragment(otherSettingsFragment)
-        sharedViewModel.setCurrentSelectedPage(PageFragment(type))
+        showSelectedPage(PageFragment(type))
 
         NavigationTracking.sendClickBottomNavigationMenuEvent(TrackingConstant.CLICK_OTHERS)
     }
@@ -275,15 +266,23 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             } else {
                 transaction.add(R.id.sahContainer, fragment, fragmentName)
             }
-            transaction.commitNowAllowingStateLoss()
+
+            if(remoteConfig.isImprovementDisabled()) {
+                transaction.commitNowAllowingStateLoss()
+            } else {
+                transaction.commit()
+            }
         }
     }
 
-    private fun observeCurrentSelectedPageLiveData() {
-        sharedViewModel.currentSelectedPage.observe(this, Observer {
-            sahBottomNav.currentItem = it.type
-            statusBarCallback?.setCurrentFragmentType(it.type)
-        })
+    private fun showSelectedPage(page: PageFragment) {
+        val pageType = page.type
+        setCurrentFragmentType(pageType)
+        sahBottomNav.currentItem = pageType
+    }
+
+    private fun setCurrentFragmentType(@FragmentType pageType: Int) {
+        statusBarCallback?.setCurrentFragmentType(pageType)
     }
 
     private fun observeNotificationsLiveData() {
