@@ -306,17 +306,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         descDialog = view.findViewById(R.id.tv_dialogDesc)
         titleDialog.text = altTitle
         descDialog.text = altDescription
-        /*    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                descDialog.text = Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY)
-            } else {
-                descDialog.text = Html.fromHtml(description)
-            }*/
         val alertDialog = adb.create()
-        alertDialog.window?.setGravity(Gravity.TOP)
         alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        val params: WindowManager.LayoutParams? = alertDialog.window?.attributes // change this to your dialog.
-        params?.y = 200
-        alertDialog.window?.attributes = params
         alertDialog.setCancelable(true)
         alertDialog.setCanceledOnTouchOutside(true)
         btn1.setOnClickListener { v: View? ->
