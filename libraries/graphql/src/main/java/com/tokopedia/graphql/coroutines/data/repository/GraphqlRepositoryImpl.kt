@@ -7,13 +7,8 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.util.AnalyticsUtils
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.data.model.GraphqlResponseInternal
-import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.*
+import com.tokopedia.graphql.util.LoggingUtils.logGqlSizeCached
 import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -128,10 +123,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 //Lookup for data
                 mResults[requests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, requests[i].typeOfT)
 
-                AnalyticsUtils.sendEvent(AnalyticsUtils.GtmKeys.EVENT_NAME,
-                        AnalyticsUtils.GtmKeys.EVENT_CATEGORY,
-                        AnalyticsUtils.GtmKeys.EVENT_ACTION,
-                        AnalyticsUtils.getLabel(requests[i].query, cachesResponse));
+                logGqlSizeCached("java", requests.toString(), cachesResponse)
 
                 mIsCachedData[requests[i].typeOfT] = true
                 requests[i].isNoCache = true
