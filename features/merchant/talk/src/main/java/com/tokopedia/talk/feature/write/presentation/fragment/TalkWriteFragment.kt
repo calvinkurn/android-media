@@ -3,7 +3,6 @@ package com.tokopedia.talk.feature.write.presentation.fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,6 +12,8 @@ import android.view.ViewTreeObserver
 import android.widget.EditText
 import androidx.lifecycle.Observer
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.gson.Gson
+import com.google.gson.JsonNull
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -20,6 +21,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -199,7 +202,10 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     private fun goToChat(): Boolean {
-        return RouteManager.route(context, TOP_CHAT_APPLINK + viewModel.shopId)
+        val intent = RouteManager.getIntent(context, TOP_CHAT_APPLINK + viewModel.shopId)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, getProductInfoToJson())
+        startActivity(intent)
+        return true
     }
 
     private fun goToReplyPage(questionId: Int) {
@@ -362,5 +368,14 @@ class TalkWriteFragment : BaseDaggerFragment(),
             show()
             setContent(content, this@TalkWriteFragment)
         }
+    }
+
+    private fun getProductInfoToJson(): String {
+        (viewModel.writeFormData.value as? Success)?.let {
+            val productInfo = listOf(ProductPreview(id = viewModel.getProductId().toString(), name = it.data.productName, imageUrl = it.data.productThumbnailUrl, price = "Rp some dummy"))
+            val gson = Gson()
+            return gson.toJson(productInfo, productInfo.javaClass)
+        }
+        return ""
     }
 }
