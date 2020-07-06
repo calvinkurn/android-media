@@ -426,6 +426,8 @@ public interface ConstantTransactionAnalytics {
         String EDIT_SELLER_NOTES = "product - click tulis catatan";
         String FIND_SIMILAR_PRODUCT = "product - click cari barang serupa";
         String USER_CHANGE_COURIER_OSP = "courier - click arrow to change courier option";
+        String CLICK_UBAH_WHEN_DURATION_ERROR = "click ubah when duration error";
+        String CLICK_SELECTED_DURATION_OPTION = "click selected duration option";
         String CLICK_ON_INSURANCE = "courier - click on asuransi pengiriman";
         String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
         String CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS = "click pilih pembayaran - not success";

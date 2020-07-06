@@ -113,6 +113,8 @@ ext {
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
             logisticcart                    : ":features:logistic:logisticcart",
+            manageaddress                   : ":features:logistic:manageaddress",
+            editshipping                    : ":features:logistic:editshipping",
 
             goldMerchant                    : ":features:merchant:gold_merchant",
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
@@ -210,6 +212,7 @@ ext {
             loginregister                   : ":features:user:loginregister",
             loginfingerprint                : ":features:user:loginfingerprint",
             sessioncommon                   : ":features:user:sessioncommon",
+            notifTroubleshooter             : ":features:user:notif-troubleshooter",
             notifCenter                     : ":features:user:notifcenter",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
@@ -233,6 +236,7 @@ ext {
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
-            recharge_slice                  : ":features:recharge:recharge_slice"
+            recharge_slice                  : ":features:recharge:recharge_slice",
+            logintestapp                    : ":testapp-features:user:logintestapp"
     ]
 }
