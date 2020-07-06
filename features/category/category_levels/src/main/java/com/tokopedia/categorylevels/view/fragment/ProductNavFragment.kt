@@ -43,6 +43,7 @@ import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
+import com.tokopedia.common_category.model.bannedCategory.BannedData
 import com.tokopedia.common_category.model.bannedCategory.SubCategoryItem
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.core.gcm.GCMHandler
@@ -132,9 +133,10 @@ open class ProductNavFragment : BaseBannedProductFragment(),
         private const val EXTRA_PARENT_ID = " PARENT_ID"
         private const val EXTRA_PARENT_NAME = " PARENT_NAME"
         private const val EXTRA_CATEGORY_URL = "CATEGORY_URL"
+        private const val EXTRA_BANNED_DATA = "CATEGORY_DATA"
 
         @JvmStatic
-        fun newInstance(departmentId: String, departmentName: String, categoryUrl: String?): Fragment {
+        fun newInstance(departmentId: String, departmentName: String, categoryUrl: String?, data: BannedData?): Fragment {
             val fragment = ProductNavFragment()
             val bundle = Bundle()
             if (categoryUrl != null) {
@@ -142,6 +144,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             }
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentId)
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
+            bundle.putParcelable(EXTRA_BANNED_DATA, data)
             fragment.arguments = bundle
             return fragment
         }
@@ -158,10 +161,11 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             if (it.containsKey(EXTRA_CATEGORY_URL)) {
                 categoryUrl = it.getString(EXTRA_CATEGORY_URL, "")
                 val uri = Uri.parse(categoryUrl)
-                mSelectedFilter = URLParser(uri.encodedQuery?:categoryUrl).paramKeyValueMap
+                mSelectedFilter = URLParser(uri.encodedQuery ?: categoryUrl).paramKeyValueMap
             }
             mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
             mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
+            bannedData = it.getParcelable(EXTRA_BANNED_DATA) ?: BannedData()
         }
     }
 
@@ -552,8 +556,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     private fun handleAddWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             onSuccessAddWishlist(productCardOptionsModel.productId)
-        }
-        else {
+        } else {
             onErrorAddWishList(getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist), productCardOptionsModel.productId)
         }
     }
@@ -561,8 +564,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     private fun handleRemoveWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             onSuccessRemoveWishlist(productCardOptionsModel.productId)
-        }
-        else {
+        } else {
             onErrorRemoveWishlist(getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist), productCardOptionsModel.productId)
         }
     }

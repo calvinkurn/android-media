@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -27,6 +28,7 @@ import com.tokopedia.common_category.factory.catalog.CatalogTypeFactory
 import com.tokopedia.common_category.factory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.interfaces.CatalogCardListener
+import com.tokopedia.common_category.model.bannedCategory.BannedData
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,7 +37,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_nav.*
 import javax.inject.Inject
-import com.google.gson.annotations.SerializedName
 
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
@@ -68,13 +69,15 @@ class CatalogNavFragment : BaseBannedProductFragment(),
     companion object {
         private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+        private const val EXTRA_BANNED_DATA = "CATEGORY_DATA"
 
         @JvmStatic
-        fun newInstance(departmentId: String, departmentName: String): Fragment {
+        fun newInstance(departmentId: String, departmentName: String, data: BannedData?): Fragment {
             val fragment = CatalogNavFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentId)
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
+            bundle.putParcelable(EXTRA_BANNED_DATA, data)
             fragment.arguments = bundle
             return fragment
         }
@@ -105,6 +108,7 @@ class CatalogNavFragment : BaseBannedProductFragment(),
             if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
                 mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
                 mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
+                bannedData = it.getParcelable(EXTRA_BANNED_DATA) ?: BannedData()
             }
         }
     }

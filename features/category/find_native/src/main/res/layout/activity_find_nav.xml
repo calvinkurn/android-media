@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,7 +8,6 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_navigation"
         android:background="@color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -84,7 +82,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.5"
                     app:typographyType="body_1"
-                    app:typographyWeight="bold"/>
+                    app:typographyWeight="bold" />
 
                 <ImageView
                     android:id="@+id/searchButton"

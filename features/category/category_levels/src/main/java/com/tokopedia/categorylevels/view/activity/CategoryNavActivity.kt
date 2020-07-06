@@ -11,25 +11,26 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.categorylevels.R
-import com.tokopedia.common_category.customview.SearchNavigationView
-import com.tokopedia.common_category.fragment.BaseBannedProductFragment
-import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.categorylevels.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.categorylevels.data.catalogModel.CategorySectionItem
 import com.tokopedia.categorylevels.di.DaggerCategoryNavComponent
 import com.tokopedia.categorylevels.view.fragment.CatalogNavFragment
 import com.tokopedia.categorylevels.view.fragment.ProductNavFragment
+import com.tokopedia.common_category.customview.SearchNavigationView
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
+import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.CategoryNavigationListener
+import com.tokopedia.common_category.model.bannedCategory.BannedData
 import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -48,7 +49,7 @@ private const val EXTRA_PARENT_NAME = " PARENT_NAME"
 private const val STATE_GRID = 1
 private const val STATE_LIST = 2
 private const val STATE_BIG = 3
-
+private const val IS_BANNED = 1
 
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         SearchNavigationView.SearchNavClickListener,
@@ -76,6 +77,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private var categoryUrl: String? = null
     private var addCatalog: Boolean = true
+    private var bannedData: BannedData? = null
 
     private lateinit var categoryNavComponent: com.tokopedia.categorylevels.di.CategoryNavComponent
 
@@ -117,7 +119,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun getDimensionMap(data: Data): Map<String, String>? {
-        return catAnalyticsInstance.createOpenScreenEventMap(rootId = data.rootId, parent = data.parent, id =  data.id.toString(), url = data.url)
+        return catAnalyticsInstance.createOpenScreenEventMap(rootId = data.rootId, parent = data.parent, id = data.id.toString(), url = data.url)
     }
 
     private fun initializeSearchParameter(intent: Intent) {
@@ -226,7 +228,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             progressBar.hide()
             when (it) {
                 is Success -> {
-                    updateToolBarHeading(it.data)
+                    updateToolBarHeading(it.data.name?:"")
+                    bannedData = convertDataIfBanned(it.data)
                     openAdultPage()
                 }
             }
@@ -239,6 +242,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                     updateToolBarHeading(it.data.name ?: "")
                     this.departmentId = it.data.id.toString()
                     sendOpenScreenAnalytics(it.data)
+                    bannedData = convertDataIfBanned(it.data)
                     handleCategoryDetailSuccess()
                 }
                 is Fail -> {
@@ -253,6 +257,14 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             }
             container.show()
         })
+    }
+
+    private fun convertDataIfBanned(data: Data): BannedData {
+        return if (data.isBanned == IS_BANNED) {
+            BannedData(data.name, data.bannedMessage, data.bannedMsgHeader, data.appRedirection, data.displayButton, data.isBanned)
+        } else {
+            BannedData()
+        }
     }
 
     private fun removeCatalogTab() {
@@ -353,7 +365,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun markDefaultFilterState(uri: Uri) {
-        val map = URLParser(uri.encodedQuery?:uri.toString()).paramKeyValueMap
+        val map = URLParser(uri.encodedQuery ?: uri.toString()).paramKeyValueMap
         map.remove(EXTRA_CATEGORY_NAME)
         if (map.size > 0) {
             searchNavContainer?.onFilterSelected(true)
@@ -374,9 +386,9 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>) {
-        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName, categoryUrl)))
-        if(addCatalog)
-            searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
+        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName, categoryUrl, bannedData)))
+        if (addCatalog)
+            searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName, bannedData)))
     }
 
     private fun setActiveTab() {
@@ -476,7 +488,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         super.onActivityResult(requestCode, resultCode, data)
         AdultManager.handleActivityResult(this, requestCode, resultCode, data, object : AdultManager.Callback {
             override fun onFail() {
-
+                finish()
             }
 
             override fun onVerificationSuccess(message: String?) {
@@ -509,7 +521,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         catAnalyticsInstance.eventFilterClicked(departmentId)
     }
 
-    override fun onButtonClicked(bannedProduct: Data) {
+    override fun onButtonClicked(bannedProduct: BannedData) {
         bannedProduct.name?.let { catAnalyticsInstance.eventBukaClick(bannedProduct.appRedirection.toString(), it) }
     }
 
