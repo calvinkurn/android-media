@@ -262,9 +262,10 @@ public class SearchActivity extends BaseActivity
     }
 
     private void onSearchBarClicked() {
-        if (searchParameter == null) return;
+        String keyword = "";
+        if (searchParameter != null) keyword = searchParameter.getSearchQuery();
 
-        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery());
+        SearchTracking.trackEventClickSearchBar(keyword);
         moveToAutoCompleteActivity();
     }
 
