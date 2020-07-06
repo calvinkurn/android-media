@@ -9,10 +9,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.domain.model.shipping.LogisticPromoInfo
-import com.tokopedia.oneclickcheckout.common.domain.model.shipping.ServicesItem
-import com.tokopedia.oneclickcheckout.common.domain.model.shipping.ServicesItemModel
-import com.tokopedia.oneclickcheckout.common.domain.model.shipping.ServicesItemModelNoPrice
+import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.LogisticPromoInfo
+import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItem
+import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItemModel
+import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItemModelNoPrice
 import com.tokopedia.unifyprinciples.Typography
 
 class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import kotlinx.android.synthetic.main.card_preference.view.*
 
@@ -78,13 +78,13 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         }
 
         val addressModel = preference.addressModel
-        tvAddressName.text = addressModel?.addressName ?: ""
-        val receiverName = addressModel?.receiverName
-        val phone = addressModel?.phone
+        tvAddressName.text = addressModel.addressName
+        val receiverName = addressModel.receiverName
+        val phone = addressModel.phone
         var receiverText = ""
-        if (receiverName != null) {
+        if (receiverName.isNotBlank()) {
             receiverText = " - $receiverName"
-            if (phone != null) {
+            if (phone.isNotBlank()) {
                 receiverText = "$receiverText ($phone)"
             }
         }
@@ -94,23 +94,23 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         } else {
             tvAddressReceiver.gone()
         }
-        tvAddressDetail.text = addressModel?.fullAddress ?: ""
+        tvAddressDetail.text = addressModel.fullAddress
 
         val shipmentModel = preference.shipmentModel
-        tvShippingName.text = "Pengiriman ${shipmentModel?.serviceName?.capitalize() ?: ""}"
-        val tempServiceDuration = shipmentModel?.serviceDuration ?: ""
+        tvShippingName.text = itemView.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
+        val tempServiceDuration = shipmentModel.serviceDuration
         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+            itemView.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
         } else {
             OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
         }
         tvShippingDuration.text = serviceDur
 
         val paymentModel = preference.paymentModel
-        ImageHandler.loadImageFitCenter(itemView.context, ivPayment, paymentModel?.image)
-        tvPaymentName.text = paymentModel?.gatewayName ?: ""
-        val description = paymentModel?.description
-        if (description != null && description.isNotBlank()) {
+        ImageHandler.loadImageFitCenter(itemView.context, ivPayment, paymentModel.image)
+        tvPaymentName.text = paymentModel.gatewayName
+        val description = paymentModel.description
+        if (description.isNotBlank()) {
             tvPaymentDetail.text = description
             tvPaymentDetail.visible()
         } else {

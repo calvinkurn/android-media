@@ -17,6 +17,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
+import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
@@ -105,8 +106,8 @@ class RegisterInitialViewModel @Inject constructor(
     val goToSecurityQuestionAfterRelogin: LiveData<String>
         get() = mutableGoToSecurityQuestionAfterRelogin
 
-    private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfo>>()
-    val getUserInfoResponse: LiveData<Result<ProfileInfo>>
+    private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfoData>>()
+    val getUserInfoResponse: LiveData<Result<ProfileInfoData>>
         get() = mutableGetUserInfoResponse
 
     private val mutableGetTickerInfoResponse = MutableLiveData<Result<List<TickerInfoPojo>>>()
@@ -202,9 +203,9 @@ class RegisterInitialViewModel @Inject constructor(
 
     }
 
-    fun getUserInfo() {
+    fun getUserInfo(isCreatePin: Boolean = false) {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                onSuccessGetUserInfo(),
+                onSuccessGetUserInfo(isCreatePin),
                 onFailedGetUserInfo()))
     }
 
@@ -383,9 +384,9 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
+    private fun onSuccessGetUserInfo(isCreatePin: Boolean): (ProfilePojo) -> Unit {
         return {
-            mutableGetUserInfoResponse.value = Success(it.profileInfo)
+            mutableGetUserInfoResponse.value = Success(ProfileInfoData(isCreatePin, it.profileInfo))
         }
     }
 

@@ -153,6 +153,9 @@
 /features/logistic/logisticorder/                    	@tokopedia/android-minionbob-dev
 /features/logistic/dropoff/                    	        @tokopedia/android-minionbob-dev
 /features/logistic/logisticcart/                		@tokopedia/android-minionbob-dev
+/features/logistic/manageaddress/                		@tokopedia/android-minionbob-dev
+/features/logistic/editshipping/                        @tokopedia/android-minion-bob
+
 
 /features/user/chatbot/                         		@tokopedia/android-miniondarth-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -171,6 +174,7 @@
 /features/user/sessioncommon/                   		@tokopedia/android-minionkevin-dev
 /features/user/loginphone/                      		@tokopedia/android-minionkevin-dev
 /features/user/managename/                      		@tokopedia/android-minionkevin-dev
+/features/user/notif-troubleshooter/                    @tokopedia/android-minionkevin-dev
 /features/user/notifcenter/                     		@tokopedia/android-minionkevin-dev
 /features/user/attachproduct/                   		@tokopedia/android-minionkevin-dev
 /features/user/changephonenumber                		@tokopedia/android-minionkevin-dev
@@ -205,7 +209,6 @@
 /features/promo/tokopoints              				@tokopedia/android-minionsolo-dev
 /features/promo/tokopoints_notification 				@tokopedia/android-minionsolo-dev
 /features/promo/gamification            				@tokopedia/android-minionsolo-dev
-/features/payment/withdraw/             				@tokopedia/android-minionsolo-dev
 /features/kyc                           				@tokopedia/android-minionyoda-dev
 /features/promo/merchant_voucher                        @tokopedia/android-minionsolo-dev
 /features/promo/promo_gamification_common               @tokopedia/android-minionsolo-dev
@@ -223,6 +226,7 @@
 /features/digital/instant_debit_bca                     @tokopedia/android-minionyoda-dev
 /features/fintech/wallet                				@tokopedia/android-minionyoda-dev
 /features/payment/thankyou_native                		@tokopedia/android-minionyoda-dev
+/features/payment/withdraw/             				@tokopedia/android-minionyoda-dev
 
 /features/payment/payment_setting/              		@tokopedia/android-minionyoda-dev
 /features/payment/pms/                          		@tokopedia/android-minionyoda-dev
