@@ -407,6 +407,23 @@ object CartListPresenterUpdateCartTest : Spek({
             }
         }
 
+        Scenario("failed update cart with exception") {
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartData(false)
+            }
+
+            Then("should hide progress loading") {
+                verify {
+                    view.hideProgressLoading()
+                }
+            }
+        }
+
     }
 
 })
