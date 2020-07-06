@@ -3,12 +3,14 @@ package com.tokopedia.shop_showcase.shop_showcase_add.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.view.*
+import android.view.MotionEvent
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseEditParam
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
@@ -56,10 +58,6 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
 
     override fun getParentViewResourceID(): Int {
         return PARENT_VIEW_ACTIVITY
-    }
-
-    override fun getParentViewResourceID(): Int {
-        return R.id.parent_view
     }
 
     override fun setupStatusBar(){
