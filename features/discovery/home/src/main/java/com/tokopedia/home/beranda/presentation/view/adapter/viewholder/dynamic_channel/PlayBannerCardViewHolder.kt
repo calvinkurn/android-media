@@ -143,6 +143,14 @@ class PlayBannerCardViewHolder(
         playCarouselCardDataModel?.let { listener.onPlayBannerCarouselRefresh(it, adapterPosition) }
     }
 
+    fun onPause(){
+        playBannerCarouselView?.onPause()
+    }
+
+    fun onResume(){
+        playBannerCarouselView?.onResume()
+    }
+
     fun onDestroy(){
         playBannerCarouselView?.onDestroy()
     }

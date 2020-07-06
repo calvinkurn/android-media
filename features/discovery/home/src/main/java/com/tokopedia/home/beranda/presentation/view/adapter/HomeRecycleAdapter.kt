@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayBannerCardViewHolder
@@ -76,6 +77,13 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         return list
     }
 
+    private fun getPositionPlayCarousel(): Int{
+        for (i in currentList.indices) {
+            if(getItem(i) is PlayCarouselCardDataModel) return i
+        }
+        return -1
+    }
+
     private fun getAllExoPlayers(): ArrayList<HomePlayWidgetHelper> {
         val list: ArrayList<HomePlayWidgetHelper> = ArrayList()
         for (i in currentList.indices) {
@@ -94,6 +102,11 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
             (getViewHolder(currentSelected) as? PlayCardViewHolder)?.resume()
         }
 
+        val playCarouselIndex = getPositionPlayCarousel()
+        if(playCarouselIndex != -1){
+            (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onResume()
+        }
+
         if(itemCount > 0){
             (getViewHolder(0) as? BannerViewHolder)?.onResume()
         }
@@ -105,6 +118,12 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
             currentSelected = positions.first()
             (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause()
         }
+
+        val playCarouselIndex = getPositionPlayCarousel()
+        if(playCarouselIndex != -1){
+            (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onPause()
+        }
+
         if(itemCount > 0){
             (getViewHolder(0) as? BannerViewHolder)?.onPause()
         }
