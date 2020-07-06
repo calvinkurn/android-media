@@ -95,7 +95,6 @@ import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
-import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -967,10 +966,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
-        val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
-            viewModel.editVariantsStock(result)
+        if (product.hasStockReserved == true) {
+            //TODO: go to stock campaign page
+        } else {
+            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
+                viewModel.editVariantsStock(result)
+            }
+            editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
         }
-        editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
         ProductManageTracking.eventClickEditStockVariant()
     }
 

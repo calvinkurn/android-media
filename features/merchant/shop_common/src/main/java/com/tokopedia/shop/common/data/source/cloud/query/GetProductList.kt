@@ -19,6 +19,7 @@ internal object GetProductList {
                     max
                 }
                 stock
+                hasStockReserved
                 cashback
                 status
                 featured
