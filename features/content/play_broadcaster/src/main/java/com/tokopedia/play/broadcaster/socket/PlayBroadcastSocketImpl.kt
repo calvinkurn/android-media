@@ -1,7 +1,5 @@
 package com.tokopedia.play.broadcaster.socket
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonElement
@@ -35,8 +33,6 @@ class PlayBroadcastSocketImpl constructor(
             maxRetries = DEFAULT_MAX_RETRIES,
             pingInterval = DEFAULT_PING
     )
-
-    private val _observableResponseMessage = MutableLiveData<PlaySocketType>()
 
     override fun config(minReconnectDelay: Int, maxRetries: Int, pingInterval: Long) {
         this.config = SocketConfiguration(minReconnectDelay, maxRetries, pingInterval)
@@ -93,7 +89,7 @@ class PlayBroadcastSocketImpl constructor(
                 }
 
                 if (data != null) {
-                    _observableResponseMessage.postValue(data)
+                    socketInfoListener?.onReceive(data)
                 }
             }
 
@@ -127,8 +123,6 @@ class PlayBroadcastSocketImpl constructor(
         if (::compositeSubscription.isInitialized)
             compositeSubscription.clear()
     }
-
-    override fun getObservablePlaySocketMessage(): LiveData<out PlaySocketType> = _observableResponseMessage
 
     data class SocketConfiguration(
             val minReconnectDelay: Int,

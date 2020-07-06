@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
+import com.tokopedia.play.broadcaster.socket.PlaySocketType
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -127,27 +128,12 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
     private val _observablePermissionState = permissionUtil.getObservablePlayPermissionState()
-    private val socketResponseHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
-        addSource(playSocket.getObservablePlaySocketMessage()) {
-            when(it) {
-                is Metric -> onRetrievedNewMetric(PlayBroadcastUiMapper.mapMetricList(it))
-                is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(it)
-                is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(it)
-                is LiveDuration -> restartLiveDuration(it)
-            }
-        }
-    }
-
-    private val socketResponseHandlerObserver = object : Observer<Unit> {
-        override fun onChanged(t: Unit?) {}
-    }
 
     private val channelIdObserver = object : Observer<String> {
         override fun onChanged(t: String?) {}
     }
 
     init {
-        socketResponseHandler.observeForever(socketResponseHandlerObserver)
         _observableChannelId.observeForever(channelIdObserver)
 
         _observableChatList.value = mutableListOf()
@@ -155,7 +141,6 @@ class PlayBroadcastViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        socketResponseHandler.removeObserver(socketResponseHandlerObserver)
         _observableChannelId.removeObserver(channelIdObserver)
         playSocket.destroy()
         scope.cancel()
@@ -350,6 +335,15 @@ class PlayBroadcastViewModel @Inject constructor(
         fun connectWebSocket(): Job = scope.launch(dispatcher.io) {
             playSocket.connect(channelId = channelId, groupChatToken = socketCredential.gcToken)
             playSocket.socketInfoListener(object : PlaySocketInfoListener{
+                override fun onReceive(data: PlaySocketType) {
+                    when(data) {
+                        is Metric -> onRetrievedNewMetric(PlayBroadcastUiMapper.mapMetricList(data))
+                        is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(data)
+                        is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(data)
+                        is LiveDuration -> restartLiveDuration(data)
+                    }
+                }
+
                 override fun onError(throwable: Throwable) {
                     connectWebSocket()
                 }
