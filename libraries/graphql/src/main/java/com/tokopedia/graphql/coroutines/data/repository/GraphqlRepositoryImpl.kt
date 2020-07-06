@@ -123,7 +123,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 //Lookup for data
                 mResults[requests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, requests[i].typeOfT)
 
-                logGqlSizeCached("java", requests.toString(), cachesResponse)
+                logGqlSizeCached("kt", requests.toString(), cachesResponse)
 
                 mIsCachedData[requests[i].typeOfT] = true
                 requests[i].isNoCache = true
