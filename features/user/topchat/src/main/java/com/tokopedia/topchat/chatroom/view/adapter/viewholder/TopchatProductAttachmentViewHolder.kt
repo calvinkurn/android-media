@@ -8,6 +8,7 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -39,6 +40,7 @@ open class TopchatProductAttachmentViewHolder(
     private var cardContainer: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.containerProductAttachment)
     private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
     private var loadView: LoaderUnify? = itemView?.findViewById(R.id.iv_attachment_shimmer)
+    private var freeShippingImage: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
 
     private val white = "#ffffff"
     private val white2 = "#fff"
@@ -226,10 +228,10 @@ open class TopchatProductAttachmentViewHolder(
 
     private fun bindFreeShipping(product: ProductAttachmentViewModel) {
         if (product.hasFreeShipping()) {
-            itemView.iv_free_shipping?.show()
-            ImageHandler.loadImageRounded2(itemView.context, itemView.iv_free_shipping, product.getFreeShippingImageUrl())
+            freeShippingImage?.show()
+            ImageHandler.loadImageRounded2(itemView.context, freeShippingImage, product.getFreeShippingImageUrl())
         } else {
-            itemView.iv_free_shipping?.hide()
+            freeShippingImage?.hide()
         }
     }
 
