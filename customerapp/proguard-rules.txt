@@ -426,4 +426,4 @@
  -keep class com.tokopedia.product.manage.feature.stockreminder.data.** { *; }
 
  -dontwarn com.squareup.javapoet.**
- -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
+ -dontwarn com.tokopedia.topads.dashboard.view.sheet.DateSheetPickerKt.**

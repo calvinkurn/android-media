@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.tokopedia.datepicker.range.view.model.PeriodRangeModel
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -19,24 +18,50 @@ class DatePickerSheet {
 
     private fun setupView(context: Context, index: Int, range: String, dateList: ListUnify?, btnClose: ImageView?) {
         dialog?.let { dialog ->
+            val listUnify = ArrayList<ListItemUnify>()
             val dateModel = Utils.getPeriodRangeList(context)
-            val listUnify = getListData(context, range, dateModel)
+
+            dateModel.forEachIndexed { index, periodRangeModel ->
+
+                val data = if (index != CUSTOM_DATE)
+                    ListItemUnify(periodRangeModel.label, periodRangeModel.getDescription(context))
+                else
+                    ListItemUnify(periodRangeModel.label, range)
+
+                data.isBold = true
+                data.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
+                listUnify.add(data)
+            }
             dateList?.setData(listUnify)
+
             dateList?.run {
-                dateList?.onLoadFinish {
+                this.onLoadFinish {
                     this.setOnItemClickListener { parent, view, position, id ->
                         setSelected(listUnify, position) {
-                            setSelectedPos(position, dateModel)
+                            if (position != CUSTOM_DATE) {
+                                onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
+                                dialog.dismiss()
+                            } else {
+                                customDatepicker?.invoke()
+                                dialog.dismiss()
+                            }
                         }
                     }
                     listUnify.forEachIndexed { position, it ->
                         it.listRightRadiobtn?.setOnClickListener {
-                            setSelected(listUnify, position) {
-                                setSelectedPos(position, dateModel)
+                            this.setSelected(listUnify, position) {
+                                if (position != CUSTOM_DATE) {
+                                    onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
+                                    dialog.dismiss()
+                                } else {
+                                    customDatepicker?.invoke()
+                                    dialog.dismiss()
+                                }
                             }
                         }
                     }
-                    setSelected(listUnify, index) {}
+
+                    this?.setSelected(listUnify, index) {}
                 }
             }
             btnClose?.setOnClickListener {
@@ -45,31 +70,19 @@ class DatePickerSheet {
         }
     }
 
-    private fun setSelectedPos(position: Int, dateModel: ArrayList<PeriodRangeModel>) {
-        if (position != CUSTOM_DATE) {
-            onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
-            dialog?.dismiss()
-        } else {
-            customDatepicker?.invoke()
-            dialog?.dismiss()
-        }
+    private fun ListUnify.setSelected(items: List<ListItemUnify>, position: Int, onChecked: (selectedItem: ListItemUnify) -> Any) = run {
+        val selectedItem = this.getItemAtPosition(position) as ListItemUnify
+        items.filter { it.getShownRadioButton()?.isChecked ?: false }
+                .filterNot { it == selectedItem }
+                .onEach { it.getShownRadioButton()?.isChecked = false }
+        selectedItem.getShownRadioButton()?.isChecked = true
+        onChecked(selectedItem)
     }
 
-    private fun getListData(context: Context, range: String, dateModel: ArrayList<PeriodRangeModel>): ArrayList<ListItemUnify> {
-        val listUnify = ArrayList<ListItemUnify>()
-
-        dateModel.forEachIndexed { index, periodRangeModel ->
-
-            val data = if (index != CUSTOM_DATE)
-                ListItemUnify(periodRangeModel.label, periodRangeModel.getDescription(context))
-            else
-                ListItemUnify(periodRangeModel.label, range)
-
-            data.isBold = true
-            data.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
-            listUnify.add(data)
-        }
-        return listUnify
+    private fun ListItemUnify.getShownRadioButton() = run {
+        if (listLeftRadiobtn?.visibility == View.VISIBLE) listLeftRadiobtn
+        else if (listRightRadiobtn?.visibility == View.VISIBLE) listRightRadiobtn
+        else null
     }
 
     fun show() {
@@ -92,19 +105,4 @@ class DatePickerSheet {
             return fragment
         }
     }
-}
-
-fun ListUnify.setSelected(items: List<ListItemUnify>, position: Int, onChecked: (selectedItem: ListItemUnify) -> Any) = run {
-    val selectedItem = this.getItemAtPosition(position) as ListItemUnify
-    items.filter { it.getShownRadioButton()?.isChecked ?: false }
-            .filterNot { it == selectedItem }
-            .onEach { it.getShownRadioButton()?.isChecked = false }
-    selectedItem.getShownRadioButton()?.isChecked = true
-    onChecked(selectedItem)
-}
-
-fun ListItemUnify.getShownRadioButton() = run {
-    if (listLeftRadiobtn?.visibility == View.VISIBLE) listLeftRadiobtn
-    else if (listRightRadiobtn?.visibility == View.VISIBLE) listRightRadiobtn
-    else null
 }
