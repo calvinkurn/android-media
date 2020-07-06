@@ -5,6 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
+import com.tokopedia.chat_common.domain.pojo.productattachment.TopchatProductRating
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import java.util.*
 
@@ -57,6 +58,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     var remainingStock: Int = 1
     var status: Int = 0
     var wishList: Boolean = false
+    var rating: TopchatProductRating = TopchatProductRating()
     var images: List<String> = emptyList()
         get() {
             return if (field.isNotEmpty()) {
@@ -65,12 +67,10 @@ open class ProductAttachmentViewModel : SendableViewModel,
                 listOf(productImage)
             }
         }
-
     val hasDiscount: Boolean
         get() {
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
         }
-
     val stringBlastId: String get() = blastId.toString()
 
     override fun updateData(attribute: Any?) {
@@ -94,6 +94,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             status = attribute.productProfile.status
             wishList = attribute.productProfile.wishList
             images = attribute.productProfile.images
+            rating = attribute.productProfile.rating
             if (variants.isNotEmpty()) {
                 setupVariantsField()
             }
@@ -358,8 +359,11 @@ open class ProductAttachmentViewModel : SendableViewModel,
     }
 
     fun hasReview(): Boolean {
-        // TODO: Impl later
-        return false
+        return rating.count > 0
+    }
+
+    fun fromBroadcast(): Boolean {
+        return blastId != 0
     }
 
     companion object {

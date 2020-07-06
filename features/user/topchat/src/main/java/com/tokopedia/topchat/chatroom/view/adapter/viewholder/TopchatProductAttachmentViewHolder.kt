@@ -81,6 +81,7 @@ open class TopchatProductAttachmentViewHolder(
             bindCampaign(product)
             bindPrice(product)
             bindStatusContainer(product)
+            bindRating(product)
             bindFreeShipping(product)
             bindFooter(product)
             bindEmptyStockLabel(product)
@@ -234,10 +235,25 @@ open class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindStatusContainer(product: ProductAttachmentViewModel) {
-        if (product.hasFreeShipping() || product.hasReview()) {
+        if (product.hasFreeShipping() || (product.hasReview() && product.fromBroadcast())) {
             statusContainer?.show()
         } else {
             statusContainer?.hide()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun bindRating(product: ProductAttachmentViewModel) {
+        if (product.hasReview() && product.fromBroadcast()) {
+            reviewScore?.text = product.rating.score.toString()
+            reviewCount?.text = "(${product.rating.count})"
+            reviewStar?.show()
+            reviewScore?.show()
+            reviewCount?.show()
+        } else {
+            reviewStar?.hide()
+            reviewScore?.hide()
+            reviewCount?.hide()
         }
     }
 
