@@ -146,9 +146,6 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableChannelId.observeForever(channelIdObserver)
 
         _observableChatList.value = mutableListOf()
-
-        mockChatList()
-        mockMetrics()
     }
 
     override fun onCleared() {
@@ -277,7 +274,7 @@ class PlayBroadcastViewModel @Inject constructor(
     fun startPushStream() {
         scope.launchCatchError(block = {
             withContext(dispatcher.main) {
-//                startWebSocket()
+                startWebSocket()
                 playPusher.startPush(ingestUrl)
                 updateChannelStatus(PlayChannelStatus.Live)
             }
