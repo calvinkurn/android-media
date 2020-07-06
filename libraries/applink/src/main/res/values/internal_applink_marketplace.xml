@@ -3,6 +3,9 @@
     <string name="host_marketplace" translatable="false">marketplace</string>
     <string name="host_hotlist" translatable="false">hot</string>
     <string name="host_hotlist_revamp" translatable="false">hotlist</string>
+    <string name="host_marketplace_category_level" translatable="false">marketplace</string>
+    <string name="host_category_level" translatable="false">category</string>
+
     <string name="host_find" translatable="false">find</string>
     <string name="host_amp_find" translatable="false">amp/find</string>
     <!--
@@ -40,7 +43,7 @@
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*\\/</string>
-    <string name="path_set_cashback" translatable="false">/set-cashback/.*\\/.*\\/</string>
+    <string name="path_set_cashback" translatable="false">/set-cashback/.*\\/</string>
     <string name="path_create_review" translatable="false">/product-review/create/.*\\/.*\\/</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
     <string name="path_product_report" translatable="false">/product-report/.*\\/</string>
@@ -59,6 +62,7 @@
     <string name="path_mitra_toppers_dashboard" translatable="false">/mitra-toppers-dashboard</string>
     <string name="path_seller_info" translatable="false">/seller-info</string>
     <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
+    <string name="path_shop_favourite_list" translatable="false">/shop-favourites</string>
 
     <string name="path_review_inbox" translatable="false">/review</string>
     <string name="path_review_inbox_detail" translatable="false">/review/.*\\/</string>
@@ -89,6 +93,7 @@
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
     <string name="path_user_attach_invoice" translatable="false">/user-attach-invoice</string>
     <string name="path_user_attach_voucher" translatable="false">/user-attach-voucher</string>
+    <string name="path_user_order_history" translatable="false">/user-order-history/.*\\/</string>
     <string name="title_open_shop">Buka Toko Gratis</string>
     <string name="title_ovop2p">OVO P2P Transfer</string>
     <string name="applink_report_title">Report</string>

@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
@@ -16,6 +17,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.AssertableSubscriber
+import java.lang.reflect.Type
 
 object GetCartListSimplifiedUseCaseTest : Spek({
 
@@ -34,9 +36,13 @@ object GetCartListSimplifiedUseCaseTest : Spek({
 
         Scenario("success") {
 
+            val result = HashMap<Type, Any>()
+            result[ShopGroupSimplifiedGqlResponse::class.java] = ShopGroupSimplifiedGqlResponse(ShopGroupSimplifiedResponse("OK"))
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("success response") {
                 every { graphqlUseCase.createObservable(any()) } returns
-                        Observable.just(GraphqlResponse(mapOf(ShopGroupSimplifiedGqlResponse::class.java to ShopGroupSimplifiedGqlResponse(ShopGroupSimplifiedResponse("OK"))), null, false))
+                        Observable.just(gqlResponse)
             }
 
             When("create observable") {
@@ -60,9 +66,13 @@ object GetCartListSimplifiedUseCaseTest : Spek({
 
             val errorMessages = listOf("error message", "other message")
 
+            val result = HashMap<Type, Any>()
+            result[ShopGroupSimplifiedGqlResponse::class.java] = ShopGroupSimplifiedGqlResponse(ShopGroupSimplifiedResponse("FAIL", errorMessages = errorMessages))
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("error response with message") {
                 every { graphqlUseCase.createObservable(any()) } returns
-                        Observable.just(GraphqlResponse(mapOf(ShopGroupSimplifiedGqlResponse::class.java to ShopGroupSimplifiedGqlResponse(ShopGroupSimplifiedResponse("FAIL", errorMessages = errorMessages))), null, false))
+                        Observable.just(gqlResponse)
             }
 
             When("create observable") {
@@ -81,9 +91,13 @@ object GetCartListSimplifiedUseCaseTest : Spek({
 
         Scenario("unexpected fail") {
 
+            val result = HashMap<Type, Any>()
+            result[ShopGroupSimplifiedGqlResponse::class.java] = ShopGroupSimplifiedGqlResponse(ShopGroupSimplifiedResponse("FAIL"))
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("error response without message") {
                 every { graphqlUseCase.createObservable(any()) } returns
-                        Observable.just(GraphqlResponse(mapOf(ShopGroupSimplifiedGqlResponse::class.java to ShopGroupSimplifiedGqlResponse(ShopGroupSimplifiedResponse("FAIL"))), null, false))
+                        Observable.just(gqlResponse)
             }
 
             When("create observable") {

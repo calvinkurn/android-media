@@ -32,7 +32,6 @@
             android:layout_marginTop="@dimen/dp_4"
             android:text="@string/ads_not_delivered"
             app:labelType="general_light_orange"
-            app:layout_constraintEnd_toEndOf="@id/iklan_otomatis"
             app:layout_constraintStart_toStartOf="@id/iklan_otomatis"
             app:layout_constraintTop_toBottomOf="@id/iklan_otomatis" />
 

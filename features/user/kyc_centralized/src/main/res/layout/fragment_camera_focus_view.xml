@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         android:keepScreenOn="true"
         app:cameraUseDeviceOrientation="false"
-        app:cameraPictureSizeMaxHeight="2000"
         app:cameraPlaySounds="true"
         app:cameraAudio="off"/>
 

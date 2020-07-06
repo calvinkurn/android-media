@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,6 +14,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
+import com.tokopedia.topads.auto.di.module.AutoAdsModule
+import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
 import com.tokopedia.topads.auto.view.OnBoardingSliderAdapter
 import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen1
 import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen2
@@ -29,7 +32,7 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
     private lateinit var adapter: OnBoardingSliderAdapter
 
     override fun getComponent(): AutoAdsComponent = DaggerAutoAdsComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).autoAdsQueryModule(AutoAdsQueryModule(this)).build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,11 +56,9 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
         }
 
         view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-            }
+            override fun onPageScrollStateChanged(state: Int) {}
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
                 setToolBarStatusBar(position)
@@ -71,11 +72,10 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
         setStatusBar(position)
         setButton(position)
         when (position) {
-            0 -> toolbar.setBackgroundColor(resources.getColor(R.color.topads_autoads_onboarding_color1))
-            2 -> toolbar.setBackgroundColor(resources.getColor(R.color.topads_autoads_onboarding_color1))
-            1 -> toolbar.setBackgroundColor(resources.getColor(R.color.topads_autoads_onboarding_color2))
+            0 -> toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color1))
+            2 -> toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color1))
+            1 -> toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color2))
         }
-
     }
 
     private fun setButton(position: Int) {
@@ -98,9 +98,9 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
             if (position == 0 || position == 2)
-                window.statusBarColor = resources.getColor(R.color.topads_autoads_onboarding_color1)
+                window.statusBarColor = ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color1)
             else
-                window.statusBarColor = resources.getColor(R.color.topads_autoads_onboarding_color2)
+                window.statusBarColor = ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color2)
         }
     }
 

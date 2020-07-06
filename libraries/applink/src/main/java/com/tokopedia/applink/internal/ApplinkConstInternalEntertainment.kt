@@ -22,5 +22,12 @@ object ApplinkConstInternalEntertainment {
     val EVENT_SEARCH = "$INTERNAL_EVENT/search"
     @JvmField
     val EVENT_LOCATION = "$INTERNAL_EVENT/location"
+    @JvmField
+    val EVENT_PDP = "$INTERNAL_EVENT/detail"
+    @JvmField
+    val EVENT_FORM = "$INTERNAL_EVENT/form"
+    @JvmField
+    val EVENT_PACKAGE = "$INTERNAL_EVENT/choose-package"
+
 
 }

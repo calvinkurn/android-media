@@ -8,7 +8,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.*
-import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.view.*
 
 /**
  * Created by Pika on 3/6/20.

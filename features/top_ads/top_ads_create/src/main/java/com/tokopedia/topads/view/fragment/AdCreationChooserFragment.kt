@@ -1,5 +1,6 @@
 package com.tokopedia.topads.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
-import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.data.response.AutoAdsResponse
@@ -33,11 +33,10 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     private var dailyBudget = 0
     private var current_auto_ads_status = 0
 
-
     companion object {
 
         private const val TOGGLE_OFF = "toggle_off"
-        private const val REQUEST_CODE = 0
+        private const val AUTO_ADS_DISABLED = 111
         private const val ACTIVE = 500
         private const val NON_ACTIVE = 600
         private const val IN_PROGRESS_200 = 200
@@ -105,9 +104,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         auto_ads.setOnClickListener {
             if (adStatus == AUTO) {
                 val intent = Intent(context, EditBudgetAutoAdsActivity::class.java)
-                intent.putExtra(AutoAdsBaseBudgetFragment.KEY_DAILY_BUDGET, dailyBudget)
-                intent.putExtra(AutoAdsBaseBudgetFragment.KEY_AUTOADS_STATUS, current_auto_ads_status)
-                startActivityForResult(intent, REQUEST_CODE)
+                startActivityForResult(intent, AUTO_ADS_DISABLED)
             }
             if (adStatus == MANAUAL || adStatus == NO_ADS) {
                 RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
@@ -153,8 +150,10 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AUTO_ADS_DISABLED) {
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
+        }
         viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
-
     }
-
 }

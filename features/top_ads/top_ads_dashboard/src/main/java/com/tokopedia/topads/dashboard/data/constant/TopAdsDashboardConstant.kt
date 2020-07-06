@@ -1,7 +1,5 @@
 package com.tokopedia.topads.dashboard.data.constant
 
-import com.tokopedia.design.base.BaseToaster
-
 object TopAdsDashboardConstant {
     const val PARAM_TYPE = "type"
     const val PARAM_START_DATE = "start_date"
@@ -18,7 +16,6 @@ object TopAdsDashboardConstant {
     const val EXTRA_AD_CHANGED = "EXTRA_AD_CHANGED"
     const val EXTRA_FROM_PUSH = "from_notif"
     const val EXTRA_APPLINK_FROM_PUSH = "applink_from_notif"
-    const val EXTRA_CREDIT = "EXTRA_CREDIT"
     const val EXTRA_TOTAL_GROUP_ADS = "EXTRA_TOTAL_GROUP_ADS"
     const val EXTRA_TOTAL_PRODUCT_ADS = "EXTRA_TOTAL_PRODUCT_ADS"
     const val EXTRA_SELECTED_OPTION = "selected_option"
@@ -43,24 +40,15 @@ object TopAdsDashboardConstant {
     const val SOURCE_DASH = "dashboard"
     const val ACTION_MOVE = "move_group"
     const val AD_ID = "ads"
-    const val KEYWORD_TYPE_PHRASE = 11
-    const val KEYWORD_TYPE_EXACT = 21
-    const val KEYWORD_TYPE_NEGATIVE_PHRASE = 12
-    const val KEYWORD_TYPE_NEGATIVE_EXACT = 22
     const val TIDAK_DIBATASI = "Tidak Dibatasi"
     const val GROUP_ID = "group_id"
-    const val PRICE_DAILY = "daily_budget"
-    const val GROUP_STATUS = "group_status"
     const val PRICE_SPEND = "price_spent"
-    const val NOT_VALID = "nont_valid"
-    const val IS_ACTIVE = "is_active"
+    const val NOT_VALID = "Rp 0"
     const val GROUP_NAME = "group_name"
     const val GROUP_TOTAL = "group_total"
-    const val groupId = "groupId"
-    const val groupName = "groupName"
-    const val groupStatus = "status"
-    const val priceBid = "price_bid"
-    const val priceDaily = "price_daily"
+    const val GROUPID = "groupId"
+    const val GROUPNAME = "groupName"
+    const val PRICEBID = "price_bid"
     const val CUSTOM_DATE = 5
     const val DATE_RANGE_PRODUK = "dateRangeSelectedProduct"
     const val DATE_RANGE_BERANDA = "dateRangeSelectedBeranda"
@@ -80,4 +68,12 @@ object TopAdsDashboardConstant {
     const val TOASTER_DURATION :Long = 2000
     const val EXPIRE = "expiryDate"
     const val PRODUCT = "product"
+    const val EDIT_GROUP_REQUEST_CODE = 47
+    const val EDIT_WITHOUT_GROUP_REQUEST_CODE = 49
+    const val GROUP_UPDATED = 23
+    const val AUTO_ADS_DISABLED = 111
+    const val STATUS_ACTIVE = 1
+    const val STATUS_TIDAK_TAMPIL = 2
+    const val TAB_POSITION = "tab_position"
+
 }

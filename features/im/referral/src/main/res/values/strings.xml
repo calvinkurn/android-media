@@ -5,7 +5,6 @@
     <string name="bagi_kode_referral">Bagi kode referral-mu</string>
     <string name="referral_help_tell"><![CDATA[Minta teman untuk mendaftar & bertransaksi]]></string>
     <string name="referral_screen_name">Referral Home</string>
-    <string name="referral_friend_welcome_screen_name">Friend View After Install</string>
     <string name="drawer_title_referral_appshare">Dapatkan Cashback</string>
     <string name="drawer_title_appshare">Share ke Teman</string>
     <string name="apa_itu_tokocash">Apa itu Cashback?</string>
@@ -15,7 +14,6 @@
     <string name="referral_phone_number_verify_screen_name">Phone Number Verification</string>
     <string name="copied">Tersalin</string>
     <string name="fiends_invited_lable">teman diajak</string>
-    <string name="referral_welcome_header">Hi memberi kamu Promo Referral.</string>
     <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
     <string name="referral_share_screen_name">Share Channel</string>
     <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>

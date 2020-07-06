@@ -26,19 +26,26 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private var listVisitable = mutableListOf<Visitable<*>>()
 
+    private var isTyping = false
+
+    fun setIsTyping(isTyping: Boolean) {
+        this.isTyping = isTyping
+    }
+
     override fun search(searchParameter: SearchParameter) {
         this.querySearch = searchParameter.getSearchQuery()
 
         getSuggestionUseCase.execute(
-                createGetSuggestionParams(searchParameter),
+                createGetSuggestionParams(searchParameter, isTyping),
                 createGetSuggestionSubscriber()
         )
     }
 
-    private fun createGetSuggestionParams(searchParameter: SearchParameter) = SuggestionUseCase.getParams(
+    private fun createGetSuggestionParams(searchParameter: SearchParameter, isTyping: Boolean) = SuggestionUseCase.getParams(
         searchParameter.getSearchParameterMap(),
         userSession.deviceId,
-        userSession.userId
+        userSession.userId,
+        isTyping
     )
 
     private fun createGetSuggestionSubscriber(): Subscriber<SuggestionData> = object : Subscriber<SuggestionData>() {

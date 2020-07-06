@@ -5,11 +5,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
+import com.tokopedia.topads.common.data.internal.ParamObject.PRICE_BID
+import com.tokopedia.topads.common.data.internal.ParamObject.PRICE_DAILY
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUPS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_DASH
-import com.tokopedia.topads.dashboard.data.model.EditBulkGroup
 import com.tokopedia.topads.dashboard.data.model.GroupActionResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -24,9 +26,10 @@ class TopAdsGroupActionUseCase @Inject constructor(graphqlRepository: GraphqlRep
 
     fun setParams(action: String, groupIds: List<String>) {
 
-        val group = ArrayList<EditBulkGroup>()
+        val group: ArrayList<Map<String, String?>> = arrayListOf()
         groupIds.forEach {
-            group.add(EditBulkGroup(it, null, null))
+            val map = mapOf(GROUPID to it, PRICE_BID to null, PRICE_DAILY to null)
+            group.add(map)
         }
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_ID] = userSession.shopId

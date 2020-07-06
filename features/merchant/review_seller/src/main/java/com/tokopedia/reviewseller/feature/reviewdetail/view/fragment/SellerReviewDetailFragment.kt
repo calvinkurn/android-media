@@ -427,11 +427,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     productID.toString(),
                     filterListItemUnify[position].listTitleText)
 
-            if (position == positionFilterPeriod) return
             setIntentResultChipDate(filterListItemUnify[position].listTitleText, position)
             positionFilterPeriod = position
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelProductReviewDetail?.setChipFilterDateText(filterListItemUnify[position].listTitleText)
+            endlessRecyclerViewScrollListener?.resetState()
             bottomSheetPeriodDetail?.dismiss()
             loadInitialData()
         } catch (e: Exception) {
@@ -565,6 +565,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val getTopicsFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<TopicUiModel>().firstOrNull()
         reviewSellerDetailAdapter.updateFilterTopic(adapterPosition, item.title.toString(), updatedState, getTopicsFilterFromAdapter)
         viewModelProductReviewDetail?.setFilterTopicDataText(getTopicsFilterFromAdapter?.sortFilterItemList)
+        endlessRecyclerViewScrollListener?.resetState()
     }
 
     override fun onParentTopicFilterClicked() {
@@ -590,6 +591,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         if (getSelectedCheckbox?.ratingIsChecked != ratingAndState.second && getSelectedCheckbox != null) {
             reviewSellerDetailAdapter.updateFilterRating(adapterPosition, ratingAndState.second, getRatingFilterFromAdapter)
             viewModelProductReviewDetail?.setFilterRatingDataText(getRatingFilterFromAdapter.ratingBarList)
+            endlessRecyclerViewScrollListener?.resetState()
             reviewSellerDetailAdapter.removeReviewNotFound()
             reviewSellerDetailAdapter.showLoading()
         }
@@ -608,6 +610,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
         reviewSellerDetailAdapter.updateTopicFromBottomSheet(topic)
         viewModelProductReviewDetail?.setSortAndFilterTopicData(topic to sortValue)
+        endlessRecyclerViewScrollListener?.resetState()
         reviewSellerDetailAdapter.removeReviewNotFound()
         reviewSellerDetailAdapter.showLoading()
     }

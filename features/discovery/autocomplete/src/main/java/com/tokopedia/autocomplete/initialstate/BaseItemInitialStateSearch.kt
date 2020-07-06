@@ -1,6 +1,6 @@
 package com.tokopedia.autocomplete.initialstate
 
-class BaseItemInitialStateSearch(
+data class BaseItemInitialStateSearch(
         val template: String = "",
         val imageUrl: String = "",
         val applink: String = "",

@@ -104,11 +104,13 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun topAdsCreated(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>) {
+    fun topAdsCreated(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>,
+                      dataGroup: HashMap<String, Any?>, onSuccess: (() -> Unit),onError:(()->Unit)) {
         topAdsCreateUseCase.setParam(dataProduct, dataKeyword, dataGroup)
         topAdsCreateUseCase.executeQuerySafeMode(
-                {},
+                { onSuccess() },
                 { throwable ->
+                    onError()
                     throwable.printStackTrace()
                 })
     }

@@ -15,9 +15,6 @@ import rx.Observable;
 @Deprecated
 public interface CreditCardAuthApi {
 
-    @POST(TkpdBaseURL.Payment.PATH_ZEUS_CHECK_WHITELIST)
-    Observable<Response<String>> checkWhiteList(@Body JsonObject requestBody);
-
     @POST(TkpdBaseURL.Payment.PATH_ZEUS_UPDATE_WHITELIST)
     Observable<Response<String>> updateWhiteList(@Body JsonObject requestBody);
 

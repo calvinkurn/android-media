@@ -22,6 +22,8 @@ object ProductManageListConstant {
     const val REQUEST_CODE_CATEGORY = 2789
     const val REQUEST_CODE_STOCK_REMINDER = 7777
     const val SET_CASHBACK_REQUEST_CODE = 3333
+    const val REQUEST_CODE_ADD_PRODUCT = 3697
+    const val REQUEST_CODE_EDIT_PRODUCT = 9736
 
     const val FILTER_ALL_PRODUK = -2
     const val FILTER_SOLD_PRODUK = -3

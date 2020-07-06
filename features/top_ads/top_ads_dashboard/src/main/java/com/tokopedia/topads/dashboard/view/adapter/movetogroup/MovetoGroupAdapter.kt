@@ -3,8 +3,8 @@ package com.tokopedia.topads.dashboard.view.adapter.movetogroup
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupViewModel
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewholder.MovetoGroupViewHolder
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupViewModel
 
 
 class MovetoGroupAdapter(val typeFactory: MovetoGroupAdapterTypeFactory) : RecyclerView.Adapter<MovetoGroupViewHolder<MovetoGroupViewModel>>() {

@@ -77,9 +77,6 @@
     <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
     <string name="wishlist_check_cart">Cek Keranjang</string>
 
-    <string name="flight_title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
-    <string name="flight_phone_verification_header">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel.</string>
-
 
     <!-- Shake Shake Campaign -->
 
@@ -88,10 +85,6 @@
     <string name="drawer_title_shopping_list">Daftar Belanja</string>
     <string name="drawer_title_payment_list">Menunggu Pembayaran</string>
     <string name="drawer_title_digital_transaction_list"><![CDATA[Daftar Top-Up & Tagihan]]></string>
-    <string name="drawer_title_travel_flight_transaction_list">Daftar Tiket Pesawat</string>
-    <string name="drawer_title_travel_train_transaction_list">Daftar Tiket Kereta Api</string>
-    <string name="drawer_title_events_transaction_list">Daftar Events</string>
-    <string name="drawer_title_deals_transaction_list">Daftar Deals</string>
     <string name="exit_message">Tekan sekali lagi untuk keluar</string>
     <string name="sedang_dalam_proses_shake">Sedang dalam Proses Shake</string>
     <string name="ok">OK</string>
@@ -176,4 +169,9 @@
     <string name="saldo_webview_title">Tokopedia</string>
   
     <string name="title_logout" translatable="false">logout</string>
+
+    <!--Talk-->
+    <string name="title_reading_page">Q&amp;A</string>
+    <string name="title_reply_page">Balas Pertanyaan</string>
+
 </resources>

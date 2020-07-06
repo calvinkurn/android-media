@@ -14,11 +14,8 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
@@ -63,6 +60,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
 
         private const val REQUEST_CODE_ADD_CREDIT = 1
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
+        private const val SEVEN_DAYS_RANGE_INDEX = 2
 
         fun createInstance(): BerandaTabFragment {
             return BerandaTabFragment()
@@ -123,8 +121,9 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
         }
-        startDate = topAdsDashboardPresenter.startDate
-        endDate = topAdsDashboardPresenter.endDate
+        setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
+        endDate = Utils.getEndDate()
+        startDate = Utils.getStartDate()
         loadData()
         hari_ini?.setOnClickListener {
             showBottomSheet()
@@ -176,7 +175,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     private fun setDateRangeText(position: Int) {
         when (position) {
             1 -> current_date.text = context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
-            0 -> current_date.text = context?.getString(R.string.hari_ini)
+            0 -> current_date.text = context?.getString(R.string.topads_dash_hari_ini)
             2 -> current_date.text = context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
                 val text = Utils.outputFormat.format(startDate) + " - " + Utils.outputFormat.format(endDate)
@@ -308,4 +307,12 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            clear()
+            commit()
+        }
+    }
 }

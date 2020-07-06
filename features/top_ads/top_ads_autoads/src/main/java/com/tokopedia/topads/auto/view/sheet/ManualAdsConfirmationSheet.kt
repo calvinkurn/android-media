@@ -19,7 +19,7 @@ class ManualAdsConfirmationSheet {
     var dismissed: (() -> Unit)? = null
 
     private fun setupView(context: Context, manualClick: () -> Unit) {
-        dialog!!.setOnShowListener { dialogInterface ->
+        dialog?.setOnShowListener { dialogInterface ->
             val dialog = dialogInterface as BottomSheetDialog
             val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (frameLayout != null) {
@@ -30,11 +30,6 @@ class ManualAdsConfirmationSheet {
         startManualAdsButton?.setOnClickListener {
             dismissDialog()
             manualClick.invoke()
-            if(AppUtil.isSellerInstalled(context)) {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
-            } else {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
-            }
         }
         closeButton?.setOnClickListener { dismissDialog() }
         cancel?.setOnClickListener { dismissDialog() }
@@ -59,7 +54,7 @@ class ManualAdsConfirmationSheet {
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_autoads_bottom_sheet_layout_confirmation_manual_ads)
             fragment.closeButton = fragment.dialog?.findViewById(com.tokopedia.design.R.id.btn_close)
-            fragment.startManualAdsButton = fragment.dialog!!.findViewById(R.id.btn_start_manual_ads)
+            fragment.startManualAdsButton = fragment.dialog?.findViewById(R.id.btn_start_manual_ads)
             fragment.cancel = fragment.dialog?.findViewById(R.id.cancel_btn_start_manual_ads)
             fragment.setupView(context, manualClick)
             return fragment

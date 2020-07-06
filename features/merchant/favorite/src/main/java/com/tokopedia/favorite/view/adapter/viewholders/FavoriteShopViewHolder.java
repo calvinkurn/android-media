@@ -13,7 +13,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.favorite.R;
 import com.tokopedia.favorite.utils.TrackingConst;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;

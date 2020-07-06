@@ -22,7 +22,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_NEGATIVE
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
@@ -31,9 +32,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecorati
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
-import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticdata.util.getLatLng
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
@@ -75,6 +76,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var labelAlamatList: Array<String> = emptyArray()
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
+    private var isFullFlow: Boolean = true
+    private var isLogisticLabel: Boolean = true
 
     lateinit var mapView: MapView
 
@@ -95,6 +98,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
                     putBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, extra.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD))
                     putBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, extra.getBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, false))
+                    putBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, true))
                 }
             }
         }
@@ -119,6 +123,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             isMismatchSolved = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
             isUnnamedRoad = it.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, false)
             isNullZipcode = it.getBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, false)
+            isLogisticLabel = it.getBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, true)
         }
     }
 
@@ -188,7 +193,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
         back_button_detail.setOnClickListener {
             if (!isMismatch && !isMismatchSolved) {
-                AddNewAddressAnalytics.eventClickBackArrowOnPositivePageChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
+                AddNewAddressAnalytics.eventClickBackArrowOnPositivePageChangeAddressPositive(isFullFlow, isLogisticLabel)
             }
             activity?.finish()
         }
@@ -196,7 +201,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         if (!isMismatch && !isMismatchSolved) {
             et_detail_address.apply {
                 addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper))
-                setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive(eventLabel = LOGISTIC_LABEL) }
+                setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive(isFullFlow, isLogisticLabel) }
                 addTextChangedListener(setDetailAlamatWatcher())
 
                 setOnTouchListener { view, event ->
@@ -213,7 +218,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             et_receiver_name.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
+                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive(isFullFlow, isLogisticLabel)
                     }
                 }
 
@@ -237,7 +242,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
+                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive(isFullFlow, isLogisticLabel)
                     }
                 }
             }
@@ -248,7 +253,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     addTextChangedListener(setWrapperWatcher(et_kota_kecamatan_mismatch_wrapper))
                     setOnClickListener {
                         showDistrictRecommendationBottomSheet()
-                        AddNewAddressAnalytics.eventClickFieldKotaKecamatanChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+                        AddNewAddressAnalytics.eventClickFieldKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
                     }
                 }
             }
@@ -258,7 +263,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 addTextChangedListener(setAlamatWatcher())
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+                        AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative(isFullFlow, isLogisticLabel)
                     }
                 }
                 setOnTouchListener { view, event ->
@@ -285,7 +290,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative(isFullFlow, isLogisticLabel)
                     }
                 }
             }
@@ -301,7 +306,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative(isFullFlow, isLogisticLabel)
                     }
                 }
             }
@@ -372,9 +377,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private fun eventShowListLabelAlamat(type: String) {
         showLabelAlamatList()
         if (type.equals("positive", true)) {
-            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive(isFullFlow, isLogisticLabel)
         } else {
-            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressNegative(isFullFlow, isLogisticLabel)
         }
     }
 
@@ -382,9 +387,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         setSaveAddressModel()
         saveAddressDataModel?.let {
             if (isMismatch) {
-                presenter.saveAddress(it, ANA_NEGATIVE)
+                presenter.saveAddress(it, ANA_NEGATIVE, isFullFlow, isLogisticLabel)
             } else {
-                presenter.saveAddress(it, ANA_POSITIVE)
+                presenter.saveAddress(it, ANA_POSITIVE, isFullFlow, isLogisticLabel)
             }
         }
     }
@@ -402,7 +407,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         }
 
         if (!validated) {
-            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field, eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field, isFullFlow, isLogisticLabel)
         }
 
         if (!validateFormDefault(field)) validated = false
@@ -445,7 +450,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         }
 
         if (!validated) {
-            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field, eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field, isFullFlow, isLogisticLabel)
         }
 
         if (!validateFormDefault(field)) validated = false
@@ -487,9 +492,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
         if (!validated) {
             if (isMismatch) {
-                AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field, eventLabel = LOGISTIC_LABEL)
+                AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field, isFullFlow, isLogisticLabel)
             } else {
-                AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field, eventLabel = LOGISTIC_LABEL)
+                AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field, isFullFlow, isLogisticLabel)
             }
         }
         return validated
@@ -602,7 +607,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun eventShowZipCodes() {
         showZipCodes()
-        AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+        AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative(isFullFlow, isLogisticLabel)
     }
 
     private fun setupRvKodePosChips() {
@@ -635,7 +640,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, false,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
-                AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
+                AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive(isFullFlow, isLogisticLabel)
             }
         }
     }
@@ -653,11 +658,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 hideKeyboard()
                 if (et_kota_kecamatan_mismatch?.text.isNullOrEmpty()) {
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
-                    AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu(eventLabel = LOGISTIC_LABEL)
+                    AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu(isFullFlow, isLogisticLabel)
                 } else {
                     goToPinpointActivity(currentLat, currentLong, false, token, true,
                             isMismatchSolved, isMismatch, saveAddressDataModel)
-                    AddNewAddressAnalytics.eventClickButtonPilihLokasiIni(eventLabel = LOGISTIC_LABEL)
+                    AddNewAddressAnalytics.eventClickButtonPilihLokasiIni(isFullFlow, isLogisticLabel)
                 }
             }
         }
@@ -716,7 +721,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance()
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         fragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
@@ -895,10 +900,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         rv_kodepos_chips_mismatch.visibility = View.GONE
         et_kode_pos_mismatch.apply {
             setText(zipCode)
-            AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative(isFullFlow, isLogisticLabel)
         }
         saveAddressDataModel?.postalCode = zipCode
-        AddNewAddressAnalytics.eventClickChipsKodePosChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+        AddNewAddressAnalytics.eventClickChipsKodePosChangeAddressNegative(isFullFlow, isLogisticLabel)
     }
 
     override fun onBackPressed(): Boolean {
@@ -917,9 +922,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             setSelection(et_label_address?.text?.length ?: 0)
         }
         if (!isMismatch && !isMismatchSolved) {
-            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive(isFullFlow, isLogisticLabel)
         } else {
-            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressNegative(isFullFlow, isLogisticLabel)
         }
     }
 

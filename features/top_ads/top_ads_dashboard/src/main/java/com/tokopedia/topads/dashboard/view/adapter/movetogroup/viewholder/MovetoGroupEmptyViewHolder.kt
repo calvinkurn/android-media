@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewholder.MovetoGroupViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
 
 /**

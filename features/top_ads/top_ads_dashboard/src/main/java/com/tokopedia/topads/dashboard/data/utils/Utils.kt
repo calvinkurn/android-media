@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCALE
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
@@ -25,7 +26,7 @@ object Utils {
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy")
     val format = SimpleDateFormat("yyyy-MM-dd")
 
-    fun setSearchListener(view: View, onSuccess:(()->Unit)) {
+    fun setSearchListener(context: Context?, view: View, onSuccess: () -> Unit) {
         val searchbar = view.findViewById<SearchBarUnify>(R.id.searchBar)
         val searchTextField = searchbar?.searchBarTextField
         val searchClearButton = searchbar?.searchBarIcon
@@ -36,6 +37,7 @@ object Utils {
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     onSuccess.invoke()
+                    dismissKeyboard(context,view)
                     return true
                 }
                 return false
@@ -44,6 +46,7 @@ object Utils {
         searchClearButton?.setOnClickListener {
             searchTextField?.text?.clear()
             onSuccess.invoke()
+            dismissKeyboard(context,view)
         }
     }
 
@@ -67,6 +70,7 @@ object Utils {
         return periodRangeList
     }
 
+    @Throws(ParseException::class)
     fun String.stringToDate(format: String) : Date {
         val fromFormat = SimpleDateFormat(format, DEFAULT_LOCALE)
         try {
@@ -75,5 +79,24 @@ object Utils {
             e.printStackTrace()
             throw RuntimeException("Date doesnt valid ($this) with format$format")
         }
+    }
+
+    fun dismissKeyboard(context: Context?, view: View?) {
+        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        if (inputMethodManager?.isAcceptingText == true)
+            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    fun getStartDate(): Date? {
+        val startCalendar = Calendar.getInstance()
+        startCalendar.add(Calendar.DAY_OF_YEAR, -DatePickerConstant.DIFF_ONE_WEEK)
+        return startCalendar.time
+
+
+    }
+    fun getEndDate(): Date? {
+        val endCalendar = Calendar.getInstance()
+        return endCalendar.time
+
     }
 }

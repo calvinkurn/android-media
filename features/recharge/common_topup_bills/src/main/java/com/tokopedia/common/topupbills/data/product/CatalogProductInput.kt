@@ -10,51 +10,57 @@ class CatalogProductInput (
 
         @SerializedName("id")
         @Expose
-        val id: String = "",
+        var id: String = "",
         @SerializedName("param_name")
         @Expose
-        val paramName: String = "",
+        var paramName: String = "",
         @SerializedName("name")
         @Expose
-        val name: String = "",
+        var name: String = "",
         @SerializedName("style")
         @Expose
-        val style: String = "",
+        var style: String = "",
         @SerializedName("text")
         @Expose
-        val text: String = "",
+        var text: String = "",
         @SerializedName("placeholder")
         @Expose
-        val placeholder: String = "",
+        var placeholder: String = "",
         @SerializedName("help")
         @Expose
-        val help: String = "",
+        var help: String = "",
         @SerializedName("data_collections")
         @Expose
-        val dataCollections: List<DataCollection> = listOf(),
+        var dataCollections: List<DataCollection> = listOf(),
         @SerializedName("validations")
         @Expose
-        val validations: List<Validation> = listOf()
+        var validations: List<Validation> = listOf()
 
 ) {
         class Validation(
                 @SerializedName("id")
                 @Expose
-                val id: Int = 0,
+                var id: Int = 0,
                 @SerializedName("title")
                 @Expose
-                val title: String = "",
+                var title: String = "",
                 @SerializedName("rule")
                 @Expose
-                val rule: String = "",
+                var rule: String = "",
                 @SerializedName("message")
                 @Expose
-                val message: String = ""
+                var message: String = ""
         )
 
         class DataCollection(
+                @SerializedName("name")
+                @Expose
+                var name: String = "",
                 @SerializedName("value")
                 @Expose
-                val value: String = ""
+                var value: String = "",
+                @SerializedName("products")
+                @Expose
+                var products: List<CatalogProduct> = listOf()
         )
 }

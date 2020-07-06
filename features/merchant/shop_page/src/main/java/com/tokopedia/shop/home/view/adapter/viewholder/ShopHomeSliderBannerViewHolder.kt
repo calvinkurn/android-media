@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.extensions.view.hide
@@ -12,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -58,7 +60,11 @@ class ShopHomeSliderBannerViewHolder(
         carouselShopPage?.post {
             img.initialWidth = carouselShopPage?.measuredWidth
         }
+        val performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE)
         img.setImageUrl(carouselItem.imageUrl, heightRatio = bannerData?.let { getHeightRatio(it) })
+        img.onUrlLoaded = {
+            performanceMonitoring.stopTrace()
+        }
     }
 
     init {

@@ -5,6 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:translationY="@dimen/dp_20"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
+
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
@@ -73,8 +86,8 @@
                             layout="@layout/topads_dash_auto_ads_onboarding_widget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/dp_12"
-                            android:visibility="gone"
+                            android:layout_margin="@dimen/dp_8"
+                            android:visibility="visible"
                             app:layout_constraintBottom_toTopOf="@id/graph_layout"
                             app:layout_constraintTop_toBottomOf="@id/hari_ini" />
 
@@ -83,9 +96,9 @@
                             android:id="@+id/autoads_edit_widget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_12"
+                            android:layout_marginLeft="@dimen/dp_8"
                             android:layout_marginTop="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_12"
+                            android:layout_marginRight="@dimen/dp_8"
                             android:layout_marginBottom="@dimen/dp_12"
                             android:visibility="gone"
                             app:layout_constraintBottom_toTopOf="@id/graph_layout"
@@ -97,7 +110,10 @@
                             android:id="@+id/graph_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/dp_12"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:layout_marginBottom="@dimen/dp_12"
+                            android:layout_marginStart="@dimen/dp_8"
+                            android:layout_marginEnd="@dimen/dp_8"
                             android:padding="@dimen/dp_8"
                             app:layout_constraintTop_toBottomOf="@id/autoads_status">
 

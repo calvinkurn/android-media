@@ -1,5 +1,6 @@
 package com.tokopedia.topads.edit.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
+import com.tokopedia.topads.edit.utils.Constants.TAB_POSITION
 import com.tokopedia.topads.edit.view.adapter.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditGroupAdFragment
@@ -24,12 +26,10 @@ import kotlin.collections.ArrayList
 
 class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, SaveButtonStateCallBack {
 
-   @Inject
+    @Inject
     lateinit var viewModel: EditFormDefaultViewModel
     private lateinit var adapter: TopAdsEditPagerAdapter
     var list: ArrayList<Fragment> = ArrayList()
-
-    private val EDIT_GROUP_REUEST_CODE = 47
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,9 +63,13 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
             }
         }
 
-        viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup)
+        viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup,
+                ::onSuccessGroupEdited, ::finish)
+    }
+
+    private fun onSuccessGroupEdited() {
         val returnIntent = Intent()
-        setResult(EDIT_GROUP_REUEST_CODE, returnIntent)
+        setResult(Activity.RESULT_OK, returnIntent)
         finish()
     }
 
@@ -74,9 +78,10 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
     }
 
     private fun renderTabAndViewPager() {
+        val bundle = intent.extras
         view_pager.adapter = getViewPagerAdapter()
         view_pager.offscreenPageLimit = 3
-        view_pager.currentItem = 2
+        view_pager.currentItem = bundle.getInt(TAB_POSITION, 2)
         view_pager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tab_layout))
         tab_layout.setupWithViewPager(view_pager)
     }

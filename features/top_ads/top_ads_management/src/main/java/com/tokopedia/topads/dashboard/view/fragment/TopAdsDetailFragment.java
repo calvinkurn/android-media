@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;

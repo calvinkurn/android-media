@@ -17,6 +17,7 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 
 /**
@@ -90,9 +91,11 @@ class TravelHomepageViewModelTest {
             emptyUseCase.getTravelLayoutSubhomepage(any(), any())
         } returns Success(list)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
-                mapOf(TravelUnifiedSubhomepageData.Response::class.java to TravelUnifiedSubhomepageData.Response()),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[TravelUnifiedSubhomepageData.Response::class.java] = TravelUnifiedSubhomepageData.Response()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         // when
         viewModel.getListFromCloud("", true)
@@ -117,9 +120,11 @@ class TravelHomepageViewModelTest {
             emptyUseCase.getTravelLayoutSubhomepage(any(), any())
         } returns Success(list)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
-                mapOf(),
-                mapOf(GraphqlError::class.java to listOf(GraphqlError())), false)
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[GraphqlError::class.java] = listOf(GraphqlError())
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         // when
         viewModel.getListFromCloud("", true)
@@ -147,14 +152,17 @@ class TravelHomepageViewModelTest {
         // when
         viewModel.getListFromCloud("", true)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
-                mapOf(TravelUnifiedSubhomepageData.Response::class.java to TravelUnifiedSubhomepageData.Response()),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[TravelUnifiedSubhomepageData.Response::class.java] = TravelUnifiedSubhomepageData.Response()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
         viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
-                mapOf(),
-                mapOf(GraphqlError::class.java to listOf(GraphqlError())), false)
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[GraphqlError::class.java] = listOf(GraphqlError())
+        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
         viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
 
         // then
@@ -176,14 +184,17 @@ class TravelHomepageViewModelTest {
         list.add(TravelHomepageLegoBannerModel())
         viewModel.travelItemList.value = list
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
-                mapOf(TravelUnifiedSubhomepageData.Response::class.java to TravelUnifiedSubhomepageData.Response()),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[TravelUnifiedSubhomepageData.Response::class.java] = TravelUnifiedSubhomepageData.Response()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
         viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
-                mapOf(),
-                mapOf(GraphqlError::class.java to listOf(GraphqlError())), false)
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[GraphqlError::class.java] = listOf(GraphqlError())
+        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
         viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
 
         // then

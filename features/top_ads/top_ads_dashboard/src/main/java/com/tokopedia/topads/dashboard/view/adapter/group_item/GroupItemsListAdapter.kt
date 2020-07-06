@@ -3,6 +3,8 @@ package com.tokopedia.topads.dashboard.view.adapter.group_item
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.dashboard.data.model.groupitem.DataItem
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder.GroupItemsViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsViewModel
@@ -15,8 +17,10 @@ class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactor
 
 
     var items: MutableList<GroupItemsViewModel> = mutableListOf()
+    var countList: MutableList<CountDataItem> = mutableListOf()
     private var selectedMode = false
     private var fromSearch = false
+    var statsData: MutableList<DataItem> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupItemsViewHolder<GroupItemsViewModel> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -38,10 +42,10 @@ class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactor
     }
 
     private fun clearData(selectedMode: Boolean) {
-        if (!selectedMode){
+        if (!selectedMode) {
             items.forEach {
                 if (it is GroupItemsItemViewModel) {
-                   it.isChecked = false
+                    it.isChecked = false
                 }
             }
         }
@@ -49,7 +53,7 @@ class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactor
 
     override fun onBindViewHolder(holder: GroupItemsViewHolder<GroupItemsViewModel>, position: Int) {
 
-        holder.bind(items[position], selectedMode, fromSearch)
+        holder.bind(items[position], selectedMode, fromSearch, statsData, countList)
     }
 
     fun getSelectedItems(): MutableList<GroupItemsItemViewModel> {
@@ -67,6 +71,16 @@ class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactor
 
     fun setEmptyView(fromSearch: Boolean) {
         this.fromSearch = fromSearch
+        notifyDataSetChanged()
+    }
+
+    fun setstatistics(data: List<DataItem>) {
+        statsData = data.toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun setItemCount(counList: List<CountDataItem>) {
+        countList = counList.toMutableList()
         notifyDataSetChanged()
     }
 

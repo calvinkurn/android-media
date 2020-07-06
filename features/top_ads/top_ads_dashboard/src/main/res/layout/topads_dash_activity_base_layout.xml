@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_header_action_text="@string/buat_iklan"
+        app:unify_header_action_text="@string/topads_dash_buat_iklan"
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="false"
         app:unify_header_title="@string/top_ads_title_dashboard" />
@@ -31,8 +31,7 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_scrollFlags="scroll|enterAlways">
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_layout"
@@ -41,6 +40,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@color/white"
                     app:elevation="4dp"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layout_scrollFlags="scroll|enterAlways"
                     app:tabIndicatorColor="@color/topads_common_tab_green"
                     app:tabMode="fixed"
@@ -75,8 +75,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-
-                    android:text="@string/button_submit_beranda"
+                    android:text="@string/topads_dash_button_submit_beranda"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

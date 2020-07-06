@@ -1,0 +1,17 @@
+mutation topAdsGetTotalAdsAndKeywords($shopID: String!, $groupIDs: [String]!) {
+  topAdsGetTotalAdsAndKeywords(shopID: $shopID, groupIDs: $groupIDs) {
+    data {
+      ID
+      totalAds
+      totalKeywords
+    }
+    errors {
+      code
+      detail
+      title
+      object {
+        type
+      }
+    }
+  }
+}

@@ -51,10 +51,6 @@ public class TouchViewPager extends ViewPager {
         }
     }
 
-    public void setSmoothScroll(boolean smoothScroll) {
-        isSmoothScroll = smoothScroll;
-    }
-
     @Override
     public void setCurrentItem(int item) {
         super.setCurrentItem(item, isSmoothScroll);

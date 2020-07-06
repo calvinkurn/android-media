@@ -19,6 +19,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 class VoucherGameListViewModelTest {
 
@@ -40,9 +41,14 @@ class VoucherGameListViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        gqlResponseFail = GraphqlResponse(
-                mapOf(),
-                mapOf(MessageErrorException::class.java to listOf(GraphqlError())), false)
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = MessageErrorException::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+
+        gqlResponseFail = GraphqlResponse(result, errors, false)
 
         voucherGameListViewModel =
                 VoucherGameListViewModel(voucherGameListUseCase, graphqlRepository, VoucherGameTestDispatchersProvider())
@@ -82,9 +88,12 @@ class VoucherGameListViewModelTest {
                 listOf(TopupBillsPromo(1)),
                 listOf(TopupBillsTicker(1)),
                 listOf(TopupBillsBanner(1))))
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(TelcoCatalogMenuDetailData::class.java to telcoCatalogMenuDetailData),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = TelcoCatalogMenuDetailData::class.java
+        result[objectType] = telcoCatalogMenuDetailData
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         voucherGameListViewModel.getVoucherGameMenuDetail("", mapParams)

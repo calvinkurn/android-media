@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -9,8 +10,10 @@
         android:id="@+id/btn_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:padding="@dimen/dp_2"
         app:layout_constraintEnd_toStartOf="@+id/txt_title"
@@ -23,13 +26,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="center_vertical"
-        android:text="@string/topads_dash_select_action_title"
+        android:includeFontPadding="false"
         app:layout_constraintBottom_toBottomOf="@+id/btn_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"
-        app:typographyType="heading_3" />
+        app:typographyType="heading_3"
+        tools:text="This and That" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_activate"
@@ -43,6 +48,7 @@
             android:id="@+id/txt_action_active"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
             android:layout_marginLeft="@dimen/dp_30"
             android:layout_marginTop="@dimen/dp_18"
             android:layout_marginBottom="@dimen/dp_18"
@@ -100,7 +106,7 @@
             app:layout_constraintBottom_toBottomOf="@id/action_edit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/action_edit"
-            app:srcCompat="@drawable/ic_pen_ico" />
+            app:srcCompat="@drawable/topads_edit_pen_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.DividerUnify

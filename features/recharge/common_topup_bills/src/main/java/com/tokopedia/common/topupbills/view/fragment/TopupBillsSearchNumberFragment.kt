@@ -102,12 +102,11 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
     }
 
     private fun setClientNumberInputType() {
-        if (clientNumberType.equals(ClientNumberType.TYPE_INPUT_TEL, ignoreCase = true) ||
-                clientNumberType.equals(ClientNumberType.TYPE_INPUT_NUMERIC, ignoreCase = true)) {
-            searchInputNumber.searchTextView.inputType = InputType.TYPE_CLASS_NUMBER
-            searchInputNumber.searchTextView.keyListener = DigitsKeyListener.getInstance("0123456789")
-        } else {
-            searchInputNumber.searchTextView.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+        searchInputNumber.searchTextView.inputType = when (clientNumberType.toLowerCase()) {
+            ClientNumberType.TYPE_INPUT_TEL -> InputType.TYPE_CLASS_PHONE
+            ClientNumberType.TYPE_INPUT_NUMERIC -> InputType.TYPE_CLASS_NUMBER
+            ClientNumberType.TYPE_INPUT_ALPHANUMERIC -> InputType.TYPE_CLASS_TEXT
+            else ->  InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }
 

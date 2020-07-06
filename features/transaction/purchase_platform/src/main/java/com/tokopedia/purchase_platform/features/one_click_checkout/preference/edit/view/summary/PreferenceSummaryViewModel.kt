@@ -29,6 +29,25 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
     val editResult: LiveData<OccState<String>>
         get() = _editResult
 
+    var profileAddressId: Int = 0
+    var profileServiceId: Int = 0
+    var profileGatewayCode: String = ""
+    var profilePaymentMetadata: String = ""
+
+    fun isDataChanged(): Boolean {
+        val currentPref = _preference.value
+        if (currentPref != null && currentPref is OccState.Success) {
+            return when {
+                currentPref.data.addressModel?.addressId != profileAddressId -> true
+                currentPref.data.shipmentModel?.serviceId != profileServiceId -> true
+                currentPref.data.paymentModel?.gatewayCode != profileGatewayCode -> true
+                currentPref.data.paymentModel?.metadata != profilePaymentMetadata -> true
+                else -> false
+            }
+        }
+        return false
+    }
+
     fun getPreferenceDetail(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String) {
         _preference.value = OccState.Loading
         getPreferenceByIdUseCase.execute(profileId, addressId, serviceId, gatewayCode, metadata,

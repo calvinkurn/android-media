@@ -4,10 +4,12 @@ import android.content.Context;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch;
+import com.tokopedia.iris.Iris;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -45,9 +47,12 @@ public class AutocompleteTracking {
     public static final String EVENT_LABEL = "eventLabel";
     public static final String EVENT_CLICK_SEARCH = "clickSearch";
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
+    public static final String EVENT_IMPRESSED_INITIAL_STATE_PRODUCT = "productViewIris";
+    public static final String EVENT_IMPRESSED_INITIAL_STATE_PROMO = "promoViewIris";
 
     public static final String EVENTCATEGORY_TOP_NAV = "top nav";
     public static final String EVENT_CATEGORY_DIGITAL_TOP_NAV = "digital - top nav";
+    public static final String EVENT_CATEGORY_INITIAL_STATE = "initial-state";
 
     public static final String CLICK_POPULAR_SEARCH = "click - popular search";
     public static final String CLICK_RECENT_SEARCH = "click - recent search";
@@ -60,6 +65,9 @@ public class AutocompleteTracking {
     public static final String CLICK_SHOP_SUGGESTION = "click - shop autocomplete";
     public static final String CLICK_KEYWORD_SUGGESTION = "click - product autocomplete";
     public static final String EVENT_ACTION_CLICK_RECENT_SEARCH_AUTOCOMPLETE = "click - recent search autocomplete";
+    public static final String EVENT_ACTION_IMPRESSED_RECENT_VIEW = "impression - recent view product";
+    public static final String EVENT_ACTION_IMPRESSED_RECENT_SEARCH = "impression - recent search";
+    public static final String EVENT_ACTION_IMPRESSED_POPULAR_SEARCH = "impression - popular search";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -184,7 +192,7 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRefreshPopularSearch(){
+    public static void eventClickRefreshPopularSearch() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_TOP_NAV,
                 EVENTCATEGORY_TOP_NAV + " - homepage",
@@ -200,5 +208,54 @@ public class AutocompleteTracking {
                 EVENT_ACTION_CLICK_RECENT_SEARCH_AUTOCOMPLETE,
                 keyword
         );
+    }
+
+    public static void impressedRecentView(Iris iris, List<Object> list) {
+        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, EVENT_IMPRESSED_INITIAL_STATE_PRODUCT,
+                EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - " + EVENT_CATEGORY_INITIAL_STATE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSED_RECENT_VIEW,
+                EVENT_LABEL, "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                list.toArray(new Object[list.size()])
+                        ))
+        );
+        iris.saveEvent(map);
+    }
+
+    public static void impressedRecentSearch(Iris iris, List<Object> list, String keyword) {
+        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, EVENT_IMPRESSED_INITIAL_STATE_PROMO,
+                EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - " + EVENT_CATEGORY_INITIAL_STATE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSED_RECENT_SEARCH,
+                EVENT_LABEL, keyword,
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                )
+                        )
+                )
+        );
+        iris.saveEvent(map);
+    }
+
+    public static void impressedPopularSearch(Iris iris, List<Object> list) {
+        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, EVENT_IMPRESSED_INITIAL_STATE_PROMO,
+                EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - " + EVENT_CATEGORY_INITIAL_STATE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSED_POPULAR_SEARCH,
+                EVENT_LABEL, "",
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                )
+                        )
+                )
+        );
+        iris.saveEvent(map);
     }
 }

@@ -1,10 +1,10 @@
 package com.tokopedia.topads.dashboard.view.adapter.autoads
 
 import android.view.View
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyViewModel
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder.AutoAdsItemsEmptyViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder.AutoAdsItemsItemViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder.AutoAdsItemsViewHolder
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyViewModel
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemViewModel
 
 /**

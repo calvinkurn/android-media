@@ -24,29 +24,18 @@ public final class AppScreen {
     public static final String SCREEN_CONFIG_P_NOTIF = "People Edit Notif";
     public static final String SCREEN_TX_S_CONFIRM_SHIPPING = "Shop Confirm Shipping Detail";
     public static final String SCREEN_CONFIG_S_SHIPPING = "Shop Edit Shipping";
-    public static final String SCREEN_OPEN_CONFIG_S_SHIPPING = "Open Shop Edit Shipping";
     public static final String SCREEN_CONFIG_S_PAYMENT = "Shop Edit Payment";
-    public static final String SCREEN_MANAGE_PROD = "Store - Manage product";
-    public static final String SCREEN_BROWSE_HOT = "Browse hot list detail";
     public static final String SCREEN_BROWSE_HOT_LIST = "Browse Hot List";
     public static final String SCREEN_PRODUCT_INFO = "Product Info";
-    public static final String SCREEN_SETTING_MANAGE_PROFILE = "Setting - Manage Profile";
-    public static final String SCREEN_SETTING_MANAGE_SHOP = "Setting - Manage Shop";
-    public static final String SCREEN_SETTING_MANAGE_APP = "Setting - Manage App";
-    public static final String SCREEN_SETTING_ABOUT_US = "Setting - About Us";
-    public static final String SCREEN_HOME_WISHLIST = "WishList page";
-    public static final String SCREEN_FRAGMENT_WISHLIST = "WishList page";
     public static final String SCREEN_HOME_HOTLIST = "Home - hot list";
     public static final String SCREEN_TOPADS = "Top Ads Screen";
     public static final String SCREEN_FIND = "Find";
-    public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category - ";
     public static final String SCREEN_TX_SHOP_CENTER = "Transaction - Sell page";
     public static final String SCREEN_TX_SHOP_NEW_ORDER = "New order";
     public static final String SCREEN_TX_SHOP_CONFIRM_SHIPPING = "Confirm shipping";
     public static final String SCREEN_TX_SHOP_SHIPPING_STATUS = "Shipping status";
     public static final String SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST = "Transaction list - Selling";
     public static final String SCREEN_FINISH_TX = "Finish Transaction";
-    public static final String SCREEN_SHOP_DETAIL_STATS = "Shop Info Detail Statistic";
     public static final String SCREEN_CONTACT_US = "Contact us page";
     public static final String SCREEN_RESOLUTION_CENTER = "Resolution center page";
     public static final String SCREEN_RESOLUTION_CENTER_ADD = "Add resolution center page";
@@ -54,9 +43,7 @@ public final class AppScreen {
     public static final String SCREEN_SHOP_SELLING_DETAIL = "Selling Detail Page";
     public static final String SCREEN_ORDER_HISTORY = "History order";
     public static final String SCREEN_ORDER_REJECT = "Confirm Reject Order Screen";
-    public static final String SCREEN_MANAGE_GENERAL = "General Setting";
     public static final String SCREEN_TRACKING_DETAIL = "Tracking detail page";
-    public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
     public static final String SCREEN_WEBVIEW_BANNER = "Banner Web View";
     public static final String SCREEN_WEBVIEW = "General Web View";
     public static final String SCREEN_SHOP_INFO = "Shop info detail page";
@@ -67,7 +54,6 @@ public final class AppScreen {
     public static final String SCREEN_DOWNLOAD_INVOICE = "Download invoice page";
     public static final String SCREEN_TERM_PRIVACY = "Term privacy page";
     public static final String SCREEN_DEEP_LINK = "Deeplink page";
-    public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_SELLER_REP_HISTORY = "Reputation History";
     public static final String SCREEN_SELLER_SHOP_SCORE = "Shop Score";
     public static final String GOLD_MERCHANT_REDIRECT = "Gold Merchant Redirect Page";
@@ -88,7 +74,6 @@ public final class AppScreen {
 
     public static class UnifyScreenTracker {
         public static final String SCREEN_UNIFY_HOME_BERANDA = "/";
-        public static final String SCREEN_UNIFY_HOME_SHOP_FAVORIT = "/fav-shop";
     }
 
     private AppScreen() {

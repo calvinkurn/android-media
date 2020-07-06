@@ -1,8 +1,0 @@
-mutation reorderShopShowcase($ids: [String!]!) {
-    reorderShopShowcase(input: {
-        ids: $ids
-    }) {
-        success
-        message
-    }
-}

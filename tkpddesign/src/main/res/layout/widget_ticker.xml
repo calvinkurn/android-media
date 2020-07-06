@@ -20,15 +20,6 @@
 <!--android:layout_height="wrap_content"-->
 <!--/>-->
 
-<!--<com.tokopedia.design.viewpagerindicator.CirclePageIndicator-->
-<!--android:id="@+id/page_indicator_ticker"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:layout_centerHorizontal="true"-->
-<!--android:layout_alignParentBottom="true"-->
-<!--android:padding="@dimen/dp_5"-->
-<!--/>-->
-
 <!--</RelativeLayout>-->
 
 <!--</androidx.cardview.widget.CardView>-->

@@ -143,12 +143,7 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
                 if (newIntent.getData() == null) {
                     newIntent.setData(sourceIntent.getData());
                 }
-                for (Iterator<String> iterator = parameters.keySet().iterator(); iterator.hasNext();) {
-                    String key = iterator.next();
-                    if (!newIntent.hasExtra(key)) {
-                        iterator.remove();
-                    }
-                }
+                removeDuplicateKeys(newIntent,parameters);
                 newIntent.putExtras(parameters);
                 newIntent.putExtra(DeepLink.IS_DEEP_LINK, true);
                 newIntent.putExtra(DeepLink.REFERRER_URI, uri);
@@ -170,6 +165,14 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
             }
         } else {
             return createResultAndNotify(activity, false, uri, "No registered entity to handle deep link: " + uri.toString());
+        }
+    }
+    private void removeDuplicateKeys(Intent newIntent,Bundle parameters){
+        for (Iterator<String> iterator = parameters.keySet().iterator(); iterator.hasNext();) {
+            String key = iterator.next();
+            if (newIntent.hasExtra(key)) {
+                iterator.remove();
+            }
         }
     }
 

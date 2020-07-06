@@ -116,6 +116,10 @@ public interface CMConstant {
         String ATC_SHOP_ID = "shop_id";
         String SHOP_NAME = "shop_name";
         String SHOP_TYPE = "shop_type";
+
+        String WEBHOOK_PARAM = "webhook_params";
+        String NOTIFCENTER_NOTIFICATION_ID = "nc_notif_id";
+        String NOTIFCENTER_NOTIFICATION_TYPE = "nc_type_of_notif";
     }
 
     interface ReceiverExtraData {

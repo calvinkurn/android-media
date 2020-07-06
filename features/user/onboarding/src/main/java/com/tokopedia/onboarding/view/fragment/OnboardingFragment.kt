@@ -290,8 +290,8 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
         const val ONBOARD_IMAGE_PAGE_2_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_2.png"
         const val ONBOARD_IMAGE_PAGE_3_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_3.png"
 
-        private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
-        private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
+        const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
+        const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         fun createInstance(bundle: Bundle): OnboardingFragment {
             val fragment = OnboardingFragment()

@@ -6,22 +6,22 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:loader_type="circular" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
-        android:src="@drawable/card_auto_ads_create"
+        app:srcCompat="@drawable/card_auto_ads_create"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.topads.auto.view.widget.AutoAdsWidget
