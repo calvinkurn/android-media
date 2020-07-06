@@ -141,7 +141,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new CreatePostModuleLoader(),
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
-                    new InterestPickApplinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),

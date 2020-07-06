@@ -256,6 +256,9 @@
     <!--Play-->
     <string name="title_play_df">Play</string>
 
+    <!--Interest Pick-->
+    <string name="title_interest_pick">Pilih Inspirasi Kamu</string>
+
     <!--Logistic-->
     <string name="label_tracking_activity">Lacak</string>
     <string name="title_receipt_shipement_barcode_scanner">Scan Barcode</string>
