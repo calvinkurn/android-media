@@ -53,9 +53,7 @@ class DailyBudgetViewModel @Inject constructor(
                         mapOf(ParamObject.SUGGESTION to map,SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
-            data.getSuccessData<TopadsBidInfo.Response>().let {
-                onSuccess(it)
-            }
+            onSuccess(data.getSuccessData<TopadsBidInfo.Response>())
         }) {
             it.printStackTrace()
         }
