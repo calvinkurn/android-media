@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -90,6 +91,14 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         requireView().requestApplyInsetsWhenAttached()
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        if (childFragment is PlayBroadcastSetupBottomSheet) {
+            childFragment.setListener(setupListener)
+        }
+    }
+
     private fun initView(view: View) {
         with (view) {
             btnSetup = findViewById(R.id.btn_setup)
@@ -139,7 +148,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         val setupClass = PlayBroadcastSetupBottomSheet::class.java
         val fragmentFactory = childFragmentManager.fragmentFactory
         val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
-        setupFragment.setListener(setupListener)
         setupFragment.show(childFragmentManager)
     }
 
