@@ -49,6 +49,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         }
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notifcationType, notificationId));
         builder.setAutoCancel(true);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 
         if (isAllowBell()) {
             builder.setSound(getRingtoneUri());
