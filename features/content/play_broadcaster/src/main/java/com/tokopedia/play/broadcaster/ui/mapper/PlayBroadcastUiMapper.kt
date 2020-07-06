@@ -93,11 +93,11 @@ object PlayBroadcastUiMapper {
                 TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop)
         )
 
-    fun mapTotalView(concurrentUser: ConcurrentUser): TotalViewUiModel = TotalViewUiModel(
-            concurrentUser.totalUsers.toString()
+    fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
+            totalView.totalViewFmt
     )
 
-    fun mapTotalLike(stat: LiveStats): TotalLikeUiModel = TotalLikeUiModel(stat.totalLikeFmt)
+    fun mapTotalLike(totalLike: TotalLike): TotalLikeUiModel = TotalLikeUiModel(totalLike.totalLikeFmt)
 
     fun mapMetricList(metric: Metric): MutableList<PlayMetricUiModel> {
         val metricList = mutableListOf<PlayMetricUiModel>()

@@ -8,10 +8,7 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.ProductData
-import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
-import com.tokopedia.play.broadcaster.domain.model.LiveDuration
-import com.tokopedia.play.broadcaster.domain.model.LiveStats
-import com.tokopedia.play.broadcaster.domain.model.Metric
+import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
@@ -31,7 +28,6 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /**
@@ -127,8 +123,8 @@ class PlayBroadcastViewModel @Inject constructor(
         addSource(playSocket.getObservablePlaySocketMessage()) {
             when(it) {
                 is Metric -> onRetrievedNewMetric(PlayBroadcastUiMapper.mapMetricList(it))
-                is ConcurrentUser -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(it)
-                is LiveStats -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(it)
+                is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(it)
+                is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(it)
                 is LiveDuration -> _observableLiveDuration.value = PlayBroadcastUiMapper.mapLiveDuration(it)
             }
         }
