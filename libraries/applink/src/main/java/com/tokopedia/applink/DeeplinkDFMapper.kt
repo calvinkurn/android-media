@@ -144,7 +144,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
-    const val DF_EVENT_REVAMP = "df_event_revamp"
+    const val DF_ENTERTAINMENT = "df_entertainment"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -256,7 +256,7 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_PROMO_GAMIFICATION,R.string.internet_title_gamification))
 
             //Entertainment
-            add(DFP({ it.startsWith(EVENT_HOME) },DF_EVENT_REVAMP, R.string.title_event_entertainment))
+            add(DFP({ it.startsWith(EVENT_HOME) },DF_ENTERTAINMENT, R.string.title_event_entertainment))
             // Salam
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))
