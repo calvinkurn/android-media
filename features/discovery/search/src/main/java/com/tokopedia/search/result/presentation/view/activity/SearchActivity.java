@@ -262,7 +262,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void onSearchBarClicked() {
-        SearchTracking.trackEventClickSearchBar();
+        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery());
         moveToAutoCompleteActivity();
     }
 

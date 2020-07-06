@@ -105,6 +105,12 @@
           "dimension96": "{{.*}}"
         }
       ]
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - search - search result page",
+      "eventAction": "click search box",
+      "eventLabel": "{{.*}}"
     }
   ]
 }

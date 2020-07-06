@@ -63,12 +63,12 @@ public class SearchBarAnalytics {
         return eventTracking;
     }
 
-    public void eventTrackingSearchBar(String screenName) {
+    public void eventTrackingSearchBar(String screenName, String keyword) {
         Map<String, Object> stringObjectMap = TrackAppUtils.gtmData(
                 SearchBarConstant.CLICK_TOP_NAV,
                 String.format(SEARCH_BAR_EVENT_CATEGORY_FORMAT, SearchBarConstant.TOP_NAV, screenName),
                 SearchBarConstant.CLICK_SEARCH_BOX,
-                ""
+                keyword
         );
         stringObjectMap.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
         TrackApp.getInstance().getGTM().sendGeneralEvent(stringObjectMap);
