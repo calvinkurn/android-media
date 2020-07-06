@@ -116,20 +116,14 @@ class PlayBroadcastSetupBottomSheet(
                 extras = Bundle().apply {
                     putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, id)
                 },
-                sharedElements = sharedElements,
-                onFragment = {
-                    it.setListener(this)
-                }
+                sharedElements = sharedElements
         )
     }
 
     override suspend fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore): Throwable? {
         navigateToFragment(
                 fragmentClass = PlayCoverSetupFragment::class.java,
-                sharedElements = sharedElements,
-                onFragment = {
-                    it.setListener(this)
-                }
+                sharedElements = sharedElements
         )
 
         return null
@@ -142,6 +136,16 @@ class PlayBroadcastSetupBottomSheet(
             null
         }
         else error
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        when (childFragment) {
+            is PlayEtalasePickerFragment -> childFragment.setListener(this)
+            is PlayEtalaseDetailFragment -> childFragment.setListener(this)
+            is PlayCoverSetupFragment -> childFragment.setListener(this)
+        }
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -187,10 +191,7 @@ class PlayBroadcastSetupBottomSheet(
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(
-                PlayEtalasePickerFragment::class.java,
-                onFragment = {
-                    it.setListener(this)
-                }
+                PlayEtalasePickerFragment::class.java
         )
     }
 

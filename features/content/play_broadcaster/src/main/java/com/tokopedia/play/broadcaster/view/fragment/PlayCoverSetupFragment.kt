@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.*
@@ -142,6 +143,12 @@ class PlayCoverSetupFragment @Inject constructor(
         super.onDestroyView()
         viewModel.saveCover(coverSetupView.coverTitle)
         job.cancelChildren()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        getImagePickerHelper().onAttachFragment(childFragment)
     }
 
     fun setListener(listener: Listener) {

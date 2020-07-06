@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -42,6 +43,21 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
 
     private var mListener: SetupResultListener? = null
 
+    private val coverEditListener = object : CoverCropEditBottomSheet.EditCoverResultListener {
+        override fun onChangeCoverFromCropping(coverSource: CoverSource) {
+            getImagePickerHelper()
+                    .show(coverSource)
+        }
+
+        override fun onSetupCanceled() {
+            mListener?.onSetupCanceled()
+        }
+
+        override suspend fun onSetupCompletedWithData(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable? {
+            return mListener?.onSetupCompletedWithData(bottomSheet, dataStore)
+        }
+    }
+
     override fun getScreenName(): String = "Cover Edit Fragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +82,16 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data))
             super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        if (childFragment is CoverCropEditBottomSheet) {
+            childFragment.setListener(coverEditListener)
+        }
+
+        getImagePickerHelper().onAttachFragment(childFragment)
     }
 
     fun setListener(listener: SetupResultListener) {
@@ -121,20 +147,6 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
     private fun openCoverCropEditFragment() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val fragmentInstance = fragmentFactory.instantiate(requireContext().classLoader, CoverCropEditBottomSheet::class.java.name) as CoverCropEditBottomSheet
-        fragmentInstance.setListener(object : CoverCropEditBottomSheet.EditCoverResultListener {
-            override fun onChangeCoverFromCropping(coverSource: CoverSource) {
-                getImagePickerHelper()
-                        .show(coverSource)
-            }
-
-            override fun onSetupCanceled() {
-                mListener?.onSetupCanceled()
-            }
-
-            override suspend fun onSetupCompletedWithData(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable? {
-                return mListener?.onSetupCompletedWithData(bottomSheet, dataStore)
-            }
-        })
         fragmentInstance.show(childFragmentManager)
     }
 }
