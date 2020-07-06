@@ -1,16 +1,11 @@
 package com.tokopedia.play.broadcaster.socket
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
-import com.tokopedia.play.broadcaster.domain.model.LiveDuration
-import com.tokopedia.play.broadcaster.domain.model.LiveStats
-import com.tokopedia.play.broadcaster.domain.model.Metric
+import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.*
@@ -38,8 +33,6 @@ class PlayBroadcastSocketImpl constructor(
             maxRetries = DEFAULT_MAX_RETRIES,
             pingInterval = DEFAULT_PING
     )
-
-    private val _observableResponseMessage = MutableLiveData<PlaySocketType>()
 
     override fun config(minReconnectDelay: Int, maxRetries: Int, pingInterval: Long) {
         this.config = SocketConfiguration(minReconnectDelay, maxRetries, pingInterval)
@@ -78,8 +71,11 @@ class PlayBroadcastSocketImpl constructor(
 
                 var data: PlaySocketType? = null
                 when(webSocketResponse.type) {
-                    PlaySocketEnum.ConcurrentUser.value -> {
-                        data = mapConcurrentUser(webSocketResponse)
+                    PlaySocketEnum.TotalView.value -> {
+                        data = mapTotalView(webSocketResponse)
+                    }
+                    PlaySocketEnum.TotalLike.value -> {
+                        data = mapTotalLike(webSocketResponse)
                     }
                     PlaySocketEnum.LiveDuration.value -> {
                         data = mapLiveDuration(webSocketResponse)
@@ -93,7 +89,7 @@ class PlayBroadcastSocketImpl constructor(
                 }
 
                 if (data != null) {
-                    _observableResponseMessage.postValue(data)
+                    socketInfoListener?.onReceive(data)
                 }
             }
 
@@ -128,8 +124,6 @@ class PlayBroadcastSocketImpl constructor(
             compositeSubscription.clear()
     }
 
-    override fun getObservablePlaySocketMessage(): LiveData<out PlaySocketType> = _observableResponseMessage
-
     data class SocketConfiguration(
             val minReconnectDelay: Int,
             val maxRetries: Int,
@@ -151,8 +145,12 @@ class PlayBroadcastSocketImpl constructor(
         return convertToModel(response.jsonObject, Metric::class.java)
     }
 
-    private fun mapConcurrentUser(response: WebSocketResponse): ConcurrentUser? {
-        return convertToModel(response.jsonObject, ConcurrentUser::class.java)
+    private fun mapTotalView(response: WebSocketResponse): TotalView? {
+        return convertToModel(response.jsonObject, TotalView::class.java)
+    }
+
+    private fun mapTotalLike(response: WebSocketResponse): TotalLike? {
+        return convertToModel(response.jsonObject, TotalLike::class.java)
     }
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {

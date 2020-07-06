@@ -1,7 +1,5 @@
 package com.tokopedia.play.broadcaster.socket
 
-import androidx.lifecycle.LiveData
-
 
 /**
  * Created by mzennis on 24/05/20.
@@ -19,8 +17,6 @@ interface PlayBroadcastSocket {
     fun close()
 
     fun destroy()
-
-    fun getObservablePlaySocketMessage(): LiveData<out PlaySocketType>
 
     companion object {
         const val TAG = "PlayBroadcastSocket"

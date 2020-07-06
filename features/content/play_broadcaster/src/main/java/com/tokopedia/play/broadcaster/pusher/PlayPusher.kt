@@ -62,12 +62,17 @@ interface PlayPusher {
     suspend fun destroy()
 
     /**
-     * add maximum live streaming duration, the default is 30minutes
+     * add maximum live streaming duration
      */
     fun addMaxStreamDuration(millis: Long)
 
     /**
-     * add maximum pause duration when streaming, the default is 1minutes
+     * restart live streaming duration
+     */
+    fun restartStreamDuration(millis: Long)
+
+    /**
+     * add maximum pause duration when streaming
      */
     fun addMaxPauseDuration(millis: Long)
 
