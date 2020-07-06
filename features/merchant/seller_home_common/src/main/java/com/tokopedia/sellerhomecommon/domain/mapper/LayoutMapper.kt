@@ -24,6 +24,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 WidgetType.POST_LIST -> mapToPostWidget(it)
                 WidgetType.PROGRESS -> mapToProgressWidget(it)
                 WidgetType.TABLE -> mapToTableWidget(it)
+                WidgetType.PIE_CHART -> mapToPieChartWidget(it)
                 else -> mapToSectionWidget(it)
             }
         }
@@ -136,6 +137,21 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
 
     private fun mapToSectionWidget(widget: WidgetModel): SectionWidgetUiModel {
         return SectionWidgetUiModel(
+                widgetType = widget.widgetType.orEmpty(),
+                title = widget.title.orEmpty(),
+                subtitle = widget.subtitle.orEmpty(),
+                tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+                url = widget.url.orEmpty(),
+                appLink = widget.appLink.orEmpty(),
+                dataKey = widget.dataKey.orEmpty(),
+                ctaText = widget.ctaText.orEmpty(),
+                data = null,
+                isLoaded = false
+        )
+    }
+
+    private fun mapToPieChartWidget(widget: WidgetModel): PieChartWidgetUiModel {
+        return PieChartWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
