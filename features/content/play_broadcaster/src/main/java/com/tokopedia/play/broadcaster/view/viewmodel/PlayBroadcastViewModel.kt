@@ -347,7 +347,7 @@ class PlayBroadcastViewModel @Inject constructor(
         val socketCredential = getSocketCredential()
         playSocket.config(socketCredential.setting.minReconnectDelay, socketCredential.setting.maxRetries, socketCredential.setting.pingInterval)
 
-        fun connectWebSocket(): Job = scope.launch {
+        fun connectWebSocket(): Job = scope.launch(dispatcher.io) {
             playSocket.connect(channelId = channelId, groupChatToken = socketCredential.gcToken)
             playSocket.socketInfoListener(object : PlaySocketInfoListener{
                 override fun onError(throwable: Throwable) {
