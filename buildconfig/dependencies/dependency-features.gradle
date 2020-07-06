@@ -229,7 +229,7 @@ ext {
             kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
             liveness                        : ":features:user:liveness",
-            fcmCommon                       : ":features:user:fcm_common",
+            fcm_common                      : ":features:user:fcm_common",
             tkpdcore                        : ":tkpdcore",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
