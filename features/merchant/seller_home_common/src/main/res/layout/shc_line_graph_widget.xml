@@ -64,32 +64,31 @@
             android:id="@+id/tvLineGraphSubValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/spacing_lvl1"
             android:ellipsize="end"
             android:textSize="@dimen/fontSize_lvl2"
-            app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphValue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/tvLineGraphValue"
-            app:layout_constraintTop_toTopOf="@+id/tvLineGraphValue"
+            app:layout_constraintStart_toStartOf="@+id/tvLineGraphValue"
+            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphValue"
             app:typographyType="body_3"
-            app:typographyWeight="reguler" />
+            app:typographyWeight="reguler"
+            tools:text="Sub Title" />
 
         <com.tokopedia.charts.view.LineChartView
             android:id="@+id/lineGraphView"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/shc_dimen_12dp"
+            android:layout_marginLeft="@dimen/shc_dimen_12dp"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl1"
-            android:layout_marginRight="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/shc_dimen_12dp"
+            android:layout_marginRight="@dimen/shc_dimen_12dp"
             android:layout_marginBottom="@dimen/layout_lvl2"
             app:layout_constraintBottom_toTopOf="@+id/btnLineGraphMore"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphValue"
+            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphSubValue"
             app:layout_constraintVertical_bias="0.0"
             app:lcvFillColor="@color/shc_line_chart_fill_color"
             app:lcvLineColor="@color/shc_line_chart_line_color"
@@ -147,10 +146,10 @@
         <include
             layout="@layout/shc_partial_line_graph_widget_loading"
             android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/layout_lvl0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

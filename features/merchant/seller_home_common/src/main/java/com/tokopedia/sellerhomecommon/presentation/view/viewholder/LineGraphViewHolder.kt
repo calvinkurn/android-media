@@ -48,8 +48,7 @@ class LineGraphViewHolder(
         tvLineGraphValue.text = data?.header.orEmpty()
         tvLineGraphSubValue.text = data?.description.orEmpty().parseAsHtml()
 
-        if (null != data)
-            setupTooltip(element)
+        setupTooltip(element)
     }
 
     private fun openAppLink(appLink: String, dataKey: String, value: String) {
@@ -108,13 +107,11 @@ class LineGraphViewHolder(
     private fun onStateError(isShown: Boolean) = with(itemView) {
         ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
         commonWidgetErrorState.visibility = if (isShown) View.VISIBLE else View.GONE
-        tvLineGraphTitle.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
         btnLineGraphInformation.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
     }
 
     private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) = with(itemView) {
         val componentVisibility = if (isShown) View.VISIBLE else View.INVISIBLE
-        tvLineGraphTitle.visibility = componentVisibility
         tvLineGraphValue.visibility = componentVisibility
         tvLineGraphSubValue.visibility = componentVisibility
         btnLineGraphMore.visibility = componentVisibility

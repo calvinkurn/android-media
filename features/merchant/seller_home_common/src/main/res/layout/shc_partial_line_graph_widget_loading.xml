@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shimmerLineGraphWidget"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/sahLineGraphShimmer0"
         android:layout_width="@dimen/shc_dimen_120dp"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
@@ -19,38 +19,20 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/sahLineGraphShimmer1"
         android:layout_width="@dimen/shc_dimen_150dp"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/shc_dimen_20dp"
+        android:layout_marginTop="@dimen/shc_dimen_12dp"
         app:corners="10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sahLineGraphShimmer0" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/sahLineGraphShimmer2"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/shc_medium_widget_height"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
-        app:corners="10"
-        app:layout_constraintBottom_toTopOf="@+id/sahLineGraphShimmer3"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shcLineGraphLoader"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sahLineGraphShimmer1" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/sahLineGraphShimmer3"
-        android:layout_width="@dimen/shc_dimen_150dp"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
-        app:corners="10"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
