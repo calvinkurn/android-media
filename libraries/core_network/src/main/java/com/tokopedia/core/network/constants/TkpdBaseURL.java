@@ -216,4 +216,10 @@ public class TkpdBaseURL {
         public static final String SEARCH = "/tc/v1/search";
         public static final String DELETE = "/tc/v1/delete";
     }
+
+    public class Purchase {
+        public static final String PATH_ORDER_DETAIL = "/v4/order/detail";
+        public static final String PATH_ORDER_HISTORY = "/v4/order/history";
+        public static final String PATH_CHANGE_COURIER = "/v4/order/change_courier";
+    }
 }
