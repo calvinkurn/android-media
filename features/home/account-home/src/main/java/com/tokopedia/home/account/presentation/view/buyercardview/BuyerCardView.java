@@ -146,18 +146,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     }
 
     @Override
-    public void setProfileStatusCompleted() {
-        textProfileCompletion.setText(getContext().getString(R.string.verified_account));
-        textProfileCompletion.setTypeface(null, Typeface.ITALIC);
-    }
-
-    @Override
-    public void setProfileStatusIncomplete(int progress) {
-        textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
-        textProfileCompletion.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-    }
-
-    @Override
     public void showBymeIcon() {
         icByme.setVisibility(VISIBLE);
     }

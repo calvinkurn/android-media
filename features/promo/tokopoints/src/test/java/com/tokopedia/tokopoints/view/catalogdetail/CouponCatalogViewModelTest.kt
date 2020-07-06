@@ -213,7 +213,6 @@ class CouponCatalogViewModelTest {
         }
 
         viewModel.catalogDetailLiveData.observeForever(catalogObserver)
-        viewModel.pointQueryLiveData.observeForever(tokopointObserver)
         viewModel.getCatalogDetail(code)
 
         verify(ordering = Ordering.ORDERED) {
@@ -255,7 +254,6 @@ class CouponCatalogViewModelTest {
         }
 
         viewModel.catalogDetailLiveData.observeForever(catalogObserver)
-        viewModel.pointQueryLiveData.observeForever(tokopointObserver)
         viewModel.getCatalogDetail(codeData)
 
         verify(ordering = Ordering.ORDERED) {
@@ -265,7 +263,6 @@ class CouponCatalogViewModelTest {
         }
         val result = viewModel.catalogDetailLiveData.value as Success
         assert(result.data == catalogData)
-        assert((viewModel.pointQueryLiveData.value as Success).data == rewardString)
     }
 
     @Test
@@ -283,7 +280,6 @@ class CouponCatalogViewModelTest {
         }
 
         viewModel.catalogDetailLiveData.observeForever(catalogObserver)
-        viewModel.pointQueryLiveData.observeForever(tokopointObserver)
         viewModel.getCatalogDetail(codeData)
 
         verify(ordering = Ordering.ORDERED) {

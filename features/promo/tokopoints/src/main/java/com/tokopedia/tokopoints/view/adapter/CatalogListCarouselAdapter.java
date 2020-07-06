@@ -49,7 +49,6 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
             super(view);
             quota = view.findViewById(R.id.text_quota_count);
             description = view.findViewById(R.id.text_description);
-            pointLabel = view.findViewById(R.id.text_my_points_label);
             pointValue = view.findViewById(R.id.text_point_value);
             timeLabel = view.findViewById(R.id.text_time_label);
             timeValue = view.findViewById(R.id.text_time_value);

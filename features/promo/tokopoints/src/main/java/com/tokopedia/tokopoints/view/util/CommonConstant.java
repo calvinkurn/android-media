@@ -125,7 +125,6 @@ public interface CommonConstant {
 
     interface GQLQuery {
         String TP_GQL_CURRENT_POINTS = "tp_gql_current_points";
-        String TP_GQL_HISTORY_POINTS = "tp_gql_point_history";
         String TP_GQL_TOKOPOINT_APPLY_COUPON = "tp_gql_tokopoint_apply_coupon";
         String TP_GQL_COUPON_DETAIL = "tp_gql_coupon_detail";
         String TP_GQL_REFETCH_REAL_CODE = "tp_gql_refetch_real_code";
@@ -145,8 +144,6 @@ public interface CommonConstant {
         String TP_GQL_LUCKY_EGG_DETAILS = "tp_gql_lucky_egg_detail";
         String TP_GQL_TOKOPOINT_TOP_SECTION_NEW = "tp_gql_topsection_new";
         String TP_GQL_HOME_PAGE_SECTION = "tp_gql_home_page_section";
-        String TP_GQL_SUM_COUPON = "tp_gql_sum_coupon";
-        String TP_GQL_ADD_POINT_REWARD = "tp_gql_add_point_reward";
         String TP_GQL_REWARD_INTRO = "tp_gql_reward_intro";
     }
 }

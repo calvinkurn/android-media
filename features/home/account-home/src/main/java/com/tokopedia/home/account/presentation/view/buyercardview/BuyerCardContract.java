@@ -21,10 +21,6 @@ interface BuyerCardContract {
 
         void setCouponImageUrl(String imageUrl);
 
-        void setProfileStatusCompleted();
-
-        void setProfileStatusIncomplete(int progress);
-
         void showBymeIcon();
 
         void setTokoMemberAmount(String tokoMemberAmount);

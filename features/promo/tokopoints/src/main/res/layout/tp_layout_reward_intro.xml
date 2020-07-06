@@ -7,11 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/tp_margin_large" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -67,7 +62,7 @@
             android:layout_marginBottom="@dimen/dp_12"
             android:gravity="center"
             android:text="Learn More"
-            android:textColor="@color/green_80"
+            android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

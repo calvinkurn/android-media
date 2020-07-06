@@ -44,7 +44,6 @@ class RewardIntroFragment : Fragment() {
             if (data.title != null && data.title.isNotEmpty()) {
                 tv_intro_title.text = data.title
             }
-
             if (data.subtitle != null && data.subtitle.isNotEmpty()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     tv_intro_desc.text = Html.fromHtml(data.subtitle, Html.FROM_HTML_MODE_LEGACY)
@@ -52,13 +51,11 @@ class RewardIntroFragment : Fragment() {
                     tv_intro_desc.text = Html.fromHtml(data.subtitle)
                 }
             }
-
             if (data.cTA?.size != 0) {
                 btn_learn.text = data.cTA?.get(0)?.text
                 btn_learn.setOnClickListener {
                     RouteManager.route(context, data?.cTA?.get(0)?.appLink)
                 }
-
                 if (data.cTA?.size == 2) {
                     btn_check.text = data.cTA[1]?.text
                     btn_check.setOnClickListener {

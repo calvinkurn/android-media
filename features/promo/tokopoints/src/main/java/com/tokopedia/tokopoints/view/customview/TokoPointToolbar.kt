@@ -47,7 +47,6 @@ class TokoPointToolbar : Toolbar {
     var backArrowWhite: Drawable? = null
     var view: View? = null
     val dynamicItem = "dynamicItem"
-    private var clickListener: OnTokoPointToolbarClickListener? = null
 
     constructor(context: Context) : super(context) {
         inflateResource(context)
@@ -174,10 +173,6 @@ class TokoPointToolbar : Toolbar {
         container_scrolledState.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    fun setOnTokoPointToolbarClickListener(clickListener: OnTokoPointToolbarClickListener?) {
-        this.clickListener = clickListener
-    }
-
     fun setScrolledItem(dynamicActionList: List<DynamicActionListItem?>?) {
         view?.let {
             if (dynamicActionList != null) {
@@ -209,10 +204,6 @@ class TokoPointToolbar : Toolbar {
 
     internal enum class ToolbarState {
         TOOLBAR_DARK, TOOLBAR_TRANSPARENT
-    }
-
-    interface OnTokoPointToolbarClickListener {
-        fun onToolbarMyCouponClick()
     }
 
     companion object {

@@ -29,12 +29,6 @@ public interface TokoPointsHomeContract {
 
         void showLoading();
 
-        void showRedeemCouponDialog(String cta, String code, String title);
-
-        void showConfirmRedeemDialog(String cta, String code, String title);
-
-        void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode);
-
         /* New UI callback contract*/
 
         /**
@@ -50,8 +44,6 @@ public interface TokoPointsHomeContract {
 
         void renderSections(List<SectionContent> sections);
 
-        void renderPurchaseBottomsheet(LobDetails data);
-
         void renderExploreSectionTab(List<SectionContent> sections);
 
         void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections);
@@ -62,6 +54,5 @@ public interface TokoPointsHomeContract {
 
         void getTokoPointDetail();
 
-        void tokopointOnboarding2020(TokoPointsHomeContract.View view);
     }
 }

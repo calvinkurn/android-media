@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.cataloglisting
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.TextUtils
@@ -20,10 +19,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
@@ -33,20 +30,17 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT_PREPARE_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT_RENDER_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
-import com.tokopedia.tokopoints.view.fragment.FiltersBottomSheet
-import com.tokopedia.tokopoints.view.fragment.FiltersBottomSheet.OnSaveFilterCallback
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
 import com.tokopedia.tokopoints.view.model.CatalogBanner
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase
 import com.tokopedia.tokopoints.view.model.CatalogFilterPointRange
 import com.tokopedia.tokopoints.view.model.CatalogSubCategory
-import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.PageControl
 import java.util.*
 import javax.inject.Inject
 
-class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View, View.OnClickListener, OnSaveFilterCallback, TokopointPerformanceMonitoringListener {
+class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerSortType: ViewPager? = null
     private var mTabSortType: TabLayout? = null
@@ -71,7 +65,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var mContainerPointDetail: ConstraintLayout? = null
     private var appBarCollapseListener: onAppBarCollapseListener? = null
     private var isPointsAvailable = false
-    private var filtersBottomSheet: FiltersBottomSheet? = null
     private var menuItemFilter: MenuItem? = null
     private var serverErrorView: ServerErrorView? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -93,27 +86,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         setHasOptionsMenu(true)
         return view
     }
-
-    /*   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-           inflater.inflate(R.menu.tp_menu_catalog_listing, menu)
-           menuItemFilter = menu.findItem(R.id.filter_menu_item)
-           super.onCreateOptionsMenu(menu, inflater)
-       }
-
-       override fun onOptionsItemSelected(item: MenuItem): Boolean {
-           if (item.itemId == R.id.filter_menu_item) {
-               if (filtersBottomSheet != null) {
-                   filtersBottomSheet!!.show(childFragmentManager, "Filters")
-                   AnalyticsTrackerUtil.sendEvent(activity,
-                           AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                           AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
-                           AnalyticsTrackerUtil.ActionKeys.CLICK_FILTER,
-                           "")
-               }
-               return true
-           }
-           return false
-       }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -230,8 +202,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     override fun onSuccessFilter(filters: CatalogFilterBase) {
         hideLoader()
-        //Setting up filters
-        setUpFilters(filters.pointRanges)
         //Setting up subcategories types tabs
         if (filters.categories == null || filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
@@ -316,18 +286,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         }
     }
 
-    private fun setUpFilters(pointRanges: List<CatalogFilterPointRange>?) {
-        if (pointRanges != null && pointRanges.size != 0 && isSeeAllPage) {
-            if (menuItemFilter != null) menuItemFilter!!.isVisible = true
-            filtersBottomSheet = FiltersBottomSheet()
-            pointRanges[0].isSelected = true //set Default selected
-            mViewModel!!.pointRangeId = pointRanges[0].id //set Default Id
-            filtersBottomSheet!!.setData(pointRanges, this)
-        } else {
-            if (menuItemFilter != null) menuItemFilter!!.isVisible = false
-        }
-    }
-
     override fun hideLoader() {
         mContainerMain!!.displayedChild = CONTAINER_DATA
     }
@@ -371,13 +329,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
-                    "")
-        } else if (source.id == R.id.text_my_points_value_bottom) {
-            startActivity(Intent(activityContext, PointHistoryActivity::class.java))
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "")
         }
     }
@@ -484,22 +435,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             counter++
         }
         return counter
-    }
-
-    override fun onSaveFilter(filter: CatalogFilterPointRange?, selectedPosition: Int) {
-        if (filter != null) {
-            if (menuItemFilter != null) {
-                if (selectedPosition == 0) {
-                    menuItemFilter!!.setIcon(R.drawable.ic_filter_button_unselected)
-                } else {
-                    menuItemFilter!!.setIcon(R.drawable.ic_filter_button_selected)
-                }
-            }
-            if (mViewModel.pointRangeId != filter.id) {
-                mViewModel.pointRangeId = filter.id
-                refreshTab()
-            }
-        }
     }
 
     companion object {
