@@ -276,7 +276,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun startPushStream() {
         scope.launchCatchError(block = {
-            withContext(dispatcher.io) {
+            withContext(dispatcher.main) {
 //                startWebSocket()
                 playPusher.startPush(ingestUrl)
                 updateChannelStatus(PlayChannelStatus.Live)

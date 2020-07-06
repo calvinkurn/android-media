@@ -354,13 +354,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 is PlayPusherErrorType.ReachMaximumPauseDuration -> stopLiveStreaming()
             }
         }
-//        else {
-//            if (GlobalConfig.DEBUG) view?.showToaster(
-//                    message = throwable.localizedMessage,
-//                    type = Toaster.TYPE_ERROR,
-//                    duration = Toaster.LENGTH_INDEFINITE
-//            )
-//        }
+        else {
+            if (GlobalConfig.DEBUG) showToaster(
+                    message = throwable.localizedMessage,
+                    type = Toaster.TYPE_ERROR,
+                    duration = Toaster.LENGTH_SHORT
+            )
+        }
     }
 
     //region observe
