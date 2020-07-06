@@ -814,8 +814,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun validateEnquiry(): Boolean {
         return operatorId > 0 && selectedProduct != null
-                && inputDataKeys.isNotEmpty()
-                && inputData.keys.toList().sorted() == inputDataKeys.sorted()
+                && (inputDataKeys.isEmpty()
+                || inputData.keys.toList().sorted() == inputDataKeys.sorted())
     }
 
     private fun enquire() {
