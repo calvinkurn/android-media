@@ -38,10 +38,7 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
                     analytics.sendAppsFlyerTracking(result.data)
                     result
                 } else {
-                    var message = ATC_ERROR_GLOBAL
-                    if (response.response.data.message.isNotEmpty()) {
-                        message = response.response.data.message[0]
-                    }
+                    val message = response.response.data.message.firstOrNull() ?: ATC_ERROR_GLOBAL
                     throw MessageErrorException(message)
                 }
             } else {

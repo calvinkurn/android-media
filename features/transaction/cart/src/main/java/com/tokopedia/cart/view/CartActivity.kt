@@ -24,11 +24,7 @@ class CartActivity : BaseCheckoutActivity() {
     override fun setupBundlePass(extras: Bundle?) {
         val productIdStr = intent?.data?.getQueryParameter(APPLINK_PARAM_PRODUCT_ID) ?: ""
         if (productIdStr.isNotBlank()) {
-            try {
-                productId = productIdStr.toLong()
-            } catch (exception: NumberFormatException) {
-                productId = INVALID_PRODUCT_ID
-            }
+            productId = productIdStr.toLongOrNull() ?: INVALID_PRODUCT_ID
         }
         cartId = extras?.getString(EXTRA_CART_ID)
     }

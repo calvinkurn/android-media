@@ -51,31 +51,33 @@ class AddToCartExternalAnalytics @Inject constructor() {
     }
 
     fun sendEnhancedEcommerceTracking(data: AddToCartExternalDataModel) {
-        val itemBundle = Bundle()
-        itemBundle.putString(EE_PARAM_ITEM_ID, setValueOrDefault(data.productId.toString()))
-        itemBundle.putString(EE_PARAM_ITEM_NAME, setValueOrDefault(data.productName))
-        itemBundle.putString(EE_PARAM_ITEM_BRAND, setValueOrDefault(data.brand))
-        itemBundle.putString(EE_PARAM_ITEM_CATEGORY, setValueOrDefault(data.category))
-        itemBundle.putString(EE_PARAM_ITEM_VARIANT, setValueOrDefault(data.variant))
-        itemBundle.putString(EE_PARAM_SHOP_ID, setValueOrDefault(data.shopId.toString()))
-        itemBundle.putString(EE_PARAM_SHOP_NAME, setValueOrDefault(data.shopName))
-        itemBundle.putString(EE_PARAM_SHOP_TYPE, setValueOrDefault(data.shopType))
-        itemBundle.putString(EE_PARAM_CATEGORY_ID, setValueOrDefault(data.categoryId))
-        itemBundle.putInt(EE_PARAM_QUANTITY, data.quantity.coerceAtLeast(1))
-        itemBundle.putInt(EE_PARAM_PRICE, data.price)
-        itemBundle.putString(EE_PARAM_PICTURE, data.picture)
-        itemBundle.putString(EE_PARAM_URL, data.url)
-        itemBundle.putString(EE_PARAM_DIMENSION_38, setValueOrDefault(data.trackerAttribution))
-        itemBundle.putString(EE_PARAM_DIMENSION_45, setValueOrDefault(data.cartId.toString()))
-        itemBundle.putString(EE_PARAM_DIMENSION_54, if (data.isMultiOrigin) EE_VALUE_TOKOPEDIA else EE_VALUE_REGULAR)
-        itemBundle.putString(EE_PARAM_DIMENSION_83, if (data.isFreeOngkir) EE_VALUE_BEBAS_ONGKIR else EE_VALUE_NONE_OTHER)
+        val itemBundle = Bundle().apply {
+            putString(EE_PARAM_ITEM_ID, setValueOrDefault(data.productId.toString()))
+            putString(EE_PARAM_ITEM_NAME, setValueOrDefault(data.productName))
+            putString(EE_PARAM_ITEM_BRAND, setValueOrDefault(data.brand))
+            putString(EE_PARAM_ITEM_CATEGORY, setValueOrDefault(data.category))
+            putString(EE_PARAM_ITEM_VARIANT, setValueOrDefault(data.variant))
+            putString(EE_PARAM_SHOP_ID, setValueOrDefault(data.shopId.toString()))
+            putString(EE_PARAM_SHOP_NAME, setValueOrDefault(data.shopName))
+            putString(EE_PARAM_SHOP_TYPE, setValueOrDefault(data.shopType))
+            putString(EE_PARAM_CATEGORY_ID, setValueOrDefault(data.categoryId))
+            putInt(EE_PARAM_QUANTITY, data.quantity.coerceAtLeast(1))
+            putInt(EE_PARAM_PRICE, data.price)
+            putString(EE_PARAM_PICTURE, data.picture)
+            putString(EE_PARAM_URL, data.url)
+            putString(EE_PARAM_DIMENSION_38, setValueOrDefault(data.trackerAttribution))
+            putString(EE_PARAM_DIMENSION_45, setValueOrDefault(data.cartId.toString()))
+            putString(EE_PARAM_DIMENSION_54, if (data.isMultiOrigin) EE_VALUE_TOKOPEDIA else EE_VALUE_REGULAR)
+            putString(EE_PARAM_DIMENSION_83, if (data.isFreeOngkir) EE_VALUE_BEBAS_ONGKIR else EE_VALUE_NONE_OTHER)
+        }
 
-        val eventDataLayer = Bundle()
-        eventDataLayer.putString(TrackAppUtils.EVENT, EE_VALUE_EVENT_NAME)
-        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, EE_VALUE_EVENT_CATEGORY)
-        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, EE_VALUE_EVENT_ACTION)
-        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, "")
-        eventDataLayer.putParcelableArrayList(EE_VALUE_ITEMS, arrayListOf(itemBundle))
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, EE_VALUE_EVENT_NAME)
+            putString(TrackAppUtils.EVENT_CATEGORY, EE_VALUE_EVENT_CATEGORY)
+            putString(TrackAppUtils.EVENT_ACTION, EE_VALUE_EVENT_ACTION)
+            putString(TrackAppUtils.EVENT_LABEL, "")
+            putParcelableArrayList(EE_VALUE_ITEMS, arrayListOf(itemBundle))
+        }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(EE_VALUE_EVENT_NAME, eventDataLayer)
     }
