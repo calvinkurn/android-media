@@ -61,7 +61,7 @@ class DatePickerSheet {
                         }
                     }
 
-                    this?.setSelected(listUnify, index) {}
+                    setSelected(listUnify, index) {}
                 }
             }
             btnClose?.setOnClickListener {
