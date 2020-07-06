@@ -95,6 +95,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
     //-------------------------------------------------------------------//
 }
 
