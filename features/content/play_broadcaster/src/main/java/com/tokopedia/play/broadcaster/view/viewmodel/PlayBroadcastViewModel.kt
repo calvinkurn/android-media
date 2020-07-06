@@ -55,7 +55,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    private val channelId: String
+    val channelId: String
         get() = hydraConfigStore.getChannelId()
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
@@ -350,6 +350,10 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    fun setChannelId(channelId: String) {
+        hydraConfigStore.setChannelId(channelId)
+    }
+
     private suspend fun startWebSocket() {
         val socketCredential = getSocketCredential()
         playSocket.config(socketCredential.setting.minReconnectDelay, socketCredential.setting.maxRetries, socketCredential.setting.pingInterval)
@@ -371,10 +375,6 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun setSelectedCover(cover: PlayCoverUiModel) {
         getCurrentSetupDataStore().setFullCover(cover)
-    }
-
-    private fun setChannelId(channelId: String) {
-        hydraConfigStore.setChannelId(channelId)
     }
 
     private fun setIngestUrl(ingestUrl: String) {
