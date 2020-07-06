@@ -5,7 +5,7 @@ package com.tokopedia.buyerorder.unifiedhistory.common.util
  */
 object UohConsts {
     const val ALL_DATE = "Semua Tanggal"
-    const val ALL_FILTERS = "Semua Status"
+    const val ALL_STATUS = "Semua Status"
     const val ALL_CATEGORIES = "Semua Kategori"
     const val CHOOSE_FILTERS = "Pilih Status"
     const val CHOOSE_CATEGORIES = "Pilih Kategori"

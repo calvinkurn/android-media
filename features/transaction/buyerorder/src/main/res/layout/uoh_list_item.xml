@@ -108,7 +108,7 @@
             android:layout_marginBottom="@dimen/dp_12">
 
             <ImageView
-                android:id="@+id/ic_uoh_product"
+                android:id="@+id/iv_uoh_product"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
                 tools:ignore="ContentDescription" />
@@ -164,8 +164,8 @@
         
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/uoh_btn_action"
-            android:layout_width="@dimen/dp_110"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_27"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Revisi File"

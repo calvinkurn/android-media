@@ -4,10 +4,6 @@ package com.tokopedia.buyerorder.unifiedhistory.list.data.model
 import com.google.gson.annotations.SerializedName
 
 data class UohListParam(
-    @SerializedName("input")
-    var input: Input = Input()
-) {
-    data class Input(
         @SerializedName("UUID")
         var uUID: String = "",
 
@@ -44,4 +40,3 @@ data class UohListParam(
         @SerializedName("IsSortAsc")
         var isSortAsc: Boolean = false
     )
-}

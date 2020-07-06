@@ -48,8 +48,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var orderList: UohListOrder.Data.UohOrders = UohListOrder.Data.UohOrders()
     private lateinit var uohBottomSheetOptionAdapter: UohBottomSheetOptionAdapter
     private var bottomSheetOption: BottomSheetUnify? = null
-    private var currOption: String = ""
-    private var currType: Int = -1
+    private var currFilterKey: String = ""
+    private var currFilterLabel: String = ""
+    private var currFilterType: Int = -1
+    private var filter1: SortFilterItem? = null
+    private var filter2: SortFilterItem? = null
+    private var filter3: SortFilterItem? = null
+
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -102,8 +107,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     orderList = it.data
                     // nextOrderId = orderList.cursorOrderId
-                    if (orderList.filters.isNotEmpty() && orderList.categories.isNotEmpty()) {
-                        renderChipsFilter()
+                    if (currFilterKey.isEmpty() && currFilterType == -1) {
+                        if (orderList.filters.isNotEmpty() && orderList.categories.isNotEmpty()) {
+                            renderChipsFilter()
+                        }
                     }
 
                     if (orderList.orders.isNotEmpty()) {
@@ -147,63 +154,70 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        val filter1 = SortFilterItem(UohConsts.ALL_DATE, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
-        filter1.listener = {
-            filter1.type = if(filter1.type == ChipsUnify.TYPE_NORMAL) {
-                ChipsUnify.TYPE_SELECTED
-            } else {
-                ChipsUnify.TYPE_NORMAL
+        filter1 = SortFilterItem(UohConsts.ALL_DATE, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
+        filter1?.let {
+            it.listener = {
+                /*it.type = if(it.type == ChipsUnify.TYPE_NORMAL) {
+                    ChipsUnify.TYPE_SELECTED
+                } else {
+                    ChipsUnify.TYPE_NORMAL
+                }*/
+                println("++ SHOW BOTTOMSHEET 1!")
             }
-            println("++ SHOW BOTTOMSHEET 1!")
+            chips.add(it)
         }
-        chips.add(filter1)
 
-        val filter2 = SortFilterItem(UohConsts.ALL_FILTERS, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
-        filter2.listener = {
-            filter2.type = if(filter2.type == ChipsUnify.TYPE_NORMAL) {
-                ChipsUnify.TYPE_SELECTED
-            } else {
-                ChipsUnify.TYPE_NORMAL
-            }
+        filter2 = SortFilterItem(UohConsts.ALL_STATUS, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
+        filter2?.let {
+            it.listener = {
+                /*it.type = if(it.type == ChipsUnify.TYPE_NORMAL) {
+                    ChipsUnify.TYPE_SELECTED
+                } else {
+                    ChipsUnify.TYPE_NORMAL
+                }*/
 
-            uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-            showBottomSheetOptions(UohConsts.CHOOSE_FILTERS)
-            val mapKey = HashMap<String, String>()
-            orderList.filters.forEach { option ->
-                mapKey[option] = option
+                uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
+                showBottomSheetOptions(UohConsts.CHOOSE_FILTERS)
+                val mapKey = HashMap<String, String>()
+                orderList.filters.forEach { option ->
+                    mapKey[option] = option
+                }
+                uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
+                uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
+                uohBottomSheetOptionAdapter.notifyDataSetChanged()
             }
-            uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
-            uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
-            uohBottomSheetOptionAdapter.notifyDataSetChanged()
+            chips.add(it)
         }
-        chips.add(filter2)
 
-        val filter3 = SortFilterItem(UohConsts.ALL_CATEGORIES, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
-        filter3.listener = {
-            filter3.type = if(filter3.type == ChipsUnify.TYPE_NORMAL) {
-                ChipsUnify.TYPE_SELECTED
-            } else {
-                ChipsUnify.TYPE_NORMAL
+        filter3 = SortFilterItem(UohConsts.ALL_CATEGORIES, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
+        filter3?.let {
+            it.listener = {
+                uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
+                showBottomSheetOptions(UohConsts.CHOOSE_CATEGORIES)
+                val mapKey = HashMap<String, String>()
+                orderList.categories.forEach { category ->
+                    mapKey[category.value] = category.label
+                }
+                uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
+                uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
+                uohBottomSheetOptionAdapter.notifyDataSetChanged()
             }
-            uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-            showBottomSheetOptions(UohConsts.CHOOSE_CATEGORIES)
-            val mapKey = HashMap<String, String>()
-            orderList.categories.forEach { category ->
-                mapKey[category.value] = category.label
-            }
-            uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
-            uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
-            uohBottomSheetOptionAdapter.notifyDataSetChanged()
+            chips.add(it)
         }
-        chips.add(filter3)
 
         uoh_sort_filter?.addItem(chips)
         uoh_sort_filter?.sortFilterPrefix?.setOnClickListener {
             uoh_sort_filter?.resetAllFilters()
+            filter1?.title = UohConsts.ALL_DATE
+            filter2?.title = UohConsts.ALL_STATUS
+            filter3?.title = UohConsts.ALL_CATEGORIES
+            paramUohOrder = UohListParam()
+            refreshHandler?.startRefresh()
         }
-        filter1.refChipUnify.setChevronClickListener {  }
-        filter2.refChipUnify.setChevronClickListener {  }
-        filter3.refChipUnify.setChevronClickListener {  }
+
+        filter1?.refChipUnify?.setChevronClickListener {  }
+        filter2?.refChipUnify?.setChevronClickListener {  }
+        filter3?.refChipUnify?.setChevronClickListener {  }
     }
 
     private fun renderTicker() {
@@ -261,6 +275,32 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
 
             btn_apply?.setOnClickListener {
+                when (currFilterType) {
+                    UohConsts.TYPE_FILTER_DATE -> {
+                        filter1?.type = if(filter1?.type == ChipsUnify.TYPE_NORMAL) {
+                            ChipsUnify.TYPE_SELECTED
+                        } else {
+                            ChipsUnify.TYPE_NORMAL
+                        }
+                        filter1?.title = currFilterLabel
+                    }
+                    UohConsts.TYPE_FILTER_STATUS -> {
+                        filter2?.type = if(filter2?.type == ChipsUnify.TYPE_NORMAL) {
+                            ChipsUnify.TYPE_SELECTED
+                        } else {
+                            ChipsUnify.TYPE_NORMAL
+                        }
+                        filter2?.title = currFilterLabel
+                    }
+                    UohConsts.TYPE_FILTER_CATEGORY -> {
+                        filter3?.type = if(filter3?.type == ChipsUnify.TYPE_NORMAL) {
+                            ChipsUnify.TYPE_SELECTED
+                        } else {
+                            ChipsUnify.TYPE_NORMAL
+                        }
+                        filter3?.title = currFilterLabel
+                    }
+                }
                 bottomSheetOption?.dismiss()
                 refreshHandler?.startRefresh()
             }
@@ -275,20 +315,20 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetOption?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
-    override fun onOptionItemClick(option: String, filterType: Int) {
-        println("++ option = $option, filter type = $filterType")
-        currOption = option
-        currType = filterType
+    override fun onOptionItemClick(option: String, label: String, filterType: Int) {
+        currFilterKey = option
+        currFilterLabel = label
+        currFilterType = filterType
 
         when (filterType) {
             UohConsts.TYPE_FILTER_DATE -> {
 
             }
             UohConsts.TYPE_FILTER_STATUS -> {
-                paramUohOrder.input.status = option
+                paramUohOrder.status = option
             }
             UohConsts.TYPE_FILTER_CATEGORY -> {
-                paramUohOrder.input.verticalCategory = option
+                paramUohOrder.verticalCategory = option
             }
         }
     }

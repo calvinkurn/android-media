@@ -16,7 +16,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
     var selectedRadio = -1
 
     interface ActionListener {
-        fun onOptionItemClick(option: String, filterType: Int)
+        fun onOptionItemClick(option: String, label: String, filterType: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,19 +32,19 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
         val arrayKeys = uohItemMapKeyList.keys.toMutableList()
         holder.itemView.label_option.text = arrayValues[position]
         holder.itemView.setOnClickListener {
-            selectItem(position, arrayKeys)
+            selectItem(position, arrayKeys, arrayValues)
         }
 
         holder.itemView.rb_option.setOnCheckedChangeListener(null)
         holder.itemView.rb_option.isChecked = position == selectedRadio
         holder.itemView.rb_option.setOnCheckedChangeListener { _, _ ->
-            selectItem(position, arrayKeys)
+            selectItem(position, arrayKeys, arrayValues)
         }
     }
 
-    private fun selectItem(position: Int, arrayKeys: MutableList<String>) {
+    private fun selectItem(position: Int, arrayKeys: MutableList<String>, arrayValues: MutableList<String>) {
         selectedRadio = position
-        listener.onOptionItemClick(arrayKeys[position], filterType)
+        listener.onOptionItemClick(arrayKeys[position], arrayValues[position], filterType)
         notifyDataSetChanged()
     }
 
