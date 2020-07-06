@@ -38,9 +38,9 @@ class CategoryNavViewModel @Inject constructor(val pageLoadTimePerformanceMonito
             pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
             pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
             val graphqlResponse = categoryNavRepository.getCategoryDetailWithCatalogCount(departmentId)
+            pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+            pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
             graphqlResponse?.let {
-                pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
-                pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
                 it.getData<CatalogListResponse>(CatalogListResponse::class.java).searchCatalog?.let { searchCatalog ->
                     hasCatalog.value = searchCatalog.count != 0
                 }
