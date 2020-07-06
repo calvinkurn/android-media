@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk_old.R
@@ -670,9 +671,8 @@ open class InboxTalkFragment : BaseDaggerFragment(),
                         context,
                         Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, talkId))
                                 .buildUpon()
-                                .appendQueryParameter(PARAM_PRODUCT_ID, productId)
                                 .appendQueryParameter(PARAM_SHOP_ID, shopId)
-                                .appendQueryParameter(SOURCE, SOURCE_INBOX)
+                                .appendQueryParameter(TalkConstants.PARAM_SOURCE, SOURCE_INBOX)
                                 .build().toString()
                 )
                 this@InboxTalkFragment.startActivityForResult(
