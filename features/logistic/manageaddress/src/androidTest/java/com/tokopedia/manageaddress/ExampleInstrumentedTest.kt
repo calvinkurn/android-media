@@ -1,4 +1,4 @@
-package com.example.manageaddress
+package com.tokopedia.manageaddress
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
