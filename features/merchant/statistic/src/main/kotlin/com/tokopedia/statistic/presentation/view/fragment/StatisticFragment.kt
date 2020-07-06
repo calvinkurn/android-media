@@ -36,6 +36,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_stc_statistic.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -67,6 +71,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val dateRangeBottomSheet by lazy { SelectDateRageBottomSheet(requireContext(), childFragmentManager) }
     private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
     private val defaultEndDate = Date()
+    private val job = Job()
+    private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
 
     private var tabItems = emptyList<Pair<String, String>>()
     private var isFirstLoad = true
@@ -92,6 +98,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.progressWidgetData, WidgetType.PROGRESS)
         observeWidgetData(mViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(mViewModel.carouselWidgetData, WidgetType.CAROUSEL)
+        observeWidgetData(mViewModel.tableWidgetData, WidgetType.TABLE)
     }
 
     override fun onResume() {
@@ -199,15 +206,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             setOnScrollVertically {
                 showTabLayout()
                 selectTabOnScrolling()
+                requestVisibleWidgetsData()
             }
         }
         recyclerView.layoutManager = mLayoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 isUserScrolling = newState != RecyclerView.SCROLL_STATE_IDLE
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    requestVisibleWidgetsData()
-                }
             }
         })
 
@@ -219,34 +224,40 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         (bottomSheet as? BottomSheetUnify)?.dismiss()
     }
 
-    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchCardData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
         mViewModel.getCardWidgetData(dataKeys)
     }
 
-    private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
         mViewModel.getLineGraphWidgetData(dataKeys)
     }
 
-    private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchProgressData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
         mViewModel.getProgressWidgetData(dataKeys)
     }
 
-    private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchPostData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<PostListWidgetUiModel>(widgets)
         mViewModel.getPostWidgetData(dataKeys)
     }
 
-    private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun fetchCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
         mViewModel.getCarouselWidgetData(dataKeys)
+    }
+
+    private fun fetchTableData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        mViewModel.getTableWidgetData(dataKeys)
     }
 
     private fun selectDateRange() {
@@ -274,15 +285,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun requestVisibleWidgetsData() {
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
         val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
-
-        val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
-        adapter.data.forEachIndexed { index, widget ->
-            if (index in firstVisible..lastVisible && !widget.isLoaded) {
-                visibleWidgets.add(widget)
+        coroutineScope.launch {
+            val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+            adapter.data.forEachIndexed { index, widget ->
+                if (index in firstVisible..lastVisible && !widget.isLoaded) {
+                    visibleWidgets.add(widget)
+                }
             }
-        }
 
-        if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+            if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+        }
     }
 
     private fun showTabLayout() = view?.run {
@@ -366,11 +378,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
         val groupedWidgets: Map<String, List<BaseWidgetUiModel<*>>> = widgets.groupBy { it.widgetType }
-        groupedWidgets[WidgetType.CARD]?.run { getCardData(this) }
-        groupedWidgets[WidgetType.LINE_GRAPH]?.run { getLineGraphData(this) }
-        groupedWidgets[WidgetType.PROGRESS]?.run { getProgressData(this) }
-        groupedWidgets[WidgetType.CAROUSEL]?.run { getCarouselData(this) }
-        groupedWidgets[WidgetType.POST_LIST]?.run { getPostData(this) }
+        groupedWidgets[WidgetType.CARD]?.run { fetchCardData(this) }
+        groupedWidgets[WidgetType.LINE_GRAPH]?.run { fetchLineGraphData(this) }
+        groupedWidgets[WidgetType.PROGRESS]?.run { fetchProgressData(this) }
+        groupedWidgets[WidgetType.CAROUSEL]?.run { fetchCarouselData(this) }
+        groupedWidgets[WidgetType.POST_LIST]?.run { fetchPostData(this) }
+        groupedWidgets[WidgetType.TABLE]?.run { fetchTableData(this) }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
@@ -447,6 +460,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
+        this.printStackTrace()
         val message = this.message.orEmpty()
         adapter.data.filter { it.widgetType == widgetType }
                 .forEach { widget ->
