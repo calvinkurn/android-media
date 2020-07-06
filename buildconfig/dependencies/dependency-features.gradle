@@ -113,6 +113,7 @@ ext {
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
             logisticcart                    : ":features:logistic:logisticcart",
+            manageaddress                   : ":features:logistic:manageaddress",
             editshipping                    : ":features:logistic:editshipping",
 
             goldMerchant                    : ":features:merchant:gold_merchant",

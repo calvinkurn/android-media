@@ -89,6 +89,8 @@ dependencies {
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
     //Logistic
     implementation project(rootProject.ext.features.dropOff)
+    implementation project(rootProject.ext.features.logisticorder)
+    implementation project(rootProject.ext.features.manageaddress)
     //Merchant
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.talk)
@@ -123,8 +125,6 @@ dependencies {
     implementation project(rootProject.ext.features.eventHome)
     implementation project(rootProject.ext.features.eventSearch)
     implementation project(rootProject.ext.features.orderhistory)
-    //Logistic
-    implementation project(rootProject.ext.features.logisticorder)
     //Transaction
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)

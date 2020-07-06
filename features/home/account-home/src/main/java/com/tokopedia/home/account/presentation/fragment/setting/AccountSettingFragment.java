@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -211,7 +212,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                     accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
-                    startActivity(router.getManageAddressIntent(getActivity()));
+                    intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
+                    startActivity(intent);
                     break;
                 case SettingConstant.SETTING_ACCOUNT_KYC_ID:
                     onKycMenuClicked();
