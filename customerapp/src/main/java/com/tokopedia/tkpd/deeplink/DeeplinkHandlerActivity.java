@@ -31,10 +31,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
-import com.tokopedia.events.deeplink.EventsDeepLinkModule;
-import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
@@ -59,8 +55,6 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
-import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
-import com.tokopedia.navigation.applink.HomeNavigationApplinkModuleLoader;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
@@ -111,7 +105,6 @@ import timber.log.Timber;
         HomeApplinkModule.class,
         FeedDeeplinkModule.class,
         DigitalBrowseApplinkModule.class,
-        EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         CreatePostModule.class,
@@ -119,13 +112,11 @@ import timber.log.Timber;
         ExploreApplinkModule.class,
         InterestPickApplinkModule.class,
         HowtopayApplinkModule.class,
-        HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
         RecentViewApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        RNDevOptionsApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
         WebViewApplinkModule.class,
@@ -149,20 +140,17 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new HomeApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
-                    new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new CreatePostModuleLoader(),
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new InterestPickApplinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
-                    new RNDevOptionsApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader()

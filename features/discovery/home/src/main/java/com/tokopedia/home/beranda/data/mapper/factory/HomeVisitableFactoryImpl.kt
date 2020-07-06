@@ -6,7 +6,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
-import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
@@ -15,7 +14,6 @@ import com.tokopedia.home.beranda.domain.model.Spotlight
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
@@ -23,20 +21,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.visitable.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
-import com.tokopedia.topads.sdk.base.adapter.Item
-import com.tokopedia.topads.sdk.domain.model.ProductImage
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
-import kotlin.collections.HashMap
 
 class HomeVisitableFactoryImpl(
         val userSessionInterface: UserSessionInterface?,
@@ -135,6 +127,7 @@ class HomeVisitableFactoryImpl(
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
         if (needToShowUserWallet) {
             val headerViewModel = HeaderDataModel()
+            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
             visitableList.add(headerViewModel)
         }
         return this
@@ -167,7 +160,6 @@ class HomeVisitableFactoryImpl(
             val position = index+1
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
-                DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
                 DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {
                     homeData?.spotlight?.let { spotlight ->  createSpotlight(spotlight, isCache)} }
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
@@ -241,9 +233,14 @@ class HomeVisitableFactoryImpl(
                     }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = ProductHighlightTracking.getProductHighlightImpression(channel)) }
+                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                        createProductHighlightComponent(channel, position, isCache)
+                    } else {
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingData = ProductHighlightTracking.getProductHighlightImpression(channel))
+                    }
+                }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
@@ -257,7 +254,10 @@ class HomeVisitableFactoryImpl(
                         )
                     }
                 }
-                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
+                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createReminderWidget(ReminderEnum.RECHARGE) }
+                DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> {
+                    createReminderWidget(ReminderEnum.SALAM)
+                }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                     createDynamicChannel(
                             channel,
@@ -309,6 +309,16 @@ class HomeVisitableFactoryImpl(
 
     private fun createRecommendationListCarouselComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(mappingRecommendationListCarouselComponent(
+                channel,
+                isCache,
+                verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createProductHighlightComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingProductHighlightComponent(
                 channel,
                 isCache,
                 verticalPosition
@@ -388,33 +398,6 @@ class HomeVisitableFactoryImpl(
         if (!isCache) visitableList.add(ReviewDataModel(channel = channel))
     }
 
-    private fun createDynamicTopAds(channel: DynamicHomeChannel.Channels) {
-        val visitable = TopAdsDynamicChannelModel()
-        val items: MutableList<Item<*>> = ArrayList()
-        for (i in channel.grids.indices) {
-            val grid = channel.grids[i]
-            val model = ProductDynamicChannelViewModel()
-            model.productId = grid.id
-            model.productPrice = grid.price
-            model.productName = grid.name
-            model.productCashback = grid.cashback
-            val productImage = ProductImage()
-            productImage.m_url = grid.impression
-            productImage.m_ecs = grid.imageUrl
-            model.productImage = productImage
-            model.applink = grid.applink
-            model.productClickUrl = grid.productClickUrl
-            items.add(model)
-        }
-        visitable.title = channel.header.name
-        visitable.items = items
-        if (!isCache) {
-            visitable.setTrackingDataForCombination(channel.convertPromoEnhanceDynamicChannelDataLayerForCombination())
-            visitable.isTrackingCombined = true
-        }
-        visitableList.add(visitable)
-    }
-
     private fun mappingDynamicChannel(channel: DynamicHomeChannel.Channels,
                                       trackingData: Map<String, Any>?,
                                       trackingDataForCombination: List<Any>?,
@@ -455,7 +438,22 @@ class HomeVisitableFactoryImpl(
         )
         if (!isCache) {
             trackingQueue?.putEETracking(
-                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as java.util.HashMap<String, Any>
+                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
+            )
+        }
+        return viewModel
+    }
+
+    private fun mappingProductHighlightComponent(channel: DynamicHomeChannel.Channels,
+                                                  isCache: Boolean,
+                                                  verticalPosition: Int): Visitable<*> {
+        val viewModel = ProductHighlightDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        )
+        if (!isCache) {
+
+            trackingQueue?.putEETracking(
+                    ProductHighlightTracking.getProductHighlightImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
             )
         }
         return viewModel
@@ -464,19 +462,17 @@ class HomeVisitableFactoryImpl(
     private fun mappingMixLeftComponent(channel: DynamicHomeChannel.Channels,
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
-        val viewModel = MixLeftDataModel(
+        return MixLeftDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
-        return viewModel
     }
 
     private fun mappingMixTopComponent(channel: DynamicHomeChannel.Channels,
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
-        val viewModel = MixTopDataModel(
+        return MixTopDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
-        return viewModel
     }
 
     private fun createSpotlight(spotlight: Spotlight, isCache: Boolean) {
@@ -514,8 +510,8 @@ class HomeVisitableFactoryImpl(
         visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
-    private fun createRechargeRecommendationWidget() {
-        if (!isCache) visitableList.add(RechargeRecommendationViewModel())
+    private fun createReminderWidget(source: ReminderEnum){
+        if (!isCache) visitableList.add(ReminderWidgetModel(source=source))
     }
 
     override fun build(): List<Visitable<*>> = visitableList

@@ -53,6 +53,7 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_BOTTOM_SHEET_FILTER = "mainapp_enable_bottom_sheet_filter";
     public static final String ENABLE_TRACKING_VIEW_PORT = "android_customer_enable_search_tracking_view_port";
+    public static final String ENABLE_BOTTOM_SHEET_FILTER_REVAMP = "android_customer_enable_bottom_sheet_filter_revamp";
 
     public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";

@@ -76,17 +76,17 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
-                HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
-                        channelModel.id, channelModel.channelGrids, channelModel.channelHeader.name, parentPosition
-                )
+                HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(
+                        channelModel, parentPosition, true
+                ) as HashMap<String, Any>
         )
     }
 
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
-                HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(
-                        channelModel, parentPosition, true
-                ) as HashMap<String, Any>
+                HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
+                        channelModel.id, channelModel.channelGrids, channelModel.channelHeader.name, parentPosition
+                )
         )
     }
 }

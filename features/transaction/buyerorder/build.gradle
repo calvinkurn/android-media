@@ -59,6 +59,8 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.scannerZxing

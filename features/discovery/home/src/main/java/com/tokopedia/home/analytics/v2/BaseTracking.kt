@@ -304,7 +304,7 @@ abstract class BaseTracking {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommerceObjectPromoView(promotionObject)?: Ecommerce.getEcommercePromoView(promotions),
+                Ecommerce.KEY, if (promotionObject != null) Ecommerce.getEcommerceObjectPromoView(promotionObject) else Ecommerce.getEcommercePromoView(promotions),
                 ChannelId.KEY, channelId
         )
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId

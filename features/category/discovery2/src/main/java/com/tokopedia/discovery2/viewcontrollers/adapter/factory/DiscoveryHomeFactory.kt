@@ -50,6 +50,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewModel
@@ -70,7 +72,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.toko
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import kotlin.reflect.KFunction
 
 class DiscoveryHomeFactory {
 
@@ -117,6 +118,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.Shimmer, ::ShimmerViewHolder, ::ShimmerViewModel)
             initializeComponent(ComponentsList.ShimmerProductCard, ::ShimmerProductCardViewHolder, ::ShimmerViewModel)
             initializeComponent(ComponentsList.LoadMore, ::LoadMoreViewHolder, ::LoadMoreViewModel)
+            initializeComponent(ComponentsList.QuickCoupon, ::QuickCouponViewHolder, ::QuickCouponViewModel)
 
             // Product Card Revamp
             initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)

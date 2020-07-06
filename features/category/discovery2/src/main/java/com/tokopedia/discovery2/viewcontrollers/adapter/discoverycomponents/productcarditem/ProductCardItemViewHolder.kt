@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -48,8 +49,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var stockTitle: TextView = itemView.findViewById(R.id.stockText)
     private var interestedView: TextView = itemView.findViewById(R.id.textViewProductInterestedView)
     private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
-    private var imageViewRating: ImageView = itemView.findViewById(R.id.imageViewRating)
-    private var textViewRatingCount: TextView = itemView.findViewById(R.id.textViewRatingCount)
+    private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
     private var stokHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
 
@@ -123,7 +123,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             setStockProgress(dataItem)
         }
         setLabelDiscount(dataItem.discountPercentage.toString())
-        setRating(dataItem)
+        dataItem.rating?.let { setRating(it, dataItem.countReview) }
 //        setCashbackLabel(dataItem.cashback)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
@@ -275,25 +275,32 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             textViewSlashedPrice.hide()
         }
     }
+    
+    private fun setRating(rating : String, countReview : String?) {
+        val rating = rating.toIntOrZero()
+        if (rating in 1..5) {
+            for (r in 0 until rating) {
+                linearLayoutImageRating.show()
+                (linearLayoutImageRating.getChildAt(r) as ImageView).setImageResource(R.drawable.product_card_ic_rating_active)
+            }
+            setTextViewReviewCount(countReview)
 
-    private fun setRating(dataItem: DataItem) {
-        val ratingCount = dataItem.rating.toDoubleOrZero()
-        if (ratingCount > 0) {
-            imageViewRating.show()
-            textViewRatingCount.setTextAndCheckShow(ratingCount.toString())
-            setTextViewReviewCount(dataItem.countReview.toIntOrZero())
         } else {
-            imageViewRating.hide()
-            textViewRatingCount.hide()
-            textViewReviewCount.hide()
+            linearLayoutImageRating.hide()
         }
     }
 
-    private fun setTextViewReviewCount(reviewCount: Int) {
-        if (reviewCount != 0) {
-            textViewReviewCount.show()
-            textViewReviewCount.text = String.format("%s", "($reviewCount)")
+    private fun setTextViewReviewCount(reviewCount: String?) {
+        reviewCount?.let {
+            if (it.toIntOrZero() > 0) {
+                textViewReviewCount.show()
+                textViewReviewCount.text = String.format("%s", "($it)")
+            } else {
+                textViewReviewCount.hide()
+            }
         }
+
+
     }
 
     private fun handleUIClick(view: View, adapterPosition: Int) {

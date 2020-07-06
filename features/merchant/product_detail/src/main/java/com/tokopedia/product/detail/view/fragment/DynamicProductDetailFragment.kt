@@ -66,6 +66,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
@@ -223,7 +224,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var shouldFireVariantTracker = true
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mapOf())
     private var enableCheckImeiRemoteConfig = false
-    private var shouldTrackStickyLogin = true
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -747,19 +747,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun goToWebView(url: String) {
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-    }
-
-    /**
-     * ProductOpenShopViewHolder Listener
-     */
-    override fun openShopClicked() {
-        activity?.let {
-            doActionOrLogin({
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.OPEN_SHOP)
-                        ?: return@doActionOrLogin
-                startActivity(intent)
-            })
-        }
     }
 
     /**
@@ -2070,10 +2057,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
-                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListNamePdp, productInfo, shopInfo, trackerAttributionPdp,
-                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment, deeplinkUrl,
-                        viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString())
-                                ?: "0")
+
+                val sentBundle = DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(
+                        irisSessionId,
+                        trackerListNamePdp,
+                        productInfo,
+                        shopInfo,
+                        trackerAttributionPdp,
+                        isElligible,
+                        viewModel.tradeInParams.usedPrice > 0,
+                        viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment,
+                        deeplinkUrl,
+                        viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString()) ?: "0"
+                )
+                context?.let {
+                    getInstance(it).saveEvent(sentBundle)
+                }
                 return
             }
         }
@@ -2176,17 +2175,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
-        stickyLoginView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateStickyState()
-        }
         updateActionButtonShadow()
         stickyLoginView.setOnClickListener {
             goToLogin()
-            stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.PDP)
+            } else {
+                stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
+            }
         }
         stickyLoginView.setOnDismissListener(View.OnClickListener {
             stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
-            stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            } else {
+                stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
+            }
             updateStickyState()
         })
 
@@ -2194,13 +2198,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun updateStickyState() {
-        if (this.tickerDetail == null) {
-            stickyLoginView.visibility = View.GONE
-            return
-        }
-
-        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
-        if (!isCanShowing) {
+        if (tickerDetail == null) {
             stickyLoginView.visibility = View.GONE
             return
         }
@@ -2210,11 +2208,24 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             return
         }
 
-        this.tickerDetail?.let { stickyLoginView.setContent(it) }
-        stickyLoginView.show(StickyLoginConstant.Page.PDP)
-        if (shouldTrackStickyLogin || stickyLoginView.isShowing()) {
-            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
-            shouldTrackStickyLogin = false
+        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true)
+        if (stickyLoginView.isLoginReminder() && isCanShowing) {
+            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isShowing()) {
+                stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.PDP)
+            }
+        } else {
+            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true)
+            if (!isCanShowing) {
+                stickyLoginView.visibility = View.GONE
+                return
+            }
+
+            this.tickerDetail?.let { stickyLoginView.setContent(it) }
+            stickyLoginView.show(StickyLoginConstant.Page.PDP)
+            if (stickyLoginView.isShowing()) {
+                stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+            }
         }
     }
 
@@ -2940,7 +2951,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     context,
                     Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID))
                             .buildUpon()
-                            .appendQueryParameter(PARAM_APPLINK_PRODUCT_ID, it.basic.productID)
                             .appendQueryParameter(PARAM_APPLINK_SHOP_ID, it.basic.shopID)
                             .build().toString()
             )

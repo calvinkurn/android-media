@@ -2,6 +2,7 @@
 includeDynamicFeatureIfEnabled("customerapp")
 
 include "features:common:developer_options"
+include "features:common:developer_options_noop"
 include "features:common:nps"
 include "features:common:resources_common"
 include "features:common:qr_scanner"
@@ -60,7 +61,6 @@ include "features:travel:flight_orderlist"
 include "features:travel:hotel"
 include "features:travel:common_travel"
 
-include "features:entertainment:event"
 include "features:entertainment:event_home"
 include "features:entertainment:event_search"
 include "features:entertainment:event_pdp"
@@ -112,6 +112,8 @@ include "features:logistic:logisticaddaddress"
 include "features:logistic:dropoff"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
+include "features:logistic:manageaddress"
+include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
@@ -200,6 +202,7 @@ include "features:user:loginregister"
 include "features:user:logout"
 include "features:user:managename"
 include "features:user:managepassword"
+include 'features:user:notif-troubleshooter'
 include "features:user:notifcenter"
 include "features:user:onboarding"
 include "features:user:otp"
@@ -221,11 +224,12 @@ include "features:user:seamless_login"
 
 include "features:user:vote"
 
-include "features:fcm_common"
+include "features:user:fcm_common"
 
 include "tkpdcore"
 include "tkpddesign"
 include "tkpdseller"
 include "tkpdabstraction"
 
+include 'testapp-features:user:logintestapp'
 include "customerapp"

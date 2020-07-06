@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -246,12 +247,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        talkReadingRecyclerView.post {
-            talkPerformanceMonitoringListener?.let {
-                it.stopRenderPerformanceMonitoring()
-                it.stopPerformanceMonitoring()
+        talkReadingRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                talkReadingRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
-        }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
@@ -480,7 +482,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID))
                         .buildUpon()
-                        .appendQueryParameter(PARAM_PRODUCT_ID, productId)
                         .appendQueryParameter(PARAM_SHOP_ID, shopId)
                         .build().toString()
         )

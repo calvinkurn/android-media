@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_40"
-    android:background="@drawable/tp_rounded_grey_background"
-    xmlns:tool="http://schemas.android.com/tools">
+    android:background="@drawable/tp_rounded_grey_background">
 
     <RelativeLayout
+        android:id="@+id/rel_touch_view"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_6"
         android:layout_marginLeft="@dimen/dp_6"
         android:layout_marginTop="@dimen/dp_5"
         android:layout_marginEnd="@dimen/dp_6"
         android:layout_marginRight="@dimen/dp_6"
         android:layout_marginBottom="@dimen/dp_5"
-        android:layout_marginStart="@dimen/dp_6"
-        android:id="@+id/rel_touch_view"
-        android:layout_width="@dimen/dp_56"
-        tool:visibility="gone"
-        android:layout_height="match_parent"
         android:background="@drawable/bg_tp_swipe"
-        android:visibility="visible">
+        android:visibility="visible"
+        tool:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_swipe_icon"
@@ -41,31 +40,31 @@
         android:layout_height="match_parent">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginRight="@dimen/dp_6"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"
-            tool:text="dbvovbidfbvisdfbvi"
             android:id="@+id/text_swipe"
-            app:typographyType="heading_5"
-            android:textColor="@color/discount_color"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center" />
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:gravity="center"
+            android:textColor="@color/discount_color"
+            app:typographyType="heading_5"
+            tool:text="dbvovbidfbvisdfbvi" />
 
         <ImageButton
-            android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginRight="@dimen/dp_6"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"
             android:id="@+id/btn_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_5"
             android:background="@null"
             android:clickable="false"
             android:tint="@color/white"
-            app:srcCompat="@drawable/ic_check_green_24dp" />
+            app:srcCompat="@drawable/ic_tp_check_green_24dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -84,9 +83,9 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:textColor="@color/orange_red"
-                tool:text="redden"
+                android:textStyle="bold"
                 app:typographyType="heading_5"
-                android:textStyle="bold" />
+                tool:text="redden" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btn_copy_code"

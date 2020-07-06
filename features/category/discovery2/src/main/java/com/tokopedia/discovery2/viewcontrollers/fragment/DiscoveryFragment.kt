@@ -1,5 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +15,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
@@ -22,6 +26,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -31,12 +36,18 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+
+
+private const val LOGIN_REQUEST_CODE = 35769
+private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
 
 class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -53,6 +64,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: ProgressBar
     var pageEndPoint = ""
+    private var componentPosition: Int? = null
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -122,6 +134,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.getDiscoveryData()
 
         setUpObserver()
+
     }
 
     fun reSync() {
@@ -185,6 +198,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         })
     }
 
+
     private fun setPageInfo(data: PageInfo?) {
         typographyHeader.text = data?.name
         ivSearch.setOnClickListener {
@@ -205,7 +219,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         } else {
             ivShare.hide()
         }
-
     }
 
     private fun setAnimationOnScroll() {
@@ -262,7 +275,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
     }
 
-
     fun getDiscoveryAnalytics(): DiscoveryAnalytics {
         return analytics
     }
@@ -276,5 +288,58 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryAdapter.clearListViewModel()
         discoveryViewModel.clearPageData()
         discoveryViewModel.getDiscoveryData()
+    }
+
+    fun openLoginScreen(componentPosition: Int = -1) {
+        this.componentPosition = componentPosition
+        startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
+    }
+
+    fun openMobileVerificationWithBottomSheet(componentPosition: Int = -1) {
+        this.componentPosition = componentPosition
+        showVerificationBottomSheet()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
+        this.componentPosition?.let { position ->
+            if (position >= 0) {
+                discoveryBaseViewModel = discoveryAdapter.getViewModelAtPosition(position)
+            }
+        }
+        when (requestCode) {
+            LOGIN_REQUEST_CODE -> {
+                discoveryBaseViewModel?.loggedInCallback()
+            }
+            MOBILE_VERIFICATION_REQUEST_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    discoveryBaseViewModel?.isPhoneVerificationSuccess(true)
+                } else {
+                    discoveryBaseViewModel?.isPhoneVerificationSuccess(false)
+                }
+            }
+        }
+    }
+
+    private fun showVerificationBottomSheet() {
+        val closeableBottomSheetDialog = BottomSheetUnify()
+        val childView = View.inflate(context, R.layout.mobile_verification_bottom_sheet_layout, null)
+        this.fragmentManager?.let {
+            closeableBottomSheetDialog.apply {
+                showCloseIcon = true
+                setChild(childView)
+                show(it, null)
+            }
+        }
+        childView.findViewById<UnifyButton>(R.id.verify_btn).setOnClickListener {
+            closeableBottomSheetDialog.dismiss()
+            startActivityForResult(RouteManager.getIntent(activity, ADD_PHONE), MOBILE_VERIFICATION_REQUEST_CODE)
+            getDiscoveryAnalytics().trackQuickCouponPhoneVerified()
+        }
+        closeableBottomSheetDialog.setCloseClickListener {
+            closeableBottomSheetDialog.dismiss()
+            getDiscoveryAnalytics().trackQuickCouponPhoneVerifyCancel()
+        }
     }
 }

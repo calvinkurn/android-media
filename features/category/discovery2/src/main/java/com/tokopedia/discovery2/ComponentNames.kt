@@ -41,6 +41,7 @@ enum class ComponentNames(val componentName: String) {
     ShimmerProductCard("shimmer_product_card"),
     Shimmer("shimmer"),
     LoadMore("load_more"),
+    QuickCoupon("quick_coupon"),
 
     // Product Card Revamp
     ProductCardRevamp("product_card_revamp"),

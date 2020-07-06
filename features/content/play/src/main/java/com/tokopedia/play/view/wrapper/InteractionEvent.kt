@@ -24,7 +24,7 @@ sealed class InteractionEvent {
     data class DoActionProduct(val product: ProductLineUiModel, val action: ProductAction, val type: BottomInsetsType) : InteractionEvent() {
         override val needLogin: Boolean = true
     }
-    data class OpenProductDetail(val product: ProductLineUiModel) : InteractionEvent() {
+    data class OpenProductDetail(val product: ProductLineUiModel, val position: Int) : InteractionEvent() {
         override val needLogin: Boolean = false
     }
     object CartPage : InteractionEvent() {

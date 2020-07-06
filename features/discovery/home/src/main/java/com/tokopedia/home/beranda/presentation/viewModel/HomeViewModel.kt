@@ -11,6 +11,9 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
+import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.isSalamWidgetAvailable
+import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperRechargetoReminder
+import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperSalamtoReminder
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
@@ -22,6 +25,8 @@ import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
+import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidgetData
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
@@ -34,9 +39,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -85,6 +90,8 @@ open class HomeViewModel @Inject constructor(
         private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
+        private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
+        private val declineSalamWIdgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>
 ) : BaseCoRoutineScope(homeDispatcher.get().io()){
 
@@ -168,6 +175,12 @@ open class HomeViewModel @Inject constructor(
         get() = _isRequestNetworkLiveData
     private val _isRequestNetworkLiveData = MutableLiveData<Event<Boolean>>(null)
 
+    private val _salamWidgetLiveData = MutableLiveData<Event<SalamWidget>>()
+    val salamWidgetLiveData: LiveData<Event<SalamWidget>> get() = _salamWidgetLiveData
+
+    private val _rechargeRecommendationLiveData = MutableLiveData<Event<RechargeRecommendation>>()
+    val rechargeRecommendationLiveData: LiveData<Event<RechargeRecommendation>> get() = _rechargeRecommendationLiveData
+
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
 // ================================= PLEASE SORT BY NAME A-Z ==================================
@@ -186,6 +199,8 @@ open class HomeViewModel @Inject constructor(
     private var buWidgetJob: Job? = null
     private var getRechargeRecommendationJob: Job? = null
     private var declineRechargeRecommendationJob: Job? = null
+    private var getSalamWidgetJob: Job? = null
+    private var declineSalamWidgetJob : Job? = null
     private var injectCouponTimeBasedJob: Job? = null
     private var jobChannel: Job? = null
     private var channel : Channel<UpdateLiveDataModel>? = null
@@ -526,16 +541,18 @@ open class HomeViewModel @Inject constructor(
         getTokocashBalance()
     }
 
-    private fun insertRechargeRecommendation(data: RechargeRecommendation) {
+   fun insertRechargeRecommendation(data: RechargeRecommendation) {
         if (data.recommendations.isNotEmpty()) {
             _homeLiveData.value?.list?.run {
-                val findRechargeRecommendationViewModel = find { visitable -> visitable is RechargeRecommendationViewModel }
+                val findRechargeRecommendationViewModel = find { visitable -> visitable is ReminderWidgetModel
+                        && (visitable.source == ReminderEnum.RECHARGE)}
                 val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
-                if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
+                if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is ReminderWidgetModel) {
                     val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
-                            rechargeRecommendation = data
+                           data = mapperRechargetoReminder(data),
+                           source = ReminderEnum.RECHARGE
                     )
-                    launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
+                    launch(coroutineContext){updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel))}
                 }
             }
         } else {
@@ -543,12 +560,40 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    fun insertSalamWidget(data: SalamWidget) {
+        if (isSalamWidgetAvailable(data.salamWidget)) {
+            _homeLiveData.value?.list?.run {
+                val findSalamWidgetModel = find { visitable -> visitable is ReminderWidgetModel
+                        && (visitable.source == ReminderEnum.SALAM)}
+                val indexOfSalamWidgetModel = indexOf(findSalamWidgetModel)
+                if (indexOfSalamWidgetModel > -1 && findSalamWidgetModel is ReminderWidgetModel) {
+                    val newFindSalamWidgetModel = findSalamWidgetModel.copy(
+                            data = mapperSalamtoReminder(data),
+                            source = ReminderEnum.SALAM
+                    )
+                    launch(coroutineContext){updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel))}
+                }
+            }
+        } else {
+            removeSalamWidget()
+        }
+    }
+
     private fun removeRechargeRecommendation() {
         val findRechargeRecommendationViewModel =
-                _homeLiveData.value?.list?.find { visitable -> visitable is RechargeRecommendationViewModel }
+                _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.RECHARGE)}
                         ?: return
-        if (findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
+        if (findRechargeRecommendationViewModel is ReminderWidgetModel && findRechargeRecommendationViewModel.source==ReminderEnum.RECHARGE) {
             launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
+        }
+    }
+
+    private fun removeSalamWidget() {
+        val findSalamWidgetModel =
+                _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.SALAM)}
+                        ?: return
+        if (findSalamWidgetModel is ReminderWidgetModel && findSalamWidgetModel.source==ReminderEnum.SALAM) {
+            launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findSalamWidgetModel)) }
         }
     }
 
@@ -673,7 +718,6 @@ open class HomeViewModel @Inject constructor(
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
-                    getRechargeRecommendation()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {
@@ -805,22 +849,35 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getRechargeRecommendation() {
+    fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
-        if(!isRechargeModelAvailable()) return
-
+        if(!isReminderWidgetAvailable()) return
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             getRechargeRecommendationUseCase.get().setParams()
             val data = getRechargeRecommendationUseCase.get().executeOnBackground()
-            insertRechargeRecommendation(data)
+            _rechargeRecommendationLiveData.postValue(Event(data))
         }) {
             removeRechargeRecommendation()
         }
     }
 
-    private fun isRechargeModelAvailable(): Boolean {
+
+    fun getSalamWidget(){
+        if(getSalamWidgetJob?.isActive == true) return
+        if(!isReminderWidgetAvailable()) return
+
+        getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
+            val data = getSalamWidgetUseCase.get().executeOnBackground()
+            _salamWidgetLiveData.postValue(Event(data))
+        }){
+            removeSalamWidget()
+        }
+    }
+
+
+    private fun isReminderWidgetAvailable() : Boolean{
         return _homeLiveData.value?.list?.find {
-            visitable -> visitable is RechargeRecommendationViewModel
+            visitable -> visitable is ReminderWidgetModel
         } != null
     }
 
@@ -830,6 +887,15 @@ open class HomeViewModel @Inject constructor(
         declineRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             declineRechargeRecommendationUseCase.get().setParams(requestParams)
             declineRechargeRecommendationUseCase.get().executeOnBackground()
+        }){}
+    }
+
+    fun declineSalamItem(requestParams: Map<String, Int>){
+        removeSalamWidget()
+        if (declineSalamWidgetJob?.isActive==true) return
+        declineSalamWidgetJob = launchCatchError(coroutineContext, block = {
+            declineSalamWIdgetUseCase.get().setParams(requestParams)
+            declineSalamWIdgetUseCase.get().executeOnBackground()
         }){}
     }
 
@@ -1154,8 +1220,10 @@ open class HomeViewModel @Inject constructor(
                 cashBalance = walletBalanceModel.cashBalance,
                 rawCashBalance = walletBalanceModel.rawCashBalance,
                 walletType = walletBalanceModel.walletType,
-                isShowAnnouncement = walletBalanceModel.isShowAnnouncement
+                isShowAnnouncement = walletBalanceModel.isShowAnnouncement,
+                isShowTopup = walletBalanceModel.isShowTopup,
+                topupUrl = walletBalanceModel.topupUrl,
+                topupLimit = walletBalanceModel.topupLimit
         )
     }
-
 }

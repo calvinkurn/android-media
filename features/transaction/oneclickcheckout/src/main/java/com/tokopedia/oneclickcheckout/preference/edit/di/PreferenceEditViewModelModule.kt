@@ -11,7 +11,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@PreferenceEditScope
 @Module
 abstract class PreferenceEditViewModelModule {
 
@@ -19,16 +18,19 @@ abstract class PreferenceEditViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactor: ViewModelFactory): ViewModelProvider.Factory
 
+    @PreferenceEditScope
     @Binds
     @IntoMap
     @ViewModelKey(AddressListViewModel::class)
     internal abstract fun provideAddressListViewModel(viewModel: AddressListViewModel): ViewModel
 
+    @PreferenceEditScope
     @Binds
     @IntoMap
     @ViewModelKey(ShippingDurationViewModel::class)
     internal abstract fun provideShippingDurationViewModel(viewModel: ShippingDurationViewModel): ViewModel
 
+    @PreferenceEditScope
     @Binds
     @IntoMap
     @ViewModelKey(PreferenceSummaryViewModel::class)

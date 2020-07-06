@@ -9,6 +9,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.model.PremiumAccountCopyWriting;
 import com.tokopedia.home.account.data.model.PremiumAccountResponse;
@@ -404,7 +405,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
                 && accountModel.getNotifications().getResolution() != null) {
             menuList.setCount(accountModel.getNotifications().getResolution().getSeller());
         }
-        menuList.setApplink(ApplinkConst.RESCENTER_SELLER);
+        menuList.setApplink(SettingConstant.RESCENTER_SELLER);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_sales));
 

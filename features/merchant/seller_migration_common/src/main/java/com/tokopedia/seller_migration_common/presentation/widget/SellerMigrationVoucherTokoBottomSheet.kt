@@ -9,9 +9,9 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingCo
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.user.session.UserSession
 
-class SellerMigrationVoucherTokoBottomSheet(titles: List<String>,
-                                            contents: List<String>,
-                                            images: ArrayList<String>)
+class SellerMigrationVoucherTokoBottomSheet(titles: List<String> = emptyList(),
+                                            contents: List<String> = emptyList(),
+                                            images: ArrayList<String> = arrayListOf())
     : SellerMigrationBottomSheet(titles, contents, images, false) {
 
     private val userId by lazy { UserSession(context).userId }

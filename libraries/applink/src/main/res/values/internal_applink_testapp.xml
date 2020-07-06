@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_testapp" translatable="false">testapp</string>
+    <!--
+        If the link is Ended with {id}, must end with "/"
+        Otherwise, do not put "/"
+        naming: path_{module}_{page}
+        order by name
+    -->
+
+    <string name="path_testapp_login">/login</string>
+
+</resources>

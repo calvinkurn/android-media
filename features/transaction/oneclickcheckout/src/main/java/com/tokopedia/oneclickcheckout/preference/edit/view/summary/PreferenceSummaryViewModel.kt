@@ -3,16 +3,14 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.oneclickcheckout.common.domain.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.Failure
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCase
-import com.tokopedia.oneclickcheckout.preference.edit.domain.create.model.CreatePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.model.CreatePreferenceRequest
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePreferenceUseCase
-import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.model.DeletePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
-import com.tokopedia.oneclickcheckout.preference.edit.domain.get.model.GetPreferenceData
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
-import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceRequest
 import javax.inject.Inject
 
@@ -21,8 +19,8 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
                                                      private val deletePreferenceUseCase: DeletePreferenceUseCase,
                                                      private val updatePreferenceUseCase: UpdatePreferenceUseCase) : ViewModel() {
 
-    private val _preference: MutableLiveData<OccState<GetPreferenceData>> = MutableLiveData()
-    val preference: LiveData<OccState<GetPreferenceData>>
+    private val _preference: MutableLiveData<OccState<ProfilesItemModel>> = MutableLiveData()
+    val preference: LiveData<OccState<ProfilesItemModel>>
         get() = _preference
 
     private val _editResult: MutableLiveData<OccState<String>> = MutableLiveData()
@@ -38,10 +36,10 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         val currentPref = _preference.value
         if (currentPref != null && currentPref is OccState.Success) {
             return when {
-                currentPref.data.addressModel?.addressId != profileAddressId -> true
-                currentPref.data.shipmentModel?.serviceId != profileServiceId -> true
-                currentPref.data.paymentModel?.gatewayCode != profileGatewayCode -> true
-                currentPref.data.paymentModel?.metadata != profilePaymentMetadata -> true
+                currentPref.data.addressModel.addressId != profileAddressId -> true
+                currentPref.data.shipmentModel.serviceId != profileServiceId -> true
+                currentPref.data.paymentModel.gatewayCode != profileGatewayCode -> true
+                currentPref.data.paymentModel.metadata != profilePaymentMetadata -> true
                 else -> false
             }
         }
@@ -50,68 +48,49 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
 
     fun getPreferenceDetail(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String) {
         _preference.value = OccState.Loading
-        getPreferenceByIdUseCase.execute(profileId, addressId, serviceId, gatewayCode, metadata,
-                { getPreferenceData: GetPreferenceData ->
-                    _preference.value = OccState.Success(getPreferenceData)
+        getPreferenceByIdUseCase.execute(
+                { profilesItemModel: ProfilesItemModel ->
+                    _preference.value = OccState.Success(profilesItemModel)
                 },
                 { throwable: Throwable ->
-                    _preference.value = OccState.Fail(false, throwable, "")
-                })
+                    _preference.value = OccState.Failed(Failure(throwable))
+                },
+                getPreferenceByIdUseCase.generateRequestParams(profileId, addressId, serviceId, gatewayCode, metadata))
     }
 
     fun deletePreference(id: Int) {
         val value = _preference.value
         if (value is OccState.Success) {
             _editResult.value = OccState.Loading
-            deletePreferenceUseCase.execute(id, { deletePreferenceGqlResponse: DeletePreferenceGqlResponse ->
-                val messages = deletePreferenceGqlResponse.response.data.messages
-                if (messages.isNotEmpty()) {
-                    _editResult.value = OccState.Success(messages[0])
-                } else {
-                    _editResult.value = OccState.Success("Success")
-                }
-            }, { throwable: Throwable ->
-                _editResult.value = OccState.Fail(false, throwable, "")
-            })
+            deletePreferenceUseCase.execute(id,
+                    { message: String ->
+                        _editResult.value = OccState.Success(message)
+                    },
+                    { throwable: Throwable ->
+                        _editResult.value = OccState.Failed(Failure(throwable))
+                    })
         }
     }
 
     fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
         _editResult.value = OccState.Loading
         createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
-                { createPreferenceGqlResponse: CreatePreferenceGqlResponse ->
-                    val messages = createPreferenceGqlResponse.response.data.messages
-                    if (messages.isNotEmpty()) {
-                        _editResult.value = OccState.Success(messages[0])
-                    } else {
-                        _editResult.value = OccState.Success("Success")
-                    }
+                { message: String ->
+                    _editResult.value = OccState.Success(message)
                 },
                 { throwable: Throwable ->
-                    _editResult.value = OccState.Fail(false, throwable, "")
+                    _editResult.value = OccState.Failed(Failure(throwable))
                 })
     }
 
     fun updatePreference(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
         _editResult.value = OccState.Loading
         updatePreferenceUseCase.execute(UpdatePreferenceRequest(profileId, addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
-                { updatePreferenceGqlResponse: UpdatePreferenceGqlResponse ->
-                    val messages = updatePreferenceGqlResponse.response.data.messages
-                    if (messages.isNotEmpty()) {
-                        _editResult.value = OccState.Success(messages[0])
-                    } else {
-                        _editResult.value = OccState.Success("Success")
-                    }
+                { message: String ->
+                    _editResult.value = OccState.Success(message)
                 },
                 { throwable: Throwable ->
-                    _editResult.value = OccState.Fail(false, throwable, "")
+                    _editResult.value = OccState.Failed(Failure(throwable))
                 })
-    }
-
-    fun consumeEditResultFail() {
-        val value = _editResult.value
-        if (value is OccState.Fail && !value.isConsumed) {
-            _editResult.value = value.copy(isConsumed = true)
-        }
     }
 }

@@ -7,11 +7,11 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataModel
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.getRelativeDate
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_dynamic_shop_credibility.view.*
 import kotlinx.android.synthetic.main.item_dynamic_shop_credibility.view.iv_badge
 import kotlinx.android.synthetic.main.item_dynamic_shop_credibility.view.shop_ava
@@ -31,7 +31,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
         with(view) {
             showShopLoading()
             element.shopInfo?.let {
-                shop_name.text = it.shopCore.name
+                shop_name.text = MethodChecker.fromHtml(it.shopCore.name)
                 shop_location_online.text = context.getString(R.string.location_dot_builder, it.location)
                 setupLastActive(element.shopInfo?.shopLastActive.orEmpty())
                 setupBadgeAndImage(it)
@@ -64,8 +64,10 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
         val lastActive = shopLastActive.getRelativeDate(context)
         shop_last_active.text = MethodChecker.fromHtml(lastActive)
         if (lastActive == context.getString(R.string.shop_online)) {
+            shop_last_active.setWeight(Typography.BOLD)
             shop_last_active.setTextColor(MethodChecker.getColor(context, R.color.g_500))
         } else {
+            shop_last_active.setType(Typography.BODY_3)
             shop_last_active.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_68))
         }
     }

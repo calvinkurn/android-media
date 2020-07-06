@@ -131,7 +131,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
-        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
+        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()))
         return view
     }
 

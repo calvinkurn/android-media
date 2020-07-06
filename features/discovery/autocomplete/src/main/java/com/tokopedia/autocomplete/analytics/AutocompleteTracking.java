@@ -54,7 +54,6 @@ public class AutocompleteTracking {
     public static final String EVENT_IMPRESSED_INITIAL_STATE_PROMO = "promoViewIris";
 
     public static final String EVENTCATEGORY_TOP_NAV = "top nav";
-    public static final String EVENT_CATEGORY_DIGITAL_TOP_NAV = "digital - top nav";
     public static final String EVENT_CATEGORY_INITIAL_STATE = "initial-state";
 
     public static final String CLICK_POPULAR_SEARCH = "click - popular search";
@@ -145,8 +144,8 @@ public class AutocompleteTracking {
 
     public static void eventClickCurated(String label, String campaignCode) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, EVENT_CLICK_TOP_NAV,
-                        EVENT_CATEGORY, EVENT_CATEGORY_DIGITAL_TOP_NAV,
+                DataLayer.mapOf(EVENT, EVENT_CLICK_SEARCH_RESULT,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
                         EVENT_ACTION, CLICK_DIGITAL_PRODUCT_SUGGESTION,
                         EVENT_LABEL, label,
                         CAMPAIGN_CODE, campaignCode

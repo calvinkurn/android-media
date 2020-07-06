@@ -10,8 +10,6 @@ import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellati
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
-import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.domain.FlightOrderRepositoryImpl;
@@ -23,46 +21,20 @@ import java.util.Map;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 10/25/17.
  */
 
 public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements FlightRepository {
-    private FlightClassesDataSource flightClassesDataSource;
     private FlightCancellationCloudDataSource flightCancellationCloudDataSource;
 
-    public FlightRepositoryImpl(FlightClassesDataSource flightClassesDataSource,
-                                FlightOrderDataSource flightOrderDataSource,
+    public FlightRepositoryImpl(FlightOrderDataSource flightOrderDataSource,
                                 FlightOrderMapper flightOrderMapper,
                                 FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
         super(flightOrderDataSource, flightOrderMapper);
 
-        this.flightClassesDataSource = flightClassesDataSource;
         this.flightCancellationCloudDataSource = flightCancellationCloudDataSource;
-    }
-
-    @Override
-    public Observable<List<FlightClassEntity>> getFlightClasses() {
-        return flightClassesDataSource.getClasses();
-    }
-
-    @Override
-    public Observable<FlightClassEntity> getFlightClassById(final int classId) {
-        return flightClassesDataSource.getClasses()
-                .flatMap(new Func1<List<FlightClassEntity>, Observable<FlightClassEntity>>() {
-                    @Override
-                    public Observable<FlightClassEntity> call(final List<FlightClassEntity> flightClassEntities) {
-                        return Observable.from(flightClassEntities)
-                                .filter(new Func1<FlightClassEntity, Boolean>() {
-                                    @Override
-                                    public Boolean call(FlightClassEntity flightClassEntity) {
-                                        return flightClassEntity.getId() == classId;
-                                    }
-                                });
-                    }
-                });
     }
 
     @Override

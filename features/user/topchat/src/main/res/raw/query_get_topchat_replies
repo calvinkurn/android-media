@@ -46,6 +46,7 @@ query get_chat_replies($msgId: Int!, $beforeReplyTime: String) {
           isHighlight
           isRead
           blastId
+          source
           attachment {
             id
             type

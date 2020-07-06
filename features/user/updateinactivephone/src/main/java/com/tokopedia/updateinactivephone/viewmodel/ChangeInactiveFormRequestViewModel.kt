@@ -143,20 +143,11 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         params.putString(UpdateInactivePhoneConstants.Constants.USERID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID,
                         userSessionInterface.temporaryUserId))
-        params.putString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
-                requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
-                        userSessionInterface.deviceId))
-
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_BANK_BOOK_IMAGE_PATH, ""))
-        params.putInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, requestParams.getInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, 49))
-        params.putInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, requestParams.getInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, 215))
-        params.putString(UpdateInactivePhoneConstants.Constants.TOKEN, requestParams.getString(UpdateInactivePhoneConstants.Constants.TOKEN, ""))
-
         if (!TextUtils.isEmpty(changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)) {
             params.putString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)
         }
-
         return params
     }
 
@@ -167,45 +158,25 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         params.putString(UpdateInactivePhoneConstants.Constants.USERID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID,
                         userSessionInterface.temporaryUserId))
-        params.putString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
-                requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
-                        userSessionInterface.deviceId))
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_PATH, ""))
-        params.putInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, requestParams.getInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, 49))
-        params.putInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, requestParams.getInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, 215))
-        params.putString(UpdateInactivePhoneConstants.Constants.TOKEN, requestParams.getString(UpdateInactivePhoneConstants.Constants.TOKEN, ""))
         if (!TextUtils.isEmpty(changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)) {
-            params.putString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)
-        }
+            params.putString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost) }
         return params
     }
 
     private fun getSubmitImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
-        params.putString(SubmitImageUseCase.PARAM_FILE_UPLOADED,
-                generateFileUploaded(requestParams, changePhoneNumberRequestModel))
+        params.putString(UpdateInactivePhoneConstants.QueryConstants.ID_CARD_IMAGE, changePhoneNumberRequestModel.uploadIdImageModel?.uploadImageData?.picObj)
+        if (!TextUtils.isEmpty(requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_BANK_BOOK_IMAGE_PATH, ""))) {
+            params.putString(UpdateInactivePhoneConstants.QueryConstants.SAVING_BOOK_IMAGE,
+                    changePhoneNumberRequestModel.uploadBankBookImageModel?.uploadImageData?.picObj)
+        }
+        params.putString(UpdateInactivePhoneConstants.QueryConstants.SAVING_BOOK_IMAGE, changePhoneNumberRequestModel.uploadIdImageModel?.uploadImageData?.picObj)
         params.putString(UpdateInactivePhoneConstants.QueryConstants.PHONE, requestParams.getString(UpdateInactivePhoneConstants.QueryConstants.PHONE, ""))
         params.putString(UpdateInactivePhoneConstants.QueryConstants.EMAIL, requestParams.getString(UpdateInactivePhoneConstants.QueryConstants.EMAIL, ""))
         params.putInt(UpdateInactivePhoneConstants.QueryConstants.USER_ID, requestParams.getInt(UpdateInactivePhoneConstants.QueryConstants.USER_ID, 0))
         return params
-    }
-
-    private fun generateFileUploaded(requestParams: RequestParams, changePhoneNumberRequestModel: ChangePhoneNumberRequestModel): String {
-        val reviewPhotos = JSONObject()
-
-        try {
-            reviewPhotos.put(UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_ID,
-                    changePhoneNumberRequestModel.uploadIdImageModel?.uploadImageData?.picObj)
-            if (!TextUtils.isEmpty(requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_BANK_BOOK_IMAGE_PATH, ""))) {
-                reviewPhotos.put(UpdateInactivePhoneConstants.Constants.PARAM_BANKBOOK_IMAGE_ID,
-                        changePhoneNumberRequestModel.uploadBankBookImageModel?.uploadImageData?.picObj)
-            }
-        } catch (e: JSONException) {
-            throw RuntimeException(context.getString(R.string.default_error_upload_image))
-        }
-
-        return reviewPhotos.toString()
     }
 
     private suspend fun getUploadHost(email: String, phone: String, userId: String) {

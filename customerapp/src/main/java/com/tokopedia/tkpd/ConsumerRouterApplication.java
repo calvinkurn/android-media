@@ -64,11 +64,8 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
-import com.tokopedia.events.EventModuleRouter;
-import com.tokopedia.events.di.DaggerEventComponent;
-import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
+import com.tokopedia.editshipping.ui.EditShippingActivity;
+import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
@@ -86,13 +83,11 @@ import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -109,22 +104,18 @@ import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
-import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -179,7 +170,6 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
-        SellerModuleRouter,
         ReactApplication,
         ReputationRouter,
         AbstractionRouter,
@@ -193,7 +183,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GlobalNavRouter,
         AccountHomeRouter,
         OmsModuleRouter,
-        EventModuleRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         UnifiedOrderListRouter,
@@ -208,7 +197,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     Lazy<ReactUtils> reactUtils;
 
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
-    private EventComponent eventComponent;
     private OmsComponent omsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
@@ -318,17 +306,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public ShopComponent getShopComponent() {
-        if (shopComponent == null) {
-            if(daggerShopBuilder == null){
-                daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-            }
-            shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return shopComponent;
     }
 
     @Override
@@ -488,11 +465,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getPhoneVerificationActivityIntent(Context context) {
-        return PhoneVerificationActivationActivity.getIntent(context, false, false);
-    }
-
-    @Override
     public Class<?> getHomeClass() {
         return MainParentActivity.class;
     }
@@ -601,12 +573,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-            Context context, String platform, String category, String defaultSelectedTab) {
-        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
-    }
-
-    @Override
     public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
         return ReviewShopFragment.createInstance(shopId, shopDomain);
     }
@@ -619,23 +585,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
-    }
-
-    @Override
-    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
-        if(eventComponent == null){
-            eventComponent = DaggerEventComponent.builder()
-                    .baseAppComponent((this).getBaseAppComponent())
-                    .eventModule(new EventModule(this))
-                    .build();
-        }
-        if (!isEventOMS) {
-            return eventComponent.getVerifyCartWrapper().verifyPromo(requestParams);
-        } else {
-            return new PostVerifyCartWrapper(this, eventComponent.getPostVerifyCartUseCase())
-                    .verifyPromo(requestParams);
-        }
     }
 
     @Override
@@ -764,11 +713,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getManageAddressIntent(Context context) {
-        return new Intent(context, ManagePeopleAddressActivity.class);
-    }
-
-    @Override
     public void goToManageShopShipping(Context context) {
         UnifyTracking.eventManageShopShipping(context);
         context.startActivity(new Intent(context, EditShippingActivity.class));
@@ -881,8 +825,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
-        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
-        return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
+        return DevOptConfig.isChuckNotifEnabled(this);
     }
 
     @Override

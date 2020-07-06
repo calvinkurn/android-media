@@ -27,6 +27,7 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
+import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
@@ -141,7 +142,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
-        }else if(applink.equals(RESCENTER_BUYER)){
+        }else if(applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)){
             return true;
         }
 

@@ -18,7 +18,6 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -122,7 +121,6 @@ public abstract class MainApplication extends MainRouterApplication{
     private Boolean executeInBackground(){
         locationUtils = new LocationUtils(MainApplication.this);
         locationUtils.initLocationBackground();
-        TooLargeTool.startLogging(MainApplication.this);
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
         }

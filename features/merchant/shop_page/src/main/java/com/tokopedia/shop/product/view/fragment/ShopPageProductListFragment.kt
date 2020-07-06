@@ -747,7 +747,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.getNextProductListData(
                 shopId,
                 selectedEtalaseId,
-                page
+                page,
+                sortId
         )
     }
 

@@ -62,7 +62,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         listener?.showSearchBar()
         updateTouchListener(view)
-        if (savedInstanceState == null && !alreadyLoaded) {
+        if (!alreadyLoaded) {
             super.onViewCreated(view, savedInstanceState)
             showRecentSearch()
             setupRecyclerView()
@@ -156,7 +156,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     private fun observeSearchResult() {
-        viewModel.searchResult.observe(viewLifecycleOwner, Observer {
+        viewModel.searchResults.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             renderList(it, viewModel.hasNext)
         })

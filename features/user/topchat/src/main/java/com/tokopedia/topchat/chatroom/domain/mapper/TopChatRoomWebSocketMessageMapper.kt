@@ -47,7 +47,8 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 isRead = false,
                 isDummy = false,
                 isSender = !pojo.isOpposite,
-                sticker = stickerAttributes.stickerProfile
+                sticker = stickerAttributes.stickerProfile,
+                source = pojo.source
         )
     }
 
@@ -86,7 +87,8 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 !item.isOpposite,
                 voucherModel,
                 "",
-                item.blastId.toString()
+                item.blastId.toString(),
+                item.source
         )
     }
 
@@ -105,7 +107,8 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 replyTime = payload.message.timeStampUnixNano,
                 isSender = !payload.isOpposite,
                 message = payload.message.censoredReply,
-                startTime = payload.startTime
+                startTime = payload.startTime,
+                source = payload.source
         )
     }
 }

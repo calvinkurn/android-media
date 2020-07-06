@@ -148,7 +148,10 @@ data class Reply(
         val isRead: Boolean = true,
         @Expose
         @SerializedName("blastId")
-        val blastId: Int = 0
+        val blastId: Int = 0,
+        @Expose
+        @SerializedName("source")
+        val source: String = ""
 ) {
     fun isMultipleProductAttachment(nextItem: Reply?): Boolean {
         return isProductAttachment() && nextItem != null && nextItem.isProductAttachment()

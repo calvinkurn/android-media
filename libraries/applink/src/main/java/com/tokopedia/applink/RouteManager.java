@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 
 import java.util.List;
@@ -259,8 +260,8 @@ public class RouteManager {
             } else if (context instanceof Service) {
                 sourceClass = ((Service) context).getClass().getCanonicalName();
             }
-            Timber.w("P1#APPLINK_OPEN_ERROR#Router;source='%s';referrer='%s';uri='%s'",
-                    sourceClass, referrer, uriString);
+            Timber.w("P1#APPLINK_OPEN_ERROR#Router;source='%s';referrer='%s';uri='%s';journey='%s'",
+                    sourceClass, referrer, uriString, UserJourney.INSTANCE.getReadableJourneyActivity(5));
         } catch (Exception e) {
             Timber.e(e);
         }

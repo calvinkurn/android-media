@@ -115,7 +115,7 @@ object DynamicProductDetailMapper {
                 notifyMe = upcomingData.notifyMe
         ) ?: ComponentData()
 
-        val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media)
+        val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media, videos = mediaData.videos)
 
         return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia)
     }
