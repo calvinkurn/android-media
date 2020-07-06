@@ -36,6 +36,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_stc_statistic.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -67,6 +71,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val dateRangeBottomSheet by lazy { SelectDateRageBottomSheet(requireContext(), childFragmentManager) }
     private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
     private val defaultEndDate = Date()
+    private val job = Job()
+    private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
 
     private var tabItems = emptyList<Pair<String, String>>()
     private var isFirstLoad = true
@@ -200,15 +206,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             setOnScrollVertically {
                 showTabLayout()
                 selectTabOnScrolling()
+                requestVisibleWidgetsData()
             }
         }
         recyclerView.layoutManager = mLayoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 isUserScrolling = newState != RecyclerView.SCROLL_STATE_IDLE
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    requestVisibleWidgetsData()
-                }
             }
         })
 
@@ -281,15 +285,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun requestVisibleWidgetsData() {
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
         val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
-
-        val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
-        adapter.data.forEachIndexed { index, widget ->
-            if (index in firstVisible..lastVisible && !widget.isLoaded) {
-                visibleWidgets.add(widget)
+        coroutineScope.launch {
+            val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+            adapter.data.forEachIndexed { index, widget ->
+                if (index in firstVisible..lastVisible && !widget.isLoaded) {
+                    visibleWidgets.add(widget)
+                }
             }
-        }
 
-        if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+            if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+        }
     }
 
     private fun showTabLayout() = view?.run {
