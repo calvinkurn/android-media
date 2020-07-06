@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/shcTableShimmerHorLine0"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/shc_dimen_1dp"
+        android:background="@color/light_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/sahTableShimmerItem0"
+        android:layout_width="@dimen/shc_dimen_46dp"
+        android:layout_height="@dimen/shc_dimen_46dp"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:corners="10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shcTableShimmerHorLine0" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/sahTableShimmerItem1"
+        android:layout_width="@dimen/shc_dimen_156dp"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        app:corners="10"
+        app:layout_constraintStart_toEndOf="@+id/sahTableShimmerItem0"
+        app:layout_constraintTop_toTopOf="@+id/sahTableShimmerItem0" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/sahTableShimmerItem2"
+        android:layout_width="@dimen/shc_dimen_120dp"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:corners="10"
+        app:layout_constraintStart_toEndOf="@+id/sahTableShimmerItem0"
+        app:layout_constraintTop_toBottomOf="@+id/sahTableShimmerItem1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/sahTableShimmerItem3"
+        android:layout_width="@dimen/shc_dimen_36dp"
+        android:layout_height="@dimen/layout_lvl1"
+        app:corners="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sahTableShimmerItem1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
