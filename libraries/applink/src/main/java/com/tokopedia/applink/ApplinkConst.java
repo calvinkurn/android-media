@@ -314,6 +314,7 @@ public interface ApplinkConst {
         String CRACK = "tokopedia://gamification";
         String TAP_TAP_MANTAP = "tokopedia://gamification2";
         String DAILY_GIFT_BOX = "tokopedia://gamification_gift_daily";
+        String GIFT_TAP_TAP = "tokopedia://gamification_gift_60s";
     }
 
     interface Digital {
