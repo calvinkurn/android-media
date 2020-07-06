@@ -4,74 +4,44 @@
     android:id="@+id/shimmerTableWidgetWidget"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingTop="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:gravity="center"
+    android:padding="@dimen/layout_lvl2">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/sahTableShimmer0"
-        android:layout_width="@dimen/shc_dimen_120dp"
-        android:layout_height="@dimen/layout_lvl2"
+        android:id="@+id/shcTableLoader0"
+        android:layout_width="@dimen/shc_dimen_88dp"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/sahTableShimmer1"
-        android:layout_width="@dimen/shc_dimen_100dp"
+        android:id="@+id/shcTableLoader1"
+        android:layout_width="@dimen/shc_dimen_88dp"
         android:layout_height="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/layout_lvl3"
-        app:corners="8"
-        app:layout_constraintStart_toStartOf="@+id/sahTableShimmer0"
-        app:layout_constraintTop_toBottomOf="@id/sahTableShimmer0" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/sahTableShimmer2"
-        android:layout_width="@dimen/shc_dimen_100dp"
-        android:layout_height="@dimen/layout_lvl1"
-        app:corners="8"
+        app:corners="10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/sahTableShimmer1" />
+        app:layout_constraintTop_toTopOf="@+id/shcTableLoader0" />
 
-    <include
-        android:id="@+id/shcTableItemShimmer0"
-        layout="@layout/shc_partial_widget_table_loading_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <View
+        android:id="@+id/shcTableLoaderHorLine0"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/shc_dimen_1dp"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/Neutral_N75"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sahTableShimmer1" />
+        app:layout_constraintTop_toBottomOf="@+id/shcTableLoader0" />
 
-    <include
-        android:id="@+id/shcTableItemShimmer1"
-        layout="@layout/shc_partial_widget_table_loading_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shcTableLoader"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/shc_dimen_140dp"
+        android:layout_marginBottom="@dimen/shc_dimen_140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shcTableItemShimmer0" />
-
-    <include
-        android:id="@+id/shcTableItemShimmer2"
-        layout="@layout/shc_partial_widget_table_loading_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shcTableItemShimmer1" />
-
-    <include
-        android:id="@+id/shcTableItemShimmer3"
-        layout="@layout/shc_partial_widget_table_loading_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shcTableItemShimmer2" />
-
-    <include
-        android:id="@+id/shcTableItemShimmer4"
-        layout="@layout/shc_partial_widget_table_loading_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shcTableItemShimmer3" />
+        app:layout_constraintTop_toBottomOf="@+id/shcTableLoaderHorLine0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

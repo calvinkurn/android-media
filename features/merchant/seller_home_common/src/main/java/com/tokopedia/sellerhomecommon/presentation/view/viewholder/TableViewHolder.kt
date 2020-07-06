@@ -11,8 +11,8 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
-import kotlinx.android.synthetic.main.shc_widget_table.view.*
 import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
+import kotlinx.android.synthetic.main.shc_widget_table.view.*
 
 /**
  * Created By @ilhamsuaib on 10/06/20
@@ -30,27 +30,25 @@ class TableViewHolder(
 
     override fun bind(element: TableWidgetUiModel) {
         itemView.tvTableWidgetTitle.text = element.title
+        itemView.tvTableWidgetTitle.visible()
         itemView.commonWidgetErrorState.gone()
+
+        setupTooltip(element)
 
         val data: TableDataUiModel? = element.data
         when {
             data == null -> showLoadingState()
             data.error.isNotBlank() -> {
                 showErrorState()
-                setupTooltip(element)
                 listener.setOnErrorWidget(adapterPosition, element)
             }
-            else -> {
-                setOnSuccess(element)
-                setupTooltip(element)
-            }
+            else -> setOnSuccess(element)
         }
     }
 
     private fun setOnSuccess(element: TableWidgetUiModel) {
         with(itemView) {
             shcTableView.visible()
-            tvTableWidgetTitle.visible()
             commonWidgetErrorState.gone()
             shimmerTableWidgetWidget.gone()
 
@@ -61,9 +59,7 @@ class TableViewHolder(
     }
 
     private fun showLoadingState() = with(itemView) {
-        btnTableInformation.gone()
         shimmerTableWidgetWidget.visible()
-        tvTableWidgetTitle.gone()
         shcTableView.gone()
     }
 
