@@ -35,8 +35,8 @@ class DatePickerSheet {
             dateList?.setData(listUnify)
 
             dateList?.run {
-                this.onLoadFinish {
-                    this.setOnItemClickListener { parent, view, position, id ->
+                onLoadFinish {
+                    setOnItemClickListener { parent, view, position, id ->
                         setSelected(listUnify, position) {
                             if (position != CUSTOM_DATE) {
                                 onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
@@ -93,7 +93,7 @@ class DatePickerSheet {
 }
 
 fun ListUnify.setSelected(items: List<ListItemUnify>, position: Int, onChecked: (selectedItem: ListItemUnify) -> Any) = run {
-    val selectedItem = this.getItemAtPosition(position) as ListItemUnify
+    val selectedItem = getItemAtPosition(position) as ListItemUnify
     items.filter { it.getShownRadioButton()?.isChecked ?: false }
             .filterNot { it == selectedItem }
             .onEach { it.getShownRadioButton()?.isChecked = false }
