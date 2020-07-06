@@ -1,4 +1,4 @@
-package com.tokopedia.troubleshooter.notification.entity
+package com.tokopedia.troubleshooter.notification.data.entity
 
 import com.google.gson.annotations.SerializedName
 

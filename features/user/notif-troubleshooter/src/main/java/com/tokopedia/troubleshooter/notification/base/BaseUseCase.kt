@@ -26,7 +26,7 @@ abstract class BaseUseCase<in T, out P> {
     suspend inline fun <reified T> execute(
             query: String,
             repository: GraphqlRepository,
-            requestParams: RequestParams = RequestParams.EMPTY
+            requestParams: RequestParams
     ): T {
         val request = GraphqlRequest(query, T::class.java, requestParams.parameters)
         val response = repository.getReseponse(listOf(request))

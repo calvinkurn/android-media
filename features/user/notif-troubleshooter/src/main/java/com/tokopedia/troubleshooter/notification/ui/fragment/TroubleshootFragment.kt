@@ -1,6 +1,5 @@
 package com.tokopedia.troubleshooter.notification.ui.fragment
 
-import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -10,8 +9,9 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.fcmcommon.di.DaggerFcmComponent
+import com.tokopedia.fcmcommon.di.FcmModule
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
@@ -66,7 +66,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
             hideLoading()
             if (it.isSuccess == 1) {
                 onIconStatus(true)
-                updateToken()
+                viewModel.updateToken()
             } else {
                 onIconStatus(false)
             }
@@ -76,20 +76,6 @@ class TroubleshootFragment : BaseDaggerFragment() {
             hideLoading()
             onIconStatus(false)
         })
-
-        viewModel.updateToken.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(
-                    context,
-                    getString(R.string.success_update_token),
-                    Toast.LENGTH_LONG
-            ).show()
-        })
-    }
-
-    private fun updateToken() {
-        viewModel.getNewToken { newToken ->
-            viewModel.updateToken(newToken)
-        }
     }
 
     private fun onIconStatus(isSuccess: Boolean) {
@@ -121,10 +107,12 @@ class TroubleshootFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        val application = (activity as Activity).application as BaseMainApplication
-        val baseAppComponent = application.baseAppComponent
+        val fcmComponent = DaggerFcmComponent.builder()
+                .fcmModule(FcmModule(requireContext()))
+                .build()
+
         DaggerTroubleshootComponent.builder()
-                .baseAppComponent(baseAppComponent)
+                .fcmComponent(fcmComponent)
                 .troubleshootModule(TroubleshootModule(requireContext()))
                 .build()
                 .inject(this)

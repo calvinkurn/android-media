@@ -1,8 +1,8 @@
-package com.tokopedia.troubleshooter.notification.domain
+package com.tokopedia.troubleshooter.notification.data.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.troubleshooter.notification.base.BaseUseCase
-import com.tokopedia.troubleshooter.notification.entity.NotificationTroubleshoot
+import com.tokopedia.troubleshooter.notification.data.entity.NotificationTroubleshoot
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
