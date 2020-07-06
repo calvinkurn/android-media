@@ -1,64 +1,35 @@
 package com.tokopedia.oneclickcheckout.common.domain.mapper
 
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.STATUS_OK
-import com.tokopedia.oneclickcheckout.common.data.model.response.preference.*
-import com.tokopedia.oneclickcheckout.common.domain.model.preference.*
-import javax.inject.Inject
+import com.tokopedia.oneclickcheckout.common.data.model.*
+import com.tokopedia.oneclickcheckout.common.view.model.preference.*
 
-class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
+object PreferenceModelMapper {
 
-    override fun convertToDomainModel(response: PreferenceListGqlResponse): PreferenceListResponseModel {
-        if (response.data.status.equals(STATUS_OK, true)) {
-            val data = response.data.data
-            if (data.success == 1) {
-                val preferenceListResponseModel = PreferenceListResponseModel()
-                preferenceListResponseModel.messages = data.messages
-
-                val profilesModules = ArrayList<ProfilesItemModel>()
-                for (profile: ProfilesItem in data.profiles) {
-                    profilesModules.add(getProfilesItemModel(profile))
-                }
-
-                preferenceListResponseModel.profiles = profilesModules
-                preferenceListResponseModel.maxProfile = data.maxProfile
-
-                return preferenceListResponseModel
-            } else {
-                val errorMessage = data.messages
-                if (errorMessage.isNotEmpty()) {
-                    throw MessageErrorException(errorMessage[0])
-                } else {
-                    throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
-                }
+    fun convertToUIModel(data: PreferenceListData): PreferenceListResponseModel {
+        return PreferenceListResponseModel().apply {
+            messages = data.messages
+            val profilesModules = ArrayList<ProfilesItemModel>()
+            for (profile: ProfilesItem in data.profiles) {
+                profilesModules.add(getProfilesItemModel(profile))
             }
-        } else {
-            val errorMessage = response.data.errorMessage
-            if (errorMessage.isNotEmpty()) {
-                throw MessageErrorException(errorMessage[0])
-            } else {
-                throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
-            }
+            profiles = profilesModules
+            maxProfile = data.maxProfile
         }
     }
 
 
-    private fun getProfilesItemModel(profilesItem: ProfilesItem): ProfilesItemModel {
-        val profilesItemsModel = ProfilesItemModel()
-        profilesItemsModel.apply {
+    fun getProfilesItemModel(profilesItem: ProfilesItem): ProfilesItemModel {
+        return ProfilesItemModel().apply {
             profileId = profilesItem.profileId
             status = profilesItem.status
-            addressModel = profilesItem.address?.let { getAddressModel(it) }
-            paymentModel = profilesItem.payment?.let { getPaymentModel(it) }
-            shipmentModel = profilesItem.shipment?.let { getShipmentModel(it) }
+            addressModel = getAddressModel(profilesItem.address)
+            paymentModel = getPaymentModel(profilesItem.payment)
+            shipmentModel = getShipmentModel(profilesItem.shipment)
         }
-        return profilesItemsModel
     }
 
     private fun getAddressModel(address: Address): AddressModel {
-        val addressModel = AddressModel()
-        addressModel.apply {
+        return AddressModel().apply {
             addressId = address.addressId
             addressName = address.addressName
             addressStreet = address.addressStreet
@@ -73,22 +44,18 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
             receiverName = address.receiverName
             fullAddress = "${address.addressStreet}, ${address.districtName}, ${address.cityName}, ${address.provinceName} ${address.postalCode}"
         }
-        return addressModel
     }
 
     private fun getShipmentModel(shipment: Shipment): ShipmentModel {
-        val shipmentModel = ShipmentModel()
-        shipmentModel.apply {
+        return ShipmentModel().apply {
             serviceId = shipment.serviceId
             serviceDuration = shipment.serviceDuration
             serviceName = shipment.serviceName
         }
-        return shipmentModel
     }
 
     private fun getPaymentModel(payment: Payment): PaymentModel {
-        val paymentModel = PaymentModel()
-        paymentModel.apply {
+        return PaymentModel().apply {
             gatewayCode = payment.gatewayCode
             description = payment.description
             gatewayName = payment.gatewayName
@@ -96,6 +63,5 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
             url = payment.url
             metadata = payment.metadata
         }
-        return paymentModel
     }
 }
