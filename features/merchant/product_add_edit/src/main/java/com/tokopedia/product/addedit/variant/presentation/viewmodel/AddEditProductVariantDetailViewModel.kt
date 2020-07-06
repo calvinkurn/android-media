@@ -278,4 +278,15 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
+    fun validateSubmitDetailField(
+            variantDetailInputLayoutModels: List<VariantDetailInputLayoutModel>
+    ): Boolean {
+        return variantDetailInputLayoutModels.any {
+            val productPrice: BigInteger = it.price.replace(".", "").toBigIntegerOrNull().orZero()
+            val productStock: BigInteger = it.stock.replace(".", "").toBigIntegerOrNull().orZero()
+            productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() ||
+                    productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()
+        }
+    }
+
 }

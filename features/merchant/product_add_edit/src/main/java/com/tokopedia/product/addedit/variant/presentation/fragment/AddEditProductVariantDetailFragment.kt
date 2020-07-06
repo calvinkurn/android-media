@@ -310,14 +310,21 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitVariantInput() {
-        viewModel.updateProductInputModel()
-        viewModel.productInputModel.value?.apply {
-            val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
-            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+        val detailList = variantDetailFieldsAdapter?.getDetailInputLayoutList().orEmpty()
+        val isError = viewModel.validateSubmitDetailField(detailList)
 
-            val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
+        if (isError) {
+            variantDetailFieldsAdapter?.notifyDataSetChanged()
+        } else {
+            viewModel.updateProductInputModel()
+            viewModel.productInputModel.value?.apply {
+                val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+                SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+
+                val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
+            }
         }
     }
 

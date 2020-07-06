@@ -70,7 +70,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
             }
 
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                if (isPriceFieldEdited) {
+                if (isRendered && isPriceFieldEdited) {
                     // clean any kind of number formatting here
                     var priceInput = charSequence?.toString()?.replace(".", "") ?: ""
                     // remove scientific notation e.g. 20E7

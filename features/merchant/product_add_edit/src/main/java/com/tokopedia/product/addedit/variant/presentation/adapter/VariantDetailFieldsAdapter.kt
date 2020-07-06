@@ -59,6 +59,12 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         }
     }
 
+    fun getDetailInputLayoutList(): List<VariantDetailInputLayoutModel> {
+        return list.filterIsInstance<VariantDetailFieldsViewModel>().map {
+            it.variantDetailInputLayoutModel
+        }
+    }
+
     private fun notifyElement(adapterPosition: Int, element: Visitable<*>) {
         visitables[adapterPosition] = element
         notifyItemChanged(adapterPosition)
