@@ -4,23 +4,18 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
-
-import com.tokopedia.analyticsdebugger.debugger.data.source.ApplinkLogDao
-import com.tokopedia.analyticsdebugger.debugger.data.source.FpmLogDao
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDao
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
-import com.tokopedia.analyticsdebugger.debugger.data.source.IrisLogSaveDao
-import com.tokopedia.analyticsdebugger.debugger.data.source.IrisLogSendDao
+import com.tokopedia.analyticsdebugger.debugger.data.source.*
 
 /**
  * @author okasurya on 5/14/18.
  */
-@Database(entities = [GtmLogDB::class, FpmLogDB::class, ApplinkLogDB::class, IrisSaveLogDB::class, IrisSendLogDB::class, GtmErrorLogDB::class], version = 2)
+@Database(entities = [GtmLogDB::class, FpmLogDB::class, ApplinkLogDB::class, TopAdsLogDB::class, IrisSaveLogDB::class, IrisSendLogDB::class, GtmErrorLogDB::class], version = 5)
 abstract class TkpdAnalyticsDatabase : RoomDatabase() {
 
     abstract fun gtmLogDao(): GtmLogDao
     abstract fun fpmLogDao(): FpmLogDao
     abstract fun applinkLogDao(): ApplinkLogDao
+    abstract fun topAdsLogDao(): TopAdsLogDao
     abstract fun irisLogSaveDao(): IrisLogSaveDao
     abstract fun irisLogSendDao(): IrisLogSendDao
     abstract fun gtmErrorLogDao(): GtmErrorLogDao

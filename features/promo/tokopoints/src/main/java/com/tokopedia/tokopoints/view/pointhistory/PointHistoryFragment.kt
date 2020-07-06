@@ -17,8 +17,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
@@ -29,6 +27,7 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.layout_tp_server_error.view.*
 import kotlinx.android.synthetic.main.tp_content_point_history.*
 import kotlinx.android.synthetic.main.tp_content_point_history.view.*
@@ -148,8 +147,8 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
         view?.apply {
             data?.let { data ->
                 con_header.visibility = View.VISIBLE
-                text_my_points_value.text = CurrencyFormatUtil.convertPriceValue(data.reward.toDouble(), false)
-                text_loyalty_value.text = CurrencyFormatUtil.convertPriceValue(data.loyalty.toDouble(), false)
+                text_my_points_value.text = CurrencyHelper.convertPriceValue(data.reward.toDouble(), false)
+                text_loyalty_value.text = CurrencyHelper.convertPriceValue(data.loyalty.toDouble(), false)
                 mStrPointExpInfo = data.rewardExpiryInfo
                 mStrLoyaltyExpInfo = data.loyaltyExpiryInfo
                 container_main.displayedChild = CONTAINER_DATA
@@ -183,16 +182,21 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
     }
 
     private fun showHistoryExpiryBottomSheet(pointInfo: String?, loyaltyInfo: String?) {
-        val dialog = CloseableBottomSheetDialog.createInstanceRounded(activity)
+        val dialog = BottomSheetUnify()
         val view = layoutInflater.inflate(R.layout.tp_point_history_info, null, false)
         val textPoint = view.findViewById<TextView>(R.id.text_point_exp_info)
         val textLoyalty = view.findViewById<TextView>(R.id.text_loyalty_exp_info)
         textPoint.text = MethodChecker.fromHtml(pointInfo)
         textLoyalty.text = MethodChecker.fromHtml(loyaltyInfo)
         view.findViewById<View>(R.id.btn_help_history).setOnClickListener { v -> RouteManager.route(context, CommonConstant.WebLink.INFO_EXPIRED_POINTS, getString(R.string.tp_title_tokopoints)) }
-        dialog.setCustomContentView(view, getString(R.string.tp_title_history_bottomshet), false)
-        dialog.show()
-        view.findViewById<View>(R.id.close_button).setOnClickListener { v -> dialog.dismiss() }
+        dialog.apply {
+            setChild(view)
+            showCloseIcon = true
+            setCloseClickListener { dismiss() }
+            context?.resources?.getString(R.string.tp_title_history_bottomshet)?.let { setTitle(it) }
+        }
+
+        dialog.show(childFragmentManager, "")
     }
 
     companion object {

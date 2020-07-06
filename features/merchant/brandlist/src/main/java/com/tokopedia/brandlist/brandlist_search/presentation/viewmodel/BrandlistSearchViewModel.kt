@@ -7,6 +7,7 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreAllBrands
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistAllBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistPopularBrandUseCase
+import com.tokopedia.brandlist.common.BrandlistDispatcherProvider
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -19,8 +20,8 @@ import javax.inject.Inject
 class BrandlistSearchViewModel @Inject constructor(
         private val getBrandlistPopularBrandUseCase: GetBrandlistPopularBrandUseCase,
         private val getBrandlistAllBrandUseCase: GetBrandlistAllBrandUseCase,
-        dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher) {
+        private val dispatchers: BrandlistDispatcherProvider
+): BaseViewModel(dispatchers.ui()) {
 
     companion object {
         private const val INITIAL_OFFSET = 0
@@ -47,8 +48,20 @@ class BrandlistSearchViewModel @Inject constructor(
 
     private var firstLetterChanged = false
     private var totalBrandSize = 0
+    private var totalBrandOnTheChipHeader = 0
     var currentOffset = INITIAL_OFFSET
     var currentLetter = INITIAL_LETTER
+
+
+    private fun getRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
+        if (renderedBrands == 0) return ALL_BRANDS_REQUEST_SIZE
+        val remainingBrands = totalBrandSize - renderedBrands
+        return if (remainingBrands > ALL_BRANDS_REQUEST_SIZE) {
+            ALL_BRANDS_REQUEST_SIZE
+        } else {
+            remainingBrands
+        }
+    }
 
     fun loadInitialBrands() {
         searchAllBrands(
@@ -71,6 +84,23 @@ class BrandlistSearchViewModel @Inject constructor(
         )
     }
 
+    fun loadMoreBrands(brandFirstLetter: String){
+        val requestSize = getRequestSize(totalBrandSize, currentOffset)
+        searchAllBrands(
+                offset = currentOffset,
+                query = ALL_BRANDS_QUERY,
+                brandSize = requestSize,
+                sortType = ALPHABETIC_ASC_SORT,
+                firstLetter = brandFirstLetter
+        )
+    }
+
+    fun getTotalBrandSizeForChipHeader(): Int = totalBrandOnTheChipHeader
+    fun updateTotalBrandSizeForChipHeader(totalNumber: Int) {
+        this.totalBrandOnTheChipHeader = totalNumber
+    }
+
+    fun getTotalBrandSize(): Int = totalBrandSize
     fun updateTotalBrandSize(totalBrandSize: Int) {
         this.totalBrandSize = totalBrandSize
     }
@@ -79,20 +109,12 @@ class BrandlistSearchViewModel @Inject constructor(
         currentOffset += renderedBrands
     }
 
-    fun updateCurrentLetter() {
-        val firstLetter = getFirstLetter(totalBrandSize, currentOffset)
-        if (firstLetter != currentLetter) {
-            currentLetter = firstLetter
-            firstLetterChanged = true
-        }
-    }
+    fun getFirstLetterChanged(): Boolean = firstLetterChanged
 
-    fun updateEndlessRequestParameter() {
-        if (firstLetterChanged) {
-            totalBrandSize = 0
-            currentOffset = 0
-            firstLetterChanged = false
-        }
+    fun resetParams() {
+        firstLetterChanged = false
+        totalBrandSize = 0
+        currentOffset = INITIAL_OFFSET
     }
 
     fun searchBrand(
@@ -102,7 +124,7 @@ class BrandlistSearchViewModel @Inject constructor(
             firstLetter: String
     ) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(CATEGORY_ID, offset,
                         query, brandSize, POPULARITY_SORT, firstLetter)
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()
@@ -121,7 +143,7 @@ class BrandlistSearchViewModel @Inject constructor(
     ) {
         val categoryIdString = categoryIds.toString().replace(" ","")
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 getBrandlistPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase.
                         createParams(
                                 userId.toInt(),
@@ -146,7 +168,7 @@ class BrandlistSearchViewModel @Inject constructor(
             firstLetter: String
     ) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(CATEGORY_ID, offset,
                         query, brandSize, sortType, firstLetter)
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()
@@ -161,7 +183,7 @@ class BrandlistSearchViewModel @Inject constructor(
 
     fun getTotalBrands() {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(CATEGORY_ID, INITIAL_OFFSET,
                         ALL_BRANDS_QUERY, 0, ALPHABETIC_ASC_SORT, "")
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()
@@ -172,29 +194,5 @@ class BrandlistSearchViewModel @Inject constructor(
         }) {
             _brandlistAllBrandTotal.value = Fail(it)
         }
-    }
-
-    fun resetParams() {
-        firstLetterChanged = false
-        totalBrandSize = 0
-        currentOffset = INITIAL_OFFSET
-        currentLetter = INITIAL_LETTER
-    }
-
-    private fun getRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
-        if (renderedBrands == 0) return ALL_BRANDS_REQUEST_SIZE
-        val remainingBrands = totalBrandSize - renderedBrands
-        return if (remainingBrands > ALL_BRANDS_REQUEST_SIZE) {
-            ALL_BRANDS_REQUEST_SIZE
-        } else {
-            remainingBrands
-        }
-    }
-
-    private fun getFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
-        return if (totalBrandSize == currentOffset) {
-            val newLetter = currentLetter + 1
-            newLetter
-        } else currentLetter
     }
 }

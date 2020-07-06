@@ -68,7 +68,23 @@ data class ShopInfo(
 
         @SerializedName("shopHomeType")
         @Expose
-        val shopHomeType: String = ""
+        val shopHomeType: String = "",
+
+        @SerializedName("os")
+        @Expose
+        val os: Os = Os(),
+
+        @SerializedName("gold")
+        @Expose
+        val gold: Gold = Gold(),
+
+        @SerializedName("activeProduct")
+        @Expose
+        val activeProduct: Int = 0,
+
+        @SerializedName("shopStats")
+        @Expose
+        val shopStats: ShopStats = ShopStats()
 
 ) {
     fun mapToShopInfoData(): ShopInfoData {
@@ -128,7 +144,11 @@ data class ShopInfo(
 
         @SerializedName("statusTitle")
         @Expose
-        val statusTitle: String = ""
+        val statusTitle: String = "",
+
+        @SerializedName("isIdle")
+        @Expose
+        val isIdle: Boolean = false
     )
 
     data class FavoriteData(
@@ -179,13 +199,27 @@ data class ShopInfo(
 
             @SerializedName("until")
             @Expose
-            val closeUntil: String = ""
+            val closeUntil: String = "",
+
+            @SerializedName("detail")
+            @Expose
+            val closeDetail: CloseDetail = CloseDetail()
+    )
+
+    data class CloseDetail(
+            @SerializedName("openDate")
+            @Expose
+            val openDateUnix: String = ""
     )
 
     data class CreatedInfo(
             @SerializedName("openSince")
             @Expose
-            val openSince: String = ""
+            val openSince: String = "",
+
+            @SerializedName("shopCreated")
+            @Expose
+            val shopCreated: String = ""
     )
 
     data class TopContent(
@@ -222,5 +256,19 @@ data class ShopInfo(
             @SerializedName("fax")
             @Expose
             val fax: String = ""
+    )
+
+    data class ShopStats(
+            @SerializedName("productSold")
+            @Expose
+            val productSold: String = "",
+
+            @SerializedName("totalTx")
+            @Expose
+            val totalTx: String = "",
+
+            @SerializedName("totalShowcase")
+            @Expose
+            val totalShowcase: String = ""
     )
 }

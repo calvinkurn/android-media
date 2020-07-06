@@ -18,7 +18,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.goldMerchantResource)
@@ -29,6 +28,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.applink)
+
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network

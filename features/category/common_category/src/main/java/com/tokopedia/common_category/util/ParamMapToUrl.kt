@@ -8,7 +8,7 @@ import java.util.ArrayList
 
 class ParamMapToUrl {
 
-    companion object{
+    companion object {
         @JvmStatic
         fun <T> generateUrlParamString(paramMap: Map<String, T>?): String {
             if (paramMap == null) {
@@ -32,11 +32,7 @@ class ParamMapToUrl {
             } catch (e: UnsupportedEncodingException) {
                 e.printStackTrace()
             }
-
         }
     }
-
-
-
 }
 

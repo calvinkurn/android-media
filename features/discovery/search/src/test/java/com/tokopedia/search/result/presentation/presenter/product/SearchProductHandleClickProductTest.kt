@@ -1,24 +1,27 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.topAdsClickUrl
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.topAdsImpressionUrl
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 
 internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixtures() {
 
+    private val adapterPosition = 1
+    private val userId = "12345678"
+    private val capturedProductItemViewModel = slot<ProductItemViewModel>()
+
     @Test
     fun `Handle onProductClick with null ProductItemViewModel`() {
-        `When handle product click`(null, -1)
+        `When handle product click`(null)
 
         `Then verify view not doing anything`()
     }
 
-    private fun `When handle product click`(productItemViewModel: ProductItemViewModel?, position: Int) {
-        productListPresenter.onProductClick(productItemViewModel, position)
+    private fun `When handle product click`(productItemViewModel: ProductItemViewModel?) {
+        productListPresenter.onProductClick(productItemViewModel, adapterPosition)
     }
 
     private fun `Then verify view not doing anything`() {
@@ -35,22 +38,28 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             it.isTopAds = true
             it.topadsImpressionUrl = topAdsImpressionUrl
             it.topadsClickUrl = topAdsClickUrl
+            it.position = 1
         }
-        val position = 0
 
-        `When handle product click`(productItemViewModel, position)
+        `When handle product click`(productItemViewModel)
 
-        `Then verify view interaction for Top Ads Product`(productItemViewModel, position)
+        `Then verify view interaction for Top Ads Product`(productItemViewModel)
+        `Then verify position is correct`(productItemViewModel)
     }
 
-    private fun `Then verify view interaction for Top Ads Product`(productItemViewModel: ProductItemViewModel, position: Int) {
+    private fun `Then verify view interaction for Top Ads Product`(productItemViewModel: ProductItemViewModel) {
         verify {
             productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsClickUrl)
-            productListView.sendTopAdsGTMTrackingProductClick(productItemViewModel, position)
-            productListView.routeToProductDetail(productItemViewModel, position)
+            productListView.sendTopAdsGTMTrackingProductClick(capture(capturedProductItemViewModel))
+            productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
 
         confirmVerified(productListView)
+    }
+
+    private fun `Then verify position is correct`(productItemViewModel: ProductItemViewModel) {
+        val product = capturedProductItemViewModel.captured
+        assert(product.position == productItemViewModel.position)
     }
 
     @Test
@@ -62,25 +71,53 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             it.categoryID = 13
             it.isTopAds = false
         }
-        val position = 0
-        val userId = "12345678"
 
-        `Given user session data`(userId)
+        `Given user session data`()
 
-        `When handle product click`(productItemViewModel, position)
+        `When handle product click`(productItemViewModel)
 
-        `Then verify view interaction is correct for non Top Ads Product`(productItemViewModel, position, userId)
+        `Then verify view interaction is correct for non Top Ads Product`(productItemViewModel)
     }
 
-    private fun `Given user session data`(userId: String) {
+    private fun `Given user session data`() {
         every { userSession.isLoggedIn } returns true
         every { userSession.userId } returns userId
     }
 
-    private fun `Then verify view interaction is correct for non Top Ads Product`(productItemViewModel: ProductItemViewModel, position: Int, userId: String) {
+    private fun `Then verify view interaction is correct for non Top Ads Product`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendGTMTrackingProductClick(productItemViewModel, position, userId)
-            productListView.routeToProductDetail(productItemViewModel, position)
+            productListView.sendGTMTrackingProductClick(productItemViewModel, userId)
+            productListView.routeToProductDetail(productItemViewModel, adapterPosition)
+        }
+
+        confirmVerified(productListView)
+    }
+
+    @Test
+    fun `Handle onProductClick for organic ads product`() {
+        val productItemViewModel = ProductItemViewModel().also {
+            it.productID = "12345"
+            it.productName = "Pixel 4"
+            it.price = "Rp100.000.000"
+            it.categoryID = 13
+            it.isTopAds = false
+            it.isOrganicAds = true
+            it.topadsImpressionUrl = topAdsImpressionUrl
+            it.topadsClickUrl = topAdsClickUrl
+        }
+
+        `Given user session data`()
+
+        `When handle product click`(productItemViewModel)
+
+        `Then verify view interaction is correct for organic Ads Product`(productItemViewModel)
+    }
+
+    private fun `Then verify view interaction is correct for organic Ads Product`(productItemViewModel: ProductItemViewModel) {
+        verify {
+            productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsClickUrl)
+            productListView.sendGTMTrackingProductClick(productItemViewModel, userId)
+            productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
 
         confirmVerified(productListView)

@@ -20,6 +20,7 @@ object ProductDetailCommonConstant{
     const val FORCE_REFRESH = "forceRefresh"
     const val PARAM_PRODUCT_IDS = "productIds"
     const val PARAM_WAREHOUSE_ID = "warehouseID"
+    const val PARAM_SHOP_CREDIBILITY_EXIST = "shopCredibilityExist"
     const val PARAM_CART_TYPE = "cartTypeParam"
     const val PARAM_INCLUDE_WAREHOUSE = "includeWarehouse"
     const val PARAM_IS_VARIANT = "isVariant"
@@ -44,7 +45,7 @@ object ProductDetailCommonConstant{
 
     val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
             "last_active", "location", "terms", "allow_manage",
-            "is_owner", "other-goldos", "status")
+            "is_owner", "other-goldos", "status", "closed_info", "create_info", "active_product", "shopstats")
 
     const val SHOP_ID_PARAM = "shopId"
     const val PRODUCT_ID_PARAM = "productId"
@@ -79,4 +80,7 @@ object ProductDetailCommonConstant{
     const val VALUE_TEASER_TRACKING_REGISTER = "on"
     const val VALUE_TEASER_TRACKING_UNREGISTER = "off"
     const val VALUE_TEASER_SOURCE = "pdp"
+
+    const val PARAM_APPLINK_SHOP_ID = "shop_id"
+    const val PARAM_APPLINK_PRODUCT_ID = "product_id"
 }

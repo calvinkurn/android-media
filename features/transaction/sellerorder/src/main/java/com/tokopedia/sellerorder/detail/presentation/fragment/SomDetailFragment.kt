@@ -161,7 +161,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
     private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
     private var rejectOrderResponse = SomRejectOrder.Data.RejectOrder()
-    private var editAwbResponse = SomEditAwbResponse.Data()
+    private var successEditAwbResponse = SomEditAwbResponse.Data()
+    private var failEditAwbResponse = SomEditAwbResponse.Error()
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
@@ -557,7 +558,15 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         if (detailResponse.flagOrderMeta.flagFreeShipping) {
             showFreeShippingAcceptOrderDialog(buttonResp)
         } else {
-            showAcceptOrderDialog(buttonResp)
+            acceptOrder(buttonResp)
+        }
+    }
+
+    private fun acceptOrder(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+        val mapParam = buttonResp.param.convertStrObjToHashMap()
+        if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
+            somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
+                    mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
         }
     }
 
@@ -629,29 +638,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 setChild(dialogView)
-            }
-            dialogUnify.show()
-        }
-    }
-
-    private fun showAcceptOrderDialog(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
-        view?.context?.let {
-            val dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
-                setTitle(buttonResp.title)
-                setDescription(buttonResp.content)
-                setPrimaryCTAText(getString(R.string.terima_pesanan))
-                setPrimaryCTAClickListener {
-                    val mapParam = buttonResp.param.convertStrObjToHashMap()
-                    if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
-                        somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
-                            mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
-                        dismiss()
-                    }
-                }
-                setSecondaryCTAText(getString(R.string.kembali))
-                setSecondaryCTAClickListener {
-                    dismiss()
-                }
             }
             dialogUnify.show()
         }
@@ -824,6 +810,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             btn_cancel_order_canceled?.setOnClickListener { bottomSheetUbahResi.dismiss() }
             btn_cancel_order_confirmed?.text = getString(R.string.change_no_resi_btn_ubah)
             btn_cancel_order_confirmed?.setOnClickListener {
+                secondaryBottomSheet?.dismiss()
                 bottomSheetUbahResi.dismiss()
                 doEditAwb(tf_cancel_notes?.textFieldInput?.text.toString())
             }
@@ -851,15 +838,21 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         somDetailViewModel.editRefNumResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    editAwbResponse = it.data
-                    if (editAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
-                        showCommonToaster(editAwbResponse.mpLogisticEditRefNum.listMessage.first())
+                    successEditAwbResponse = it.data
+                    if (successEditAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
+                        showCommonToaster(successEditAwbResponse.mpLogisticEditRefNum.listMessage.first())
+                        loadDetail()
                     } else {
                         showToasterError(getString(R.string.global_error), view)
                     }
                 }
                 is Fail -> {
-                    showToasterError(getString(R.string.global_error), view)
+                    failEditAwbResponse.message = it.throwable.message.toString()
+                    if(failEditAwbResponse.message.isNotEmpty()) {
+                        showToasterError(failEditAwbResponse.message, view)
+                    } else {
+                        showToasterError(getString(R.string.global_error), view)
+                    }
                 }
             }
         })

@@ -6,13 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.search.presentation.model.FlightFareModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.searchV4.domain.FlightComboKeyUseCase
 import com.tokopedia.flight.searchV4.domain.FlightSearchJouneyByIdUseCase
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.searchV4.presentation.model.SearchErrorEnum
+import com.tokopedia.flight.searchV4.presentation.model.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -74,7 +70,7 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
                 priceModel.comboKey = comboKey
 
                 if (isValidReturnJourney(departureJourney, journeyModel)) {
-                    priceModel.returnPrice = buildFare(journeyModel.fare, true)
+                    priceModel.returnPrice = buildFare(journeyModel.fare)
                     selectedReturnJourney = journeyModel
                     mutableSearchErrorStringId.postValue(SearchErrorEnum.NO_ERRORS)
                 } else {
@@ -99,7 +95,7 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
             val comboKey = flightComboKeyUseCase.execute(selectedFlightDepartureId, selectedId)
 
             flightAnalytics.eventSearchProductClickFromDetail(flightSearchPassData, returnJourney)
-            priceModel.returnPrice = buildFare(returnJourney.fare, true)
+            priceModel.returnPrice = buildFare(returnJourney.fare)
             priceModel.comboKey = comboKey
 
             if (isValidReturnJourney(departureJourney, returnJourney)) {
@@ -114,38 +110,21 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
         }
     }
 
-    private fun buildFare(journeyFare: FlightFareModel, isNeedCombo: Boolean): FlightFareModel =
-            if (isNeedCombo) {
-                FlightFareModel(
-                        journeyFare.adult,
-                        journeyFare.adultCombo,
-                        journeyFare.child,
-                        journeyFare.childCombo,
-                        journeyFare.infant,
-                        journeyFare.infantCombo,
-                        journeyFare.adultNumeric,
-                        journeyFare.adultNumericCombo,
-                        journeyFare.childNumeric,
-                        journeyFare.childNumericCombo,
-                        journeyFare.infantNumeric,
-                        journeyFare.infantNumericCombo
-                )
-            } else {
-                FlightFareModel(
-                        journeyFare.adult,
-                        "",
-                        journeyFare.child,
-                        "",
-                        journeyFare.infant,
-                        "",
-                        journeyFare.adultNumeric,
-                        0,
-                        journeyFare.childNumeric,
-                        0,
-                        journeyFare.infantNumeric,
-                        0
-                )
-            }
+    private fun buildFare(journeyFare: FlightFareModel): FlightFareModel =
+            FlightFareModel(
+                    journeyFare.adult,
+                    journeyFare.adultCombo,
+                    journeyFare.child,
+                    journeyFare.childCombo,
+                    journeyFare.infant,
+                    journeyFare.infantCombo,
+                    journeyFare.adultNumeric,
+                    journeyFare.adultNumericCombo,
+                    journeyFare.childNumeric,
+                    journeyFare.childNumericCombo,
+                    journeyFare.infantNumeric,
+                    journeyFare.infantNumericCombo
+            )
 
     private fun isValidReturnJourney(departureModel: FlightJourneyModel, returnModel: FlightJourneyModel): Boolean {
         if (departureModel.routeList != null && returnModel.routeList != null &&

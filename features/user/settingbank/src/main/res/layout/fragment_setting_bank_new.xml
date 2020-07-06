@@ -27,7 +27,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/add_account_button" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/add_account_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
@@ -43,7 +43,6 @@
         android:textColor="@color/sbank_btn_text_color"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:typographyType="heading_5"
         tools:visibility="visible" />
 
     <ProgressBar

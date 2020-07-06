@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="margin_2dp">2dp</dimen>
+    <dimen name="top_margin_default">12dp</dimen>
+    <dimen name="margin_default">16dp</dimen>
+    <dimen name="image_width_brand">90dp</dimen>
+    <dimen name="margin_sm">15dp</dimen>
+    <dimen name="fonts">14sp</dimen>
+    <dimen name="font_medium">16sp</dimen>
+    <dimen name="fontvs">12sp</dimen>
+    <dimen name="margin_small">10dp</dimen>
+
+</resources>

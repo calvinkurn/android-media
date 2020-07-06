@@ -22,6 +22,8 @@ class ComponentViewHolder(itemView: View) : BaseViewHolder(itemView) {
     private val button = itemView.findViewById<UnifyButton>(R.id.buttonPageDynamicOnbaording)
 
     fun bindTitle(textDataModel: TitleUiModel) {
+        title.minLines = 3
+        title.maxLines = 3
         title.apply {
             text = textDataModel.text
             setVisible(textDataModel.visibility)

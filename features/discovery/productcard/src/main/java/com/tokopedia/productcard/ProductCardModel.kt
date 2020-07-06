@@ -33,7 +33,12 @@ data class ProductCardModel (
         val hasThreeDots: Boolean = false,
         val labelGroupList: List<LabelGroup> = listOf(),
         val hasAddToCartButton: Boolean = false,
-        val hasRemoveFromWishlistButton: Boolean = false
+        val hasRemoveFromWishlistButton: Boolean = false,
+        val pdpViewCount: String = "",
+        val stockBarLabel: String = "",
+        val stockBarPercentage: Int = 0,
+        val isOutOfStock: Boolean = false,
+        val addToCardText: String = ""
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -92,4 +97,8 @@ data class ProductCardModel (
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0
     }
+
+    fun isShowFreeOngkirBadge() = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
+
+    fun isShowShopBadge() = shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() } != null && shopLocation.isNotEmpty()
 }

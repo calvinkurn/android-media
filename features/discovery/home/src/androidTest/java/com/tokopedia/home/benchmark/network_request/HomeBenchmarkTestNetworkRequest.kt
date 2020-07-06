@@ -11,11 +11,9 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeRoomData
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.junit.Rule
 import org.junit.Test
 import kotlin.coroutines.CoroutineContext
@@ -47,7 +45,8 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
     @Test
     fun benchmark_HomeDataMapper_mapToHomeViewModel() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val homeVisitableFactory = HomeVisitableFactoryImpl(null)
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig)
         val trackingQueue = TrackingQueue(context)
         val homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue)
 

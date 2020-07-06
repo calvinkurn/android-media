@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.product.detail.R
-import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -103,6 +103,13 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL)
+    fun provideRawDiscussionMostHelpful(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_talk_discussion_most_helpful)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_DISPLAY_ADS)
     fun provideRawDisplayAds(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.get_topads_query)
@@ -120,6 +127,27 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_SHOP)
     fun provideGetShop(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_info)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_SHOP_SPEED)
+    fun provideGetShopSpeed(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_speed)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_SHOP_CHAT_SPEED)
+    fun provideGetShopChatSpeed(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_chat_speed)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_SHOP_RATING)
+    fun provideGetShopRatingQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_rating)
 
     @ProductDetailScope
     @Provides
@@ -203,6 +231,13 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_TICKER)
+    fun provideQueryTicker(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_sticky_login_query)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
     fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
@@ -242,7 +277,6 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
     fun provideGetCartType(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
-
 
     @ProductDetailScope
     @Provides

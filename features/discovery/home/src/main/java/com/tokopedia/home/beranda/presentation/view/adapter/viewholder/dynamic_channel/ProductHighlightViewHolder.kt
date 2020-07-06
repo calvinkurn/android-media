@@ -8,9 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.FreeOngkir
 import com.tokopedia.home.beranda.helper.DateHelper
 import com.tokopedia.home.beranda.helper.glide.FPM_DEALS_WIDGET_PRODUCT_IMAGE
-import com.tokopedia.home.beranda.helper.glide.loadImageRounded
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.util.setGradientBackground
@@ -94,15 +95,34 @@ class ProductHighlightViewHolder(
                 setDealsProductImage(it.imageUrl)
                 setDealsProductDiscountLabel(it.discount)
                 setDealsProductStockbar(it.soldPercentage, it.label)
+                setDealsProductFreeOngkir(it.freeOngkir)
                 setDealsProductViewCount(it.productViewCountFormatted)
             }
+        }
+    }
+
+    private fun setDealsProductFreeOngkir(freeOngkir: FreeOngkir) {
+        if (freeOngkir.isActive) {
+            itemView.imageFreeOngkirPromo?.visibility = View.VISIBLE
+            itemView.imageFreeOngkirPromo?.loadImage(freeOngkir.imageUrl)
         }
     }
 
     private fun setDealsProductCard(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
         itemView.deals_product_card.setOnClickListener {
             listener.onSectionItemClicked(grid.applink)
-            ProductHighlightTracking.sendRecommendationListClick(channel, grid, adapterPosition)
+            ProductHighlightTracking.sendRecommendationListClick(
+                    channelId = channel.id,
+                    headerName = channel.header.name,
+                    campaignCode = channel.campaignCode,
+                    persoType = channel.persoType,
+                    categoryId = channel.categoryID,
+                    gridFreeOngkirIsActive = grid.freeOngkir.isActive,
+                    gridId = grid.id,
+                    gridName = grid.name,
+                    gridPrice = grid.price,
+                    position = adapterPosition
+            )
         }
     }
 

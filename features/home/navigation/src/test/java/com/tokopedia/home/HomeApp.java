@@ -34,6 +34,11 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
+    public void doLogoutAccount(Context activity) {
+
+    }
+
+    @Override
     public Intent getManageAddressIntent(Context context) {
         return null;
     }
@@ -45,11 +50,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
 
     @Override
     public void goToManageShopProduct(Context context) {
-
-    }
-
-    @Override
-    public void goToManageCreditCard(Context context) {
 
     }
 
@@ -69,6 +69,16 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
+    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
+        return false;
+    }
+
+    @Override
+    public void sendOpenHomeEvent() {
+
+    }
+
+    @Override
     public Intent getTrainOrderListIntent(Context context) {
         return null;
     }
@@ -84,12 +94,27 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
+    public boolean isEnableInterestPick() {
+        return false;
+    }
+
+    @Override
+    public Fragment getHomeFragment(boolean scroll) {
+        return null;
+    }
+
+    @Override
     public Fragment getFeedPlusFragment(Bundle bundle) {
         return new Fragment();
     }
 
     @Override
-    public Intent getInboxTicketCallingIntent(Context context) {
+    public Fragment getCartFragment(Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public Fragment getOfficialStoreFragment(Bundle bundle) {
         return null;
     }
 
@@ -109,6 +134,11 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
+    public Intent getHomeIntent(Context context) {
+        return null;
+    }
+
+    @Override
     public void onForceLogout(Activity activity) {
 
     }
@@ -120,6 +150,11 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
 
     @Override
     public void showMaintenancePage() {
+
+    }
+
+    @Override
+    public void sendForceLogoutAnalytics(Response response, boolean b, boolean b1) {
 
     }
 
@@ -154,12 +189,27 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
+    public boolean isAllowLogOnChuckInterceptorNotification() {
+        return false;
+    }
+
+    @Override
+    public void onNewIntent(Context context, Intent intent) {
+
+    }
+
+    @Override
     public FingerprintModel getFingerprintModel() {
         return mock(FingerprintModel.class);
     }
 
     @Override
     public void doRelogin(String newAccessToken) {
+
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
 }

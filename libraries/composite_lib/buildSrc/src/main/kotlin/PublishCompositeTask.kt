@@ -35,7 +35,8 @@ open class PublishCompositeTask : DefaultTask() {
         println("Dep Hash Set: $dependenciesProjectNameHashSet")
         println("Project to Artifact: ${projectToArtifactInfoList.map {
             it.key + "-" + it.value.groupId + ":" + it.value.artifactId +
-                ":" + it.value.versionName + "/" + it.value.maxCurrentVersionName
+                ":" + it.value.versionName + "/" + it.value.maxCurrentVersionName+ 
+                "/" + it.value.increaseVersionString
         }}")
         println("Artifact to Project: $artifactIdToProjectNameList")
         println("Module to Publish: $moduleToPublishList")
@@ -125,6 +126,7 @@ open class PublishCompositeTask : DefaultTask() {
             }
         }
         successPublish = successModuleList.isNotEmpty() && failModuleList.isEmpty()
+        deleteBackup()
     }
 
     private fun backupRootDependencyLibraryFile() {
@@ -204,6 +206,19 @@ open class PublishCompositeTask : DefaultTask() {
         }
     }
 
+    private fun deleteBackup() {
+        val backupFile = File(LIBRARIES_BACKUP_PATH)
+        if (backupFile.exists()) {
+            backupFile.delete()
+        }
+        changedModuleList.forEach {
+            val backup = File("${it}/.build_backup")
+            if (backup.exists()) {
+                backup.delete()
+            }
+        }
+    }
+
     private fun returnBackupForRootDependencyLibraries() {
         val reader = File(LIBRARIES_PATH)
         val backup = File(LIBRARIES_BACKUP_PATH)
@@ -220,24 +235,44 @@ open class PublishCompositeTask : DefaultTask() {
 
         val outputFile = File("$module/build/outputs/aar/$module.aar")
         val outputFile2 = File("$module/build/outputs/aar/$module-debug.aar")
+        val outputFile3 = File("$module/build/outputs/aar/$module-release.aar")
         if (outputFile.exists()) {
             outputFile.delete()
         }
         if (outputFile2.exists()) {
             outputFile2.delete()
         }
-        
-        val gitCommandAssembleString = "./gradlew assembleDebug  -p $module --stacktrace"
-        val gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        if (outputFile3.exists()) {
+            outputFile3.delete()
+        }
+
+        var gitCommandAssembleString = ""
+        var gitCommandAssembleResultString = ""
+        try {
+            gitCommandAssembleString = "gradle assembleDebug  -p $module --stacktrace"
+            gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        } catch (e:java.lang.Exception) {
+            gitCommandAssembleString = "../.././gradlew assembleDebug  -p $module --stacktrace"
+            gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        }
+
         if (!gitCommandAssembleResultString.contains("BUILD SUCCESSFUL")) {
             return false
         }
         if (outputFile2.exists()) {
             outputFile2.copyTo(outputFile, true)
+            outputFile2.copyTo(outputFile3, true)
         }
 
-        val gitCommandString = "./gradlew artifactoryPublish  -p $module --stacktrace"
-        val gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        var gitCommandString = ""
+        var gitResultLog = ""
+        try {
+            gitCommandString = "gradle artifactoryPublish  -p $module --stacktrace"
+            gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        } catch (e:java.lang.Exception) {
+            gitCommandString = "../.././gradlew artifactoryPublish  -p $module --stacktrace"
+            gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        }
         print(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")
     }

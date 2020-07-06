@@ -24,8 +24,8 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
@@ -335,7 +335,8 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
+                    startActivity(intent)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
@@ -433,7 +434,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         val view = LayoutInflater.from(context)
                 .inflate(R.layout.layout_tp_network_error_large, null, false)
         val img = view.findViewById<ImageView>(R.id.img_error)
-        img.setImageResource(R.drawable.ic_tp_error_redeem_full)
         val titleText = view.findViewById<TextView>(R.id.text_title_error)
         if (title == null || title.isEmpty()) {
             titleText.setText(R.string.tp_label_too_many_access)

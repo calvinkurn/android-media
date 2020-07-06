@@ -1,5 +1,6 @@
 package com.tokopedia.plugin
 
+import getCommitId
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -29,7 +30,7 @@ open class PrintLatestVersionTask : DefaultTask() {
             val projectName = artifactIdToProjectNameList[key] ?: ""
             if (successModuleList.contains(projectName)) {
                 //instead writing for the original version, we overwrite with the success published version
-                val commitId = getCommitId(projectName)
+                val commitId = getCommitId(project, projectName)
                 outputVersionFile.appendText("$key#${projectToArtifactInfoList[projectName]?.increaseVersionString}#${commitId}\n")
             } else {
                 outputVersionFile.appendText("$key#${value.versionName}#${value.commidId}\n")
@@ -42,14 +43,10 @@ open class PrintLatestVersionTask : DefaultTask() {
             val artifactInfo = projectToArtifactInfoList[successModule]
             val artifactId = artifactInfo?.artifactId
             if (!moduleLatestVersionMap.contains(artifactId)) {
-                val commitId = getCommitId(successModule)
+                val commitId = getCommitId(project, successModule)
                 outputVersionFile.appendText("$artifactId#${artifactInfo?.increaseVersionString}#${commitId}\n")
             }
         }
     }
 
-    fun getCommitId (projectName:String):String {
-        val gitLog = "git log -1 --pretty=format:\'%h\' ${projectName}"
-        return gitLog.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
-    }
 }

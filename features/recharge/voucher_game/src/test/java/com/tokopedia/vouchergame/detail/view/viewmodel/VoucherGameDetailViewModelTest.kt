@@ -58,7 +58,7 @@ class VoucherGameDetailViewModelTest {
         )
         val voucherGameDetailData = VoucherGameDetailData.Response(VoucherGameDetailData(
                 enquiryFields = listOf(CatalogProductInput("1",
-                        dataCollections = listOf(CatalogProductInput.DataCollection("value")),
+                        dataCollections = listOf(CatalogProductInput.DataCollection(name = "name")),
                         validations = listOf(CatalogProductInput.Validation(1)))),
                 product = VoucherGameProductData("data", dataCollections = dataCollection)
         ))
@@ -79,7 +79,7 @@ class VoucherGameDetailViewModelTest {
         assert(response.enquiryFields.isNotEmpty())
         assertEquals(response.enquiryFields[0].id, "1")
         assert(response.enquiryFields[0].dataCollections.isNotEmpty())
-//        assertEquals(response.enquiryFields[0].dataCollections[0].value, "value")
+        assertEquals(response.enquiryFields[0].dataCollections[0].name, "name")
         assert(response.enquiryFields[0].validations.isNotEmpty())
         assertEquals(response.enquiryFields[0].validations[0].id, 1)
 

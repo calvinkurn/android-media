@@ -28,4 +28,18 @@ object Query {
             "    }\n" +
             "  }\n" +
             "}"
+
+    const val GET_PRODUCT_INCENTIVE_OVO = "query getProductRevIncentiveOvo{\n" +
+            "\tproductrevIncentiveOvo{\n" +
+            "    ticker{\n" +
+            "      title\n" +
+            "      subtitle\n" +
+            "    }\n" +
+            "    title\n" +
+            "    subtitle\n" +
+            "    description\n" +
+            "    numbered_list\n" +
+            "    cta_text\n" +
+            "  }\n" +
+            "}\n"
 }

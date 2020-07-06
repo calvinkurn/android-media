@@ -27,8 +27,8 @@
     <string name="pm_label_button_score_submit">Tingkatkan Skor Toko</string>
     <string name="pm_label_button_close">Tutup</string>
 
-    <string name="pm_label_score_verification_header">Yaah, skor performa tokomu kurang dari \n75 poin</string>
-    <string name="pm_label_score_verification_desc">Segera tingkatkan skor performa tokomu minimum 75 untuk upgrade jadi Power Merchant.</string>
+    <string name="pm_label_score_verification_header">Yaah, pengajuan kamu belum berhasil</string>
+    <string name="pm_label_score_verification_desc">Skor performa tokomu kurang dari 75. Segera tingkatkan performa toko untuk menjadi Power Merchant.</string>
 
     <string name="pm_label_bs_success_header_transition">Yay, kamu berhasil jadi Power Merchant</string>
     <string name="pm_label_bs_success_header">Selamat! Kamu sudah menjadi Power Merchant</string>
@@ -93,4 +93,22 @@
     <string name="label_back">Kembali</string>
     <string name="label_send_answer">Kirim Jawaban</string>
 
+    <string name="power_merchant_free_shipping">Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_eligible_title">Tokomu memenuhi syarat untuk Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_not_eligible_title">Pelajari tentang Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_transition_title">Perubahan Skema Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_transition_description"><![CDATA[<strong><font color=\"#31353b\">Per 13 Juli 2020,</font></strong> skema baru akan diterapkan. Pelajari lebih lanjut.]]></string>
+    <string name="power_merchant_free_shipping_description"><![CDATA[Tingkatkan potensi penjualanmu <strong><font color=\"#31353b\">hingga 50%.</font></strong>]]></string>
+    <string name="power_merchant_free_shipping_not_eligible_description">Tarik perhatian pembeli dan tingkatkan penjualanmu.</string>
+    <string name="power_merchant_free_shipping_active_description">Cek penggunaan Bebas Ongkir-mu</string>
+    <string name="power_merchant_free_shipping_title">Status Bebas Ongkir : <![CDATA[<strong><font color=\"#31353b\">Aktif</font></strong>]]></string>
+    <string name="power_merchant_free_shipping_shop_score_description">Aktivasi ulang setelah performa tokomu meningkat.</string>
+    <string name="power_merchant_free_shipping_shop_score_title">Status Bebas Ongkir : <![CDATA[<strong><font color=\"#31353b\">Tidak aktif</font></strong>]]></string>
+    <string name="power_merchant_free_shipping_load_error">Bebas Ongkir tak bisa ditampilkan</string>
+    <string name="power_merchant_free_shipping_activate">Aktifkan Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_learn_more">Pelajari Bebas Ongkir</string>
+    <string name="power_merchant_click_to_reload">Ketuk ikon untuk memuat ulang</string>
+    <string name="power_merchant_success_free_shipping_description">Yuk, aktivasi fitur Bebas Ongkir untuk meningkatkan penjualan tokomu.</string>
+    <string name="power_merchant_label_new">BARU</string>
+    <string name="power_merchant_learn_more">Pelajari Selengkapnya</string>
 </resources>

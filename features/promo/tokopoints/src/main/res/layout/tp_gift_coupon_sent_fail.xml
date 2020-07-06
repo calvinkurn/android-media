@@ -1,99 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:id="@+id/gift_coupon_fail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/tp_margin_medium"
+    android:layout_marginRight="@dimen/tp_margin_medium"
     android:background="@color/transparent">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardview"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardElevation="@dimen/dp_0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_centerInParent="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_30"
-            android:padding="@dimen/dp_16">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/tp_margin_small"
+            android:layout_marginBottom="@dimen/tp_margin_small"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardElevation="@dimen/dp_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:letterSpacing="-0.01"
-                android:lineSpacingExtra="@dimen/sp_6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_2"
-                tool:text="Ada gangguan di rumah Toped" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:lineSpacingExtra="@dimen/sp_6"
-                android:textColor="@color/tp_history_item_grey_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_title"
-                app:typographyType="body_2"
-                tool:text="Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti." />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/btn_sentFail"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="@dimen/dp_40"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_30"
-                android:background="@drawable/bg_rounded_gift_sendbtn"
-                android:gravity="center"
-                android:text="@string/tp_try_again"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/content"
-                app:typographyType="heading_5" />
+                android:padding="@dimen/tp_padding_medium">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_route"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_18"
-                android:gravity="center"
-                android:text="Kembali Ke Beranda"
-                android:textColor="@color/tp_history_item_grey_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_sentFail"
-                app:typographyType="body_2" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:letterSpacing="-0.01"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="heading_2"
+                    tool:text="Ada gangguan di rumah Toped" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:textColor="@color/tp_history_item_grey_color"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title"
+                    app:typographyType="body_2"
+                    tool:text="Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti." />
 
-    </androidx.cardview.widget.CardView>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/btn_sentFail"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:background="@drawable/bg_rounded_gift_sendbtn"
+                    android:gravity="center"
+                    android:text="@string/tp_try_again"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/content"
+                    app:typographyType="heading_5" />
 
-    <ImageView
-        android:id="@+id/iv_banner"
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_200"
-        android:layout_marginTop="@dimen/dp_150"
-        app:layout_constraintBottom_toTopOf="@+id/cardview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/img_giftsent_fail" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_route"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_18"
+                    android:gravity="center"
+                    android:text="Kembali Ke Beranda"
+                    android:textColor="@color/tp_history_item_grey_color"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_sentFail"
+                    app:typographyType="body_2" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/iv_banner"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_200"
+            android:layout_marginTop="@dimen/dp_150"
+            app:layout_constraintBottom_toTopOf="@+id/cardview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/img_giftsent_fail" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

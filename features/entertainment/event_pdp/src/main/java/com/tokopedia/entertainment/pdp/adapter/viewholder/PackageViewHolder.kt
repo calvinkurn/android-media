@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
 
-    lateinit var quantityEditorValueButtonClicked: (String, String, Int, Boolean, String, String) -> Unit
+    lateinit var quantityEditorValueButtonClicked: (String,String, String, Int, Boolean, String, String) -> Unit
     lateinit var pilihbuttonClicked: (String) -> Unit
     private var isError = false
 
@@ -52,9 +52,10 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
             txtSubtitle_ticket.text = items.description
             txtPrice_ticket.text = CurrencyFormatter.getRupiahFormat(items.salesPrice.toLong())
 
+            val areItemAvailable = items.scheduleStatusBahasa == items.isEmpty || items.sold.toInt()>=items.available.toInt()
 
-            txtPilih_ticket.visibility = if(items.scheduleStatusBahasa == items.isEmpty) View.GONE else View.VISIBLE
-            txtHabis_ticket.visibility = if(items.scheduleStatusBahasa == items.isEmpty) View.VISIBLE else View.GONE
+            txtPilih_ticket.visibility = if(areItemAvailable) View.GONE else View.VISIBLE
+            txtHabis_ticket.visibility = if(areItemAvailable) View.VISIBLE else View.GONE
 
 
             quantityEditor.minValue = items.minQty.toInt()
@@ -63,7 +64,7 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
                 if(::quantityEditorValueButtonClicked.isInitialized){
                     isError = !(quantityEditor.getValue() >= items.minQty.toInt() && quantityEditor.getValue() <= items.maxQty.toInt())
 
-                    quantityEditorValueButtonClicked.invoke(items.id,items.salesPrice,newValue, isError, items.name,items.productId)
+                    quantityEditorValueButtonClicked.invoke(items.id,items.productGroupId,items.salesPrice,newValue, isError, items.name,items.productId)
                 }
                 eventPDPTracking.onClickQuantity()
             }
@@ -99,7 +100,7 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
                     } else if(txtTotal.toString().isBlank()){ isError = true }
 
                     if (::quantityEditorValueButtonClicked.isInitialized) {
-                        quantityEditorValueButtonClicked.invoke(items.id, items.salesPrice, getDigit(txtTotal.toString()), isError, items.name, items.productId)
+                        quantityEditorValueButtonClicked.invoke(items.id,items.productGroupId, items.salesPrice, getDigit(txtTotal.toString()), isError, items.name, items.productId)
                     }
                 }
             })
@@ -120,8 +121,8 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
                 eventPDPTracking.onClickPackage(items, itemView.quantityEditor.getValue())
             } else {
                 itemView.clearFocus()
-                itemView.txtPilih_ticket.visibility = if(items.scheduleStatusBahasa == items.isEmpty) View.GONE else View.VISIBLE
-                itemView.txtHabis_ticket.visibility = if(items.scheduleStatusBahasa == items.isEmpty) View.VISIBLE else View.GONE
+                txtPilih_ticket.visibility = if(areItemAvailable) View.GONE else View.VISIBLE
+                txtHabis_ticket.visibility = if(areItemAvailable) View.VISIBLE else View.GONE
                 itemView.greenDivider.visibility = View.GONE
                 itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_normal_bg)
                 itemView.quantityEditor.clearFocus()

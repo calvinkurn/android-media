@@ -1,13 +1,14 @@
 package com.tokopedia.home.viewModel.homepage
 
+import android.content.Context
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.SendTopAdsUseCase
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -88,10 +89,6 @@ class HomeViewModelBannerHomepageTest : Spek({
                 }
                 confirmVerified(observerHome)
             }
-
-            When("Topads clicked"){
-                homeViewModel.onBannerClicked(slidesModel)
-            }
         }
     }
 
@@ -146,9 +143,17 @@ class HomeViewModelBannerHomepageTest : Spek({
         lateinit var homeViewModel: HomeViewModel
         createHomeViewModelTestInstance()
         var url = ""
+        var productId = ""
+        var productName = ""
+        var imageUrl = ""
         val slotUrl = slot<String>()
-        val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
+        val slotProductId = slot<String>()
+        val slotProductName = slot<String>()
+        val slotImageUrl = slot<String>()
+
+        val topAdsUrlHitter by memoized<TopAdsUrlHitter>()
         val getHomeUseCase by memoized<HomeUseCase>()
+        val context by memoized<Context>()
         Scenario("User doesn't have cache, and must get data from network. And should available on view"){
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             Given("Banner data "){
@@ -164,9 +169,14 @@ class HomeViewModelBannerHomepageTest : Spek({
                         )
                 )
             }
+
             Given("set return impression"){
-                every { sendTopAdsUseCase.executeOnBackground(capture(slotUrl)) } answers {
+                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl), capture(slotProductId),
+                        capture(slotProductName), capture(slotImageUrl)) } answers {
                     url = slotUrl.captured
+                    productId = slotProductId.captured
+                    productName = slotProductName.captured
+                    imageUrl = slotImageUrl.captured
                 }
             }
 
@@ -185,12 +195,21 @@ class HomeViewModelBannerHomepageTest : Spek({
                 confirmVerified(observerHome)
             }
 
+            val testImpressionUrl = "impression url"
+            val testBannerId = "banner id"
+            val testBannerName = "banner name"
+            val testImageUrl = "image url"
+
             When("Impression topads called"){
-                homeViewModel.sendTopAds("coba topads")
+                topAdsUrlHitter.hitImpressionUrl(context, testImpressionUrl,
+                        testBannerId, testBannerName, testImageUrl)
             }
 
-            Then("Check the url is same"){
-                Assert.assertTrue(url == "coba topads")
+            Then("verify impression"){
+                assert(url == testImpressionUrl)
+                assert(productId == testBannerId)
+                assert(productName == testBannerName)
+                assert(imageUrl == testImageUrl)
             }
         }
     }

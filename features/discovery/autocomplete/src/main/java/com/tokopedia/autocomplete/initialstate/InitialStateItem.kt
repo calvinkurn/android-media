@@ -1,6 +1,7 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.analyticconstant.DataLayer
 
 data class InitialStateItem(
         @SerializedName("template")
@@ -37,6 +38,36 @@ data class InitialStateItem(
         val shortcutImage: String = "",
 
         @SerializedName("id")
-        val itemId: String = ""
-)
+        val itemId: String = "",
+
+        @SerializedName("type")
+        val type: String = ""
+) {
+        fun getObjectDataLayerForRecentView(position: Int): Any {
+                return DataLayer.mapOf(
+                        "name", getName(),
+                        "id", itemId,
+                        "price", "",
+                        "brand", "none",
+                        "category", "none / other",
+                        "variant", "none",
+                        "list", "/search - recentview - product",
+                        "position", position
+                )
+        }
+
+        fun getObjectDataLayerForPromo(position: Int): Any {
+                return DataLayer.mapOf(
+                        "id", itemId,
+                        "name", "/search - initial state",
+                        "creative", title,
+                        "position", position
+                )
+        }
+
+        private fun getName() : String {
+                return if (title.isEmpty()) "none / other"
+                else title
+        }
+}
 

@@ -154,9 +154,10 @@ public class UriUtil {
                     String segmentName = itr.next().toString();
                     if (segmentName.startsWith("{") &&
                             segmentName.endsWith("}")) {
-                        result.put(segmentName ,
+                        result.put(segmentName.substring(1, segmentName.length() - 1) ,
                                 uri.getPathSegments().get(i));
                     }
+                    i++;
                 }
             }
         } catch (Exception e) {
@@ -179,6 +180,21 @@ public class UriUtil {
             stringBuilder.append("?");
             for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
                 stringBuilder.append(entry.getKey()).append("=").append(entry.getValue());
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public static String buildUriAppendParams(@NonNull String uri,
+                                              @Nullable Map<String, Object> queryParameters) {
+        StringBuilder stringBuilder = new StringBuilder(uri);
+        if (queryParameters != null && queryParameters.size() > 0) {
+            stringBuilder.append("?");
+            int i = 0;
+            for (Map.Entry<String, Object> entry : queryParameters.entrySet()) {
+                if (i > 0) stringBuilder.append("&");
+                stringBuilder.append(entry.getKey()).append("=").append(entry.getValue());
+                i++;
             }
         }
         return stringBuilder.toString();

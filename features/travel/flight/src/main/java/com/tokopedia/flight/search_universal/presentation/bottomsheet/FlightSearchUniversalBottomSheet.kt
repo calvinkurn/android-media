@@ -1,6 +1,5 @@
 package com.tokopedia.flight.search_universal.presentation.bottomsheet
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,16 +9,15 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
-import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
-import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.di.DaggerFlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.di.FlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
@@ -62,13 +60,27 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
     }
 
     override fun onDepartureAirportClicked() {
-        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_title))
-        startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE)
+        val flightAirportPickerBottomSheet = FlightAirportPickerBottomSheet.getInstance()
+        flightAirportPickerBottomSheet.listener = object : FlightAirportPickerBottomSheet.Listener {
+            override fun onAirportSelected(selectedAirport: FlightAirportModel) {
+                mChildView.flightSearchFormView.setOriginAirport(selectedAirport)
+            }
+        }
+        fragmentManager?.let {
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+        }
     }
 
     override fun onDestinationAirportClicked() {
-        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_title))
-        startActivityForResult(intent, REQUEST_CODE_AIRPORT_DESTINATION)
+        val flightAirportPickerBottomSheet = FlightAirportPickerBottomSheet.getInstance()
+        flightAirportPickerBottomSheet.listener = object : FlightAirportPickerBottomSheet.Listener {
+            override fun onAirportSelected(selectedAirport: FlightAirportModel) {
+                mChildView.flightSearchFormView.setDestinationAirport(selectedAirport)
+            }
+        }
+        fragmentManager?.let {
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+        }
     }
 
     override fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
@@ -150,22 +162,6 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         mChildView.flightSearchFormView.removeFocus()
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_AIRPORT_DEPARTURE -> {
-                    val departureAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
-                    departureAirport?.let {
-                        mChildView.flightSearchFormView.setOriginAirport(departureAirport)
-                    }
-                }
-                REQUEST_CODE_AIRPORT_DESTINATION -> {
-                    val arrivalAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
-                    arrivalAirport?.let {
-                        mChildView.flightSearchFormView.setDestinationAirport(arrivalAirport)
-                    }
-                }
-            }
-        }
     }
 
     private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String) {
@@ -238,9 +234,6 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         const val TAG_SEARCH_FORM = "TagFlightSearchFormBottomSheet"
         const val TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
         const val TAG_RETURN_CALENDAR = "flightCalendarReturn"
-
-        const val REQUEST_CODE_AIRPORT_DEPARTURE = 1
-        const val REQUEST_CODE_AIRPORT_DESTINATION = 2
 
         fun getInstance(): FlightSearchUniversalBottomSheet =
                 FlightSearchUniversalBottomSheet()

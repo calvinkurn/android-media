@@ -1,8 +1,8 @@
 package com.tokopedia.loginregister.registerinitial.viewmodel
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.fragment.app.Fragment
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -17,6 +17,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
+import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
@@ -37,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -106,8 +106,8 @@ class RegisterInitialViewModel @Inject constructor(
     val goToSecurityQuestionAfterRelogin: LiveData<String>
         get() = mutableGoToSecurityQuestionAfterRelogin
 
-    private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfo>>()
-    val getUserInfoResponse: LiveData<Result<ProfileInfo>>
+    private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfoData>>()
+    val getUserInfoResponse: LiveData<Result<ProfileInfoData>>
         get() = mutableGetUserInfoResponse
 
     private val mutableGetTickerInfoResponse = MutableLiveData<Result<List<TickerInfoPojo>>>()
@@ -203,9 +203,9 @@ class RegisterInitialViewModel @Inject constructor(
 
     }
 
-    fun getUserInfo() {
+    fun getUserInfo(isCreatePin: Boolean = false) {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                onSuccessGetUserInfo(),
+                onSuccessGetUserInfo(isCreatePin),
                 onFailedGetUserInfo()))
     }
 
@@ -384,9 +384,9 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
+    private fun onSuccessGetUserInfo(isCreatePin: Boolean): (ProfilePojo) -> Unit {
         return {
-            mutableGetUserInfoResponse.value = Success(it.profileInfo)
+            mutableGetUserInfoResponse.value = Success(ProfileInfoData(isCreatePin, it.profileInfo))
         }
     }
 
