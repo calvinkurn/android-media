@@ -179,7 +179,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void emptyState() {
-        scrollview.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
+        scrollview.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
         containerView.setVisibility(View.GONE);
         setGravityCenter();
         NetworkErrorHelper
