@@ -21,4 +21,6 @@ interface WidgetAdapterFactory {
     fun type(postListWidget: PostListWidgetUiModel): Int
 
     fun type(progressWidgetWidget: ProgressWidgetUiModel): Int
+
+    fun type(pieChartWidget: PieChartWidgetUiModel): Int
 }
