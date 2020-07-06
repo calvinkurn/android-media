@@ -183,6 +183,8 @@ class CreateMerchantVoucherStepsViewModelTest {
 
         mViewModel.initiateEditDuplicateVoucher()
 
+        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             basicShopInfoUseCase.executeOnBackground()
             initiateVoucherUseCase.executeOnBackground()
