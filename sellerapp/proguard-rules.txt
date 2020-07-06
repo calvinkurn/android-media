@@ -428,5 +428,5 @@
 -dontwarn com.squareup.javapoet.**
 
 -dontwarn com.tokopedia.empty_state.**
--dontwarn com.tokopedia.topads.dashboard.view.sheet.DateSheetPickerKt.**
+-dontwarn com.tokopedia.topads.dashboard.view.sheet.DateSheetPicker
 

@@ -204,6 +204,4 @@ public protected *;
     public void initTranslator();
 }
 
- -dontwarn com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet.**
-
 -keep class com.google.firebase.perf.FirebasePerformance
