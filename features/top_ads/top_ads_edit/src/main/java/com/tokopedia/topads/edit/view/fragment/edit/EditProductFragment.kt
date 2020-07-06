@@ -169,7 +169,7 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun createProduct(price: ArrayList<String>?, product: ArrayList<Int>?, name: ArrayList<String>?, image: ArrayList<String>?) {
-        if (adapter.items[0] is EditProductEmptyViewModel)
+        if (adapter.items.isNotEmpty() && adapter.items[0] is EditProductEmptyViewModel)
             adapter.items.clear()
         product?.forEachIndexed {ind,it ->
             val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(ind)!!, image[ind], name?.get(ind)!!)
