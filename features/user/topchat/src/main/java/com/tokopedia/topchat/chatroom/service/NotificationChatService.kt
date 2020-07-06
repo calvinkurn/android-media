@@ -42,7 +42,7 @@ class NotificationChatService : JobIntentService() {
     companion object {
         private const val JOB_ID_RETRY = 712
         private const val JOB_ID_NOTIFICATION = 812
-        private const val DELAY_THREAD_BINDER = 10000L
+        private const val DELAY_THREAD_BINDER = 1000L
 
         fun enqueueWork(context: Context, intent: Intent) {
             enqueueWork(context, NotificationChatService::class.java, JOB_ID_NOTIFICATION, intent)
@@ -50,7 +50,7 @@ class NotificationChatService : JobIntentService() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        return super.onBind(intent).also {
+        return super.onBind(intent)?.also {
             Handler().post {
                 Thread.sleep(DELAY_THREAD_BINDER)
             }
