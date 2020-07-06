@@ -234,6 +234,7 @@ ext {
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
-            recharge_slice                  : ":features:recharge:recharge_slice"
+            recharge_slice                  : ":features:recharge:recharge_slice",
+            logintestapp                    : ":testapp-features:user:logintestapp"
     ]
 }
