@@ -35,12 +35,6 @@ class HotlistNavUseCaseModule {
 
     @HotlistNavScope
     @Provides
-    fun getHotListDetailUseCase(context: Context): HotlistDetailUseCase {
-        return HotlistDetailUseCase(context)
-    }
-
-    @HotlistNavScope
-    @Provides
     fun provideCategoryProductUseCase(context: Context,
                                       @Named("productGqlUseCaseObject") graphqlUseCase: GraphqlUseCase):
             CategoryProductUseCase {
