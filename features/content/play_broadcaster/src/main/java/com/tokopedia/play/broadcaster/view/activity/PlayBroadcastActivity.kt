@@ -66,6 +66,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
+    private var isRecreated = false
+
     private var systemUiVisibility: Int
         get() = window.decorView.systemUiVisibility
         set(value) {
@@ -79,6 +81,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
+        isRecreated = (savedInstanceState != null)
+
         viewModel.initPushStream()
         setupContent()
         initView()
@@ -238,7 +242,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 is NetworkResult.Loading -> loaderView.show()
                 is NetworkResult.Success -> {
                     loaderView.hide()
-                    handleChannelConfiguration(result.data)
+                    if (!isRecreated) handleChannelConfiguration(result.data)
                 }
                 is NetworkResult.Fail -> {
                     loaderView.hide()

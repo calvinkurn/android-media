@@ -14,10 +14,12 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.model.HydraSetupData
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
@@ -89,6 +91,8 @@ class PlayBeforeLiveFragment @Inject constructor(
         initView(view)
         setupView(view)
         setupInsets(view)
+
+        if (savedInstanceState != null) populateSavedData(savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -117,6 +121,15 @@ class PlayBeforeLiveFragment @Inject constructor(
             is EditCoverTitleBottomSheet -> childFragment.setListener(setupResultListener)
             is CoverEditFragment -> childFragment.setListener(setupResultListener)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val cacheManager = SaveInstanceCacheManager(requireContext(), true)
+        cacheManager.onSave(outState)
+        cacheManager.put("a", "aaa")
+        cacheManager.put(KEY_SETUP_DATA, parentViewModel.getHydraSetupData())
+        println("Cache Manager id save: ${cacheManager.id}")
     }
 
     private fun initView(view: View) {
@@ -197,6 +210,15 @@ class PlayBeforeLiveFragment @Inject constructor(
         })
     }
     //endregion
+
+    private fun populateSavedData(savedInstanceState: Bundle) {
+        val cacheManager = SaveInstanceCacheManager(requireContext(), savedInstanceState)
+        val savedSetupData = cacheManager.get<HydraSetupData>(KEY_SETUP_DATA, HydraSetupData::class.java)
+        val a = cacheManager.get<String>("a", String::class.java)
+        println("Cache Manager a: $a")
+        println("Saved Setup Data: $savedSetupData")
+        savedSetupData?.let { parentViewModel.setHydraSetupData(it) }
+    }
 
     private fun openBroadcastLivePage(liveStreamInfo: LiveStreamInfoUiModel) {
         broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
@@ -281,5 +303,10 @@ class PlayBeforeLiveFragment @Inject constructor(
         val editTitleBottomSheet = EditCoverTitleBottomSheet()
         editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         return editTitleBottomSheet
+    }
+
+    companion object {
+
+        private const val KEY_SETUP_DATA = "setup_data"
     }
 }
