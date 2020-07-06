@@ -21,7 +21,9 @@ class PieChartViewHolder(
     }
 
     override fun bind(element: PieChartWidgetUiModel) {
+        with(itemView) {
 
+        }
     }
 
     interface Listener : BaseViewHolderListener {
