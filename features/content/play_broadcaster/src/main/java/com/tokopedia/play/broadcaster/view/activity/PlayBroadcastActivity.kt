@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -131,9 +132,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         loaderView = findViewById(R.id.loader_initial)
         globalErrorView = findViewById(R.id.error_channel)
 
-        viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener{
+        viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener {
             override fun onCameraIconClicked() {
-                viewModel.getPlayPusher().switchCamera()
+                viewModel.switchCamera()
             }
 
             override fun onCloseIconClicked() {
@@ -266,7 +267,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 if (config.channelType != ChannelType.Active) checkPermission()
                 when(config.channelType) {
                     ChannelType.Active -> showDialogWhenActiveOnOtherDevices()
-                    ChannelType.Pause -> openBroadcastActivePage()
+                    ChannelType.Pause -> {
+                        showDialogContinueLiveStreaming()
+                        openBroadcastActivePage()
+                    }
                     ChannelType.Draft, ChannelType.Unknown -> openBroadcastSetupPage()
                 }
             } else {
@@ -311,6 +315,24 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 primaryListener = { dialog ->
                     dialog.dismiss()
                     finish()
+                }
+        ).show()
+    }
+
+    private fun showDialogContinueLiveStreaming() {
+        getDialog(
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                title = getString(R.string.play_dialog_continue_live_title),
+                desc = getString(R.string.play_dialog_continue_live_desc),
+                primaryCta = getString(R.string.play_next),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    viewModel.startPushStream()
+                },
+                secondaryCta = getString(R.string.play_broadcast_end),
+                secondaryListener = { dialog ->
+                    dialog.dismiss()
+                    viewModel.stopPushStream()
                 }
         ).show()
     }

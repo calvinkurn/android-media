@@ -47,7 +47,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         setQualityMode(this)
     }
 
-    override fun create() {
+    override suspend fun create() {
         if (mAliVcLivePusher != null) {
             mAliVcLivePusher?.destroy()
             mAliVcLivePusher = null
@@ -57,161 +57,128 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
             mAliVcLivePusher?.setLivePushErrorListener(mAliVcLivePushErrorListener)
             mAliVcLivePusher?.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
-            }
-        } catch (e: IllegalStateException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
+                throw IllegalStateException(e)
             }
         }
     }
 
-    override fun startPreview(surfaceView: SurfaceView) {
-        try {
-            if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_GRANTED) {
-                mAliVcLivePusher?.startPreview(surfaceView)
-            }
-        } catch (e: IllegalArgumentException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
-        } catch (e: IllegalStateException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
+    override suspend fun startPreview(surfaceView: SurfaceView) {
+        if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+            if (GlobalConfig.DEBUG)
+                throw IllegalStateException("android.permission.CAMERA not granted")
+            return
         }
+        mAliVcLivePusher?.startPreview(surfaceView)
     }
 
     override fun stopPreview() {
         try {
             mAliVcLivePusher?.stopPreview()
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
     }
 
-    override fun startPush(ingestUrl: String, onActive: () -> Unit) {
+    override suspend fun startPush(ingestUrl: String) {
         if (ingestUrl.isNotEmpty()) {
             this.mIngestUrl = ingestUrl
         }
         if (this.mIngestUrl.isEmpty()) {
-            _observableInfoState.value = PlayPusherInfoState.Error(PlayPusherErrorType.Throwable("ingestUrl must not be empty"))
-            if (GlobalConfig.DEBUG) {
-                throw IllegalArgumentException("")
-            }
-            return
+            throw IllegalArgumentException("ingestUrl must not be empty")
         }
-        if (mPlayPusherStatus != PlayPusherStatus.Idle) return // TODO remove
-        mPlayPusherStatus = PlayPusherStatus.Active
-        onActive()
-
-//        if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Idle) return
-//        try {
-//            mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
-//            mTimerDuration?.start()
-//            mPlayPusherStatus = PlayPusherStatus.Active
-//            onActive()
-//        } catch (e: Exception) {
-//            if (GlobalConfig.DEBUG) {
-//                e.printStackTrace()
-//            }
-//        }
+        if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Idle) {
+            throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
+        }
+        try {
+            mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
+            mTimerDuration?.start()
+            mPlayPusherStatus = PlayPusherStatus.Active
+        } catch (e: Exception) {
+            // crashlytics
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
+                throw IllegalStateException(e)
+            }
+        }
     }
 
-    override fun restartPush() {
+    override suspend fun restartPush() {
         try {
             mAliVcLivePusher?.restartPushAync()
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
+                throw IllegalStateException(e)
             }
         }
     }
 
-    override fun stopPush(onStop: () -> Unit) {
-        // TODO remove
-        mPlayPusherStatus = PlayPusherStatus.Stop
-        onStop()
-
-//        if (!isPushing()) return
-//        try {
-//            mAliVcLivePusher?.stopPush()
-//            mTimerDuration?.stop()
-//            mPlayPusherStatus = PlayPusherStatus.Stop
-//            onStop()
-//        } catch (e: Exception) {
-//            if (GlobalConfig.DEBUG) {
-//                e.printStackTrace()
-//            }
-//        }
-    }
-
-    override fun switchCamera() {
+    override suspend fun stopPush() {
+        if (!isPushing()) return
         try {
-            mAliVcLivePusher?.switchCamera()
+            mAliVcLivePusher?.stopPush()
+            mTimerDuration?.stop()
+            mPlayPusherStatus = PlayPusherStatus.Stop
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
     }
 
-    override fun resume(onActive: () -> Unit) {
-        // TODO remove
-        if (mPlayPusherStatus != PlayPusherStatus.Paused) return
-        mTimerDuration?.resume()
-        mPlayPusherStatus = PlayPusherStatus.Active
-        onActive()
-
-//        if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Paused) return
-//        try {
-//            mAliVcLivePusher?.resumeAsync()
-//            mTimerDuration?.resume()
-//            mPlayPusherStatus = PlayPusherStatus.Active
-//            onActive()
-//        } catch (e: java.lang.IllegalStateException) {
-//            if (GlobalConfig.DEBUG) {
-//                e.printStackTrace()
-//            }
-//        } catch (e: java.lang.IllegalArgumentException) {
-//            if (GlobalConfig.DEBUG) {
-//                e.printStackTrace()
-//            }
-//        }
+    override suspend fun switchCamera() {
+        mAliVcLivePusher?.switchCamera()
     }
 
-    override fun pause(onPause: () -> Unit) {
-        // TODO remove
-        if (mPlayPusherStatus != PlayPusherStatus.Active) return
-        mTimerDuration?.pause()
-        mPlayPusherStatus = PlayPusherStatus.Paused
-        onPause()
-
-//        if (!isPushing() || mPlayPusherStatus != PlayPusherStatus.Active) return
-//        try {
-//            mAliVcLivePusher?.pause()
-//            mTimerDuration?.pause()
-//            mPlayPusherStatus = PlayPusherStatus.Paused
-//            onPause()
-//        } catch (e: Exception) {
-//            if (GlobalConfig.DEBUG) {
-//                e.printStackTrace()
-//            }
-//        }
+    override suspend fun resume() {
+        if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Paused) return
+        try {
+            mAliVcLivePusher?.resumeAsync()
+            mTimerDuration?.resume()
+            mPlayPusherStatus = PlayPusherStatus.Active
+        } catch (e: Exception) {
+            // crashlytics
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
+                throw IllegalStateException(e)
+            }
+        }
     }
 
-    override fun destroy() {
+    override suspend fun pause() {
+        if (!isPushing() || mPlayPusherStatus != PlayPusherStatus.Active) return
+        try {
+                mAliVcLivePusher?.pause()
+                mTimerDuration?.pause()
+                mPlayPusherStatus = PlayPusherStatus.Paused
+            } catch (e: Exception) {
+                // crashlytics
+                if (GlobalConfig.DEBUG) {
+                    e.printStackTrace()
+                    throw IllegalStateException(e)
+                }
+            }
+    }
+
+    override suspend fun destroy() {
         try {
             mAliVcLivePusher?.destroy()
             mTimerDuration?.destroy()
         } catch (e: Exception) {
+            // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
+                throw IllegalStateException(e)
             }
         }
     }
@@ -330,6 +297,6 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     companion object {
         const val AUDIO_BITRATE_128Kbps = 128000
-        const val TAG_PLAY_PUSHER = "PlayPusher"
+        const val TAG_PLAY_PUSHER = "play-broadcaster-pusher"
     }
 }

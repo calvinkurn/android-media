@@ -14,12 +14,12 @@ interface PlayPusher {
     /**
      * Initialize SDK
      */
-    fun create()
+    suspend fun create()
 
     /**
      * Open camera for preview live streaming
      */
-    fun startPreview(surfaceView: SurfaceView)
+    suspend fun startPreview(surfaceView: SurfaceView)
 
     /**
      * Stop previewing
@@ -29,37 +29,37 @@ interface PlayPusher {
     /**
      * Start live streaming by providing ingest url
      */
-    fun startPush(ingestUrl: String, onActive: () -> Unit = {})
+    suspend fun startPush(ingestUrl: String)
 
     /**
      * Restart live streaming
      */
-    fun restartPush()
+    suspend fun restartPush()
 
     /**
      * Stop live streaming
      */
-    fun stopPush(onStop: () -> Unit = {})
+    suspend fun stopPush()
 
     /**
      * Switch camera between front and back, the default is front
      */
-    fun switchCamera()
+    suspend fun switchCamera()
 
     /**
      * Resume pusher
      */
-    fun resume(onActive: () -> Unit = {})
+    suspend fun resume()
 
     /**
      * Pause pusher
      */
-    fun pause(onPause: () -> Unit = {})
+    suspend fun pause()
 
     /**
      * Destroy pusher
      */
-    fun destroy()
+    suspend fun destroy()
 
     /**
      * add maximum live streaming duration, the default is 30minutes

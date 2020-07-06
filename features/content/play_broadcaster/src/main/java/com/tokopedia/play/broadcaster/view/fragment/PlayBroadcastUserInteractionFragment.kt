@@ -12,16 +12,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
-import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
+import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
+import com.tokopedia.play.broadcaster.util.error.PusherErrorThrowable
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
@@ -31,6 +30,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
+import com.tokopedia.play.broadcaster.view.state.BroadcastState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
@@ -80,13 +80,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         initView(view)
         setupView()
         setupInsets(view)
-        setupContent()
+//        if (parentViewModel.allPermissionGranted()) setupContent()
+//        else parentViewModel.checkPermission()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeChannelInfo()
+//        observeChannelInfo()
         observeLiveInfo()
         observeLiveDuration()
         observeTotalViews()
@@ -94,6 +95,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeNetworkConnectionDuringLive()
+//        observePermissionStateEvent()
     }
 
     override fun onStart() {
@@ -142,16 +144,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun setupContent() {
-        val ingestUrl = arguments?.getString(KEY_INGEST_URL)
-        if (ingestUrl != null && ingestUrl.isNotEmpty()) {
-            startCountDown(ingestUrl)
-        } else {
-            parentViewModel.fetchChannelData()
-        }
-    }
-
-    private fun startCountDown(ingestUrl: String) {
+    private fun startCountDown() {
         val animationProperty = PlayTimerCountDown.AnimationProperty.Builder()
                 .setFullRotationInterval(3000)
                 .setTextCountDownInterval(2000)
@@ -164,7 +157,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun onFinish() {
                 countdownTimer.gone()
-                startLiveStreaming(ingestUrl)
+                startLiveStreaming()
             }
         })
     }
@@ -180,7 +173,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onDestroy() {
-        parentViewModel.getPlayPusher().destroy()
+        parentViewModel.destroyPushStream()
         try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         super.onDestroy()
     }
@@ -189,8 +182,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         return showDialogWhenActionClose()
     }
 
-    private fun startLiveStreaming(ingestUrl: String) {
-        parentViewModel.startPushStream(ingestUrl)
+    private fun startLiveStreaming() {
+        parentViewModel.startPushStream()
     }
 
     private fun stopLiveStreaming() {
@@ -247,7 +240,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun getExitDialog(): DialogUnify {
         if (!::exitDialog.isInitialized) {
-           exitDialog =  requireContext().getDialog(
+           exitDialog = requireContext().getDialog(
                    actionType = DialogUnify.HORIZONTAL_ACTION,
                    title = getString(R.string.play_live_broadcast_dialog_end_title),
                    desc = getString(R.string.play_live_broadcast_dialog_end_desc),
@@ -256,7 +249,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    secondaryCta = getString(R.string.play_broadcast_exit),
                    secondaryListener = { dialog ->
                        dialog.dismiss()
-                       doEndStreaming()
+                       stopLiveStreaming()
                    }
            )
         }
@@ -271,24 +264,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 primaryListener = { dialog ->
                     dialog.dismiss()
                     navigateToSummary()
-                }
-        ).show()
-    }
-
-    private fun showDialogContinueLiveStreaming(ingestUrl: String) {
-        requireContext().getDialog(
-                actionType = DialogUnify.HORIZONTAL_ACTION,
-                title = getString(R.string.play_dialog_continue_live_title),
-                desc = getString(R.string.play_dialog_continue_live_desc),
-                primaryCta = getString(R.string.play_next),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    startLiveStreaming(ingestUrl)
-                },
-                secondaryCta = getString(R.string.play_broadcast_end),
-                secondaryListener = { dialog ->
-                    dialog.dismiss()
-                    doEndStreaming()
                 }
         ).show()
     }
@@ -329,23 +304,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         getProductLiveBottomSheet().show(childFragmentManager)
     }
 
-    private fun doEndStreaming() {
-        stopLiveStreaming()
-        navigateToSummary()
-    }
-
     private fun navigateToSummary() {
         broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
     }
 
-    private fun handleChannelInfo(channelInfo: ChannelInfoUiModel) {
-        when (channelInfo.status) {
-            PlayChannelStatus.Active, PlayChannelStatus.Live -> startLiveStreaming(channelInfo.ingestUrl)
-            PlayChannelStatus.Pause -> showDialogContinueLiveStreaming(channelInfo.ingestUrl)
-            PlayChannelStatus.Stop -> doEndStreaming()
-            else -> {}
-        }
-    }
+//    private fun handleChannelInfo(channelInfo: ChannelInfoUiModel) {
+//        when (channelInfo.status) {
+//            PlayChannelStatus.Active, PlayChannelStatus.Live -> startLiveStreaming(channelInfo.ingestUrl)
+//            PlayChannelStatus.Pause -> {
+//                Log.d("Meyta", "${this::class.java} showDialogContinueLiveStreaming")
+//                showDialogContinueLiveStreaming(channelInfo.ingestUrl)
+//            }
+//            PlayChannelStatus.Stop -> doEndStreaming()
+//            else -> {}
+//        }
+//    }
 
     private fun handleLiveNetworkInfo(pusherNetworkState: PlayPusherNetworkState) {
         when(pusherNetworkState) {
@@ -363,22 +336,30 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         duration = Toaster.LENGTH_INDEFINITE,
                         actionLabel = getString(R.string.play_broadcast_try_again),
                         actionListener = View.OnClickListener {
-                            parentViewModel.getPlayPusher().restartPush()
+                            parentViewModel.restartPushStream()
                         })
             }
         }
     }
 
-    private fun handleLiveError(errorType: PlayPusherErrorType) {
-        when(errorType) {
-            is PlayPusherErrorType.UnSupportedDevice -> {
-                // TODO("handle unsupported devices")
-                // Perangkat tidak mendukung\n layanan siaran live streaming
-                // Layanan live streaming tidak didukung pada perangkat Anda.
-                // showDialogWhenUnSupportedDevices()
+    private fun handleLiveError(throwable: Throwable) {
+        if (throwable is PusherErrorThrowable) {
+            when(throwable.mErrorType) {
+                is PlayPusherErrorType.UnSupportedDevice -> {
+                    // TODO("handle unsupported devices")
+                    // Perangkat tidak mendukung\n layanan siaran live streaming
+                    // Layanan live streaming tidak didukung pada perangkat Anda.
+                    // showDialogWhenUnSupportedDevices()
+                }
+                is PlayPusherErrorType.ReachMaximumPauseDuration -> stopLiveStreaming()
             }
-            is PlayPusherErrorType.ReachMaximumPauseDuration -> doEndStreaming()
-            is PlayPusherErrorType.Throwable -> if (GlobalConfig.DEBUG) showToaster(errorType.message, type = Toaster.TYPE_ERROR)
+        }
+        else {
+            if (GlobalConfig.DEBUG) showToaster(
+                    message = throwable.localizedMessage,
+                    type = Toaster.TYPE_ERROR,
+                    duration = Toaster.LENGTH_SHORT
+            )
         }
     }
 
@@ -386,29 +367,33 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is NetworkResult.Loading -> loadingView.show()
-                is NetworkResult.Success -> {
-                    loadingView.hide()
-                    handleChannelInfo(it.data)
-                }
-                is NetworkResult.Fail -> {
-                    loadingView.hide()
-                    view?.showToaster(
-                            message = it.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR,
-                            duration = Toaster.LENGTH_INDEFINITE
-                    )
-                }
-            }
-        })
-    }
+//    private fun observeChannelInfo() {
+//        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
+//            when (it) {
+//                is NetworkResult.Loading -> loadingView.show()
+//                is NetworkResult.Success -> {
+//                    loadingView.hide()
+//                    handleChannelInfo(it.data)
+//                }
+//                is NetworkResult.Fail -> {
+//                    loadingView.hide()
+//                    view?.showToaster(
+//                            message = it.error.localizedMessage,
+//                            type = Toaster.TYPE_ERROR,
+//                            duration = Toaster.LENGTH_INDEFINITE
+//                    )
+//                }
+//            }
+//        })
+//    }
 
     private fun observeLiveInfo() {
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
-           if (it is PlayPusherInfoState.Error) handleLiveError(it.errorType)
+            when (it) {
+                is BroadcastState.Init -> startCountDown()
+                is BroadcastState.Stop -> navigateToSummary()
+                is BroadcastState.Error -> handleLiveError(it.error)
+            }
         })
     }
 
@@ -451,6 +436,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeNetworkConnectionDuringLive() {
         parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver(::handleLiveNetworkInfo))
     }
+
+//    private fun observePermissionStateEvent() {
+//        parentViewModel.observablePermissionState.observe(this, Observer {
+//           if (it is PlayPermissionState.Granted) setupContent()
+//        })
+//    }
     //endregion
 
     companion object {

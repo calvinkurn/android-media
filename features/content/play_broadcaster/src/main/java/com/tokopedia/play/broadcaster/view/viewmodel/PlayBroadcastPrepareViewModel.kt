@@ -1,8 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -47,12 +45,27 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     val observableCreateLiveStream: LiveData<NetworkResult<LiveStreamInfoUiModel>>
         get() = _observableCreateLiveStream
     private val _observableCreateLiveStream = MutableLiveData<NetworkResult<LiveStreamInfoUiModel>>()
+    private val _observableIngestUrl: LiveData<String> = MediatorLiveData<String>().apply {
+        addSource(_observableCreateLiveStream) {
+            if (it is NetworkResult.Success) setIngestUrl(it.data.ingestUrl)
+        }
+    }
+
+    private val ingestUrlObserver = object : Observer<String> {
+        override fun onChanged(t: String?) {}
+    }
 
     init {
         _observableFollowers.value = FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)
         scope.launch {
             _observableFollowers.value = getLiveFollowers()
         }
+        _observableIngestUrl.observeForever(ingestUrlObserver)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _observableIngestUrl.removeObserver(ingestUrlObserver)
     }
 
     fun setDataFromSetupDataStore(setupDataStore: PlayBroadcastSetupDataStore) {
@@ -107,6 +120,10 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         val isCoverValid = currentCover?.croppedCover is CoverSetupState.Cropped
 
         return isProductValid && isCoverValid
+    }
+
+    private fun setIngestUrl(ingestUrl: String) {
+        channelConfigStore.setIngestUrl(ingestUrl)
     }
 
     companion object {

@@ -22,54 +22,50 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     private var mTimer: PlayPusherTimer? = null
     private var isPushing: Boolean = false
 
-    override fun create() {
+    override suspend fun create() {
         _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.UnSupportedDevice))
     }
 
-    override fun startPreview(surfaceView: SurfaceView) {}
+    override suspend fun startPreview(surfaceView: SurfaceView) {}
 
     override fun stopPreview() {}
 
     //TODO("for testing only")
-    override fun startPush(ingestUrl: String, onActive: () -> Unit) {
+    override suspend fun startPush(ingestUrl: String) {
         if (!isPushing) {
             mTimer?.start()
             this.isPushing = true
-            onActive()
         }
     }
 
-    override fun restartPush() {}
+    override suspend fun restartPush() {}
 
     //TODO("for testing only")
-    override fun stopPush(onStop: () -> Unit) {
+    override suspend fun stopPush() {
         if (isPushing) {
             mTimer?.stop()
             this.isPushing = false
-            onStop()
         }
     }
 
-    override fun switchCamera() {}
+    override suspend fun switchCamera() {}
 
     //TODO("for testing only")
-    override fun resume(onActive: () -> Unit) {
+    override suspend fun resume() {
         if (!isPushing) {
             mTimer?.resume()
-            onActive()
         }
     }
 
     //TODO("for testing only")
-    override fun pause(onPause: () -> Unit) {
+    override suspend fun pause() {
         if (isPushing) {
             mTimer?.pause()
             this.isPushing = false
-            onPause()
         }
     }
 
-    override fun destroy() {
+    override suspend fun destroy() {
         mTimer?.destroy()
     }
 
