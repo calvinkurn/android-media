@@ -37,7 +37,6 @@ class PlayPusherTimer(val context: Context) {
     }
 
     fun stop() {
-        callback?.onCountDownFinish(getTimeElapsed())
         mCountDownTimer?.cancel()
     }
 
@@ -65,6 +64,7 @@ class PlayPusherTimer(val context: Context) {
 
     fun destroy() {
         mCountDownTimer?.cancel()
+        mCountDownTimer = null
     }
 
     private fun getCountDownTimer(liveStreamDuration: Long): PlayCountDownTimer {

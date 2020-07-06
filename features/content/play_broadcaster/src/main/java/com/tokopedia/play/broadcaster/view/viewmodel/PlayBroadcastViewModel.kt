@@ -91,6 +91,15 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
+    private val _observableLiveDuration = MediatorLiveData<Event<BroadcastTimerState>>().apply {
+        addSource(playPusher.getObservablePlayPusherInfoState()) {
+            when(it) {
+                is PlayPusherInfoState.TimerActive -> value = Event(BroadcastTimerState.Active(it.timeRemaining))
+                is PlayPusherInfoState.TimerAlmostFinish -> value = Event(BroadcastTimerState.AlmostFinish(it.minutesUntilFinished))
+                is PlayPusherInfoState.TimerFinish -> value = Event(BroadcastTimerState.Finish(it.timeElapsed))
+            }
+        }
+    }
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
     private val _observableShareInfo = MutableLiveData<ShareUiModel>()
