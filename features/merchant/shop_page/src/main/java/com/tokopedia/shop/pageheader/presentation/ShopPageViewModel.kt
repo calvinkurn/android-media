@@ -160,10 +160,10 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             throw MessageErrorException(shopInfoError.mapNotNull { it.message }.joinToString(separator = ", "))
         }
 
-        val broadcasterConfigError = gqlResponse.getError(Broadcaster.Config::class.java)
-        val broadcasterConfig = gqlResponse.getData<Broadcaster.Config>(Broadcaster.Config::class.java)
-        if(broadcasterConfigError == null || broadcasterConfig != null){
-            shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = broadcasterConfig)
+        val broadcasterConfigError = gqlResponse.getError(Broadcaster::class.java)
+        val broadcasterConfig = gqlResponse.getData<Broadcaster>(Broadcaster::class.java)
+        if(broadcasterConfigError == null || broadcasterConfig?.config != null){
+            shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = broadcasterConfig.config)
         } else {
             throw MessageErrorException(broadcasterConfigError.mapNotNull { it.message }.joinToString(separator = ", "))
         }

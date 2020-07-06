@@ -66,7 +66,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             displayAsBuyer()
         }
-        setupSgcPlayWidget(shopInfo, !isMyShop, broadcasterConfig)
+        setupSgcPlayWidget(shopInfo, isMyShop, broadcasterConfig)
 
         if (shopInfo.freeOngkir.isActive)
             showLabelFreeOngkir(remoteConfig)

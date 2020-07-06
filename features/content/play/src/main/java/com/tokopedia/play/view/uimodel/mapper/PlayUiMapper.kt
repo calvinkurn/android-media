@@ -6,6 +6,7 @@ import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
  * Created by mzennis on 2020-03-06.

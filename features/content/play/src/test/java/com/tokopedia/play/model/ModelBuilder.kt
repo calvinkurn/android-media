@@ -2,7 +2,6 @@ package com.tokopedia.play.model
 
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
@@ -10,9 +9,9 @@ import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import com.tokopedia.variant_common.model.ProductVariantCommon
