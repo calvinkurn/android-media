@@ -27,12 +27,12 @@ import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.changephonenumber.di.input.ChangePhoneNumberInputComponent;
 import com.tokopedia.changephonenumber.di.input.ChangePhoneNumberInputModule;
 import com.tokopedia.changephonenumber.di.input.DaggerChangePhoneNumberInputComponent;
-import com.tokopedia.changephonenumber.util.CustomPhoneNumberUtil;
 import com.tokopedia.changephonenumber.view.customview.BottomSheetInfo;
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.utils.phonenumber.PhoneNumberUtil;
 
 import java.util.ArrayList;
 
@@ -114,7 +114,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton = view.findViewById(R.id.next_button);
         progressDialog = (RelativeLayout) view.findViewById(R.id.loading_view);
 
-        oldPhoneNumber.setText(CustomPhoneNumberUtil.transform(phoneNumber));
+        oldPhoneNumber.setText(PhoneNumberUtil.transform(phoneNumber));
     }
 
     private void setViewListener() {
