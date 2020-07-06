@@ -89,7 +89,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        recyclerView.playVideos()
+        recyclerView.playVideos(false)
     }
 
     fun onPause(){

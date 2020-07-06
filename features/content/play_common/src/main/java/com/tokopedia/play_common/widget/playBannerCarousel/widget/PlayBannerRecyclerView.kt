@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader
 import com.google.android.exoplayer2.util.Util
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.util.PlayConnectionCommon
@@ -46,7 +47,11 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
     private val snapListener = object : GravitySnapHelper.SnapListener{
         override fun onSnap(recyclerView: RecyclerView?, position: Int) {
-            playVideos()
+            if (recyclerView?.canScrollHorizontally(1) == false) {
+                playVideos(true)
+            } else {
+                playVideos(false)
+            }
         }
     }
 
@@ -90,13 +95,13 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             override fun onChildViewAttachedToWindow(view: View) {}
 
             override fun onChildViewDetachedFromWindow(view: View) {
-                log(this::class.simpleName ?: "", "On Detach From Window: ${view.tag}")
+                log("On Detach From Window: ${view.tag}")
                 resetVideoView(view.tag)
             }
         })
     }
 
-    fun playVideos() {
+    fun playVideos(isEndOfList: Boolean) {
         try{
             // check internet wifi or data available or auto play or video data is not empty
             if(!(PlayConnectionCommon.isConnectWifi(context) || PlayConnectionCommon.isConnectCellular(context)) || !isAutoPlay || mediaObjects.isEmpty()) return
@@ -118,6 +123,17 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 endPosition--
             }
 
+            log("Find position range: $startPosition - $endPosition")
+
+            // if end of list play from right to start
+            if(isEndOfList){
+                // if there are 3 items visible, play from last and middle item
+                if(endPosition - startPosition == 2){
+                    startPosition += 1
+                }
+                log("End of list update position: $startPosition - $endPosition")
+            }
+
             // something is wrong. return.
             if (startPosition < 0 || endPosition < 0) {
                 return
@@ -131,12 +147,14 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 if(targetPositions.size == videoPlayers.size) break
             }
 
-            log(this::class.simpleName ?: "", "Position play: $targetPositions")
+            log("Position play: $targetPositions")
+
+            log("Previous Position: $previousPosition")
 
             // find new position
             val newPositions = targetPositions.filter { !previousPosition.contains(it) }
 
-            log(this::class.simpleName ?: "", "New Position: $newPositions")
+            log("New Position: $newPositions")
 
             if(newPositions.isEmpty()){
                 // find prev contain target position
@@ -162,11 +180,11 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
             for (playPosition in newPositions){
                 for (videoPlayer in videoPlayers){
-                    log(this::class.simpleName ?: "", "New Position Contains : ${videoPlayer.position}")
+                    log("New Position Contains : ${videoPlayer.position}")
                     if(!targetPositions.contains(videoPlayer.position)){
-                        log(this::class.simpleName ?: "", "On Remove Video View: at ${videoPlayer.position}")
+                        log("On Remove Video View: at ${videoPlayer.position}")
                         removeVideoView(videoPlayer)
-                        log(this::class.simpleName ?: "", "On Play Video: $playPosition")
+                        log("On Play Video: $playPosition")
                         playVideo(videoPlayer, playPosition)
                         break
                     }
@@ -174,6 +192,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             }
         } catch (exception: Exception) {
             exception.printStackTrace()
+            log(exception.toString())
         }
     }
 
@@ -190,17 +209,23 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             videoPlayer.autoPlayJob = launch {
                 launchCatchError(Dispatchers.Main, block = {
                     exoPlayer.seekTo(mediaObjectsLastPosition[playPosition].toLong())
-                }){}
+                }){
+                    log(it.toString())
+                }
                 delay(delayDuration.toLong())
                 launchCatchError(Dispatchers.Main, block = {
                     exoPlayer.prepare(videoSource)
                     exoPlayer.playWhenReady = true
-                }){}
+                }){
+                    log(it.localizedMessage)
+                }
                 delay(if(PlayConnectionCommon.isConnectWifi(context)) durationPlayWithWifi.toLong() else durationPlayWithData.toLong())
                 launchCatchError(Dispatchers.Main, block = {
                     exoPlayer.playWhenReady = false
                     removeVideoView(videoPlayer)
-                }){}
+                }){
+                    log(it.toString())
+                }
             }
             videoPlayer.autoPlayJob?.start()
         }
@@ -279,6 +304,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     }
 
     fun resetVideoPlayer(){
+        previousPosition.clear()
         for(videoPlayer in videoPlayers){
             removeVideoView(videoPlayer)
         }
@@ -291,8 +317,8 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         resetVideoPlayer()
         coroutineContext.cancelChildren()
         Handler().postDelayed({
-            playVideos()
-        }, 250)
+            playVideos(false)
+        }, 500)
     }
 
     /* in seconds */
@@ -374,8 +400,8 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         }
     }
 
-    private fun log(tag: String, message: String){
-        Timber.tag(tag).e(message)
+    private fun log(message: String){
+        if(GlobalConfig.DEBUG) Timber.tag(this::class.simpleName ?: "").e(message)
     }
 
     companion object{
