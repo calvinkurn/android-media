@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.TelcoFilterViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -36,4 +37,9 @@ abstract class DigitalTopupViewModelModule {
     @IntoMap
     @ViewModelKey(DigitalTelcoEnquiryViewModel::class)
     internal abstract fun digitalTelcoEnquiryViewModel(enquiryViewModel: DigitalTelcoEnquiryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TelcoFilterViewModel::class)
+    internal abstract fun telcoFilterViewModel(enquiryViewModel: TelcoFilterViewModel): ViewModel
 }

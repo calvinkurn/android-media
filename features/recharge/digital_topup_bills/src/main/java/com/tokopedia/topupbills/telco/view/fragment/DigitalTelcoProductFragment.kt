@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,16 +20,18 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
+import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
 import com.tokopedia.topupbills.telco.data.TelcoFilterTagComponent
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
+import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalTelcoFilterBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
-import com.tokopedia.topupbills.telco.view.model.TelcoFilterData
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.TelcoFilterViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -46,6 +49,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var titleEmptyState: TextView
     private lateinit var descEmptyState: TextView
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
+    private lateinit var telcoFilterViewModel: TelcoFilterViewModel
     private lateinit var selectedOperatorName: String
     private lateinit var shimmeringGridLayout: LinearLayout
     private lateinit var shimmeringListLayout: LinearLayout
@@ -54,7 +58,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private var titleProduct: String = ""
     private var selectedProduct: Int = 0
     private var hasTitle = false
-    private var telcoFilterData = TelcoFilterData()
     private var productType = TelcoProductType.PRODUCT_LIST
 
     @Inject
@@ -71,6 +74,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             sharedModelPrepaid = viewModelProvider.get(SharedTelcoPrepaidViewModel::class.java)
+            telcoFilterViewModel = viewModelProvider.get(TelcoFilterViewModel::class.java)
         }
     }
 
@@ -167,31 +171,34 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     private fun renderSortFilter(filters: List<TelcoFilterTagComponent>) {
-        if (telcoFilterData.getFilterTags().isEmpty()) {
-            telcoFilterData.setFilterTags(filters)
+        if (telcoFilterViewModel.getFilterTags().isEmpty()) {
+            telcoFilterViewModel.setFilterTags(filters)
 
             val filterData = arrayListOf<SortFilterItem>()
 
-            telcoFilterData.getFilterTags().map { filterTag ->
+            telcoFilterViewModel.getFilterTags().map { filterTag ->
                 val sortFilter = SortFilterItem(filterTag.text)
                 sortFilter.listener = {
-                    val listTag = ArrayList<String>()
-                    val listKey = ArrayList<String>()
-                    filterTag.dataCollections.map { dataCollection ->
-                        listTag.add(dataCollection.value)
-                        listKey.add(dataCollection.key)
-                    }
+                    val filterBottomSheet = DigitalTelcoFilterBottomSheet.newInstance(filterTag.text,
+                            filterTag.paramName, filterTag.filterTagDataCollections as ArrayList<FilterTagDataCollection>)
+                    filterBottomSheet.setListener(object : DigitalTelcoFilterBottomSheet.ActionListener {
+                        override fun onTelcoFilterSaved(valuesFilter: ArrayList<String>) {
+                            telcoFilterViewModel.addFilter(filterTag.paramName, valuesFilter)
+                            sharedModelPrepaid.setSelectedFilter(telcoFilterViewModel.getAllFilter())
 
-                    //TODO make bottom sheet here
-                    if (sortFilter.type == ChipsUnify.TYPE_NORMAL) {
-                        sortFilter.type = ChipsUnify.TYPE_SELECTED
-                        telcoFilterData.addFilter(filterTag.paramName, listKey)
-                    } else {
-                        sortFilter.type = ChipsUnify.TYPE_NORMAL
-                        telcoFilterData.removeFilter(filterTag.paramName)
-                    }
-                    sortFilter.selectedItem = listTag
-                    sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
+                            if (telcoFilterViewModel.isFilterSelected()) {
+                                sortFilter.type = ChipsUnify.TYPE_SELECTED
+                            } else {
+                                sortFilter.type = ChipsUnify.TYPE_NORMAL
+                            }
+                        }
+
+                        override fun getFilterSelected(): ArrayList<String> {
+                            return telcoFilterViewModel.getFilterSelectedByParamName(filterTag.paramName)
+                        }
+                    })
+                    filterBottomSheet.setShowListener { filterBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+                    filterBottomSheet.show(childFragmentManager, "filter telco")
                 }
                 filterData.add(sortFilter)
             }
