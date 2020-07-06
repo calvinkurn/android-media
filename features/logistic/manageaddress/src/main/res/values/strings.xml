@@ -20,4 +20,6 @@
 
     <string name="title_empty_search">Oops, alamat tidak ditemukan</string>
     <string name="text_empty_search">Cek kata kuncimu dan coba lagi, ya.</string>
+
+    <string name="tokopedia_note_delimeter">[Tokopedia Note:</string>
 </resources>

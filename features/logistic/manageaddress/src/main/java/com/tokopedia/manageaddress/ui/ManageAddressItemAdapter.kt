@@ -48,18 +48,19 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
             with(itemView) {
                 val addressStreet = data.addressStreet
                 val postalCode = data.postalCode
-                val tokopediaNote = "[Tokopedia Note:" + addressStreet.substringAfterLast("[Tokopedia Note:")
+                val tokopediaNoteCondition = context.getString(R.string.tokopedia_note_delimeter)
+                val tokopediaNote = tokopediaNoteCondition + addressStreet.substringAfterLast(tokopediaNoteCondition)
                 setVisibility(data)
                 setPrimary(data)
                 address_name.text = data.addressName
                 receiver_name.text = data.receiverName
                 receiver_phone.text = data.receiverPhone
-                if(addressStreet.contains("Tokopedia Note")) {
+                if(addressStreet.contains(tokopediaNoteCondition)) {
                     val newAddress = addressStreet.replace(tokopediaNote, "")
                     tokopedia_note.visible()
                     tokopedia_note.text = tokopediaNote
                     if(addressStreet.contains(postalCode)) address_detail.text = newAddress
-                    else address_detail.text = newAddress + "," + data.postalCode
+                    else address_detail.text = newAddress + ", " + data.postalCode
                 } else {
                     address_detail.text = data.addressStreet + ", " + data.postalCode
                 }
