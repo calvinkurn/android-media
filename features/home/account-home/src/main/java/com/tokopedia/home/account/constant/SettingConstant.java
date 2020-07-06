@@ -54,4 +54,5 @@ public class SettingConstant {
     }
 
     public static String PLAYSTORE_URL = "https://play.google.com/store/apps/details?id=";
+    public static String RESCENTER_SELLER = "https://m.tokopedia.com/resolution-center/inbox/seller";
 }

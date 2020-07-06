@@ -15,6 +15,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Label
@@ -139,7 +140,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             })
             etQty?.addTextChangedListener(quantityTextWatcher)
             btnQtyPlus?.setOnClickListener {
-                if (product.quantity.orderQuantity < product.quantity.maxOrderQuantity) {
+                if (product.quantity.orderQuantity < product.quantity.maxOrderQuantity && product.quantity.orderQuantity < product.quantity.maxOrderStock) {
                     product.quantity.orderQuantity++
                     etQty?.setText("${product.quantity.orderQuantity}")
                 }
@@ -159,10 +160,10 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     private fun renderProductPropertiesInvenage() {
-        if (product.productResponse.productInvenageTotal.byUserText.complete.isNotEmpty()) {
-            val completeText = product.productResponse.productInvenageTotal.byUserText.complete
-            val totalInOtherCart = product.productResponse.productInvenageTotal.byUser.inCart
-            val totalRemainingStock = product.productResponse.productInvenageTotal.byUser.lastStockLessThan
+        if (product.productInvenageTotal.byUserText.complete.isNotEmpty()) {
+            val completeText = product.productInvenageTotal.byUserText.complete
+            val totalInOtherCart = product.productInvenageTotal.byUser.inCart
+            val totalRemainingStock = product.productInvenageTotal.byUser.lastStockLessThan
             val invenageText = completeText.replace(view.context?.getString(com.tokopedia.purchase_platform.common.R.string.product_invenage_remaining_stock)
                     ?: "", "" + totalRemainingStock)
                     .replace(view.context?.getString(com.tokopedia.purchase_platform.common.R.string.product_invenage_in_other_cart)
@@ -180,15 +181,18 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         btnQtyPlus?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_enabled)
 
         if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
-            error = String.format(view.context.getString(R.string.min_order_x), element.minOrderQuantity)
+            error = element.errorProductMinQuantity.replace(QuantityUiModel.VALUE_REPLACE_STRING, element.minOrderQuantity.toString())
         } else if (element.orderQuantity > element.maxOrderQuantity) {
-            error = String.format(view.context.getString(R.string.max_order_x), element.maxOrderQuantity)
+            error = element.errorProductMaxQuantity.replace(QuantityUiModel.VALUE_REPLACE_STRING, element.maxOrderQuantity.toString())
+            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_MAX_QTY)
+        } else if (element.orderQuantity > element.maxOrderStock) {
+            error = element.errorProductAvailableStock.replace(QuantityUiModel.VALUE_REPLACE_STRING, element.maxOrderStock.toString())
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_MAX_QTY)
         }
         if (element.orderQuantity <= element.minOrderQuantity) {
             btnQtyMin?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout_disabled)
         }
-        if (element.orderQuantity >= element.maxOrderQuantity) {
+        if (element.orderQuantity >= element.maxOrderQuantity || element.orderQuantity >= element.maxOrderStock) {
             btnQtyPlus?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_disabled)
         }
 

@@ -13,18 +13,15 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.search.presentation.model.*
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
-import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRouteRequest
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRequestModel
 import com.tokopedia.flight.searchV4.domain.*
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSelectedModel
+import com.tokopedia.flight.searchV4.presentation.model.*
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.presentation.model.statistics.FlightSearchStatisticModel
+import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -109,8 +106,7 @@ class FlightSearchViewModel @Inject constructor(
     fun generateSearchStatistics() {
         launchCatchError(context = dispatcherProvider.ui(), block = {
             if (::filterModel.isInitialized) {
-                searchStatisticModel = flightSearchStatisticUseCase.executeCoroutine(
-                        flightSearchStatisticUseCase.createRequestParams(filterModel))
+                searchStatisticModel = flightSearchStatisticUseCase.execute(filterModel)
             }
         }) {
             it.printStackTrace()
@@ -127,15 +123,15 @@ class FlightSearchViewModel @Inject constructor(
 
     fun fetchSearchDataCloud(isReturnTrip: Boolean, delayInSeconds: Long = -1) {
         val date: String = flightSearchPassData.getDate(isReturnTrip)
-        val adult = flightSearchPassData.flightPassengerViewModel.adult
-        val child = flightSearchPassData.flightPassengerViewModel.children
-        val infant = flightSearchPassData.flightPassengerViewModel.infant
+        val adult = flightSearchPassData.flightPassengerModel.adult
+        val child = flightSearchPassData.flightPassengerModel.children
+        val infant = flightSearchPassData.flightPassengerModel.infant
         val classId = flightSearchPassData.flightClass.id
-        val searchRequestId = flightSearchPassData.searchRequestId ?: ""
+        val searchRequestId = flightSearchPassData.searchRequestId
 
         val requestModel = FlightSearchRequestModel(
-                flightAirportCombine.depAirport,
-                flightAirportCombine.arrAirport,
+                flightAirportCombine.departureAirport,
+                flightAirportCombine.arrivalAirport,
                 date, adult, child, infant, classId,
                 flightAirportCombine.airlines,
                 FlightRequestUtil.getLocalIpAddress(),
@@ -188,12 +184,12 @@ class FlightSearchViewModel @Inject constructor(
 
         val combineRequestModel = FlightCombineRequestModel(
                 routes,
-                flightSearchPassData.flightPassengerViewModel.adult,
-                flightSearchPassData.flightPassengerViewModel.children,
-                flightSearchPassData.flightPassengerViewModel.infant,
+                flightSearchPassData.flightPassengerModel.adult,
+                flightSearchPassData.flightPassengerModel.children,
+                flightSearchPassData.flightPassengerModel.infant,
                 flightSearchPassData.flightClass.id,
                 FlightRequestUtil.getLocalIpAddress(),
-                flightSearchPassData.searchRequestId ?: "")
+                flightSearchPassData.searchRequestId)
 
         launchCatchError(context = dispatcherProvider.ui(), block = {
             isCombineDone = flightSearchCombineUseCase.execute(combineRequestModel)
@@ -363,19 +359,19 @@ class FlightSearchViewModel @Inject constructor(
     private fun runFireAndForgetForReturn(isReturnTrip: Boolean) {
         if (!isReturnTrip) {
             val date: String = flightSearchPassData.getDate(true)
-            val adult = flightSearchPassData.flightPassengerViewModel.adult
-            val child = flightSearchPassData.flightPassengerViewModel.children
-            val infant = flightSearchPassData.flightPassengerViewModel.infant
+            val adult = flightSearchPassData.flightPassengerModel.adult
+            val child = flightSearchPassData.flightPassengerModel.children
+            val infant = flightSearchPassData.flightPassengerModel.infant
             val classId = flightSearchPassData.flightClass.id
             val searchRequestId = flightSearchPassData.searchRequestId
 
             val requestModel = FlightSearchRequestModel(
-                    flightAirportCombine.arrAirport,
-                    flightAirportCombine.depAirport,
+                    flightAirportCombine.arrivalAirport,
+                    flightAirportCombine.departureAirport,
                     date, adult, child, infant, classId,
                     flightAirportCombine.airlines,
                     FlightRequestUtil.getLocalIpAddress(),
-                    searchRequestId ?: "")
+                    searchRequestId)
 
             launchCatchError(dispatcherProvider.ui(), {
                 flightSearchUseCase.execute(requestModel,

@@ -32,7 +32,7 @@ class ChatSearchViewModel @Inject constructor(
     val errorMessage: LiveData<Throwable> get() = _errorMessage
 
     private var _searchResults = MutableLiveData<List<Visitable<*>>>()
-    val searchResult: LiveData<List<Visitable<*>>> get() = _searchResults
+    val searchResults: LiveData<List<Visitable<*>>> get() = _searchResults
 
     var firstContactSearchResults: GetChatSearchResponse = GetChatSearchResponse()
 

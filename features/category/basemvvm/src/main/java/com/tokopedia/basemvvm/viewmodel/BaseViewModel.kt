@@ -23,6 +23,10 @@ abstract class BaseViewModel(private val dispatcher : CoroutineDispatcher = Disp
 
     open fun doOnDestroy() {}
 
+    open fun onClear(){
+        onCleared()
+    }
+
     open fun cancelJob(){
         if (isActive && !viewModelJob.isCancelled){
             viewModelJob.cancel()

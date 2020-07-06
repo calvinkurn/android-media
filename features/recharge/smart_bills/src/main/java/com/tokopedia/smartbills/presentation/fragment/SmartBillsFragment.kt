@@ -232,6 +232,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             )
         } else {
             smartBillsAnalytics.userId = userSession.userId
+            smartBillsAnalytics.eventOpenScreen()
 
             context?.let { context ->
                 // Setup ticker
@@ -356,7 +357,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     private fun toggleAllItems(value: Boolean) {
-        smartBillsAnalytics.clickAllBills()
+        smartBillsAnalytics.clickAllBills(value)
         adapter.toggleAllItems(value)
 
         totalPrice = if (value) maximumPrice else 0

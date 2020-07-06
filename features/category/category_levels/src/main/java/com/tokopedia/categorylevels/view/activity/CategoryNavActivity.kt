@@ -75,6 +75,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     private var parentName: String? = null
 
     private var categoryUrl: String? = null
+    private var addCatalog: Boolean = true
 
     private lateinit var categoryNavComponent: com.tokopedia.categorylevels.di.CategoryNavComponent
 
@@ -174,18 +175,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 STATE_GRID -> {
                     catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "grid")
                     img_display_button.tag = STATE_LIST
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_list_display))
                 }
 
                 STATE_LIST -> {
                     catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "list")
                     img_display_button.tag = STATE_BIG
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_big_display))
                 }
                 STATE_BIG -> {
                     catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "big")
                     img_display_button.tag = STATE_GRID
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_grid_display))
                 }
             }
         }
@@ -245,6 +246,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 }
             }
         })
+
+        categoryNavViewModel.getHasCatalogLiveData().observe(this, Observer {
+            if (!it) {
+                removeCatalogTab()
+            }
+            container.show()
+        })
+    }
+
+    private fun removeCatalogTab() {
+        tabs.hide()
+        addCatalog = false
     }
 
     private fun handleCategoryDetailSuccess() {
@@ -362,7 +375,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>) {
         searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName, categoryUrl)))
-        searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
+        if(addCatalog)
+            searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
     }
 
     private fun setActiveTab() {
@@ -443,7 +457,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.home) {
+        if (item?.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }

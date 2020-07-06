@@ -8,8 +8,9 @@ interface SmartBillsAnalyticConstants {
 
     interface Event {
         companion object {
-            const val SMART_BILLS = "clickSmartBill"
+            const val CLICK_SMART_BILLS = "clickSmartBill"
             const val PRODUCT_VIEW = "productView"
+            const val PRODUCT_CLICK = "productClick"
             const val CHECKOUT = "checkout"
         }
     }
@@ -18,6 +19,7 @@ interface SmartBillsAnalyticConstants {
         companion object {
             const val CLICK_LANGGANAN = "click langganan"
             const val CLICK_ALL_TAGIHAN = "click all tagihan"
+            const val UNCLICK_ALL_TAGIHAN = "unclick all tagihan"
             const val CLICK_TICK_BILL = "click tick bill"
             const val CLICK_UNTICK_BILL = "click untick bill"
             const val IMPRESSION_ALL_PRODUCT = "impression all product"
@@ -41,6 +43,7 @@ interface SmartBillsAnalyticConstants {
             const val SCREEN_NAME = "screenName"
             const val CURRENT_SITE = "currentSite"
             const val BUSINESS_UNIT = "businessUnit"
+            const val IS_LOGIN_STATUS = "isLoggedInStatus"
         }
     }
 
@@ -48,6 +51,7 @@ interface SmartBillsAnalyticConstants {
         companion object {
             const val ECOMMERCE = "ecommerce"
             const val CLICK = "click"
+            const val CHECKOUT = "checkout"
             const val ACTION_FIELD = "actionField"
             const val LIST = "list"
             const val STEP = "step"

@@ -74,11 +74,6 @@ interface DynamicProductDetailListener {
     fun onShipmentSocialProofClicked(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
-     * ProductOpenShopViewHolder
-     */
-    fun openShopClicked()
-
-    /**
      * ProductShopInfoViewHolder
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)

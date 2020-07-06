@@ -10,8 +10,6 @@ public class FlightUrl {
 
     public static final String FLIGHT_PATH = "travel/v1/flight/";
     public static final String FLIGHT_PATH_V11 = "travel/v1.1/flight/";
-    public static final String FLIGHT_SEARCH_SINGLE = FLIGHT_PATH + "search/single";
-    public static final String FLIGHT_SEARCH_COMBINED = FLIGHT_PATH + "search/combined";
     public static final String FLIGHT_CANCELLATION_PATH = FLIGHT_PATH + "cancel/";
     public static final String FLIGHT_CANCELLATION_PATH_V11 = FLIGHT_PATH_V11 + "cancel/";
     public static final String FLIGHT_CANCELLATION_PASSENGER = FLIGHT_CANCELLATION_PATH + "passenger";

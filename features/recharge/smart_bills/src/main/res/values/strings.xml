@@ -16,7 +16,7 @@
     <string name="smart_bills_item_detail_title">Detail %1$s</string>
     <string name="smart_bills_item_detail_title_default">Detail Tagihan</string>
     <string name="smart_bills_item_detail_label_1">Nomor Pelanggan</string>
-    <string name="smart_bills_item_detail_label_2">Nama Lengkap</string>
+    <string name="smart_bills_item_detail_label_2">Nama Tagihan</string>
     <string name="smart_bills_item_detail_label_3">Total Tagihan</string>
     <string name="smart_bills_empty_state_title">Belum ada transaksi yang ditemukan</string>
     <string name="smart_bills_empty_state_description">Tagihan yang pernah dibayar akan muncul di sini dan kamu bisa bayar lagi sekaligus.</string>

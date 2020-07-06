@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
-import com.tokopedia.oneclickcheckout.common.domain.model.preference.PreferenceListResponseModel
-import com.tokopedia.oneclickcheckout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.oneclickcheckout.common.view.model.preference.PreferenceListResponseModel
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -143,7 +143,7 @@ class PreferenceListBottomSheet(
         adapter?.submitList(preferences.profiles)
         progressBar?.gone()
         rvPreferenceList?.visible()
-        if (preferences.profiles?.size ?: 0 >= preferences.maxProfile) {
+        if (preferences.profiles.size >= preferences.maxProfile) {
             btnAddPreference?.visible()
             btnAddPreference?.isEnabled = false
         } else {

@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutGroupListItem;
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutListItem;
@@ -408,7 +409,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setMenu(context.getString(R.string.title_menu_seller_complain));
         menuList.setMenuDescription(context.getString(R.string.label_menu_seller_complain));
         menuList.setCount(accountModel.getNotifications().getResolution().getSeller());
-        menuList.setApplink(ApplinkConst.RESCENTER_SELLER);
+        menuList.setApplink(SettingConstant.RESCENTER_SELLER);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_sales));
         items.add(menuList);

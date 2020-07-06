@@ -48,13 +48,13 @@ import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.data.model.response.preference.Address
-import com.tokopedia.oneclickcheckout.common.domain.model.OccGlobalEvent
-import com.tokopedia.oneclickcheckout.common.domain.model.OccState
-import com.tokopedia.oneclickcheckout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.oneclickcheckout.common.data.model.Address
+import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.data.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.data.checkout.Data
+import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OccInfoBottomSheet
@@ -136,6 +136,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private var progressDialog: AlertDialog? = null
     private var coachMark: CoachMark? = null
+    private var dialogUnify: DialogUnify? = null
 
     private var shouldUpdateCart: Boolean = true
     private var shouldDismissProgressDialog: Boolean = false
@@ -359,7 +360,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 is OccGlobalEvent.CheckoutError -> {
                     progressDialog?.dismiss()
                     view?.let { _ ->
-                        ErrorCheckoutBottomSheet().show(this, it, object : ErrorCheckoutBottomSheet.Listener {
+                        ErrorCheckoutBottomSheet().show(this, it.error, object : ErrorCheckoutBottomSheet.Listener {
                             override fun onClickSimilarProduct(errorCode: String) {
                                 if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
                                     orderSummaryAnalytics.eventClickSimilarProductShopClosed()
@@ -380,19 +381,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 is OccGlobalEvent.PriceChangeError -> {
                     progressDialog?.dismiss()
                     if (activity != null) {
-                        val messageData = it.priceValidation.message
-                        if (messageData != null) {
-                            val priceValidationDialog = DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-                            priceValidationDialog.setTitle(messageData.title)
-                            priceValidationDialog.setDescription(messageData.desc)
-                            priceValidationDialog.setPrimaryCTAText(messageData.action)
-                            priceValidationDialog.setPrimaryCTAClickListener {
-                                priceValidationDialog.dismiss()
-                                refresh(isFullRefresh = false)
-                            }
-                            priceValidationDialog.show()
-                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PRICE_CHANGE)
+                        val messageData = it.message
+                        val priceValidationDialog = DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                        priceValidationDialog.setTitle(messageData.title)
+                        priceValidationDialog.setDescription(messageData.desc)
+                        priceValidationDialog.setPrimaryCTAText(messageData.action)
+                        priceValidationDialog.setPrimaryCTAClickListener {
+                            priceValidationDialog.dismiss()
+                            refresh(isFullRefresh = false)
                         }
+                        priceValidationDialog.show()
+                        orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PRICE_CHANGE)
                     }
                 }
                 is OccGlobalEvent.PromoClashing -> {
@@ -400,7 +399,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     if (activity != null) {
                         fragmentManager?.let { fm ->
                             val promoNotEligibleBottomsheet = PromoNotEligibleBottomsheet.createInstance()
-                            promoNotEligibleBottomsheet.notEligiblePromoHolderDataList = it.notEligiblePromoHolderdataList
+                            promoNotEligibleBottomsheet.notEligiblePromoHolderDataList = it.notEligiblePromoHolderDataList
                             promoNotEligibleBottomsheet.actionListener = object : PromoNotEligibleActionListener {
                                 override fun onShow() {
                                     val bottomSheetBehavior = promoNotEligibleBottomsheet.bottomSheetBehavior
@@ -416,7 +415,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 }
 
                                 override fun onButtonContinueClicked(checkoutType: Int) {
-                                    viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderdataList, onSuccessCheckout())
+                                    viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderDataList, onSuccessCheckout())
                                     orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
                                 }
 
@@ -837,6 +836,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.userId)
             viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
         }
 
@@ -852,7 +852,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        override fun chooseDuration() {
+        override fun chooseDuration(isDurationError: Boolean) {
+            if (isDurationError) {
+                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.userId)
+            }
             if (viewModel.orderTotal.value?.buttonState != ButtonBayarState.LOADING) {
                 orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
             }
@@ -895,10 +898,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, profileSize > 1)
                                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
-                                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
-                                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
-                                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode
-                                        ?: "")
+                                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel.addressId)
+                                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel.serviceId)
+                                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel.gatewayCode)
                                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                             }

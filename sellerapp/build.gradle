@@ -247,6 +247,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticorder)
+    implementation project(rootProject.ext.features.editshipping)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
@@ -382,9 +383,9 @@ dependencies {
     implementation rootProject.ext.monitoringDependencies.bugSnag
 
     if (rootProject.ext.debugToolsEnabled) {
-        implementation project(project.ext.debugToolsDependencies.blockCanary)
+        implementation project(rootProject.ext.libraries.blockCanary)
     } else {
-        implementation project.ext.debugToolsDependencies.blockCanaryNoOp
+        implementation rootProject.ext.libraries.blockCanaryNoOp
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
