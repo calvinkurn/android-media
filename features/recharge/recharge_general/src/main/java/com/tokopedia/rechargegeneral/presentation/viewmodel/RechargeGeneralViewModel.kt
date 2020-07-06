@@ -22,7 +22,6 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RechargeGeneralViewModel @Inject constructor(
-        private val rechargeGeneralMapper: RechargeGeneralMapper,
         private val graphqlRepository: GraphqlRepository,
         private val dispatcher: RechargeGeneralDispatchersProvider)
     : BaseViewModel(dispatcher.IO) {
@@ -41,7 +40,7 @@ class RechargeGeneralViewModel @Inject constructor(
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
             if (data.response.operatorGroups == null) {
@@ -60,7 +59,7 @@ class RechargeGeneralViewModel @Inject constructor(
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralDynamicInput.Response>()
 
             val foundProduct = data.response.enquiryFields.find { it.name == PARAM_PRODUCT }
