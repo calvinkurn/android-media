@@ -671,7 +671,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 dividerUserInfo.setVisibility(View.VISIBLE);
                 userInfo.removeAllViews();
                 for (PassengerForm passengerForm : metaDataInfo.getPassengerForms()) {
-                    if(!passengerForm.getPassengerInformations().isEmpty()) {
+                    if(passengerForm!=null) {
                         for (PassengerInformation passengerInformation : passengerForm.getPassengerInformations()) {
                             DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                             doubleTextView.setTopText(passengerInformation.getTitle());
