@@ -229,4 +229,5 @@ include "tkpddesign"
 include "tkpdseller"
 include "tkpdabstraction"
 
+include 'testapp-features:user:logintestapp'
 include "customerapp"

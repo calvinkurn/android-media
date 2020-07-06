@@ -43,6 +43,7 @@ interface SmartBillsAnalyticConstants {
             const val SCREEN_NAME = "screenName"
             const val CURRENT_SITE = "currentSite"
             const val BUSINESS_UNIT = "businessUnit"
+            const val IS_LOGIN_STATUS = "isLoggedInStatus"
         }
     }
 
