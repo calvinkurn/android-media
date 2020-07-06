@@ -1,32 +1,35 @@
 package com.tokopedia.topads.sdk.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
-
-import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
-class TopAdsImageViewViewModel @Inject constructor(private val topAdsImageViewUseCase: TopAdsImageViewUseCase) :ViewModel(), CoroutineScope {
+class TopAdsImageViewViewModel constructor(application: Application) :AndroidViewModel(application), CoroutineScope {
 
     private val response: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> = MutableLiveData()
     private val viewModelJob = SupervisorJob()
+    private var useCase: TopAdsImageViewUseCase =
+            TopAdsImageViewUseCase(UserSession(application.applicationContext).userId, TopAdsRepository())
 
     fun getImageData(queryParams: MutableMap<String, Any>) {
         launchCatchError(
                 block = {
-                    response.postValue(Success(topAdsImageViewUseCase.getImageData(queryParams)))
+                    response.postValue(Success(useCase.getImageData(queryParams)))
                 },
                 onError = {
                     response.postValue(Fail(it))
@@ -34,7 +37,7 @@ class TopAdsImageViewViewModel @Inject constructor(private val topAdsImageViewUs
     }
 
     fun getQueryParams(query: String,source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String): MutableMap<String, Any> {
-        return topAdsImageViewUseCase.getQueryMap(query,source, pageToken, adsCount, dimenId,depId)
+        return useCase.getQueryMap(query,source, pageToken, adsCount, dimenId,depId)
     }
 
 

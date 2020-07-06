@@ -12,11 +12,9 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 
-import javax.inject.Inject
-
 private const val BASE_URL = "https://ta-staging.tokopedia.com/v1.3/display"
 
-class TopAdsRepository @Inject constructor() {
+class TopAdsRepository {
 
     private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 

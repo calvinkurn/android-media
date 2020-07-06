@@ -1,19 +1,19 @@
 package com.tokopedia.topads.sdk.widget
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
-import com.tokopedia.topads.sdk.di.TopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
@@ -23,44 +23,23 @@ import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
-import javax.inject.Inject
 
-class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
+class TopAdsImageView : AppCompatImageView {
 
-    @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    companion object {
+        private var noOfObject = 0
+    }
 
     private lateinit var topAdsImageViewViewModel: TopAdsImageViewViewModel
-
     private var topAdsImageViewClickListener: TopAdsImageViewClickListener? = null
     private var topAdsImageViewImpressionListener: TopAdsImageViewImpressionListener? = null
     private var topAdsImageVieWApiResponseListener: TopAdsImageVieWApiResponseListener? = null
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
-
-    private fun init() {
-        component.inject(this)
-        val activity: FragmentActivity by lazy {
-            try {
-                context as FragmentActivity
-            } catch (exception: ClassCastException) {
-                throw ClassCastException("Please ensure that the provided Context is a valid FragmentActivity")
-            }
-        }
-        topAdsImageViewViewModel = ViewModelProviders
-                .of(activity, viewModelProvider)
-                .get(TopAdsImageViewViewModel::class.java)
-    }
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     /**
      * Use this function to get callback when user click on view
@@ -87,30 +66,38 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
      * @param dimenId Use this parameter to provide dimen id
      * @param depId Required in case of category and intermediate page else optional
      * */
-    fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "",  depId: String = "", pageToken: String = "") {
-        val queryParams = topAdsImageViewViewModel.getQueryParams(query,source, pageToken, adsCount, dimenId, depId)
+    fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "") {
+        initViewModel()
+        val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId)
         topAdsImageViewViewModel.getImageData(queryParams)
-        if (!topAdsImageViewViewModel.getResponse().hasActiveObservers()){
-            topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
-                when (it) {
-                    is Success -> {
-                        topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
-                        Timber.d("Response received successfully")
-                    }
-                    is Fail -> {
-                        topAdsImageVieWApiResponseListener?.onError(it.throwable)
-                        Timber.d("error in response")
-                    }
+        topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
+                    Timber.d("Response received successfully")
                 }
+                is Fail -> {
+                    topAdsImageVieWApiResponseListener?.onError(it.throwable)
+                    Timber.d("error in response")
+                }
+            }
 
-            })
-        }
+        })
     }
 
-    override fun getComponent(): TopAdsComponent {
-        return DaggerTopAdsComponent.builder()
-                .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
+
+    private fun initViewModel() {
+        val activity: FragmentActivity by lazy {
+            try {
+                context as FragmentActivity
+            } catch (exception: ClassCastException) {
+                throw ClassCastException("Please ensure that the provided Context is a valid FragmentActivity")
+            }
+        }
+        topAdsImageViewViewModel = ViewModelProviders
+                .of(activity)
+                .get((TopAdsImageViewViewModel::class.java.canonicalName
+                        ?: "") + noOfObject++, TopAdsImageViewViewModel::class.java)
     }
 
     /**
@@ -128,20 +115,33 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
      * */
     fun loadImage(imageData: TopAdsImageViewModel) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
-            ImageHandler.LoadImageResize(context,
-                    this,
-                    imageData.imageUrl,
-                    context.resources.displayMetrics.widthPixels,
-                    getHeight(imageData.imageWidth, imageData.imageHeight)
-            )
-            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
-                    ?: "")
-            Timber.d("TopAdsImageView is visible")
-            this.setOnClickListener {
-                topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
-                Timber.d("TopAdsImageView is clicked")
-                ImpresionTask(this.javaClass.canonicalName).execute(imageData.adClickUrl)
-            }
+            Glide.with(context)
+                    .load(imageData.imageUrl)
+                    .override(context.resources.displayMetrics.widthPixels,
+                            getHeight(imageData.imageWidth, imageData.imageHeight))
+                    .fitCenter()
+                    .addListener(object : RequestListener<Drawable> {
+
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            Timber.d("Error in loading TopAdsImageView")
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+
+                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl ?: "")
+                            Timber.d("TopAdsImageView is loaded successfully")
+
+                            this@TopAdsImageView.setOnClickListener {
+                                topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
+                                Timber.d("TopAdsImageView is clicked")
+                                ImpresionTask(this@TopAdsImageView.javaClass.canonicalName).execute(imageData.adClickUrl)
+                            }
+                            return false
+                        }
+
+                    })
+                    .into(this)
         } else {
             this.hide()
         }

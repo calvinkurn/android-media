@@ -2,8 +2,6 @@ package com.tokopedia.topads.sdk.domain.interactor
 
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 import kotlin.collections.set
 
 private const val ADS_TYPE = "ep"
@@ -16,8 +14,8 @@ private const val USER_ID = "user_id"
 private const val DEP_ID = "dep_id"
 private const val QUERY = "q"
 
-class TopAdsImageViewUseCase @Inject constructor(private val userSession: UserSessionInterface,
-                                                 private val repository: TopAdsRepository) {
+class TopAdsImageViewUseCase constructor(private val userId: String,
+                                         private val repository: TopAdsRepository) {
 
     suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
         return repository.getImageData(queryParams)
@@ -25,7 +23,7 @@ class TopAdsImageViewUseCase @Inject constructor(private val userSession: UserSe
 
     fun getQueryMap(query: String, source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String): MutableMap<String, Any> {
         val queryMap = HashMap<String, Any>()
-        queryMap[USER_ID] = userSession.userId
+        queryMap[USER_ID] = userId
         queryMap[ADS_TYPE] = "banner"
         queryMap[DEVICE_TYPE] = "android"
         queryMap[SOURCE] = source
