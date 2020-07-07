@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
+import com.tokopedia.play.broadcaster.util.cleanBackstack
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
@@ -84,6 +85,7 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
         inject()
         childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
+        cleanBackstack()
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
