@@ -177,6 +177,7 @@ class AddEditProductVariantFragment :
         observeProductInputModel()
         observeInputStatus()
         observeSizechartVisibility()
+        observeVariantPhotosVisibility()
         observeIsEditMode()
 
         cardSizechart.setOnClickListener {
@@ -317,14 +318,12 @@ class AddEditProductVariantFragment :
     }
 
     private fun deselectVariantType(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
-        val variantId = variantDetail.variantID
         // hide section
         resetVariantValueSection(layoutPosition)
         // remove adapter - layout map entry
         viewModel.removeVariantValueLayoutMapEntry(adapterPosition)
         // update layout - selected unit values map
         viewModel.updateSelectedVariantUnitValuesMap(layoutPosition, mutableListOf())
-
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                 viewModel.updateSelectedVariantUnitValuesLevel1(mutableListOf())
@@ -333,11 +332,7 @@ class AddEditProductVariantFragment :
                 viewModel.updateSelectedVariantUnitValuesLevel2(mutableListOf())
             }
         }
-
-        if (variantId == COLOUR_VARIANT_TYPE_ID) {
-            variantPhotoLayout.hide()
-        }
-
+        viewModel.hideProductVariantPhotos(variantDetail)
         viewModel.updateSizechartFieldVisibility(variantDetail, false)
     }
 
@@ -625,6 +620,7 @@ class AddEditProductVariantFragment :
 
     private fun showCustomVariantInputForm(layoutPosition: Int, variantId: Int, unitName: String) {
         customVariantValueInputForm = BottomSheetUnify()
+        customVariantValueInputForm?.isKeyboardOverlap = false
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + unitName)
         val customVariantValueInputLayout = CustomVariantUnitValueForm(context)
         customVariantValueInputLayout.setLayoutPosition(layoutPosition)
@@ -672,60 +668,10 @@ class AddEditProductVariantFragment :
                 is Success -> {
                     // all variant details
                     val variantDetails = result.data.getCategoryVariantCombination.data.variantDetails
-                    // setup variant type section view
-                    variantTypeAdapter?.setData(variantDetails)
-                    variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
                     // get selected variant details
                     val selectedVariantDetails = viewModel.getSelectedVariantDetails()
-                    // set selected variant types
-                    variantTypeAdapter?.setSelectedItems(selectedVariantDetails)
-                    // update variant selection state
-                    if (selectedVariantDetails.size == 1) viewModel.isSingleVariantTypeIsSelected = true
-                    // set selected variant unit and values
-                    selectedVariantDetails.forEachIndexed { index, variantDetail ->
-
-                        val selectedVariantUnit = variantDetail.units.firstOrNull()
-                                ?: Unit()
-                        val selectedVariantUnitValues = variantDetail.units.firstOrNull()?.unitValues
-                                ?: listOf()
-
-                        when (index) {
-                            VARIANT_VALUE_LEVEL_ONE_POSITION -> {
-                                setupVariantValueSection(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail, selectedVariantUnitValues)
-                                // update adapter - layout position map
-                                viewModel.updateVariantValuesLayoutMap(index, VARIANT_VALUE_LEVEL_ONE_POSITION)
-                                // update view model selected variant unit level1
-                                viewModel.updateSelectedVariantUnitMap(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnit)
-                                // update view model selected variant unit values level 1
-                                viewModel.updateSelectedVariantUnitValuesLevel1(selectedVariantUnitValues)
-                                // update layout position - selected variant unit values
-                                viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnitValues.toMutableList())
-                            }
-                            VARIANT_VALUE_LEVEL_TWO_POSITION -> {
-                                setupVariantValueSection(VARIANT_VALUE_LEVEL_TWO_POSITION, variantDetail, selectedVariantUnitValues)
-                                // update adapter - layout position map
-                                viewModel.updateVariantValuesLayoutMap(index, VARIANT_VALUE_LEVEL_TWO_POSITION)
-                                // update view model selected variant unit level2
-                                viewModel.updateSelectedVariantUnitMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnit)
-                                // update view model selected variant unit values level 2
-                                viewModel.updateSelectedVariantUnitValuesLevel2(selectedVariantUnitValues)
-                                // update layout position - selected variant unit values
-                                viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnitValues.toMutableList())
-                            }
-                        }
-                    }
-
-                    // set product variant images
-                    viewModel.productInputModel.value?.run {
-                        val variantPhotos = viewModel.getProductVariantPhotos(this)
-                        variantPhotoAdapter?.setData(variantPhotos)
-                    }
-
-                    // set product variant size chart
-                    val sizechart = viewModel.productInputModel.value?.variantInputModel?.sizecharts
-                            ?: PictureVariantInputModel()
-                    viewModel.updateSizechart(sizechart)
-                    viewModel.updateSizechartFieldVisibility()
+                    // setup the page
+                    setupAddEditVariantPage(variantDetails, selectedVariantDetails)
                 }
                 is Fail -> {
                     context?.let {
@@ -788,10 +734,76 @@ class AddEditProductVariantFragment :
         })
     }
 
+    private fun observeVariantPhotosVisibility() {
+        viewModel.isVariantPhotosVisible.observe(this, Observer{ isVisible ->
+            if (isVisible) variantPhotoLayout.show()
+            else variantPhotoLayout.hide()
+        })
+    }
+
     private fun observeSizechartVisibility() {
         viewModel.isVariantSizechartVisible.observe(this, Observer {
             layoutSizechart.visibility = if (it) View.VISIBLE else View.GONE
         })
+    }
+
+    private fun setupAddEditVariantPage(variantDetails: List<VariantDetail>, selectedVariantDetails: List<VariantDetail>) {
+        // setup variant type section view
+        variantTypeAdapter?.setData(variantDetails)
+        variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
+        // set selected variant types
+        variantTypeAdapter?.setSelectedItems(selectedVariantDetails)
+        // update variant selection state
+        if (selectedVariantDetails.size == 1) viewModel.isSingleVariantTypeIsSelected = true
+        // set selected variant unit and values
+        selectedVariantDetails.forEachIndexed { index, variantDetail ->
+            val selectedVariantUnit = variantDetail.units.firstOrNull()
+                    ?: Unit()
+            val selectedVariantUnitValues = variantDetail.units.firstOrNull()?.unitValues
+                    ?: listOf()
+            when (index) {
+                VARIANT_VALUE_LEVEL_ONE_POSITION -> {
+                    setupVariantValueSection(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail, selectedVariantUnitValues)
+                    // update adapter - layout position map
+                    viewModel.updateVariantValuesLayoutMap(index, VARIANT_VALUE_LEVEL_ONE_POSITION)
+                    // update view model selected variant unit level1
+                    viewModel.updateSelectedVariantUnitMap(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnit)
+                    // update view model selected variant unit values level 1
+                    viewModel.updateSelectedVariantUnitValuesLevel1(selectedVariantUnitValues)
+                    // update layout position - selected variant unit values
+                    viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnitValues.toMutableList())
+                }
+                VARIANT_VALUE_LEVEL_TWO_POSITION -> {
+                    setupVariantValueSection(VARIANT_VALUE_LEVEL_TWO_POSITION, variantDetail, selectedVariantUnitValues)
+                    // update adapter - layout position map
+                    viewModel.updateVariantValuesLayoutMap(index, VARIANT_VALUE_LEVEL_TWO_POSITION)
+                    // update view model selected variant unit level2
+                    viewModel.updateSelectedVariantUnitMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnit)
+                    // update view model selected variant unit values level 2
+                    viewModel.updateSelectedVariantUnitValuesLevel2(selectedVariantUnitValues)
+                    // update layout position - selected variant unit values
+                    viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnitValues.toMutableList())
+                }
+            }
+            // show the variant photos
+            viewModel.showProductVariantPhotos(variantDetail)
+        }
+
+        // set product variant images
+        viewModel.productInputModel.value?.run {
+            val variantPhotos = viewModel.getProductVariantPhotos(this)
+            if (variantPhotos.isNotEmpty()) {
+                // populate the adapter with photos
+                variantPhotoAdapter?.setData(variantPhotos)
+            }
+        }
+
+        // set product variant size chart
+        val sizechart = viewModel.productInputModel.value?.variantInputModel?.sizecharts
+                ?: PictureVariantInputModel()
+        viewModel.updateSizechart(sizechart)
+        viewModel.updateSizechartFieldVisibility()
+
     }
 
     private fun showRemoveVariantDialog() {

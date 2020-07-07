@@ -42,7 +42,7 @@ object ProductAddVariantTracking {
 
     // 2.5 label = variant type - variant unit values counter
     fun saveVariantUnitValues(label: String, shopId: String) {
-        sendAddProductVariantClick("click simpan variant", label, shopId, SCREEN_NAME)
+        sendAddProductVariantClick("click simpan variant type values", label, shopId, SCREEN_NAME)
     }
 
     // 2.6
@@ -52,7 +52,7 @@ object ProductAddVariantTracking {
 
     // 2.7 label = variant type - variant unit value
     fun saveCustomVariantUnitValue(label: String, shopId: String) {
-        sendAddProductVariantClick("click simpan custom variant", label, shopId, SCREEN_NAME)
+        sendAddProductVariantClick("click simpan custom variant value", label, shopId, SCREEN_NAME)
     }
 
     // 2.8
