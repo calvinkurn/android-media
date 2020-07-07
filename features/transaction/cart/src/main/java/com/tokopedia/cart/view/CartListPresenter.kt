@@ -416,6 +416,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var subTotalWholesalePrice = 0.0
         var subtotalWholesaleCashback = 0.0
 
+        returnValue[0] = subTotalWholesalePrice
+        returnValue[1] = subtotalWholesaleCashback
+
         var hasCalculateWholesalePrice = false
         val wholesalePriceDataList = originData.wholesalePriceData ?: emptyList()
 
@@ -553,13 +556,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
         }
 
-        if (!subtotalWholesalePriceMap.isEmpty()) {
+        if (subtotalWholesalePriceMap.isNotEmpty()) {
             for ((_, value) in subtotalWholesalePriceMap) {
                 subtotalPrice += value
             }
         }
 
-        if (!subtotalWholesaleCashbackMap.isEmpty()) {
+        if (subtotalWholesaleCashbackMap.isNotEmpty()) {
             for ((_, value) in subtotalWholesaleCashbackMap) {
                 subtotalCashback += value
             }
