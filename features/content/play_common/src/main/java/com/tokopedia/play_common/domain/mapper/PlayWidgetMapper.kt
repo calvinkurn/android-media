@@ -1,7 +1,6 @@
 package com.tokopedia.play_common.domain.mapper
 
 import com.tokopedia.play_common.domain.model.PlayWidget
-import com.tokopedia.play_common.widget.playBannerCarousel.helper.DateHelper
 import com.tokopedia.play_common.widget.playBannerCarousel.model.*
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.BasePlayBannerCarouselModel
 
@@ -10,9 +9,8 @@ object PlayWidgetMapper {
         val list = mutableListOf<BasePlayBannerCarouselModel>()
         if(playWidget.meta.overlayImage.isNotBlank())
         list.add(PlayBannerCarouselOverlayImageDataModel(
-                imageUrl = playWidget.meta.overlayImage,
-                applink = playWidget.meta.overlayImageApplink,
-                weblink = playWidget.meta.overlayImageWeblink
+                applink = playWidget.meta.overlayImageApplink ?: "",
+                imageUrl = playWidget.meta.overlayImage
         ))
 
         list.addAll(
@@ -25,7 +23,6 @@ object PlayWidgetMapper {
                                 applink = it.appLink,
                                 channelCreator = it.partner.name,
                                 countView = it.stats.view.formatted,
-                                endTime = DateHelper.getExpiredTime(it.endTime),
                                 isLive = it.video.isLive,
                                 isShowTotalView = it.video.isShowTotalView,
                                 isPromo = it.config.hasPromo,
@@ -36,12 +33,13 @@ object PlayWidgetMapper {
                                     else -> PlayBannerWidgetType.NONE
                                 },
                                 serverTime = 0,
-                                startTime = DateHelper.getExpiredTime(it.startTime),
+                                startTime = it.startTime,
                                 videoUrl = it.video.streamSource,
                                 coverUrl = it.video.coverUrl,
                                 channelId = it.id,
                                 videoId = it.video.id,
-                                videoType = it.video.type
+                                videoType = it.video.type,
+                                remindMe = it.config.isReminderSet
                         )
                     }
                 }

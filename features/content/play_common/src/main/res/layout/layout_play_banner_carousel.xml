@@ -27,6 +27,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <FrameLayout
+        android:id="@+id/content_play_banner"
         android:layout_width="match_parent"
         android:layout_height="260dp"
         android:layout_marginTop="10dp"
@@ -50,11 +51,11 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/parallax_image"
-                android:layout_marginLeft="@dimen/spacing_lvl8"
-                android:layout_marginStart="@dimen/spacing_lvl8"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
                 android:layout_height="match_parent"
-                android:layout_width="@dimen/play_banner_item_carousel_width"
-                android:scaleType="fitCenter"/>
+                android:layout_width="wrap_content"
+                android:scaleType="fitXY"/>
 
         </FrameLayout>
 
@@ -87,4 +88,12 @@
             tools:listitem="@layout/item_play_banner_carousel"/>
 
     </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/container_play_shimmering"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

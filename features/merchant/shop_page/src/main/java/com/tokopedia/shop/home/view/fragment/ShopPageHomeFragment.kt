@@ -155,8 +155,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeLiveData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        shopHomeAdapter.resumePlayCarousel()
+    }
+
     override fun onPause() {
         shopPageHomeTracking.sendAllTrackingQueue()
+        shopHomeAdapter.pausePlayCarousel()
         super.onPause()
     }
 
@@ -166,6 +172,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.checkWishlistData?.removeObservers(this)
         viewModel?.reminderPlayLiveData?.removeObservers(this)
         viewModel?.flush()
+        shopHomeAdapter.onDestroy()
         super.onDestroy()
     }
 
