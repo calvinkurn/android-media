@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -167,6 +168,10 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         val paymentURL: String = data.checkout.data.data.redirectUrl
 
                         if (!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
+                            val taskStackBuilder = TaskStackBuilder.create(context)
+                            val intentHomeEvent = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
+                            taskStackBuilder.addNextIntent(intentHomeEvent)
+                            taskStackBuilder.startActivities()
                             ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(com.tokopedia.oms.R.string.pembayaran))
                         } else {
                             view?.let {
