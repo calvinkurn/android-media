@@ -1,21 +1,19 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.address
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.oneclickcheckout.common.domain.model.OccState
+import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.purchase_platform.common.feature.addresslist.GetAddressCornerUseCase
 import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseCase, dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseCase, private val dispatcher: ExecutorDispatchers) : BaseViewModel(dispatcher.main) {
 
     var savedQuery: String = ""
     var selectedId = "-1"
@@ -63,7 +61,7 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
 
     fun logicSelection(addressListModel: AddressListModel) {
         launch {
-            withContext(Dispatchers.Default) {
+            withContext(dispatcher.default) {
                 val addressList = addressListModel.listAddress
                 for (item in addressList) {
                     item.isSelected = item.id == selectedId

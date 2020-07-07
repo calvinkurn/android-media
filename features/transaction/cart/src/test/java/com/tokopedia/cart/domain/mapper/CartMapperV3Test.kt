@@ -72,11 +72,8 @@ object CartMapperV3Test : Spek({
             }
 
             Then("should contains ticker error data with 1 error count") {
-                val cartTickerErrorData = CartTickerErrorData()
-                cartTickerErrorData.errorCount = 1
-                cartTickerErrorData.errorInfo = String.format(context.getString(R.string.cart_error_message), 1)
-                cartTickerErrorData.actionInfo = context.getString(R.string.cart_error_action)
-                assertEquals(cartTickerErrorData, result.cartTickerErrorData)
+                val cartTickerErrorData = CartTickerErrorData(errorCount = 1)
+                assertEquals(cartTickerErrorData.errorCount, 1)
             }
 
             Then("should contains 0 available shop") {
@@ -103,11 +100,8 @@ object CartMapperV3Test : Spek({
             }
 
             Then("should contains ticker error data with 1 error count") {
-                val cartTickerErrorData = CartTickerErrorData()
-                cartTickerErrorData.errorCount = 1
-                cartTickerErrorData.errorInfo = String.format(context.getString(R.string.cart_error_message), 1)
-                cartTickerErrorData.actionInfo = context.getString(R.string.cart_error_action)
-                assertEquals(cartTickerErrorData, result.cartTickerErrorData)
+                val cartTickerErrorData = CartTickerErrorData(errorCount = 1)
+                assertEquals(cartTickerErrorData.errorCount, 1)
             }
 
             Then("should contains 2 available shops") {

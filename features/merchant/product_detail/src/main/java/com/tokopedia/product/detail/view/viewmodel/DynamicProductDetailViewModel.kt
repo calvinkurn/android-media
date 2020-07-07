@@ -354,9 +354,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private fun addStaticComponent(it: ProductDetailDataModel) {
-        if (isUserSessionActive && !isUserHasShop) {
-            it.listOfLayout.add(ProductOpenShopDataModel())
-        }
         it.listOfLayout.add(ProductLastSeenDataModel())
     }
 
