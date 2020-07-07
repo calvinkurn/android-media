@@ -325,7 +325,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         else urlOrPath
                     }.orEmpty()
                     val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), viewModel.isEditing.value
-                            ?: false, viewModel.isAdding)
+                            ?: false, viewModel.isAdding.value ?: false)
                     startActivityForResult(intent, REQUEST_CODE_IMAGE)
                 }
             }
@@ -400,7 +400,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             // 3. add product then press back
             // to prevent edit tracker always fired when we came here from add product mode
             // we need a flag isAdding which will be true only if we come to this fragment from product manage
-            val isAdding = viewModel.isAdding
+            val isAdding = viewModel.isAdding.value ?: false
             startAddEditProductDetailActivity(productInputModel, true, isAdding)
         }
 
@@ -600,7 +600,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         if(productPhotoAdapter?.itemCount ?: 0 > 1) {
             // to avoid double hit tracker when dragging or touching image product, we have to put if here
             if(countTouchPhoto == 2) {
-                if (viewModel.isEditing.value == true && !viewModel.isAdding) {
+                if (viewModel.isAdding.value == false) {
                     ProductEditMainTracking.trackDragPhoto(shopId)
                 } else {
                     ProductAddMainTracking.trackDragPhoto(shopId)
@@ -610,10 +610,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
-        if (viewModel.isAdding) {
-            ProductAddStepperTracking.trackRemoveProductImage(shopId)
-        } else {
+        if (viewModel.isAdding.value == false) {
             ProductEditStepperTracking.trackRemoveProductImage(shopId)
+        } else {
+            ProductAddStepperTracking.trackRemoveProductImage(shopId)
         }
     }
 
@@ -999,7 +999,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val cacheManager = SaveInstanceCacheManager(this, true).apply {
                 put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel.value)
                 put(EXTRA_IS_EDITING_PRODUCT, true)
-                put(EXTRA_IS_ADDING_PRODUCT, viewModel.isAdding)
+                put(EXTRA_IS_ADDING_PRODUCT, viewModel.isAdding.value)
             }
             val intent = AddEditProductDescriptionActivity.createInstance(this, cacheManager.id)
             startActivityForResult(intent, REQUEST_CODE_DESCRIPTION_EDIT)
@@ -1011,7 +1011,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val cacheManager = SaveInstanceCacheManager(this, true).apply {
                 put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel.value)
                 put(EXTRA_IS_EDITING_PRODUCT, true)
-                put(EXTRA_IS_ADDING_PRODUCT, viewModel.isAdding)
+                put(EXTRA_IS_ADDING_PRODUCT, viewModel.isAdding.value)
             }
             val intent = AddEditProductShipmentActivity.createInstance(this, cacheManager.id)
             startActivityForResult(intent, REQUEST_CODE_SHIPMENT_EDIT)
@@ -1032,7 +1032,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")
                     put(AddEditProductUploadConstant.EXTRA_NEED_RETAIN_IMAGE, false)
                     put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, viewModel.hasWholesale)
-                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, viewModel.isAdding)
+                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, viewModel.isAdding.value)
                 }
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
                 intent?.run {

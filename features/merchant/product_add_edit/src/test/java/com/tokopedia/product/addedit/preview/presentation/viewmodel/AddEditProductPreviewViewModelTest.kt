@@ -188,7 +188,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productAddResult.value = ProductInputModel().apply { detailInputModel.wholesaleList = listOf(WholeSaleInputModel()) }
         viewModel.productInputModel.getOrAwaitValue()
 
-        assertEquals(false, viewModel.isAdding)
+        assertEquals(false, viewModel.isAdding.value)
         assertEquals(true, viewModel.hasOriginalVariantLevel)
         assertEquals(true, viewModel.isDuplicate)
         assertEquals("112", viewModel.getProductId())
