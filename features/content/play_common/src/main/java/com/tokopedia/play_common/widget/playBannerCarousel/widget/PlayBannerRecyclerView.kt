@@ -3,6 +3,7 @@ package com.tokopedia.play_common.widget.playBannerCarousel.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.CountDownTimer
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.Gravity
@@ -26,7 +27,6 @@ import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.util.PlayConnectionCommon
 import com.tokopedia.play_common.widget.playBannerCarousel.helper.GravitySnapHelper
@@ -35,15 +35,13 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidge
 import com.tokopedia.play_common.widget.playBannerCarousel.model.ViewPlayerModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.BasePlayBannerCarouselModel
 import com.tokopedia.play_common.widget.playBannerCarousel.viewHolder.PlayBannerCarouselItemViewHolder
-import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("SyntheticAccessor")
-class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : RecyclerView(context, attrs, defStyleAttr), CoroutineScope {
+class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : RecyclerView(context, attrs, defStyleAttr) {
 
     private val snapListener = object : GravitySnapHelper.SnapListener{
         override fun onSnap(recyclerView: RecyclerView?, position: Int) {
@@ -79,11 +77,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     private var durationPlayWithWifi: Int = 0
     private var durationPlayWithData: Int = 0
     private var delayDuration: Int = 0
-
-    private val masterJob = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = masterJob + Dispatchers.IO
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -206,28 +199,9 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             exoPlayer.volume = 0f
             videoPlayer.position = playPosition
             videoPlayer.viewHolderParent = holder.itemView
-            videoPlayer.autoPlayJob = launch {
-                launchCatchError(Dispatchers.Main, block = {
-                    exoPlayer.seekTo(mediaObjectsLastPosition[playPosition].toLong())
-                }){
-                    log(it.toString())
-                }
-                delay(delayDuration.toLong())
-                launchCatchError(Dispatchers.Main, block = {
-                    exoPlayer.prepare(videoSource)
-                    exoPlayer.playWhenReady = true
-                }){
-                    log(it.localizedMessage)
-                }
-                delay(if(PlayConnectionCommon.isConnectWifi(context)) durationPlayWithWifi.toLong() else durationPlayWithData.toLong())
-                launchCatchError(Dispatchers.Main, block = {
-                    exoPlayer.playWhenReady = false
-                    removeVideoView(videoPlayer)
-                }){
-                    log(it.toString())
-                }
-            }
-            videoPlayer.autoPlayJob?.start()
+            exoPlayer.seekTo(mediaObjectsLastPosition[playPosition].toLong())
+            exoPlayer.prepare(videoSource)
+            videoPlayer.timerAutoPlay?.start()
         }
     }
 
@@ -268,8 +242,8 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         }
         videoPlayer.position = -1
         videoPlayer.viewHolderParent = null
-        videoPlayer.autoPlayJob?.cancel()
-        videoPlayer.autoPlayJob = null
+        videoPlayer.timerAutoPlay?.cancel()
+        videoPlayer.timerAutoPause?.cancel()
     }
 
     private fun resetVideoView(viewHolder: Any?) {
@@ -300,7 +274,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             videoPlayer.videoPlayer.release()
         }
         resetVideoPlayer()
-        coroutineContext.cancelChildren()
     }
 
     fun resetVideoPlayer(){
@@ -315,7 +288,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         this.mediaObjects.addAll(list)
         this.mediaObjectsLastPosition.addAll(list.map { 0 })
         resetVideoPlayer()
-        coroutineContext.cancelChildren()
         Handler().postDelayed({
             playVideos(false)
         }, 500)
@@ -334,7 +306,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
         // clear old players
         for (videoPlayer in videoPlayers){
-            videoPlayer.autoPlayJob?.cancel()
             videoPlayer.videoPlayer.release()
             removeVideoView(videoPlayer)
         }
@@ -353,7 +324,24 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             videoSurfaceView.layoutParams = layoutParams
             videoSurfaceView.findViewById<AspectRatioFrameLayout>(R.id.exo_content_frame).requestLayout()
 
-            val videoPlayer = ViewPlayerModel(videoSurfaceView, exoPlayer,-1)
+            val timerAutoPause = object : CountDownTimer(if(PlayConnectionCommon.isConnectWifi(context)) durationPlayWithWifi.toLong() else durationPlayWithData.toLong(), 1000){
+                override fun onFinish() {
+                    videoSurfaceView.getPlayer()?.playWhenReady = false
+                }
+
+                override fun onTick(millisUntilFinished: Long) {}
+            }
+
+            val timerAutoPlay = object : CountDownTimer(delayDuration.toLong(), 1000) {
+                override fun onFinish() {
+                    exoPlayer.playWhenReady = true
+                    timerAutoPause.start()
+                }
+
+                override fun onTick(millisUntilFinished: Long) {}
+            }
+
+            val videoPlayer = ViewPlayerModel(videoSurfaceView, exoPlayer,-1, timerAutoPlay = timerAutoPlay, timerAutoPause = timerAutoPause)
             exoPlayer.addListener(object : Player.EventListener {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     when (playbackState) {
