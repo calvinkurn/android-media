@@ -407,7 +407,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
         }
 
-        Scenario("failed update cart with exception") {
+        Scenario("failed because data is empty") {
 
             Given("shop data list") {
                 every { view.getAllSelectedCartDataList() } answers { emptyList() }
