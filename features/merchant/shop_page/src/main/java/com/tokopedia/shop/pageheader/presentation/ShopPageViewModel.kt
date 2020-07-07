@@ -64,9 +64,9 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
-        launchCatchError(block = {
+        launchCatchError(Dispatchers.Main, block = {
             val shopInfoShopBadgeFeedWhitelist = asyncCatchError(
-                    Dispatchers.IO,
+                    Dispatchers.Main,
                     block = {
                         getShopInfoShopReputationDataFeedWhitelist(id, shopDomain, isRefresh)
                     },
@@ -77,7 +77,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             )
 
             val shopOperationalHourStatus = asyncCatchError(
-                    Dispatchers.IO,
+                    Dispatchers.Main,
                     block = { getShopOperationalHourStatus(id) },
                     onError = {
                         shopInfoResp.postValue(Fail(it))
@@ -86,7 +86,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             )
 
             val shopFavourite = asyncCatchError(
-                    Dispatchers.IO,
+                    Dispatchers.Main,
                     block = { getShopFavoriteStatus(shopId, shopDomain) },
                     onError = {
                         shopInfoResp.postValue(Fail(it))
@@ -137,6 +137,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
                 .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain, source = SHOP_PAGE_SOURCE)
         val shopInfoRequest = gqlGetShopInfoUseCase.request
 
+
         getBroadcasterShopConfigUseCase.params = GetBroadcasterShopConfigUseCase.createParams(shopId)
         val broadcasterConfigRequest = getBroadcasterShopConfigUseCase.request
 
@@ -147,7 +148,10 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
                 GetWhitelistUseCase.WHITELIST_SHOP,
                 shopId.toString()
         ))
-        val requests = mutableListOf(shopInfoRequest, broadcasterConfigRequest, shopReputationRequest, feedWhitelistRequest)
+        val requests = mutableListOf(shopInfoRequest, shopReputationRequest, feedWhitelistRequest)
+        if(isMyShop(shopId.toString())) {
+            requests.add(broadcasterConfigRequest)
+        }
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (isRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         val gqlResponse = gqlRepository.getReseponse(requests, cacheStrategy)
         val shopInfoError = gqlResponse.getError(ShopInfo.Response::class.java)
@@ -160,16 +164,18 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             throw MessageErrorException(shopInfoError.mapNotNull { it.message }.joinToString(separator = ", "))
         }
 
-        val broadcasterConfigError = gqlResponse.getError(Broadcaster::class.java)
-        val broadcasterConfig = gqlResponse.getData<Broadcaster>(Broadcaster::class.java)
-        if(broadcasterConfigError == null || broadcasterConfig?.config != null){
-            shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = broadcasterConfig.config)
-        } else {
-            throw MessageErrorException(broadcasterConfigError.mapNotNull { it.message }.joinToString(separator = ", "))
+        if(isMyShop(shopId = shopId.toString())) {
+            val broadcasterConfigError = gqlResponse.getError(Broadcaster::class.java)
+            val broadcasterConfig = gqlResponse.getData<Broadcaster>(Broadcaster::class.java)
+            if (broadcasterConfigError == null && broadcasterConfig?.config != null) {
+                shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = broadcasterConfig?.config)
+            } else {
+                shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = Broadcaster.Config(false))
+            }
         }
 
         val shopBadgeError = gqlResponse.getError(ShopBadge.Response::class.java)
-        val shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java).result.firstOrNull()
+        val shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)?.result?.firstOrNull()
         if (shopBadgeError == null || shopBadgeError.isEmpty()) {
             shopBadge?.let {
                 shopInfoShopBadgeFeedWhitelist.shopBadge = it
