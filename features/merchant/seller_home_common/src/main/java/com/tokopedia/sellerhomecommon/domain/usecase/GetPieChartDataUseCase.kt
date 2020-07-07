@@ -20,7 +20,7 @@ class GetPieChartDataUseCase(
 ) : BaseGqlUseCase<List<PieChartDataUiModel>>() {
 
     override suspend fun executeOnBackground(): List<PieChartDataUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetPieChartDataUseCase::class.java)
+        val gqlRequest = GraphqlRequest(QUERY, GetPieChartDataResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(GetPieChartDataResponse::class.java)
