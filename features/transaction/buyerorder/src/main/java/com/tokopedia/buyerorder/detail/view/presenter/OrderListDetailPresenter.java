@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -30,15 +31,18 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
+import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.buyagain.ResponseBuyAgain;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
+import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
+import com.tokopedia.buyerorder.list.data.Order;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
@@ -100,6 +104,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     String fromPayment = null;
     String orderId;
     RequestCancelInfo requestCancelInfo;
+    @Inject
+    SendEventNotificationUseCase sendEventNotificationUseCase;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
@@ -226,6 +232,37 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
     }
 
+    @Override
+    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText){
+        if (actionButton.getName().equalsIgnoreCase("customer_notification")){
+            HashMap<String, String> mapBody = new HashMap<String, String>();
+            mapBody.put("body", metadata);
+            sendEventNotificationUseCase.setPath(actionButton.getUri());
+            sendEventNotificationUseCase.setBody(mapBody);
+            sendEventNotificationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (getView() != null && getView().getAppContext() != null) {
+                        getView().showSuccessMessageWithAction(e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
+                        if (getView() != null && getView().getAppContext() != null) {
+                            actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_success));
+                            actionButtonText.setClickable(false);
+                            getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_copied));
+                        }
+                }
+            });
+        }
+    }
 
     @Override
     public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.ActionInterface view, int position, boolean flag) {
@@ -438,9 +475,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (details.getItems() != null && details.getItems().size() > 0) {
             Flags flags = details.getFlags();
             if (flags != null)
-                getView().setItems(details.getItems(), flags.isIsOrderTradeIn());
+                getView().setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
             else
-                getView().setItems(details.getItems(), false);
+                getView().setItems(details.getItems(), false, details);
         }
         if (details.additionalInfo().size() > 0) {
             getView().setAdditionInfoVisibility(View.VISIBLE);
@@ -478,7 +515,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().setPaymentData(details.paymentData());
         getView().setContactUs(details.contactUs(),details.getHelpLink());
 
-        if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
+        if(details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)){
+            getView().setActionButtonsVisibility(View.GONE, View.GONE);
+        } else if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
                 ActionButton leftActionButton = details.actionButtons().get(0);
                 ActionButton rightActionButton = details.actionButtons().get(1);
@@ -664,7 +703,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             if (details != null && details.getPayMethods() != null && details.getPayMethods().size() > 0 && !TextUtils.isEmpty(details.getPayMethods().get(0).getValue())) {
                 paymentMethod = details.getPayMethods().get(0).getValue();
             }
-            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
+            if(categoryType==3){
+                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getProductName(), metaDataInfo.getTotalPrice(), metaDataInfo.getQuantity(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
+            }else {
+                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
+            }
         }
     }
 

@@ -236,7 +236,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                     R.raw.orderlist_marketplace), Data.class, variables, false);
         } else {
-            variables.put(OrderCategory.KEY_LABEL, orderCategory);
+            if (orderCategory.equalsIgnoreCase(OrderCategory.EVENTS)){
+                variables.put(OrderCategory.KEY_LABEL, OrderCategory.EVENT);
+            }else{
+              variables.put(OrderCategory.KEY_LABEL, orderCategory);
+            }
             variables.put(OrderCategory.PAGE, page);
             variables.put(OrderCategory.PER_PAGE, PER_PAGE_COUNT);
             variables.put(ORDER_ID, orderId);
