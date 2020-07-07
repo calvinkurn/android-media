@@ -890,7 +890,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onClickShopNow() {
         cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart()
-        RouteManager.route(activity, ApplinkConst.HOME)
+        val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     override fun onShowAllItem(appLink: String) {
