@@ -1,11 +1,10 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
-import com.tokopedia.seller.product.common.utils.ProductDraftErrorHandler;
-import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.seller.product.common.utils.ProductDraftErrorHandler;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductLegacyUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -40,13 +39,10 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
 
     @Override
     public void fetchAllDraftData() {
-        if (GlobalConfig.isSellerApp()) {
-            fetchAllDraftProductUseCase.execute(FetchAllDraftProductUseCase.createRequestParams(),
-                    getSubscriber());
-        } else {
-            fetchAllDraftProductLegacyUseCase.execute(FetchAllDraftProductUseCase.createRequestParams(),
-                    getSubscriber());
-        }
+        fetchAllDraftProductUseCase.execute(
+                FetchAllDraftProductUseCase.createRequestParams(),
+                getSubscriber()
+        );
     }
 
     @Override

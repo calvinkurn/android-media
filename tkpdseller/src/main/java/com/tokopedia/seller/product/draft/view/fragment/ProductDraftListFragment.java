@@ -27,7 +27,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -35,7 +34,6 @@ import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProdu
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
-import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.draft.analytic.ProductDraftListTracker;
@@ -221,21 +219,13 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onItemClicked(ProductDraftViewModel productDraftViewModel) {
-        Intent intent = null;
-        if (GlobalConfig.isSellerApp()) {
-            String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-                    .buildUpon()
-                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productDraftViewModel.getProductDraftId() + "")
-                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
-                    .build()
-                    .toString();
-        } else {
-            if (productDraftViewModel.isEdit()) {
-                intent = ProductDraftEditActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
-            } else {
-                intent = ProductDraftAddActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
-            }
-        }
+        String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                .buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productDraftViewModel.getProductDraftId() + "")
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
+                .build()
+                .toString();
+        Intent intent = RouteManager.getIntent(getContext(), uri);
 
         eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         if (intent != null) {
