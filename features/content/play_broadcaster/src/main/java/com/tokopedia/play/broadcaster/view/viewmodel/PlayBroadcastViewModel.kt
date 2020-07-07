@@ -9,7 +9,10 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.HydraSetupData
 import com.tokopedia.play.broadcaster.data.model.ProductData
-import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.LiveDuration
+import com.tokopedia.play.broadcaster.domain.model.Metric
+import com.tokopedia.play.broadcaster.domain.model.TotalLike
+import com.tokopedia.play.broadcaster.domain.model.TotalView
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
@@ -31,6 +34,10 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
@@ -134,7 +141,10 @@ class PlayBroadcastViewModel @Inject constructor(
         override fun onChanged(t: String?) {}
     }
 
+    private val metricsChannel = BroadcastChannel<PlayMetricUiModel>(Channel.BUFFERED)
+
     init {
+        scope.launch { initMetricsChannel() }
         _observableChannelId.observeForever(channelIdObserver)
 
         _observableChatList.value = mutableListOf()
@@ -164,7 +174,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
             launch {
                 if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
-                else if (configUiModel.channelType == ChannelType.Pause) getChannelById(configUiModel.channelId) // get channel when channel status is paused
+//                else if (configUiModel.channelType == ChannelType.Pause) getChannelById(configUiModel.channelId) // get channel when channel status is paused
             }
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
@@ -358,7 +368,7 @@ class PlayBroadcastViewModel @Inject constructor(
             playSocket.socketInfoListener(object : PlaySocketInfoListener{
                 override fun onReceive(data: PlaySocketType) {
                     when(data) {
-                        is Metric -> onRetrievedNewMetric(PlayBroadcastUiMapper.mapMetricList(data))
+                        is Metric -> queueNewMetrics(PlayBroadcastUiMapper.mapMetricList(data))
                         is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(data)
                         is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(data)
                         is LiveDuration -> restartLiveDuration(data)
@@ -410,13 +420,18 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableNewMetric.value = Event(newMetric)
     }
 
-    private fun onRetrievedNewMetric(metricList: MutableList<PlayMetricUiModel>) {
-        scope.launch(dispatcher.io) {
-            for (metric in  metricList) {
-                delay(metric.interval)
-                onRetrievedNewMetric(metric)
-                metricList.remove(metric)
+    private fun queueNewMetrics(metricList: List<PlayMetricUiModel>) {
+        scope.launch(dispatcher.computation) {
+            metricList.forEach {
+                metricsChannel.send(it)
             }
+        }
+    }
+
+    private suspend fun initMetricsChannel() = withContext(dispatcher.computation) {
+        metricsChannel.asFlow().collect {
+            onRetrievedNewMetric(it)
+            delay(it.interval)
         }
     }
 
@@ -437,9 +452,11 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun mockMetrics() {
         scope.launch(dispatcher.io) {
             while(isActive) {
-                delay(3000)
-                onRetrievedNewMetric(
-                    PlayBroadcastMocker.getMockMetric()
+                delay(15000)
+                queueNewMetrics(
+                        List(3) {
+                            PlayBroadcastMocker.getMockMetric()
+                        }
                 )
             }
         }
