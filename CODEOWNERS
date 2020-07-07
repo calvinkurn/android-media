@@ -73,7 +73,6 @@
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_showcase/                       @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
-/features/merchant/shop_score/                          @tokopedia/minion-stuart
 /features/merchant/youtube_common/                      @tokopedia/minion-stuart
 /features/merchant/voucher_creation/                    @tokopedia/minion-stuart
 
