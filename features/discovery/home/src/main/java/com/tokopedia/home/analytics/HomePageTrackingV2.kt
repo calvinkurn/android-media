@@ -632,7 +632,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_POPULAR_KEYWORDS,
-                eventLabel = channel.header.name,
+                eventLabel = String.format(BaseTracking.Label.FORMAT_2_ITEMS, channel.header.name, keyword),
                 channelId = channel.id,
                 categoryId = channel.categoryPersona,
                 affinity = channel.persona,
