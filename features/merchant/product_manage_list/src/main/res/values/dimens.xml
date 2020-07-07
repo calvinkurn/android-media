@@ -45,4 +45,5 @@
     <dimen name="product_manage_filter_count_shimmer_width">80dp</dimen>
     <dimen name="product_manage_mutli_select_shimmer_width">92dp</dimen>
     <dimen name="product_manage_item_stock_info_vertical_spacing">7dp</dimen>
+    <dimen name="product_manage_campaign_stock_horizontal_margin">20dp</dimen>
 </resources>
