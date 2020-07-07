@@ -37,6 +37,57 @@ class SharedTelcoPrepaidViewModelTest {
     }
 
     @Test
+    fun setProductCatalogSelected_validData() {
+        //given
+        val productCatalogItem = TelcoProduct(id = "2")
+        //when
+        sharedTelcoPrepaidViewModel.setProductCatalogSelected(productCatalogItem)
+        //then
+        val actualData = sharedTelcoPrepaidViewModel.productCatalogItem.value
+        assertEquals(productCatalogItem.id, actualData?.id)
+    }
+
+    @Test
+    fun setShowTotalPrice_validData() {
+        //when
+        sharedTelcoPrepaidViewModel.setShowTotalPrice(true)
+        //then
+        val actualData = sharedTelcoPrepaidViewModel.showTotalPrice.value
+        assertEquals(true, actualData)
+    }
+
+    @Test
+    fun setSelectedCategoryViewPager_validData() {
+        //given
+        val categoryName = "Paket Data"
+        //when
+        sharedTelcoPrepaidViewModel.setSelectedCategoryViewPager(categoryName)
+        //then
+        val actualData = sharedTelcoPrepaidViewModel.selectedCategoryViewPager.value
+        assertEquals(categoryName, actualData)
+    }
+
+    @Test
+    fun setSelectedFilter_validData() {
+        //given
+        val selectedFilter = ArrayList<HashMap<String, Any>>()
+        val map = HashMap<String, Any>()
+        val valueTag = ArrayList<String>()
+        valueTag.add("2")
+        valueTag.add("3")
+        map["param_name"] = "tag_feature"
+        map["values"] = valueTag
+        selectedFilter.add(map)
+
+        //when
+        sharedTelcoPrepaidViewModel.setSelectedFilter(selectedFilter)
+
+        //then
+        val actualData = sharedTelcoPrepaidViewModel.selectedFilter.value
+        assertEquals(selectedFilter[0].getValue("values"), actualData?.get(0)?.getValue("values"))
+    }
+
+    @Test
     fun getCatalogProductList_DataValid_SuccessGetData() {
         //given
         val multiTab = gson.fromJson(gson.JsonToString("multitab.json"), TelcoCatalogProductInputMultiTab::class.java)
@@ -47,13 +98,14 @@ class SharedTelcoPrepaidViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1")
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList())
 
         //then
         val actualData = sharedTelcoPrepaidViewModel.productList.value
         assertNotNull(actualData)
         assert(actualData is Success)
         val labelPulsa = (actualData as Success).data[0].label
+        assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
         assertEquals(multiTab.rechargeCatalogProductDataData.productInputList[0].label, labelPulsa)
     }
 
@@ -69,13 +121,14 @@ class SharedTelcoPrepaidViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1")
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList())
 
         //then
         val actualData = sharedTelcoPrepaidViewModel.productList.value
         assertNotNull(actualData)
         assert(actualData is Fail)
         val error = (actualData as Fail).throwable
+        assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
         assertEquals(errorGql.message, error.message)
     }
 }
