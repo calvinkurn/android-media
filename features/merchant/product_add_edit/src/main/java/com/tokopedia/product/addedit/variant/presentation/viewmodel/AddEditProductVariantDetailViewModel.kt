@@ -52,6 +52,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
 
     private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
+    private val inputPriceErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
+    private val inputStockErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
 
     fun getInputFieldSize(): Int {
         return inputFieldSize
@@ -206,21 +208,27 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         if (priceInput.isEmpty()) {
             inputModel.isPriceError = true
             inputModel.priceFieldErrorMessage = provider.getEmptyProductPriceErrorMessage() ?: ""
-            mErrorCounter.value = +1
+            updateInputPriceErrorStatusMap(adapterPosition, true)
+
             return inputModel
         }
         val productPrice: BigInteger = priceInput.toBigIntegerOrNull().orZero()
         if (productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger()) {
             inputModel.isPriceError = true
             inputModel.priceFieldErrorMessage = provider.getMinLimitProductPriceErrorMessage() ?: ""
-            mErrorCounter.value = +1
+            updateInputPriceErrorStatusMap(adapterPosition, true)
             return inputModel
         }
         inputModel.isPriceError = false
         inputModel.priceFieldErrorMessage = ""
-        val errorCounter = mErrorCounter.value ?: 0
-        if (errorCounter > 0) mErrorCounter.value = -1
+        updateInputPriceErrorStatusMap(adapterPosition, false)
+
         return inputModel
+    }
+
+    private fun updateInputPriceErrorStatusMap(adapterPosition: Int, isError: Boolean) {
+        inputPriceErrorStatusMap[adapterPosition] = isError
+        mErrorCounter.value = inputPriceErrorStatusMap.count { it.value }
     }
 
     fun validateProductVariantStockInput(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
@@ -230,21 +238,26 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         if (stockInput.isEmpty()) {
             inputModel.isStockError = true
             inputModel.stockFieldErrorMessage = provider.getEmptyProductStockErrorMessage() ?: ""
-            mErrorCounter.value = +1
+            updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
         val productStock: BigInteger = stockInput.toBigIntegerOrNull().orZero()
         if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
             inputModel.isStockError = true
             inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage() ?: ""
-            mErrorCounter.value = +1
+            updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
         inputModel.isStockError = false
         inputModel.stockFieldErrorMessage = ""
-        val errorCounter = mErrorCounter.value ?: 0
-        if (errorCounter > 0) mErrorCounter.value = -1
+        updateInputStockErrorStatusMap(adapterPosition, false)
+
         return inputModel
+    }
+
+    private fun updateInputStockErrorStatusMap(adapterPosition: Int, isError: Boolean) {
+        inputStockErrorStatusMap[adapterPosition] = isError
+        mErrorCounter.value = inputStockErrorStatusMap.count { it.value }
     }
 
     fun validateVariantPriceInput(priceInput: BigInteger): String {
@@ -262,6 +275,17 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 provider.getMinLimitProductStockErrorMessage().orEmpty()
             }
             else -> ""
+        }
+    }
+
+    fun validateSubmitDetailField(
+            variantDetailInputLayoutModels: List<VariantDetailInputLayoutModel>
+    ): Boolean {
+        return variantDetailInputLayoutModels.any {
+            val productPrice: BigInteger = it.price.replace(".", "").toBigIntegerOrNull().orZero()
+            val productStock: BigInteger = it.stock.replace(".", "").toBigIntegerOrNull().orZero()
+            productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() ||
+                    productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()
         }
     }
 
