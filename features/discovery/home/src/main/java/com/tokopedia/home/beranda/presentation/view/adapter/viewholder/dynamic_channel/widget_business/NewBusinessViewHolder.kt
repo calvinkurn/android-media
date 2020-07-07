@@ -76,6 +76,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             listener.getTabBusinessWidget(adapterPosition)
         }
         performanceMonitoring = PerformanceMonitoring()
+        adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
