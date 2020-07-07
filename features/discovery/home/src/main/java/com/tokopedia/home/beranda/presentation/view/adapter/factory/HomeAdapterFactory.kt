@@ -319,6 +319,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
+            TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

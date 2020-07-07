@@ -3,10 +3,13 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.BannerAdsTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import kotlinx.android.synthetic.main.home_dc_topads_banner.view.*
 
 class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryListener) :
@@ -29,6 +32,27 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
 
             override fun onError(t: Throwable) {
                 categoryListener.removeViewHolderAtPosition(adapterPosition)
+            }
+        })
+
+        view.home_topads_image_view.setTopAdsImageViewImpression(object: TopAdsImageViewImpressionListener {
+            override fun onTopAdsImageViewImpression(viewUrl: String) {
+                BannerAdsTracking.sendBannerAdsImpressionTracking(
+                        categoryListener.getTrackingQueueObj(),
+                        channel,
+                        categoryListener.userId,
+                        adapterPosition
+                )
+            }
+        })
+
+        view.home_topads_image_view.setTopAdsImageViewClick(object: TopAdsImageViewClickListener {
+            override fun onTopAdsImageViewClicked(applink: String?) {
+                BannerAdsTracking.sendBannerAdsClickTracking(
+                        channel,
+                        categoryListener.userId,
+                        adapterPosition
+                )
             }
         })
 

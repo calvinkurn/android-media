@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.topads.sdk.widget.TopAdsImageView
-    android:id="@+id/home_topads_image_view"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/content_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/channel_title"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include
+        layout="@layout/home_master_dynamic_channel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.topads.sdk.widget.TopAdsImageView
+        android:id="@+id/home_topads_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title_container" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
