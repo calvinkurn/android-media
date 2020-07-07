@@ -159,7 +159,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     }
 
     override fun addDynamicChannelVisitable(): HomeVisitableFactory {
-        visitableList.add(PlayCarouselCardDataModel())
+//        visitableList.add(PlayCarouselCardDataModel())
         homeData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
