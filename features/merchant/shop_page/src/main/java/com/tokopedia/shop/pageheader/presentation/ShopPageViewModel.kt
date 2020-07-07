@@ -64,9 +64,9 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
-        launchCatchError(Dispatchers.Main, block = {
+        launchCatchError(block = {
             val shopInfoShopBadgeFeedWhitelist = asyncCatchError(
-                    Dispatchers.Main,
+                    Dispatchers.IO,
                     block = {
                         getShopInfoShopReputationDataFeedWhitelist(id, shopDomain, isRefresh)
                     },
@@ -77,7 +77,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             )
 
             val shopOperationalHourStatus = asyncCatchError(
-                    Dispatchers.Main,
+                    Dispatchers.IO,
                     block = { getShopOperationalHourStatus(id) },
                     onError = {
                         shopInfoResp.postValue(Fail(it))
@@ -86,7 +86,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             )
 
             val shopFavourite = asyncCatchError(
-                    Dispatchers.Main,
+                    Dispatchers.IO,
                     block = { getShopFavoriteStatus(shopId, shopDomain) },
                     onError = {
                         shopInfoResp.postValue(Fail(it))
