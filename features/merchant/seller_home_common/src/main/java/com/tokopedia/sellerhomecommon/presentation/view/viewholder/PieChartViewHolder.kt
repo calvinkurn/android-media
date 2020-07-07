@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.charts.config.piechart.PieChartConfigBuilder
 import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.kotlin.extensions.view.gone
@@ -78,11 +79,13 @@ class PieChartViewHolder(
 
     private fun setOnError() {
         with(itemView) {
+            commonWidgetErrorState.visible()
             pieChartShc.gone()
             shimmerWidgetCommon.gone()
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
-            commonWidgetErrorState.visible()
+
+            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
         }
     }
 
