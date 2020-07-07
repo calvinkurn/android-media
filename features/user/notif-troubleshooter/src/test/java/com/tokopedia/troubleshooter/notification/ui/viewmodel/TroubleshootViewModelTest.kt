@@ -78,7 +78,7 @@ class TroubleshootViewModelTest {
             firstArg<(String) -> Unit>().invoke(token)
         }
 
-        viewModel.updateToken()
+        viewModel.getNewToken()
 
         verify { instanceManager.getNewToken(any()) }
         verify { messagingManager.onNewToken(token) }

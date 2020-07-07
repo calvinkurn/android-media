@@ -5,6 +5,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,18 +75,29 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
     private fun initObservable() {
         viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
-            hideLoading()
+            pgLoaderTestNotif?.invisible()
             if (it.isSuccess == 1) {
                 onIconStatus(true)
-                viewModel.updateToken()
+                viewModel.getNewToken()
             } else {
                 onIconStatus(false)
             }
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            hideLoading()
+            pgLoaderTestNotif?.invisible()
             onIconStatus(false)
+        })
+
+        viewModel.fcmToken.observe(viewLifecycleOwner, Observer {
+            textSummary?.show()
+
+            if(!isNewToken(it)) {
+                textSummary?.append("\nToken sudah terbaru : $it")
+            } else {
+                viewModel.updateToken(it)
+                textSummary?.append("\nToken baru saja diperbarui : $it dari ${getTokenFromPref()}")
+            }
         })
 
         settingViewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
@@ -130,7 +142,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
             imgStatusCategorySetting?.show()
             imgStatusCategorySetting?.setImageDrawable(
                     if (importance != NotificationManager.IMPORTANCE_HIGH
-                            && importance != NotificationManager.IMPORTANCE_DEFAULT) {
+                            ||importance != NotificationManager.IMPORTANCE_DEFAULT) {
                         drawable(it, R.drawable.ic_green_checked)
                     } else {
                         drawable(it, R.drawable.ic_red_error)
@@ -171,12 +183,20 @@ class TroubleshootFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showLoading() {
-        pgLoaderTestNotif?.show()
+    fun isNewToken(token: String): Boolean {
+        val prefToken = getTokenFromPref()
+        return prefToken != null && token != prefToken
     }
 
-    private fun hideLoading() {
-        pgLoaderTestNotif?.invisible()
+    private fun getTokenFromPref(): String? {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString("pref_fcm_token", "")
+    }
+
+    private fun showLoading() {
+        pgLoaderTestNotif?.show()
+        pgLoaderNotificationSetting?.show()
+        pgLoaderCategorySetting?.show()
+        pgLoaderRingtone?.show()
     }
 
     private fun setupToolbar() {
