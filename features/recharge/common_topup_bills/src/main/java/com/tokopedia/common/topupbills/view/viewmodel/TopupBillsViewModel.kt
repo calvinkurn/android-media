@@ -97,7 +97,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                 val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
             _menuDetailData.postValue(Success(data.catalogMenuDetailData))
@@ -129,7 +129,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
                 val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TopupBillsFavNumberData>()
 
             _favNumberData.postValue(Success(data.favNumber))

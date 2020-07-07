@@ -68,6 +68,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
@@ -253,7 +254,8 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_CRACK) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_MANTAP) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_SMC_REFERRAL) ||
-                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT)
+                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT) ||
+                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_GIFT)
             }, DF_PROMO_GAMIFICATION,R.string.internet_title_gamification))
 
             //Entertainment
@@ -314,8 +316,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(SHIPPING_CONFIRMATION) }, DF_BASE, R.string.path_shipping_confirmation))
             add(DFP({ it.startsWith(ORDER_TRACKING) }, DF_BASE, R.string.path_order_tracking))
+            add(DFP({ it.startsWith(MANAGE_ADDRESS) }, DF_BASE, R.string.path_manage_address))
 
-            // Transaction
+            // Transaction    
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
             add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.checkout_module_title_activity_shipping_address))
             add(DFP({

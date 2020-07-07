@@ -479,6 +479,7 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
     val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
+    val GAMIFICATION_TAP_TAP_GIFT = "$INTERNAL_GLOBAL/gamification_gift_60s"
 
     //ManageNotificationActivity
     @JvmField
