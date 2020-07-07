@@ -19,8 +19,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
+import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
 import kotlinx.android.synthetic.main.shc_partial_line_graph_tooltip.view.*
-import kotlinx.android.synthetic.main.shc_partial_line_graph_widget_loading.view.*
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -101,7 +101,7 @@ class LineGraphViewHolder(
     }
 
     private fun onStateLoading(isShown: Boolean) = with(itemView) {
-        shimmerLineGraphWidget.visibility = if (isShown) View.VISIBLE else View.GONE
+        shimmerWidgetCommon.visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
     private fun onStateError(isShown: Boolean) = with(itemView) {

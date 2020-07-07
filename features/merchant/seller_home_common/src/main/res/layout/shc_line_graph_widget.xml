@@ -144,7 +144,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
-            layout="@layout/shc_partial_line_graph_widget_loading"
+            layout="@layout/shc_partial_common_widget_state_loading"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
             app:layout_constraintBottom_toBottomOf="parent"
