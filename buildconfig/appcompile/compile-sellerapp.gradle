@@ -51,6 +51,7 @@ include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticorder"
 include "features:logistic:logisticcart"
+include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"

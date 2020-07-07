@@ -171,6 +171,11 @@ dependencies {
     })
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
+
+    //you can comment below line if you use old login
+    implementation project(rootProject.ext.features.logintestapp)
+
 //    implementation project(rootProject.ext.libraries.logger)
 //    implementation (rootProject.ext.debugToolsDependencies.timber){
 //        exclude group: 'org.jetbrains', module: 'annotations'

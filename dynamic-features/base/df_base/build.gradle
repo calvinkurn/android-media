@@ -55,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.features.exploreCategory)
     implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.kategori)
+    implementation project(rootProject.ext.features.categoryLevels)
     implementation project(rootProject.ext.features.findNative)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
     //Content
@@ -88,6 +89,8 @@ dependencies {
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
     //Logistic
     implementation project(rootProject.ext.features.dropOff)
+    implementation project(rootProject.ext.features.logisticorder)
+    implementation project(rootProject.ext.features.manageaddress)
     //Merchant
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.talk)
@@ -120,8 +123,6 @@ dependencies {
     implementation project(rootProject.ext.features.campaignShakeLanding)
     //Entertainment
     implementation project(rootProject.ext.features.orderhistory)
-    //Logistic
-    implementation project(rootProject.ext.features.logisticorder)
     //Transaction
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)

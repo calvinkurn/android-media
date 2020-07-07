@@ -91,6 +91,7 @@ import com.tokopedia.url.TokopediaUrl;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -356,7 +357,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 orderListAnalytics.sendViewInvoiceClickEvent();
                 orderListAnalytics.sendLihatInvoiceClick(status.status());
 
-                Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
+                Intent intent = SeeInvoiceActivity.newInstance(Objects.requireNonNull(getContext()), status, invoice,
                         getString(R.string.title_invoice));
                 startActivity(intent);
             });

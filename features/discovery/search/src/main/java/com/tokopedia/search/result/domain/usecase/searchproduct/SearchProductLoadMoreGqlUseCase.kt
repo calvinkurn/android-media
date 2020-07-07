@@ -117,6 +117,7 @@ class SearchProductLoadMoreGqlUseCase(
                             id
                             name
                             wishlist
+                            category_breadcrumb
                             image {
                                 m_url
                                 s_url

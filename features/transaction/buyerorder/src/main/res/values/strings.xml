@@ -455,4 +455,7 @@ Anda di sini.</string>
     <string name="tulis_alasan">Tulis alasan...</string>
     <string name="ask_2_lainnya">Kendala apa yang kamu alami?</string>
     <string name="icon_placeholder">Icon</string>
+    <string name="toaster_lainnya_empty">Mohon isi kendala yang kamu alami</string>
+    <string name="toaster_manual_max">Max 160 karakter</string>
+    <string name="toaster_manual_min">Min. 15 karakter</string>
 </resources>
