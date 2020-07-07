@@ -4,6 +4,12 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class DiscussionDataByQuestionID(
+        @SerializedName("shopID")
+        @Expose
+        val shopID: String = "",
+        @SerializedName("shopURL")
+        @Expose
+        val shopURL: String = "",
         @SerializedName("question")
         @Expose
         val question: Question = Question(),
@@ -18,5 +24,8 @@ data class DiscussionDataByQuestionID(
         val thumbnail: String = "",
         @SerializedName("url")
         @Expose
-        val url: String = ""
+        val url: String = "",
+        @SerializedName("productID")
+        @Expose
+        val productId: String = ""
 )

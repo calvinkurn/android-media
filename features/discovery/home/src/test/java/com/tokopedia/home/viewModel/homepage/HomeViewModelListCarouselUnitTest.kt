@@ -172,7 +172,7 @@ class HomeViewModelListCarouselUnitTest : Spek({
             }
 
             When("Express checkout clicked"){
-                homeViewModel.onCloseBuyAgain(dataModel.channel!!, 0)
+                homeViewModel.onCloseBuyAgain(dataModel.channel!!.id, 0)
             }
 
             Then("Expect channel updated") {

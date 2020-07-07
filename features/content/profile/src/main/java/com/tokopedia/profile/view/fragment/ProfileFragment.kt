@@ -1838,7 +1838,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
 
-        return bottomSheet.data
+        return bottomSheet.data?: LinkerData()
     }
 
     private fun sendTracker(packageName: String) {

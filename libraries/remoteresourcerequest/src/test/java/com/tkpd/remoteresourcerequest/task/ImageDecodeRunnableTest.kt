@@ -2,17 +2,19 @@ package com.tkpd.remoteresourcerequest.task
 
 import android.graphics.BitmapFactory
 import android.util.DisplayMetrics
+import com.tkpd.remoteresourcerequest.runnable.ImageDecodeRunnable
 import io.mockk.*
 import org.junit.Before
 import org.junit.Test
 
 class ImageDecodeRunnableTest {
-    var task = mockk< ImageDecodeRunnable.TaskDecodeProperties>(relaxed = true)
+    private var task = mockk< ImageDecodeRunnable.TaskDecodeProperties>(relaxed = true)
     private lateinit var decodeRunnable : ImageDecodeRunnable
 
     @Before
     fun setup(){
-        decodeRunnable = ImageDecodeRunnable(task)
+        decodeRunnable =
+                ImageDecodeRunnable(task)
     }
     @Test
     fun runTest(){

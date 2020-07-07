@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -137,7 +139,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onFinishChooseSort(sortOption: SortOption) {
-        TalkReadingTracking.eventClickSort(sortOption.id.name.toLowerCase(), viewModel.userId, productId)
+        TalkReadingTracking.eventClickSort(sortOption.displayName, viewModel.userId, productId)
         viewModel.updateSelectedSort(sortOption)
     }
 
@@ -182,7 +184,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         goToLoginActivity()
     }
 
-    override fun onUserDetailsClicked(userId: String) {
+    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopId: String) {
+        if(isSeller) {
+            goToShopPageActivity(shopId)
+            return
+        }
         goToProfileActivity(userId)
     }
 
@@ -241,12 +247,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        talkReadingRecyclerView.post {
-            talkPerformanceMonitoringListener?.let {
-                it.stopRenderPerformanceMonitoring()
-                it.stopPerformanceMonitoring()
+        talkReadingRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                talkReadingRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
-        }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
@@ -445,9 +452,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun showErrorToaster() {
         Toaster.toasterCustomCtaWidth = TOASTER_CTA_WIDTH
-        view?.let { Toaster.make(talkReadingContainer, getString(R.string.reading_connection_error_toaster_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener {
-            loadData(currentPage)
-        }) }
+        view?.let {
+            Toaster.build(talkReadingContainer, getString(R.string.reading_connection_error_toaster_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener { loadData(currentPage) }). show() }
     }
 
     private fun updateSortHeader(sortOption: SortOption) {
@@ -476,7 +482,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID))
                         .buildUpon()
-                        .appendQueryParameter(PARAM_PRODUCT_ID, productId)
                         .appendQueryParameter(PARAM_SHOP_ID, shopId)
                         .build().toString()
         )
@@ -485,6 +490,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun goToProfileActivity(userId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
+        startActivity(intent)
+    }
+
+    private fun goToShopPageActivity(shopId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
         startActivity(intent)
     }
 

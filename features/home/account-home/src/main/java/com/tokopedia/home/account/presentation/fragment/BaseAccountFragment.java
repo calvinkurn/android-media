@@ -27,6 +27,7 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
+import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
@@ -70,6 +71,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_TOK
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
+import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 /**
@@ -140,6 +142,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
+        }else if(applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)){
+            return true;
         }
 
         return false;
@@ -441,7 +445,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
                 item.toLowerCase());
     }
 
-    private void sendTracking(String title, String section, String item) {
+    protected void sendTracking(String title, String section, String item) {
         sendTracking(title, section, item, false);
     }
 

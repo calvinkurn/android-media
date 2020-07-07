@@ -75,6 +75,7 @@ public interface SearchEventTracking {
         String IMPRESSION_BROAD_MATCH = "impression - broad match";
         String CLICK_BROAD_MATCH_LIHAT_SEMUA = "click - broad match lihat semua";
         String CLICK_BROAD_MATCH = "click - broad match";
+        String CLICK_INSPIRATION_CARD = "click inspiration card";
     }
 
     interface Label {

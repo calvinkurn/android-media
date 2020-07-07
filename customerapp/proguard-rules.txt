@@ -342,6 +342,9 @@
 #tradein
 -keep class com.tokopedia.tradein.viewmodel.** { *; }
 
+#discovery
+-keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
+
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
 

@@ -143,7 +143,14 @@ class HomeViewModelBannerHomepageTest : Spek({
         lateinit var homeViewModel: HomeViewModel
         createHomeViewModelTestInstance()
         var url = ""
+        var productId = ""
+        var productName = ""
+        var imageUrl = ""
         val slotUrl = slot<String>()
+        val slotProductId = slot<String>()
+        val slotProductName = slot<String>()
+        val slotImageUrl = slot<String>()
+
         val topAdsUrlHitter by memoized<TopAdsUrlHitter>()
         val getHomeUseCase by memoized<HomeUseCase>()
         val context by memoized<Context>()
@@ -164,8 +171,12 @@ class HomeViewModelBannerHomepageTest : Spek({
             }
 
             Given("set return impression"){
-                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl)) } answers {
+                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl), capture(slotProductId),
+                        capture(slotProductName), capture(slotImageUrl)) } answers {
                     url = slotUrl.captured
+                    productId = slotProductId.captured
+                    productName = slotProductName.captured
+                    imageUrl = slotImageUrl.captured
                 }
             }
 
@@ -184,12 +195,21 @@ class HomeViewModelBannerHomepageTest : Spek({
                 confirmVerified(observerHome)
             }
 
+            val testImpressionUrl = "impression url"
+            val testBannerId = "banner id"
+            val testBannerName = "banner name"
+            val testImageUrl = "image url"
+
             When("Impression topads called"){
-                topAdsUrlHitter.hitImpressionUrl(context,"coba topads")
+                topAdsUrlHitter.hitImpressionUrl(context, testImpressionUrl,
+                        testBannerId, testBannerName, testImageUrl)
             }
 
-            Then("Check the url is same"){
-                Assert.assertTrue(url == "coba topads")
+            Then("verify impression"){
+                assert(url == testImpressionUrl)
+                assert(productId == testBannerId)
+                assert(productName == testBannerName)
+                assert(imageUrl == testImageUrl)
             }
         }
     }

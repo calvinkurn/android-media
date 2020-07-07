@@ -35,16 +35,9 @@ class HotlistNavUseCaseModule {
 
     @HotlistNavScope
     @Provides
-    fun getHotListDetailUseCase(context: Context): HotlistDetailUseCase {
-        return HotlistDetailUseCase(context)
-    }
-
-    @HotlistNavScope
-    @Provides
-    fun provideCategoryProductUseCase(context: Context,
-                                      @Named("productGqlUseCaseObject") graphqlUseCase: GraphqlUseCase):
+    fun provideCategoryProductUseCase(@Named("productGqlUseCaseObject") graphqlUseCase: GraphqlUseCase):
             CategoryProductUseCase {
-        return CategoryProductUseCase(context, graphqlUseCase)
+        return CategoryProductUseCase(graphqlUseCase)
     }
 
     @HotlistNavScope
@@ -60,18 +53,6 @@ class HotlistNavUseCaseModule {
                               : TopAdsProductsUseCase)
             : GetProductListUseCase {
         return GetProductListUseCase(categoryProductUseCase, topAdsProductsUseCase)
-    }
-
-    @HotlistNavScope
-    @Provides
-    fun provideDynamicFilterUseCase(context: Context): DynamicFilterUseCase {
-        return DynamicFilterUseCase(context)
-    }
-
-    @HotlistNavScope
-    @Provides
-    fun provideQuickFilterUseCase(context: Context): QuickFilterUseCase {
-        return QuickFilterUseCase(context)
     }
 
     @HotlistNavScope

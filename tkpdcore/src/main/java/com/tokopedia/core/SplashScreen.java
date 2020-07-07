@@ -60,17 +60,8 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         resetAllDatabaseFlag();
-        decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
         WeaveInterface remoteConfigWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -129,7 +120,7 @@ public class SplashScreen extends AppCompatActivity {
         }
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
-        registerFCMDeviceID();
+        registerFCMDeviceID(status);
         return true;
     }
 
@@ -150,9 +141,9 @@ public class SplashScreen extends AppCompatActivity {
         };
     }
 
-    private void registerFCMDeviceID() {
+    private void registerFCMDeviceID(boolean isPlayServiceAvailable) {
         GCMHandler gcm = new GCMHandler(this);
-        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener());
+        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener(), isPlayServiceAvailable);
     }
 
     public void finishSplashScreen() {
@@ -219,6 +210,7 @@ public class SplashScreen extends AppCompatActivity {
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }
+                            Timber.w("P2#LINKER#splash_screen;deeplink='%s'", tokopediaDeeplink);
                             intent.setData(Uri.parse(tokopediaDeeplink));
                             startActivity(intent);
                             finish();

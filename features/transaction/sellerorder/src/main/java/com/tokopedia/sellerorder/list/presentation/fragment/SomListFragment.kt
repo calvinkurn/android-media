@@ -125,6 +125,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var refreshHandler: RefreshHandler? = null
     private var tabActive = ""
     private var tabStatus = ""
+    private var filterStatusIdStr = ""
     private var filterStatusId = 0
     private var isFilterApplied = false
     private var defaultStartDate = ""
@@ -150,7 +151,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 arguments = Bundle().apply {
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
-                    putInt(FILTER_STATUS_ID, bundle.getInt(FILTER_STATUS_ID))
+                    putString(FILTER_STATUS_ID, bundle.getString(FILTER_STATUS_ID))
                     putBoolean(FROM_WIDGET_TAG, bundle.getBoolean(FROM_WIDGET_TAG))
                 }
             }
@@ -173,7 +174,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
             tabStatus = arguments?.getString(TAB_STATUS).toString()
-            filterStatusId = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
+            filterStatusIdStr = arguments?.getString(FILTER_STATUS_ID).toString()
+            filterStatusId = filterStatusIdStr.toIntOrNull() ?: 0
             isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
         loadTicker()
@@ -219,7 +221,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun openSellerMigrationBottomSheet() {
         context?.let {
-            val sellerMigrationBottomSheet: BottomSheetUnify = createNewInstance(it)
+            val sellerMigrationBottomSheet: BottomSheetUnify = createNewInstance()
             sellerMigrationBottomSheet.show(childFragmentManager, "")
         }
     }
@@ -579,6 +581,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         refreshHandler?.finishRefresh()
         empty_state_order_list?.visibility = View.GONE
         order_list_rv?.visibility = View.VISIBLE
+        quick_filter?.visibility = View.VISIBLE
 
         if (!onLoadMore) {
             somListItemAdapter.addList(orderList.orders)
@@ -602,8 +605,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderFilterEmpty(title: String, desc: String) {
         refreshHandler?.finishRefresh()
-        order_list_rv.visibility = View.GONE
-        empty_state_order_list.visibility = View.VISIBLE
+        order_list_rv?.visibility = View.GONE
+        quick_filter?.visibility = View.VISIBLE
+        empty_state_order_list?.visibility = View.VISIBLE
         title_empty?.text = title
         desc_empty?.text = desc
         btn_cek_peluang?.visibility = View.GONE
@@ -612,8 +616,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderErrorOrderList(title: String, desc: String) {
         refreshHandler?.finishRefresh()
-        order_list_rv.visibility = View.GONE
-        empty_state_order_list.visibility = View.VISIBLE
+        order_list_rv?.visibility = View.GONE
+        quick_filter?.visibility = View.GONE
+        empty_state_order_list?.visibility = View.VISIBLE
         title_empty?.text = title
         desc_empty?.text = desc
         ic_empty?.loadImageDrawable(R.drawable.ic_som_error_list)
@@ -628,8 +633,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderEmptyOrderList() {
         refreshHandler?.finishRefresh()
-        order_list_rv.visibility = View.GONE
-        empty_state_order_list.visibility = View.VISIBLE
+        order_list_rv?.visibility = View.GONE
+        quick_filter?.visibility = View.VISIBLE
+        empty_state_order_list?.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_peluang_title)
 
         // Peluang Feature has been removed, thus we set text to empty and button is gone

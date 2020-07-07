@@ -40,7 +40,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.miscDependencies.guava
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation (rootProject.ext.miscDependencies.ucrop){

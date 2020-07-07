@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
@@ -17,6 +19,7 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
+import java.util.*
 import javax.inject.Inject
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
@@ -30,6 +33,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     fun getHeader(): HeaderUnify = thank_header
 
     override fun getScreenName(): String {
+       sendScreenNameToIrisForMoenage()
         return SCREEN_NAME
     }
 
@@ -145,16 +149,12 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragment?.let {
             return when (it) {
                 is LoaderFragment -> true
-                is DeferredPaymentFragment -> {
-                    it.onBackPressed()
-                }
-                is ProcessingPaymentFragment -> {
-                    it.onBackPressed()
-                }
                 else -> {
-                    gotoHomePage()
-                    finish()
-                    true
+                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
+                        override fun onCompleted() {
+                            gotoHomePage()
+                        }
+                    })
                 }
             }
 
@@ -167,10 +167,17 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         finish()
     }
 
+    private fun sendScreenNameToIrisForMoenage(){
+        val values = HashMap<String, Any>()
+        values["screenName"]= IRIS_SCREEN_NAME_MO
+        IrisAnalytics.getInstance(this).saveEvent(values)
+    }
+
     companion object {
         const val SCREEN_NAME = "Finish Transaction"
         const val ARG_PAYMENT_ID = "payment_id"
         const val ARG_MERCHANT = "merchant"
+        const val IRIS_SCREEN_NAME_MO = "thank_you_page_launched"
     }
 }
 

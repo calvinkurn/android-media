@@ -12,6 +12,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewMode
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
+import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -45,6 +46,10 @@ class InitialStatePresenter @Inject constructor(
 
     fun getSearchParameter(): Map<String, String> {
         return searchParameter
+    }
+
+    private fun getUserId(): String {
+        return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 
     override fun getInitialStateData() {
@@ -317,6 +322,32 @@ class InitialStatePresenter @Inject constructor(
                 view.deleteRecentSearch(listVistable)
             }
         }
+    }
+
+    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        trackEventItemClicked(item, adapterPosition)
+
+        view?.dropKeyBoard()
+        view?.route(item.applink, searchParameter)
+        view?.finish()
+    }
+
+    private fun trackEventItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        when(item.type) {
+            TYPE_SHOP -> view?.trackEventClickRecentShop(getRecentShopLabelForTracking(item), getUserId())
+            else -> view?.trackEventClickRecentSearch(
+                    getItemEventLabelForTracking(item, adapterPosition),
+                    adapterPosition
+            )
+        }
+    }
+
+    private fun getRecentShopLabelForTracking(item: BaseItemInitialStateSearch): String {
+        return getShopIdFromApplink(item.applink) + " - keyword: " + item.title
+    }
+
+    private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch, adapterPosition: Int): String {
+        return "value: ${item.title} - po: ${adapterPosition +1} - applink: ${item.applink}"
     }
 
     override fun detachView() {

@@ -10,7 +10,7 @@ import com.db.williamchart.base.BaseWilliamChartModel;
 import com.db.williamchart.util.GMStatisticUtil;
 import com.db.williamchart.view.LineChartView;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.gm.statistic.view.widget.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.resource.GMConstant;

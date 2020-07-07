@@ -7,11 +7,16 @@ import android.os.Looper
 import android.os.Message
 import android.widget.ImageView
 import androidx.annotation.RawRes
+import com.tkpd.remoteresourcerequest.R
+import com.tkpd.remoteresourcerequest.callback.CallbackDispatcher
+import com.tkpd.remoteresourcerequest.callback.DeferredCallback
+import com.tkpd.remoteresourcerequest.callback.DeferredTaskCallback
 import com.tkpd.remoteresourcerequest.database.ResourceDB
-import com.tkpd.remoteresourcerequest.utils.CallbackDispatcher
-import com.tkpd.remoteresourcerequest.utils.DeferredCallback
+import com.tkpd.remoteresourcerequest.type.RequestedResourceType
+import com.tkpd.remoteresourcerequest.utils.Constants.CONTEXT_NOT_INITIALIZED_MESSAGE
+import com.tkpd.remoteresourcerequest.utils.Constants.URL_NOT_INITIALIZED_MESSAGE
 import com.tkpd.remoteresourcerequest.utils.DensityFinder
-import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tkpd.remoteresourcerequest.worker.DeferredWorker
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 import java.util.concurrent.BlockingQueue
@@ -32,38 +37,68 @@ class ResourceDownloadManager private constructor() {
     private lateinit var mDownloadTaskThreadPool: ThreadPoolExecutor
     private lateinit var mDecodeTaskThreadPool: ThreadPoolExecutor
 
-    lateinit var context: WeakReference<Context>
-    lateinit var handler: Handler
-    private lateinit var mBaseUrl: String
-    private lateinit var mRelativeUrl: String
-    private val map = mutableMapOf<String, ArrayList<DeferredResourceTask>?>()
+    private lateinit var context: WeakReference<Context>
+    private lateinit var handler: Handler
 
+    private var mBaseUrl: String = ""
+    private var mRelativeUrl: String = ""
     private lateinit var mClient: OkHttpClient
+
 
     internal var deferredCallback: DeferredCallback? = null
 
-    private var density: String = ""
+    companion object {
 
-    fun initialize(context: Context, @RawRes resourceId: Int): ResourceDownloadManager {
+        const val DOWNLOAD_STARTED = 1
+        const val DOWNLOAD_COMPLETED = 2
+        const val DOWNLOAD_FAILED = 3
+        const val DECODE_STARTED = 4
+        const val DECODE_FAILED = 5
+        const val DECODE_COMPLETED = 6
+        const val TASK_COMPLETED = 7
+        const val DOWNLOAD_SKIPPED = 8
+
+
+        private const val DEFAULT_POOL_SIZE = 4
+        private const val MAX_POOL_SIZE = 6
+        private const val KEEP_ALIVE_TIME: Long = 5
+        private const val DEFAULT_TIME_OUT = 60L
+
+        const val MANAGER_TAG: String = "RDM"
+
+        @Volatile
+        private var INSTANCE: ResourceDownloadManager? = null
+
+        fun getManager(): ResourceDownloadManager {
+            val tempInstance =
+                    INSTANCE
+            if (tempInstance != null) {
+                return tempInstance
+            }
+            synchronized(this) {
+                val instance =
+                        ResourceDownloadManager()
+                INSTANCE = instance
+                return instance
+            }
+        }
+    }
+
+    /**
+     * this method should be called before proceeding further with anything. Specially
+     * before creating MultiDPIImageType object so that density of device can be matched for it
+     * and download can happen for proper density.
+     **/
+    fun initialize(
+            context: Context,
+            @RawRes resourceId: Int
+    ): ResourceDownloadManager {
         initializeFields()
         this.context = WeakReference(context.applicationContext)
         roomDB = ResourceDB.getDatabase(context)
-        density = getDisplayDensity(context)
+        initDensityPathToAppendInUrl(context)
         scheduleWorker(context, resourceId)
         return this
-    }
-
-    fun scheduleWorker(context: Context, resourceId: Int) {
-        DeferredWorker.schedulePeriodicWorker(context, this, resourceId)
-    }
-
-    fun addDeferredCallback(deferredCallback: DeferredCallback): ResourceDownloadManager {
-        this.deferredCallback = deferredCallback
-        return this
-    }
-
-    fun getDisplayDensity(context: Context): String {
-        return DensityFinder.findDensity(context, deferredCallback)
     }
 
     /**
@@ -71,74 +106,78 @@ class ResourceDownloadManager private constructor() {
      * where file to be downloaded is placed.
      */
     fun setBaseAndRelativeUrl(baseUrl: String, relativeUrl: String): ResourceDownloadManager {
-        if (baseUrl != "" && !::mBaseUrl.isInitialized)
+        if (baseUrl.isNotEmpty() && mBaseUrl.isEmpty())
             mBaseUrl = baseUrl
-        if (relativeUrl != "" && !::mRelativeUrl.isInitialized)
+        if (relativeUrl.isNotEmpty() && mRelativeUrl.isEmpty())
             mRelativeUrl = relativeUrl
         return this
     }
 
+    fun addDeferredCallback(deferredCallback: DeferredCallback): ResourceDownloadManager {
+        this.deferredCallback = deferredCallback
+        return this
+    }
+
+    internal fun scheduleWorker(context: Context, resourceId: Int) {
+        DeferredWorker
+                .schedulePeriodicWorker(context, this, resourceId)
+    }
+
+    private fun initDensityPathToAppendInUrl(context: Context): String {
+        DensityFinder.initializeDensityPath(context)
+        return DensityFinder.densityUrlPath
+    }
+
     private fun initializeFields() {
         handler = getMainHandler()
-        resourceDownloadTaskQueue = LinkedBlockingQueue<DeferredResourceTask>()
-        mDownloadWorkQueue = LinkedBlockingQueue<Runnable>()
-        mDecodeWorkQueue = LinkedBlockingQueue<Runnable>()
+        resourceDownloadTaskQueue = LinkedBlockingQueue(10)
+        mDownloadWorkQueue = LinkedBlockingQueue()
+        mDecodeWorkQueue = LinkedBlockingQueue()
         mDownloadTaskThreadPool = ThreadPoolExecutor(
-                DEFAULT_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, mDownloadWorkQueue
+                DEFAULT_POOL_SIZE,
+                MAX_POOL_SIZE,
+                KEEP_ALIVE_TIME, TimeUnit.SECONDS, mDownloadWorkQueue
         )
         mDecodeTaskThreadPool = ThreadPoolExecutor(
-                DEFAULT_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, mDecodeWorkQueue
+                DEFAULT_POOL_SIZE,
+                MAX_POOL_SIZE,
+                KEEP_ALIVE_TIME, TimeUnit.SECONDS, mDecodeWorkQueue
         )
     }
 
     fun startDownload(
-            remoteFileName: String,
-            imageView: DeferredImageView?,
+            resourceType: RequestedResourceType,
             deferredTaskCallback: DeferredTaskCallback?
     ): DeferredResourceTask {
-        check(!(!::mBaseUrl.isInitialized || !::mRelativeUrl.isInitialized)) {
-            "ResourceDownloadManager not initialized!! " +
-                    "Call ResourceDownloadManager.setBaseAndRelativeUrl(baseUrl, relativeUrl) at least once!!!!"
-        }
         check(::context.isInitialized) {
-            "ResourceDownloadManager not initialized!! " +
-                    "Call ResourceDownloadManager.initialize(context, resId) first!!!!"
+            CONTEXT_NOT_INITIALIZED_MESSAGE
         }
 
-        val customUrl = getResourceUrl(remoteFileName)
+        check(mBaseUrl.isNotEmpty() && mRelativeUrl.isNotEmpty()) {
+            URL_NOT_INITIALIZED_MESSAGE
+        }
+
+        val customUrl = getResourceUrl(resourceType)
         var task = pollForIdleTask()
-        if (task == null) {
-            task = getNewDownloadTaskInstance()
-        }
-        task.isRequestedFromWorker = imageView?.let { false } ?: true
-        task.initTask(customUrl, imageView, deferredTaskCallback)
+        task = task ?: getNewDownloadTaskInstance()
 
-        if (map[customUrl] == null || map[customUrl]?.size == 0) {
-            map[customUrl] = ArrayList()
-            mDownloadTaskThreadPool.execute(task.getDownloadRunnable())
-        } else {
-            task.removeDownloadRunnable()
-            CallbackDispatcher.dispatchLog(deferredCallback,
-                    "DOWNLOAD_ALREADY_IN_PROGRESS ${task.getDownloadUrl()}")
-        }
-        map[customUrl]!!.add(task) // Added !! since null case handled in if case above
+        task.initTask(customUrl, resourceType, deferredTaskCallback)
+
+        mDownloadTaskThreadPool.execute(task.getDownloadRunnable())
 
         return task
     }
 
     fun getNewDownloadTaskInstance(): DeferredResourceTask {
-        return DeferredResourceTask(this, getClient(), roomDB)
+        return DeferredResourceTask(
+                this,
+                getClient(),
+                roomDB
+        )
     }
 
-    internal fun getResourceUrl(remoteFileName: String): String {
-        val url = mBaseUrl + mRelativeUrl + remoteFileName
-        return convertToCustomUrl(url)
-    }
-
-    private fun convertToCustomUrl(url: String): String {
-        val indexToBreak = url.lastIndexOf(URL_SEPARATOR) + 1
-        val name = url.substring(0, indexToBreak)
-        return (name + density + URL_SEPARATOR + url.substring(indexToBreak))
+    internal fun getResourceUrl(remoteFileType: RequestedResourceType): String {
+        return mBaseUrl + mRelativeUrl + remoteFileType.relativeFilePath
     }
 
     fun getContextWrapper(): ContextWrapper {
@@ -162,66 +201,67 @@ class ResourceDownloadManager private constructor() {
     }
 
     fun handleMessage(message: Message): Boolean {
+
         val task = message.obj as DeferredResourceTask
+        var urlAndWorkerInfo = "%s,%s"
+        urlAndWorkerInfo =
+                urlAndWorkerInfo.format(task.isRequestedFromWorker, task.getDownloadUrl())
+
         when (message.what) {
+            /******************** DOWNLOAD state handling starts ********************/
             DOWNLOAD_STARTED -> {
-                CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DOWNLOAD_STARTED ${task.getDownloadUrl()}")
+                logCurrentState("DOWNLOAD_STARTED,$urlAndWorkerInfo")
                 return true
             }
             DOWNLOAD_SKIPPED -> {
-                CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DOWNLOAD_SKIPPED ${task.getDownloadUrl()}")
+                logCurrentState("DOWNLOAD_SKIPPED,$urlAndWorkerInfo")
                 CallbackDispatcher.onCacheHit(deferredCallback, task.getDownloadUrl())
                 onDownloadCompleted(task)
                 return true
             }
             DOWNLOAD_COMPLETED -> {
-                CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DOWNLOAD_COMPLETED ${task.getDownloadUrl()},  " +
-                                "startedFromWorker = ${task.isRequestedFromWorker} ")
-                CallbackDispatcher.onDownloadState(deferredCallback,
-                        task.getDownloadUrl(), true)
+                logCurrentState("DOWNLOAD_COMPLETED,$urlAndWorkerInfo")
+                CallbackDispatcher.onDownloadState(
+                        deferredCallback,
+                        task.getDownloadUrl(), true
+                )
+
                 onDownloadCompleted(task)
                 return true
             }
-
             DOWNLOAD_FAILED -> {
-                CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DOWNLOAD_FAILED ${task.getDownloadUrl()},  " +
-                                "startedFromWorker = ${task.isRequestedFromWorker} ")
-                CallbackDispatcher.onDownloadState(deferredCallback,
-                        task.getDownloadUrl(), false)
+                logCurrentState("DOWNLOAD_FAILED,$urlAndWorkerInfo")
+                CallbackDispatcher.onDownloadState(
+                        deferredCallback,
+                        task.getDownloadUrl(), false
+                )
+                onDownloadFailed(task)
                 offerTask(task)
                 return true
             }
+            /******************* DOWNLOAD state handling ends ***********************/
 
+            /******************* DECODE state handling starts ***********************/
             DECODE_STARTED -> {
-                CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DECODE_STARTED ${task.getDownloadUrl()}")
+                logCurrentState("DECODE_STARTED,$urlAndWorkerInfo")
                 return true
             }
-
             DECODE_COMPLETED -> {
-                CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DECODE_COMPLETED ${task.getDownloadUrl()},  " +
-                                "startedFromWorker = ${task.isRequestedFromWorker} ")
+                logCurrentState("DECODE_COMPLETED,$urlAndWorkerInfo")
 
                 onDecodeCompleted(task)
                 return true
             }
-
             DECODE_FAILED -> {
-                CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DECODE_FAILED ${task.getDownloadUrl()}, " +
-                                "startedFromWorker = ${task.isRequestedFromWorker} ")
+                logCurrentState("DECODE_FAILED,$urlAndWorkerInfo")
+
                 offerTask(task)
                 return true
             }
+            /******************* DECODE state handling ends *************************/
 
             TASK_COMPLETED -> {
-                CallbackDispatcher.dispatchLog(deferredCallback,
-                        "TASK_COMPLETED ${task.getDownloadUrl()}")
+                logCurrentState("TASK_COMPLETED,$urlAndWorkerInfo")
                 offerTask(task)
                 return true
             }
@@ -229,32 +269,44 @@ class ResourceDownloadManager private constructor() {
         return false
     }
 
+    private fun onDownloadFailed(task: DeferredResourceTask) {
+        task.deferredImageView?.let { imageReference ->
+            imageReference.get()?.setImageResource(R.drawable.ic_loading_error)
+        }
+        task.notifyDownloadFailed()
+    }
+
+    internal fun logCurrentState(logMessage: String) {
+        CallbackDispatcher.dispatchLog(deferredCallback, logMessage)
+    }
+
     private fun offerTask(task: DeferredResourceTask) {
-        map[task.getDownloadUrl()]?.clear()
-        map[task.getDownloadUrl()] = null
         task.recycleTask()
         resourceDownloadTaskQueue.offer(task)
     }
 
     private fun onDownloadCompleted(completedTask: DeferredResourceTask) {
-        val taskList = map[completedTask.getDownloadUrl()]
-        taskList?.forEach { task ->
-            task.setByteBuffer(completedTask.getByteBuffer())
-            task.deferredImageView?.let {
-                if (it.get() != null) {
-                    it.get()?.mRemoteFileName = ""
-                    startDecoding(task)
-                } else {
-                    handler.obtainMessage(TASK_COMPLETED, task).sendToTarget()
-                }
-            } ?: handler.obtainMessage(TASK_COMPLETED, task).sendToTarget()
+        completedTask.deferredImageView?.let {
+            if (it.get() != null) {
+                it.get()?.mRemoteFileName = ""
+                startDecoding(completedTask)
+            } else {
+                handler.obtainMessage(TASK_COMPLETED, completedTask).sendToTarget()
+            }
+        } ?: kotlin.run {
+            handler.obtainMessage(TASK_COMPLETED, completedTask).sendToTarget()
         }
+        completedTask.notifyDownloadComplete()
     }
 
     private fun onDecodeCompleted(task: DeferredResourceTask) {
         task.deferredImageView?.let { weakRefIV ->
             if (weakRefIV.get() != null) {
                 task.getBitmap()?.let {
+
+                    if (task.requestedDensity != 0)
+                        it.density = task.requestedDensity
+
                     (weakRefIV.get() as ImageView).setImageBitmap(it)
                 }
                 handler.obtainMessage(TASK_COMPLETED, task).sendToTarget()
@@ -268,17 +320,10 @@ class ResourceDownloadManager private constructor() {
         mDecodeTaskThreadPool.execute(task.getDecodeRunnable())
     }
 
-    fun stopDeferredImageViewRendering(
-            fileName: String,
-            deferredImageView: DeferredImageView
-    ) {
-        val url = mBaseUrl + mRelativeUrl + fileName
-        val taskList = map[url]
-        taskList?.forEach { task ->
-            if (task.deferredImageView?.get() == deferredImageView) {
-                task.interruptDecodeRunnable()
-                task.deferredImageView?.clear()
-            }
+    fun stopDeferredImageViewRendering(task: DeferredResourceTask?) {
+        if (task?.deferredImageView?.get() != null) {
+            task.interruptDecodeRunnable()
+            task.deferredImageView?.clear()
         }
     }
 
@@ -287,41 +332,5 @@ class ResourceDownloadManager private constructor() {
     }
 
     fun pollForIdleTask(): DeferredResourceTask? = resourceDownloadTaskQueue.poll()
-
-    companion object {
-
-        const val DOWNLOAD_STARTED = 1
-        const val DOWNLOAD_COMPLETED = 2
-        const val DOWNLOAD_FAILED = 3
-        const val DECODE_STARTED = 4
-        const val DECODE_FAILED = 5
-        const val DECODE_COMPLETED = 6
-        const val TASK_COMPLETED = 7
-        const val DOWNLOAD_SKIPPED = 8
-
-
-        private const val DEFAULT_POOL_SIZE = 2
-        private const val MAX_POOL_SIZE = 6
-        private const val KEEP_ALIVE_TIME: Long = 5
-        private const val DEFAULT_TIME_OUT = 60L
-        const val URL_SEPARATOR = "/"
-
-        const val MANAGER_TAG: String = "ResourceDownloadManager"
-
-        @Volatile
-        private var INSTANCE: ResourceDownloadManager? = null
-
-        fun getManager(): ResourceDownloadManager {
-            val tempInstance = INSTANCE
-            if (tempInstance != null) {
-                return tempInstance
-            }
-            synchronized(this) {
-                val instance = ResourceDownloadManager()
-                INSTANCE = instance
-                return instance
-            }
-        }
-    }
 
 }

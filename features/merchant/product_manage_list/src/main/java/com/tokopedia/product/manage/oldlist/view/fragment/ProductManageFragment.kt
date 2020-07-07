@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.oldlist.view.fragment
 import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
-import android.app.ProgressDialog.show
 import android.content.*
 import android.graphics.Typeface
 import android.net.Uri
@@ -48,7 +47,6 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
@@ -56,14 +54,16 @@ import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
+import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
+import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity
+import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity
 import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
@@ -99,6 +99,7 @@ import com.tokopedia.product.manage.oldlist.view.model.ProductManageViewModel
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationProductBottomSheet
 import com.tokopedia.topads.common.data.model.DataDeposit
@@ -108,6 +109,7 @@ import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
@@ -128,7 +130,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    lateinit var bottomActionView: BottomActionView
+    lateinit var bottomActionView: FloatingButtonUnify
     lateinit var progressDialog: ProgressDialog
     lateinit var coordinatorLayout: CoordinatorLayout
     lateinit var topAdsWidgetFreeClaim: TopAdsWidgetFreeClaim
@@ -189,15 +191,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         val itemId = item.itemId
         if (itemId == R.id.add_product_menu) {
             item.subMenu.findItem(R.id.label_view_add_image).setOnMenuItemClickListener { item ->
-                RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                startActivity(ProductAddNameCategoryActivity.createInstance(activity))
                 ProductManageTracking.eventProductManageTopNav(item.title.toString())
                 true
-            }
-            item.subMenu.findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener { item ->
-                val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
-                startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
-                ProductManageTracking.eventProductManageTopNav(item.title.toString())
-                false
             }
         }
         return super.onOptionsItemSelected(item)
@@ -214,14 +210,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         setupBottomSheet()
         renderCheckedView()
 
-        bottomActionView.setButton1OnClickListener {
+        bottomActionView.setDefault()
+        bottomActionView.sortItem.listener = {
             context?.let {
                 val intent = ProductManageSortActivity.createIntent(it, sortProductOption)
                 startActivityForResult(intent, REQUEST_CODE_SORT)
             }
         }
-
-        bottomActionView.setButton2OnClickListener {
+        bottomActionView.filterItem.listener = {
             context?.let {
                 val intent = ProductManageFilterActivity.createIntent(it, productManageFilterModel)
                 startActivityForResult(intent, REQUEST_CODE_FILTER)
@@ -472,7 +468,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     private fun showToasterNormal(message: String) {
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), View.OnClickListener {  })
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), View.OnClickListener { })
         }
     }
 
@@ -652,13 +648,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun getChangeFeaturedErrorMessage(throwable: Throwable): String =
-        when(throwable) {
-            is UnknownHostException -> getString(R.string.product_manage_failed_no_internet)
-            is TimeoutException -> getString(R.string.product_manage_failed_set_featured_product)
-            is com.tokopedia.network.exception.MessageErrorException ->
-                throwable.message?: getString(R.string.product_manage_failed_set_featured_product)
-            else -> ErrorHandler.getErrorMessage(context, throwable)
-        }
+            when (throwable) {
+                is UnknownHostException -> getString(R.string.product_manage_failed_no_internet)
+                is TimeoutException -> getString(R.string.product_manage_failed_set_featured_product)
+                is com.tokopedia.network.exception.MessageErrorException ->
+                    throwable.message
+                            ?: getString(R.string.product_manage_failed_set_featured_product)
+                else -> ErrorHandler.getErrorMessage(context, throwable)
+            }
 
 
     private fun updateBulkLayout() {
@@ -961,24 +958,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
-    private fun goToAddEditProduct(productId: String, mode: String) {
+    private fun goToDuplicateProduct(productId: String) {
         activity?.let {
-            val uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-                    .buildUpon()
-                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
-                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, mode)
-                    .build()
-                    .toString()
-            RouteManager.route(context, uri)
+            val intent = ProductDuplicateActivity.createInstance(it, productId)
+            startActivity(intent)
         }
     }
 
-    private fun goToDuplicateProduct(productId: String) {
-        goToAddEditProduct(productId, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
-    }
-
     private fun goToEditProduct(productId: String) {
-        goToAddEditProduct(productId, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+        val intent = ProductEditActivity.createInstance(activity, productId)
+        startActivity(intent)
     }
 
     private fun showDialogActionDeleteProduct(productIdList: List<String>, onClickListener: DialogInterface.OnClickListener, onCancelListener: DialogInterface.OnClickListener) {
@@ -1113,14 +1102,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun setupTicker() {
-        if(isSellerMigrationEnabled(context)) {
+        if (isSellerMigrationEnabled(context)) {
             sellerMigrationTicker.apply {
                 tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_title)
                 setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_content))
-                setDescriptionClickEvent(object: TickerCallback {
+                setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        SellerMigrationTracking.eventOnClickProductTicker(userSession.userId)
                         openSellerMigrationBottomSheet()
                     }
+
                     override fun onDismiss() {
                         // No Op
                     }

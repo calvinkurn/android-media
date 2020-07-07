@@ -27,10 +27,11 @@ import timber.log.Timber
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private lateinit var url: String
-    private var showTitleBar = true
+    var showTitleBar = true
+    private set
     private var allowOverride = true
     private var needLogin = false
-    private var title = ""
+    var title = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)

@@ -8,4 +8,6 @@ interface InitialStateItemClickListener {
     fun onRefreshPopularSearch()
 
     fun onItemClicked(applink: String, webUrl: String)
+
+    fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
 }

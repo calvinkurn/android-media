@@ -122,7 +122,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
-    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation project(rootProject.ext.libraries.playCore)
     androidTestImplementation rootProject.ext.firebase.core
 

@@ -9,7 +9,6 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
-import com.tokopedia.design.button.BottomActionView
 
 /**
  * Simple scrolling behavior that monitors nested events in the scrolling
@@ -109,7 +108,7 @@ class QuickHideBehaviour : CoordinatorLayout.Behavior<View> {
     private fun getTargetHideValue(parent: ViewGroup, target: View): Float {
         if (target is ConstraintLayout) {
             return (-target.getHeight()).toFloat()
-        } else if (target is BottomActionView || target is CardView) {
+        } else if (target is CardView) {
             return (parent.height - target.top).toFloat()
         }
         return 0f

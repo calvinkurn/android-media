@@ -502,6 +502,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void setBoughtDate(String boughtDate) {
+
+    }
+
+    @Override
     public void showReplacementView(List<String> reasons) {
 
     }

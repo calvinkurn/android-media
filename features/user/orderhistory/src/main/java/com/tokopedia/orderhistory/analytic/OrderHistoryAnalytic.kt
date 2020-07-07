@@ -49,7 +49,7 @@ class OrderHistoryAnalytic @Inject constructor() {
                                                 "category", product.categoryId,
                                                 "list", "/chat",
                                                 "position", position,
-                                                "dimension40", "/chat"
+                                                "dimension40", "/chat - buy again"
                                         )
                                 )
                         )

@@ -3,20 +3,23 @@ package com.tokopedia.entertainment.pdp.fragment
 import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
@@ -38,8 +41,9 @@ import com.tokopedia.entertainment.pdp.data.pdp.EventPDPModel
 import com.tokopedia.entertainment.pdp.data.pdp.OpenHour
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getActiveDate
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getEndDate
-import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getSizeSchedule
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getStartDate
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.isScheduleSizeWithDate
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.isScheduleSizeWithoutDate
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLatitude
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLongitude
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventMediaMapper.mapperMediaPDP
@@ -53,7 +57,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_facilities.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_how_to_go_there.view.*
@@ -61,12 +65,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_open_hour.view.*
 import kotlinx.android.synthetic.main.fragment_event_pdp.*
 import kotlinx.android.synthetic.main.partial_event_pdp_price.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
-import kotlinx.android.synthetic.main.widget_event_pdp_carousel.*
-import kotlinx.android.synthetic.main.widget_event_pdp_tab_section.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -198,7 +196,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     private fun loadCalendar(context: Context, productDetailData: ProductDetailData) {
         btn_event_pdp_cek_tiket.setOnClickListener {
             eventPDPTracking.onClickCariTicket(productDetailData)
-            if (getSizeSchedule(productDetailData)) {
+            if (isScheduleSizeWithDate(productDetailData)) {
 
                 val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
                 val bottomSheets = BottomSheetUnify()
@@ -232,8 +230,12 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 fragmentManager?.let {
                     bottomSheets.show(it, "")
                 }
-            } else {
+            } else if (isScheduleSizeWithoutDate(productDetailData)) {
                 goToTicketPageWithoutDate()
+            } else {
+                view?.let {
+                    Toaster.make(it, it.context.getString(R.string.ent_pdp_empty_package), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error))
+                }
             }
         }
     }
@@ -291,8 +293,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                    widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
-                            as LinearLayoutManager).findFirstVisibleItemPosition())
+                widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
+                        as LinearLayoutManager).findFirstVisibleItemPosition())
             }
         })
     }
@@ -316,7 +318,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         val startDate = getStartDate(productDetailData)
         val endDate = getEndDate(productDetailData)
         context?.let {
-            RouteManager.route(it, getString(R.string.ent_pdp_param_to_package,ApplinkConstInternalEntertainment.EVENT_PACKAGE,urlPDP,selectedDate,startDate,endDate))
+            RouteManager.route(it, getString(R.string.ent_pdp_param_to_package, ApplinkConstInternalEntertainment.EVENT_PACKAGE, urlPDP, selectedDate, startDate, endDate))
         }
     }
 
@@ -386,18 +388,33 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     override fun seeAllAbout(value: String, title: String) {
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_about, null)
+
+        val viewParent = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_about, null)
         val bottomSheets = BottomSheetUnify()
+        val webView = viewParent.web_event_pdp_about
         bottomSheets.apply {
-            setChild(view)
+            isFullpage = true
+            setChild(viewParent)
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
 
-            view.web_event_pdp_about.loadData(value, "text/html", "UTF-8")
-            fragmentManager?.let {
-                bottomSheets.show(it, "")
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
+        }
+
+        bottomSheets.setShowListener {
+            val loader = viewParent.loader_unify_event_pdp
+
+            webView.loadData(value, "text/html", "UTF-8")
+            webView.webViewClient = object : WebViewClient(){
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    webView.visibility = View.VISIBLE
+                    loader.visibility = View.GONE
+                }
             }
+        }
 
     }
 

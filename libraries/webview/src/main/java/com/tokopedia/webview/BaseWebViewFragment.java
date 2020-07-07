@@ -55,6 +55,7 @@ import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
+import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
@@ -472,6 +473,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
 
     class MyWebViewClient extends WebViewClient {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            if (view.getContext() instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) view.getContext();
+                String title = view.getTitle();
+                String activityTitle = activity.getTitle();
+                if (TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE)) {
+                    if (activity.getShowTitleBar()) {
+                        activity.setTitle(title);
+                        activity.updateTitle(title);
+                    }
+                }
+            }
+        }
 
         @Nullable
         @Override
@@ -553,15 +569,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         Uri uri = Uri.parse(url);
+        if (uri.isOpaque()) {
+            return false;
+        }
         if (goToLoginGoogle(uri)) return true;
         String queryParam = null;
         String headerText = null;
 
         try {
-            if(uri.isHierarchical()) {
-                queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
-                headerText = uri.getQueryParameter(CUST_HEADER);
-            }
+            queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+            headerText = uri.getQueryParameter(CUST_HEADER);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -637,7 +654,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void logApplinkErrorOpen(String url) {
         String referrer = getPreviousUri();
-        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s'",
+        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s';journey='-'",
                 getClass().getSimpleName(), referrer, url);
     }
 

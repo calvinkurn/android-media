@@ -51,6 +51,9 @@ data class Product(
         @SerializedName("discount_percentage")
         @Expose
         val discountPercentage: Int = 0,
+        @SerializedName("clusterID")
+        @Expose
+        val clusterId: Int = -1,
         @SerializedName("rating")
         @Expose
         val rating: Int = 0,

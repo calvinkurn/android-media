@@ -3,8 +3,8 @@ package com.tokopedia.categorylevels.domain.usecase
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.categorylevels.R
-import com.tokopedia.categorylevels.data.catalogModel.CatalogListResponse
-import com.tokopedia.categorylevels.data.catalogModel.SearchCatalog
+import com.tokopedia.common_category.data.catalogModel.CatalogListResponse
+import com.tokopedia.common_category.data.catalogModel.SearchCatalog
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams

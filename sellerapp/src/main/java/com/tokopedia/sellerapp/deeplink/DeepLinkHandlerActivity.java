@@ -12,14 +12,10 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.SessionApplinkModule;
-import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
 import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
@@ -54,8 +50,6 @@ import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneAppli
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
@@ -73,15 +67,12 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         InboxDeeplinkModule.class,
         TrackingAppLinkModule.class,
         TopChatAppLinkModule.class,
-        SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        UserIdentificationApplinkModule.class,
         FlashsaleDeeplinkModule.class,
         CreatePostModule.class,
-        RNDevOptionsApplinkModule.class,
         WebViewApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
@@ -103,15 +94,12 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new InboxDeeplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
-                new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
-                new UserIdentificationApplinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
                 new CreatePostModuleLoader(),
-                new RNDevOptionsApplinkModuleLoader(),
                 new WebViewApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()
         );

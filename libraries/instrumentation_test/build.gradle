@@ -65,7 +65,7 @@ dependencies {
         exclude module: 'support-annotations'
     }
     implementation rootProject.ext.testDependencies.mockitorCore, { exclude group: 'net.bytebuddy' }
-    implementation 'org.mockito:mockito-android:2.6.3'
+    implementation rootProject.ext.testDependencies.mockitorAndroid
 
     implementation rootProject.ext.testDependencies.assertJCore
 

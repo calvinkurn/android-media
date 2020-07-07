@@ -23,6 +23,10 @@
     <string name="play_discount_percent">%d%%</string>
     <string name="play_stock_available">Stok Tersedia</string>
     <string name="play_add_to_cart_message_success">Produk berhasil ditambahkan ke keranjang</string>
+    <string name="play_product_empty_title">Barang &amp; promo\n pilihan telah habis</string>
+    <string name="play_product_empty_desc">Wah, barang &amp; promo pilihan sudah habis, Yuk\n cek barang menarik lainnya dari toko ini!</string>
+    <string name="play_product_empty_action">Ke Halaman Toko</string>
+    <string name="play_product_updated">Produk telah diupdate</string>
 
     <!--mock-->
     <string name="play_mock_cart">99+</string>
@@ -35,4 +39,5 @@
     <string name="play_transition_video">video_play</string>
 
     <string name="play_general_err_message">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+
 </resources>

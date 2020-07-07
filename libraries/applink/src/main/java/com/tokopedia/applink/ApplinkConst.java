@@ -60,10 +60,12 @@ public interface ApplinkConst {
     String DIGITAL = "tokopedia://digital";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
+    String DIGITAL_SMARTBILLS = "tokopedia://digital/bayarsekaligus";
     String DIGITAL_CART = "tokopedia://digital/cart";
     String DIGITAL_CATEGORY = "tokopedia://digital/category";
     String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
+    String REACT_DISCOVERY_PAGE = "tokopedia://reactDiscovery/{page_id}";
     String DISCOVERY_NEW_USER = "tokopedia://discovery/pengguna-baru";
     String HOME_EXPLORE = "tokopedia://jump/{section}";
     String PROMO = "tokopedia://promo";
@@ -103,12 +105,6 @@ public interface ApplinkConst {
     String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
-    String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
-    String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
-    String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
-    String PROMO_SALE = "tokopedia://sale/{slug}/";
-    String PROMO_SALE_NO_SLASH = "tokopedia://sale/{slug}";
-    String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
     String WALLET_HOME = "tokopedia://wallet";
     String WALLET_ACTIVATION = "tokopedia://wallet/activation";
     String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
@@ -177,7 +173,6 @@ public interface ApplinkConst {
     String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
     String PRODUCT_EDIT = "tokopedia://product/edit/{product_id}";
     String SELLER_TRANSACTION = "tokopedia://seller";
-    String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
     String CONTACT_US = "tokopedia://contact-us";
@@ -254,7 +249,6 @@ public interface ApplinkConst {
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
-    String CREATE_PASSWORD = "tokopedia://createpassword";
     String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
@@ -310,6 +304,8 @@ public interface ApplinkConst {
 
     String DFFALLBACKURL_KEY = "dffallbackurl";
 
+    String OCC = "tokopedia://occ";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -318,6 +314,7 @@ public interface ApplinkConst {
         String CRACK = "tokopedia://gamification";
         String TAP_TAP_MANTAP = "tokopedia://gamification2";
         String DAILY_GIFT_BOX = "tokopedia://gamification_gift_daily";
+        String GIFT_TAP_TAP = "tokopedia://gamification_gift_60s";
     }
 
     interface Digital {
@@ -352,6 +349,7 @@ public interface ApplinkConst {
 
     }
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
+    String DISCOVERY = "tokopedia://discovery";
 
     String MONEYIN = "tokopedia://money_in/device_validation";
 
@@ -429,6 +427,10 @@ public interface ApplinkConst {
         String PATH_ASK_BUYER = "askbuyer";
 
         String SOURCE_ASK_SELLER = "tx_ask_seller";
+        String SOURCE_PAGE = "source_page";
+
+        // chat source page
+        String SOURCE_CHAT_SEARCH = "chat_search";
     }
 
     interface AttachInvoice {
@@ -492,6 +494,7 @@ public interface ApplinkConst {
         String EXTRA_IS_LEASING = "is_leasing";
         String EXTRA_CUSTOM_EVENT_LABEL = "custom_event_label";
         String EXTRA_CUSTOM_EVENT_ACTION = "custom_event_action";
+        String EXTRA_CUSTOM_DIMENSION40 = "custom_dimension40";
         String EXTRA_LAYOUT_NAME = "layout_name";
         String EXTRA_ATC_EXTERNAL_SOURCE = "atc_external_source";
 
@@ -513,5 +516,10 @@ public interface ApplinkConst {
         String EXTRA_TITLE = "title";
         String EXTRA_SUBTITLE = "subtitle";
         String EXTRA_BUTTON = "button";
+    }
+
+    interface ResCenter {
+        String MOBILE =  "/mobile";
+        String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
     }
 }

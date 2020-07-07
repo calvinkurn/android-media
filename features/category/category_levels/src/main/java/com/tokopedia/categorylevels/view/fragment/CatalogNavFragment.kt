@@ -35,6 +35,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_nav.*
 import javax.inject.Inject
+import com.google.gson.annotations.SerializedName
+
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
@@ -273,7 +275,13 @@ class CatalogNavFragment : BaseBannedProductFragment(),
         catalog_recyclerview.requestLayout()
     }
 
-    data class AceFilterInput(var pmin: String, var pmax: String, var sc: String)
+    data class AceFilterInput(
+            @field:SerializedName("pmin")
+            var pmin: String,
+            @field:SerializedName("pmax")
+            var pmax: String,
+            @field:SerializedName("sc")
+            var sc: String)
 
     override fun onSwipeToRefresh() {
         reloadData()

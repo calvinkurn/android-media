@@ -28,28 +28,15 @@ public class TkpdBaseURL {
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
 
-        public static final String PATH_GET_DETAIL_PRODUCT = "get_detail.pl";
         public static final String PATH_GET_EDIT_PRODUCT_FORM = "get_edit_product_form.pl";
     }
 
     public static class User {
-        public static final String URL_INBOX_RES_CENTER = BASE_DOMAIN + "v4/inbox-resolution-center/";
         public static final String PATH_NOTIFICATION = "v4/notification/";
         public static final String URL_NOTIFICATION = BASE_DOMAIN + PATH_NOTIFICATION;
-        public static final String URL_PEOPLE_ACTION = BASE_DOMAIN + "v4/action/people/";
         public static final String URL_PEOPLE = BASE_DOMAIN + "v4/people/";
 
-        public static final String PATH_GET_CREATE_RESOLUTION_FORM_NEW = "get_create_resolution_form_new.pl";
-        public static final String PATH_GET_EDIT_RESOLUTION_FORM = "get_edit_resolution_form.pl";
-        public static final String PATH_GET_RES_CENTER_PRODUCT_LIST = "get_product_list.pl";
-        public static final String PATH_GET_SOLUTION = "get_form_solution.pl";
-        public static final String PATH_GET_KURIR_LIST = "get_kurir_list.pl";
-        public static final String PATH_GET_APPEAL_RESOLUTION_FORM = "get_appeal_resolution_form.pl";
-        public static final String PATH_TRACK_SHIPPING_REF_V2 = "v4/inbox-resolution-center/track_shipping_ref.pl";
-
         public static final String PATH_GET_NOTIFICATION = "get_notification.pl";
-
-        public static final String PATH_EDIT_NOTIFICATION = "edit_notification.pl";
 
         public static final String PATH_GET_PEOPLE_INFO = "get_people_info.pl";
     }
@@ -89,25 +76,6 @@ public class TkpdBaseURL {
 
     }
 
-    public static class ResCenter {
-        public static final String URL_RES_CENTER_ACTION = BASE_DOMAIN + "v4/action/resolution-center/";
-
-        public static final String PATH_REJECT_ADMIN_RES_SUBMIT = "reject_admin_resolution_submit.pl";
-        public static final String PATH_REJECT_ADMIN_RES_VALIDATION = "reject_admin_resolution_validation_new.pl";
-        public static final String PATH_REPLY_CONVERSATION_SUBMIT = "reply_conversation_submit.pl";
-        public static final String PATH_REPLY_CONVERSATION_VALIDATION_NEW = "reply_conversation_validation_new.pl";
-        public static final String PATH_CANCEL_RESOLUTION_V2 = "v4/action/resolution-center/cancel_resolution.pl";
-        public static final String PATH_REPORT_RESOLUTION_V2 = "v4/action/resolution-center/report_resolution.pl";
-        public static final String PATH_FINISH_RES_RETURN_V2 = "v4/action/resolution-center/finish_resolution_retur.pl";
-        public static final String PATH_ACCEPT_ADMIN_RESOLUTION_V2 = "v4/action/resolution-center/accept_admin_resolution.pl";
-        public static final String PATH_INPUT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/input_address_resolution.pl";
-        public static final String PATH_EDIT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/edit_address_resolution.pl";
-        public static final String PATH_REPLY_CONVERSATION_SUBMIT_V2 = "v4/action/resolution-center/reply_conversation_submit.pl";
-        public static final String PATH_REPLY_CONVERSATION_VALIDATION_V2 = "v4/action/resolution-center/reply_conversation_validation.pl";
-        public static final String PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER = "generate_token_host.pl";
-        public static final String PATH_GENERATE_TOKEN_HOST = "v4/action/resolution-center/" + PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER;
-    }
-
     public static class Search {
         public static final String URL_HOT_LIST = BASE_DOMAIN + "v4/hotlist/";
 
@@ -119,15 +87,10 @@ public class TkpdBaseURL {
         public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + V4_ACTION_GENERATE_HOST;
 
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
-        public static final String PATH_GENERATE_HOST_V2 = "v4/action/generate-host/generate_host.pl";
 
         public static final String PATH_UPLOAD_IMAGE_HELPER = "/web-service/v4/action/upload-image-helper/";
         public static final String PATH_ADD_PRODUCT_PICTURE = "add_product_picture.pl";
         public static final String PATH_OPEN_SHOP_PICTURE = "open_shop_picture.pl";
-        public static final String PATH_CONTACT_IMAGE = "/web-service/v4/action/upload-image/upload_contact_image.pl";
-        public static final String PATH_CREATE_RESOLUTION_PICTURE_FULL = "/web-service/v4/action/upload-image-helper/create_resolution_picture.pl";
-        public static final String PATH_UPLOAD_VIDEO = "/upload/video";
-        public static final String PATH_UPLOAD_ATTACHMENT = "/upload/attachment";
     }
 
     public static class Ace {
@@ -170,42 +133,6 @@ public class TkpdBaseURL {
 
     public static class ResCenterV2 {
         public static final String BASE_RESOLUTION = TokopediaUrl.Companion.getInstance().getAPI() + "resolution/";
-        public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
-        public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
-        public static final String BASE_INBOX_RESOLUTION_V2 = BASE_RESOLUTION_VERSION_2 + "inbox";
-        public static final String BASE_DETAIL_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
-        public static final String BASE_DETAIL_RESOLUTION_V2 = BASE_RESOLUTION_VERSION_2 + "detail/{resolution_id}";
-
-        public static final String GET_RESOLUTION_DETAIL = BASE_DETAIL_RESOLUTION;
-        public static final String GET_RESOLUTION_DETAIL_V2 = BASE_DETAIL_RESOLUTION_V2;
-        public static final String GET_RESOLUTION_CONVERSATION = BASE_DETAIL_RESOLUTION + "/conversation";
-        public static final String GET_RESOLUTION_CONVERSATION_MORE = BASE_DETAIL_RESOLUTION + "/conversation/more";
-        public static final String GET_RESOLUTION_HISTORY_AWB = BASE_DETAIL_RESOLUTION + "/history/awb";
-        public static final String GET_RESOLUTION_HISTORY_ACTION = BASE_DETAIL_RESOLUTION + "/history/action";
-        public static final String GET_RESOLUTION_HISTORY_ACTION_V2 = BASE_DETAIL_RESOLUTION_V2 + "/history/action";
-        public static final String GET_RESOLUTION_HISTORY_ADDRESS = BASE_DETAIL_RESOLUTION + "/history/address";
-        public static final String GET_RESOLUTION_LIST_PRODUCT = BASE_DETAIL_RESOLUTION + "/product";
-        public static final String GET_RESOLUTION_PRODUCT_DETAIL = BASE_DETAIL_RESOLUTION + "/product/{trouble_id}";
-        public static final String ACTION_REPLY_RESOLUTION = BASE_DETAIL_RESOLUTION + "/reply";
-        public static final String ACTION_FINISH_RESOLUTION = BASE_DETAIL_RESOLUTION + "/finish";
-        public static final String ACTION_CANCEL_RESOLUTION = BASE_DETAIL_RESOLUTION + "/cancel";
-        public static final String ACTION_ASK_HELP_RESOLUTION = BASE_DETAIL_RESOLUTION + "/report_resolution";
-        public static final String ACTION_ACCEPT_SOLUTION = BASE_DETAIL_RESOLUTION + "/accept";
-
-        public static final String BASE_RESOLUTION_DETAIL_V1 = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
-
-
-        public static final String BASE_DETAIL_NEXT_ACTION_RESOLUTION_V2 = BASE_DETAIL_RESOLUTION_V2 + "/next_action";
-        public static final String GET_RESOLUTION_CONVERSATION_V2 = BASE_DETAIL_RESOLUTION_V2 + "/conversation";
-        public static final String GET_RESOLUTION_CONVERSATION_MORE_V2 = GET_RESOLUTION_CONVERSATION_V2 + "/more";
-        public static final String POST_RESOLUTION_CONVERSATION_ADDRESS = BASE_RESOLUTION_DETAIL_V1 + "/address";
-        public static final String POST_RESOLUTION_CONVERSATION_ADDRESS_EDIT = BASE_RESOLUTION_DETAIL_V1 + "/conversation/{conversation_id}/edit_address";
-
-
-        public static final String GET_INBOX_RESOLUTION_V2_BUYER = BASE_INBOX_RESOLUTION_V2 + "/buyer";
-        public static final String GET_INBOX_RESOLUTION_V2_SELLER = BASE_INBOX_RESOLUTION_V2 + "/seller";
-        public static final String GET_INBOX_RESOLUTION_V2_SINGLE_ITEM = BASE_INBOX_RESOLUTION_V2 + "/{resolution_id}";
-
     }
 
     public static class Payment {
@@ -213,7 +140,10 @@ public class TkpdBaseURL {
     }
 
     public static class Chat {
-        public static final String SEARCH = "/tc/v1/search";
         public static final String DELETE = "/tc/v1/delete";
+    }
+
+    public class Purchase {
+        public static final String PATH_ORDER_HISTORY = "/v4/order/history";
     }
 }

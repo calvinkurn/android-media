@@ -1,14 +1,8 @@
 package com.tokopedia.instantdebitbca.data.view.activity
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.instantdebitbca.data.view.fragment.InstantDebitBcaFragment
 
@@ -16,10 +10,19 @@ import com.tokopedia.instantdebitbca.data.view.fragment.InstantDebitBcaFragment
  * Created by nabillasabbaha on 25/03/19.
  */
 open class InstantDebitBcaActivity : BaseSimpleActivity(), InstantDebitBcaFragment.ActionListener{
+
+    companion object {
+        val CALLBACK_URL = "callbackUrl"
+    }
+
     private val finishDelay = 5000
 
     override fun getNewFragment(): Fragment {
-        return InstantDebitBcaFragment.newInstance(applicationContext, intent.getStringExtra(CALLBACK_URL))
+        var callback = ""
+        intent?.extras?.getString(CALLBACK_URL)?.let {
+            callback = it
+        }
+        return InstantDebitBcaFragment.newInstance(callback)
     }
 
     override fun redirectPage(applinkUrl: String?){
@@ -33,26 +36,5 @@ open class InstantDebitBcaActivity : BaseSimpleActivity(), InstantDebitBcaFragme
     private fun finishWithDelay() {
         val handler = Handler()
         handler.postDelayed({ finish() }, finishDelay.toLong())
-    }
-
-    companion object {
-
-        val CALLBACK_URL = "callbackUrl"
-
-        fun newInstance(context: Context, callbackUrl: String): Intent {
-            val intent = Intent(context, InstantDebitBcaActivity::class.java)
-            intent.putExtra(CALLBACK_URL, callbackUrl)
-            return intent
-        }
-    }
-
-    object DeepLinkIntent{
-
-        @DeepLink(ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_APPLINK)
-        @JvmStatic fun intentForTaskStackBuilderMethods(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            val callbackUrl = if (extras.containsKey(CALLBACK_URL)) extras.getString(CALLBACK_URL) else ""
-            return newInstance(context, callbackUrl)
-        }
     }
 }

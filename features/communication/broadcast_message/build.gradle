@@ -44,9 +44,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
     testImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

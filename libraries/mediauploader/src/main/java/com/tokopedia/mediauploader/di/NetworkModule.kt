@@ -1,11 +1,11 @@
 package com.tokopedia.mediauploader.di
 
 import com.google.gson.Gson
-import com.tokopedia.resources.common.BuildConfig
+import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor
+import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor.Companion.DEFAULT_TIMEOUT
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -16,9 +16,12 @@ import java.util.concurrent.TimeUnit
     @MediaUploaderQualifier
     fun provideOkHttpClientBuilder(): OkHttpClient.Builder {
         return OkHttpClient.Builder()
-                .connectTimeout(NET_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(NET_READ_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(NET_WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+                .readTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+                .writeTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+                .callTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+                .addInterceptor(NetworkTimeOutInterceptor())
+                .retryOnConnectionFailure(false)
     }
 
     @Provides
@@ -31,10 +34,6 @@ import java.util.concurrent.TimeUnit
     }
 
     companion object {
-        private const val NET_READ_TIMEOUT = 60L
-        private const val NET_WRITE_TIMEOUT = 60L
-        private const val NET_CONNECT_TIMEOUT = 60L
-
         private const val BASE_URL = "https://upedia.tokopedia.net/"
     }
 
