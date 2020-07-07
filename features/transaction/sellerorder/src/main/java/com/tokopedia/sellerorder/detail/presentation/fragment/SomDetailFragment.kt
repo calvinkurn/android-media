@@ -305,6 +305,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     renderDetail()
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     showToasterError(getString(R.string.global_error), view)
                 }
             }
@@ -328,6 +329,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     SomAnalytics.eventClickAcceptOrderPopup(false)
                 }
             }
@@ -377,6 +379,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     fragmentManager?.let { it1 -> bottomSheetRejectReason.show(it1, getString(R.string.show_bottomsheet)) }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     showToasterError(getString(R.string.global_error), bottomSheetRejectReason.view)
                 }
             }
@@ -397,6 +400,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     view?.let { v ->
                         val msg = it.throwable.message
                         val msgProcessed = if (msg.isNullOrBlank()) "Terjadi Kesalahan" else msg
@@ -852,6 +856,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     failEditAwbResponse.message = it.throwable.message.toString()
                     if(failEditAwbResponse.message.isNotEmpty()) {
                         showToasterError(failEditAwbResponse.message, view)
@@ -1290,6 +1295,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     showToasterError(getString(R.string.global_error), view)
                 }
             }

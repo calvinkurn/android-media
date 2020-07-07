@@ -369,6 +369,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 renderInfoTicker(it.data)
             }
             is Fail -> {
+                SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                 ticker_info?.visibility = View.GONE
             }
         }
@@ -388,6 +389,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     quick_filter?.visibility = View.GONE
                 }
             }
@@ -406,6 +408,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 loadOrderList(nextOrderId)
             }
             is Fail -> {
+                SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                 loadOrderList(nextOrderId)
             }
         }
@@ -581,6 +584,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
                 }
             }

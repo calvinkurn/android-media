@@ -101,6 +101,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
                     renderConfirmReqPickup()
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }
@@ -119,6 +120,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
 
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
                     Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }
