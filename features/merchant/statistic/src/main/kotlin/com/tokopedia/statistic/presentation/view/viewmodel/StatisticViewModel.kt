@@ -167,7 +167,6 @@ class StatisticViewModel @Inject constructor(
                 getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getPieChartDataUseCase.executeOnBackground()
             })
-            delay(5000L)
             _pieChartWidgetData.postValue(result)
         }, onError = {
             _pieChartWidgetData.postValue(Fail(it))
