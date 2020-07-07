@@ -83,7 +83,6 @@ include "features:merchant:talk"
 include 'features:merchant:youtube_common'
 include "features:merchant:variant_common"
 include "features:merchant:voucher_creation"
-include "features:merchant:seller_migration_common"
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"
