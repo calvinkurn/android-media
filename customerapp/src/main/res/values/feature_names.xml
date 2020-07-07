@@ -266,7 +266,7 @@
     <string name="title_play_df">Play</string>
 
     <!--Interest Pick-->
-    <string name="title_interest_pick">Pilih Inspirasi Kamu</string>
+    <string name="ip_title">Pilih Inspirasi Kamu</string>
 
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
