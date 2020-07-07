@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/play_seller_widget_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,44 +15,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/shop_page_sgc_title_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyType="body_2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/beta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/shop_page_play_widget_beta_badge"
-            android:textColor="@android:color/white"
-            android:background="@drawable/beta_badge"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
-            app:layout_constraintEnd_toStartOf="@+id/container_lottie"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/shop_page_sgc_title_1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title2"
+            android:id="@+id/shop_page_sgc_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/shop_page_play_widget_sgc_content"
+            tools:text="@string/shop_page_play_widget_title"
             app:typographyType="body_2"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shop_page_sgc_title_1"
-            app:layout_constraintEnd_toStartOf="@+id/container_lottie" />
+            app:layout_constraintEnd_toStartOf="@+id/container_lottie"
+            />
         <FrameLayout
             android:id="@+id/container_lottie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/title2">
+            app:layout_constraintStart_toEndOf="@+id/shop_page_sgc_title">
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottie"
                 android:layout_width="120dp"
