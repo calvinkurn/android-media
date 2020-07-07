@@ -209,7 +209,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
                     startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                     return true;
-                } else if(url.substring(0, url.lastIndexOf("/")).contains("order-list?tab=EVENT")){
+                } else if(Uri.parse(url).getLastPathSegment().contains("order-list")){
                     responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
                     responseIntent.putExtra(ScroogePGUtil.SUCCESS_MSG_URL,ApplinkConst.EVENTS_ORDER);
                     setResult(ScroogePGUtil.RESULT_CODE_SUCCESS, responseIntent);
