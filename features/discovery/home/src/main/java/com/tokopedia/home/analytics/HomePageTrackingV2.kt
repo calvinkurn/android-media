@@ -597,7 +597,7 @@ object HomePageTrackingV2 : BaseTracking() {
         private const val CLICK_POPULAR_KEYWORDS_RELOAD = "click view all on popular keyword banner"
         private const val IMPRESSION_POPULAR_KEYWORDS = "impression on popular keyword banner"
         private const val POPULAR_KEYWORDS_NAME = "popular keyword banner"
-        fun getPopularKeywordImpressionItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionView(
+        fun getPopularKeywordImpressionItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String,  positionInWidget: Int) = getBasicPromotionView(
                 event = Event.PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_POPULAR_KEYWORDS,
@@ -606,13 +606,13 @@ object HomePageTrackingV2 : BaseTracking() {
                     Promotion(
                             id = channel.id,
                             creative = it.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
+                            name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
                             position = (position+1).toString()
                     )
 
                 })
 
-        fun getPopularKeywordImpressionIrisItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionChannelView(
+            fun getPopularKeywordImpressionIrisItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) = getBasicPromotionChannelView(
                 event = Event.PROMO_VIEW_IRIS,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_POPULAR_KEYWORDS,
@@ -622,13 +622,13 @@ object HomePageTrackingV2 : BaseTracking() {
                     Promotion(
                             id = channel.id,
                             creative = it.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position+1, POPULAR_KEYWORDS_NAME, keyword),
-                            position = position.toString()
+                            name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
+                            position = (position+1).toString()
                     )
 
                 })
 
-        fun getPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionChannelClick(
+        fun getPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) = getBasicPromotionChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_POPULAR_KEYWORDS,
@@ -643,14 +643,14 @@ object HomePageTrackingV2 : BaseTracking() {
                     Promotion(
                             id = channel.id,
                             creative = it.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position+1, POPULAR_KEYWORDS_NAME, keyword),
-                            position = position.toString()
+                            name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
+                            position = (position+1).toString()
                     )
 
                 })
 
-        fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
-            getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, keyword))
+        fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, keyword, positionInWidget))
         }
 
         fun getPopularKeywordClickReload(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
