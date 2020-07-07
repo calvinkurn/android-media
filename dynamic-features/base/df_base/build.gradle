@@ -124,8 +124,6 @@ dependencies {
     //Entertainment
     implementation project(rootProject.ext.features.orderhistory)
     implementation project(rootProject.ext.features.eventRevamp)
-    //Logistic
-    implementation project(rootProject.ext.features.logisticorder)
     //Transaction
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)
