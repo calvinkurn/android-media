@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">shop-score</string>
-    <string name="title_shop_score">Performa Toko</string>
+<!--    <string name="title_shop_score">Performa Toko</string>-->
+    <string name="title_shop_score_seller">Performa Toko</string>
     <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon %1$s hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
     <string name="subtitle_first_shop_score_detail_summary">Perfoma Toko Anda</string>
     <string name="subtitle_second_shop_score_detail_summary">dengan nilai rata-rata</string>

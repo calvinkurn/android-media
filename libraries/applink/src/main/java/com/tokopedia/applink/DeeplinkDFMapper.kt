@@ -69,6 +69,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MA
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SCORE
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
@@ -295,6 +296,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_BASE, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE, R.string.merchant_seller))
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE) }, DF_BASE, R.string.title_shop_score_seller))
             add(DFP({ it.startsWith(CREATE_VOUCHER) ||
                     it.startsWith(VOUCHER_LIST) ||
                     it.startsWith(VOUCHER_DETAIL)}, DF_BASE, R.string.title_voucher_creation))
