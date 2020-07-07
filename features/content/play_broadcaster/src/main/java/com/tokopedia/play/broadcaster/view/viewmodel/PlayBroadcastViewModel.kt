@@ -154,17 +154,25 @@ class PlayBroadcastViewModel @Inject constructor(
     fun getConfiguration() {
         scope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
+
             val config = withContext(dispatcher.io) {
                 getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
                 return@withContext getConfigurationUseCase.executeOnBackground()
             }
+
             val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
-            if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
-            else if (configUiModel.channelType == ChannelType.Pause) getChannelById(configUiModel.channelId) // get channel when channel status is paused
+
+            launch {
+                if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
+                else if (configUiModel.channelType == ChannelType.Pause) getChannelById(configUiModel.channelId) // get channel when channel status is paused
+            }
+
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+
             setMaxMinProduct(configUiModel.productTagConfig)
             playPusher.addMaxStreamDuration(configUiModel.durationConfig.duration) // configure maximum live streaming duration
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
+
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
         }
