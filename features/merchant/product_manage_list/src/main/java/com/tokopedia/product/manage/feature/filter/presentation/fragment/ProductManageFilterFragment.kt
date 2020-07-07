@@ -1,12 +1,12 @@
 package com.tokopedia.product.manage.feature.filter.presentation.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
@@ -37,12 +37,18 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_new.*
 import javax.inject.Inject
 
-class ProductManageFilterFragment(private val onFinishedListener: OnFinishedListener,
-                                  private val filterOptionWrapper: FilterOptionWrapper?) : BottomSheetUnify(),
+class ProductManageFilterFragment(private var onFinishedListener: OnFinishedListener? = null,
+                                  private var filterOptionWrapper: FilterOptionWrapper? = null) : BottomSheetUnify(),
         HasComponent<ProductManageFilterComponent>,
         SeeAllListener, ChipsAdapter.ChipClickListener, ShowChipsListener {
 
     companion object {
+        const val CACHE_MANAGER_ID = "cache_manager_id"
+
+        const val KEY_FILTER_OPTION_WRAPPER = "filter_option_wrapper"
+        const val KEY_NEED_TO_POSTPONE_ACTIVITY_RESULT = "postpone_activity_result"
+        const val KEY_SELECTED_FILTERS = "selected_filters"
+
         const val ACTIVITY_EXPAND_FLAG = "expand_type"
         const val CACHE_MANAGER_KEY = "cache_id"
         const val SORT_CACHE_MANAGER_KEY = "sort"
@@ -60,12 +66,8 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         const val ITEM_CATEGORIES_INDEX = 2
         const val ITEM_OTHER_FILTER_INDEX = 3
 
-        fun createInstance(context: Context, filterOptionWrapper: FilterOptionWrapper?, onFinishedListener: OnFinishedListener) : ProductManageFilterFragment {
-            return ProductManageFilterFragment(onFinishedListener, filterOptionWrapper).apply{
-                val view = View.inflate(context, R.layout.fragment_product_manage_filter_new,null)
-                setChild(view)
-                setTitle(BOTTOMSHEET_TITLE)
-            }
+        fun createInstance(filterOptionWrapper: FilterOptionWrapper?, onFinishedListener: OnFinishedListener) : ProductManageFilterFragment {
+            return ProductManageFilterFragment(onFinishedListener, filterOptionWrapper)
         }
     }
 
@@ -77,9 +79,21 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
 
     private var filterAdapter: FilterAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
+    private var needToPostponeActivityResult: Boolean = false
+    private var postponedActivityResult: Runnable? = null
+    private var cacheManager: SaveInstanceCacheManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            val cacheManagerId = it.getString(CACHE_MANAGER_ID).orEmpty()
+            cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
+            filterOptionWrapper = cacheManager?.get(KEY_FILTER_OPTION_WRAPPER, FilterOptionWrapper::class.java, null)
+            needToPostponeActivityResult = cacheManager?.get(KEY_NEED_TO_POSTPONE_ACTIVITY_RESULT, Boolean::class.java, false) ?: false
+        }
+        val view = View.inflate(context, R.layout.fragment_product_manage_filter_new,null)
+        setChild(view)
+        setTitle(BOTTOMSHEET_TITLE)
         initInjector()
     }
 
@@ -109,7 +123,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         val intent = Intent(this.activity,ProductManageFilterExpandActivity::class.java)
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         when(element.title) {
-            ProductManageFilterMapper.SORT_HEADER -> {
+            SORT_HEADER -> {
                 cacheManager?.put(SORT_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, SORT_CACHE_MANAGER_KEY)
                 ProductManageTracking.eventSortingFilter()
@@ -118,12 +132,12 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
                 cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, ETALASE_CACHE_MANAGER_KEY)
             }
-            ProductManageFilterMapper.CATEGORY_HEADER -> {
+            CATEGORY_HEADER -> {
                 cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, CATEGORIES_CACHE_MANAGER_KEY)
                 ProductManageTracking.eventCategoryFilter()
             }
-            ProductManageFilterMapper.OTHER_FILTER_HEADER -> {
+            OTHER_FILTER_HEADER -> {
                 cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, OTHER_FILTER_CACHE_MANAGER_KEY)
                 ProductManageTracking.eventOthersFilter()
@@ -136,31 +150,11 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == EXPAND_FILTER_REQUEST) {
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, data?.getStringExtra(CACHE_MANAGER_KEY)) }
-            when(resultCode) {
-                UPDATE_SORT_SUCCESS_RESPONSE -> {
-                    val dataToUpdate: FilterUiModel? = cacheManager?.get(SORT_CACHE_MANAGER_KEY, FilterUiModel::class.java)
-                    dataToUpdate?.let {
-                        productManageFilterViewModel.updateSpecificData(it, ITEM_SORT_INDEX)
-                    }
-                }
-                UPDATE_ETALASE_SUCCESS_RESPONSE -> {
-                    val dataToUpdate: FilterUiModel? = cacheManager?.get(ETALASE_CACHE_MANAGER_KEY, FilterUiModel::class.java)
-                    dataToUpdate?.let {
-                        productManageFilterViewModel.updateSpecificData(it, ITEM_ETALASE_INDEX)
-                    }
-                }
-                UPDATE_CATEGORIES_SUCCESS_RESPONSE -> {
-                    val dataToUpdate: FilterUiModel? = cacheManager?.get(CATEGORIES_CACHE_MANAGER_KEY, FilterUiModel::class.java)
-                    dataToUpdate?.let {
-                        productManageFilterViewModel.updateSpecificData(it, ITEM_CATEGORIES_INDEX)
-                    }
-                }
-                UPDATE_OTHER_FILTER_SUCCESS_RESPONSE -> {
-                    val dataToUpdate: FilterUiModel? = cacheManager?.get(OTHER_FILTER_CACHE_MANAGER_KEY, FilterUiModel::class.java)
-                    dataToUpdate?.let {
-                        productManageFilterViewModel.updateSpecificData(it, ITEM_OTHER_FILTER_INDEX)
-                    }
+            if (!needToPostponeActivityResult) {
+                processActivityResult(resultCode, data)
+            } else {
+                postponedActivityResult = Runnable {
+                    processActivityResult(resultCode, data)
                 }
             }
         }
@@ -192,6 +186,46 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val selectedFilters = productManageFilterViewModel.getSelectedFilters()
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.put(KEY_FILTER_OPTION_WRAPPER, filterOptionWrapper)
+        cacheManager?.put(KEY_NEED_TO_POSTPONE_ACTIVITY_RESULT, true)
+        cacheManager?.put(KEY_SELECTED_FILTERS, selectedFilters)
+        outState.putString(CACHE_MANAGER_ID, cacheManager?.id.orEmpty())
+    }
+
+    private fun processActivityResult(resultCode: Int, data: Intent?) {
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, data?.getStringExtra(CACHE_MANAGER_KEY)) }
+        when(resultCode) {
+            UPDATE_SORT_SUCCESS_RESPONSE -> {
+                val dataToUpdate: FilterUiModel? = cacheManager?.get(SORT_CACHE_MANAGER_KEY, FilterUiModel::class.java)
+                dataToUpdate?.let {
+                    productManageFilterViewModel.updateSpecificData(it, ITEM_SORT_INDEX)
+                }
+            }
+            UPDATE_ETALASE_SUCCESS_RESPONSE -> {
+                val dataToUpdate: FilterUiModel? = cacheManager?.get(ETALASE_CACHE_MANAGER_KEY, FilterUiModel::class.java)
+                dataToUpdate?.let {
+                    productManageFilterViewModel.updateSpecificData(it, ITEM_ETALASE_INDEX)
+                }
+            }
+            UPDATE_CATEGORIES_SUCCESS_RESPONSE -> {
+                val dataToUpdate: FilterUiModel? = cacheManager?.get(CATEGORIES_CACHE_MANAGER_KEY, FilterUiModel::class.java)
+                dataToUpdate?.let {
+                    productManageFilterViewModel.updateSpecificData(it, ITEM_CATEGORIES_INDEX)
+                }
+            }
+            UPDATE_OTHER_FILTER_SUCCESS_RESPONSE -> {
+                val dataToUpdate: FilterUiModel? = cacheManager?.get(OTHER_FILTER_CACHE_MANAGER_KEY, FilterUiModel::class.java)
+                dataToUpdate?.let {
+                    productManageFilterViewModel.updateSpecificData(it, ITEM_OTHER_FILTER_INDEX)
+                }
+            }
+        }
+    }
+
     private fun initInjector() {
         component?.inject(this)
     }
@@ -220,7 +254,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         buttonCloseBottomSheet.setOnClickListener {
             productManageFilterViewModel.filterData.value?.let { data ->
                 val dataToSave = ProductManageFilterMapper.mapFiltersToFilterOptions(data)
-                onFinishedListener.onFinish(dataToSave)
+                onFinishedListener?.onFinish(dataToSave)
                 super.dismiss()
                 ProductManageTracking.eventFilter()
             }
@@ -228,7 +262,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         this.setCloseClickListener {
             productManageFilterViewModel.filterData.value?.let { data ->
                 val dataToSave = ProductManageFilterMapper.mapFiltersToFilterOptions(data)
-                onFinishedListener.onFinish(dataToSave)
+                onFinishedListener?.onFinish(dataToSave)
                 super.dismiss()
             }
         }
@@ -248,6 +282,10 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
 
     private fun observeFilterData() {
         productManageFilterViewModel.filterData.observe(this, Observer {
+            if (needToPostponeActivityResult) {
+                postponedActivityResult?.run()
+            }
+            selectPreviouslySelectedFilters(it)
             hideLoading()
             filterAdapter?.updateData(it)
             if(checkSelected(it)) {
@@ -256,6 +294,22 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
                 bottomSheetAction.visibility = View.GONE
             }
         })
+    }
+
+    private fun selectPreviouslySelectedFilters(filterList: MutableList<FilterUiModel>) {
+        val selectedFilters: List<FilterDataUiModel> = cacheManager?.get(KEY_SELECTED_FILTERS, object : TypeToken<List<FilterDataUiModel>>() {}.type, emptyList())
+                ?: emptyList()
+        selectedFilters.onEach { selectedFilter ->
+            filterList.forEach loop@{ filterUiModel ->
+                filterUiModel.data.forEach { filterDataUiModel ->
+                    if (filterDataUiModel.id == selectedFilter.id && filterDataUiModel.name == selectedFilter.name &&
+                            filterDataUiModel.value == selectedFilter.value) {
+                        filterDataUiModel.select = filterDataUiModel.id == selectedFilter.id
+                        return@loop
+                    }
+                }
+            }
+        }
     }
 
     private fun initBottomSheetReset() {
@@ -289,7 +343,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         filterOptionWrapper?.let {
             ProductManageFilterMapper.mapFilterOptionWrapperToSelectedSort(it)?.let { selectedSort ->
                 productManageFilterViewModel.updateSelect(selectedSort,
-                        ProductManageFilterMapper.SORT_HEADER)
+                        SORT_HEADER)
             }
             ProductManageFilterMapper.mapFilterOptionWrapperToSelectedEtalase(it)?.let { selectedEtalase ->
                 productManageFilterViewModel.updateSelect(selectedEtalase,
@@ -303,6 +357,10 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
             }
             productManageFilterViewModel.updateShow(it.filterShownState)
         }
+    }
+
+    fun setOnFinishedListener(onFinishedListener: OnFinishedListener) {
+        this.onFinishedListener = onFinishedListener
     }
 
     interface OnFinishedListener {

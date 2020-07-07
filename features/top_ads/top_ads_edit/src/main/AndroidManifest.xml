@@ -39,6 +39,22 @@
             android:label="@string/topads_edit_product_select_label"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity android:name=".view.activity.EditFormWithoutGroupActivity"
+            android:label="@string/topads_common_title_product_ad_edit"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_edit_without_group"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
