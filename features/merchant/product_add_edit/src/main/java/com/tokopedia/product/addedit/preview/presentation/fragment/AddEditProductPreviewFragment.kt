@@ -610,10 +610,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
-        if (viewModel.isEditing.value == true) {
-            ProductEditStepperTracking.trackRemoveProductImage(shopId)
-        } else {
+        if (viewModel.isAdding) {
             ProductAddStepperTracking.trackRemoveProductImage(shopId)
+        } else {
+            ProductEditStepperTracking.trackRemoveProductImage(shopId)
         }
     }
 
