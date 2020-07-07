@@ -174,4 +174,7 @@
     <string name="title_reading_page">Q&amp;A</string>
     <string name="title_reply_page">Balas Pertanyaan</string>
 
+    <!--Find Native-->
+    <string name="title_find_native">Q&amp;A</string>
+
 </resources>

@@ -82,12 +82,8 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.chips
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     testImplementation "org.robolectric:robolectric:3.8"
     testImplementation "org.robolectric:multidex:3.4.2"
-    testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     testImplementation rootProject.ext.testDependencies.assertJ
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -122,4 +118,3 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'
