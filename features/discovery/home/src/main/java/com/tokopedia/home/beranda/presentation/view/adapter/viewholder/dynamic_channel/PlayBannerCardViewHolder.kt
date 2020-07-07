@@ -8,8 +8,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.widget.playBannerCarousel.PlayBannerCarousel
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
@@ -31,19 +29,14 @@ class PlayBannerCardViewHolder(
     private var playBannerCarouselView: PlayBannerCarousel? = null
 
     init {
-        if(playBannerCarouselView == null) playBannerCarouselView = PlayBannerCarousel(view.context)
+        playBannerCarouselView = itemView.play_banner_carousel
         playBannerCarouselView?.setListener(this)
-        itemView.hide()
     }
 
     override fun bind(element: PlayCarouselCardDataModel?) {
         playCarouselCardDataModel = element
         element?.playBannerCarouselDataModel?.let {
             if(it.channelList.isNotEmpty()){
-                itemView.show()
-                if(playBannerCarouselView?.parent == null) {
-                    itemView.play_banner_container.addView(playBannerCarouselView)
-                }
                 playBannerCarouselView?.setItem(it)
             }
         }
@@ -53,10 +46,6 @@ class PlayBannerCardViewHolder(
         playCarouselCardDataModel = element
         element?.playBannerCarouselDataModel?.let {
             if(it.channelList.isNotEmpty()){
-                itemView.show()
-                if(playBannerCarouselView?.parent == null) {
-                    itemView.play_banner_container.addView(playBannerCarouselView)
-                }
                 playBannerCarouselView?.setItem(it)
             }
         }
@@ -97,22 +86,31 @@ class PlayBannerCardViewHolder(
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         listener.sendEETracking(
-                if(dataModel.remindMe) HomePageTrackingV2.PlayWidgetCarousel.getClickRemoveRemind(
-                        channelId = dataModel.channelId,
-                        userId = listener.userId,
-                        notifierId = (position + 1).toString()
-                ) else HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
-                        channelId = dataModel.channelId,
-                        userId = listener.userId,
-                        notifierId = (position + 1).toString()
-                )
+                if(dataModel.remindMe) {
+                    HomePageTrackingV2.PlayWidgetCarousel.getClickRemoveRemind(
+                            channelId = dataModel.channelId,
+                            userId = listener.userId,
+                            notifierId = (position + 1).toString()
+                    )
+                } else {
+                    HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
+                            channelId = dataModel.channelId,
+                            userId = listener.userId,
+                            notifierId = (position + 1).toString()
+                    )
+                }
         )
         listener.onPlayBannerReminderClick(dataModel)
     }
 
-    override fun onSeeMoreClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
+    override fun onSeeMoreBannerClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
         listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickSeeAll(dataModel.imageUrl, listener.userId))
         RouteManager.route(itemView.context, dataModel.applink)
+    }
+
+    override fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel) {
+        listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickSeeAll(dataModel.imageUrl, listener.userId))
+        RouteManager.route(itemView.context, dataModel.seeMoreApplink)
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
@@ -145,7 +143,15 @@ class PlayBannerCardViewHolder(
         playCarouselCardDataModel?.let { listener.onPlayBannerCarouselRefresh(it, adapterPosition) }
     }
 
+    fun onPause(){
+        playBannerCarouselView?.onPause()
+    }
+
+    fun onResume(){
+        playBannerCarouselView?.onResume()
+    }
+
     fun onDestroy(){
-//        itemView.play_banner_carousel?.onDestroy()
+        playBannerCarouselView?.onDestroy()
     }
 }

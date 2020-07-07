@@ -3,6 +3,7 @@ package com.tokopedia.play_common.widget.playBannerCarousel.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.BasePlayBannerCarouselModel
@@ -33,8 +34,9 @@ class PlayBannerCarouselAdapter(
     }
 
     fun setItems(list: List<BasePlayBannerCarouselModel>){
+        val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(PlayDiffUtil(this.list, list))
+        diffResult.dispatchUpdatesTo(this)
         this.list = list
-        notifyDataSetChanged()
     }
 
     private fun onCreateViewItem(parent: ViewGroup, viewType: Int): View {

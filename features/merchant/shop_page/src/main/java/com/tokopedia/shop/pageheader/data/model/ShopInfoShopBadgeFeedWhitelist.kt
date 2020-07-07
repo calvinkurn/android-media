@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.data.model
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 

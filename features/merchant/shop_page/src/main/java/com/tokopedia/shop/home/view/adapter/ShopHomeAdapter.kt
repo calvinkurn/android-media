@@ -1,16 +1,14 @@
 package com.tokopedia.shop.home.view.adapter
 
+import android.os.Bundle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 
 /**
@@ -23,6 +21,10 @@ class ShopHomeAdapter(
 
     companion object {
         private const val ALL_PRODUCT_STRING = "Semua Produk"
+
+        const val ON_PAUSE = "on_pause"
+        const val ON_RESUME = "on_resume"
+        const val ON_DESTROY = "on_resume"
     }
 
     var isOwner: Boolean = false
@@ -97,6 +99,32 @@ class ShopHomeAdapter(
             if(totalFoundProductId != 0)
                 notifyItemChanged(visitables.indexOf(shopHomeCarousellProductUiModel))
         }
+    }
+
+    fun pausePlayCarousel(){
+        notifyItemChanged(getPositionPlayCarousel(), Bundle().apply {
+            putBoolean(ON_PAUSE, true)
+        })
+    }
+
+    fun resumePlayCarousel(){
+        notifyItemChanged(getPositionPlayCarousel(), Bundle().apply {
+            putBoolean(ON_RESUME, true)
+        })
+    }
+
+    fun onDestroy(){
+        notifyItemChanged(getPositionPlayCarousel(), Bundle().apply {
+            putBoolean(ON_DESTROY, true)
+        })
+    }
+
+    private fun getPositionPlayCarousel(): Int{
+        var index = -1
+        visitables.withIndex().find { (index, data) -> data is ShopHomePlayCarouselUiModel}?.let {
+            index = it.index
+        }
+        return index
     }
 
 }

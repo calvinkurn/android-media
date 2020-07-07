@@ -159,7 +159,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     }
 
     override fun addDynamicChannelVisitable(): HomeVisitableFactory {
-        visitableList.add(PlayCarouselCardDataModel())
+//        visitableList.add(PlayCarouselCardDataModel())
         homeData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
@@ -232,6 +232,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> { createPlayCarouselWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
                         channel,
                         trackingData = MixTopTracking.getMixTopView(MixTopTracking.mapChannelToProductTracker(channel), headerName = channel.header.name, positionOnWidgetHome = position.toString()),
@@ -247,6 +248,13 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
+            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
+        }
+    }
+
+    private fun createPlayCarouselWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) {
+            val playBanner = mappingPlayCarouselChannel(channel, HashMap(), isCache)
             if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
         }
     }
@@ -408,6 +416,16 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                                    trackingData: MutableMap<String, Any>,
                                    isCache: Boolean): Visitable<*> {
         val playCardViewModel = PlayCardDataModel(channel, null)
+        if (!isCache) {
+            playCardViewModel.setTrackingData(trackingData)
+        }
+        return playCardViewModel
+    }
+
+    private fun mappingPlayCarouselChannel(channel: DynamicHomeChannel.Channels,
+                                   trackingData: MutableMap<String, Any>,
+                                   isCache: Boolean): Visitable<*> {
+        val playCardViewModel = PlayCarouselCardDataModel(channel)
         if (!isCache) {
             playCardViewModel.setTrackingData(trackingData)
         }

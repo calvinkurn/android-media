@@ -1,10 +1,9 @@
 package com.tokopedia.shop.pageheader.presentation
 
-import androidx.lifecycle.MutableLiveData
 import android.text.TextUtils
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -12,17 +11,16 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
-import com.tokopedia.shop.pageheader.data.model.ShopInfoShopBadgeFeedWhitelist
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.pageheader.data.model.ShopInfoShopBadgeFeedWhitelist
 import com.tokopedia.shop.pageheader.domain.interactor.GetModerateShopUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.RequestModerateShopUseCase
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
@@ -32,7 +30,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -40,6 +39,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
                                             private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
                                             private val userSessionInterface: UserSessionInterface,
                                             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+                                            private val getBroadcasterShopConfigUseCase: GetBroadcasterShopConfigUseCase,
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
@@ -137,6 +137,10 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
                 .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain, source = SHOP_PAGE_SOURCE)
         val shopInfoRequest = gqlGetShopInfoUseCase.request
 
+
+        getBroadcasterShopConfigUseCase.params = GetBroadcasterShopConfigUseCase.createParams(shopId)
+        val broadcasterConfigRequest = getBroadcasterShopConfigUseCase.request
+
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId)
         val shopReputationRequest = getShopReputationUseCase.request
 
@@ -145,6 +149,9 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
                 shopId.toString()
         ))
         val requests = mutableListOf(shopInfoRequest, shopReputationRequest, feedWhitelistRequest)
+        if(isMyShop(shopId.toString())) {
+            requests.add(broadcasterConfigRequest)
+        }
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (isRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         val gqlResponse = gqlRepository.getReseponse(requests, cacheStrategy)
         val shopInfoError = gqlResponse.getError(ShopInfo.Response::class.java)
@@ -156,8 +163,19 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
         } else {
             throw MessageErrorException(shopInfoError.mapNotNull { it.message }.joinToString(separator = ", "))
         }
+
+        if(isMyShop(shopId = shopId.toString())) {
+            val broadcasterConfigError = gqlResponse.getError(Broadcaster::class.java)
+            val broadcasterConfig = gqlResponse.getData<Broadcaster>(Broadcaster::class.java)
+            if (broadcasterConfigError == null && broadcasterConfig?.config != null) {
+                shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = broadcasterConfig?.config)
+            } else {
+                shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = Broadcaster.Config(false))
+            }
+        }
+
         val shopBadgeError = gqlResponse.getError(ShopBadge.Response::class.java)
-        val shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java).result.firstOrNull()
+        val shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)?.result?.firstOrNull()
         if (shopBadgeError == null || shopBadgeError.isEmpty()) {
             shopBadge?.let {
                 shopInfoShopBadgeFeedWhitelist.shopBadge = it

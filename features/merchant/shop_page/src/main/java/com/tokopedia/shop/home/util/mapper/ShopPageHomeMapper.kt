@@ -6,17 +6,14 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
-import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
 import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
@@ -117,11 +114,7 @@ object ShopPageHomeMapper {
             isMyOwnProduct: Boolean
     ): List<BaseShopHomeWidgetUiModel> {
         return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
-            add(mapToPlayWidgetUiModel(ShopLayoutWidget.Widget(
-                    name = WidgetName.PLAY_CAROUSEL_WIDGET,
-                    type = WidgetType.DYNAMIC
-            )))
-            shopLayoutWidgetResponse.filter { it.data.isNotEmpty() }.onEach {
+            shopLayoutWidgetResponse.onEach {
                 val widgetUiModel = mapToWidgetUiModel(it, isMyOwnProduct)
                 widgetUiModel?.let { model ->
                     add(model)
@@ -145,7 +138,7 @@ object ShopPageHomeMapper {
                 mapToVoucherUiModel(widgetResponse)
             }
             DYNAMIC.toLowerCase()-> {
-                mapToPlayWidgetUiModel(widgetResponse)
+                mapToPlayWidgetUiModel(widgetResponse, isMyOwnProduct)
             }
             else -> {
                 null
@@ -233,7 +226,8 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToPlayWidgetUiModel(widgetModel: ShopLayoutWidget.Widget): ShopHomePlayCarouselUiModel {
+    private fun mapToPlayWidgetUiModel(widgetModel: ShopLayoutWidget.Widget, isMyOwnProduct: Boolean): ShopHomePlayCarouselUiModel? {
+        if(isMyOwnProduct) return null
         return ShopHomePlayCarouselUiModel(
                 widgetId = widgetModel.widgetID,
                 layoutOrder = widgetModel.layoutOrder,
