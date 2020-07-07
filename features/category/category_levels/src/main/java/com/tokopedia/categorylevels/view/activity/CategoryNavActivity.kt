@@ -256,7 +256,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun removeCatalogTab() {
-        tabs.hide()
+        category_tabs.hide()
         addCatalog = false
     }
 
@@ -365,7 +365,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         categorySectionPagerAdapter = com.tokopedia.categorylevels.adapters.CategoryNavigationPagerAdapter(supportFragmentManager)
         categorySectionPagerAdapter?.setData(categorySectionItemList)
         pager.adapter = categorySectionPagerAdapter
-        tabs.tabLayout.setupWithViewPager(pager)
+        category_tabs.tabLayout.setupWithViewPager(pager)
         setActiveTab()
     }
 
