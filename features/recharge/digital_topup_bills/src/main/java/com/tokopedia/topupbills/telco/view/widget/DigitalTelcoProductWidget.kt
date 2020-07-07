@@ -55,7 +55,9 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         recyclerView.adapter = adapter
         if (productType == TelcoProductType.PRODUCT_GRID) {
             recyclerView.layoutManager = GridLayoutManager(context, 2)
-            recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN_DP, resources))
+            if (recyclerView.itemDecorationCount == 0) {
+                recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN_DP, resources))
+            }
         } else {
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
