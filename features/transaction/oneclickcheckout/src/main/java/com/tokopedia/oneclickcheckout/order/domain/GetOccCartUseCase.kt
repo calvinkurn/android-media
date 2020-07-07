@@ -12,11 +12,6 @@ import com.tokopedia.oneclickcheckout.order.data.get.*
 import com.tokopedia.oneclickcheckout.order.domain.mapper.LastApplyMapper
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.oneclickcheckout.order.view.model.ByProduct
-import com.tokopedia.oneclickcheckout.order.view.model.ByProductText
-import com.tokopedia.oneclickcheckout.order.view.model.ByUser
-import com.tokopedia.oneclickcheckout.order.view.model.ByUserText
-import com.tokopedia.oneclickcheckout.order.view.model.ProductInvenageTotal
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.usecase.RequestParams
@@ -49,6 +44,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                     cartString = cart.cartString
                     product = generateOrderProduct(cart.product).apply {
                         quantity = mapQuantity(response.response.data)
+                        tickerMessage = mapProductTickerMessage(response.response.data.tickerMessage)
                     }
                     shop = generateOrderShop(cart.shop).apply {
                         errors = cart.errors
@@ -149,7 +145,6 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             productFinsurance = product.productFinsurance
             isSlashPrice = product.isSlashPrice
             productTrackerData = ProductTrackerData(product.productTrackerData.attribution, product.productTrackerData.trackerListName)
-            productInvenageTotal = mapProductInvenageTotal(product.productInvenageTotal)
         }
         return orderProduct
     }
@@ -176,12 +171,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return quantityViewModel
     }
 
-    private fun mapProductInvenageTotal(productInvenageTotal: com.tokopedia.oneclickcheckout.order.data.get.ProductInvenageTotal): ProductInvenageTotal {
-        val byProduct = ByProduct(productInvenageTotal.byProduct.inCart, productInvenageTotal.byProduct.lastStockLessThan)
-        val byProductText = ByProductText(productInvenageTotal.byProductText.inCart, productInvenageTotal.byProductText.lastStockLessThan, productInvenageTotal.byProductText.complete)
-        val byUser = ByUser(productInvenageTotal.byUser.inCart, productInvenageTotal.byUser.lastStockLessThan)
-        val byUserText = ByUserText(productInvenageTotal.byUserText.inCart, productInvenageTotal.byUserText.lastStockLessThan, productInvenageTotal.byUserText.complete)
-        return ProductInvenageTotal(productInvenageTotal.isCountedByProduct, productInvenageTotal.isCountedByUser, byProduct, byProductText, byUser, byUserText)
+    private fun mapProductTickerMessage(tickerMessage: OccTickerMessage): ProductTickerMessage {
+        return ProductTickerMessage(tickerMessage.message, tickerMessage.replacement.map { ProductTickerMessageReplacement(it.identifier, it.value) })
     }
 
     companion object {
