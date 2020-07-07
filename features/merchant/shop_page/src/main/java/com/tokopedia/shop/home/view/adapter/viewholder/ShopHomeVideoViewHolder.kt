@@ -56,7 +56,9 @@ class ShopHomeVideoViewHolder(
         loaderImageView = view.findViewById(R.id.loaderVideoYoutube)
         ivVideoNotFound = view.findViewById(R.id.ivVideoNotFound)
         groupVideoError = view.findViewById(R.id.groupVideoError)
-        youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
+        try {
+            youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
+        }catch (e: Throwable){ }
     }
 
     override fun bind(model: ShopHomeDisplayWidgetUiModel) {

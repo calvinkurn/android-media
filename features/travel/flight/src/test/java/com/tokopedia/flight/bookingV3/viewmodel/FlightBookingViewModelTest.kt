@@ -2,6 +2,8 @@ package com.tokopedia.flight.bookingV3.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV3.data.*
@@ -28,6 +30,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,6 +48,7 @@ class FlightBookingViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val travelTickerUseCase = mockk<TravelTickerCoroutineUseCase>()
 
     @RelaxedMockK
     private lateinit var graphqlRepository: GraphqlRepository
@@ -54,7 +58,7 @@ class FlightBookingViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = FlightBookingViewModel(graphqlRepository, testDispatcherProvider)
+        viewModel = FlightBookingViewModel(graphqlRepository, travelTickerUseCase, testDispatcherProvider)
     }
 
     @Test
@@ -62,7 +66,7 @@ class FlightBookingViewModelTest {
         // given
 
         // when
-        val flightViewModel = FlightBookingViewModel(graphqlRepository, testDispatcherProvider)
+        val flightViewModel = FlightBookingViewModel(graphqlRepository, travelTickerUseCase, testDispatcherProvider)
         flightViewModel.verifyRetryCount = 2
         flightViewModel.retryCount = 1
         flightViewModel.pastVerifyParam = "dummy"
@@ -1763,6 +1767,46 @@ class FlightBookingViewModelTest {
         val otherPriceData = viewModel.flightOtherPriceData.value!!
         otherPriceData.size shouldBe 0
         viewModel.getFlightBookingParam().insurances.size shouldBe 0
+    }
+
+    @Test
+    fun fetchTickerData_successFetchData_tickerDataShouldBeSameAsData() {
+        // given
+        coEvery {
+            travelTickerUseCase.execute(any(), any())
+        } returns Success(TICKER_DATA)
+
+        // when
+        viewModel.fetchTickerData()
+
+        // then
+        assert(viewModel.tickerData.value is Success<TravelTickerModel>)
+        val tickerData = (viewModel.tickerData.value as Success<TravelTickerModel>).data
+
+        tickerData.title shouldBe TICKER_DATA.title
+        tickerData.message shouldBe TICKER_DATA.message
+        tickerData.status shouldBe TICKER_DATA.status
+        tickerData.startTime shouldBe TICKER_DATA.startTime
+        tickerData.endTime shouldBe TICKER_DATA.endTime
+        tickerData.page shouldBe TICKER_DATA.page
+        tickerData.isPeriod shouldBe TICKER_DATA.isPeriod
+        tickerData.instances shouldBe TICKER_DATA.instances
+        tickerData.type shouldBe TICKER_DATA.type
+        tickerData.url shouldBe TICKER_DATA.url
+    }
+
+    @Test
+    fun fetchTickerData_returnFail_tickerValueShouldBeFailed() {
+        // given
+        coEvery {
+            travelTickerUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        // when
+        viewModel.fetchTickerData()
+
+        // then
+        assert(viewModel.tickerData.value is Fail)
     }
 
 }

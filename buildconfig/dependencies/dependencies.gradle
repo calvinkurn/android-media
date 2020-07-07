@@ -24,7 +24,7 @@ ext {
     runnerVersion = "1.1.0"
     rulesVersion = "1.1.0"
     apolloVersion = '0.3.0'
-    lottieVersion = '2.7.0'
+    lottieVersion = '3.4.1'
     reactNativeVersion = '0.60.5'
     powerMockVersion = '1.6.2'
     roomVersion = '2.2.1'
@@ -89,7 +89,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.8'
-    unifyComponentsVersion = '1.1.40'
+    unifyComponentsVersion = '1.1.41'
     unifyCoachMarkVersion = '1.2.6'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'

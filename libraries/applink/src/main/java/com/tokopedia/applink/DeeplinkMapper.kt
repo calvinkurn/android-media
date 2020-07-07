@@ -205,7 +205,10 @@ object DeeplinkMapper {
     }
 
     private val deeplinkPatternTokopediaSchemeList: MutableList<DLP> = listOf(
-            DLP.startWith(ApplinkConst.HOME) { _, _, deeplink -> getRegisteredNavigationHome(deeplink) },
+            DLP(logic = { _, _, deeplink -> !GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) },
+                    targetDeeplink = { _, _, deeplink -> getRegisteredNavigationHome(deeplink) }),
+            DLP(logic = { _, _, deeplink -> GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) },
+                    targetDeeplink = { _, _, _ -> ApplinkConstInternalSellerapp.SELLER_HOME }),
             DLP.startWith(ApplinkConst.INBOX, ApplinkConsInternalHome.HOME_INBOX),
             DLP.startWith(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER),
             DLP.startWith(ApplinkConst.SALAM_UMRAH_SHOP) { ctx, _, deeplink -> getRegisteredNavigationSalamUmrahShop(deeplink, ctx) },
@@ -229,8 +232,6 @@ object DeeplinkMapper {
             DLP.startWithPattern(ApplinkConst.HOME_HOTLIST) { _, _, deeplink -> getRegisteredHotlist(deeplink) },
             DLP.startWithPattern(ApplinkConst.PRODUCT_EDIT) { _, _, deeplink -> DeepLinkMapperProductManage.getEditProductInternalAppLink(deeplink) },
             DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
-            DLP(logic = { _, _, deeplink -> GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) },
-                    targetDeeplink = { _, _, _ -> ApplinkConstInternalSellerapp.SELLER_HOME }),
             DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, _, deeplink -> getRegisteredNavigationProductReview(deeplink) },
             DLP.startWith(ApplinkConst.REPUTATION) { _, _, deeplink -> getRegisteredNavigationReputation(deeplink) },
             DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
@@ -249,6 +250,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.Gamification.CRACK) { _, _, deeplink -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.Gamification.TAP_TAP_MANTAP) { _, _, deeplink -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.Gamification.DAILY_GIFT_BOX) { _, _, deeplink -> DeeplinkMapperGamification.getDailyGiftBoxDeeplink(deeplink) },
+            DLP.startWith(ApplinkConst.Gamification.GIFT_TAP_TAP) { _, _, deeplink -> DeeplinkMapperGamification.getGiftBoxTapTapDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.SELLER_ORDER_DETAIL) { _, _, deeplink -> getRegisteredNavigationOrder(deeplink) },
             DLP(logic = { _, _, deeplink -> isShopReview(deeplink) },
                     targetDeeplink = { _, _, deeplink -> getRegisteredNavigationShopReview(deeplink) }),
@@ -304,6 +306,7 @@ object DeeplinkMapper {
                         UriUtil.buildUri(ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO_WITH_ID,
                                 uri.pathSegments.first())
                     }),
+            DLP.exact(ApplinkConst.POWER_MERCHANT_SUBSCRIBE, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE),
             DLP.exact(ApplinkConst.SETTING_PROFILE, ApplinkConstInternalGlobal.SETTING_PROFILE),
             DLP.exact(ApplinkConst.ADD_CREDIT_CARD, ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD),
             DLP.exact(ApplinkConst.SETTING_NOTIFICATION, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING),
@@ -372,7 +375,9 @@ object DeeplinkMapper {
 
     // mechanism to bring most frequent deeplink to top of the list
     private fun putToTop(index: Int) {
-        deeplinkPatternTokopediaSchemeList.add(0, deeplinkPatternTokopediaSchemeList.removeAt(index))
+        // Uncomment this for performance for RouteManager. Currently disabled in production
+        // Requirement: deeplinkPatternTokopediaSchemeList should be order-independent
+        // deeplinkPatternTokopediaSchemeList.add(0, deeplinkPatternTokopediaSchemeList.removeAt(index))
     }
 
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {
@@ -429,6 +434,7 @@ object DeeplinkMapper {
         return when (trimDeeplink) {
             ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+            ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
