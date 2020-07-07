@@ -210,9 +210,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                     startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                     return true;
                 } else if(Uri.parse(url).getLastPathSegment().contains("order-list")){
-                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
-                    responseIntent.putExtra(ScroogePGUtil.SUCCESS_MSG_URL,ApplinkConst.EVENTS_ORDER);
-                    setResult(ScroogePGUtil.RESULT_CODE_SUCCESS, responseIntent);
+                    RouteManager.route(ScroogeActivity.this, ApplinkConst.EVENTS_ORDER);
                     finish();
                 } else {
                     returnVal = false;
