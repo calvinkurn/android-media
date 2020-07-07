@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.bugsnag.android.gradle'
 
@@ -33,7 +33,6 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
@@ -331,6 +330,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.crashlytics
+//    implementation rootProject.ext.firebase.analytics
 
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.appCompactV7
