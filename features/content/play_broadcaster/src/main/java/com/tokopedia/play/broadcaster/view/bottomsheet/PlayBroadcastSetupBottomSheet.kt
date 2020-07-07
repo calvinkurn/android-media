@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
+import com.tokopedia.play.broadcaster.util.cleanBackstack
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
@@ -86,7 +87,7 @@ class PlayBroadcastSetupBottomSheet(
         childFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
-        cleanBackStack()
+        cleanBackstack()
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheet_Setup_Pinned)
     }
 
@@ -194,13 +195,6 @@ class PlayBroadcastSetupBottomSheet(
         navigateToFragment(
                 PlayEtalasePickerFragment::class.java
         )
-    }
-
-    private fun cleanBackStack() {
-        val backStackCount = childFragmentManager.backStackEntryCount
-        for (i in 0 until backStackCount) {
-            childFragmentManager.popBackStackImmediate()
-        }
     }
 
     private fun maxHeight(): Int = getScreenHeight()

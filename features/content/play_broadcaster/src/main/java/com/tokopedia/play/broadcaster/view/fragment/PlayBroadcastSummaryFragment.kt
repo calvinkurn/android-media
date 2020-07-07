@@ -11,7 +11,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -20,7 +19,6 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -100,7 +98,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
             val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
             if (marginLayoutParams.bottomMargin != newBottomMargin) {
                 marginLayoutParams.updateMargins(bottom = newBottomMargin)
-                v.requestLayout()
+                v.parent.requestLayout()
             }
         }
     }
