@@ -16,8 +16,8 @@ import com.tokopedia.play.broadcaster.domain.model.TotalView
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherTimerInfoState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
@@ -25,7 +25,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.error.PusherErrorThrowable
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.play.broadcaster.view.state.BroadcastState
@@ -103,9 +102,10 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableLiveDuration = MediatorLiveData<Event<BroadcastTimerState>>().apply {
         addSource(playPusher.getObservablePlayPusherInfoState()) {
             when(it) {
-                is PlayPusherInfoState.TimerActive -> value = Event(BroadcastTimerState.Active(it.timeRemaining))
-                is PlayPusherInfoState.TimerAlmostFinish -> value = Event(BroadcastTimerState.AlmostFinish(it.minutesUntilFinished))
-                is PlayPusherInfoState.TimerFinish -> value = Event(BroadcastTimerState.Finish(it.timeElapsed))
+                is PlayPusherTimerInfoState.TimerActive -> value = Event(BroadcastTimerState.Active(it.remainingTime))
+                is PlayPusherTimerInfoState.TimerAlmostFinish -> value = Event(BroadcastTimerState.AlmostFinish(it.minutesUntilFinished))
+                is PlayPusherTimerInfoState.TimerFinish -> value = Event(BroadcastTimerState.Finish(it.timeElapsed))
+                is PlayPusherTimerInfoState.ReachMaximumPauseDuration -> value = Event(BroadcastTimerState.ReachMaximumPauseDuration)
             }
         }
     }
@@ -130,11 +130,7 @@ class PlayBroadcastViewModel @Inject constructor(
             value = Event(it)
         }
     }
-    private val _observableLiveInfoState = MediatorLiveData<Event<BroadcastState>>().apply {
-        addSource(playPusher.getObservablePlayPusherInfoState()) {
-            if (it is PlayPusherInfoState.Error) value = Event(BroadcastState.Error(PusherErrorThrowable(it.errorType)))
-        }
-    }
+    private val _observableLiveInfoState = MutableLiveData<Event<BroadcastState>>()
     private val _observablePermissionState = permissionUtil.getObservablePlayPermissionState()
 
     private val channelIdObserver = object : Observer<String> {

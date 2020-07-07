@@ -14,13 +14,11 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
-import com.tokopedia.play.broadcaster.util.error.PusherErrorThrowable
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
@@ -88,7 +86,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-//        observeChannelInfo()
         observeLiveInfo()
         observeLiveDuration()
         observeTotalViews()
@@ -309,18 +306,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
     }
 
-//    private fun handleChannelInfo(channelInfo: ChannelInfoUiModel) {
-//        when (channelInfo.status) {
-//            PlayChannelStatus.Active, PlayChannelStatus.Live -> startLiveStreaming(channelInfo.ingestUrl)
-//            PlayChannelStatus.Pause -> {
-//                Log.d("Meyta", "${this::class.java} showDialogContinueLiveStreaming")
-//                showDialogContinueLiveStreaming(channelInfo.ingestUrl)
-//            }
-//            PlayChannelStatus.Stop -> doEndStreaming()
-//            else -> {}
-//        }
-//    }
-
     private fun handleLiveNetworkInfo(pusherNetworkState: PlayPusherNetworkState) {
         when(pusherNetworkState) {
             is PlayPusherNetworkState.Recover -> {
@@ -343,56 +328,22 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun handleLiveError(throwable: Throwable) {
-        if (throwable is PusherErrorThrowable) {
-            when(throwable.mErrorType) {
-                is PlayPusherErrorType.UnSupportedDevice -> {
-                    // TODO("handle unsupported devices")
-                    // Perangkat tidak mendukung\n layanan siaran live streaming
-                    // Layanan live streaming tidak didukung pada perangkat Anda.
-                    // showDialogWhenUnSupportedDevices()
-                }
-                is PlayPusherErrorType.ReachMaximumPauseDuration -> stopLiveStreaming()
-            }
-        } else {
-            if (GlobalConfig.DEBUG) showToaster(
-                    message = throwable.localizedMessage,
-                    type = Toaster.TYPE_ERROR,
-                    duration = Toaster.LENGTH_SHORT
-            )
-        }
-    }
-
     //region observe
     /**
      * Observe
      */
-//    private fun observeChannelInfo() {
-//        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
-//            when (it) {
-//                is NetworkResult.Loading -> loadingView.show()
-//                is NetworkResult.Success -> {
-//                    loadingView.hide()
-//                    handleChannelInfo(it.data)
-//                }
-//                is NetworkResult.Fail -> {
-//                    loadingView.hide()
-//                    view?.showToaster(
-//                            message = it.error.localizedMessage,
-//                            type = Toaster.TYPE_ERROR,
-//                            duration = Toaster.LENGTH_INDEFINITE
-//                    )
-//                }
-//            }
-//        })
-//    }
-
     private fun observeLiveInfo() {
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
             when (it) {
                 is BroadcastState.Init -> startCountDown()
                 is BroadcastState.Stop -> navigateToSummary()
-                is BroadcastState.Error -> handleLiveError(it.error)
+                is BroadcastState.Error -> {
+                    if (GlobalConfig.DEBUG) showToaster(
+                            message = it.error.localizedMessage,
+                            type = Toaster.TYPE_ERROR,
+                            duration = Toaster.LENGTH_SHORT
+                    )
+                }
             }
         })
     }
@@ -414,6 +365,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     stopLiveStreaming()
                     showDialogWhenTimeout()
                 }
+                is BroadcastTimerState.ReachMaximumPauseDuration -> stopLiveStreaming()
             }
         })
     }
