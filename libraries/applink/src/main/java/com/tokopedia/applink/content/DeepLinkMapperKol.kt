@@ -1,4 +1,4 @@
-package com.tokopedia.applink.kol
+package com.tokopedia.applink.content
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.COMMENT

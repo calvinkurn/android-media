@@ -28,11 +28,11 @@
     <string name="host_kol_youtube" translatable="false">kolyoutube</string>
     <string name="path_play_detail" translatable="false">/.*\</string>
 
-    <string name="applink_title_comment_kol">Comments</string>
-    <string name="applink_title_kol_post_detail" translatable="false">Post Detail</string>
-    <string name="applink_title_kol_post_youtube" translatable="false">Post Youtube</string>
-    <string name="applink_title_kol_content_report" translatable="false">Laporan Konten</string>
-    <string name="applink_title_kol_video_detail" translatable="false">Video Detail</string>
-    <string name="applink_title_kol_media_preview" translatable="false">Media Preview</string>
+    <string name="applink_kol_title_comment">Comments</string>
+    <string name="applink_kol_title_post_detail" translatable="false">Post Detail</string>
+    <string name="applink_kol_title_post_youtube" translatable="false">Post Youtube</string>
+    <string name="applink_kol_title_content_report" translatable="false">Laporan Konten</string>
+    <string name="applink_kol_title_video_detail" translatable="false">Video Detail</string>
+    <string name="applink_kol_title_media_preview" translatable="false">Media Preview</string>
 
 </resources>

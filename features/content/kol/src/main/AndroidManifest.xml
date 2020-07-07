@@ -4,7 +4,7 @@
     <application>
         <activity
             android:name=".feature.comment.view.activity.KolCommentActivity"
-            android:label="@string/title_kol_comment"
+            android:label="@string/kol_title_comment"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -23,7 +23,7 @@
 
         <activity
             android:name=".feature.postdetail.view.activity.KolPostDetailActivity"
-            android:label="@string/title_kol_post_detail"
+            android:label="@string/kol_title_post_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -41,7 +41,7 @@
 
         <activity
             android:name=".feature.post.view.activity.KolPostYouTubeActivity"
-            android:label="@string/title_kol_post_youtube"
+            android:label="@string/kol_title_post_youtube"
             android:screenOrientation="landscape">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -57,7 +57,7 @@
 
         <activity
             android:name=".feature.report.view.activity.ContentReportActivity"
-            android:label="@string/title_kol_report"
+            android:label="@string/kol_title_report"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
@@ -76,7 +76,7 @@
 
         <activity
             android:name=".feature.video.view.activity.VideoDetailActivity"
-            android:label="@string/title_kol_video_detail"
+            android:label="@string/kol_title_video_detail"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -92,7 +92,7 @@
         </activity>
         <activity
             android:name=".feature.video.view.activity.MediaPreviewActivity"
-            android:label="@string/title_kol_media_preview"
+            android:label="@string/kol_title_media_preview"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
