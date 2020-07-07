@@ -45,6 +45,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -76,8 +77,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     private var cartListData: CartListData? = null
     private var hasPerformChecklistChange: Boolean = false
     private var insuranceChecked = true
+
     // Store last validate use response from promo page
     var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
+
     // Store last validate use response from cart page
     var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
     var isLastApplyResponseStillValid = true
@@ -306,24 +309,72 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>) {
-        var totalCashback = 0.0
-        var totalPrice = 0.0
         var totalItemQty = 0
-        var errorProductCount = 0
+        var subtotalPrice = 0.0
+        var subtotalCashback = 0.0
 
+        // Get total error product
+        val errorProductCount = getErrorProductCount(dataList)
+
+        // Collect all Cart Item
+        val tmpAllCartItemDataList = getAvailableCartItemDataList(dataList)
+
+        // Set cart item parent id
+        val allCartItemDataList = setDefaultParentId(tmpAllCartItemDataList)
+
+        // Calculate total total item, price and cashback for marketplace product
+        val returnValueMarketplaceProduct = calculatePriceMarketplaceProduct(allCartItemDataList)
+        totalItemQty += returnValueMarketplaceProduct[0] as Int
+        subtotalPrice += returnValueMarketplaceProduct[1] as Double
+        subtotalCashback += returnValueMarketplaceProduct[2] as Double
+
+        // Calculate total item and price for insurance product
+        insuranceChecked = true
+        val returnValueInsuranceProduct = calculatePriceInsuranceProduct(insuranceCartShopsArrayList, totalItemQty, subtotalPrice)
+        totalItemQty += returnValueInsuranceProduct[0] as Int
+        subtotalPrice += returnValueInsuranceProduct[1] as Double
+
+        view?.updateCashback(subtotalCashback)
+
+        var totalPriceString = "-"
+        if (subtotalPrice > 0) {
+            totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(subtotalPrice.toLong(), false).removeDecimalSuffix()
+        }
+        val selectAllItem = view?.getAllAvailableCartDataList()?.size == allCartItemDataList.size + errorProductCount &&
+                allCartItemDataList.size > 0 && insuranceChecked
+        val unSelectAllItem = allCartItemDataList.size == 0
+        view?.renderDetailInfoSubTotal(totalItemQty.toString(), totalPriceString, selectAllItem, unSelectAllItem, dataList.isEmpty())
+    }
+
+    private fun getAvailableCartItemDataList(dataList: List<CartShopHolderData>): ArrayList<CartItemHolderData> {
         // Collect all Cart Item, if has no error and selected
         val allCartItemDataList = ArrayList<CartItemHolderData>()
+        for (cartShopHolderData in dataList) {
+            if (cartShopHolderData.shopGroupAvailableData.cartItemDataList != null &&
+                    !cartShopHolderData.shopGroupAvailableData.isError &&
+                    (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
+                cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let {
+                    for (cartItemHolderData in it) {
+                        if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
+                            allCartItemDataList.add(cartItemHolderData)
+                        }
+                    }
+                }
+            }
+        }
+
+        return allCartItemDataList
+    }
+
+    private fun getErrorProductCount(dataList: List<CartShopHolderData>): Int {
+        var errorProductCount = 0
         for (cartShopHolderData in dataList) {
             if (cartShopHolderData.shopGroupAvailableData.cartItemDataList != null) {
                 if (!cartShopHolderData.shopGroupAvailableData.isError) {
                     if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
                         cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
-                                if (cartItemHolderData.cartItemData?.isError == false) {
-                                    if (cartItemHolderData.isSelected) {
-                                        allCartItemDataList.add(cartItemHolderData)
-                                    }
-                                } else {
+                                if (cartItemHolderData.cartItemData?.isError == true) {
                                     errorProductCount++
                                 }
                             }
@@ -336,7 +387,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
         }
 
+        return errorProductCount
+    }
+
+    private fun setDefaultParentId(allCartItemDataList: ArrayList<CartItemHolderData>): ArrayList<CartItemHolderData> {
         // Set cart item parent id if current value is 0
+        val result = ArrayList(allCartItemDataList)
         for (i in allCartItemDataList.indices) {
             val cartItemData = allCartItemDataList[i].cartItemData
             if (cartItemData?.originData?.parentId == "0") {
@@ -344,10 +400,128 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
         }
 
-        // Calculate total price, total item, and wholesale price (if any)
-        val cashbackWholesalePriceMap = HashMap<String, Double>()
+        return result
+    }
+
+    private fun calculatePriceWholesaleProduct(originData: CartItemData.OriginData,
+                                               itemQty: Int,
+                                               parentId: String,
+                                               subtotalWholesalePriceMap: HashMap<String, Double>,
+                                               subtotalWholesaleCashbackMap: HashMap<String, Double>): Array<Any> {
+        // Return value by index
+        // 0 -> subtotalWholesalePrice
+        // 1 -> subtotalWholesaleCashback
+        val returnValue = Array<Any>(2) { }
+
+        var subTotalWholesalePrice = 0.0
+        var subtotalWholesaleCashback = 0.0
+
+        var hasCalculateWholesalePrice = false
+        val wholesalePriceDataList = originData.wholesalePriceData ?: emptyList()
+
+        for (wholesalePriceData in wholesalePriceDataList) {
+            if (itemQty >= wholesalePriceData.qtyMin) {
+                subTotalWholesalePrice = (itemQty * wholesalePriceData.prdPrc).toDouble()
+                hasCalculateWholesalePrice = true
+                val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        wholesalePriceData.prdPrc, false).removeDecimalSuffix()
+                originData.wholesalePriceFormatted = wholesalePriceFormatted
+                break
+            }
+        }
+        if (!hasCalculateWholesalePrice) {
+            if (itemQty > wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc) {
+                subTotalWholesalePrice = (itemQty * wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc).toDouble()
+                val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc, false).removeDecimalSuffix()
+                originData.wholesalePriceFormatted = wholesalePriceFormatted
+            } else {
+                subTotalWholesalePrice = itemQty * originData.pricePlan
+                originData.wholesalePriceFormatted = null
+            }
+        }
+        if (originData.isCashBack) {
+            val cashbackPercentageString = originData.productCashBack?.replace("%", "")
+            val cashbackPercentage = cashbackPercentageString?.toDouble()
+                    ?: 0.toDouble()
+            subtotalWholesaleCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice
+        }
+        if (!subtotalWholesalePriceMap.containsKey(parentId)) {
+            returnValue[0] = subTotalWholesalePrice
+        }
+        if (!subtotalWholesaleCashbackMap.containsKey(parentId)) {
+            returnValue[1] = subtotalWholesaleCashback
+        }
+
+        return returnValue
+    }
+
+    private fun calculatePriceNormalProduct(originData: CartItemData.OriginData,
+                                            itemQty: Int,
+                                            parentId: String,
+                                            cartItemParentIdMap: HashMap<String, CartItemData>,
+                                            subtotalPrice: Double,
+                                            subtotalCashback: Double,
+                                            cartItemHolderData: CartItemHolderData): Array<Any> {
+        // Return value by index
+        // 0 -> totalPrice
+        // 1 -> totalCashback
+        val returnValue = Array<Any>(2) { }
+
+        var tmpSubTotalPrice = subtotalPrice
+        var tmpSubtotalCashback = subtotalCashback
+
+        if (!cartItemParentIdMap.containsKey(parentId)) {
+            val itemPrice = itemQty * (originData.pricePlan ?: 0.toDouble())
+            if (originData.isCashBack) {
+                val cashbackPercentageString = originData.productCashBack?.replace("%", "")
+                val cashbackPercentage = cashbackPercentageString?.toDouble()
+                        ?: 0.toDouble()
+                val itemCashback = cashbackPercentage / PERCENTAGE * itemPrice
+                tmpSubtotalCashback += itemCashback
+            }
+            tmpSubTotalPrice += itemPrice
+            originData.wholesalePriceFormatted = null
+            cartItemHolderData.cartItemData?.let {
+                cartItemParentIdMap[parentId] = it
+            }
+        } else {
+            val calculatedHolderData = cartItemParentIdMap[parentId]
+            if (calculatedHolderData?.originData?.pricePlan != originData.pricePlan) {
+                val itemPrice = itemQty * originData.pricePlan
+                if (originData.isCashBack) {
+                    val cashbackPercentageString = originData.productCashBack?.replace("%", "")
+                    val cashbackPercentage = cashbackPercentageString?.toDouble()
+                            ?: 0.toDouble()
+                    val itemCashback = cashbackPercentage / PERCENTAGE * itemPrice
+                    tmpSubtotalCashback += itemCashback
+                }
+                tmpSubTotalPrice += itemPrice
+                originData.wholesalePriceFormatted = null
+            }
+        }
+
+        returnValue[0] = tmpSubTotalPrice
+        returnValue[1] = tmpSubtotalCashback
+
+        return returnValue
+    }
+
+    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Array<Any> {
+        // Return value by index
+        // 0 -> totalItemQty
+        // 1 -> subtotalPrice
+        // 2 -> subtotalCashback
+        val returnValue = Array<Any>(3) { }
+
+        var totalItemQty = 0
+        var subtotalPrice = 0.0
+        var subtotalCashback = 0.0
+
+        val subtotalWholesaleCashbackMap = HashMap<String, Double>()
         val subtotalWholesalePriceMap = HashMap<String, Double>()
         val cartItemParentIdMap = HashMap<String, CartItemData>()
+
         for (cartItemHolderData in allCartItemDataList) {
             cartItemHolderData.cartItemData?.originData?.let {
                 val parentId = it.parentId ?: "0"
@@ -365,102 +539,57 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     }
                 }
 
-                var hasCalculateWholesalePrice = false
-                val wholesalePriceDataList = it.wholesalePriceData
-                if (wholesalePriceDataList != null && wholesalePriceDataList.isNotEmpty()) {
-                    var subTotalWholesalePrice = 0.0
-                    var itemCashback = 0.0
-                    for (wholesalePriceData in wholesalePriceDataList) {
-                        if (itemQty >= wholesalePriceData.qtyMin) {
-                            subTotalWholesalePrice = (itemQty * wholesalePriceData.prdPrc).toDouble()
-                            hasCalculateWholesalePrice = true
-                            val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                    wholesalePriceData.prdPrc, false).removeDecimalSuffix()
-                            it.wholesalePriceFormatted = wholesalePriceFormatted
-                            break
-                        }
-                    }
-                    if (!hasCalculateWholesalePrice) {
-                        if (itemQty > wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc) {
-                            subTotalWholesalePrice = (itemQty * wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc).toDouble()
-                            val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                    wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc, false).removeDecimalSuffix()
-                            it.wholesalePriceFormatted = wholesalePriceFormatted
-                        } else {
-                            subTotalWholesalePrice = itemQty * it.pricePlan
-                            it.wholesalePriceFormatted = null
-                        }
-                    }
-                    if (it.isCashBack) {
-                        val cashbackPercentageString = it.productCashBack?.replace("%", "")
-                        val cashbackPercentage = cashbackPercentageString?.toDouble()
-                                ?: 0.toDouble()
-                        itemCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice
-                    }
-                    if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-                        subtotalWholesalePriceMap[parentId] = subTotalWholesalePrice
-                    }
-                    if (!cashbackWholesalePriceMap.containsKey(parentId)) {
-                        cashbackWholesalePriceMap[parentId] = itemCashback
-                    }
-                    it
+                if (!it.wholesalePriceData.isNullOrEmpty()) {
+                    // Calculate price and cashback for wholesale marketplace product
+                    val returnValueWholesaleProduct = calculatePriceWholesaleProduct(it, itemQty, parentId, subtotalWholesalePriceMap, subtotalWholesaleCashbackMap)
+                    subtotalWholesalePriceMap[parentId] = returnValueWholesaleProduct[0] as Double
+                    subtotalWholesaleCashbackMap[parentId] = returnValueWholesaleProduct[1] as Double
                 } else {
-                    if (!cartItemParentIdMap.containsKey(parentId)) {
-                        val itemPrice = itemQty * (it.pricePlan
-                                ?: 0.toDouble())
-                        if (it.isCashBack) {
-                            val cashbackPercentageString = it.productCashBack?.replace("%", "")
-                            val cashbackPercentage = cashbackPercentageString?.toDouble()
-                                    ?: 0.toDouble()
-                            val itemCashback = cashbackPercentage / PERCENTAGE * itemPrice
-                            totalCashback += itemCashback
-                        }
-                        totalPrice += itemPrice
-                        it.wholesalePriceFormatted = null
-                        cartItemHolderData.cartItemData?.let {
-                            cartItemParentIdMap[parentId] = it
-                        }
-                        it
-                    } else {
-                        val calculatedHolderData = cartItemParentIdMap[parentId]
-                        if (calculatedHolderData?.originData?.pricePlan != it.pricePlan) {
-                            val itemPrice = itemQty * it.pricePlan
-                            if (it.isCashBack) {
-                                val cashbackPercentageString = it.productCashBack?.replace("%", "")
-                                val cashbackPercentage = cashbackPercentageString?.toDouble()
-                                        ?: 0.toDouble()
-                                val itemCashback = cashbackPercentage / PERCENTAGE * itemPrice
-                                totalCashback += itemCashback
-                            }
-                            totalPrice += itemPrice
-                            it.wholesalePriceFormatted = null
-                        }
-                        it
-                    }
+                    // Calculate price and cashback for normal marketplace product
+                    val returnValueNormalProduct = calculatePriceNormalProduct(it, itemQty, parentId, cartItemParentIdMap, subtotalPrice, subtotalCashback, cartItemHolderData)
+                    subtotalPrice = returnValueNormalProduct[0] as Double
+                    subtotalCashback = returnValueNormalProduct[1] as Double
                 }
             }
         }
 
         if (!subtotalWholesalePriceMap.isEmpty()) {
             for ((_, value) in subtotalWholesalePriceMap) {
-                totalPrice += value
+                subtotalPrice += value
             }
         }
 
-        if (!cashbackWholesalePriceMap.isEmpty()) {
-            for ((_, value) in cashbackWholesalePriceMap) {
-                totalCashback += value
+        if (!subtotalWholesaleCashbackMap.isEmpty()) {
+            for ((_, value) in subtotalWholesaleCashbackMap) {
+                subtotalCashback += value
             }
         }
 
-        insuranceChecked = true
+        returnValue[0] = totalItemQty
+        returnValue[1] = subtotalPrice
+        returnValue[2] = subtotalCashback
+
+        return returnValue
+    }
+
+    private fun calculatePriceInsuranceProduct(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>,
+                                               totalItemQty: Int,
+                                               subtotalPrice: Double): Array<Any> {
+        // Return value by index
+        // 0 -> totalItemQty
+        // 1 -> subtotalPrice
+        val returnValue = Array<Any>(3) { }
+
+        var tmpTotalItemQty = totalItemQty
+        var tmpSubTotalPrice = subtotalPrice
+
         for (insuranceCartShops in insuranceCartShopsArrayList) {
             if (insuranceCartShops.shopItemsList.size > 0) {
                 for (insuranceCartShopItem in insuranceCartShops.shopItemsList) {
                     for (insuranceCartDigitalProduct in insuranceCartShopItem.digitalProductList) {
                         if (insuranceCartDigitalProduct.optIn) {
-                            totalPrice += insuranceCartDigitalProduct.pricePerProduct.toDouble()
-                            totalItemQty += 1
+                            tmpSubTotalPrice += insuranceCartDigitalProduct.pricePerProduct.toDouble()
+                            tmpTotalItemQty += 1
                         } else {
                             insuranceChecked = false
                         }
@@ -469,15 +598,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
         }
 
-        var totalPriceString = "-"
-        if (totalPrice > 0) {
-            totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice.toLong(), false).removeDecimalSuffix()
-        }
-        view?.updateCashback(totalCashback)
-        val selectAllItem = view?.getAllAvailableCartDataList()?.size == allCartItemDataList.size + errorProductCount &&
-                allCartItemDataList.size > 0 && insuranceChecked
-        val unSelectAllItem = allCartItemDataList.size == 0
-        view?.renderDetailInfoSubTotal(totalItemQty.toString(), totalPriceString, selectAllItem, unSelectAllItem, dataList.isEmpty())
+        returnValue[0] = tmpTotalItemQty
+        returnValue[1] = tmpSubTotalPrice
+
+        return returnValue
     }
 
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
