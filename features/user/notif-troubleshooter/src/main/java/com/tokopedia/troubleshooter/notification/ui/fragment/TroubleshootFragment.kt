@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
@@ -66,7 +66,9 @@ class TroubleshootFragment : BaseDaggerFragment() {
         * */
         Handler().postDelayed({
             viewModel.troubleshoot()
-
+            activity?.let {
+                settingViewModel.getSetting(it)
+            }
         }, REQ_DELAY)
     }
 
@@ -87,17 +89,17 @@ class TroubleshootFragment : BaseDaggerFragment() {
         })
 
         settingViewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
-            pgLoaderNotificationSetting?.hide()
+            pgLoaderNotificationSetting?.invisible()
             setNotificationSettingStatus(it)
         })
 
         settingViewModel.notificationImportance.observe(viewLifecycleOwner, Observer {
-            pgLoaderCategorySetting?.hide()
+            pgLoaderCategorySetting?.invisible()
             setNotificationImportanceStatus(it)
         })
 
         settingViewModel.notificationSoundUri.observe(viewLifecycleOwner, Observer {
-            pgLoaderRingtone?.hide()
+            pgLoaderRingtone?.invisible()
             setUriClick(it)
         })
     }
@@ -117,6 +119,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
         }
 
         if(uri == null) {
+            textSummary?.show()
             textSummary?.append("\nRingtone tidak ditemukan.")
         }
     }
@@ -136,6 +139,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
         if (importance != NotificationManager.IMPORTANCE_HIGH
                 || importance != NotificationManager.IMPORTANCE_DEFAULT){
             textSummary?.append("\nMohon cek pengaturan notifikasi anda. ($importance)")
+            textSummary?.show()
         }
     }
 
@@ -151,6 +155,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
         if (!notificationEnable){
             textSummary?.append("\nMohon hidupkan pengaturan notifikasi anda.")
+            textSummary?.show()
         }
     }
 
@@ -171,7 +176,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
     }
 
     private fun hideLoading() {
-        pgLoaderTestNotif?.hide()
+        pgLoaderTestNotif?.invisible()
     }
 
     private fun setupToolbar() {
