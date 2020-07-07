@@ -187,7 +187,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                             telcoFilterData.addFilter(componentId, filterTag.paramName, valuesFilter)
                             sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
 
-                            if (telcoFilterData.isFilterSelected()) {
+                            if (telcoFilterData.isFilterSelectedByParamName(filterTag.paramName)) {
                                 sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                             } else {
                                 sortFilterItem.type = ChipsUnify.TYPE_NORMAL

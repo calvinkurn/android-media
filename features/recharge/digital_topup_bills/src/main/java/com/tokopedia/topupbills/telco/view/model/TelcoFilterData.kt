@@ -73,6 +73,10 @@ class TelcoFilterData {
         return _filterData.isNotEmpty()
     }
 
+    fun isFilterSelectedByParamName(paramName: String): Boolean {
+        return getFilterSelectedByParamName(paramName).size > 0
+    }
+
     fun getFilterSelectedByParamName(paramName: String): ArrayList<String> {
         val arrayList = ArrayList<String>()
         _filterData.map {
