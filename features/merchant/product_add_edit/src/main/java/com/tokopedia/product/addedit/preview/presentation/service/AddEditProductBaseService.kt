@@ -94,12 +94,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val imagePathList = filterPathOnly(imageUrlOrPathList)
         val pathImageCount = imagePathList.size
         val uploadIdList: ArrayList<String> = ArrayList()
-
-        // if sizeChartPath valid then add to progress
-        notificationManager = getNotificationManager(pathImageCount)
-        notificationManager?.onSubmitUpload()
+        val primaryImagePathOrUrl = imageUrlOrPathList.getOrNull(0).orEmpty()
 
         launchCatchError(block = {
+            notificationManager = getNotificationManager(pathImageCount)
+            notificationManager?.onStartUpload(primaryImagePathOrUrl)
+
             repeat(pathImageCount) { i ->
                 val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
                 uploadIdList.add(imageId)
@@ -179,7 +179,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
-                notificationManager?.onAddProgress(filePath)
+                notificationManager?.onAddProgress()
                 result.uploadId
             }
             is UploadResult.Error -> {
