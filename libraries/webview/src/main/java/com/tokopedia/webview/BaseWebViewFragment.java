@@ -80,9 +80,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
-    private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
-    private static final String KEY_CLEAR_CACHE = "android_webview_can_clear_cache";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
+
+    private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
+    private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
+
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
@@ -328,6 +330,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGOUT && resultCode == RESULT_OK) {
+            hasMoveToNativePage = true;
             startActivity(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN));
         }
     }
@@ -628,6 +631,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT);
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, true);
                 startActivityForResult(intent, REQUEST_CODE_LOGOUT);
             } else {
                 startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
