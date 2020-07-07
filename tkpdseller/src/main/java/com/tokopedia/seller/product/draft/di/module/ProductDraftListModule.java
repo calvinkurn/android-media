@@ -18,6 +18,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepositor
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductLegacyUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductLegacyUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductLegacyUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
@@ -54,11 +55,18 @@ public class ProductDraftListModule extends ProductAddModule {
     ProductDraftListPresenter providePresenterDraft(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
                                                     FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase,
                                                     DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
+                                                    DeleteSingleDraftProductLegacyUseCase deleteSingleDraftProductLegacyUseCase,
                                                     UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
                                                     ClearAllDraftProductUseCase clearAllDraftProductUseCase,
                                                     ClearAllDraftProductLegacyUseCase clearAllDraftProductLegacyUseCase) {
-        return new ProductDraftListPresenterImpl(fetchAllDraftProductUseCase, fetchAllDraftProductLegacyUseCase, deleteSingleDraftProductUseCase,
-                updateUploadingDraftProductUseCase, clearAllDraftProductUseCase, clearAllDraftProductLegacyUseCase);
+        return new ProductDraftListPresenterImpl(
+                fetchAllDraftProductUseCase,
+                fetchAllDraftProductLegacyUseCase,
+                deleteSingleDraftProductUseCase,
+                deleteSingleDraftProductLegacyUseCase,
+                updateUploadingDraftProductUseCase,
+                clearAllDraftProductUseCase,
+                clearAllDraftProductLegacyUseCase);
     }
 
     // this is for product_manage_item
