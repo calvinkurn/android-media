@@ -106,6 +106,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
     private fun setUriClick(uri: Uri?) {
         activity?.let {
+            imgStatusRingtone.show()
             imgStatusRingtone?.setImageDrawable(
                     if (uri != null) {
                         drawable(it, R.drawable.ic_green_checked)
@@ -125,28 +126,27 @@ class TroubleshootFragment : BaseDaggerFragment() {
     }
 
     private fun setNotificationImportanceStatus(importance: Int) {
-        imgStatusCategorySetting?.show()
         activity?.let {
-            imgStatusTestNotif?.setImageDrawable(
+            imgStatusCategorySetting?.show()
+            imgStatusCategorySetting?.setImageDrawable(
                     if (importance != NotificationManager.IMPORTANCE_HIGH
-                            || importance != NotificationManager.IMPORTANCE_DEFAULT) {
+                            && importance != NotificationManager.IMPORTANCE_DEFAULT) {
                         drawable(it, R.drawable.ic_green_checked)
                     } else {
                         drawable(it, R.drawable.ic_red_error)
                     })
         }
 
-        if (importance != NotificationManager.IMPORTANCE_HIGH
-                || importance != NotificationManager.IMPORTANCE_DEFAULT){
+        if (importance != NotificationManager.IMPORTANCE_HIGH){
             textSummary?.append("\nMohon cek pengaturan notifikasi anda. ($importance)")
             textSummary?.show()
         }
     }
 
     private fun setNotificationSettingStatus(notificationEnable: Boolean) {
-        imgStatusNotificationSetting?.show()
         activity?.let {
-            imgStatusTestNotif?.setImageDrawable(if (notificationEnable) {
+            imgStatusNotificationSetting?.show()
+            imgStatusNotificationSetting?.setImageDrawable(if (notificationEnable) {
                 drawable(it, R.drawable.ic_green_checked)
             } else {
                 drawable(it, R.drawable.ic_red_error)
