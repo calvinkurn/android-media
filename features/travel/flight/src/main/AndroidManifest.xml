@@ -3,6 +3,7 @@
     package="com.tokopedia.flight">
 
     <application android:supportsRtl="true">
+        <activity android:name=".cancellationV2.presentation.activity.FlightCancellationPassengerActivity"></activity>
         <activity
             android:name=".homepage.presentation.activity.FlightHomepageActivity"
             android:label="@string/flight_dashboard_toolbar_title"
