@@ -76,10 +76,10 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             listener.getTabBusinessWidget(adapterPosition)
         }
         performanceMonitoring = PerformanceMonitoring()
-        adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
+        adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
         performanceMonitoring?.startTrace(performanceTraceName)
         showLoading()
         errorBuWidget.hide()
@@ -103,6 +103,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?, payloads: MutableList<Any>) {
         try {
+            adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
             model = element
             if (payloads.isNotEmpty() && payloads.getOrNull(0) is Bundle) {
                 val bundle = (payloads.first() as Bundle)
