@@ -43,6 +43,7 @@ object MixLeftComponentTracking: BaseTracking()  {
                 Action.KEY, CLICK_MIX_LEFT_LOADMORE_CARD,
                 Label.KEY, channel.id + " - " + channel.channelHeader.name,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
+                ChannelId.KEY, channel.id,
                 Screen.KEY, Screen.DEFAULT,
                 UserId.KEY, userId,
                 BusinessUnit.KEY, BusinessUnit.DEFAULT
