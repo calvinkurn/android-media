@@ -7,30 +7,31 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import android.content.Context
 
-@Database(entities = [ProductDraft::class], version = DBMetaData.DB_VERSION, exportSchema = false)
+@Database(entities = [ProductDraft::class], version = DBMetaData.DB_VERSION_SEVEN, exportSchema = false)
 abstract class ProductDraftDB : RoomDatabase(){
     abstract fun getProductDraftDao(): ProductDraftDao
 
     companion object {
-        @Volatile private var INSTANCE: ProductDraftDB? = null
+        @Volatile
+        private var INSTANCE: ProductDraftDB? = null
 
         @JvmStatic
         fun getInstance(context: Context): ProductDraftDB {
             return INSTANCE
-                    ?: synchronized(this){
-                INSTANCE
-                        ?: buildDatabase(context).also{ INSTANCE = it}
-            }
+                    ?: synchronized(this) {
+                        INSTANCE
+                                ?: buildDatabase(context).also { INSTANCE = it }
+                    }
         }
 
         private fun buildDatabase(context: Context): ProductDraftDB {
             return Room.databaseBuilder(context, ProductDraftDB::class.java, DBMetaData.DB_NAME)
-                    .addMigrations(migration_6_7)
+                    .addMigrations(migration_6_7, migration_8_7)
                     .allowMainThreadQueries()
                     .build()
         }
 
-        private val migration_6_7 = object : Migration(DBMetaData.DB_OLD_VERSION, DBMetaData.DB_VERSION) {
+        private val migration_6_7 = object : Migration(DBMetaData.DB_VERSION_SIX, DBMetaData.DB_VERSION_SEVEN) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("CREATE TABLE ${DBMetaData.DB_TABLE}2(" +
                         "id INTEGER PRIMARY KEY," +
@@ -42,6 +43,10 @@ abstract class ProductDraftDB : RoomDatabase(){
                 database.execSQL("DROP TABLE ${DBMetaData.DB_TABLE}")
                 database.execSQL("ALTER TABLE ${DBMetaData.DB_TABLE}2 RENAME TO ${DBMetaData.DB_TABLE}")
             }
+        }
+
+        private val migration_8_7 = object : Migration(DBMetaData.DB_VERSION_EIGHT, DBMetaData.DB_VERSION_SEVEN) {
+            override fun migrate(database: SupportSQLiteDatabase) { /*nothing changes */ }
         }
     }
 }
