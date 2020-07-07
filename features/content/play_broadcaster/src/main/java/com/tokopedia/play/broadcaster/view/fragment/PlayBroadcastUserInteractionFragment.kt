@@ -354,8 +354,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 }
                 is PlayPusherErrorType.ReachMaximumPauseDuration -> stopLiveStreaming()
             }
-        }
-        else {
+        } else {
             if (GlobalConfig.DEBUG) showToaster(
                     message = throwable.localizedMessage,
                     type = Toaster.TYPE_ERROR,

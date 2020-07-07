@@ -326,10 +326,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
     }
 
-    private fun showDialogWhenActiveOnOtherDevices() {
+    private fun showDialogWhenUnSupportedDevices() {
         getDialog(
-                title = getString(R.string.play_dialog_error_active_other_devices_title),
-                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                title = getString(R.string.play_dialog_unsupported_device_title),
+                desc = getString(R.string.play_dialog_unsupported_device_desc),
                 primaryCta = getString(R.string.play_broadcast_exit),
                 primaryListener = { dialog ->
                     dialog.dismiss()
@@ -352,6 +352,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 secondaryListener = { dialog ->
                     dialog.dismiss()
                     viewModel.stopPushStream()
+                }
+        ).show()
+    }
+
+    private fun showDialogWhenActiveOnOtherDevices() {
+        getDialog(
+                title = getString(R.string.play_dialog_error_active_other_devices_title),
+                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                primaryCta = getString(R.string.play_broadcast_exit),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    finish()
                 }
         ).show()
     }
