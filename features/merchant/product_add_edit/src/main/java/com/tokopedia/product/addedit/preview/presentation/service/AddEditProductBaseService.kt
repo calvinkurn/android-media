@@ -11,6 +11,7 @@ import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -90,15 +91,16 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
-        val urlImageCount = imageUrlOrPathList.size
+        val imagePathList = filterPathOnly(imageUrlOrPathList)
+        val pathImageCount = imagePathList.size
         val uploadIdList: ArrayList<String> = ArrayList()
 
         // if sizeChartPath valid then add to progress
-        notificationManager = getNotificationManager(urlImageCount)
+        notificationManager = getNotificationManager(pathImageCount)
         notificationManager?.onSubmitUpload()
 
         launchCatchError(block = {
-            repeat(urlImageCount) { i ->
+            repeat(pathImageCount) { i ->
                 val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
                 uploadIdList.add(imageId)
             }
@@ -192,6 +194,11 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             }
         }
     }
+
+    private fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
+            imageUrlOrPathList.filterNot {
+                it.startsWith(AddEditProductConstants.HTTP_PREFIX)
+            }
 
     private fun sendSuccessBroadcast() {
         val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
