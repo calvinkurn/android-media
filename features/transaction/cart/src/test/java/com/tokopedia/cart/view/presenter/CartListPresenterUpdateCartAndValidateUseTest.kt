@@ -126,6 +126,23 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
             }
         }
 
+        Scenario("failed update cart because data is empty") {
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+            }
+
+            When("process to update and validate use data") {
+                cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+            }
+
+            Then("should hide progress loading") {
+                verify {
+                    view.hideProgressLoading()
+                }
+            }
+        }
+
     }
 
 })

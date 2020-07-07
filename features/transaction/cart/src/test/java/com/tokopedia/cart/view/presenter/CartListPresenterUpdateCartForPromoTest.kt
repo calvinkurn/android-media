@@ -2,6 +2,7 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
@@ -77,6 +78,22 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
                 isSuccess = true
             }
 
+            val cartItemDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData().apply {
+                        isCod = true
+                        pricePlan = 1000.0
+                    }
+                    updatedData = CartItemData.UpdatedData().apply {
+                        quantity = 10
+                    }
+                })
+            }
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+            }
+
             Given("update cart data") {
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
@@ -100,6 +117,22 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
                 message = "Error"
             }
 
+            val cartItemDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData().apply {
+                        isCod = true
+                        pricePlan = 1000.0
+                    }
+                    updatedData = CartItemData.UpdatedData().apply {
+                        quantity = 10
+                    }
+                })
+            }
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+            }
+
             Given("update cart data") {
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
@@ -120,6 +153,22 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
 
             val exception = CartResponseErrorException("error message")
 
+            val cartItemDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData().apply {
+                        isCod = true
+                        pricePlan = 1000.0
+                    }
+                    updatedData = CartItemData.UpdatedData().apply {
+                        quantity = 10
+                    }
+                })
+            }
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+            }
+
             Given("update cart data") {
                 every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
@@ -135,6 +184,22 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
             }
         }
 
+        Scenario("failed update cart because data is empty") {
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.doUpdateCartForPromo()
+            }
+
+            Then("should hide progress loading") {
+                verify {
+                    view.hideProgressLoading()
+                }
+            }
+        }
     }
 
 })

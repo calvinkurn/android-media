@@ -581,8 +581,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val valueY = llPromoCheckout.y + dy
         TRANSLATION_LENGTH += dy
         if (dy != 0) {
-            if (TRANSLATION_LENGTH - dy == 0f) {
-                // Initial position of View
+            if (initialPromoButtonPosition == 0f && TRANSLATION_LENGTH - dy == 0f) {
+                // Initial position of View if previous initialization attempt failed
                 initialPromoButtonPosition = llPromoCheckout.y
             }
 
@@ -2068,6 +2068,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.show()
         bottomLayoutShadow.show()
         cardHeader.show()
+        llPromoCheckout.show()
+        llPromoCheckout.post {
+            if (initialPromoButtonPosition == 0f) {
+                initialPromoButtonPosition = llPromoCheckout.y
+            }
+        }
     }
 
     private fun showErrorContainer() {
