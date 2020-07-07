@@ -155,7 +155,6 @@ class TroubleshootFragment : BaseDaggerFragment() {
         if (importance == Int.MAX_VALUE) {
             imgStatusCategorySetting?.invisible()
             textNotificationCategory?.invisible()
-            textNotificationCategory
         } else if (importance != NotificationManager.IMPORTANCE_HIGH){
             textSummary?.append("\nMohon cek pengaturan notifikasi anda. ($importance)\n")
             textSummary?.show()
