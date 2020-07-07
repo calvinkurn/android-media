@@ -21,36 +21,44 @@ class PlayPusherTimer(val context: Context) {
     var pauseDuration: Long? = null
 
     private var mDuration: Long = 0
-    private var mLastTimeLeftInMillis: Long = 0
+    private var mRemainingMillis: Long = 0
 
     private var mCountDownTimer: PlayCountDownTimer? = null
     private var mLocalStorage: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun start() {
+        val lastMillis = getLongValue(REMAINING_MILLIS)?:0
+        this.mDuration = if (lastMillis > 0) lastMillis else mDuration
+        start(mDuration)
+    }
+
+    private fun start(duration: Long) {
         if (mCountDownTimer != null){
             mCountDownTimer?.cancel()
             mCountDownTimer = null
         }
 
-        mCountDownTimer = getCountDownTimer(mDuration)
+        mCountDownTimer = getCountDownTimer(duration)
         mCountDownTimer?.start()
     }
 
     fun stop() {
         mCountDownTimer?.cancel()
+        removeValue(REMAINING_MILLIS)
+        removeValue(PAUSE_TIME)
     }
 
     fun restart(duration: Long) {
         this.mDuration = duration
-        start()
+        start(duration)
     }
 
     fun resume() {
         pauseDuration?.let { maxPauseMillis ->
-            getLongValue(PLAY_TIMER_LAST_MILLIS)?.let { lastMillis ->
-                if (reachMaximumPauseDuration(lastMillis, maxPauseMillis)) {
+            getLongValue(PAUSE_TIME)?.let { lastMillis ->
+                if (lastMillis > 0  && reachMaximumPauseDuration(lastMillis, maxPauseMillis)) {
                     callback?.onReachMaximumPauseDuration()
-                    removeValue(PLAY_TIMER_LAST_MILLIS)
+                    removeValue(PAUSE_TIME)
                 }
             }
         }
@@ -59,7 +67,8 @@ class PlayPusherTimer(val context: Context) {
 
     fun pause() {
         mCountDownTimer?.pause()
-        saveLongValue(PLAY_TIMER_LAST_MILLIS, System.currentTimeMillis())
+        saveLongValue(REMAINING_MILLIS, mRemainingMillis)
+        saveLongValue(PAUSE_TIME, System.currentTimeMillis())
     }
 
     fun destroy() {
@@ -74,7 +83,7 @@ class PlayPusherTimer(val context: Context) {
             }
 
             override fun onTick(millisUntilFinished: Long) {
-                mLastTimeLeftInMillis = millisUntilFinished
+                mRemainingMillis = millisUntilFinished
                 val timeout = timeoutList.firstOrNull { millisUntilFinished in it.minMillis..it.maxMillis }
                 if (timeout != null) callback?.onCountDownAlmostFinish(timeout.minute)
                 else callback?.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
@@ -85,7 +94,7 @@ class PlayPusherTimer(val context: Context) {
     private fun getTimeElapsed(): String = millisToMinuteSecond(
             getTimeElapsedInMillis()
     )
-    private fun getTimeElapsedInMillis(): Long = mDuration - mLastTimeLeftInMillis
+    private fun getTimeElapsedInMillis(): Long = mDuration - mRemainingMillis
 
     private fun millisToMinuteSecond(millis: Long) = String.format("%02d:%02d",
             millisToMinute(millis),
@@ -118,6 +127,7 @@ class PlayPusherTimer(val context: Context) {
 
     companion object {
         const val DEFAULT_INTERVAL = 1000L
-        const val PLAY_TIMER_LAST_MILLIS = "play_broadcast_last_millis"
+        const val PAUSE_TIME = "play_broadcast_pause_time"
+        const val REMAINING_MILLIS = "play_broadcast_remaining_millis"
     }
 }
