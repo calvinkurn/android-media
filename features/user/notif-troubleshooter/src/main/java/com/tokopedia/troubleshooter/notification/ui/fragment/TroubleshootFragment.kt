@@ -1,11 +1,13 @@
 package com.tokopedia.troubleshooter.notification.ui.fragment
 
+import android.app.NotificationManager
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -18,6 +20,7 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
+import com.tokopedia.troubleshooter.notification.ui.viewmodel.LocalNotificationSettingViewModel
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
@@ -27,12 +30,17 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: TroubleshootViewModel
+    private lateinit var settingViewModel: LocalNotificationSettingViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(TroubleshootViewModel::class.java)
+
+        settingViewModel = ViewModelProviders
+                .of(this, viewModelFactory)
+                .get(LocalNotificationSettingViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -58,6 +66,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
         * */
         Handler().postDelayed({
             viewModel.troubleshoot()
+
         }, REQ_DELAY)
     }
 
@@ -76,13 +85,80 @@ class TroubleshootFragment : BaseDaggerFragment() {
             hideLoading()
             onIconStatus(false)
         })
+
+        settingViewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
+            pgLoaderNotificationSetting?.hide()
+            setNotificationSettingStatus(it)
+        })
+
+        settingViewModel.notificationImportance.observe(viewLifecycleOwner, Observer {
+            pgLoaderCategorySetting?.hide()
+            setNotificationImportanceStatus(it)
+        })
+
+        settingViewModel.notificationSoundUri.observe(viewLifecycleOwner, Observer {
+            pgLoaderRingtone?.hide()
+            setUriClick(it)
+        })
+    }
+
+    private fun setUriClick(uri: Uri?) {
+        activity?.let {
+            imgStatusRingtone?.setImageDrawable(
+                    if (uri != null) {
+                        drawable(it, R.drawable.ic_green_checked)
+                    } else {
+                        drawable(it, R.drawable.ic_red_error)
+                    })
+        }
+        uri?.let {
+            val ringtone = RingtoneManager.getRingtone(context, uri)
+            textRingtone?.setOnClickListener { ringtone.play() }
+        }
+
+        if(uri == null) {
+            textSummary?.append("\nRingtone tidak ditemukan.")
+        }
+    }
+
+    private fun setNotificationImportanceStatus(importance: Int) {
+        imgStatusCategorySetting?.show()
+        activity?.let {
+            imgStatusTestNotif?.setImageDrawable(
+                    if (importance != NotificationManager.IMPORTANCE_HIGH
+                            || importance != NotificationManager.IMPORTANCE_DEFAULT) {
+                        drawable(it, R.drawable.ic_green_checked)
+                    } else {
+                        drawable(it, R.drawable.ic_red_error)
+                    })
+        }
+
+        if (importance != NotificationManager.IMPORTANCE_HIGH
+                || importance != NotificationManager.IMPORTANCE_DEFAULT){
+            textSummary?.append("\nMohon cek pengaturan notifikasi anda. ($importance)")
+        }
+    }
+
+    private fun setNotificationSettingStatus(notificationEnable: Boolean) {
+        imgStatusNotificationSetting?.show()
+        activity?.let {
+            imgStatusTestNotif?.setImageDrawable(if (notificationEnable) {
+                drawable(it, R.drawable.ic_green_checked)
+            } else {
+                drawable(it, R.drawable.ic_red_error)
+            })
+        }
+
+        if (!notificationEnable){
+            textSummary?.append("\nMohon hidupkan pengaturan notifikasi anda.")
+        }
     }
 
     private fun onIconStatus(isSuccess: Boolean) {
-        imgStatus?.show()
+        imgStatusTestNotif?.show()
 
         activity?.let {
-            imgStatus?.setImageDrawable(if (isSuccess) {
+            imgStatusTestNotif?.setImageDrawable(if (isSuccess) {
                 drawable(it, R.drawable.ic_green_checked)
             } else {
                 drawable(it, R.drawable.ic_red_error)
@@ -91,11 +167,11 @@ class TroubleshootFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        pgLoader?.show()
+        pgLoaderTestNotif?.show()
     }
 
     private fun hideLoading() {
-        pgLoader?.hide()
+        pgLoaderTestNotif?.hide()
     }
 
     private fun setupToolbar() {
