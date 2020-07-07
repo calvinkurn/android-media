@@ -22,10 +22,12 @@ import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.channelNotFound
+import com.tokopedia.play.broadcaster.util.error.PusherErrorThrowable
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.showToaster
@@ -37,7 +39,9 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
+import com.tokopedia.play.broadcaster.view.state.BroadcastState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
@@ -93,6 +97,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         getConfiguration()
 
+        observePusherInfoState()
         observeConfiguration()
         observePermissionStateEvent()
     }
@@ -279,6 +284,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             }
         })
     }
+
+    private fun observePusherInfoState() {
+        viewModel.observableLiveInfoState.observe(this, EventObserver{
+            if (it is BroadcastState.Error &&
+                    it.error is PusherErrorThrowable &&
+                    it.error.mErrorType is PlayPusherErrorType.UnSupportedDevice)
+                showDialogWhenUnSupportedDevices()
+        })
+    }
     //endregion
 
     private fun handleChannelConfiguration(config: ConfigurationUiModel) =
@@ -326,10 +340,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
     }
 
-    private fun showDialogWhenActiveOnOtherDevices() {
+    private fun showDialogWhenUnSupportedDevices() {
         getDialog(
-                title = getString(R.string.play_dialog_error_active_other_devices_title),
-                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                title = getString(R.string.play_dialog_unsupported_device_title),
+                desc = getString(R.string.play_dialog_unsupported_device_desc),
                 primaryCta = getString(R.string.play_broadcast_exit),
                 primaryListener = { dialog ->
                     dialog.dismiss()
@@ -352,6 +366,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 secondaryListener = { dialog ->
                     dialog.dismiss()
                     viewModel.stopPushStream()
+                }
+        ).show()
+    }
+
+    private fun showDialogWhenActiveOnOtherDevices() {
+        getDialog(
+                title = getString(R.string.play_dialog_error_active_other_devices_title),
+                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                primaryCta = getString(R.string.play_broadcast_exit),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    finish()
                 }
         ).show()
     }
