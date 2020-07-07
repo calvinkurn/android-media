@@ -51,6 +51,9 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignMainStockFra
     }
 
     private fun setupView() {
+    }
+
+    private fun applyLayout() {
 
     }
 }

@@ -4,7 +4,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import javax.inject.Inject
 
-class CampaignMainStockViewModel @Inject constructor(
+class CampaignStockViewModel @Inject constructor(
         dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
+
+    fun getStockAllocation(shopId: String,
+                           productIds: Array<String>) {
+
+    }
 
 }
