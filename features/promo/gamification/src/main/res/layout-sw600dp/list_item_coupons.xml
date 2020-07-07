@@ -18,8 +18,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clTransaction"
         android:layout_width="match_parent"
-        android:layout_height="68dp"
+        android:layout_height="@dimen/gami_cl_transaction_height"
         android:background="@drawable/gf_bg_bottom_corner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
