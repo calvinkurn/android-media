@@ -130,7 +130,12 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             hashItemMap.clear()
             idPackageActive = idPackages
         }
-        hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toInt(), totalPrice, selectedDate,idPackageActive, packageName))
+
+        if(qty.toInt() > EMPTY_QTY) {
+            hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toInt(), totalPrice, selectedDate, idPackageActive, packageName))
+        } else {
+            hashItemMap.remove(idPackagesItem)
+        }
 
         this.PACKAGES_ID = idPackagesItem
         this.AMOUNT_TICKET = getTotalQuantity(hashItemMap)
@@ -138,8 +143,12 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         this.PRODUCT_ID = product_id
         this.PRODUCT_PRICE = getTotalPrice(hashItemMap).toString()
 
-        setTotalPrice(getRupiahFormat(getTotalPrice(hashItemMap)))
-        showViewBottom(!isError)
+        if (getTotalPrice(hashItemMap) != EMPTY_QTY) {
+            setTotalPrice(getRupiahFormat(getTotalPrice(hashItemMap)))
+            showViewBottom(!isError)
+        } else {
+            showViewBottom(false)
+        }
     }
 
     private fun setTotalPrice(nominal: String) {
@@ -337,6 +346,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         }
 
         val EMPTY_VALUE = "-"
+        val EMPTY_QTY = 0
         val REQUEST_CODE_LOGIN = 100
     }
 

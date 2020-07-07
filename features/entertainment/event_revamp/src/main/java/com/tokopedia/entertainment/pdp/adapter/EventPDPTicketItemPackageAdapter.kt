@@ -46,7 +46,7 @@ class EventPDPTicketItemPackageAdapter(
                 txtSubtitle_ticket.text = items.description
                 txtPrice_ticket.text = getRupiahFormat(items.salesPrice.toInt())
 
-                val itemIsAvailable = (checkDate(items.dates,onBindItemTicketListener.getSelectedDate()) || items.available.toInt()>=1)
+                val itemIsAvailable = (checkDate(items.dates,onBindItemTicketListener.getSelectedDate()) && items.available.toInt()>=1)
 
                 txtPilih_ticket.visibility = if(itemIsAvailable) View.VISIBLE else View.GONE
                 txtHabis_ticket.visibility = if(!itemIsAvailable) View.VISIBLE else View.GONE
@@ -92,6 +92,13 @@ class EventPDPTicketItemPackageAdapter(
                                     getDigit(txtTotal.toString()) <= items.maxQty.toInt()) {
                                 quantityEditor.editText.error = null
                                 isError = false
+                            }
+
+                            if(getDigit(txtTotal.toString())== EMPTY_QTY && items.minQty.toInt() == EMPTY_QTY){
+                                itemView.txtPilih_ticket.visibility = View.VISIBLE
+                                itemView.greenDivider.visibility = View.GONE
+                                itemView.quantityEditor.visibility = View.GONE
+                                itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_normal_bg)
                             }
                         } else if (txtTotal.toString().isBlank()) {
                             isError = true

@@ -34,7 +34,9 @@ object EventDateMapper{
 
     fun checkDate(list : List<String>, selectedDate: String): Boolean {
         for(date in list){
-            if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
+            if (selectedDate.isEmpty() && list.size == 1)
+                return true
+            else if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
                 return true
             }
         }
@@ -43,7 +45,9 @@ object EventDateMapper{
 
     fun getDate(list : List<String>, selectedDate: String): String {
         for(date in list){
-            if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
+            if (selectedDate.isEmpty() && list.size == 1)
+                return date
+            else if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
                 return date
             }
         }
