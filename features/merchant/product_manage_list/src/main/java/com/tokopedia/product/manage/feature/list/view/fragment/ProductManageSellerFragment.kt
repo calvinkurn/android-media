@@ -72,7 +72,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     override fun initInjector() {
-        ProductManageListInstance.getComponent((requireActivity().application))
+        ProductManageListInstance.getComponent(requireContext())
                 .inject(this)
     }
 
