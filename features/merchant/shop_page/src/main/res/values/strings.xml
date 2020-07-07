@@ -228,7 +228,7 @@
     <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
     <string name="shop_page_play_card_success_add_reminder">Berhasil pasang pengingat</string>
     <string name="shop_page_play_card_success_remove_reminder">Berhasil menghapus pengingat</string>
-    <string name="shop_page_play_widget_title" formatted="false"><![CDATA[Ayo cobain <b>live streaming</b>]]></string>
+    <string name="shop_page_play_widget_title">Ayo cobain live streaming BETA dan bikin tokomu makin terkenal</string>
     <string name="shop_page_play_widget_sgc_content">dan bikin tokomu makin terkenal!</string>
     <string name="shop_page_play_widget_beta_badge">BETA</string>
 
