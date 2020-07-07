@@ -738,6 +738,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 is Fail -> {
                     context?.let {
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
                     }
                 }
             }
@@ -776,7 +777,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     addEditProductVariantButton?.isEnabled = true
                     addEditProductVariantButton?.alpha = 1F
                 }
-                is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
+                is Fail -> {
+                    showVariantErrorToast(getString(R.string.error_cannot_get_variants))
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
+                }
             }
         })
     }
@@ -795,7 +799,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         viewModel.saveProductDraftResultLiveData.observe(this, Observer {
             when (it) {
                 is Success -> Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
-                is Fail -> AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         })
     }
