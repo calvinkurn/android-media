@@ -376,7 +376,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         context?.let {
             searchBar.closeImageButton.setImageResource(android.R.color.transparent)
-            searchBar.closeImageButton.setBackgroundResource(R.drawable.unify_clear_ic)
+            searchBar.closeImageButton.setBackgroundResource(com.tokopedia.unifycomponents.R.drawable.unify_clear_ic)
         }
     }
 
