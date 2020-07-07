@@ -88,4 +88,10 @@ class InboxModule(private val context: Context) {
         return GraphqlHelper.loadRawString(context.resources, R.raw.reply_ticket_query)
     }
 
+    @Named("ticket_list_query")
+    @Provides
+    fun provideTicketListQuery(): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.ticket_list_query)
+    }
+
 }

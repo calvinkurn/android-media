@@ -1,14 +1,15 @@
 package com.tokopedia.contactus.inboxticket2.view.contract
 
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.contactus.inboxticket2.domain.TicketsItem
+import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse2
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
+import com.tokopedia.usecase.RequestParams
 
 interface InboxListContract {
     interface InboxListView : InboxBaseView {
-        fun renderTicketList(ticketList: MutableList<TicketsItem>)
+        fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse2.Ticket.Data.TicketItem>)
         fun hideFilter()
         fun showFilter()
         fun toggleEmptyLayout(visibility: Int)
@@ -25,6 +26,6 @@ interface InboxListContract {
         fun scrollList()
         fun onRecyclerViewScrolled(layoutManager: LinearLayoutManager)
         fun getSearchListener(): CustomEditText.Listener?
-        val ticketList: Unit
+        fun getTicketList(requestParams: RequestParams?)
     }
 }

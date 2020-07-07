@@ -13,7 +13,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity
-import com.tokopedia.contactus.inboxticket2.domain.TicketsItem
+import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse2
 import com.tokopedia.contactus.inboxticket2.view.adapter.TicketListAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListPresenter
@@ -34,9 +34,9 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     private var mAdapter: TicketListAdapter? = null
     private var btnFilterTv: TextView? = null
 
-    override fun renderTicketList(ticketList: MutableList<TicketsItem>) {
+    override fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse2.Ticket.Data.TicketItem>) {
         if (mAdapter == null) {
-            mAdapter = TicketListAdapter(ticketList, mPresenter as InboxListPresenter)
+            mAdapter = TicketListAdapter(ticketItemList, mPresenter as InboxListPresenter)
         } else {
             mAdapter?.notifyDataSetChanged()
         }
@@ -96,7 +96,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
 
     override fun initView() {
         this.findingViewsId()
-        (mPresenter as InboxListPresenter).ticketList
+        (mPresenter as InboxListPresenter).getTicketList(null)
         settingOnClickListener()
         btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.contactus_ic_filter_list), null, null, null)
         rvEmailList?.addOnScrollListener(rvOnScrollListener)

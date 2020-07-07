@@ -10,17 +10,6 @@
     android:focusable="true"
     android:longClickable="true">
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/checkbox_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_ticket_status"
         android:layout_width="wrap_content"
@@ -30,16 +19,24 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@drawable/rounded_rect_yellow"
         android:gravity="center"
         android:paddingLeft="@dimen/dp_4"
         android:paddingTop="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_4"
         android:textColor="#fa591d"
-        app:layout_constraintStart_toStartOf="@id/checkbox_delete"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/rounded_rect_yellow"
         tools:text="Dalam Proses" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="view,priorityImage,verticalView,priorityTitle" />
 
 
     <View
@@ -65,7 +62,7 @@
         app:layout_constraintTop_toTopOf="@+id/view" />
 
     <View
-        android:id="@+id/view3"
+        android:id="@+id/verticalView"
         android:layout_width="1dp"
         android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_4"
@@ -85,17 +82,16 @@
         android:layout_marginLeft="@dimen/dp_4"
         android:gravity="center"
         android:textColor="#7a08c9"
-        app:layout_constraintBottom_toBottomOf="@id/view3"
-        app:layout_constraintStart_toEndOf="@id/view3"
-        app:layout_constraintTop_toTopOf="@id/view3"
-        android:text="Layanan Prioritas" />
+        app:layout_constraintBottom_toBottomOf="@id/verticalView"
+        app:layout_constraintStart_toEndOf="@id/verticalView"
+        app:layout_constraintTop_toTopOf="@id/verticalView"
+        android:text="@string/layanan_prioritas" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_ticket_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
-        app:typographyWeight="bold"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
@@ -105,12 +101,13 @@
         android:singleLine="true"
         android:textColor="#f531353b"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/checkbox_delete"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_ticket_status"
         app:layout_goneMarginStart="@dimen/dp_16"
         tools:text="Pembayaran belum diverifikasi" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ticketId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -118,7 +115,7 @@
         android:layout_marginBottom="@dimen/dp_12"
         android:textColor="#7031353b"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/checkbox_delete"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_ticket_title"
         app:typographyType="body_3"
         tools:text="ID: 14322322" />

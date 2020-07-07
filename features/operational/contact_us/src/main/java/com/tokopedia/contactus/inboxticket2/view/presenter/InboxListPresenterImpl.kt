@@ -10,8 +10,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity
-import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint
-import com.tokopedia.contactus.inboxticket2.domain.TicketsItem
+import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse2
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxFilterAdapter
@@ -20,14 +19,13 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.Inbo
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment
-import com.tokopedia.core.network.constants.TkpdBaseURL
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
 
 const val ALL = 0
@@ -38,18 +36,15 @@ const val READ = 4
 const val CLOSED = 5
 
 class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : InboxListPresenter, CustomEditText.Listener, CoroutineScope {
+    private val status: Int = 0
     private var mView: InboxListView? = null
     private val filterList: ArrayList<String> by lazy { ArrayList<String>() }
-    private val originalList: ArrayList<TicketsItem> by lazy { ArrayList<TicketsItem>() }
+    private val originalList: ArrayList<InboxTicketListResponse2.Ticket.Data.TicketItem> by lazy { ArrayList<InboxTicketListResponse2.Ticket.Data.TicketItem>() }
     var isLoading = false
     var isLastPage = false
+    private var page = 1
     var fromFilter: Boolean = false
     private var nextUrl: String? = null
-    private lateinit var queryMap: MutableMap<String, Any>
-
-    companion object {
-        val TICKET_LIST_URL = TkpdBaseURL.BASE_CONTACT_US + InboxEndpoint.LIST_TICKET
-    }
 
     override fun attachView(view: InboxBaseView?) {
         mView = view as InboxListView
@@ -59,19 +54,17 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    override val ticketList: Unit
-        get() {
+    override fun getTicketList(requestParams: RequestParams?) {
             mView?.showProgressBar()
             launchCatchError(
                     block = {
-                        if (!::queryMap.isInitialized) queryMap = HashMap()
-                        val ticketListResponse = mUseCase.getTicketListResponse(queryMap, TICKET_LIST_URL)
+                        val ticketListResponse = mUseCase.getTicketListResponse(requestParams?: mUseCase.getRequestParams(1,0))
                         when {
-                            ticketListResponse.tickets?.isNotEmpty() == true -> {
+                            !ticketListResponse.ticket?.data?.ticketItems.isNullOrEmpty() -> {
                                 mView?.toggleEmptyLayout(View.GONE)
                                 originalList.clear()
-                                originalList.addAll(ticketListResponse.tickets)
-                                nextUrl = ticketListResponse.nextPage
+                                ticketListResponse.ticket?.data?.ticketItems?.let { originalList.addAll(it) }
+                                nextUrl = ticketListResponse.ticket?.data?.nextPage
                                 isLastPage = nextUrl?.isEmpty() == true
                                 mView?.renderTicketList(originalList)
                                 mView?.showFilter()
@@ -107,35 +100,35 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
         fromFilter = true
         when (position) {
             ALL -> {
-                queryMap = mUseCase.setQueryMap(0, 0, 0)
-                ticketList
+                val requestParams = mUseCase.getRequestParams(1,0)
+                getTicketList(requestParams)
                 selectedFilter = getFilterList(filterList, ALL)
                 getFilterAdapter().setSelected(ALL)
             }
             UNREAD -> {
-                queryMap = mUseCase.setQueryMap(0, 1, 0)
-                selectedFilter = getFilterList(filterList, UNREAD)
-                ticketList
+//                queryMap = mUseCase.setQueryMap2(1,0)
+//                selectedFilter = getFilterList(filterList, UNREAD)
+//                ticketList
             }
             NEEDRATING -> {
-                queryMap = mUseCase.setQueryMap(2, 0, 1)
-                selectedFilter = getFilterList(filterList, NEEDRATING)
-                ticketList
+//                queryMap = mUseCase.setQueryMap2(1,0)
+//                selectedFilter = getFilterList(filterList, NEEDRATING)
+//                ticketList
             }
             INPROGRESS -> {
-                queryMap = mUseCase.setQueryMap(1, 0, 0)
-                selectedFilter = getFilterList(filterList, INPROGRESS)
-                ticketList
+//                queryMap = mUseCase.setQueryMap2(1,0)
+//                selectedFilter = getFilterList(filterList, INPROGRESS)
+//                ticketList
             }
             READ -> {
-                queryMap = mUseCase.setQueryMap(0, 2, 0)
-                selectedFilter = getFilterList(filterList, READ)
-                ticketList
+//                queryMap = mUseCase.setQueryMap2(1,0)
+//                selectedFilter = getFilterList(filterList, READ)
+//                ticketList
             }
             CLOSED -> {
-                queryMap = mUseCase.setQueryMap(2, 0, 2)
-                selectedFilter = getFilterList(filterList, CLOSED)
-                ticketList
+//                queryMap = mUseCase.setQueryMap2(1,0)
+//                selectedFilter = getFilterList(filterList, CLOSED)
+//                ticketList
             }
         }
         ContactUsTracking.sendGTMInboxTicket("",
@@ -205,7 +198,8 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
     }
 
     override fun reAttachView() {
-        ticketList
+//        val requestParams = mUseCase.getRequestParams(1,status)
+//        getTicketList(requestParams)
     }
 
     override fun clickCloseSearch() {
@@ -224,7 +218,8 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
         if (!isLoading && !isLastPage) {
             val PAGE_SIZE = 10
             if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= PAGE_SIZE) {
-                loadMoreItems()
+                page++
+                loadMoreItems(page)
             } else {
                 mView?.addFooter()
             }
@@ -233,15 +228,16 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
         }
     }
 
-    fun loadMoreItems() {
+    fun loadMoreItems(page: Int) {
         isLoading = true
+        mView?.addFooter()
         launchCatchError(
                 block = {
-                    if (!::queryMap.isInitialized) queryMap = HashMap()
-                    val ticketListResponse = mUseCase.getTicketListResponse(queryMap, nextUrl ?: "")
-                    if (ticketListResponse.tickets?.isNotEmpty() == true) {
-                        originalList.addAll(ticketListResponse.tickets)
-                        nextUrl = ticketListResponse.nextPage
+                    val requestParams = mUseCase.getRequestParams(page, status)
+                    val ticketListResponse = mUseCase.getTicketListResponse(requestParams)
+                    if (ticketListResponse.ticket?.data?.ticketItems?.isNullOrEmpty()==false) {
+                        originalList.addAll(ticketListResponse.ticket.data.ticketItems)
+                        nextUrl = ticketListResponse.ticket.data.nextPage
                         isLastPage = nextUrl?.isEmpty() == true
                         mView?.updateDataSet()
                     }
