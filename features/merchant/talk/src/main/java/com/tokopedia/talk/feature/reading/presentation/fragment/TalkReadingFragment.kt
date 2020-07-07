@@ -163,8 +163,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onCategoriesCleared() {
-        unselectCategories()
         resetSortOptions()
+        unselectCategories()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -319,8 +319,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                                     { showBottomSheet() },
                                     this
                             )) { showBottomSheet() }
-                    initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     initSortOptions()
+                    initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     showContainer()
                     if(!isLoadingInitialData) {
                         loadInitialData()
@@ -422,7 +422,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun initSortOptions() {
-        viewModel.updateSortOptions(listOf(SortOption.SortByInformativeness(), SortOption.SortByTime(), SortOption.SortByLike()))
+        viewModel.updateSortOptions(listOf(SortOption.SortByTime(), SortOption.SortByInformativeness()))
     }
 
     private fun getHeaderData() {
@@ -538,10 +538,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun unselectCategories() {
+        isLoadingInitialData = false
         viewModel.unselectAllCategories()
     }
 
     private fun resetSortOptions() {
+        isLoadingInitialData = true
         viewModel.resetSortOptions()
     }
 

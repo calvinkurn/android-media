@@ -130,7 +130,7 @@ class TalkReadingViewModel @Inject constructor(
     fun resetSortOptions() {
         val sortOptions = _sortOptions.value?.toMutableList()
         sortOptions?.forEach {
-            it.isSelected = it.id == SortOption.SortId.INFORMATIVENESS
+            it.isSelected = it.id == SortOption.SortId.TIME
         }
         _sortOptions.value = sortOptions
     }

@@ -6,7 +6,7 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.sortfilter.SortFilter.Companion.RELATIONSHIP_AND
 import com.tokopedia.sortfilter.SortFilter.Companion.TYPE_QUICK
-import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper.SORT_CATEGORY
+import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper.SORT_LATEST
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -39,7 +39,7 @@ class TalkReadingHeader : BaseCustomView {
 
     fun updateSelectedSort(chipText: String) {
         val sortChip = this.readingHeaderChips.chipItems.first()
-        if(chipText != SORT_CATEGORY) {
+        if(chipText != SORT_LATEST) {
             sortChip.type = ChipsUnify.TYPE_SELECTED
             sortChip.selectedItem = arrayListOf(chipText)
         } else {
