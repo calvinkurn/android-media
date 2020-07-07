@@ -1,30 +1,50 @@
 package com.tokopedia.attachvoucher.usecase
 
 import com.tokopedia.attachvoucher.data.GetVoucherResponse
+import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherCoroutineContextProvider
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class GetVoucherUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<GetVoucherResponse>
-) {
+        private val gqlUseCase: GraphqlUseCase<GetVoucherResponse>,
+        private var dispatchers: AttachVoucherCoroutineContextProvider
+) : CoroutineScope {
 
     private val paramShopId = "shop_id"
+
+    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
     fun getVouchers(
             onSuccess: (GetVoucherResponse) -> Unit,
             onError: (Throwable) -> Unit,
             shopId: Int
     ) {
-        val params = generateParams(shopId)
-        gqlUseCase.apply {
-            setTypeClass(GetVoucherResponse::class.java)
-            setRequestParams(params)
-            setGraphqlQuery(query)
-            execute({ result ->
-                onSuccess(result)
-            }, { error ->
-                onError(error)
-            })
+        launchCatchError(dispatchers.IO,
+                {
+                    val params = generateParams(shopId)
+                    val response = gqlUseCase.apply {
+                        setTypeClass(GetVoucherResponse::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    withContext(dispatchers.Main) {
+                        onSuccess(response)
+                    }
+                },
+                { exception ->
+                    withContext(dispatchers.Main) {
+                        onError(exception)
+                    }
+                }
+        )
+    }
+
+    fun safeCancel() {
+        if (coroutineContext.isActive) {
+            cancel()
         }
     }
 
