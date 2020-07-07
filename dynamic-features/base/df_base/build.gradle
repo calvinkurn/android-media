@@ -55,6 +55,8 @@ dependencies {
     implementation project(rootProject.ext.features.exploreCategory)
     implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.kategori)
+    implementation project(rootProject.ext.features.categoryLevels)
+    implementation project(rootProject.ext.features.findNative)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
     //Content
     implementation project(rootProject.ext.features.affiliate)

@@ -31,7 +31,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.checkout)
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -46,12 +45,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
-    implementation rootProject.ext.playServicesDependencies.base
-    implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.places
-    implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.debugToolsDependencies.chuck
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -68,5 +62,3 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'
-apply from: '../../../sonar_config.gradle'

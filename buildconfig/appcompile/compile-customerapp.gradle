@@ -113,6 +113,7 @@ include "features:logistic:dropoff"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
 include "features:logistic:manageaddress"
+include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
@@ -163,6 +164,7 @@ include "features:promo:tokopoints_notification"
 include "features:promo:promo_checkout"
 include "features:promo:promo_checkout_common"
 include "features:promo:promo_gamification_common"
+include "features:promo:promo_ui_common"
 include "features:promo:loyalty"
 include "features:promo:loyalty_common"
 include "features:promo:promotions_target"
@@ -201,6 +203,7 @@ include "features:user:loginregister"
 include "features:user:logout"
 include "features:user:managename"
 include "features:user:managepassword"
+include 'features:user:notif-troubleshooter'
 include "features:user:notifcenter"
 include "features:user:onboarding"
 include "features:user:otp"
@@ -222,11 +225,12 @@ include "features:user:seamless_login"
 
 include "features:user:vote"
 
-include "features:fcm_common"
+include "features:user:fcm_common"
 
 include "tkpdcore"
 include "tkpddesign"
 include "tkpdseller"
 include "tkpdabstraction"
 
+include 'testapp-features:user:logintestapp'
 include "customerapp"

@@ -12,6 +12,7 @@ object ManageAddressConstant {
     const val REQUEST_CODE_PARAM_EDIT = 102
 
     const val KERO_TOKEN = "token"
+    const val EDIT_PARAM = "EDIT_PARAM"
 
     const val SCREEN_NAME_USER_NEW = "/user/address/create"
 }

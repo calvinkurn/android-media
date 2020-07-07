@@ -114,6 +114,7 @@ ext {
             logisticorder                   : ":features:logistic:logisticorder",
             logisticcart                    : ":features:logistic:logisticcart",
             manageaddress                   : ":features:logistic:manageaddress",
+            editshipping                    : ":features:logistic:editshipping",
 
             goldMerchant                    : ":features:merchant:gold_merchant",
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
@@ -173,6 +174,7 @@ ext {
             promoCheckout                   : ":features:promo:promo_checkout",
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
+            promoUiCommon                   : ":features:promo:promo_ui_common",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
@@ -211,6 +213,7 @@ ext {
             loginregister                   : ":features:user:loginregister",
             loginfingerprint                : ":features:user:loginfingerprint",
             sessioncommon                   : ":features:user:sessioncommon",
+            notifTroubleshooter             : ":features:user:notif-troubleshooter",
             notifCenter                     : ":features:user:notifcenter",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
@@ -229,11 +232,12 @@ ext {
             kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
             liveness                        : ":features:user:liveness",
-            fcm_common                      : ":features:fcm_common",
+            fcm_common                      : ":features:user:fcm_common",
             tkpdcore                        : ":tkpdcore",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
-            recharge_slice                  : ":features:recharge:recharge_slice"
+            recharge_slice                  : ":features:recharge:recharge_slice",
+            logintestapp                    : ":testapp-features:user:logintestapp"
     ]
 }

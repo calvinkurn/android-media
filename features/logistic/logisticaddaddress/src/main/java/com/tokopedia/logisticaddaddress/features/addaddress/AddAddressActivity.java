@@ -67,9 +67,10 @@ public class AddAddressActivity extends BaseSimpleActivity {
         return AddAddressFragment.newInstance(bundle);
     }
 
-    public static Intent createInstanceEditAddress(@NonNull Activity activity,
-                                                   @Nullable RecipientAddressModel addressModel,
-                                                   @Nullable Token token) {
+
+    public static Intent createInstanceEditAddressFromManageAddress(@NonNull Activity activity,
+                                                                    @Nullable AddressModel addressModel,
+                                                                    @Nullable Token token) {
         return createInstance(
                 activity, addressModel, token,
                 INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS);

@@ -27,8 +27,8 @@
     <string name="pm_label_button_score_submit">Tingkatkan Skor Toko</string>
     <string name="pm_label_button_close">Tutup</string>
 
-    <string name="pm_label_score_verification_header">Yaah, skor performa tokomu kurang dari \n75 poin</string>
-    <string name="pm_label_score_verification_desc">Segera tingkatkan skor performa tokomu minimum 75 untuk upgrade jadi Power Merchant.</string>
+    <string name="pm_label_score_verification_header">Yaah, pengajuan kamu belum berhasil</string>
+    <string name="pm_label_score_verification_desc">Skor performa tokomu kurang dari 75. Segera tingkatkan performa toko untuk menjadi Power Merchant.</string>
 
     <string name="pm_label_bs_success_header_transition">Yay, kamu berhasil jadi Power Merchant</string>
     <string name="pm_label_bs_success_header">Selamat! Kamu sudah menjadi Power Merchant</string>

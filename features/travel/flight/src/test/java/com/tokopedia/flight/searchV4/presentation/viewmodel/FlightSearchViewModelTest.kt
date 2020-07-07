@@ -7,21 +7,16 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dummy.*
-import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.search.presentation.model.FlightAirportCombineModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.search.util.FlightSearchCache
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchErrorEntity
 import com.tokopedia.flight.searchV4.domain.*
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSelectedModel
+import com.tokopedia.flight.searchV4.presentation.model.*
+import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -169,7 +164,7 @@ class FlightSearchViewModelTest {
         coEvery { flightSortAndFilterUseCase.execute(any(), any()) } returns arrayListOf()
         coEvery { flightSearchUseCase.execute(any(), any(), any(), any()) } returns
                 FlightSearchMetaModel("JKTA", "BTJ", "2020-11-11",
-                        false, 2, 11, 1, 0, arrayListOf(),
+                        false, 2, 11, arrayListOf(),
                         "", "", 1800)
 
         // when
@@ -212,13 +207,13 @@ class FlightSearchViewModelTest {
                     airportCode = ""
                 },
                 FlightClassModel(1, "Ekonomi"),
-                "", null)
+                "tokopedia-android-internal://dummy", "")
 
         coEvery { flightSearchCombineUseCase.execute(any()) } returns true
         coEvery { flightSortAndFilterUseCase.execute(any(), any()) } returns arrayListOf()
         coEvery { flightSearchUseCase.execute(any(), any(), any(), any()) } returns
                 FlightSearchMetaModel("JKTA", "BTJ", "2020-11-11",
-                        false, 2, 11, 1, 0, arrayListOf(),
+                        false, 2, 11, arrayListOf(),
                         "", "", 1800)
 
         // when
@@ -257,12 +252,13 @@ class FlightSearchViewModelTest {
         val needDeleteData = false
         val isReturnTrip = true
         flightSearchViewModel.flightSearchPassData.isOneWay = false
+        flightSearchViewModel.flightSearchPassData.searchRequestId
 
         coEvery { flightSearchCombineUseCase.execute(any()) } returns true
         coEvery { flightSortAndFilterUseCase.execute(any(), any()) } returns arrayListOf()
         coEvery { flightSearchUseCase.execute(any(), any(), any(), any()) } returns
                 FlightSearchMetaModel("JKTA", "BTJ", "2020-11-11",
-                        false, 2, 11, 1, 0, arrayListOf(),
+                        false, 2, 11, arrayListOf(),
                         "", "", 1800)
 
         // when
@@ -281,13 +277,13 @@ class FlightSearchViewModelTest {
         val needDeleteData = false
         val isReturnTrip = true
         flightSearchViewModel.flightSearchPassData.isOneWay = false
-        flightSearchViewModel.flightSearchPassData.searchRequestId = null
+        flightSearchViewModel.flightSearchPassData.searchRequestId = ""
 
         coEvery { flightSearchCombineUseCase.execute(any()) } returns true
         coEvery { flightSortAndFilterUseCase.execute(any(), any()) } returns arrayListOf()
         coEvery { flightSearchUseCase.execute(any(), any(), any(), any()) } returns
                 FlightSearchMetaModel("JKTA", "BTJ", "2020-11-11",
-                        false, 2, 11, 1, 0, arrayListOf(),
+                        false, 2, 11, arrayListOf(),
                         "", "", 1800)
 
         // when
@@ -321,7 +317,7 @@ class FlightSearchViewModelTest {
         // given
         coEvery { flightSearchUseCase.execute(any(), any(), any(), any()) } returns META_MODEL_NEED_REFRESH_MAX_RETRY
         coEvery { flightSortAndFilterUseCase.execute(any(), any()) } returns JOURNEY_LIST_DATA.toList()
-        flightSearchViewModel.flightSearchPassData.searchRequestId = null
+        flightSearchViewModel.flightSearchPassData.searchRequestId = ""
 
         // when
         flightSearchViewModel.fetchSearchDataCloud(false)
@@ -336,23 +332,21 @@ class FlightSearchViewModelTest {
     @Test
     fun generateSearchStatistics_successGenerated_searchStatisticModelShouldBeSameWithData() {
         // given
-        coEvery { flightSearchStatisticUseCase.executeCoroutine(any()) } returns SEARCH_STATISTICS_DATA
+        coEvery { flightSearchStatisticUseCase.execute(any()) } returns SEARCH_STATISTICS_DATA
 
         // when
         flightSearchViewModel.generateSearchStatistics()
 
         // then
         coVerify {
-            flightSearchStatisticUseCase.executeCoroutine(
-                    flightSearchStatisticUseCase.createRequestParams(
-                            flightSearchViewModel.filterModel))
+            flightSearchStatisticUseCase.execute(flightSearchViewModel.filterModel)
         }
     }
 
     @Test
     fun generateSearchStatistics_failedGenerated_shouldThrowErrors() {
         // given
-        coEvery { flightSearchStatisticUseCase.executeCoroutine(any()) } coAnswers { throw Throwable("Errors") }
+        coEvery { flightSearchStatisticUseCase.execute(any()) } coAnswers { throw Throwable("Errors") }
 
         // when
         try {
@@ -362,7 +356,7 @@ class FlightSearchViewModelTest {
 
         // then
         coVerify {
-            flightSearchStatisticUseCase.executeCoroutine(any())?.wasNot(Called)
+            flightSearchStatisticUseCase.execute(any())?.wasNot(Called)
         }
     }
 
@@ -381,7 +375,7 @@ class FlightSearchViewModelTest {
     @Test
     fun changeHasFilterValue_hasFilter_shouldBeTrue() {
         // given
-        coEvery { flightSearchStatisticUseCase.executeCoroutine(any()) } returns SEARCH_STATISTICS_DATA
+        coEvery { flightSearchStatisticUseCase.execute(any()) } returns SEARCH_STATISTICS_DATA
         flightSearchViewModel.filterModel.departureTimeList = arrayListOf(DepartureTimeEnum._06)
 
         // when
@@ -428,8 +422,8 @@ class FlightSearchViewModelTest {
         val airportCombineModel = flightSearchViewModel.buildAirportCombineModel(departureAirport, arrivalAirport)
 
         // then
-        airportCombineModel.depAirport shouldBe "JKTA"
-        airportCombineModel.arrAirport shouldBe "TKYA"
+        airportCombineModel.departureAirport shouldBe "JKTA"
+        airportCombineModel.arrivalAirport shouldBe "TKYA"
     }
 
     @Test
@@ -456,8 +450,8 @@ class FlightSearchViewModelTest {
         val airportCombineModel = flightSearchViewModel.buildAirportCombineModel(departureAirport, arrivalAirport)
 
         // then
-        airportCombineModel.depAirport shouldBe "JKTA"
-        airportCombineModel.arrAirport shouldBe "TKYA"
+        airportCombineModel.departureAirport shouldBe "JKTA"
+        airportCombineModel.arrivalAirport shouldBe "TKYA"
     }
 
     @Test
@@ -484,8 +478,8 @@ class FlightSearchViewModelTest {
         val airportCombineModel = flightSearchViewModel.buildAirportCombineModel(departureAirport, arrivalAirport)
 
         // then
-        airportCombineModel.depAirport shouldBe "BTJ"
-        airportCombineModel.arrAirport shouldBe "TKYA"
+        airportCombineModel.departureAirport shouldBe "BTJ"
+        airportCombineModel.arrivalAirport shouldBe "TKYA"
     }
 
     @Test
@@ -512,8 +506,8 @@ class FlightSearchViewModelTest {
         val airportCombineModel = flightSearchViewModel.buildAirportCombineModel(departureAirport, arrivalAirport)
 
         // then
-        airportCombineModel.depAirport shouldBe "JKTA"
-        airportCombineModel.arrAirport shouldBe "BTJ"
+        airportCombineModel.departureAirport shouldBe "JKTA"
+        airportCombineModel.arrivalAirport shouldBe "BTJ"
     }
 
     @Test
@@ -540,8 +534,8 @@ class FlightSearchViewModelTest {
         val airportCombineModel = flightSearchViewModel.buildAirportCombineModel(departureAirport, arrivalAirport)
 
         // then
-        airportCombineModel.depAirport shouldBe "CGK"
-        airportCombineModel.arrAirport shouldBe "BTJ"
+        airportCombineModel.departureAirport shouldBe "CGK"
+        airportCombineModel.arrivalAirport shouldBe "BTJ"
     }
 
     @Test
@@ -553,9 +547,6 @@ class FlightSearchViewModelTest {
         flightSearchViewModel.fetchSortAndFilter()
 
         // then
-        verify {
-            flightAnalytics.eventSearchView(flightSearchViewModel.flightSearchPassData, true)
-        }
         flightSearchViewModel.journeyList.value is Success<List<FlightJourneyModel>>
         val journeyList = (flightSearchViewModel.journeyList.value as Success<List<FlightJourneyModel>>).data
 
@@ -566,7 +557,7 @@ class FlightSearchViewModelTest {
             journey.term shouldBe JOURNEY_LIST_DATA[index].term
             journey.specialTagText shouldBe JOURNEY_LIST_DATA[index].specialTagText
             journey.routeList.size shouldBe JOURNEY_LIST_DATA[index].routeList.size
-            journey.isShowSpecialPriceTag shouldBe JOURNEY_LIST_DATA[index].isShowSpecialPriceTag
+            journey.showSpecialPriceTag shouldBe JOURNEY_LIST_DATA[index].showSpecialPriceTag
             journey.isReturning shouldBe JOURNEY_LIST_DATA[index].isReturning
             journey.isRefundable shouldBe JOURNEY_LIST_DATA[index].isRefundable
             journey.isBestPairing shouldBe JOURNEY_LIST_DATA[index].isBestPairing
@@ -666,17 +657,17 @@ class FlightSearchViewModelTest {
         }
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
         selectedJourney.journeyModel shouldBe journeyModel
-        selectedJourney.priceModel.departurePrice.adult shouldBe journeyModel.fare.adult
-        selectedJourney.priceModel.departurePrice.adultNumeric shouldBe journeyModel.fare.adultNumeric
-        selectedJourney.priceModel.departurePrice.child shouldBe journeyModel.fare.child
-        selectedJourney.priceModel.departurePrice.childNumeric shouldBe journeyModel.fare.childNumeric
-        selectedJourney.priceModel.departurePrice.infant shouldBe journeyModel.fare.infant
-        selectedJourney.priceModel.departurePrice.adultCombo shouldBe ""
-        selectedJourney.priceModel.departurePrice.adultNumericCombo shouldBe 0
-        selectedJourney.priceModel.departurePrice.childCombo shouldBe ""
-        selectedJourney.priceModel.departurePrice.childNumericCombo shouldBe 0
-        selectedJourney.priceModel.departurePrice.infantCombo shouldBe ""
-        selectedJourney.priceModel.departurePrice.infantNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.adult shouldBe journeyModel.fare.adult
+        selectedJourney.priceModel.departurePrice!!.adultNumeric shouldBe journeyModel.fare.adultNumeric
+        selectedJourney.priceModel.departurePrice!!.child shouldBe journeyModel.fare.child
+        selectedJourney.priceModel.departurePrice!!.childNumeric shouldBe journeyModel.fare.childNumeric
+        selectedJourney.priceModel.departurePrice!!.infant shouldBe journeyModel.fare.infant
+        selectedJourney.priceModel.departurePrice!!.adultCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.adultNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.childCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.childNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.infantCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.infantNumericCombo shouldBe 0
     }
 
     @Test
@@ -695,17 +686,17 @@ class FlightSearchViewModelTest {
         }
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
         selectedJourney.journeyModel shouldBe journeyModel
-        selectedJourney.priceModel.departurePrice.adult shouldBe journeyModel.fare.adult
-        selectedJourney.priceModel.departurePrice.adultNumeric shouldBe journeyModel.fare.adultNumeric
-        selectedJourney.priceModel.departurePrice.child shouldBe journeyModel.fare.child
-        selectedJourney.priceModel.departurePrice.childNumeric shouldBe journeyModel.fare.childNumeric
-        selectedJourney.priceModel.departurePrice.infant shouldBe journeyModel.fare.infant
-        selectedJourney.priceModel.departurePrice.adultCombo shouldBe journeyModel.fare.adultCombo
-        selectedJourney.priceModel.departurePrice.adultNumericCombo shouldBe journeyModel.fare.adultNumericCombo
-        selectedJourney.priceModel.departurePrice.childCombo shouldBe journeyModel.fare.childCombo
-        selectedJourney.priceModel.departurePrice.childNumericCombo shouldBe journeyModel.fare.childNumericCombo
-        selectedJourney.priceModel.departurePrice.infantCombo shouldBe journeyModel.fare.infantCombo
-        selectedJourney.priceModel.departurePrice.infantNumericCombo shouldBe journeyModel.fare.infantNumericCombo
+        selectedJourney.priceModel.departurePrice!!.adult shouldBe journeyModel.fare.adult
+        selectedJourney.priceModel.departurePrice!!.adultNumeric shouldBe journeyModel.fare.adultNumeric
+        selectedJourney.priceModel.departurePrice!!.child shouldBe journeyModel.fare.child
+        selectedJourney.priceModel.departurePrice!!.childNumeric shouldBe journeyModel.fare.childNumeric
+        selectedJourney.priceModel.departurePrice!!.infant shouldBe journeyModel.fare.infant
+        selectedJourney.priceModel.departurePrice!!.adultCombo shouldBe journeyModel.fare.adultCombo
+        selectedJourney.priceModel.departurePrice!!.adultNumericCombo shouldBe journeyModel.fare.adultNumericCombo
+        selectedJourney.priceModel.departurePrice!!.childCombo shouldBe journeyModel.fare.childCombo
+        selectedJourney.priceModel.departurePrice!!.childNumericCombo shouldBe journeyModel.fare.childNumericCombo
+        selectedJourney.priceModel.departurePrice!!.infantCombo shouldBe journeyModel.fare.infantCombo
+        selectedJourney.priceModel.departurePrice!!.infantNumericCombo shouldBe journeyModel.fare.infantNumericCombo
     }
 
     @Test
@@ -724,17 +715,17 @@ class FlightSearchViewModelTest {
         }
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
         selectedJourney.journeyModel shouldBe journeyModel
-        selectedJourney.priceModel.departurePrice.adult shouldBe journeyModel.fare.adult
-        selectedJourney.priceModel.departurePrice.adultNumeric shouldBe journeyModel.fare.adultNumeric
-        selectedJourney.priceModel.departurePrice.child shouldBe journeyModel.fare.child
-        selectedJourney.priceModel.departurePrice.childNumeric shouldBe journeyModel.fare.childNumeric
-        selectedJourney.priceModel.departurePrice.infant shouldBe journeyModel.fare.infant
-        selectedJourney.priceModel.departurePrice.adultCombo shouldBe ""
-        selectedJourney.priceModel.departurePrice.adultNumericCombo shouldBe 0
-        selectedJourney.priceModel.departurePrice.childCombo shouldBe ""
-        selectedJourney.priceModel.departurePrice.childNumericCombo shouldBe 0
-        selectedJourney.priceModel.departurePrice.infantCombo shouldBe ""
-        selectedJourney.priceModel.departurePrice.infantNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.adult shouldBe journeyModel.fare.adult
+        selectedJourney.priceModel.departurePrice!!.adultNumeric shouldBe journeyModel.fare.adultNumeric
+        selectedJourney.priceModel.departurePrice!!.child shouldBe journeyModel.fare.child
+        selectedJourney.priceModel.departurePrice!!.childNumeric shouldBe journeyModel.fare.childNumeric
+        selectedJourney.priceModel.departurePrice!!.infant shouldBe journeyModel.fare.infant
+        selectedJourney.priceModel.departurePrice!!.adultCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.adultNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.childCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.childNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.infantCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.infantNumericCombo shouldBe 0
     }
 
     @Test
@@ -750,17 +741,17 @@ class FlightSearchViewModelTest {
         // then
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
         selectedJourney.journeyModel shouldBe journeyModel
-        selectedJourney.priceModel.departurePrice.adult shouldBe journeyModel.fare.adult
-        selectedJourney.priceModel.departurePrice.adultNumeric shouldBe journeyModel.fare.adultNumeric
-        selectedJourney.priceModel.departurePrice.child shouldBe journeyModel.fare.child
-        selectedJourney.priceModel.departurePrice.childNumeric shouldBe journeyModel.fare.childNumeric
-        selectedJourney.priceModel.departurePrice.infant shouldBe journeyModel.fare.infant
-        selectedJourney.priceModel.departurePrice.adultCombo shouldBe ""
-        selectedJourney.priceModel.departurePrice.adultNumericCombo shouldBe 0
-        selectedJourney.priceModel.departurePrice.childCombo shouldBe ""
-        selectedJourney.priceModel.departurePrice.childNumericCombo shouldBe 0
-        selectedJourney.priceModel.departurePrice.infantCombo shouldBe ""
-        selectedJourney.priceModel.departurePrice.infantNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.adult shouldBe journeyModel.fare.adult
+        selectedJourney.priceModel.departurePrice!!.adultNumeric shouldBe journeyModel.fare.adultNumeric
+        selectedJourney.priceModel.departurePrice!!.child shouldBe journeyModel.fare.child
+        selectedJourney.priceModel.departurePrice!!.childNumeric shouldBe journeyModel.fare.childNumeric
+        selectedJourney.priceModel.departurePrice!!.infant shouldBe journeyModel.fare.infant
+        selectedJourney.priceModel.departurePrice!!.adultCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.adultNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.childCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.childNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.infantCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.infantNumericCombo shouldBe 0
     }
 
     @Test
@@ -875,7 +866,7 @@ class FlightSearchViewModelTest {
     @Test
     fun recountFilterCounterWithMinPrice() {
         // given
-        coEvery { flightSearchStatisticUseCase.executeCoroutine(any()) } returns SEARCH_STATISTICS_DATA
+        coEvery { flightSearchStatisticUseCase.execute(any()) } returns SEARCH_STATISTICS_DATA
         flightSearchViewModel.filterModel = defaultFilterModel
         flightSearchViewModel.filterModel.priceMin = SEARCH_STATISTICS_DATA.minPrice + 1000
         flightSearchViewModel.filterModel.priceMax = SEARCH_STATISTICS_DATA.maxPrice
@@ -890,7 +881,7 @@ class FlightSearchViewModelTest {
     @Test
     fun recountFilterCounterWithMaxPrice() {
         // given
-        coEvery { flightSearchStatisticUseCase.executeCoroutine(any()) } returns SEARCH_STATISTICS_DATA
+        coEvery { flightSearchStatisticUseCase.execute(any()) } returns SEARCH_STATISTICS_DATA
         flightSearchViewModel.filterModel = defaultFilterModel
         flightSearchViewModel.filterModel.priceMin = SEARCH_STATISTICS_DATA.minPrice
         flightSearchViewModel.filterModel.priceMax = SEARCH_STATISTICS_DATA.maxPrice - 1000
@@ -905,7 +896,7 @@ class FlightSearchViewModelTest {
     @Test
     fun recountFilterCounterWithMinAndMaxPrice() {
         // given
-        coEvery { flightSearchStatisticUseCase.executeCoroutine(any()) } returns SEARCH_STATISTICS_DATA
+        coEvery { flightSearchStatisticUseCase.execute(any()) } returns SEARCH_STATISTICS_DATA
         flightSearchViewModel.filterModel = defaultFilterModel
         flightSearchViewModel.filterModel.priceMin = SEARCH_STATISTICS_DATA.minPrice + 1000
         flightSearchViewModel.filterModel.priceMax = SEARCH_STATISTICS_DATA.maxPrice - 1000
@@ -920,7 +911,7 @@ class FlightSearchViewModelTest {
     @Test
     fun recountFilterCounterWithoutFilter() {
         // given
-        coEvery { flightSearchStatisticUseCase.executeCoroutine(any()) } returns SEARCH_STATISTICS_DATA
+        coEvery { flightSearchStatisticUseCase.execute(any()) } returns SEARCH_STATISTICS_DATA
         flightSearchViewModel.priceFilterStatistic = Pair(SEARCH_STATISTICS_DATA.minPrice, SEARCH_STATISTICS_DATA.maxPrice)
         flightSearchViewModel.filterModel = defaultFilterModel
         flightSearchViewModel.filterModel.priceMin = SEARCH_STATISTICS_DATA.minPrice

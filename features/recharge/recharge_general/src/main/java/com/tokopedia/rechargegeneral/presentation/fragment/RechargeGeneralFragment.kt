@@ -762,14 +762,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun getOperatorCluster(menuId: Int) {
         viewModel.getOperatorCluster(
                 GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group),
-                viewModel.createOperatorClusterParams(menuId)
+                viewModel.createOperatorClusterParams(menuId),
+                recharge_general_swipe_refresh_layout.isRefreshing
         )
     }
 
     private fun getProductList(menuId: Int, operator: Int) {
         viewModel.getProductList(
                 GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
-                viewModel.createProductListParams(menuId, operator)
+                viewModel.createProductListParams(menuId, operator),
+                recharge_general_swipe_refresh_layout.isRefreshing
         )
     }
 
@@ -814,8 +816,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun validateEnquiry(): Boolean {
         return operatorId > 0 && selectedProduct != null
-                && inputDataKeys.isNotEmpty()
-                && inputData.keys.toList().sorted() == inputDataKeys.sorted()
+                && (inputDataKeys.isEmpty()
+                || inputData.keys.toList().sorted() == inputDataKeys.sorted())
     }
 
     private fun enquire() {

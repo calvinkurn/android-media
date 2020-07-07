@@ -291,6 +291,10 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         }
     }
 
+    public List<Visitable> getItemList() {
+        return list;
+    }
+
     public interface OnItemChangeView {
         void onChangeList();
 
