@@ -17,26 +17,27 @@
         android:minWidth="@dimen/dp_80"
         android:paddingBottom="@dimen/dp_8"
         android:paddingTop="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingStart="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_8"
         android:paddingRight="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_12"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="@string/label_top_ads_impression"
+            app:typographyType="small"
             style="@style/TextView.Micro.BlackDisabled"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="12"
-            style="@style/TextView.TitleBig"/>
+            tools:text="500M"
+            android:textColor="@color/topads_heading_color"
+            app:typographyType="heading_5"/>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

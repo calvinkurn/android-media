@@ -34,6 +34,10 @@ class ShopShowcaseProductAddActivity: BaseSimpleActivity() {
         return ACTIVITY_LAYOUT
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     override fun setupStatusBar() {
         val window: Window = window
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

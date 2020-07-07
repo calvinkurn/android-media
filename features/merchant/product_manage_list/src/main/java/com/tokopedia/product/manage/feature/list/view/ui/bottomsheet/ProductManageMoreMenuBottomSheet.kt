@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.ui.bottomsheet
 
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
@@ -12,9 +13,9 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_product_manage_more_menu.view.*
 
 class ProductManageMoreMenuBottomSheet(
-        context: Context?,
-        private val listener: ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
-        private val fm: FragmentManager?
+        context: Context? = null,
+        private val listener: ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener? = null,
+        private val fm: FragmentManager? = null
 ): BottomSheetUnify() {
 
     companion object {
@@ -26,15 +27,24 @@ class ProductManageMoreMenuBottomSheet(
     private var moreMenuAdapter: ProductManageMoreMenuAdapter? = null
 
     init {
-        moreMenuAdapter = context?.let { ProductManageMoreMenuAdapter(it, listener) }
-        val itemView = View.inflate(context, LAYOUT, null).apply {
-            moreMenuList.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = moreMenuAdapter
+        if (context != null && listener != null && fm != null) {
+            moreMenuAdapter = context?.let { ProductManageMoreMenuAdapter(it, listener) }
+            val itemView = View.inflate(context, LAYOUT, null).apply {
+                moreMenuList.apply {
+                    setHasFixedSize(true)
+                    layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    adapter = moreMenuAdapter
+                }
             }
+            setChild(itemView)
         }
-        setChild(itemView)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.run {
+            parentFragment?.childFragmentManager?.beginTransaction()?.remove(this@ProductManageMoreMenuBottomSheet)?.commit()
+        }
     }
 
     fun show() {
