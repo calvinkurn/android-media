@@ -30,8 +30,8 @@ import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalTelcoFilterBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
+import com.tokopedia.topupbills.telco.view.model.TelcoFilterData
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
-import com.tokopedia.topupbills.telco.view.viewmodel.TelcoFilterViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -49,15 +49,16 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var titleEmptyState: TextView
     private lateinit var descEmptyState: TextView
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
-    private lateinit var telcoFilterViewModel: TelcoFilterViewModel
     private lateinit var selectedOperatorName: String
     private lateinit var shimmeringGridLayout: LinearLayout
     private lateinit var shimmeringListLayout: LinearLayout
     private lateinit var sortFilter: SortFilter
+    private lateinit var titleFilterResult: TextView
 
     private var titleProduct: String = ""
     private var selectedProduct: Int = 0
     private var hasTitle = false
+    private var telcoFilterData: TelcoFilterData = TelcoFilterData()
     private var productType = TelcoProductType.PRODUCT_LIST
 
     @Inject
@@ -74,7 +75,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             sharedModelPrepaid = viewModelProvider.get(SharedTelcoPrepaidViewModel::class.java)
-            telcoFilterViewModel = viewModelProvider.get(TelcoFilterViewModel::class.java)
         }
     }
 
@@ -104,6 +104,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         shimmeringGridLayout = view.findViewById(R.id.shimmering_product_grid)
         shimmeringListLayout = view.findViewById(R.id.shimmering_product_list)
         sortFilter = view.findViewById(R.id.sort_filter)
+        titleFilterResult = view.findViewById(R.id.title_filter_result)
         return view
     }
 
@@ -117,6 +118,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
             sharedModelPrepaid.productList.observe(this, Observer {
+                if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
                 when (it) {
                     is Success -> onSuccessProductList()
                     is Fail -> onErrorProductList()
@@ -170,41 +172,46 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun renderSortFilter(filters: List<TelcoFilterTagComponent>) {
-        if (telcoFilterViewModel.getFilterTags().isEmpty()) {
-            telcoFilterViewModel.setFilterTags(filters)
+    private fun renderSortFilter(componentId: Int, filters: List<TelcoFilterTagComponent>) {
+        if (telcoFilterData.getFilterTags().isEmpty()) {
+            telcoFilterData.setFilterTags(filters)
 
             val filterData = arrayListOf<SortFilterItem>()
-
-            telcoFilterViewModel.getFilterTags().map { filterTag ->
-                val sortFilter = SortFilterItem(filterTag.text)
-                sortFilter.listener = {
+            telcoFilterData.getFilterTags().map { filterTag ->
+                val sortFilterItem = SortFilterItem(filterTag.text)
+                sortFilterItem.listener = {
                     val filterBottomSheet = DigitalTelcoFilterBottomSheet.newInstance(filterTag.text,
                             filterTag.paramName, filterTag.filterTagDataCollections as ArrayList<FilterTagDataCollection>)
                     filterBottomSheet.setListener(object : DigitalTelcoFilterBottomSheet.ActionListener {
                         override fun onTelcoFilterSaved(valuesFilter: ArrayList<String>) {
-                            telcoFilterViewModel.addFilter(filterTag.paramName, valuesFilter)
-                            sharedModelPrepaid.setSelectedFilter(telcoFilterViewModel.getAllFilter())
+                            telcoFilterData.addFilter(componentId, filterTag.paramName, valuesFilter)
+                            sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
 
-                            if (telcoFilterViewModel.isFilterSelected()) {
-                                sortFilter.type = ChipsUnify.TYPE_SELECTED
+                            if (telcoFilterData.isFilterSelected()) {
+                                sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                             } else {
-                                sortFilter.type = ChipsUnify.TYPE_NORMAL
+                                sortFilterItem.type = ChipsUnify.TYPE_NORMAL
                             }
                         }
 
                         override fun getFilterSelected(): ArrayList<String> {
-                            return telcoFilterViewModel.getFilterSelectedByParamName(filterTag.paramName)
+                            return telcoFilterData.getFilterSelectedByParamName(filterTag.paramName)
                         }
                     })
                     filterBottomSheet.setShowListener { filterBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
                     filterBottomSheet.show(childFragmentManager, "filter telco")
                 }
-                filterData.add(sortFilter)
+                filterData.add(sortFilterItem)
             }
             sortFilter.addItem(filterData)
             sortFilter.chipItems.map {
                 it.refChipUnify.setChevronClickListener {}
+            }
+            sortFilter.filterType = SortFilter.TYPE_QUICK
+            sortFilter.filterRelationship = SortFilter.RELATIONSHIP_AND
+            sortFilter.dismissListener = {
+                telcoFilterData.clearAllFilter()
+                sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
             }
         }
     }
@@ -214,29 +221,30 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         productInputList.map {
             if (it.label == titleProduct) {
-                if (it.product.dataCollections.isNotEmpty()) {
+                if (it.product.dataCollections.isNotEmpty() && it.product.dataCollections[0].products.isNotEmpty()) {
                     emptyStateProductView.hide()
                     telcoTelcoProductView.show()
 
                     val dataCollections = wrapDataCollections(it)
 
                     //set true on selected product datacollection list
-                    var position = -1
                     val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
                     if (activeCategory == titleProduct && selectedProduct > 0) {
                         for (i in dataCollections.indices) {
-                            if (dataCollections[i].id.toInt() == selectedProduct) {
+                            if (dataCollections[i].id == selectedProduct.toString()) {
                                 dataCollections[i].attributes.selected = true
-                                position = i
                                 break
                             }
                         }
                     }
-                    renderSortFilter(it.filterTagComponents)
+                    renderSortFilter(it.product.id, it.filterTagComponents)
                     telcoTelcoProductView.renderProductList(productType, dataCollections)
+
                 } else {
                     onErrorProductList()
                 }
+            } else {
+                //do nothing
             }
         }
     }
@@ -245,7 +253,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         val dataCollections = mutableListOf<TelcoProduct>()
         hasTitle = productInput.product.dataCollections.size > 1 && productInput.label != TelcoComponentName.PRODUCT_PULSA
         productInput.product.dataCollections.map {
-            if (hasTitle) {
+            if (hasTitle && !telcoFilterData.isFilterSelected()) {
                 if (it.name.isNotEmpty()) {
                     dataCollections.add(TelcoProduct(titleSection = it.name, isTitle = true))
                 } else {
@@ -254,7 +262,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             }
             dataCollections.addAll(it.products)
         }
-        return dataCollections;
+        return dataCollections
     }
 
     private fun onErrorProductList() {

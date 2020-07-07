@@ -1,12 +1,8 @@
-package com.tokopedia.topupbills.telco.view.viewmodel
+package com.tokopedia.topupbills.telco.view.model
 
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.topupbills.telco.data.TelcoFilterTagComponent
-import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Inject
 
-class TelcoFilterViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+class TelcoFilterData {
 
     private val _filterData = ArrayList<HashMap<String, Any>>()
     private val _filterTags = mutableListOf<TelcoFilterTagComponent>()
@@ -14,22 +10,39 @@ class TelcoFilterViewModel @Inject constructor(private val dispatcher: Coroutine
     /**
      * example filter data param
      * "filterData": [
-            {
-                "value": [
-                    "621"
-                ],
-                "param_name": "filter_tag_tipe_kuota"
-            }
-        ]
+    {
+    "value": [
+    "621"
+    ],
+    "param_name": "filter_tag_tipe_kuota"
+    },
+    {param_name: "apply_filter_to_component_id", value: ["8"]}
+    ]
+     *
      */
 
-    fun addFilter(paramName: String, valuesFilter: List<String>) {
+    fun addFilter(componentId: Int, paramName: String, valuesFilter: List<String>) {
         var addNewObj = true
+        var addApplyFilter = true
         _filterData.map {
             if (it.containsValue(paramName)) {
                 it[FILTER_VALUE] = valuesFilter
                 addNewObj = false
             }
+
+            if (it.containsValue(FILTER_COMPONENT_ID)) {
+                addApplyFilter = false
+            }
+        }
+
+        //add "apply_filter_to_component_id"
+        if (addApplyFilter) {
+            val valueItem = HashMap<String, Any>()
+            val list = ArrayList<String>()
+            list.add(componentId.toString())
+            valueItem[FILTER_PARAM_NAME] = FILTER_COMPONENT_ID
+            valueItem[FILTER_VALUE] = list
+            _filterData.add(valueItem)
         }
 
         if (addNewObj) {
@@ -42,10 +55,18 @@ class TelcoFilterViewModel @Inject constructor(private val dispatcher: Coroutine
         if (getFilterSelectedByParamName(paramName).size == 0) {
             removeFilter(paramName)
         }
+
+        if (_filterData.size == 1 && _filterData[0].containsValue(FILTER_COMPONENT_ID)) {
+            removeFilter(FILTER_COMPONENT_ID)
+        }
     }
 
     fun getAllFilter(): ArrayList<HashMap<String, Any>> {
         return _filterData
+    }
+
+    fun clearAllFilter() {
+        _filterData.clear()
     }
 
     fun isFilterSelected(): Boolean {
@@ -85,5 +106,6 @@ class TelcoFilterViewModel @Inject constructor(private val dispatcher: Coroutine
     companion object {
         const val FILTER_PARAM_NAME = "param_name"
         const val FILTER_VALUE = "value"
+        const val FILTER_COMPONENT_ID = "apply_filter_to_component_id"
     }
 }

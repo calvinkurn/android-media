@@ -10,6 +10,7 @@ query getProductQuery($menuID: Int!, $operatorID: String!, $filterData: [Recharg
         name
       }
       product {
+        id
         name
         text
         placeholder

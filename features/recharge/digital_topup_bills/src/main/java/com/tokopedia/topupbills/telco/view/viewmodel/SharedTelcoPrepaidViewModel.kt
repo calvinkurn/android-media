@@ -76,8 +76,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
             val mapParam = HashMap<String, Any>()
             mapParam[KEY_MENU_ID] = menuId
             mapParam[KEY_OPERATOR_ID] = operatorId
-            filterData?.let {
-                mapParam[KEY_FILTER_DATA] = it
+            if (filterData != null && filterData.size > 0) {
+                mapParam[KEY_FILTER_DATA] = filterData
             }
 
             val data = withContext(dispatcher) {

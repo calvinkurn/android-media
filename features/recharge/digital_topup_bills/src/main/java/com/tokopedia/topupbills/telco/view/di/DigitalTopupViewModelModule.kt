@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
-import com.tokopedia.topupbills.telco.view.viewmodel.TelcoFilterViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -38,8 +37,4 @@ abstract class DigitalTopupViewModelModule {
     @ViewModelKey(DigitalTelcoEnquiryViewModel::class)
     internal abstract fun digitalTelcoEnquiryViewModel(enquiryViewModel: DigitalTelcoEnquiryViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(TelcoFilterViewModel::class)
-    internal abstract fun telcoFilterViewModel(enquiryViewModel: TelcoFilterViewModel): ViewModel
 }
