@@ -68,6 +68,12 @@
                 app:tabTextColor="@color/Neutral_N700_68"
                 tools:visibility="visible" />
 
+            <View
+                android:id="@+id/separator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@drawable/bg_line_separator"/>
+
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
