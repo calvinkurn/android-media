@@ -10,7 +10,7 @@ import java.util.List;
 public class OrderListInitContract {
      public interface Presenter {
 
-         void getInitData();
+         void getInitData(String orderCategory);
 
          void destroyView();
 
@@ -24,7 +24,7 @@ public class OrderListInitContract {
 
         void showErrorNetwork(String message);
 
-        void renderTabs(List<OrderLabelList> orderLabelList);
+        void renderTabs(List<OrderLabelList> orderLabelList, String orderCategory);
 
         void updateTicker(TickerResponse tickerInfo);
     }
