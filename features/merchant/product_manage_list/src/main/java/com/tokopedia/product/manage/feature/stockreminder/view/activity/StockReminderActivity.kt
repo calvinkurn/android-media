@@ -42,4 +42,7 @@ class StockReminderActivity : BaseSimpleActivity() {
 
     override fun getScreenName(): String = AppScreen.SCREEN_STOCK_REMINDER
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
 }
