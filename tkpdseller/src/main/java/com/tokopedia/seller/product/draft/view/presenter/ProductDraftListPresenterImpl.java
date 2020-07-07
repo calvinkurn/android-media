@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.draft.view.presenter;
 
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
+import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductLegacyUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
@@ -24,17 +25,20 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
     private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
     private FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase;
+    private ClearAllDraftProductLegacyUseCase clearAllDraftProductLegacyUseCase;
 
     public ProductDraftListPresenterImpl(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
                                          FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase,
                                          DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
-                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase) {
+                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase,
+                                         ClearAllDraftProductLegacyUseCase clearAllDraftProductLegacyUseCase) {
         this.fetchAllDraftProductUseCase = fetchAllDraftProductUseCase;
         this.fetchAllDraftProductLegacyUseCase = fetchAllDraftProductLegacyUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
         this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
+        this.clearAllDraftProductLegacyUseCase = clearAllDraftProductLegacyUseCase;
     }
 
     @Override
@@ -62,7 +66,11 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
 
     @Override
     public void clearAllDraftData() {
-        clearAllDraftProductUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
+        if (GlobalConfig.isSellerApp()) {
+            clearAllDraftProductUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
+        } else {
+            clearAllDraftProductLegacyUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
+        }
     }
 
     private Subscriber<Boolean> getClearAllDraftSubscriber() {
