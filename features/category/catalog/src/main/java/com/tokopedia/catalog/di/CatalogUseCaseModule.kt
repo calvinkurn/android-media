@@ -34,6 +34,13 @@ class CatalogUseCaseModule {
     }
 
     @CatalogScope
+    @Named("topAdsProductListing")
+    @Provides
+    fun provideTopAdsUseCase(): TopAdsProductsUseCase {
+        return TopAdsProductsUseCase()
+    }
+
+    @CatalogScope
     @Provides
     fun provideCategoryProductUseCase(graphqlUseCase: GraphqlUseCase): CategoryProductUseCase {
         return CategoryProductUseCase(graphqlUseCase)
