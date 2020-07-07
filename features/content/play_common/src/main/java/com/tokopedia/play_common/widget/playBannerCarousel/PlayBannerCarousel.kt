@@ -114,9 +114,9 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
             recyclerView.adapter = adapter
             recyclerView.addOnScrollListener(configureParallax())
         }
+        recyclerView.setDelayDuration(playBannerCarouselDataModel.durationDelayStartVideo, playBannerCarouselDataModel.durationPlayWithData, playBannerCarouselDataModel.durationPlayWithWifi)
         recyclerView.setAutoPlay(true, playBannerCarouselDataModel.isAutoPlayAmount)
         recyclerView.setMedia(list)
-        recyclerView.setDelayDuration(playBannerCarouselDataModel.durationDelayStartVideo, playBannerCarouselDataModel.durationPlayWithData, playBannerCarouselDataModel.durationPlayWithWifi)
         configureHeader(playBannerCarouselDataModel)
         configureBackground(playBannerCarouselDataModel)
         adapter?.setItems(list)
