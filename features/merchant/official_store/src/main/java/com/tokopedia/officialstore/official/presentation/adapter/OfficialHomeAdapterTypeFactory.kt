@@ -9,16 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
-import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
-import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
-import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.visitable.*
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
@@ -109,5 +101,9 @@ class OfficialHomeAdapterTypeFactory(
 
     override fun type(mixTopDataModel: MixTopDataModel): Int {
         return MixTopComponentViewHolder.LAYOUT
+    }
+
+    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
+        return ProductHighlightComponentViewHolder.LAYOUT
     }
 }

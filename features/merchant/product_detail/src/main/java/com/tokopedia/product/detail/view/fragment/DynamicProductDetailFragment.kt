@@ -750,19 +750,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     /**
-     * ProductOpenShopViewHolder Listener
-     */
-    override fun openShopClicked() {
-        activity?.let {
-            doActionOrLogin({
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.OPEN_SHOP)
-                        ?: return@doActionOrLogin
-                startActivity(intent)
-            })
-        }
-    }
-
-    /**
      * ProductReviewViewHolder
      */
     override fun onSeeAllReviewClick(componentTrackDataModel: ComponentTrackDataModel?) {
@@ -2964,7 +2951,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     context,
                     Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID))
                             .buildUpon()
-                            .appendQueryParameter(PARAM_APPLINK_PRODUCT_ID, it.basic.productID)
                             .appendQueryParameter(PARAM_APPLINK_SHOP_ID, it.basic.shopID)
                             .build().toString()
             )
