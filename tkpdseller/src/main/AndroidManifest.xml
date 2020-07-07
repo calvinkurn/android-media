@@ -185,10 +185,6 @@
         <service
             android:name="com.tokopedia.product.manage.item.main.base.view.service.UploadProductService"
             android:exported="false" />
-        <service
-            android:name=".transaction.neworder.view.presenter.OrderWidgetJobService"
-            android:label="@string/app_name"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 
