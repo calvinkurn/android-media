@@ -12,7 +12,7 @@ import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.PowerMerchantViewAdapter
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
-import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantItemView.*
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantItemView.PowerMerchantBenefit
 import kotlinx.android.synthetic.main.layout_power_merchant_benefit.view.*
 
 class PowerMerchantBenefitView: ConstraintLayout {
@@ -41,9 +41,9 @@ class PowerMerchantBenefitView: ConstraintLayout {
     private fun setupBenefitList() {
         val benefits = listOf(
             PowerMerchantBenefit(
-                R.string.power_merchant_shop_benefit,
-                R.string.power_merchant_shop_benefit_description,
-                R.drawable.ic_power_merchant
+                    R.string.power_merchant_shop_benefit,
+                    R.string.power_merchant_shop_benefit_description,
+                    com.tokopedia.gm.resource.R.drawable.ic_power_merchant
             ),
             PowerMerchantBenefit(
                 R.string.power_merchant_top_ads_benefit,
