@@ -129,44 +129,35 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setVisibleResultNumber(show: Boolean) {
-        val shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
         if (show && getInputNumber().isNotEmpty()) {
-            layoutResult.apply {
-                alpha = 0f
-                inputNumberResult.text = getInputNumber()
-                layoutResult.show()
-                animate()
-                        .alpha(1f)
-                        .setDuration(shortAnimationDuration.toLong())
-                        .setListener(null)
-
-                layoutInputNumber.animate()
-                        .alpha(0f)
-                        .setDuration(shortAnimationDuration.toLong())
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(p0: Animator?) {
-                                layoutInputNumber.hide()
-                            }
-                        })
-            }
+            animateVisibilityView(layoutResult, layoutInputNumber)
         } else {
-            layoutInputNumber.apply {
-                alpha = 0f
-                layoutInputNumber.show()
-                animate()
-                        .alpha(1f)
-                        .setDuration(shortAnimationDuration.toLong())
-                        .setListener(null)
+            animateVisibilityView(layoutInputNumber, layoutResult)
+        }
+    }
 
-                layoutResult.animate()
-                        .alpha(0f)
-                        .setDuration(shortAnimationDuration.toLong())
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(p0: Animator?) {
-                                layoutResult.hide()
-                            }
-                        })
-            }
+    /**
+     * @param view1 show
+     * @param view2 hide
+     */
+    private fun animateVisibilityView(view1: View, view2: View) {
+        val shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+        view1.apply {
+            alpha = ALPHA_0F
+            view1.show()
+            animate()
+                    .alpha(ALPHA_1F)
+                    .setDuration(shortAnimationDuration.toLong())
+                    .setListener(null)
+
+            view2.animate()
+                    .alpha(ALPHA_0F)
+                    .setDuration(shortAnimationDuration.toLong())
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(p0: Animator?) {
+                            view2.hide()
+                        }
+                    })
         }
     }
 
@@ -195,6 +186,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             return phoneNumberWithPrefix
         }
         return ""
+    }
+
+    companion object {
+        private const val ALPHA_0F = 0f
+        private const val ALPHA_1F = 1f
     }
 
     interface ActionListener {
