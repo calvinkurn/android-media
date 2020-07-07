@@ -781,7 +781,7 @@ public class GTMAnalytics extends ContextAnalytics {
             }
         }
 
-        pushEventV5("openScreen", bundle, context);
+        pushEventV5("openScreen", wrapWithSessionIris(bundle), context);
         iris.saveEvent(bundleToMap(bundle));
     }
 
@@ -947,7 +947,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         //
         bundle.putString(KEY_EVENT, keyEvent);
-        pushEventV5(keyEvent, bundle, context);
+        pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
     }
 
     public void sendCampaign(Map<String, Object> param) {
@@ -971,7 +971,7 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("utmContent", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
         bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
 
-        pushEventV5("campaignTrack", bundle, context);
+        pushEventV5("campaignTrack", wrapWithSessionIris(bundle), context);
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
@@ -991,7 +991,19 @@ public class GTMAnalytics extends ContextAnalytics {
                 bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
         }
 
-        pushEventV5(params.get(KEY_EVENT) + "", bundle, context);
+
+        pushEventV5(params.get(KEY_EVENT) + "", wrapWithSessionIris(bundle), context);
+    }
+
+    public Bundle wrapWithSessionIris(Bundle bundle){
+        // AN-18166
+        // globally put sessionIris
+        String sessionIris = bundle.getString(SESSION_IRIS);
+        if (!CommonUtils.checkStringNotNull(sessionIris)) {
+            bundle.putString(SESSION_IRIS, iris.getSessionId());
+        }
+        return bundle;
+        // end of globally put sessionIris
     }
 
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
