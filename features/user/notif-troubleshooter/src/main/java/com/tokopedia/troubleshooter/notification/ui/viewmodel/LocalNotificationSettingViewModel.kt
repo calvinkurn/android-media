@@ -35,6 +35,8 @@ class LocalNotificationSettingViewModel @Inject constructor(
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = manager.getNotificationChannel("ANDROID_GENERAL_CHANNEL")
             _notificationImportance.value = channel.importance
+        } else {
+            _notificationImportance.value = Int.MAX_VALUE
         }
         _notificationSoundUri.value = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
     }
