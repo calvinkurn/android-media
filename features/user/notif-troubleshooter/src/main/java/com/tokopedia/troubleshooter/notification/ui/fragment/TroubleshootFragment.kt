@@ -1,11 +1,14 @@
 package com.tokopedia.troubleshooter.notification.ui.fragment
 
 import android.app.NotificationManager
+import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +29,7 @@ import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewMo
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
+
 
 class TroubleshootFragment : BaseDaggerFragment() {
 
@@ -141,17 +145,20 @@ class TroubleshootFragment : BaseDaggerFragment() {
         activity?.let {
             imgStatusCategorySetting?.show()
             imgStatusCategorySetting?.setImageDrawable(
-                    if (importance != NotificationManager.IMPORTANCE_HIGH
-                            ||importance != NotificationManager.IMPORTANCE_DEFAULT) {
+                    if (importance == NotificationManager.IMPORTANCE_HIGH
+                            ||importance == NotificationManager.IMPORTANCE_DEFAULT) {
                         drawable(it, R.drawable.ic_green_checked)
                     } else {
                         drawable(it, R.drawable.ic_red_error)
                     })
         }
-
         if (importance != NotificationManager.IMPORTANCE_HIGH){
-            textSummary?.append("\nMohon cek pengaturan notifikasi anda. ($importance)")
+            textSummary?.append("\nMohon cek pengaturan notifikasi anda. ($importance)\n")
             textSummary?.show()
+        }
+
+        textNotificationCategory?.setOnClickListener {
+            goToSettingNotification()
         }
     }
 
@@ -168,6 +175,10 @@ class TroubleshootFragment : BaseDaggerFragment() {
         if (!notificationEnable){
             textSummary?.append("\nMohon hidupkan pengaturan notifikasi anda.")
             textSummary?.show()
+        }
+
+        textNotificationSetting?.setOnClickListener {
+            goToSettingNotification()
         }
     }
 
@@ -190,6 +201,30 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
     private fun getTokenFromPref(): String? {
         return PreferenceManager.getDefaultSharedPreferences(context).getString("pref_fcm_token", "")
+    }
+
+    private fun goToSettingNotification() {
+        activity?.let {
+            val intent = Intent()
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                    intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, it.packageName)
+                }
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> {
+                    intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                    intent.putExtra("app_package", it.packageName)
+                    intent.putExtra("app_uid", it.applicationInfo.uid)
+                }
+                else -> {
+                    intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    intent.addCategory(Intent.CATEGORY_DEFAULT)
+                    intent.data = Uri.parse("package:" + it.packageName)
+                }
+            }
+
+            it.startActivity(intent)
+        }
     }
 
     private fun showLoading() {

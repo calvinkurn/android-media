@@ -66,6 +66,7 @@
         android:layout_marginTop="@dimen/dp_16"/>
 
     <TextView
+        android:id="@+id/textNotificationSetting"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16"
@@ -101,6 +102,7 @@
         android:layout_marginTop="@dimen/dp_16"/>
 
     <TextView
+        android:id="@+id/textNotificationCategory"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16"
