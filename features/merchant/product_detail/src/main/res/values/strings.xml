@@ -247,7 +247,7 @@
     <string name="product_detail_discussion_attached_products">%d produk</string>
     <string name="product_detail_discussion_empty_subtitle">Tanya di Q&amp;A aja!</string>
     <string name="product_detail_discussion_empty_description">Masih ragu dengan barang ini? Tanyain langsung aja di sini.</string>
-    <string name="product_detail_discussion_empty_button">Kirim Pertanyaan</string>
+    <string name="product_detail_discussion_empty_button">Tanya Sekarang</string>
     <string name="product_detail_discussion_formatted_date">• %s</string>
     <string name="product_detail_discussion_total_answers">%d jawaban</string>
     <string name="product_detail_discussion_seller_label">Penjual</string>

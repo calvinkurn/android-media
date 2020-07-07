@@ -29,11 +29,14 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     override fun bind(element: TalkReadingUiModel) {
         element.question.apply {
             itemView.setOnClickListener { threadListener.onThreadClicked(questionID) }
+            showInquirerName(userName)
+            showInquirerProfilePicture(userThumbnail)
+            showInquiryDate(createTimeFormatted)
             showQuestionWithCondition(state.isMasked, content, maskedContent, questionID)
             if(totalAnswer > 0 && answer.answerID.isNotEmpty()) {
                 hideNoAnswersText()
-                showProfilePicture(answer.userThumbnail, answer.userId, answer.isSeller, element.shopId)
-                showDisplayName(answer.userName, answer.userId, answer.isSeller, element.shopId)
+                showProfilePicture(answer.userThumbnail)
+                showDisplayName(answer.userName)
                 showSellerLabelWithCondition(answer.isSeller)
                 showDate(answer.createTimeFormatted)
                 if(answer.state.isMasked) {
@@ -41,7 +44,6 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                     return
                 }
                 showAnswer(answer.content, questionID)
-                showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
                 showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
             } else {
                 showNoAnswersText()
@@ -49,8 +51,41 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         }
     }
 
+    private fun showInquirerProfilePicture(inquirerThumbnail: String) {
+        if(inquirerThumbnail.isNotEmpty()) {
+            itemView.readingInquirerProfilePicture.apply {
+                loadImage(inquirerThumbnail)
+                show()
+            }
+        } else {
+            itemView.readingInquirerProfilePicture.hide()
+        }
+    }
+
+    private fun showInquirerName(inquirerName: String) {
+        if(inquirerName.isNotEmpty()) {
+            itemView.readingInquirerName.apply{
+                text = inquirerName
+                show()
+            }
+        } else {
+            itemView.readingInquirerName.hide()
+        }
+    }
+
+    private fun showInquiryDate(date: String) {
+        if(date.isNotEmpty()) {
+            itemView.readingInquiryDate.apply {
+                text = addBulletPointToDate(date)
+                show()
+            }
+        } else {
+            itemView.readingInquiryDate.hide()
+        }
+    }
+
     private fun showQuestionWithCondition(isMasked: Boolean, content: String, maskedContent: String, questionId: String) {
-        itemView.readingQuestionTitle.apply {
+        itemView.readingInquiry.apply {
             text = if(isMasked) {
                 isEnabled = false
                 maskedContent
@@ -66,14 +101,11 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
 
     private fun showMaskedAnswer(maskedContent: String, questionId: String) {
         itemView.apply {
-            readingMessage.apply {
+            readingRespondentAnswer.apply {
                 text = maskedContent
                 isEnabled = false
                 show()
             }
-            attachedProductIcon.hide()
-            attachedProductCount.hide()
-            seeOtherAnswers.hide()
         }
     }
 
@@ -88,48 +120,42 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         }
     }
 
-    private fun showProfilePicture(userThumbNail: String, userId: String, isSeller: Boolean, shopId: String) {
+    private fun showProfilePicture(userThumbNail: String) {
         if(userThumbNail.isNotEmpty()) {
-            itemView.readingProfilePicture.apply {
+            itemView.readingRespondentProfilePicture.apply {
                 loadImage(userThumbNail)
-                setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
-                }
                 show()
             }
         } else {
-            itemView.readingProfilePicture.hide()
+            itemView.readingRespondentProfilePicture.hide()
         }
     }
 
-    private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
+    private fun showDisplayName(userName: String) {
         if(userName.isNotEmpty()) {
-            itemView.readingDisplayName.apply{
+            itemView.readingRespondentDisplayName.apply{
                 text = userName
-                setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
-                }
                 show()
             }
         } else {
-            itemView.readingDisplayName.hide()
+            itemView.readingRespondentDisplayName.hide()
         }
     }
 
     private fun showAnswer(answer: String, questionId: String) {
         if(answer.isNotEmpty()) {
-            itemView.readingMessage.apply {
+            itemView.readingRespondentAnswer.apply {
                 isEnabled = true
                 text = HtmlLinkHelper(context, answer).spannedString
                 setCustomMovementMethod(fun(link: String) : Boolean {return threadListener.onLinkClicked(link)})
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
-                val viewTreeObserver = readingMessage.viewTreeObserver
+                val viewTreeObserver = readingRespondentAnswer.viewTreeObserver
                 val maxLines = resources.getInteger(R.integer.talk_reading_max_lines)
                 viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        val secondViewTreeObserver = readingMessage.viewTreeObserver
+                        val secondViewTreeObserver = readingRespondentAnswer.viewTreeObserver
                         secondViewTreeObserver.removeOnGlobalLayoutListener(this)
                         if (lineCount > maxLines) {
                             val endOfLastLine = layout.getLineEnd(maxLines - 1)
@@ -142,7 +168,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 show()
             }
         } else {
-            itemView.readingMessage.hide()
+            itemView.readingRespondentAnswer.hide()
         }
     }
 
@@ -177,20 +203,21 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
 
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
-            itemView.readingDate.apply {
+            itemView.readingRespondentResponseDate.apply {
                 text = addBulletPointToDate(date)
                 show()
             }
         } else {
-            itemView.readingDate.hide()
+            itemView.readingRespondentResponseDate.hide()
         }
     }
 
     private fun showSellerLabelWithCondition(isSeller: Boolean) {
         if(isSeller) {
-            itemView.readingSellerLabel.show()
+            itemView.readingRespondentSellerLabel.show()
+            itemView.readingRespondentDisplayName.hide()
         } else {
-            itemView.readingSellerLabel.hide()
+            itemView.readingRespondentSellerLabel.hide()
         }
     }
 
@@ -198,25 +225,10 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
-    private fun showNumberOfAttachedProductsWithCondition(attachedProducts: Int) {
-        if(attachedProducts > 0) {
-            itemView.apply {
-                attachedProductIcon.show()
-                attachedProductCount.text = String.format(context.getString(R.string.reading_attached_product), attachedProducts)
-                attachedProductCount.show()
-            }
-        } else {
-            itemView.apply {
-                attachedProductIcon.hide()
-                attachedProductCount.hide()
-            }
-        }
-    }
-
     private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int, questionId: String) {
         val answersToShow = otherAnswers - 1
         if(answersToShow > 0) {
-            itemView.seeOtherAnswers.apply {
+            itemView.readingSeeOtherAnswers.apply {
                 text = String.format(context.getString(R.string.reading_other_answers), answersToShow)
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
@@ -224,20 +236,18 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 show()
             }
         } else {
-            itemView.seeOtherAnswers.hide()
+            itemView.readingSeeOtherAnswers.hide()
         }
     }
 
     private fun hideOtherElements() {
         itemView.apply {
-            attachedProductCount.hide()
-            attachedProductIcon.hide()
-            readingMessage.hide()
-            readingProfilePicture.hide()
-            readingDisplayName.hide()
-            readingDate.hide()
-            seeOtherAnswers.hide()
-            readingSellerLabel.hide()
+            readingRespondentAnswer.hide()
+            readingRespondentProfilePicture.hide()
+            readingRespondentDisplayName.hide()
+            readingRespondentResponseDate.hide()
+            readingSeeOtherAnswers.hide()
+            readingRespondentSellerLabel.hide()
         }
     }
 

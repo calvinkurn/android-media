@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
@@ -103,6 +104,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
+        setItemDecoration()
         getDataFromArguments()
         observeViewState()
         observeProductHeader()
@@ -182,14 +184,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         }
         updateLastAction(TalkGoToReply(questionID))
         goToLoginActivity()
-    }
-
-    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopId: String) {
-        if(isSeller) {
-            goToShopPageActivity(shopId)
-            return
-        }
-        goToProfileActivity(userId)
     }
 
     override fun onLinkClicked(link: String): Boolean {
@@ -489,16 +483,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         startActivityForResult(intent, TALK_REPLY_ACTIVITY_REQUEST_CODE)
     }
 
-    private fun goToProfileActivity(userId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
-        startActivity(intent)
-    }
-
-    private fun goToShopPageActivity(shopId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
-        startActivity(intent)
-    }
-
     private fun goToLoginActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         startActivityForResult(intent, LOGIN_ACTIVITY_REQUEST_CODE)
@@ -545,6 +529,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun resetSortOptions() {
         isLoadingInitialData = true
         viewModel.resetSortOptions()
+    }
+
+    private fun setItemDecoration() {
+        talkReadingRecyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
     }
 
 }
