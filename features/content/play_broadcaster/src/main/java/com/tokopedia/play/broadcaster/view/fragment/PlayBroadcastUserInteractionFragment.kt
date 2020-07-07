@@ -344,9 +344,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun handleLiveError(throwable: Throwable) {
-        if (throwable is PusherErrorThrowable &&
-                throwable.mErrorType is PlayPusherErrorType.ReachMaximumPauseDuration) {
-            stopLiveStreaming()
+        if (throwable is PusherErrorThrowable) {
+            when(throwable.mErrorType) {
+                is PlayPusherErrorType.UnSupportedDevice -> {
+                    // TODO("handle unsupported devices")
+                    // Perangkat tidak mendukung\n layanan siaran live streaming
+                    // Layanan live streaming tidak didukung pada perangkat Anda.
+                    // showDialogWhenUnSupportedDevices()
+                }
+                is PlayPusherErrorType.ReachMaximumPauseDuration -> stopLiveStreaming()
+            }
         } else {
             if (GlobalConfig.DEBUG) showToaster(
                     message = throwable.localizedMessage,

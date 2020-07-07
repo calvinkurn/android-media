@@ -22,12 +22,10 @@ import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.channelNotFound
-import com.tokopedia.play.broadcaster.util.error.PusherErrorThrowable
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.showToaster
@@ -39,9 +37,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
-import com.tokopedia.play.broadcaster.view.state.BroadcastState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
@@ -97,7 +93,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         getConfiguration()
 
-        observePusherInfoState()
         observeConfiguration()
         observePermissionStateEvent()
     }
@@ -282,15 +277,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 is PlayPermissionState.Denied -> onPermissionDisabled(it.permissions)
                 is PlayPermissionState.Error -> onError(it.throwable)
             }
-        })
-    }
-
-    private fun observePusherInfoState() {
-        viewModel.observableLiveInfoState.observe(this, EventObserver{
-            if (it is BroadcastState.Error &&
-                    it.error is PusherErrorThrowable &&
-                    it.error.mErrorType is PlayPusherErrorType.UnSupportedDevice)
-                showDialogWhenUnSupportedDevices()
         })
     }
     //endregion
