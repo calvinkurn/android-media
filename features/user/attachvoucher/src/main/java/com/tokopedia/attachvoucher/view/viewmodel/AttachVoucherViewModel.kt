@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.attachvoucher.data.EmptyVoucherUiModel
 import com.tokopedia.attachvoucher.data.GetVoucherResponse
 import com.tokopedia.attachvoucher.data.VoucherUiModel
+import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
 import javax.inject.Inject
 
@@ -50,8 +51,8 @@ class AttachVoucherViewModel @Inject constructor(
         )
     }
 
-    private fun onSuccessGetVouchers(getVoucherResponse: GetVoucherResponse) {
-        _vouchers.value = getVoucherResponse.vouchers
+    private fun onSuccessGetVouchers(vouchers: List<VoucherUiModel>) {
+        _vouchers.value = vouchers
         _filter.value = NO_FILTER
     }
 
