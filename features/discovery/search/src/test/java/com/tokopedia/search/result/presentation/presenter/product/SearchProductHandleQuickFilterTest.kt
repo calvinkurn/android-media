@@ -7,11 +7,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfi
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelQuickFilter
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelWithNoQuickFilter
 import com.tokopedia.search.shouldBe
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.RequestParams
@@ -23,6 +22,9 @@ import org.junit.Test
 import rx.Subscriber
 import java.util.*
 
+private const val searchProductModelWithQuickFilter = "searchproduct/quickfilter/with-quick-filter.json"
+private const val searchProductModelNoQuickFilter = "searchproduct/quickfilter/no-quick-filter.json"
+
 internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixtures() {
     private val requestParamsSlot = slot<RequestParams>()
     private val listItemSlot = slot<ArrayList<SortFilterItem>>()
@@ -33,14 +35,16 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         `Given new quick filter is enabled`()
         `Given isBottomSheetFilterRevampABTestEnabled return true`()
         setUp()
-        `Given Search Product API will return SearchProductModel`(searchProductModelQuickFilter)
+
+        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
 
         `Then verify isBottomSheetFilterRevampEnabled() is true`()
         `Then verify setNewQuick filter is called`()
         `Then verify SortFilterItem list from response`()
-        `Then verify option list from response`(searchProductModelQuickFilter)
+        `Then verify option list from response`(searchProductModel)
     }
 
     private fun `Given new quick filter is enabled`() {
@@ -118,7 +122,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `SearchProductModel has No Quick Filter`() {
-        `Given Search Product API will return SearchProductModel`(searchProductModelWithNoQuickFilter)
+        val searchProductModel = searchProductModelNoQuickFilter.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
 
@@ -134,7 +139,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `SearchProductModel has Quick Filter and enableBottomSheetFilterRevampFirebase is false`() {
-        `Given Search Product API will return SearchProductModel`(searchProductModelQuickFilter)
+        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
 
@@ -163,7 +169,9 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         `Given new quick filter is enabled`()
         `Given isBottomSheetFilterRevampABTestEnabled return false`()
         setUp()
-        `Given Search Product API will return SearchProductModel`(searchProductModelQuickFilter)
+
+        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
 
