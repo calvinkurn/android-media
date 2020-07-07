@@ -63,9 +63,6 @@ data class BankAccount(
         @SerializedName("bankName")
         @Expose
         val bankName: String? = null,
-        @SerializedName("fsp")
-        @Expose
-        val fsp: Int,
         @SerializedName("bankImageUrl")
         @Expose
         val bankImageUrl: String? = null,
@@ -81,7 +78,6 @@ data class BankAccount(
             parcel.readString(),
             parcel.readLong(),
             parcel.readString(),
-            parcel.readInt(),
             parcel.readString(),
             parcel.readInt(),
             parcel.readString() ?: "")
@@ -92,7 +88,6 @@ data class BankAccount(
         parcel.writeString(accNumber ?: "")
         parcel.writeLong(bankID)
         parcel.writeString(bankName ?: "")
-        parcel.writeInt(fsp)
         parcel.writeString(bankImageUrl ?: "")
         parcel.writeInt(statusFraud)
         parcel.writeString(copyWriting ?: "")

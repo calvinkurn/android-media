@@ -15,7 +15,6 @@ import com.tokopedia.unifycomponents.ticker.TickerType
 
 class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    private val PRIMARY_ACCOUNT = 1
     private val DISABLE_IMAGE_ALPHA = 0.38F
     private val ENABLE_IMAGE_ALPHA = 1F
 
@@ -35,7 +34,6 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         }
         ticker.gone()
         setBankStatus(
-                isPrimary = (bankAccount.fsp == PRIMARY_ACCOUNT),
                 status = bankAccount.statusFraud,
                 copyWriting = bankAccount.copyWriting
         )
@@ -45,46 +43,35 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     private fun addClickListener() {
         view.findViewById<View>(R.id.btnIsiData).setOnClickListener { listener?.onClickDataContent(view.tag as BankAccount) }
-        view.findViewById<View>(R.id.btnMakePrimary).setOnClickListener { listener?.onMakeAccountPrimary(view.tag as BankAccount) }
         view.findViewById<View>(R.id.btnHapus).setOnClickListener { listener?.deleteBankAccount(view.tag as BankAccount) }
     }
 
-    private fun setBankStatus(isPrimary: Boolean, status: Int, copyWriting: String?) {
+    private fun setBankStatus(status: Int, copyWriting: String?) {
         var tickerType = Ticker.TYPE_INFORMATION
         when (status) {
             in 0..1, 4 -> {
                 enableBankItem()
-                setAccountViewStatus(isPrimary = isPrimary, showMakePrimaryButton = !isPrimary,
-                        showIsiDataButton = false, showDeleteButton = !isPrimary,
-                        showPendingAccountButton = false)
+                setAccountViewStatus(showIsiDataButton = false, showPendingAccountButton = false)
             }
             2 -> {
                 disableBankItem()
                 tickerType = Ticker.TYPE_ERROR
-                setAccountViewStatus(isPrimary = false, showMakePrimaryButton = false,
-                        showIsiDataButton = true, showDeleteButton = true,
-                        showPendingAccountButton = false)
+                setAccountViewStatus(showIsiDataButton = true, showPendingAccountButton = false)
             }
             3 -> {
                 disableBankItem()
                 tickerType = Ticker.TYPE_ERROR
-                setAccountViewStatus(isPrimary = false, showMakePrimaryButton = false,
-                        showIsiDataButton = false, showDeleteButton = true,
-                        showPendingAccountButton = false)
+                setAccountViewStatus(showIsiDataButton = false,showPendingAccountButton = false)
 
             }
             5 -> {
                 disableBankItem()
                 tickerType = Ticker.TYPE_INFORMATION
-                setAccountViewStatus(isPrimary = false, showMakePrimaryButton = false,
-                        showIsiDataButton = false, showDeleteButton = true,
-                        showPendingAccountButton = false)
+                setAccountViewStatus(showIsiDataButton = false,showPendingAccountButton = false)
             }
             6 -> {
                 enableBankItem()
-                setAccountViewStatus(isPrimary = false, showMakePrimaryButton = false,
-                        showIsiDataButton = false, showDeleteButton = true,
-                        showPendingAccountButton = true)
+                setAccountViewStatus(showIsiDataButton = false, showPendingAccountButton = true)
             }
         }
 
@@ -119,38 +106,10 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 
-    private fun setAccountViewStatus(isPrimary: Boolean,
-                                     showMakePrimaryButton: Boolean,
-                                     showIsiDataButton: Boolean,
-                                     showDeleteButton: Boolean,
+    private fun setAccountViewStatus(showIsiDataButton: Boolean,
                                      showPendingAccountButton: Boolean) {
-        hideShowPrimaryTag(isPrimary)
-        hideShowMakePrimaryButton(showMakePrimaryButton)
         hideShowIsiDataButton(showIsiDataButton)
-        hideShowDeleteButton(showDeleteButton)
         hideShowPendingAccountTag(showPendingAccountButton)
-        hideShowDeleteButton(true)
-    }
-
-    private fun hideShowDeleteButton(isShow: Boolean) {
-        when (isShow) {
-            true -> view.findViewById<TextView>(R.id.btnHapus).visible()
-            else -> view.findViewById<TextView>(R.id.btnHapus).gone()
-        }
-    }
-
-    private fun hideShowPrimaryTag(isShow: Boolean) {
-        when (isShow) {
-            true -> view.findViewById<TextView>(R.id.tvAccountPrimaryTag).visible()
-            else -> view.findViewById<TextView>(R.id.tvAccountPrimaryTag).gone()
-        }
-    }
-
-    private fun hideShowMakePrimaryButton(isShow: Boolean) {
-        when (isShow) {
-            true -> view.findViewById<TextView>(R.id.btnMakePrimary).visible()
-            else -> view.findViewById<TextView>(R.id.btnMakePrimary).gone()
-        }
     }
 
     private fun hideShowIsiDataButton(isShow: Boolean) {

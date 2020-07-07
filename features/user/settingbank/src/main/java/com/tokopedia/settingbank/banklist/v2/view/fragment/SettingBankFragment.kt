@@ -47,7 +47,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private lateinit var tNCViewModel: SettingBankTNCViewModel
     private lateinit var settingBankViewModel: SettingBankViewModel
-    private lateinit var makeAccountPrimaryViewModel: MakeAccountPrimaryViewModel
     private lateinit var deleteBankAccountViewModel: DeleteBankAccountViewModel
     private lateinit var kycViewModel: GetKYCViewModel
 
@@ -77,7 +76,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         settingBankViewModel = viewModelProvider.get(SettingBankViewModel::class.java)
         tNCViewModel = viewModelProvider.get(SettingBankTNCViewModel::class.java)
-        makeAccountPrimaryViewModel = viewModelProvider.get(MakeAccountPrimaryViewModel::class.java)
         deleteBankAccountViewModel = viewModelProvider.get(DeleteBankAccountViewModel::class.java)
         kycViewModel = viewModelProvider.get(GetKYCViewModel::class.java)
     }
@@ -169,9 +167,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
             }
         })
 
-        makeAccountPrimaryViewModel.makeAccountPrimaryState.observe(this, Observer {
-            handleMakeAccountPrimaryState(it)
-        })
         deleteBankAccountViewModel.deleteAccountState.observe(this, Observer {
             handleDeleteBankAccountState(it)
         })
@@ -243,24 +238,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         }
     }
 
-    private fun handleMakeAccountPrimaryState(state: MakePrimaryAccountResponseState) {
-        when (state) {
-            is OnMakePrimaryRequestStarted -> {
-                progress_bar.visible()
-            }
-            is OnMakePrimaryRequestEnded -> {
-                progress_bar.gone()
-            }
-            is OnMakePrimaryRequestSuccess -> {
-                showToasterOnUI(state.message)
-                loadUserBankAccountList()
-                activity?.setResult(Activity.RESULT_OK, Intent())
-            }
-            is OnMakePrimaryRequestError -> {
-                showError(state.throwable) { makeAccountPrimary() }
-            }
-        }
-    }
 
     private fun openTNCBottomSheet(templateData: TemplateData?) {
         templateData?.let {
@@ -393,12 +370,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     private fun getMenuRes(): Int = R.menu.menu_info_add_bank_account
 
 
-    override fun onMakeAccountPrimary(bankAccount: BankAccount) {
-        bankSettingAnalytics.eventMakeAccountPrimaryClick()
-        makePrimaryBankAccount = bankAccount
-        makeAccountPrimary()
-    }
-
     override fun deleteBankAccount(bankAccount: BankAccount) {
         bankSettingAnalytics.eventDeleteAccountClick()
         openDeleteConfirmationPopUp(bankAccount)
@@ -409,11 +380,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         getKYCInfoForUser(bankAccount)
     }
 
-    private fun makeAccountPrimary() {
-        makePrimaryBankAccount?.let {
-            makeAccountPrimaryViewModel.createBankAccountPrimary(it)
-        }
-    }
 
     private fun openDeleteConfirmationPopUp(bankAccount: BankAccount) {
         deleteBankAccount = bankAccount

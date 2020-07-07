@@ -29,13 +29,6 @@ class GqlRawQueryModule {
     @SettingBankScope
     @Provides
     @IntoMap
-    @StringKey(QUERY_MAKE_ACCOUNT_PRIMARY)
-    fun provideRawMakeAccountPrimary(context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_make_account_primary_v2)
-
-    @SettingBankScope
-    @Provides
-    @IntoMap
     @StringKey(QUERY_GET_ADD_BANK_TNC)
     fun provideAddBankAccountTNC(context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_add_bank_tnc_v2)

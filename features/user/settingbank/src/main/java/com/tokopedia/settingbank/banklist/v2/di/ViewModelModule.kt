@@ -54,11 +54,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(MakeAccountPrimaryViewModel::class)
-    internal abstract fun addMakeAccountPrimaryViewModel(viewModel: MakeAccountPrimaryViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(DeleteBankAccountViewModel::class)
     internal abstract fun addDeleteBankAccountViewModel(viewModel: DeleteBankAccountViewModel): ViewModel
 
