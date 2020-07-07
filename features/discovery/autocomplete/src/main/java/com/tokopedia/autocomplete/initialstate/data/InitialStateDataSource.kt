@@ -21,10 +21,4 @@ class InitialStateDataSource(
                 }
                 .map(initialStateMapper)
     }
-
-    fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Boolean> {
-        return initialStateApi.deleteRecentSearch(parameters).map {
-            it.isSuccessful
-        }
-    }
 }
