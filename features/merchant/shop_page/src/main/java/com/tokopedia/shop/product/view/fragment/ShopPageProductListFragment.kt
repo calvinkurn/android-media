@@ -53,6 +53,7 @@ import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPerformanceMonitoringListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -815,6 +816,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
         }
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltRenderPage(it)
+            }
+        }
     }
 
     private fun stopMonitoringPltRenderPage() {
@@ -823,6 +829,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
         }
+        stopPerformanceMonitoring()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -912,7 +919,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun observeViewModelLiveData() {
         viewModel.etalaseListData.observe(this, Observer {
-            startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
                     onSuccessGetEtalaseListData(it.data)
@@ -964,6 +970,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         })
 
         viewModel.productListData.observe(this, Observer {
+            startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
                     onSuccessGetProductListData(it.data.first, it.data.second)
@@ -1040,7 +1047,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
         }
-        stopPerformanceMonitoring()
     }
 
     private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
@@ -1138,6 +1144,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun stopPerformanceMonitoring() {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltRenderPage(it)
+            }
+        }
         (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
     }
 
