@@ -59,6 +59,9 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     var productInputModel = MutableLiveData<ProductInputModel>()
 
+    private var mIsVariantPhotosVisible = MutableLiveData<Boolean>()
+    val isVariantPhotosVisible: LiveData<Boolean> get() = mIsVariantPhotosVisible
+
     private var mVariantSizechart = MutableLiveData(PictureVariantInputModel())
     val variantSizechart: LiveData<PictureVariantInputModel> get() = mVariantSizechart
 
@@ -161,6 +164,18 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun updateSizechart(newSizechart: PictureVariantInputModel) {
         mVariantSizechart.value = newSizechart
+    }
+
+    fun showProductVariantPhotos(selectedVariantDetail: VariantDetail) {
+        // if the product has color variant show the photos
+        val hasColorVariant =  selectedVariantDetail.variantID == COLOUR_VARIANT_TYPE_ID
+        if (hasColorVariant) mIsVariantPhotosVisible.value = true
+    }
+
+    fun hideProductVariantPhotos(selectedVariantDetail: VariantDetail) {
+        // if the product has color variant show the photos
+        val hasColorVariant =  selectedVariantDetail.variantID == COLOUR_VARIANT_TYPE_ID
+        if (hasColorVariant) mIsVariantPhotosVisible.value = false
     }
 
     fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
@@ -365,12 +380,8 @@ class AddEditProductVariantViewModel @Inject constructor(
         } ?: SelectionInputModel()
         // get variant image urls
         val photoUrls = mutableListOf<String>()
-        productInputModel.variantInputModel.products.forEach {
-            if (it.pictures.isNotEmpty()) {
-                it.pictures.forEach { pictureInputModel ->
-                    photoUrls.add(pictureInputModel.urlOriginal)
-                }
-            }
+        productInputModel.variantInputModel.productVariantPhotos.forEach {
+            photoUrls.add(it.urlOriginal)
         }
         // compile variant photos
         colorVariant.options.forEachIndexed { index, optionInputModel ->
