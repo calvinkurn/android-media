@@ -270,6 +270,12 @@ class HomeVisitableFactoryImpl(
                             isCombined = false
                     )
                 }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
+                    createDynamicChannel(
+                            channel,
+                            isCombined = false
+                    )
+                }
             }
         }
 
@@ -383,6 +389,9 @@ class HomeVisitableFactoryImpl(
                 channel.promoName = String.format(PROMO_NAME_MIX_LEFT, position.toString(), channel.header.name)
                 channel.setPosition(position)
             } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET) {
+                channel.promoName = String.format(PROMO_NAME_CATEGORY_WIDGET, position.toString(), channel.header.name)
+                channel.setPosition(position)
+            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS) {
                 channel.promoName = String.format(PROMO_NAME_CATEGORY_WIDGET, position.toString(), channel.header.name)
                 channel.setPosition(position)
             }

@@ -505,6 +505,14 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    fun removeViewHolderAtPosition(position: Int) {
+        val homeViewModel = _homeLiveData.value
+        val detectViewHolder = homeViewModel?.list?.get(position)
+        detectViewHolder?.let {
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
+        }
+    }
+
     fun onCloseGeolocation() {
         val homeViewModel = _homeLiveData.value
         val detectGeolocation = homeViewModel?.list?.find { visitable -> visitable is GeoLocationPromptDataModel }

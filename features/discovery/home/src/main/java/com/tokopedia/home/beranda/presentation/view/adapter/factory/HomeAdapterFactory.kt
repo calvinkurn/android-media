@@ -243,6 +243,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
              * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
              */
             DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> MixTopBannerViewHolder.LAYOUT
+            /**
+             * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
+             */
+            DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> TopadsBannerViewHolder.LAYOUT
             else -> EmptyBlankViewHolder.LAYOUT
         }
     }
