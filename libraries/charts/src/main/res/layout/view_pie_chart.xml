@@ -9,14 +9,14 @@
         android:id="@+id/pieChart"
         android:layout_width="@dimen/charts_150dp"
         android:layout_height="@dimen/charts_150dp"
-        android:layout_marginTop="@dimen/layout_lvl2" />
+        android:layout_marginTop="@dimen/layout_lvl3" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPieChartLegend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/charts_12dp"
+        android:layout_marginLeft="@dimen/charts_12dp"
         tools:itemCount="3"
         tools:listitem="@layout/item_pie_chart_legend" />
 </LinearLayout>
