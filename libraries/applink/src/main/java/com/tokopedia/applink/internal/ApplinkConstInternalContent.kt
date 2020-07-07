@@ -27,4 +27,6 @@ object ApplinkConstInternalContent {
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"
     const val PLAY_DETAIL = "$INTERNAL_PLAY/{channel_id}"
 
+    const val HOST_PLAY_BROADCASTER = "play-broadcaster"
+    const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
 }

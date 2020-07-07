@@ -1,10 +1,19 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
+import android.graphics.Typeface.BOLD
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -12,12 +21,15 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.extension.formatToSimpleNumber
+import com.tokopedia.shop.pageheader.util.RoundedBackgroundColorSpan
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -26,6 +38,7 @@ import kotlinx.android.synthetic.main.partial_new_shop_page_seller_play_widget.v
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
+                                       private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
                                        private val context: Context) {
     private var isShopFavourited = false
 
@@ -33,11 +46,11 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
     }
 
-    fun bind(shopInfo: ShopInfo, isMyShop: Boolean, remoteConfig: RemoteConfig) {
+    fun bind(shopInfo: ShopInfo, broadcasterConfig: Broadcaster.Config?, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavourited) }
         view.shop_page_main_profile_location.text = shopInfo.location
-        view.play_seller_widget_container.visibility = if(isMyShop) View.VISIBLE else View.GONE
+
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopInfo.shopAssets.avatar)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
@@ -56,17 +69,49 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 view.shop_page_main_profile_badge.visibility = View.GONE
             }
         }
-
         if (isMyShop) {
             displayAsSeller()
         } else {
             displayAsBuyer()
         }
+        setupSgcPlayWidget(shopInfo, isMyShop, broadcasterConfig)
 
         if (shopInfo.freeOngkir.isActive)
             showLabelFreeOngkir(remoteConfig)
         else
             view.shop_page_main_profile_free_ongkir.hide()
+    }
+
+    private fun setupTextContentSgcWidget(){
+        if(view.shop_page_sgc_title.text.isBlank()) {
+            val text = context.getString(R.string.shop_page_play_widget_title)
+            val spannable = SpannableString(text)
+            spannable.setSpan(
+                    StyleSpan(BOLD),
+                    11, 25,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannable.setSpan(
+                    RelativeSizeSpan(0.9f),
+                    26, 30,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannable.setSpan(
+                    RoundedBackgroundColorSpan(ContextCompat.getColor(context, R.color.color_beta_badge), 4f, 10f),
+                    26, 30,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            view.shop_page_sgc_title.text = spannable
+        }
+    }
+
+    private fun setupSgcPlayWidget(shopInfo: ShopInfo, isMyShop: Boolean, broadcasterConfig: Broadcaster.Config?){
+        view.play_seller_widget_container.visibility = if(isMyShop && broadcasterConfig?.streamAllowed == true) View.VISIBLE else View.GONE
+        if(isMyShop){
+            setupTextContentSgcWidget()
+            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopInfo.shopCore.shopID, customDimensionShopPage = CustomDimensionShopPage.create(shopInfo))
+            view.container_lottie?.setOnClickListener {
+                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopInfo.shopCore.shopID, customDimensionShopPage = CustomDimensionShopPage.create(shopInfo))
+                RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+            }
+        }
     }
 
     private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {

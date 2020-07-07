@@ -23,8 +23,7 @@ data class PlayBannerCarouselItemDataModel(
         val videoUrl: String = "",
         val isPromo: Boolean = false,
         val applink: String = "",
-        val startTime: Date? = null,
-        val endTime: Date? = null,
+        val startTime: String? = "",
         val serverTime: Long = 0L,
         val widgetType: PlayBannerWidgetType = PlayBannerWidgetType.NONE,
         val partnerId: String = "",
@@ -32,5 +31,26 @@ data class PlayBannerCarouselItemDataModel(
 ): BasePlayBannerCarouselModel, ImpressHolder(){
     override fun type(typeFactory: PlayBannerCarouselTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun getId(): Any {
+        return channelId
+    }
+
+    override fun equalsWith(other: BasePlayBannerCarouselModel): Boolean {
+        return other is PlayBannerCarouselItemDataModel
+                && other.channelTitle == channelTitle
+                && other.remindMe == remindMe
+                && other.isLive == isLive
+                && other.isPromo == isPromo
+                && other.isShowTotalView == isShowTotalView
+                && other.applink == applink
+                && other.channelCreator == channelCreator
+                && other.countView == countView
+                && other.videoType == videoType
+                && other.videoId == videoId
+                && other.coverUrl == coverUrl
+                && other.videoUrl == videoUrl
+                && other.startTime == startTime
     }
 }

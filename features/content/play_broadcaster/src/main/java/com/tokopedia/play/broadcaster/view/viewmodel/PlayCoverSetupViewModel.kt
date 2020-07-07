@@ -141,7 +141,7 @@ class PlayCoverSetupViewModel @Inject constructor(
                     )
                 }
                 else throw IllegalStateException("Error in validating image")
-            } else {
+            } else if (currentCropState !is CoverSetupState.Cropped.Uploaded) {
                 throw IllegalStateException("Cover is not cropped yet")
             }
 

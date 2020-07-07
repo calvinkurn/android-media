@@ -131,7 +131,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             val newTopMargin = margin.top + insets.systemWindowInsetTop
             if (marginLayoutParams.topMargin != newTopMargin) {
                 marginLayoutParams.updateMargins(top = newTopMargin)
-                v.requestLayout()
+                v.parent.requestLayout()
             }
         }
 
@@ -140,7 +140,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
             if (marginLayoutParams.bottomMargin != newBottomMargin) {
                 marginLayoutParams.updateMargins(bottom = newBottomMargin)
-                v.requestLayout()
+                v.parent.requestLayout()
             }
         }
     }

@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -173,4 +174,11 @@ internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestLis
             .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
             .addListener(requestListener)
             .into(this)
+}
+
+internal fun Fragment.cleanBackstack() {
+    val backStackCount = childFragmentManager.backStackEntryCount
+    for (i in 0 until backStackCount) {
+        childFragmentManager.popBackStackImmediate()
+    }
 }
