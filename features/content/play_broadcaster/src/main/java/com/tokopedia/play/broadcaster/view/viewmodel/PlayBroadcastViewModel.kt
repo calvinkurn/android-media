@@ -174,7 +174,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
             launch {
                 if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
-//                else if (configUiModel.channelType == ChannelType.Pause) getChannelById(configUiModel.channelId) // get channel when channel status is paused
+                else if (configUiModel.channelType == ChannelType.Pause) getChannelById(configUiModel.channelId) // get channel when channel status is paused
             }
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
