@@ -128,7 +128,7 @@ class ProductPostTagViewHolder(val mainView: View,
 
     private fun calculateBackgroundAlpha(opacityString: String): Int {
         val floatValue = opacityString.toFloat()
-        return ((floatValue / 255) * 100).toInt()
+        return ((floatValue / 100) * 255).toInt()
     }
 
     private fun getDefaultBackgroundColor(): ColorPojo {
