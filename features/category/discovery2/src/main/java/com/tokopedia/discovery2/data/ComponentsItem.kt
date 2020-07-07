@@ -48,6 +48,7 @@ data class ComponentsItem(
         var chipSelectionChange: Boolean = false,
         var couponDetailClicked: Boolean = false,
         var couponAppliedClicked: Boolean = false,
+        var position: Int = 0,
         var couponViewImpression: Boolean = false) {
 
     private var componentsItem: List<ComponentsItem>? = null

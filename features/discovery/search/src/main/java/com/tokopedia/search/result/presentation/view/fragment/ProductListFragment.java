@@ -881,6 +881,7 @@ public class ProductListFragment
         product.setPriceFormat(item.getPrice());
         product.setCategory(new Category(item.getCategoryID()));
         product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
+        product.setCategoryBreadcrumb(item.getCategoryBreadcrumb());
 
         return product;
     }

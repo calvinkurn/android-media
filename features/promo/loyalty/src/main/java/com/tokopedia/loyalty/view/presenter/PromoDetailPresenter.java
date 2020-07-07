@@ -1,7 +1,11 @@
 package com.tokopedia.loyalty.view.presenter;
 
 import android.content.res.Resources;
+import android.util.Log;
 
+import com.google.gson.JsonSyntaxException;
+import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.loyalty.view.util.CommonConstant;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -25,6 +29,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author Aghny A. Putra on 4/4/18
@@ -59,6 +64,10 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
 
             @Override
             public void onError(Throwable e) {
+                if (e instanceof JsonSyntaxException) {
+                    Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                }
+
                 if (isViewAttached()) {
                     if (e instanceof UnknownHostException) {
                         // No internet connection

@@ -221,7 +221,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun openSellerMigrationBottomSheet() {
         context?.let {
-            val sellerMigrationBottomSheet: BottomSheetUnify = createNewInstance(it)
+            val sellerMigrationBottomSheet: BottomSheetUnify = createNewInstance()
             sellerMigrationBottomSheet.show(childFragmentManager, "")
         }
     }

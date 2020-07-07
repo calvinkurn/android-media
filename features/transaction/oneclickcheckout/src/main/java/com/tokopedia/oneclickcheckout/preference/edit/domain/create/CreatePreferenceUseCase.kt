@@ -3,26 +3,27 @@ package com.tokopedia.oneclickcheckout.preference.edit.domain.create
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.DEFAULT_SUCCESS_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.model.CreatePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.model.CreatePreferenceRequest
 import javax.inject.Inject
 
-class CreatePreferenceUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<CreatePreferenceGqlResponse>) {
+interface CreatePreferenceUseCase {
+    fun execute(param: CreatePreferenceRequest, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit)
+}
 
-    fun execute(param: CreatePreferenceRequest, onSuccess: (CreatePreferenceGqlResponse) -> Unit, onError: (Throwable) -> Unit) {
+class CreatePreferenceUseCaseImpl @Inject constructor(private val graphqlUseCase: GraphqlUseCase<CreatePreferenceGqlResponse>): CreatePreferenceUseCase {
+
+    override fun execute(param: CreatePreferenceRequest, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to param))
         graphqlUseCase.setTypeClass(CreatePreferenceGqlResponse::class.java)
         graphqlUseCase.execute({ response: CreatePreferenceGqlResponse ->
             if (response.response.status.equals(STATUS_OK, true) && response.response.data.success == 1) {
-                onSuccess(response)
-            } else if (response.response.data.messages.isNotEmpty()) {
-                onError(MessageErrorException(response.response.data.messages[0]))
-            } else if (response.response.errorMessage.isNotEmpty()) {
-                onError(MessageErrorException(response.response.errorMessage[0]))
+                onSuccess(response.response.data.messages.firstOrNull() ?: DEFAULT_SUCCESS_MESSAGE)
             } else {
-                onError(MessageErrorException(DEFAULT_ERROR_MESSAGE))
+                onError(MessageErrorException(response.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE))
             }
         }, { throwable: Throwable ->
             onError(throwable)
