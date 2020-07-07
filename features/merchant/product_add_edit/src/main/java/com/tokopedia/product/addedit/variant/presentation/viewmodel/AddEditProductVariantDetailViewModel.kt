@@ -14,6 +14,8 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,6 +40,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         it.detailInputModel.wholesaleList.isNotEmpty()
     }
 
+    val isEditMode: Boolean get() = productInputModel.value?.productId.orZero() > 0
+
     private val mErrorCounter = MutableLiveData(0)
     val errorCounter: LiveData<Int> get() = mErrorCounter
 
@@ -48,6 +52,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
 
     private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
+    private val inputPriceErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
+    private val inputStockErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
 
     fun getInputFieldSize(): Int {
         return inputFieldSize
@@ -135,6 +141,21 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
+    fun getPrimaryVariantTitle(combination: List<Int>): String {
+        val selections = productInputModel.value?.variantInputModel?.selections ?: emptyList()
+        val level1OptionIndex = combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION).orZero()
+        val level2OptionIndex = combination.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION).orZero()
+
+        val level1Title = selections
+                .getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.options?.
+                getOrNull(level1OptionIndex)?.value.orEmpty()
+
+        val level2Title = selections
+                .getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)?.options?.
+                getOrNull(level2OptionIndex)?.value.orEmpty()
+        return "${level1Title}-${level2Title}"
+    }
+
     fun updateSkuVisibilityStatus(isVisible: Boolean) {
         inputLayoutModelMap.forEach {
             it.value.isSkuFieldVisible = isVisible
@@ -187,21 +208,27 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         if (priceInput.isEmpty()) {
             inputModel.isPriceError = true
             inputModel.priceFieldErrorMessage = provider.getEmptyProductPriceErrorMessage() ?: ""
-            mErrorCounter.value = +1
+            updateInputPriceErrorStatusMap(adapterPosition, true)
+
             return inputModel
         }
         val productPrice: BigInteger = priceInput.toBigIntegerOrNull().orZero()
         if (productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger()) {
             inputModel.isPriceError = true
             inputModel.priceFieldErrorMessage = provider.getMinLimitProductPriceErrorMessage() ?: ""
-            mErrorCounter.value = +1
+            updateInputPriceErrorStatusMap(adapterPosition, true)
             return inputModel
         }
         inputModel.isPriceError = false
         inputModel.priceFieldErrorMessage = ""
-        val errorCounter = mErrorCounter.value ?: 0
-        if (errorCounter > 0) mErrorCounter.value = -1
+        updateInputPriceErrorStatusMap(adapterPosition, false)
+
         return inputModel
+    }
+
+    private fun updateInputPriceErrorStatusMap(adapterPosition: Int, isError: Boolean) {
+        inputPriceErrorStatusMap[adapterPosition] = isError
+        mErrorCounter.value = inputPriceErrorStatusMap.count { it.value }
     }
 
     fun validateProductVariantStockInput(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
@@ -211,21 +238,26 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         if (stockInput.isEmpty()) {
             inputModel.isStockError = true
             inputModel.stockFieldErrorMessage = provider.getEmptyProductStockErrorMessage() ?: ""
-            mErrorCounter.value = +1
+            updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
         val productStock: BigInteger = stockInput.toBigIntegerOrNull().orZero()
         if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
             inputModel.isStockError = true
             inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage() ?: ""
-            mErrorCounter.value = +1
+            updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
         inputModel.isStockError = false
         inputModel.stockFieldErrorMessage = ""
-        val errorCounter = mErrorCounter.value ?: 0
-        if (errorCounter > 0) mErrorCounter.value = -1
+        updateInputStockErrorStatusMap(adapterPosition, false)
+
         return inputModel
+    }
+
+    private fun updateInputStockErrorStatusMap(adapterPosition: Int, isError: Boolean) {
+        inputStockErrorStatusMap[adapterPosition] = isError
+        mErrorCounter.value = inputStockErrorStatusMap.count { it.value }
     }
 
     fun validateVariantPriceInput(priceInput: BigInteger): String {
@@ -243,6 +275,17 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 provider.getMinLimitProductStockErrorMessage().orEmpty()
             }
             else -> ""
+        }
+    }
+
+    fun validateSubmitDetailField(
+            variantDetailInputLayoutModels: List<VariantDetailInputLayoutModel>
+    ): Boolean {
+        return variantDetailInputLayoutModels.any {
+            val productPrice: BigInteger = it.price.replace(".", "").toBigIntegerOrNull().orZero()
+            val productStock: BigInteger = it.stock.replace(".", "").toBigIntegerOrNull().orZero()
+            productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() ||
+                    productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()
         }
     }
 

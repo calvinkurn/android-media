@@ -12,23 +12,29 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
+import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailFieldsAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailInputTypeFactoryImpl
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailFieldsViewHolder
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailHeaderViewHolder
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_TRACKER_OFF
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_TRACKER_ON
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
 import java.math.BigInteger
 import javax.inject.Inject
@@ -39,7 +45,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         VariantDetailFieldsViewHolder.OnPriceInputTextChangedListener,
         VariantDetailFieldsViewHolder.OnStockInputTextChangedListener,
         MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener,
-        SelectVariantMainBottomSheet.SelectVariantMainListener, VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener {
+        SelectVariantMainBottomSheet.SelectVariantMainListener,
+        VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener {
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -53,6 +60,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModel: AddEditProductVariantDetailViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var variantDetailFieldsAdapter: VariantDetailFieldsAdapter? = null
 
@@ -87,6 +97,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendTrackerTrackScreenData()
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
@@ -104,6 +115,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         switchUnifySku.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateSkuVisibilityStatus(isVisible = isChecked)
             variantDetailFieldsAdapter?.updateSkuVisibilityStatus(viewModel.getAvailableFields(), isChecked)
+            sendTrackerClickSKUToggleData(isChecked)
         }
 
         imageViewMultipleEdit.setOnClickListener {
@@ -116,6 +128,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         buttonSave.setOnClickListener {
             submitVariantInput()
+            sendTrackerSaveVariantDetailData()
         }
 
         observeSelectedVariantSize()
@@ -141,6 +154,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
+
+        // tracking
+        ProductAddVariantDetailTracking.clickVariantStatusToggle(
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+        )
     }
 
     override fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
@@ -174,6 +193,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {
         viewModel.updatePrimaryVariant(combination)
+
+        // tracking
+        ProductAddVariantDetailTracking.saveMainVariant(
+                viewModel.getPrimaryVariantTitle(combination),
+                userSession.shopId)
     }
 
     fun onBackPressed() {
@@ -207,8 +231,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun observeInputStatus() {
         viewModel.errorCounter.observe(this, Observer {
-            val errorCount = it ?: 0
-            buttonSave.isEnabled = errorCount <= 0
+            buttonSave.isEnabled = it.orZero() <= 0
         })
     }
 
@@ -275,6 +298,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         bottomSheet.setData(variantInputModel)
         bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
         bottomSheet.setEnableEditPrice(!hasWholesale)
+        bottomSheet.setTrackerShopId(userSession.shopId)
+        bottomSheet.setTrackerIsEditMode(viewModel.isEditMode)
         bottomSheet.show(fragmentManager)
     }
 
@@ -286,14 +311,55 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitVariantInput() {
-        viewModel.updateProductInputModel()
-        viewModel.productInputModel.value?.apply {
-            val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
-            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+        val detailList = variantDetailFieldsAdapter?.getDetailInputLayoutList().orEmpty()
+        val isError = viewModel.validateSubmitDetailField(detailList)
 
-            val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
+        if (isError) {
+            variantDetailFieldsAdapter?.notifyDataSetChanged()
+        } else {
+            viewModel.updateProductInputModel()
+            viewModel.productInputModel.value?.apply {
+                val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+                SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+
+                val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun sendTrackerSaveVariantDetailData() {
+        if (viewModel.isEditMode) {
+            ProductEditVariantDetailTracking.saveVariantDetail(userSession.shopId)
+        } else {
+            ProductAddVariantDetailTracking.saveVariantDetail(userSession.shopId)
+        }
+    }
+
+    private fun sendTrackerClickSKUToggleData(isChecked: Boolean) {
+        if (viewModel.isEditMode) {
+            ProductEditVariantDetailTracking.clickSKUToggle(
+                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                    userSession.shopId)
+        } else {
+            ProductAddVariantDetailTracking.clickSKUToggle(
+                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                    userSession.shopId)
+        }
+    }
+
+    private fun sendTrackerTrackScreenData() {
+        if (viewModel.isEditMode) {
+            ProductEditVariantDetailTracking.trackScreen(
+                    userSession.isLoggedIn.toString(),
+                    userSession.userId
+            )
+        } else {
+            ProductAddVariantDetailTracking.trackScreen(
+                    userSession.isLoggedIn.toString(),
+                    userSession.userId
+            )
         }
     }
 }

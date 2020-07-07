@@ -32,7 +32,7 @@ object ProductAddVariantDetailTracking {
 
     // 3.5 label = price
     fun trackManageAllSku(label: String, shopId: String) {
-        sendAddProductVariantDetailClick("fill in price", label, shopId, SCREEN_NAME)
+        sendAddProductVariantDetailClick("fill in sku", label, shopId, SCREEN_NAME)
     }
 
     // 3.6 label = on/off
