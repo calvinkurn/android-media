@@ -1,0 +1,20 @@
+package com.tokopedia.product.manage.feature.campaignstock.ui.adapter.viewholder
+
+import android.view.View
+import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ActiveProductSwitchUiModel
+import kotlinx.android.synthetic.main.item_campaign_stock_active_product_switch.view.*
+
+class ActiveProductSwitchViewHolder(itemView: View?): AbstractViewHolder<ActiveProductSwitchUiModel>(itemView) {
+
+    companion object {
+        @LayoutRes
+        val LAYOUT_RES = R.layout.item_campaign_stock_active_product_switch
+    }
+
+    override fun bind(element: ActiveProductSwitchUiModel) {
+        itemView.switch_campaign_stock_active?.isChecked = element.isActive
+    }
+}

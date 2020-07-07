@@ -247,4 +247,8 @@
     <string name="product_manage_campaign_stock_total_stock">Total Stok: &#160;</string>
     <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
     <string name="product_manage_campaign_stock_save">Simpan</string>
+    <string name="product_manage_campaign_stock_active_product">Produk Aktif</string>
+    <string name="product_manage_campaign_stock_stock_amount">Jumlah Stok</string>
+    <string name="product_manage_campaign_stock_main_stock">Stok Utama (%s)</string>
+    <string name="product_manage_campaign_stock_campaign_stock">Stok Campaign (%s)</string>
 </resources>
