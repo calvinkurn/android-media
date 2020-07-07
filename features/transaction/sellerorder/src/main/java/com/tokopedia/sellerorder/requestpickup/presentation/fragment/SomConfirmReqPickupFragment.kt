@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.Utils
@@ -27,7 +27,6 @@ import com.tokopedia.sellerorder.requestpickup.di.SomConfirmReqPickupComponent
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
 import com.tokopedia.sellerorder.requestpickup.presentation.viewmodel.SomConfirmReqPickupViewModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_som_confirm_req_pickup.*

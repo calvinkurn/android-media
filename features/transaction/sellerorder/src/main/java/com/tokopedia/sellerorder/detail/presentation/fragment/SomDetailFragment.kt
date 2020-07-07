@@ -42,6 +42,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.common.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
 import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
