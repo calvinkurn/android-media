@@ -94,6 +94,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
 
         private val QUERY_APP_CLIENT_ID = "{app_client_id}"
+        private val REGEX_NUMBER = "[^0-9]".toRegex()
     }
 
     override fun attachView(view: ICartListView) {
@@ -588,7 +589,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setProductID(recommendationItem.productId.toString())
             setProductName(recommendationItem.name)
-            setPrice(recommendationItem.price.replace("[^0-9]".toRegex(), ""))
+            setPrice(recommendationItem.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(if (recommendationItem.categoryBreadcrumbs.isBlank())
                 EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
@@ -624,7 +625,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return EnhancedECommerceProductCartMapData().apply {
             setProductID(wishlistItemHolderData.id)
             setProductName(wishlistItemHolderData.name)
-            setPrice(wishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setPrice(wishlistItemHolderData.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(wishlistItemHolderData.category)
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -657,7 +658,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return EnhancedECommerceProductCartMapData().apply {
             setProductID(recentViewItemHolderData.id)
             setProductName(recentViewItemHolderData.name)
-            setPrice(recentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setPrice(recentViewItemHolderData.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -677,7 +678,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setProductID(recommendationItem.productId.toString())
             setProductName(recommendationItem.name)
-            setPrice(recommendationItem.price.replace("[^0-9]".toRegex(), ""))
+            setPrice(recommendationItem.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(if (recommendationItem.categoryBreadcrumbs.isBlank())
                 EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
@@ -722,7 +723,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setProductName(cartRecentViewItemHolderData.name)
             setProductID(cartRecentViewItemHolderData.id)
-            setPrice(cartRecentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setPrice(cartRecentViewItemHolderData.price.replace(REGEX_NUMBER, ""))
             setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -741,7 +742,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val enhancedECommerceProductData = EnhancedECommerceProductData().apply {
             setProductID(cartRecentViewItemHolderData.id)
             setProductName(cartRecentViewItemHolderData.name)
-            setPrice(cartRecentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setPrice(cartRecentViewItemHolderData.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setPosition(position.toString())
@@ -766,7 +767,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setProductName(cartWishlistItemHolderData.name)
             setProductID(cartWishlistItemHolderData.id)
-            setPrice(cartWishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setPrice(cartWishlistItemHolderData.price.replace(REGEX_NUMBER, ""))
             setCategory(cartWishlistItemHolderData.category)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -785,7 +786,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val enhancedECommerceEmptyCartProductData = EnhancedECommerceProductData().apply {
             setProductID(cartWishlistItemHolderData.id)
             setProductName(cartWishlistItemHolderData.name)
-            setPrice(cartWishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setPrice(cartWishlistItemHolderData.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(cartWishlistItemHolderData.category)
             setPosition(position.toString())
@@ -939,7 +940,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val enhancedECommerceProductCartMapData = EnhancedECommerceRecomProductCartMapData().apply {
             setProductName(cartRecommendationItemHolderData.recommendationItem.name)
             setProductID(cartRecommendationItemHolderData.recommendationItem.productId.toString())
-            setPrice(cartRecommendationItemHolderData.recommendationItem.price.replace("[^0-9]".toRegex(), ""))
+            setPrice(cartRecommendationItemHolderData.recommendationItem.price.replace(REGEX_NUMBER, ""))
             setCategory(cartRecommendationItemHolderData.recommendationItem.categoryBreadcrumbs)
             setQty(cartRecommendationItemHolderData.recommendationItem.minOrder)
             setShopId(cartRecommendationItemHolderData.recommendationItem.shopId.toString())
