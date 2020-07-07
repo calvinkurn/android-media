@@ -73,7 +73,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             displayAsBuyer()
         }
-        setupSgcPlayWidget(shopInfo, !isMyShop, broadcasterConfig)
+        setupSgcPlayWidget(shopInfo, isMyShop, broadcasterConfig)
 
         if (shopInfo.freeOngkir.isActive)
             showLabelFreeOngkir(remoteConfig)
@@ -102,7 +102,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     private fun setupSgcPlayWidget(shopInfo: ShopInfo, isMyShop: Boolean, broadcasterConfig: Broadcaster.Config?){
-        view.play_seller_widget_container.visibility = if(isMyShop ) View.VISIBLE else View.GONE
+        view.play_seller_widget_container.visibility = if(isMyShop && broadcasterConfig?.streamAllowed == true) View.VISIBLE else View.GONE
         if(isMyShop){
             setupTextContentSgcWidget()
             shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopInfo.shopCore.shopID, customDimensionShopPage = CustomDimensionShopPage.create(shopInfo))
