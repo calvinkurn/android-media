@@ -10,14 +10,14 @@ class TelcoFilterData {
     /**
      * example filter data param
      * "filterData": [
-    {
-    "value": [
-    "621"
-    ],
-    "param_name": "filter_tag_tipe_kuota"
-    },
-    {param_name: "apply_filter_to_component_id", value: ["8"]}
-    ]
+     *      {
+     *          "value": [
+     *          "621"
+     *          ],
+     *          "param_name": "filter_tag_tipe_kuota"
+     *      },
+     *          {param_name: "apply_filter_to_component_id", value: ["8"]}
+     *      ]
      *
      */
 
