@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -108,7 +109,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopInfo.shopCore.shopID, customDimensionShopPage = CustomDimensionShopPage.create(shopInfo))
             view.container_lottie?.setOnClickListener {
                 shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopInfo.shopCore.shopID, customDimensionShopPage = CustomDimensionShopPage.create(shopInfo))
-                RouteManager.route(view.context, "tokopedia-android-internal://play-broadcaster")
+                RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
             }
         }
     }
