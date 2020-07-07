@@ -49,8 +49,9 @@ class DiscomActivityTest {
     }
 
     @Test
-    fun main() {
-        onView(withId(R.id.edit_text_search)).perform(typeText("jak"))
+    fun givenValidQueryReturnsRequiredResults() {
+        val testQuery = "jak"
+        onView(withId(R.id.edit_text_search)).perform(typeText(testQuery))
 
         // Bad, can't implement idling resource on baselistfragment's search delay
         Thread.sleep(DiscomFragment.DEBOUNCE_DELAY_IN_MILIS)

@@ -50,17 +50,17 @@ object EspressoUtils {
         }
     }
 
-    fun holderWithText(text: String): Matcher<RecyclerView.ViewHolder> {
-        return object : TypeSafeMatcher<RecyclerView.ViewHolder>() {
-            override fun describeTo(description: Description?) {
-                description?.appendText("Searching for $text")
-            }
-
-            override fun matchesSafely(item: RecyclerView.ViewHolder?): Boolean {
-                return item?.itemView?.findViewById<TextView>(R.id.address_name)?.text.toString() == text
-            }
-        }
-    }
+//    fun holderWithText(text: String): Matcher<RecyclerView.ViewHolder> {
+//        return object : TypeSafeMatcher<RecyclerView.ViewHolder>() {
+//            override fun describeTo(description: Description?) {
+//                description?.appendText("Searching for $text")
+//            }
+//
+//            override fun matchesSafely(item: RecyclerView.ViewHolder?): Boolean {
+//                return item?.itemView?.findViewById<TextView>(R.id.address_name)?.text.toString() == text
+//            }
+//        }
+//    }
 
     fun childAtPosition(parentMatcher: Matcher<View>, position: Int): Matcher<View> {
 
