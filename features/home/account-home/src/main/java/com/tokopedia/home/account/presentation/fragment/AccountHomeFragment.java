@@ -20,8 +20,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
-import com.tokopedia.additional_check.data.GetObjectPojo;
-import com.tokopedia.additional_check.view.BottomSheetCheck;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
@@ -103,7 +101,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void onResume() {
         super.onResume();
         presenter.sendUserAttributeTracker();
-        presenter.checkStatus();
     }
 
     @Override
@@ -298,10 +295,5 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             badgeViewInbox.setBadgeGravity(Gravity.END | Gravity.TOP);
             badgeViewInbox.setBadgeNumber(badgeNumber);
         }
-    }
-
-    @Override
-    public void openBottomSheet(GetObjectPojo data) {
-        BottomSheetCheck.Companion.showBottomSheetCheck(getActivity(), data);
     }
 }

@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.additional_check.data.GetObjectPojo;
-import com.tokopedia.additional_check.domain.usecase.AdditionalCheckUseCase;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -23,14 +21,11 @@ public class AccountHomePresenter extends BaseDaggerPresenter<AccountHome.View> 
     private GetUserAttributesUseCase getUserAttributesUseCase;
     private AccountAnalytics accountAnalytics;
     private AccountHome.View view;
-    private AdditionalCheckUseCase additionalCheckUseCase;
 
     public AccountHomePresenter(GetUserAttributesUseCase getUserAttributesUseCase,
-                                AdditionalCheckUseCase additionalCheckUseCase,
                                 AccountAnalytics accountAnalytics) {
         this.getUserAttributesUseCase = getUserAttributesUseCase;
         this.accountAnalytics = accountAnalytics;
-        this.additionalCheckUseCase = additionalCheckUseCase;
     }
 
     @Override
@@ -72,25 +67,5 @@ public class AccountHomePresenter extends BaseDaggerPresenter<AccountHome.View> 
     @Override
     public void openTabByParam(String param) {
         if (param.equals(AccountConstants.ACCOUNT_TAB_SELLER)) view.openSellerTab();
-    }
-
-    @Override
-    public void checkStatus() {
-        additionalCheckUseCase.getMockBottomSheetSuccessObservable().subscribe(new Subscriber<GetObjectPojo>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GetObjectPojo getObjectPojo) {
-                view.openBottomSheet(getObjectPojo);
-            }
-        });
     }
 }
