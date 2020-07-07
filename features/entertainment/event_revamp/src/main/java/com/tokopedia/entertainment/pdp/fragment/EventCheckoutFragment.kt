@@ -157,16 +157,22 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 context?.let {
                     progressDialog.dismiss()
                     val context = it
-
-                    val paymentData = data.checkout.data.data.queryString
-                    val paymentURL: String = data.checkout.data.data.redirectUrl
-
-                    if(!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
-                        ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(com.tokopedia.oms.R.string.pembayaran))
-                    }else{
+                    if (data.checkout.data.success == 0) {
                         view?.let {
-                            Toaster.make(it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            Toaster.make(it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                                     context.getString(R.string.ent_checkout_error))
+                        }
+                    } else {
+                        val paymentData = data.checkout.data.data.queryString
+                        val paymentURL: String = data.checkout.data.data.redirectUrl
+
+                        if (!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
+                            ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(com.tokopedia.oms.R.string.pembayaran))
+                        } else {
+                            view?.let {
+                                Toaster.make(it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                        context.getString(R.string.ent_checkout_error))
+                            }
                         }
                     }
                 }

@@ -21,10 +21,14 @@ object EventVerifyMapper {
         )
     }
 
-    fun getItemMap(packageItem: PackageItem, pdpData: ProductDetailData, quantiy : Int, totalPrice:Int, selectedDate: String):ItemMap{
+    fun getItemMap(packageItem: PackageItem, pdpData: ProductDetailData, quantiy : Int,
+                   totalPrice:Int, selectedDate: String, packageId:String, packageName:String):ItemMap{
+        val locationDesc = pdpData.outlets.firstOrNull()?.district ?: ""
+        val locationName= pdpData.outlets.firstOrNull()?.name ?: ""
         packageItem.apply {
             return ItemMap(
                     id = id,
+                    packageId = packageId,
                     name = name,
                     productId = productId,
                     productName = pdpData.displayName,
@@ -35,7 +39,9 @@ object EventVerifyMapper {
                     price = salesPrice.toInt(),
                     quantity = quantiy,
                     totalPrice = totalPrice,
-                    locationName = pdpData.location,
+                    locationName = locationName,
+                    locationDesc = locationDesc,
+                    packageName = packageName,
                     productAppUrl = pdpData.appUrl,
                     webAppUrl = pdpData.webUrl,
                     productImage = pdpData.imageApp,

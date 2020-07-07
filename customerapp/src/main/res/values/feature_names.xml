@@ -254,7 +254,7 @@
     <string name="title_talk_discuss">Diskusi</string>
 
     <!-- Dynamic feature for event-->
-    <string name="df_title_event_revamp">Event</string>
+    <string name="df_title_entertainment">Entertainment</string>
     <string name="ent_home_page_event_hiburan"><![CDATA[Event & Hiburan]]></string>
     <string name="ent_search_title"><![CDATA[Search Event]]></string>
     <string name="ent_search_event_location"><![CDATA[Lokasi]]></string>

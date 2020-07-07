@@ -93,7 +93,11 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                 val graphqlRequest = GraphqlRequest(rawQuery, EventVerifyResponseV2::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<EventVerifyResponseV2>()
-            mutableVerifyResponse.value = data
+            if(data.eventVerify.error.isNullOrEmpty()) {
+                mutableVerifyResponse.value = data
+            } else{
+                error.value = data.eventVerify.errorDescription
+            }
         }) {
             error.value = it.message
         }

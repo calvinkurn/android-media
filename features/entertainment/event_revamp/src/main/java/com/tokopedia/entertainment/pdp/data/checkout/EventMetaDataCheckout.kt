@@ -155,9 +155,9 @@ data class ItemMapCheckout(
         @SerializedName("total_price")
         @Expose
         val totalPrice: Int = 0,
-        @SerializedName("web_app_url")
+        @SerializedName("product_web_url")
         @Expose
-        val webAppUrl:String = "",
+        val productWebUrl:String = "",
         @SerializedName("passenger_forms")
         @Expose
         var passengerForms : MutableList<PassengerForm> = arrayListOf()

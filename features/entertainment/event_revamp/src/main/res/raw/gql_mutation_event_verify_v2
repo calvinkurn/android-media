@@ -30,6 +30,7 @@ mutation verify_v2($eventVerify: VerifyRequest!) {
         location_desc
         product_app_url
         web_app_url
+        product_web_url
         product_image
         flag_id
         package_id
