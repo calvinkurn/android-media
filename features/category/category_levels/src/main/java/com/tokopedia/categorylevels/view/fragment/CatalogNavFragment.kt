@@ -10,10 +10,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.categorylevels.R
@@ -358,5 +360,9 @@ class CatalogNavFragment : BaseBannedProductFragment(),
     override fun addBannedProductScreen() {
         super.addBannedProductScreen()
         view?.findViewById<View>(R.id.layout_banned_screen)?.show()
+    }
+
+    override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
+        return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
     }
 }

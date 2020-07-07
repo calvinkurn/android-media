@@ -102,7 +102,6 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
     private fun initBannedProductViewModel() {
         val viewModelProvider = ViewModelProviders.of(this, baseViewModelFactory)
         bannedProdNavViewModel = viewModelProvider.get(BannedProdNavViewModel::class.java)
-        lifecycle.addObserver(bannedProdNavViewModel)
     }
 
     private fun observeSeamlessLogin() {

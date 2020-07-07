@@ -14,10 +14,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -759,5 +761,9 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     override fun addBannedProductScreen() {
         super.addBannedProductScreen()
         view?.findViewById<View>(R.id.layout_banned_screen)?.show()
+    }
+
+    override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
+        return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
     }
 }
