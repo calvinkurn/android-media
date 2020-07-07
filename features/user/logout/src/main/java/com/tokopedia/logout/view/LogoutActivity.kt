@@ -50,6 +50,8 @@ import javax.inject.Inject
  * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LOGOUT]
  * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME]
  * default is 'true', set 'false' if you wan get activity result
+ * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY]
+ * default is 'false', set 'true' if you just wan to clear data only
  */
 
 class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
@@ -62,6 +64,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private val logoutViewModel by lazy { viewModelProvider.get(LogoutViewModel::class.java) }
 
     private var isReturnToHome = true
+    private var isClearDataOnly = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -90,12 +93,18 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         showLoading()
         saveLoginReminderData()
-        logoutViewModel.doLogout()
+
+        if (isClearDataOnly) {
+            clearData()
+        } else {
+            logoutViewModel.doLogout()
+        }
     }
 
     private fun getParams() {
         if (intent.extras != null) {
             isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, true) as Boolean
+            isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean
         }
     }
 
