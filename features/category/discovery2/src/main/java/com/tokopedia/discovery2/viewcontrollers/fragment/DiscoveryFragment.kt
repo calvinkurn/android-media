@@ -381,7 +381,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onClick(view: View?) {
         when (view) {
             ivToTop -> {
-                recyclerView.smoothScrollToPosition(0)
+                recyclerView.smoothScrollToTop()
                 ivToTop.hide()
             }
         }
