@@ -171,7 +171,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onDestroy() {
-        parentViewModel.destroyPushStream()
         try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         super.onDestroy()
     }

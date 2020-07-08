@@ -172,7 +172,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             }
     }
 
-    override suspend fun destroy() {
+    override fun destroy() {
         try {
             mAliVcLivePusher?.destroy()
             mTimerDuration?.destroy()
@@ -180,7 +180,6 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
-                throw IllegalStateException(e)
             }
         }
     }

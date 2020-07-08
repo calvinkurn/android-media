@@ -62,7 +62,7 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
         }
     }
 
-    override suspend fun destroy() {
+    override fun destroy() {
         mTimer?.destroy()
     }
 

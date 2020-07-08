@@ -59,7 +59,7 @@ interface PlayPusher {
     /**
      * Destroy pusher
      */
-    suspend fun destroy()
+    fun destroy()
 
     /**
      * add maximum live streaming duration

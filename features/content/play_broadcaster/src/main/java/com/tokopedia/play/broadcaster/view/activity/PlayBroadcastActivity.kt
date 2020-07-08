@@ -126,6 +126,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
+    override fun onDestroy() {
+        viewModel.destroyPushStream()
+        super.onDestroy()
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (!viewModel.getPermissionUtil().onRequestPermissionsResult(requestCode, permissions, grantResults))
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
