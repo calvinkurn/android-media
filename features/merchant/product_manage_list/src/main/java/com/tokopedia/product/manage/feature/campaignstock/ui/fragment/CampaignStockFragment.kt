@@ -43,7 +43,7 @@ class CampaignStockFragment: BaseDaggerFragment() {
         activity?.intent?.getStringExtra(CampaignStockActivity.SHOP_ID)
     }
 
-    private val productId by lazy {
+    private val productIds by lazy {
         activity?.intent?.getStringArrayExtra(CampaignStockActivity.PRODUCT_ID)
     }
 
@@ -92,7 +92,9 @@ class CampaignStockFragment: BaseDaggerFragment() {
         mViewModel.getStockAllocationData.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
                 is Success -> {
-                    applyLayout(result.data, "https://i.pinimg.com/originals/2d/cd/80/2dcd80c6f5a21a437313adde93b373d8.png")
+                    result.data.let { productUrlAndStockDataPair ->
+                        applyLayout(productUrlAndStockDataPair.first, productUrlAndStockDataPair.second)
+                    }
                 }
                 is Fail -> {
 
@@ -102,14 +104,15 @@ class CampaignStockFragment: BaseDaggerFragment() {
     }
 
     private fun setupView() {
+        showLoading()
         shopId?.let { shopId ->
-            productId?.let { productId ->
-                mViewModel.getStockAllocation(shopId, productId)
+            productIds?.let { productIds ->
+                mViewModel.getStockAllocation(productIds.toList(), shopId)
             }
         }
     }
 
-    private fun applyLayout(data: GetStockAllocationData, productImageUrl: String) {
+    private fun applyLayout(productImageUrl: String, data: GetStockAllocationData) {
         with(data) {
             setupProductSummary(summary, productImageUrl)
             setupFragmentTabs(summary)
@@ -140,6 +143,10 @@ class CampaignStockFragment: BaseDaggerFragment() {
             adapter = mAdapter
             isUserInputEnabled = false
         }
+    }
+
+    private fun showLoading() {
+
     }
 
     private fun changeViewPagerPage(position: Int) {

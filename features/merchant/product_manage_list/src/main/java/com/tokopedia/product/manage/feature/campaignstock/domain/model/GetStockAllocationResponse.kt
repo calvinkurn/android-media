@@ -5,85 +5,85 @@ import com.tokopedia.network.data.model.response.Header
 
 data class GetStockAllocationResponse(
         @SerializedName("GetStockAllocation")
-        val getStockAllocation: GetStockAllocation? = GetStockAllocation()
+        val getStockAllocation: GetStockAllocation = GetStockAllocation()
 )
 
 data class GetStockAllocation(
         @SerializedName("data")
-        val data: GetStockAllocationData = GetStockAllocationData(),
+        val data: List<GetStockAllocationData> = listOf(),
         @SerializedName("header")
-        val header: Header? = Header()
+        val header: Header = Header()
 )
 
 data class GetStockAllocationData(
         @SerializedName("summary")
-        val summary: GetStockAllocationSummary? = GetStockAllocationSummary(),
+        val summary: GetStockAllocationSummary = GetStockAllocationSummary(),
         @SerializedName("detail")
-        val detail: GetStockAllocationDetail? = GetStockAllocationDetail()
+        val detail: GetStockAllocationDetail = GetStockAllocationDetail()
 )
 
 data class GetStockAllocationSummary(
         @SerializedName("is_variant")
-        val isVariant: Boolean? = false,
+        val isVariant: Boolean = false,
         @SerializedName("product_name")
-        val productName: String? = "",
+        val productName: String = "",
         @SerializedName("sellable_stock")
-        val sellableStock: String? = "",
+        val sellableStock: String = "",
         @SerializedName("reserve_stock")
-        val reserveStock: String? = "",
+        val reserveStock: String = "",
         @SerializedName("total_stock")
-        val totalStock: String? = ""
+        val totalStock: String = ""
 )
 
 data class GetStockAllocationDetail(
         @SerializedName("sellable")
-        val sellable: GetStockAllocationDetailSellable? = GetStockAllocationDetailSellable(),
+        val sellable: List<GetStockAllocationDetailSellable> = listOf(),
         @SerializedName("reserve")
-        val reserve: GetStockAllocationDetailReserve? = GetStockAllocationDetailReserve()
+        val reserve: List<GetStockAllocationDetailReserve> = listOf()
 )
 
 data class GetStockAllocationDetailSellable(
         @SerializedName("product_id")
-        val productId: String? = "",
+        val productId: String = "",
         @SerializedName("warehouse_id")
-        val warehouseId: String? = "",
+        val warehouseId: String = "",
         @SerializedName("product_name")
-        val productName: String? = "",
+        val productName: String = "",
         @SerializedName("stock")
-        val stock: String? = ""
+        val stock: String = ""
 )
 
 data class GetStockAllocationDetailReserve(
         @SerializedName("event_info")
-        val eventInfo: GetStockAllocationEventInfo? = GetStockAllocationEventInfo()
+        val eventInfo: GetStockAllocationEventInfo = GetStockAllocationEventInfo()
 )
 
 data class GetStockAllocationEventInfo(
         @SerializedName("event_type")
-        val eventType: String? = "",
+        val eventType: String = "",
         @SerializedName("event_name")
-        val eventName: String? = "",
+        val eventName: String = "",
         @SerializedName("description")
-        val description: String? = "",
+        val description: String = "",
         @SerializedName("stock")
-        val stock: String? = "",
+        val stock: String = "",
         @SerializedName("action_wording")
-        val actionWording: String? = "",
+        val actionWording: String = "",
         @SerializedName("action_url")
-        val actionUrl: String? = "",
+        val actionUrl: String = "",
         @SerializedName("product")
-        val product: GetStockAllocationReservedProduct? = GetStockAllocationReservedProduct()
+        val product: GetStockAllocationReservedProduct = GetStockAllocationReservedProduct()
 )
 
 data class GetStockAllocationReservedProduct(
         @SerializedName("product_id")
-        val productId: String? = "",
+        val productId: String = "",
         @SerializedName("warehouse_id")
-        val warehouseId: String? = "",
+        val warehouseId: String = "",
         @SerializedName("product_name")
-        val productName: String? = "",
+        val productName: String = "",
         @SerializedName("description")
-        val description: String? = "",
+        val description: String = "",
         @SerializedName("stock")
-        val stock: String? = ""
+        val stock: String = ""
 )
