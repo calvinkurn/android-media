@@ -103,7 +103,7 @@ class ShopHomeAdapter(
 
     fun pausePlayCarousel(){
         val indexPlay = getPositionPlayCarousel()
-        if(indexPlay == -1) return;
+        if(indexPlay == -1) return
         notifyItemChanged(indexPlay, Bundle().apply {
             putBoolean(ON_PAUSE, true)
         })
@@ -111,7 +111,7 @@ class ShopHomeAdapter(
 
     fun resumePlayCarousel(){
         val indexPlay = getPositionPlayCarousel()
-        if(indexPlay == -1) return;
+        if(indexPlay == -1) return
         notifyItemChanged(indexPlay, Bundle().apply {
             putBoolean(ON_RESUME, true)
         })
@@ -119,7 +119,7 @@ class ShopHomeAdapter(
 
     fun onDestroy(){
         val indexPlay = getPositionPlayCarousel()
-        if(indexPlay == -1) return;
+        if(indexPlay == -1) return
         notifyItemChanged(indexPlay, Bundle().apply {
             putBoolean(ON_DESTROY, true)
         })
