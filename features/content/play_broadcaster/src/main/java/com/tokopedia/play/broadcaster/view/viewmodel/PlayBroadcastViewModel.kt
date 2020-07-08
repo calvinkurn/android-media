@@ -280,14 +280,6 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun stopPreview() {
-        playPusher.stopPreview()
-    }
-
-    fun startCamera() {
-        playPusher.destroy()
-    }
-
     fun startCountDown() {
         _observableLiveInfoState.value = Event(BroadcastState.Init)
     }
@@ -339,7 +331,7 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.launchCatchError(block = {
             withContext(dispatcher.io) {
                 playPusher.stopPush()
-                stopPreview()
+                playPusher.stopPreview()
                 playSocket.destroy()
                 updateChannelStatus(PlayChannelStatus.Stop)
             }
