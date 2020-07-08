@@ -1,4 +1,4 @@
-package com.tokopedia.home.topads
+package com.tokopedia.test.application.espresso_component.topads
 
 import android.app.Activity
 import com.tokopedia.analyticsdebugger.database.TopAdsLogDB
@@ -6,8 +6,8 @@ import java.io.File
 
 object TopAdsVerificationTestReportUtil {
     private val FILE_TOPADS_REPORT_ROOT = "topads_verificator_data"
-    private val FILE_TOPADS_LOG = "report-topads-verificator-home-log.log"
-    private val FILE_TOPADS_VERIFICATOR_DATA = "report-topads-verificator-home.csv"
+    private val FILE_TOPADS_LOG = "report-topads-verificator-log.log"
+    private val FILE_TOPADS_VERIFICATOR_DATA = "report-topads-verificator.csv"
 
     fun writeTopAdsVerificatorReportData(activity: Activity, topAdsLogDB: TopAdsLogDB) {
         val path = activity.getExternalFilesDir(null)
