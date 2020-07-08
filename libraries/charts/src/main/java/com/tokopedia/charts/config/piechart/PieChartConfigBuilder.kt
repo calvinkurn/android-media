@@ -13,7 +13,7 @@ import com.tokopedia.charts.config.piechart.model.PieChartConfig
 class PieChartConfigBuilder {
 
     companion object {
-        fun getDefaultConfig(): PieChartConfig = create {  }
+        fun getDefaultConfig(): PieChartConfig = create { }
 
         fun create(lambda: PieChartConfigBuilder.() -> Unit) = PieChartConfigBuilder().apply(lambda).build()
     }
