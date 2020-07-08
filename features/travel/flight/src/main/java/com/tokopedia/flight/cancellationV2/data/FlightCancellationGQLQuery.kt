@@ -4,6 +4,7 @@ package com.tokopedia.flight.cancellationV2.data
  * @author by furqan on 06/07/2020
  */
 object FlightCancellationGQLQuery {
+
     val CANCEL_PASSENGER = """
         query cancelPassenger(${'$'}invoiceID:String!){
           flightCancelPassenger(invoiceID:${'$'}invoiceID){
@@ -79,4 +80,5 @@ object FlightCancellationGQLQuery {
           }
         }
     """.trimIndent()
+
 }
