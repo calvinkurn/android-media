@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.util.channelNotFound
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
@@ -74,6 +75,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             window.decorView.systemUiVisibility = value
         }
 
+    private var deviceSupported = DeviceInfoUtil.isDeviceSupported()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
@@ -85,11 +88,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         if (savedInstanceState != null) populateSavedState(savedInstanceState)
 
-        viewModel.initPushStream()
+        initPushStream()
         setupContent()
         initView()
         setupView()
         setupInsets()
+
+        if (!deviceSupported) {
+            showDialogWhenUnSupportedDevices()
+            return
+        }
 
         getConfiguration()
 
@@ -175,6 +183,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun checkPermission() {
         viewModel.checkPermission()
+    }
+
+    private fun initPushStream() {
+        viewModel.initPushStream()
     }
 
     private fun setFragmentFactory() {
@@ -369,7 +381,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     companion object {
-
         private const val CHANNEL_ID = "channel_id"
     }
 }
