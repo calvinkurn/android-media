@@ -11,20 +11,30 @@ import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
 class TabsViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
-    private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
-    private val selectedTabComponentsItem: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+
         components.getComponentsItem()?.let {
-            listData.value = it as ArrayList<ComponentsItem>
+            it as ArrayList<ComponentsItem>
+            if(components.properties?.background == "plain") {
+                setUnifyTabs.value = it
+            }else {
+                setColorTabs.value = it
+            }
+
         }
-        updateSelectedTabValue(null)
     }
 
 
-    fun getListDataLiveData(): LiveData<ArrayList<ComponentsItem>> {
-        return listData
+    fun getColorTabComponentLiveData(): LiveData<ArrayList<ComponentsItem>> {
+        return setColorTabs
+    }
+
+    fun getUnifyTabLiveData(): LiveData<ArrayList<ComponentsItem>> {
+        return setUnifyTabs
     }
 
     override val coroutineContext: CoroutineContext
@@ -34,33 +44,12 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     }
 
-    fun onTabClick(id: String) {
-        updateSelectedTabValue(id)
+    fun setSelectedState(position: Int,selection:Boolean) {
+        components.getComponentsItem()?.get(position)?.data?.get(0)?.isSelected = selection
+    }
+
+    fun onTabClick() {
         this.syncData.value = true
-    }
-
-
-    private fun updateSelectedTabValue(id: String?) {
-        val selectedID = id ?: getSelectedId(components)
-        components.getComponentsItem()?.forEach { components ->
-            components.data?.get(0)?.let { dataItem ->
-                dataItem.isSelected = components.id == selectedID
-                if (dataItem.isSelected) {
-                    selectedTabComponentsItem.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
-                }
-
-            }
-        }
-    }
-
-    private fun getSelectedId(components: ComponentsItem): String {
-        var selectedID: String? = null
-        for (it in components.getComponentsItem()!!) {
-            if (it.data?.get(0)?.isSelected!!) {
-                selectedID = it.id
-            }
-        }
-        return selectedID ?: components.getComponentsItem()?.get(0)?.id.toString()
     }
 
 }

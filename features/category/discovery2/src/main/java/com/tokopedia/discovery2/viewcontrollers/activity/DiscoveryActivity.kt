@@ -55,7 +55,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         }
         toolbar?.hide()
         setObserver()
-        discoveryViewModel.getDiscoveryUIConfig()
+        //discoveryViewModel.getDiscoveryUIConfig()
     }
 
     private fun setObserver() {

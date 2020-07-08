@@ -4,60 +4,82 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.customview.SpaceItemDecoration
+import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.TabsUnify
 
 class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private val tabsRecyclerView: RecyclerView = itemView.findViewById(R.id.bannerRecyclerView)
+    private val tabsHolder: TabsUnify = itemView.findViewById(R.id.tabs_holder)
     private lateinit var tabsViewModel: TabsViewModel
-    private val tabsRecyclerViewAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
-    private lateinit var linearLayoutManager: LinearLayoutManager
     private val tabViewOffSet = 30
 
-    init {
-        attachRecyclerView()
-    }
 
-    private fun attachRecyclerView() {
-        linearLayoutManager = LinearLayoutManager(fragment.activity, LinearLayoutManager.HORIZONTAL, false)
-        tabsRecyclerView.apply {
-            setMargin(resources.getDimensionPixelSize(R.dimen.dp_12),
-                    resources.getDimensionPixelSize(R.dimen.dp_8),
-                    resources.getDimensionPixelSize(R.dimen.dp_12),
-                    resources.getDimensionPixelSize(R.dimen.dp_8))
-            adapter = tabsRecyclerViewAdapter
-            layoutManager = linearLayoutManager
-            addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
-        }
-    }
+
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
-    }
 
+        tabsHolder.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                if(tab.customView != null && tab.customView is CustomViewCreator) {
+                    ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
+                }
+                tabsViewModel.setSelectedState(tab.position,true)
+                tabsViewModel.onTabClick()
 
-    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
-        super.setUpObservers(lifecycleOwner)
-        tabsViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer {
-            tabsRecyclerViewAdapter.setDataList(it)
-        })
-        tabsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { needResync ->
-            if (needResync) {
-                tabsRecyclerViewAdapter.notifyDataSetChanged()
-                (fragment as DiscoveryFragment).reSync()
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                tabsViewModel.setSelectedState(tab.position,false)
+                if(tab.customView == null || !(tab.customView is CustomViewCreator)) return
+                ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(false)
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
             }
         })
     }
 
-    fun onTabClick(id: String, position: Int) {
-        linearLayoutManager.scrollToPositionWithOffset(position, tabViewOffSet)
-        tabsViewModel.onTabClick(id)
+
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
+        tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            tabsHolder.tabLayout.removeAllTabs()
+            it.forEach {
+                it?.data?.get(0)?.name?.let {
+                    tabsHolder.addNewTab(it)
+                }
+
+
+            }
+        })
+        tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            tabsHolder.tabLayout.removeAllTabs()
+            it.forEach {
+                var tab = tabsHolder.tabLayout.newTab()
+                tab.customView = CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.TabsItem, it, fragment)
+
+                tabsHolder.tabLayout.addTab(tab,it.data?.get(0)?.isSelected?:false)
+            }
+        })
+    }
+
+    override fun onViewDetachedToWindow() {
+        super.onViewDetachedToWindow()
+        tabsViewModel.getColorTabComponentLiveData().removeObservers(fragment.viewLifecycleOwner)
+    }
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        super.setUpObservers(lifecycleOwner)
+
+        tabsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { needResync ->
+            if (needResync) {
+                (fragment as DiscoveryFragment).reSync()
+            }
+        })
     }
 }
