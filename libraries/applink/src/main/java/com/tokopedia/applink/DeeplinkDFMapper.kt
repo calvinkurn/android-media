@@ -296,7 +296,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_BASE, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE, R.string.merchant_seller))
-            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE) }, DF_BASE, R.string.title_shop_score_sellerapp))
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE) }, DF_MERCHANT_SELLER, R.string.title_shop_score_sellerapp))
             add(DFP({ it.startsWith(CREATE_VOUCHER) ||
                     it.startsWith(VOUCHER_LIST) ||
                     it.startsWith(VOUCHER_DETAIL)}, DF_BASE, R.string.title_voucher_creation))
