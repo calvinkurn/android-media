@@ -8,7 +8,7 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHe
 
 object TalkReplyMapper {
 
-    fun mapDiscussionDataResponseToTalkReplyHeaderModel(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, isMyShop: Boolean): TalkReplyHeaderModel {
+    fun mapDiscussionDataResponseToTalkReplyHeaderModel(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, isMyShop: Boolean, isMyQuestion: Boolean): TalkReplyHeaderModel {
         discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.apply {
             return TalkReplyHeaderModel(
                     createTimeFormatted,
@@ -21,14 +21,15 @@ object TalkReplyMapper {
                     maskedContent,
                     userThumbnail,
                     userName,
-                    userId)
+                    userId,
+                    isMyQuestion)
         }
     }
 
-    fun mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper): List<TalkReplyUiModel> {
+    fun mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, userId:String): List<TalkReplyUiModel> {
         val result = mutableListOf<TalkReplyUiModel>()
         discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.answer.forEach {
-            result.add(TalkReplyUiModel(it, discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.shopID))
+            result.add(TalkReplyUiModel(it, discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.shopID, it.userId == userId))
         }
         return result
     }

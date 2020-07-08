@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.talk.common.utils.setCustomMovementMethod
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
@@ -37,9 +36,11 @@ class TalkReplyHeaderViewHolder(view: View,
             showQuestionWithCondition(isMasked, question, maskedContent)
             showKebabWithConditions(allowReport, allowDelete, onKebabClickedListener)
             showFollowWithCondition(allowFollow, isFollowed, talkReplyHeaderListener)
-            showProfilePictureAndNameWithCondition(element.userThumbnail, element.userName, element.userId.toString())
+            showProfilePictureAndNameWithCondition(element.userThumbnail, element.userId.toString())
             showHeaderDateWithCondition(date)
+            showUserNameWithCondition(element.userName, element.isMyQuestion)
             itemView.apply {
+                replyHeaderDate.text = context.getString(R.string.reply_dot_builder, date)
                 replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
                 replyHeaderTNC.setCustomMovementMethod { talkReplyHeaderListener.onTermsAndConditionsClicked() }
             }
@@ -55,7 +56,7 @@ class TalkReplyHeaderViewHolder(view: View,
         }
     }
 
-    private fun showProfilePictureAndNameWithCondition(userThumbnail: String, userName: String, userId: String) = with(itemView) {
+    private fun showProfilePictureAndNameWithCondition(userThumbnail: String, userId: String) = with(itemView) {
         replyUserImage?.shouldShowWithAction(userThumbnail.isNotEmpty()) {
             replyUserImage?.apply {
                 loadImage(userThumbnail)
@@ -63,13 +64,6 @@ class TalkReplyHeaderViewHolder(view: View,
                     threadListener.goToProfilePage(userId)
                 }
                 show()
-            }
-        }
-
-        replyUserName?.apply {
-            text = userName
-            setOnClickListener {
-                threadListener.goToProfilePage(userId)
             }
         }
     }
@@ -100,6 +94,16 @@ class TalkReplyHeaderViewHolder(view: View,
                 }
                 return super.onTouchEvent(widget, buffer, event);
             }
+        }
+    }
+
+    private fun showUserNameWithCondition(userName: String, isMyQuestion: Boolean) = with(itemView) {
+        if (isMyQuestion) {
+            replyUserName.hide()
+            labelMyQuestion.show()
+        } else {
+            labelMyQuestion.hide()
+            replyUserName.text = userName
         }
     }
 

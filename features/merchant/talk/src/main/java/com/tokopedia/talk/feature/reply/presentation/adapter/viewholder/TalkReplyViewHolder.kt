@@ -19,6 +19,8 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabCli
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREEN
+import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREY
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
 
 class TalkReplyViewHolder(view: View,
@@ -36,9 +38,9 @@ class TalkReplyViewHolder(view: View,
         itemView.talkReplyContainer.setBackgroundColor(Color.WHITE)
         element.answer.apply {
             showProfilePicture(userThumbnail, userId, isSeller, element.shopId)
-            showDisplayName(userName, userId, isSeller, element.shopId)
+            showDisplayName(userName, userId, isSeller, element.shopId, element.isMyQuestion)
             showDate(createTimeFormatted)
-            showSellerLabelWithCondition(isSeller)
+            showSellerLabelWithCondition(isSeller, element.isMyQuestion)
             showAnswer(content, state.isMasked, maskedContent)
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
@@ -59,8 +61,8 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
-        if(userName.isNotEmpty()) {
+    private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String, isMyQuestion:Boolean) {
+        if(userName.isNotEmpty() && !isMyQuestion) {
             itemView.replyDisplayName.apply{
                 text = userName
                 setOnClickListener {
@@ -84,13 +86,21 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showSellerLabelWithCondition(isSeller: Boolean)  = with(itemView){
-        if (isSeller) {
-            replyDisplayName.hide()
-            replySellerLabel.show()
-        } else {
-            replyDisplayName.show()
-            replySellerLabel.hide()
+    private fun showSellerLabelWithCondition(isSeller: Boolean, isMyQuestions:Boolean) = with(itemView){
+        when {
+            isSeller -> {
+                replySellerLabel.text = context.getString(R.string.reading_seller_label)
+                replySellerLabel.setLabelType(GENERAL_LIGHT_GREEN)
+                replySellerLabel.show()
+            }
+            isMyQuestions -> {
+                replySellerLabel.text = context.getString(R.string.reading_your_question_label)
+                replySellerLabel.setLabelType(GENERAL_LIGHT_GREY)
+                replySellerLabel.show()
+            }
+            else -> {
+                replySellerLabel.hide()
+            }
         }
     }
 

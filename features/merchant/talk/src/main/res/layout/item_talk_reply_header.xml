@@ -27,12 +27,29 @@
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:textColor="@color/light_N700_68"
         app:layout_constraintStart_toEndOf="@+id/replyUserImage"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        app:layout_constraintTop_toTopOf="@+id/replyUserImage"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        app:layout_goneMarginStart="@dimen/layout_lvl2"
         tools:text="Jevon" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelMyQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reading_your_question_label"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:labelType="general_light_grey"
+        app:layout_constraintTop_toTopOf="@id/replyUserImage"
+        app:layout_constraintStart_toEndOf="@id/replyUserImage" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/replyDateBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="labelMyQuestion, replyUserName, replyUserImage"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyHeaderDate"
@@ -41,8 +58,9 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintStart_toEndOf="@+id/replyUserName"
-        app:layout_constraintTop_toTopOf="@+id/replyUserName"
+        app:layout_constraintStart_toEndOf="@+id/replyDateBarrier"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/layout_lvl1"
         app:typographyType="body_3"
         tools:text="• 30 Feb 2020" />
 
@@ -55,7 +73,7 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/replyHeaderDate"
         app:srcCompat="@drawable/talk_ic_kebab"
         tools:visibility="visible" />
 
@@ -64,7 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="replyUserName,replyHeaderKebab,replyUserImage, replyHeaderDate"/>
+        app:constraint_referenced_ids="labelMyQuestion,replyUserName,replyHeaderKebab,replyUserImage, replyHeaderDate"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyHeaderMessage"
