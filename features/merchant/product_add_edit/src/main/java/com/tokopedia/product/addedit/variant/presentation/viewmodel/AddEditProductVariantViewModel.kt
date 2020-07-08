@@ -386,18 +386,15 @@ class AddEditProductVariantViewModel @Inject constructor(
         val colorVariant = productInputModel.variantInputModel.selections.firstOrNull {
             it.variantId == COLOUR_VARIANT_TYPE_ID.toString()
         } ?: SelectionInputModel()
-        // get variant image urls
-        val photoUrls = productInputModel.variantInputModel.products.distinctBy {
-            // distinct by level 1 combination
-            it.combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)
-        }.map {
-            // get picture inside the list
-            it.pictures.firstOrNull()?.urlOriginal
-        }
+
         // compile variant photos
         colorVariant.options.forEachIndexed { index, optionInputModel ->
             val variantUnitValueName = optionInputModel.value
-            val photoUrl = photoUrls.getOrNull(index) ?: ""
+            // get variant image urls
+            val photoUrl = productInputModel.variantInputModel.products.find {
+                it.combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION) == index
+            }?.pictures?.firstOrNull()?.urlOriginal.orEmpty()
+
             variantPhotos.add(VariantPhoto(variantUnitValueName, photoUrl))
         }
         return variantPhotos
