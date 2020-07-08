@@ -36,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.dialog.AccessRequestDialogFragment
 import com.tokopedia.home.account.AccountConstants.Analytics.ABOUT_US
@@ -464,9 +465,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             clearEtalaseCache(it.applicationContext)
             TrackApp.getInstance().moEngage.logoutEvent()
             userSession.logoutSession()
-//            val notify = NotificationModHandler(activity)
-//            notify.dismissAllActivedNotifications()
-//            NotificationModHandler.clearCacheAllNotification(activity)
+            val notify = NotificationModHandler(activity)
+            notify.dismissAllActivedNotifications()
+            NotificationModHandler.clearCacheAllNotification(activity)
 
             val intent: Intent = getHomeIntent(activity)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
