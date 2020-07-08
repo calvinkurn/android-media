@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.tracking
 
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClick
-import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductClick
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClickWithoutScreen
 
 
 object ProductAddStepperTracking {
@@ -32,7 +32,7 @@ object ProductAddStepperTracking {
     }
 
     fun trackRemoveProductImage(shopId: String) {
-        sendEditProductClick(shopId, "click remove product image")
+        sendAddProductClickWithoutScreen(shopId, "click remove product image")
     }
 
 }
