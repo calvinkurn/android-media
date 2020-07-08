@@ -180,6 +180,7 @@ class AddEditProductVariantFragment :
         observeSizechartVisibility()
         observeVariantPhotosVisibility()
         observeIsEditMode()
+        observeHasVariants()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -727,8 +728,13 @@ class AddEditProductVariantFragment :
             // track the screen
             if (isEditMode) ProductEditVariantTracking.trackScreen(isLoggedin, userId)
             else ProductAddVariantTracking.trackScreen(isLoggedin, userId)
-            // hide reset button in edit mode
-            tvDeleteAll?.visibility = if (isEditMode) View.VISIBLE else View.GONE
+        })
+    }
+
+    private fun observeHasVariants() {
+        viewModel.hasVariants.observe(this, Observer { hasVariants ->
+            // hide reset button if has variants
+            tvDeleteAll?.visibility = if (hasVariants) View.VISIBLE else View.GONE
         })
     }
 
