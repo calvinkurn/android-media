@@ -132,7 +132,6 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var toggleNotifyMeUseCase: ToggleNotifyMeUseCase
 
-
     @RelaxedMockK
     lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
 
