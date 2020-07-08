@@ -35,4 +35,7 @@
     <string name="applink_kol_title_video_detail" translatable="false">Video Detail</string>
     <string name="applink_kol_title_media_preview" translatable="false">Media Preview</string>
 
+    <string name="applink_ip_host" translatable="false">interestpick</string>
+    <string name="applink_ip_title" translatable="false">Pilih Inspirasi Kamu</string>
+
 </resources>

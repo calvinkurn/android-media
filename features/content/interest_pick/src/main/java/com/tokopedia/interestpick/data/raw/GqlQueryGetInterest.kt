@@ -1,4 +1,6 @@
-{
+package com.tokopedia.interestpick.data.raw
+
+const val GQL_QUERY_GET_INTEREST: String = """{
   feed_interest_user(){
     header{
       image_url
@@ -15,4 +17,4 @@
     }
     error
   }
-}
+}"""
