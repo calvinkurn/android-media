@@ -31,7 +31,9 @@ class PieChartView(
         attrs: AttributeSet?
 ) : LinearLayout(context, attrs) {
 
-    private var config: PieChartConfig? = null
+    var config: PieChartConfig? = null
+        private set
+
     private val legendAdapter by lazy {
         PieChartLegendAdapter()
     }
