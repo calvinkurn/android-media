@@ -177,16 +177,30 @@ class TroubleshootFragment : BaseDaggerFragment() {
             }
             importance != NotificationManager.IMPORTANCE_HIGH -> {
                 ticker?.show()
-                ticker?.tickerTitle = "Error"
-                ticker?.tickerType = Ticker.TYPE_ERROR
-                errorText = "$errorText\nMohon cek pengaturan notifikasi anda ($importance). Atur ke nilai prioritas lebih tinggi. Klik disini untuk ke pengaturan."
-                ticker?.setTextDescription(errorText)
-            }
-            importance == NotificationManager.IMPORTANCE_DEFAULT -> {
-                ticker?.show()
-                ticker?.tickerTitle = "Informasi"
-                ticker?.tickerType = Ticker.TYPE_INFORMATION
-                errorText = "$errorText\nPengaturan Notifikasi anda sudah memenuhi standar."
+                when (importance) {
+                    NotificationManager.IMPORTANCE_DEFAULT -> {
+                        ticker?.tickerTitle = "Informasi"
+                        ticker?.tickerType = Ticker.TYPE_INFORMATION
+                        errorText = "$errorText\nPengaturan notifikasi anda sudah memenuhi standar."
+                    }
+                    NotificationManager.IMPORTANCE_LOW -> {
+                        ticker?.tickerTitle = "Error"
+                        ticker?.tickerType = Ticker.TYPE_ERROR
+                        errorText = "$errorText\nNilai prioritas \"Notifikasi\": Low ($importance)." +
+                                "\nNotifikasi muncul, tapi tidak ada suara." +
+                                "\nAtur ke nilai prioritas lebih tinggi." +
+                                "\nKlik untuk ke pengaturan."
+                    }
+                    else -> {
+                        ticker?.tickerTitle = "Error"
+                        ticker?.tickerType = Ticker.TYPE_ERROR
+                        errorText = "$errorText\nNilai prioritas \"Notifikasi\": None ($importance)." +
+                                "\nNotifikasi tidak muncul." +
+                                "\nAtur ke nilai prioritas lebih tinggi." +
+                                "\nKlik untuk ke pengaturan."
+                    }
+                }
+                errorText.trimStart()
                 ticker?.setTextDescription(errorText)
             }
         }
@@ -213,6 +227,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
             ticker?.show()
             ticker?.tickerTitle = "Error"
             errorText = "$errorText\nMohon hidupkan pengaturan notifikasi anda. Klik disini untuk ke pengaturan."
+            errorText.trimStart()
             ticker?.setTextDescription(errorText)
         }
 

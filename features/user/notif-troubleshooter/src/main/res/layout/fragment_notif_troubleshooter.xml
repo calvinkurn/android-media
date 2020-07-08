@@ -47,14 +47,16 @@
 
     <TextView
         android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_0"
+        android:gravity="center_vertical"
         android:paddingLeft="@dimen/dp_16"
         android:text="Test Push Notification"
         android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="@+id/pgLoaderTestNotif"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pgLoaderTestNotif"
-        app:layout_constraintTop_toTopOf="@+id/pgLoaderTestNotif" />
+        app:layout_constraintTop_toTopOf="@+id/pgLoaderTestNotif"
+        />
 
 
     <ProgressBar
@@ -83,7 +85,8 @@
     <TextView
         android:id="@+id/textNotificationSetting"
         android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_0"
+        android:gravity="center_vertical"
         android:paddingLeft="@dimen/dp_16"
         android:text="Pengaturan Notifikasi"
         android:textSize="@dimen/sp_16"
@@ -119,7 +122,8 @@
     <TextView
         android:id="@+id/textNotificationCategory"
         android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_0"
+        android:gravity="center_vertical"
         android:paddingLeft="@dimen/dp_16"
         android:text="Pengaturan Kategori"
         android:textSize="@dimen/sp_16"
@@ -155,7 +159,8 @@
     <TextView
         android:id="@+id/textRingtone"
         android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_0"
+        android:gravity="center_vertical"
         android:paddingLeft="@dimen/dp_16"
         android:text="Ringtone"
         android:textSize="@dimen/sp_16"
