@@ -73,7 +73,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var filter2: SortFilterItem? = null
     private var filter3: SortFilterItem? = null
     private var defaultStartDate = ""
+    private var defaultStartDateStr = ""
     private var defaultEndDate = ""
+    private var defaultEndDateStr = ""
     private var arrayFilterDate = arrayOf<String>()
     private var onLoadMore = false
     private var currPage = 1
@@ -106,15 +108,20 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onRefresh(view: View?) {
+        println("++ masuk onRefresh")
+        onLoadMore = false
+        currPage = 1
         loadOrderHistoryList()
     }
 
     private fun setInitialValue() {
         defaultStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+        defaultStartDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
         defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
+        defaultEndDateStr = Date().toFormattedString("dd MMM yyyy")
         paramUohOrder.createTimeStart = defaultStartDate
         paramUohOrder.createTimeEnd = defaultEndDate
-        paramUohOrder.page = currPage
+        paramUohOrder.page = 1
 
         arrayFilterDate = resources.getStringArray(R.array.filter_date)
     }
@@ -124,13 +131,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.setPullEnabled(true)
         uohListItemAdapter = UohListItemAdapter()
 
-        rv_order_list?.apply {
-            layoutManager = LinearLayoutManager(activity)
-            adapter = uohListItemAdapter
-        }
+        addEndlessScrollListener()
     }
 
-    /*private fun addEndlessScrollListener() {
+    private fun addEndlessScrollListener() {
         rv_order_list?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = uohListItemAdapter
@@ -138,98 +142,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     onLoadMore = true
                     if (orderList.next.isNotEmpty()) {
-                        loadOrderList(nextOrderId)
+                        currentPage += 1
+                        loadOrderHistoryList()
                     }
                 }
             }
             addOnScrollListener(scrollListener)
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        _animator?.end()
-                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
-                            duration = ANIMATION_DURATION_IN_MILIS
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {
-                                }
-
-                                override fun onAnimationCancel(p0: Animator?) {
-                                    isFilterButtonAnimating = false
-                                }
-
-                                override fun onAnimationStart(animation: Animator) {
-                                    isFilterButtonAnimating = true
-                                }
-
-                                override fun onAnimationEnd(animation: Animator) {
-                                    isFilterButtonAnimating = false
-                                }
-                            })
-                            if (!isFilterButtonAnimating) {
-                                start()
-                            }
-                        }
-                    }
-                }
-
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    if (dy > 0) {
-                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
-                            duration = ANIMATION_DURATION_IN_MILIS
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {
-                                }
-
-                                override fun onAnimationCancel(p0: Animator?) {
-                                    isFilterButtonAnimating = false
-                                    _animator = null
-                                }
-
-                                override fun onAnimationStart(animation: Animator) {
-                                    isFilterButtonAnimating = true
-                                    _animator = animation
-                                }
-
-                                override fun onAnimationEnd(animation: Animator) {
-                                    isFilterButtonAnimating = false
-                                    _animator = null
-
-                                }
-                            })
-                            if (!isFilterButtonAnimating) {
-                                start()
-                            }
-                        }
-                    } else if (dy < 0) {
-                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
-                            duration = ANIMATION_DURATION_IN_MILIS
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {
-                                }
-
-                                override fun onAnimationCancel(p0: Animator?) {
-                                    isFilterButtonAnimating = false
-                                }
-
-                                override fun onAnimationStart(animation: Animator) {
-                                    isFilterButtonAnimating = true
-                                }
-
-                                override fun onAnimationEnd(animation: Animator) {
-                                    isFilterButtonAnimating = false
-                                }
-                            })
-                            if (!isFilterButtonAnimating) {
-                                start()
-                            }
-                        }
-                    }
-                }
-            })
         }
-    }*/
+    }
 
     private fun loadOrderHistoryList() {
+        paramUohOrder.page = currPage
         uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.uoh_get_order_history), paramUohOrder)
     }
 
@@ -238,7 +161,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    // nextOrderId = orderList.cursorOrderId
+                    currPage += 1
                     if (currFilterKey.isEmpty() && currFilterType == -1) {
                         if (orderList.filters.isNotEmpty() && orderList.categories.isNotEmpty()) {
                             renderChipsFilter()
@@ -299,6 +222,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
                 uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
+                uohBottomSheetOptionAdapter.selectedKey = currFilterKey
                 uohBottomSheetOptionAdapter.notifyDataSetChanged()
             }
             it.title = arrayFilterDate[2]
@@ -316,6 +240,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
                 uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
+                uohBottomSheetOptionAdapter.selectedKey = currFilterKey
                 uohBottomSheetOptionAdapter.notifyDataSetChanged()
             }
             chips.add(it)
@@ -332,6 +257,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
                 uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
+                uohBottomSheetOptionAdapter.selectedKey = currFilterKey
                 uohBottomSheetOptionAdapter.notifyDataSetChanged()
             }
             chips.add(it)
@@ -378,7 +304,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.finishRefresh()
         empty_state_order_list?.visibility = View.GONE
         rv_order_list?.visibility = View.VISIBLE
-        uohListItemAdapter.addList(orderList.orders)
+
+        if (!onLoadMore) {
+            uohListItemAdapter.addList(orderList.orders)
+        } else {
+            uohListItemAdapter.appendList(orderList.orders)
+            scrollListener.updateStateAfterGetData()
+        }
     }
 
     private fun renderEmptyList() {
@@ -409,27 +341,23 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             btn_apply?.setOnClickListener {
                 when (currFilterType) {
                     UohConsts.TYPE_FILTER_DATE -> {
-                        filter1?.type = if(filter1?.type == ChipsUnify.TYPE_NORMAL) {
-                            ChipsUnify.TYPE_SELECTED
+                        filter1?.type = ChipsUnify.TYPE_SELECTED
+                        if (currFilterKey.toInt() == 3) {
+                            if (paramUohOrder.createTimeStart.isNotEmpty() && paramUohOrder.createTimeEnd.isNotEmpty()) {
+                                val splitStartDate = paramUohOrder.createTimeStart.split('-')
+                                val splitEndDate = paramUohOrder.createTimeEnd.split('-')
+                                filter1?.title = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
+                            }
                         } else {
-                            ChipsUnify.TYPE_NORMAL
+                            filter1?.title = currFilterLabel
                         }
-                        filter1?.title = currFilterLabel
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
-                        filter2?.type = if(filter2?.type == ChipsUnify.TYPE_NORMAL) {
-                            ChipsUnify.TYPE_SELECTED
-                        } else {
-                            ChipsUnify.TYPE_NORMAL
-                        }
+                        filter2?.type = ChipsUnify.TYPE_SELECTED
                         filter2?.title = currFilterLabel
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
-                        filter3?.type = if(filter3?.type == ChipsUnify.TYPE_NORMAL) {
-                            ChipsUnify.TYPE_SELECTED
-                        } else {
-                            ChipsUnify.TYPE_NORMAL
-                        }
+                        filter3?.type = ChipsUnify.TYPE_SELECTED
                         filter3?.title = currFilterLabel
                     }
                 }
@@ -486,12 +414,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     option.toInt() == 3 -> {
                         bottomSheetOption?.apply {
                             cl_choose_date?.visible()
-                            tf_start_date?.textFieldInput?.setText(defaultStartDate)
+                            tf_start_date?.textFieldInput?.setText(defaultStartDateStr)
                             tf_start_date?.textFieldInput?.isFocusable = false
                             tf_start_date?.textFieldInput?.isClickable = true
                             tf_start_date?.textFieldInput?.setOnClickListener { showDatePicker(START_DATE) }
 
-                            tf_end_date?.textFieldInput?.setText(defaultEndDate)
+                            tf_end_date?.textFieldInput?.setText(defaultEndDateStr)
                             tf_end_date?.textFieldInput?.isFocusable = false
                             tf_end_date?.textFieldInput?.isClickable = true
                             tf_end_date?.textFieldInput?.setOnClickListener { showDatePicker(END_DATE) }
@@ -553,9 +481,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (flag.equals(START_DATE, true)) {
                         paramUohOrder.createTimeStart = "${resultDate[2]}-$monthStr-$dateStr"
                         bottomSheetOption?.tf_start_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                        defaultStartDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
                     } else {
                         paramUohOrder.createTimeEnd = "${resultDate[2]}-$monthStr-$dateStr"
                         bottomSheetOption?.tf_end_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                        defaultEndDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
                     }
                     datePicker.dismiss()
                 }

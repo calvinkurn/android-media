@@ -17,6 +17,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
     var uohItemMapKeyList = HashMap<String, String>()
     var filterType = -1
     var selectedRadio = -1
+    var selectedKey = ""
 
     interface ActionListener {
         fun onOptionItemClick(option: String, label: String, filterType: Int)
@@ -40,7 +41,9 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
 
         holder.itemView.rb_option.setOnCheckedChangeListener(null)
 
-        if (position == 2) {
+        if (filterType == UohConsts.TYPE_FILTER_DATE && position == 2 && selectedRadio == -1 && selectedKey.isEmpty()) {
+            holder.itemView.rb_option.isChecked = true
+        } else if (arrayKeys[position].equals(selectedKey, true) && selectedRadio == -1) {
             holder.itemView.rb_option.isChecked = true
         } else {
             holder.itemView.rb_option.isChecked = position == selectedRadio

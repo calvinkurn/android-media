@@ -32,7 +32,7 @@ data class UohListParam(
         var page: Int = 0,
 
         @SerializedName("Limit")
-        var limit: Int = 0,
+        var limit: Int = 20,
 
         @SerializedName("SortBy")
         var sortBy: String = "",
