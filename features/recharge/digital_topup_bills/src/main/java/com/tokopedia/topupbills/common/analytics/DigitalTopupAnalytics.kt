@@ -8,7 +8,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransacti
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
-import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
+import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 

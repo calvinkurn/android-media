@@ -6,6 +6,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

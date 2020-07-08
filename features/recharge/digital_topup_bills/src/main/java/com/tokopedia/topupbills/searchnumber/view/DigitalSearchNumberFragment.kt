@@ -16,7 +16,7 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragm
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
-import com.tokopedia.topupbills.covertContactUriToContactData
+import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
 import kotlinx.android.synthetic.main.fragment_search_number_telco.*
 import java.util.*

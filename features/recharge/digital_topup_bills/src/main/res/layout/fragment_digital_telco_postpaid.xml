@@ -32,7 +32,7 @@
                 app:tckv_indicator_on_color="@color/tkpd_main_green"
                 tools:visibility="gone" />
 
-            <com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
+            <com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
                 android:id="@+id/telco_input_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
