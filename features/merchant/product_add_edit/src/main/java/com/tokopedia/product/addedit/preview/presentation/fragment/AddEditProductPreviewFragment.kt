@@ -602,9 +602,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             // to avoid double hit tracker when dragging or touching image product, we have to put if here
             if(countTouchPhoto == 2) {
                 if (viewModel.productInputModel.value?.didBackPress == true || viewModel.isAdding) {
-                    ProductAddMainTracking.trackDragPhoto(shopId)
+                    ProductAddStepperTracking.trackDragPhoto(shopId)
                 } else {
-                    ProductEditMainTracking.trackDragPhoto(shopId)
+                    ProductEditStepperTracking.trackDragPhoto(shopId)
                 }
             }
         }
