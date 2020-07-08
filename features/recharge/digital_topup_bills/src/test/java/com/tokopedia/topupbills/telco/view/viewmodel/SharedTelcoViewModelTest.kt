@@ -1,6 +1,8 @@
 package com.tokopedia.topupbills.telco.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.topupbills.data.TopupBillsPromo
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -32,6 +34,38 @@ class SharedTelcoViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         telcoViewModel = SharedTelcoViewModel(graphqlRepository, Dispatchers.Unconfined)
+    }
+
+    @Test
+    fun setRecommendationTelco_dataValid() {
+        //given
+        val listRecommendation = ArrayList<TopupBillsRecommendation>()
+        listRecommendation.add(TopupBillsRecommendation(clientNumber = "0875343243434"))
+        //when
+        telcoViewModel.setRecommendationTelco(listRecommendation)
+        //then
+        assertEquals(listRecommendation[0].clientNumber, telcoViewModel.recommendations.value?.get(0)?.clientNumber)
+    }
+
+    @Test
+    fun setPromoTelco_dataValid() {
+        //given
+        val listPromo = ArrayList<TopupBillsPromo>()
+        listPromo.add(TopupBillsPromo(title = "test promo telco"))
+        //when
+        telcoViewModel.setPromoTelco(listPromo)
+        //then
+        assertEquals(listPromo[0].title, telcoViewModel.promos.value?.get(0)?.title)
+    }
+
+    @Test
+    fun setSelectedRecentNumber_dataValid() {
+        //given
+        val selectedRecent = TopupBillsRecommendation(clientNumber = "0875343243434")
+        //when
+        telcoViewModel.setSelectedRecentNumber(selectedRecent)
+        //then
+        assertEquals(selectedRecent.clientNumber, telcoViewModel.selectedRecentNumber.value?.clientNumber)
     }
 
     @Test
