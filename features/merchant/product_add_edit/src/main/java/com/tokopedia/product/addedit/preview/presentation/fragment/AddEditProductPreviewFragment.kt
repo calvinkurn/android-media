@@ -507,6 +507,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             return
                         }
                     }
+                    viewModel.productAddResult.value?.didBackPress = true
                     val productInputModel = viewModel.productAddResult.value ?: ProductInputModel()
                     context?.let {
                         val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)

@@ -104,7 +104,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
             it.isNullOrBlank()
         }
         addSource(productInputModel) {
-            it.didBackPress
+            if(it.didBackPress) {
+                it.didBackPress
+            }
         }
     }
 
