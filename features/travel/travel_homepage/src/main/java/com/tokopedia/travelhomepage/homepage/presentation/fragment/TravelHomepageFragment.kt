@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
@@ -182,33 +181,33 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun getScreenName(): String = ""
 
-    override fun onItemBindViewHolder(travelLayoutSubhomepageMetaData: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+    override fun onItemBindViewHolder(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
         travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
-                travelLayoutSubhomepageMetaData, true)
+                travelLayoutSubhomepage, true)
     }
 
-    override fun onBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
-        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    override fun onBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
+        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
     }
 
-    override fun onCategoryItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
-        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    override fun onCategoryItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
+        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
     }
 
-    override fun onDestinationItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
-        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    override fun onDestinationItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
+        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
     }
 
-    override fun onLegoBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
-        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    override fun onLegoBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
+        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
     }
 
-    override fun onProductCardItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
-        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    override fun onProductCardItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
+        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
     }
 
-    override fun onHomepageSectionItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
-        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    override fun onHomepageSectionItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
+        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
     }
 
     override fun onItemClick(appUrl: String, webUrl: String) {
