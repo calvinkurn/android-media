@@ -419,12 +419,16 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     public void onClickBanner(ProductItem productItem) {
+        String deeplink = "tokopedia://";
+        String fullPathWW = "https://www.tokopedia.com/";
+        String domainWithWWW = "www.tokopedia.com/";
+        String domainWithoutWWW = "tokopedia.com/";
         if (!TextUtils.isEmpty(productItem.getSeoUrl())) {
-            if (productItem.getSeoUrl().contains("www.tokopedia.com")) {
-                String applink = productItem.getSeoUrl().replace("https://www.tokopedia.com/", "tokopedia://");
+            if (productItem.getSeoUrl().contains(domainWithWWW)) {
+                String applink = productItem.getSeoUrl().replace(fullPathWW,deeplink );
                 RouteManager.route(getView().getActivity(), applink);
-            } else if(productItem.getSeoUrl().contains("tokopedia.com")) {
-                String applink = productItem.getSeoUrl().replace("tokopedia.com/", "tokopedia://");
+            } else if(productItem.getSeoUrl().contains(domainWithoutWWW)) {
+                String applink = productItem.getSeoUrl().replace(domainWithoutWWW, deeplink);
                 RouteManager.route(getView().getActivity(), applink);
             } else {
                 RouteManager.route(getView().getActivity(), productItem.getSeoUrl());
