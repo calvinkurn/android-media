@@ -35,12 +35,11 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
             android:background="@drawable/bg_play_bottom_sheet"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/gl_max_height" />
+            app:layout_constraintTop_toTopOf="@id/gl_max_height"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
