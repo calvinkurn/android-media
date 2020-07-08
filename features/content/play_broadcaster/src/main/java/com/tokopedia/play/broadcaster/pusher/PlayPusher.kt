@@ -53,7 +53,7 @@ interface PlayPusher {
     suspend fun resume()
 
     /**
-     * Call this method to disable ongoing live stream. Then, the stream ingest SDK pauses the video preview and video stream ingest at the last frame.
+     * Call this method to disable ongoing live stream. Then, the SDK pauses the video preview and video stream at the last frame.
      */
     suspend fun pause()
 
