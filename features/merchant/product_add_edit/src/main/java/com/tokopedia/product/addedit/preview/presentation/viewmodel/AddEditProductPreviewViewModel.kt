@@ -101,7 +101,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     val isAdding =  MediatorLiveData<Boolean>().apply {
         addSource(productId) {
-            it.isNullOrEmpty()
+            it.isNullOrBlank()
         }
         addSource(productInputModel) {
             it.didBackPress
