@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.shop.R;
+import com.tokopedia.shop.score.R;
 import com.tokopedia.shop.score.view.model.ShopScoreDetailItemViewModel;
 
 import java.util.ArrayList;

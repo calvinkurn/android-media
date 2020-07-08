@@ -8,7 +8,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.tokopedia.shop.R;
+import com.tokopedia.shop.score.R;
+
 
 /**
  * @author sebastianuskh on 2/23/17.

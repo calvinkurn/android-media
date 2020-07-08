@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.shop.R;
+import com.tokopedia.shop.score.R;
 import com.tokopedia.shop.score.view.widget.SquareProgressBar;
 
 /**

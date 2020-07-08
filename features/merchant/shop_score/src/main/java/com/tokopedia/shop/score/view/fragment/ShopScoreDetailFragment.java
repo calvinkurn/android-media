@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.gm.resource.GMConstant;
-import com.tokopedia.shop.R;
+import com.tokopedia.shop.score.R;
 import com.tokopedia.shop.score.di.ShopScoreDetailDependencyInjector;
 import com.tokopedia.shop.score.view.model.ShopScoreDetailItemViewModel;
 import com.tokopedia.shop.score.view.model.ShopScoreDetailStateEnum;

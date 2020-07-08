@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
-import com.tokopedia.shop.R;
+import com.tokopedia.shop.score.R;
 
 /**
  * @author sebastianuskh on 2/23/17.

@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.shop.R;
+import com.tokopedia.shop.score.R;
 import com.tokopedia.shop.score.view.fragment.ShopScoreDetailFragment;
 import com.tokopedia.shop.score.view.fragment.ShopScoreDetailFragmentCallback;
 

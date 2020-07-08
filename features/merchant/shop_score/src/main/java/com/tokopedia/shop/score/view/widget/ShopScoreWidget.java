@@ -6,7 +6,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.tokopedia.shop.R;
+
+import com.tokopedia.shop.score.R;
 import com.tokopedia.shop.score.view.model.ShopScoreViewModel;
 import com.tokopedia.shop.score.view.model.ShopScoreViewModelData;
 
