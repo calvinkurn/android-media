@@ -55,6 +55,6 @@
     <string name="title_voucher_creation">Voucher Creation</string>
 
     <!-- Shop Score -->
-    <string name="title_shop_score_seller">Performa Toko</string>
+    <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
 
 </resources>
