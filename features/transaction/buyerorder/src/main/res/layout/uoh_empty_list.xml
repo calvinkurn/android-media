@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/ic_empty"
-        android:layout_width="@dimen/dp_160"
-        android:layout_height="@dimen/dp_160"
+        android:layout_width="@dimen/dp_280"
+        android:layout_height="@dimen/dp_210"
         app:srcCompat="@drawable/uoh_empty_order_list"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,8 @@
         android:layout_marginEnd="@dimen/dp_40"
         android:textAlignment="center"
         tools:text="@string/uoh_filter_empty"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:textColor="@color/tkpd_transaction_font_title_recharge_widget"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/desc_empty"
@@ -56,14 +57,14 @@
         android:layout_marginEnd="@dimen/dp_40"
         android:textAlignment="center"
         tools:text="@string/uoh_filter_empty_desc"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:textColor="@color/tkpd_transaction_font_title_recharge_widget"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_cek_peluang"
+        android:id="@+id/btn_empty"
         android:layout_width="@dimen/dp_160"
         android:layout_height="@dimen/dp_40"
         app:unifyButtonType="main"
-        android:text="@string/uoh_filter_empty_btn"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

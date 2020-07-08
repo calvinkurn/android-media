@@ -1,16 +1,15 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.fragment
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -33,6 +32,7 @@ import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -43,9 +43,9 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.btn_apply
-import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.cl_choose_date
-import kotlinx.android.synthetic.main.bottomsheet_option_uoh_item.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
+import kotlinx.android.synthetic.main.uoh_empty_list.*
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -79,6 +79,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var arrayFilterDate = arrayOf<String>()
     private var onLoadMore = false
     private var currPage = 1
+    private var textChangedJob: Job? = null
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -108,7 +109,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onRefresh(view: View?) {
-        println("++ masuk onRefresh")
         onLoadMore = false
         currPage = 1
         loadOrderHistoryList()
@@ -131,6 +131,23 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.setPullEnabled(true)
         uohListItemAdapter = UohListItemAdapter()
 
+        search_bar?.searchBarTextField?.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                textChangedJob?.cancel()
+                textChangedJob = GlobalScope.launch(Dispatchers.Main) {
+                    delay(500L)
+                    paramUohOrder.searchableText = s.toString()
+                    refreshHandler?.startRefresh()
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+        })
         addEndlessScrollListener()
     }
 
@@ -317,7 +334,34 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.finishRefresh()
         rv_order_list?.visibility = View.GONE
         empty_state_order_list?.visibility = View.VISIBLE
+        val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty()
+        searchBarIsNotEmpty?.let {
+            when {
+                it -> {
+                    ic_empty?.loadImageDrawable(R.drawable.uoh_empty_search_list)
+                    title_empty?.text = resources.getString(R.string.uoh_search_empty)
+                    desc_empty?.text = resources.getString(R.string.uoh_search_empty_desc)
+                    btn_empty?.gone()
 
+                }
+                paramUohOrder.status.isNotEmpty() -> {
+                    ic_empty?.loadImageDrawable(R.drawable.uoh_empty_order_list)
+                    title_empty?.text = resources.getString(R.string.uoh_filter_empty)
+                    desc_empty?.text = resources.getString(R.string.uoh_filter_empty_desc)
+                    btn_empty?.visible()
+                    btn_empty?.text = resources.getString(R.string.uoh_filter_empty_btn)
+
+                }
+                else -> {
+                    ic_empty?.loadImageDrawable(R.drawable.uoh_empty_order_list)
+                    title_empty?.text = resources.getString(R.string.uoh_no_order)
+                    desc_empty?.text = resources.getString(R.string.uoh_no_order_desc)
+                    btn_empty?.visible()
+                    btn_empty?.text = resources.getString(R.string.uoh_no_order_btn)
+                    // TODO : larinya kemana klo mulai belanja?
+                }
+            }
+        }
     }
 
     override fun getScreenName(): String = ""

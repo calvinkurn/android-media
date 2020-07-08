@@ -9,21 +9,21 @@
     android:layout_marginRight="@dimen/dp_12"
     android:background="@color/white">
 
-    <com.tokopedia.design.text.SearchInputView
-        android:id="@+id/search_input_view"
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:iconifiedByDefault="true"
-        android:visibility="visible"
-        app:siv_search_hint="@string/hint_cari_transaksi"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/dp_12"
+        app:search_bar_placeholder="@string/hint_cari_transaksi"
+        app:search_bar_show_icon="false"/>
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/uoh_sort_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/search_input_view"
+        app:layout_constraintTop_toBottomOf="@id/search_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_marginTop="@dimen/dp_12"/>
