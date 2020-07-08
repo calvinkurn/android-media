@@ -1,13 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.text.Layout
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.URLSpan
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewTreeObserver
-import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,8 +10,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.talk.Question
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful_question_and_answer.view.*
 
 class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -46,7 +37,7 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
 
     private fun showQuestion(question: String) {
         itemView.productDetailDiscussionInquiry.apply {
-            text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+            text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
         }
     }
 
@@ -87,7 +78,7 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
         if(answer.isNotEmpty()) {
             itemView.productDetailDiscussionRespondentAnswer.apply {
                 isEnabled = true
-                text = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+                text = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
                 show()
             }
         } else {
