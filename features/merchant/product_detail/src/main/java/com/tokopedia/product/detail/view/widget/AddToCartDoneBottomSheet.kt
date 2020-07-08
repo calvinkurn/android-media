@@ -375,7 +375,7 @@ class AddToCartDoneBottomSheet :
     override fun onProductImpression(item: RecommendationItem) {
         if (item.isTopAds) {
             context?.run {
-                TopAdsUrlHitter(className).hitClickUrl(
+                TopAdsUrlHitter(className).hitImpressionUrl(
                         this,
                         item.trackerImageUrl,
                         item.productId.toString(),
