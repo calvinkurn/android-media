@@ -59,7 +59,7 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_show_onboarding")
     @Expose
     private boolean isShowOnboarding;
-    @SerializedName("is_ineligbile_promo_dialog_enabled")
+    @SerializedName("is_ineligible_promo_dialog_enabled")
     @Expose
     private boolean isIneligbilePromoDialogEnabled;
     @SerializedName("disabled_features")
