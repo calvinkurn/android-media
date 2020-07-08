@@ -275,7 +275,6 @@ dependencies {
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.feedComponent)
-    implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.interestPickCommon)
