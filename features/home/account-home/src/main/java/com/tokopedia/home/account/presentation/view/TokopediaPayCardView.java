@@ -20,7 +20,6 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 

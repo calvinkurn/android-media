@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment.setting
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
+import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -35,13 +36,23 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.core.gcm.FCMCacheManager
-import com.tokopedia.core.gcm.NotificationModHandler
-import com.tokopedia.core.util.AppWidgetUtil
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.dialog.AccessRequestDialogFragment
-import com.tokopedia.home.account.AccountConstants.Analytics.*
-import com.tokopedia.home.account.AccountHomeRouter
+import com.tokopedia.home.account.AccountConstants.Analytics.ABOUT_US
+import com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT
+import com.tokopedia.home.account.AccountConstants.Analytics.ADVANCED_SETTING
+import com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW
+import com.tokopedia.home.account.AccountConstants.Analytics.DEVELOPER_OPTIONS
+import com.tokopedia.home.account.AccountConstants.Analytics.HELP_CENTER
+import com.tokopedia.home.account.AccountConstants.Analytics.LOGOUT
+import com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION
+import com.tokopedia.home.account.AccountConstants.Analytics.PAYMENT_METHOD
+import com.tokopedia.home.account.AccountConstants.Analytics.PRIVACY_POLICY
+import com.tokopedia.home.account.AccountConstants.Analytics.SAFE_MODE
+import com.tokopedia.home.account.AccountConstants.Analytics.SETTING
+import com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE
+import com.tokopedia.home.account.AccountConstants.Analytics.SHOP
+import com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
 import com.tokopedia.home.account.constant.SettingConstant
@@ -173,8 +184,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay))
         activity?.let {
-            if (it.application is AccountHomeRouter
-                    && remoteConfig.getBoolean(
+            if (remoteConfig.getBoolean(
                             RemoteConfigKey.CHECKOUT_TEMPLATE_SETTING_TOGGLE, false)
             ) {
                 settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
@@ -454,15 +464,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             clearEtalaseCache(it.applicationContext)
             TrackApp.getInstance().moEngage.logoutEvent()
             userSession.logoutSession()
-            val notify = NotificationModHandler(activity)
-            notify.dismissAllActivedNotifications()
-            NotificationModHandler.clearCacheAllNotification(activity)
+//            val notify = NotificationModHandler(activity)
+//            notify.dismissAllActivedNotifications()
+//            NotificationModHandler.clearCacheAllNotification(activity)
 
             val intent: Intent = getHomeIntent(activity)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             it.startActivity(intent)
-            AppWidgetUtil.sendBroadcastToAppWidget(it)
-            CMPushNotificationManager.instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(it), true)
+            sendBroadcastToAppWidget(it)
+            CMPushNotificationManager.instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
             if(this::tetraDebugger.isInitialized) tetraDebugger.setUserId("")
         }
@@ -475,6 +485,14 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
         val stickyPref = activity!!.getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE)
         stickyPref.edit().clear().apply()
+    }
+
+    private fun sendBroadcastToAppWidget(context: Context) {
+        if (GlobalConfig.isSellerApp()) {
+            val i = Intent()
+            i.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            context.sendBroadcast(i)
+        }
     }
 
     private fun initTetraDebugger() {
