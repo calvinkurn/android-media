@@ -20,14 +20,19 @@ import com.tokopedia.topads.auto.view.OnBoardingSliderAdapter
 import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen1
 import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen2
 import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen3
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_auto_onboarding_activity_layout.*
+import javax.inject.Inject
 
 /**
  * Created by Pika on 27/5/20.
  */
-class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent> {
 
+private const val CLICK_AKTIFKAN = "click - aktifkan"
+class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent> {
 
     private lateinit var adapter: OnBoardingSliderAdapter
 
@@ -49,6 +54,7 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
         }
         btn_submit.setOnClickListener {
             if (view_pager.currentItem == 2) {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_AKTIFKAN, "")
                 startActivity(Intent(this, CreateAutoAdsActivity::class.java))
                 finish()
             } else
@@ -65,7 +71,6 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
             }
 
         })
-
     }
 
     private fun setToolBarStatusBar(position: Int) {

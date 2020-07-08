@@ -28,6 +28,7 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -74,6 +75,7 @@ import kotlin.math.abs
  * Created by hadi.putra on 23/04/18.
  */
 
+private const val CLICK_COBA_SEKARANG = "click - coba sekarang"
 class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, CustomDatePicker.ActionListener {
     private var adStatus = 0
     private var adCurrentState = 0
@@ -172,6 +174,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
                 RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
             else
                 openDashboard()
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_COBA_SEKARANG, "")
         }
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
         startDate = Utils.getStartDate()

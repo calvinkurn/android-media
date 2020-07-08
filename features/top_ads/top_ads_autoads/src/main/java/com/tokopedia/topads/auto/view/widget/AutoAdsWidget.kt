@@ -35,6 +35,7 @@ import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.auto.view.sheet.ManualAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,6 +45,12 @@ import javax.inject.Inject
 /**
  * Created by Pika on 16/5/20.
  */
+
+private const val CLICK_TAMBHA_STOK = "click - tambah stok"
+private const val CLICK_TOP_UP_KREDIT = "click - top up kredit"
+private const val CLICK_CEK_STATUS = "click - cek status"
+private const val CLICK_TINGA_KATLAN = "click - tingkatkan"
+private const val CLICK_SETTING_ICON = "click - settings icon"
 class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, attrs) {
 
 
@@ -164,10 +171,22 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 when (status) {
-                    outOfCredit -> RouteManager.route(context, TOPADS_BUY_CREDIT)
-                    outOfStock -> RouteManager.route(context, MANAGE_PRODUCT_LINK)
-                    outOfDailyBudget -> startEditActivity()
-                    merchantClosed -> RouteManager.route(context, MERCHANT_SETTING_LINK)
+                    outOfCredit -> {
+                        RouteManager.route(context, TOPADS_BUY_CREDIT)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TOP_UP_KREDIT, "")
+                    }
+                    outOfStock -> {
+                        RouteManager.route(context, MANAGE_PRODUCT_LINK)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBHA_STOK, "")
+                    }
+                    outOfDailyBudget -> {
+                        startEditActivity()
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TINGA_KATLAN, "")
+                    }
+                    merchantClosed -> {
+                        RouteManager.route(context, MERCHANT_SETTING_LINK)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_CEK_STATUS, "")
+                    }
                 }
             }
 
@@ -198,6 +217,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
             switch.visibility = View.INVISIBLE
             setting.setOnClickListener {
                 startEditActivity()
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
             }
         }
     }
