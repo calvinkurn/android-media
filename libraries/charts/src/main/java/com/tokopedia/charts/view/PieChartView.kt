@@ -13,7 +13,6 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.tokopedia.charts.R
 import com.tokopedia.charts.config.piechart.PieChartConfigBuilder
-import com.tokopedia.charts.config.piechart.annotation.PieChartStyle
 import com.tokopedia.charts.config.piechart.model.PieChartConfig
 import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.charts.view.adapter.PieChartLegendAdapter
@@ -156,24 +155,23 @@ class PieChartView(
                 setupAnimation()
             }
 
-            setPieChartStyle()
+            setupDonutChart()
         }
     }
 
-    private fun setPieChartStyle() = with(pieChart) {
+    private fun setupDonutChart() = with(pieChart) {
         config?.let { cfg ->
-            when (cfg.chartStyle) {
-                PieChartStyle.DONATE -> {
-                    isDrawHoleEnabled = true
-                }
-                PieChartStyle.DONATE_CURVE -> {
-                    isDrawHoleEnabled = true
+            if (cfg.donutStyleConfig.isEnabled) {
+                isDrawHoleEnabled = true
+
+                if (cfg.donutStyleConfig.isCurve) {
                     setDrawSlicesUnderHole(false)
                     setDrawRoundedSlices(true)
                 }
-                PieChartStyle.DEFAULT -> {
-                    isDrawHoleEnabled = false
-                }
+
+                holeRadius = cfg.donutStyleConfig.holeRadius
+            } else {
+                isDrawHoleEnabled = false
             }
         }
     }
