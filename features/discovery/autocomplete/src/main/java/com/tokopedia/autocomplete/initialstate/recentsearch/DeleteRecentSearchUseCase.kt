@@ -1,9 +1,9 @@
 package com.tokopedia.autocomplete.initialstate.recentsearch
 
 import android.text.TextUtils
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.autocomplete.initialstate.data.DeleteRecentSearchResponse
 import com.tokopedia.autocomplete.util.UrlParamHelper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -40,7 +40,7 @@ class DeleteRecentSearchUseCase(
     private fun mapIsSuccess(): Func1<GraphqlResponse, Boolean>? {
         return Func1 { graphqlResponse: GraphqlResponse ->
             val searchResponse = graphqlResponse.getData<DeleteRecentSearchResponse>(DeleteRecentSearchResponse::class.java)
-            searchResponse.data.isSuccess
+            (searchResponse != null && searchResponse.data.isSuccess)
         }
     }
 
@@ -76,8 +76,7 @@ class DeleteRecentSearchUseCase(
 
             params.putString(KEY_Q, item.title)
             params.putString(KEY_TYPE, item.type)
-
-            if(item.productId.isNotEmpty()) params.putString(KEY_ITEM_ID, item.productId)
+            params.putString(KEY_ITEM_ID, item.productId)
 
             var uniqueId = AuthHelper.getMD5Hash(registrationId)
             if (!TextUtils.isEmpty(userId)) {
@@ -110,6 +109,19 @@ class DeleteRecentSearchUseCase(
             params.putString(KEY_SOURCE, DEFAULT_SOURCE)
 
             return params
+        }
+    }
+
+    private data class DeleteRecentSearchResponse(
+            @SerializedName("universe_delete_recent_search")
+            val data: DeleteRecentSearchUniverse = DeleteRecentSearchUniverse()
+    ) {
+        data class DeleteRecentSearchUniverse(
+                @SerializedName("status")
+                val status: String = ""
+        ) {
+            val isSuccess: Boolean
+                get() = status.equals("success", true)
         }
     }
 }
