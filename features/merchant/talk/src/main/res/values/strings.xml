@@ -95,11 +95,11 @@
     <string name="reading_sort_bottom_sheet_title">Urutkan berdasarkan</string>
     <string name="reading_sort_chip_string">%s (%d)</string>
     <string name="reading_seller_label">Penjual</string>
-    <string name="reading_no_answer">Belum ada jawaban</string>
+    <string name="reading_no_answer">Bantu jawab</string>
     <string name="delete_question_toaster_success">Pertanyaanmu berhasil dihapus.</string>
     <string name="reading_create_question_toaster_success">Yay, pertanyaan berhasil dibuat. Tunggu notifikasi jawaban di Inbox, ya!</string>
     <string name="reading_attached_product">%d produk</string>
-    <string name="reading_other_answers">Lihat %d jawaban lainnya</string>
+    <string name="reading_other_answers">%d jawaban lainnya</string>
     <string name="reading_ellipsis">…</string>
     <string name="reading_ticker">Diskusi kini ganti tampilan jadi Q&amp;A. Kamu bisa tanya dan jawab seputar info barang di sini.</string>
 

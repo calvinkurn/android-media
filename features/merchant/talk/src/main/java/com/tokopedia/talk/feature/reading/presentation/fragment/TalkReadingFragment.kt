@@ -104,7 +104,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
-        setItemDecoration()
         getDataFromArguments()
         observeViewState()
         observeProductHeader()
@@ -529,10 +528,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun resetSortOptions() {
         isLoadingInitialData = true
         viewModel.resetSortOptions()
-    }
-
-    private fun setItemDecoration() {
-        talkReadingRecyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
     }
 
 }
