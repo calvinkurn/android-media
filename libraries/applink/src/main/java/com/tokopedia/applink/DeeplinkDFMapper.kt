@@ -130,7 +130,7 @@ object DeeplinkDFMapper : CoroutineScope {
     private const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_GAMIFICATION = "df_gamification"
-    const val DF_SHOP_SCORE = "shop_score_sellerapp"
+//    const val DF_SHOP_SCORE = "shop_score_sellerapp"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -297,7 +297,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_BASE, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE, R.string.merchant_seller))
-            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE) }, DF_SHOP_SCORE, R.string.title_shop_score_sellerapp))
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE) }, DF_BASE, R.string.title_shop_score_sellerapp))
             add(DFP({ it.startsWith(CREATE_VOUCHER) ||
                     it.startsWith(VOUCHER_LIST) ||
                     it.startsWith(VOUCHER_DETAIL)}, DF_BASE, R.string.title_voucher_creation))
