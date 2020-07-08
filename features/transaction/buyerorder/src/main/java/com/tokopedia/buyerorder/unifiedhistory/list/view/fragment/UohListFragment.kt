@@ -1,5 +1,8 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.fragment
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +10,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
@@ -15,23 +20,35 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListParam
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohListItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
+import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.kotlin.extensions.convertMonth
+import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.bottomsheet_option_uoh.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.btn_apply
+import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.cl_choose_date
+import kotlinx.android.synthetic.main.bottomsheet_option_uoh_item.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 
 /**
@@ -43,6 +60,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var uohListItemAdapter: UohListItemAdapter
+    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private var refreshHandler: RefreshHandler? = null
     private var paramUohOrder = UohListParam()
     private var orderList: UohListOrder.Data.UohOrders = UohListOrder.Data.UohOrders()
@@ -54,7 +72,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var filter1: SortFilterItem? = null
     private var filter2: SortFilterItem? = null
     private var filter3: SortFilterItem? = null
-
+    private var defaultStartDate = ""
+    private var defaultEndDate = ""
+    private var arrayFilterDate = arrayOf<String>()
+    private var onLoadMore = false
+    private var currPage = 1
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -78,12 +100,23 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setInitialValue()
         prepareLayout()
         observingOrderHistory()
     }
 
     override fun onRefresh(view: View?) {
         loadOrderHistoryList()
+    }
+
+    private fun setInitialValue() {
+        defaultStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+        defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
+        paramUohOrder.createTimeStart = defaultStartDate
+        paramUohOrder.createTimeEnd = defaultEndDate
+        paramUohOrder.page = currPage
+
+        arrayFilterDate = resources.getStringArray(R.array.filter_date)
     }
 
     private fun prepareLayout() {
@@ -96,6 +129,105 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             adapter = uohListItemAdapter
         }
     }
+
+    /*private fun addEndlessScrollListener() {
+        rv_order_list?.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = uohListItemAdapter
+            scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    onLoadMore = true
+                    if (orderList.next.isNotEmpty()) {
+                        loadOrderList(nextOrderId)
+                    }
+                }
+            }
+            addOnScrollListener(scrollListener)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        _animator?.end()
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isFilterButtonAnimating = false
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isFilterButtonAnimating = true
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isFilterButtonAnimating = false
+                                }
+                            })
+                            if (!isFilterButtonAnimating) {
+                                start()
+                            }
+                        }
+                    }
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 0) {
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isFilterButtonAnimating = false
+                                    _animator = null
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isFilterButtonAnimating = true
+                                    _animator = animation
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isFilterButtonAnimating = false
+                                    _animator = null
+
+                                }
+                            })
+                            if (!isFilterButtonAnimating) {
+                                start()
+                            }
+                        }
+                    } else if (dy < 0) {
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isFilterButtonAnimating = false
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isFilterButtonAnimating = true
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isFilterButtonAnimating = false
+                                }
+                            })
+                            if (!isFilterButtonAnimating) {
+                                start()
+                            }
+                        }
+                    }
+                }
+            })
+        }
+    }*/
 
     private fun loadOrderHistoryList() {
         uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.uoh_get_order_history), paramUohOrder)
@@ -154,28 +286,28 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        filter1 = SortFilterItem(UohConsts.ALL_DATE, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
+        filter1 = SortFilterItem(UohConsts.ALL_DATE, ChipsUnify.TYPE_SELECTED, ChipsUnify.SIZE_MEDIUM)
         filter1?.let {
             it.listener = {
-                /*it.type = if(it.type == ChipsUnify.TYPE_NORMAL) {
-                    ChipsUnify.TYPE_SELECTED
-                } else {
-                    ChipsUnify.TYPE_NORMAL
-                }*/
-                println("++ SHOW BOTTOMSHEET 1!")
+                uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
+                showBottomSheetOptions(UohConsts.CHOOSE_DATE)
+                val mapKey = HashMap<String, String>()
+                var i = 0
+                arrayFilterDate.forEach { optionDate ->
+                    mapKey["$i"] = optionDate
+                    i++
+                }
+                uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
+                uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
+                uohBottomSheetOptionAdapter.notifyDataSetChanged()
             }
+            it.title = arrayFilterDate[2]
             chips.add(it)
         }
 
         filter2 = SortFilterItem(UohConsts.ALL_STATUS, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
         filter2?.let {
             it.listener = {
-                /*it.type = if(it.type == ChipsUnify.TYPE_NORMAL) {
-                    ChipsUnify.TYPE_SELECTED
-                } else {
-                    ChipsUnify.TYPE_NORMAL
-                }*/
-
                 uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
                 showBottomSheetOptions(UohConsts.CHOOSE_FILTERS)
                 val mapKey = HashMap<String, String>()
@@ -322,13 +454,117 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         when (filterType) {
             UohConsts.TYPE_FILTER_DATE -> {
+                when {
+                    option.toInt() == 0 -> {
+                        bottomSheetOption?.apply {
+                            cl_choose_date?.gone()
+                        }
+                        paramUohOrder.createTimeStart = ""
+                        paramUohOrder.createTimeEnd = ""
 
+                    }
+                    option.toInt() == 1 -> {
+                        bottomSheetOption?.apply {
+                            cl_choose_date?.gone()
+                        }
+                        val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -30)
+                        val endDate= Date().toFormattedString("yyyy-MM-dd")
+                        paramUohOrder.createTimeStart = startDate
+                        paramUohOrder.createTimeEnd = endDate
+
+                    }
+                    option.toInt() == 2 -> {
+                        bottomSheetOption?.apply {
+                            cl_choose_date?.gone()
+                        }
+                        val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+                        val endDate= Date().toFormattedString("yyyy-MM-dd")
+                        paramUohOrder.createTimeStart = startDate
+                        paramUohOrder.createTimeEnd = endDate
+
+                    }
+                    option.toInt() == 3 -> {
+                        bottomSheetOption?.apply {
+                            cl_choose_date?.visible()
+                            tf_start_date?.textFieldInput?.setText(defaultStartDate)
+                            tf_start_date?.textFieldInput?.isFocusable = false
+                            tf_start_date?.textFieldInput?.isClickable = true
+                            tf_start_date?.textFieldInput?.setOnClickListener { showDatePicker(START_DATE) }
+
+                            tf_end_date?.textFieldInput?.setText(defaultEndDate)
+                            tf_end_date?.textFieldInput?.isFocusable = false
+                            tf_end_date?.textFieldInput?.isClickable = true
+                            tf_end_date?.textFieldInput?.setOnClickListener { showDatePicker(END_DATE) }
+                        }
+                    }
+                }
             }
             UohConsts.TYPE_FILTER_STATUS -> {
                 paramUohOrder.status = option
             }
             UohConsts.TYPE_FILTER_CATEGORY -> {
                 paramUohOrder.verticalCategory = option
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showDatePicker(flag: String) {
+        context?.let {  context ->
+            val minDate = Calendar.getInstance()
+
+            val resultMinDate = orderList.dateLimit.split('-')
+            minDate.set(Calendar.YEAR, resultMinDate[0].toInt())
+            minDate.set(Calendar.MONTH, resultMinDate[1].toInt())
+            minDate.set(Calendar.DATE, resultMinDate[2].toInt())
+            val maxDate = Calendar.getInstance()
+            val isEndDateFilled = paramUohOrder.createTimeEnd.isNotEmpty()
+            if (isEndDateFilled && flag.equals(START_DATE, true)) {
+                val splitEndDate = paramUohOrder.createTimeEnd.split('-')
+                maxDate.set(splitEndDate[0].toInt(), splitEndDate[1].toInt() - 1, splitEndDate[2].toInt())
+            }
+            val isStartDateFilled = paramUohOrder.createTimeStart.isNotEmpty()
+            if (isStartDateFilled && flag.equals(END_DATE, true)) {
+                val splitStartDate = paramUohOrder.createTimeStart.split('-')
+                minDate.set(splitStartDate[0].toInt(), splitStartDate[1].toInt() - 1, splitStartDate[2].toInt())
+            }
+
+            val currentDate = Calendar.getInstance()
+
+            val splitDate: List<String>? = if (flag.equals(START_DATE, true)) {
+                paramUohOrder.createTimeStart.split('-')
+            } else {
+                paramUohOrder.createTimeEnd.split('-')
+            }
+
+            splitDate?.let {
+                currentDate.set(it[0].toInt(), it[1].toInt()-1, it[2].toInt())
+                val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
+                fragmentManager?.let { it1 -> datePicker.show(it1, "") }
+                datePicker.datePickerButton.setOnClickListener {
+                    val resultDate = datePicker.getDate()
+                    val monthInt = resultDate[1]+1
+                    var monthStr = monthInt.toString()
+                    if (monthStr.length == 1) monthStr = "0$monthStr"
+
+                    var dateStr = resultDate[0].toString()
+                    if (dateStr.length == 1) dateStr = "0$dateStr"
+
+                    if (flag.equals(START_DATE, true)) {
+                        paramUohOrder.createTimeStart = "${resultDate[2]}-$monthStr-$dateStr"
+                        bottomSheetOption?.tf_start_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                    } else {
+                        paramUohOrder.createTimeEnd = "${resultDate[2]}-$monthStr-$dateStr"
+                        bottomSheetOption?.tf_end_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                    }
+                    datePicker.dismiss()
+                }
+                if (flag.equals(START_DATE, true)) {
+                    datePicker.setTitle(getString(R.string.uoh_custom_start_date))
+                } else {
+                    datePicker.setTitle(getString(R.string.uoh_custom_end_date))
+                }
+                datePicker.setCloseClickListener { datePicker.dismiss() }
             }
         }
     }

@@ -7,9 +7,12 @@ object UohConsts {
     const val ALL_DATE = "Semua Tanggal"
     const val ALL_STATUS = "Semua Status"
     const val ALL_CATEGORIES = "Semua Kategori"
+    const val CHOOSE_DATE = "Pilih Tanggal"
     const val CHOOSE_FILTERS = "Pilih Status"
     const val CHOOSE_CATEGORIES = "Pilih Kategori"
     const val TYPE_FILTER_DATE = 0
     const val TYPE_FILTER_STATUS = 1
     const val TYPE_FILTER_CATEGORY = 2
+    const val START_DATE = "start_date"
+    const val END_DATE = "end_date"
 }

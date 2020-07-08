@@ -465,4 +465,6 @@ Anda di sini.</string>
     <string name="uoh_search_empty">Oops, nggak ada yang sesuai kata kuncimu</string>
     <string name="uoh_search_empty_desc">Coba masukkan kata kunci lain, ya.</string>
     <string name="uoh_apply_filter_label">Terapkan</string>
+    <string name="uoh_custom_start_date">Mulai dari</string>
+    <string name="uoh_custom_end_date">Sampai</string>
 </resources>

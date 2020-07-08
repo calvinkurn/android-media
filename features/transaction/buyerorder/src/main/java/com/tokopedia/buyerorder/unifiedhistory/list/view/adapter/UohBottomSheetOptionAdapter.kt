@@ -5,6 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh_item.view.*
 
 /**
@@ -32,19 +35,25 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
         val arrayKeys = uohItemMapKeyList.keys.toMutableList()
         holder.itemView.label_option.text = arrayValues[position]
         holder.itemView.setOnClickListener {
-            selectItem(position, arrayKeys, arrayValues)
+            selectItem(position, arrayKeys, arrayValues, holder)
         }
 
         holder.itemView.rb_option.setOnCheckedChangeListener(null)
-        holder.itemView.rb_option.isChecked = position == selectedRadio
+
+        if (position == 2) {
+            holder.itemView.rb_option.isChecked = true
+        } else {
+            holder.itemView.rb_option.isChecked = position == selectedRadio
+        }
         holder.itemView.rb_option.setOnCheckedChangeListener { _, _ ->
-            selectItem(position, arrayKeys, arrayValues)
+            selectItem(position, arrayKeys, arrayValues, holder)
         }
     }
 
-    private fun selectItem(position: Int, arrayKeys: MutableList<String>, arrayValues: MutableList<String>) {
+    private fun selectItem(position: Int, arrayKeys: MutableList<String>, arrayValues: MutableList<String>, holder: UohBottomSheetOptionAdapter.ViewHolder) {
         selectedRadio = position
         listener.onOptionItemClick(arrayKeys[position], arrayValues[position], filterType)
+
         notifyDataSetChanged()
     }
 
