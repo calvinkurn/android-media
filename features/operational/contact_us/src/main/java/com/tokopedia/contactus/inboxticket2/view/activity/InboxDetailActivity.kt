@@ -21,8 +21,10 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
+import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
+import com.tokopedia.contactus.inboxticket2.view.adapter.ImageUploadAdapter
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
@@ -41,9 +43,6 @@ import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.NEW
 import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
 import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
-import com.tokopedia.contactus.orderquery.data.ImageUpload
-import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter
-import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter.OnSelectImageClick
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -60,7 +59,7 @@ import rx.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageClick, View.OnClickListener, CloseServicePrioritiesBottomSheet, CloseSHelpFullBottomSheet, CloseComplainBottomSheetListner {
+class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener, CloseServicePrioritiesBottomSheet, CloseSHelpFullBottomSheet, CloseComplainBottomSheetListner {
 
     private lateinit var tvTicketTitle: TextView
     private lateinit var tvIdNum: TextView
@@ -283,10 +282,15 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
             }
         }
         super.onCreate(savedInstanceState)
-        imageUploadAdapter = ImageUploadAdapter(this, this)
+        imageUploadAdapter = ImageUploadAdapter(this, this, onClickCross)
         rvSelectedImages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvSelectedImages.adapter = imageUploadAdapter
         edMessage.addTextChangedListener((mPresenter as InboxDetailPresenter).watcher())
+    }
+
+    private val onClickCross = {
+        rvSelectedImages.hide()
+        rvMessageList.setPadding(0, 0, 0, resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
     }
 
     private fun showImagePickerDialog() {
@@ -320,11 +324,12 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     }
 
     private fun onClickUpload() {
-        if (rvSelectedImages.visibility != View.VISIBLE) showImagePickerDialog() else {
-            rvSelectedImages.hide()
-            rvMessageList.setPadding(0, 0, 0,
-                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
-        }
+//        if (rvSelectedImages.visibility != View.VISIBLE) showImagePickerDialog() else {
+//           // rvSelectedImages.hide()
+//            rvMessageList.setPadding(0, 0, 0,
+//                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+//        }
+        showImagePickerDialog()
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickAttachImage,
@@ -513,12 +518,12 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         if (enabled) {
             ivSendButton.setColorFilter(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_nob))
         } else {
-            ivSendButton.setColorFilter(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_300))
+            ivSendButton.clearColorFilter()
         }
     }
 
     override val imageList: List<ImageUpload>
-        get() = imageUploadAdapter.imageUpload
+        get() = imageUploadAdapter.getUploadedImageList()
 
     override val userMessage: String
         get() = edMessage.text.toString()
