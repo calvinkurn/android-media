@@ -38,8 +38,8 @@
 
     </com.tokopedia.unifycomponents.TabsUnify>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_campaign_stock"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp2_campaign_stock"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/tabs_campaign_stock"

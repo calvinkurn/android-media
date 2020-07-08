@@ -9,12 +9,17 @@ data class GetStockAllocationResponse(
 )
 
 data class GetStockAllocation(
+        @SerializedName("data")
+        val data: GetStockAllocationData = GetStockAllocationData(),
+        @SerializedName("header")
+        val header: Header? = Header()
+)
+
+data class GetStockAllocationData(
         @SerializedName("summary")
         val summary: GetStockAllocationSummary? = GetStockAllocationSummary(),
         @SerializedName("detail")
-        val detail: GetStockAllocationDetail? = GetStockAllocationDetail(),
-        @SerializedName("header")
-        val header: Header? = Header()
+        val detail: GetStockAllocationDetail? = GetStockAllocationDetail()
 )
 
 data class GetStockAllocationSummary(

@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.campaignstock.ui.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
@@ -968,6 +969,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
         if (product.hasStockReserved == true) {
             //TODO: go to stock campaign page
+            context?.run {
+                startActivity(CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)))
+            }
         } else {
             val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
                 viewModel.editVariantsStock(result)
