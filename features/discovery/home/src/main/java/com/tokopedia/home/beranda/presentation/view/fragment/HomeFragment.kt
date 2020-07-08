@@ -60,9 +60,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpre
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
-import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionItem
-import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
-import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickReload
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
@@ -72,6 +69,7 @@ import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
+import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
@@ -1580,16 +1578,16 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels) {
         getHomeViewModel().getPopularKeywordData()
-        sendPopularKeywordClickReload(channel)
+        PopularKeywordTracking.sendPopularKeywordClickReload(channel)
     }
 
     override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
-        getTrackingQueueObj()?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword, positionInWidget) as HashMap<String, Any>)
+        getTrackingQueueObj()?.putEETracking(PopularKeywordTracking.getPopularKeywordImpressionItem(channel, channel.grids[position], position, keyword, positionInWidget) as HashMap<String, Any>)
     }
 
     override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
         RouteManager.route(context, applink)
-        sendPopularKeywordClickItem(channel, position, keyword, positionInWidget)
+        PopularKeywordTracking.sendPopularKeywordClickItem(channel, position, keyword, positionInWidget)
     }
 
     protected fun registerBroadcastReceiverTokoCash() {
