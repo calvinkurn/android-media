@@ -48,10 +48,6 @@ public interface SearchConstant {
         String KEY_HEADLINE_PARAMS = "headline_params";
     }
 
-    interface RemoteConfigKey {
-        String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
-    }
-
     interface BaseUrl {
         String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
         String ACE_DOMAIN = "https://ace.tokopedia.com/";
