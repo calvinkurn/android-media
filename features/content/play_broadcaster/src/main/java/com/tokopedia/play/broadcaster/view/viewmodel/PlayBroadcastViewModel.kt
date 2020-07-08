@@ -149,7 +149,6 @@ class PlayBroadcastViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         _observableChannelId.removeObserver(channelIdObserver)
-        destroyPushStream()
         scope.cancel()
     }
 
