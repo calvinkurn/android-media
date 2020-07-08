@@ -17,9 +17,11 @@ import com.tokopedia.analyticsdebugger.validator.core.Validator
 import com.tokopedia.analyticsdebugger.validator.core.assertAnalyticWithValidator
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.MixLeftViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
+import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -42,6 +44,8 @@ class MixLeftTrackingUiTest {
 
     @Test
     fun testMixLeftHome() {
+        addDebug()
+
         initTest()
 
         doActivityTest()
@@ -49,13 +53,15 @@ class MixLeftTrackingUiTest {
         doAnalyticDebuggerTest()
 
         onFinishTest()
+
+        addDebugEnd()
     }
 
 
 
     private fun initTest() {
         gtmLogDBSource.deleteAll().subscribe()
-        login()
+//        login()
         waitForData()
     }
 
@@ -65,6 +71,14 @@ class MixLeftTrackingUiTest {
 
     private fun waitForData() {
         Thread.sleep(5000)
+    }
+
+    private fun addDebug() {
+        Thread.sleep(10000)
+    }
+
+    private fun addDebugEnd() {
+        Thread.sleep(1000000)
     }
 
     private fun doActivityTest()  {
@@ -97,9 +111,11 @@ class MixLeftTrackingUiTest {
         val viewholder = homeRecyclerView.findViewHolderForAdapterPosition(i)
         when (viewholder) {
             is MixLeftViewHolder -> {
+                logTestMessage("VH MixLeftViewHolder")
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
             }
             is MixLeftComponentViewHolder -> {
+                logTestMessage("VH MixLeftComponentViewHolder")
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
             }
         }
@@ -115,9 +131,10 @@ class MixLeftTrackingUiTest {
             try {
                 Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, ViewActions.click()))
+                logTestMessage("Click SUCCESS child pos: "+j)
             } catch (e: PerformException) {
                 e.printStackTrace()
-                logTestMessage("Click failed: "+j)
+                logTestMessage("Click FAILED child pos: "+j)
             }
         }
     }
