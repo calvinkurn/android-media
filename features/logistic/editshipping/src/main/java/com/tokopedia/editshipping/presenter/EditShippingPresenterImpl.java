@@ -609,7 +609,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     }
 
     @Override
-    public void setCourierAdditionalOptionConfig(int courierIndex, String additionalOptionQueries) {
+    public void setCourierAdditionalOptionConfig(Integer courierIndex, String additionalOptionQueries) {
         courierList.get(courierIndex).getAdditionalOptionDatas().clear();
         try {
             URI uri = URI.create(additionalOptionQueries);
