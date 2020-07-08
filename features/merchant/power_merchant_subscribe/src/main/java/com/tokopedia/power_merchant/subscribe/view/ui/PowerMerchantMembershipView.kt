@@ -49,7 +49,7 @@ class PowerMerchantMembershipView: ConstraintLayout {
             containerWarning.hide()
         } else {
             val expiredDate = shopStatus.powerMerchant.expiredTime
-            textWarning.text = formatCancellationDate(context, expiredDate)
+            textWarning.text = formatCancellationDate(context, R.string.expired_label, expiredDate)
             containerWarning.show()
         }
     }

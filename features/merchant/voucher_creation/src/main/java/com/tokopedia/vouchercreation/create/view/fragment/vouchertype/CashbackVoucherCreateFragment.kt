@@ -357,6 +357,9 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             }
             observe(viewModel.cashbackTypeData) { type ->
                 activeCashbackType = type
+                adapter.data.run {
+                    (get(indexOf(cashbackTypePickerModel)) as? CashbackTypePickerUiModel)?.currentActiveType = activeCashbackType
+                }
             }
             observe(viewModel.voucherImageValueLiveData) { imageValue ->
                 voucherImageType = imageValue

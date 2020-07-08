@@ -7,9 +7,6 @@
     <string name="title_date_picker">Atur Tanggal</string>
 
     <string name="label_back">Kembali</string>
-    <string name="label_top_ads_impression">Tampil</string>
-    <string name="label_top_ads_click">Klik</string>
-    <string name="label_top_ads_ctr">Persentase Klik</string>
     <string name="label_top_ads_conversion">Konversi</string>
     <string name="label_top_ads_conversion_product">Terjual</string>
     <string name="label_top_ads_conversion_store">Favorit</string>
@@ -31,7 +28,6 @@
     <string name="label_top_ads_income">Total Pendapatan</string>
     <string name="label_top_ads_sold">Total Terjual</string>
 
-    <string name="top_ads_desc_credit_label">Kredit TopAds</string>
     <string name="label_add_credit">Tambah Kredit</string>
 
     <!-- statistic -->
@@ -115,5 +111,102 @@
     <string name="hidden_trial_desc1">Produk dan tokomu akan diiklankan gratis hingga [01.Jan.2020]</string>
     <string name="hidden_trial_desc2">Jangkau lebih banyak pembeli dengan beriklan di berbagai halaman strategis.</string>
     <string name="hidden_trial_desc3">Tokopedia akan memilih produk dan biaya iklan yang tepat dengan Iklan Otomatis.</string>
+
+
+    <!-- TopAds Revamp -->
+    <string name="topads_dash_topads_help">TopAds Help</string>
+    <string name="topads_dash_help_ques_1">Apa itu TopAds?</string>
+    <string name="topads_dash_help_ques_2">Apa itu iklan produk?</string>
+    <string name="topads_dash_help_ques_3">Apa itu iklan headline?</string>
+    <string name="topads_dash_help_ques_4">Bagaimana cara memenangkan kompetisi?</string>
+    <string name="topads_dash_help_ques_5">Bagaimana cara membaca statistik iklan?</string>
+    <string name="topads_dash_desc_credit_label">Kredit TopAds</string>
+    <string name="label_top_ads_impression">Tampil</string>
+    <string name="label_top_ads_click">Klik</string>
+    <string name="label_top_ads_ctr">Persentase Klik</string>
+    <string name="topads_dash_button_submit_beranda">Buat Iklan Baru</string>
+    <string name="topads_dash_hari_ini">Hari ini</string>
+    <string name="topads_dash_beranda">Beranda</string>
+    <string name="topads_dash_iklan_produck">Iklan Produk</string>
+    <string name="topads_dash_headline">Headline</string>
+    <string name="topads_dash_buat_iklan">Buat Iklan</string>
+    <string name="auto_ads_status_widget_title">Beriklan nggak pakai ribet</string>
+    <string name="auto_ads_status_widget_description">Pakai Iklan Otomatis bikin lebih efektif beriklan, cukup atur anggaran harian.</string>
+    <string name="auto_ads_status_inactive_button">Coba Sekarang</string>
+    <string name="topads_dash_no_ads_description">Beriklan dengan TopAds bikin produkmu menjangkau banyak pembeli. Yuk, mulai beriklan!</string>
+    <string name="topads_dash_create_group_ads">Mulai Beriklan</string>
+    <string name="topads_datepicker_title">Periode Performa Iklan</string>
+    <string name="topads_dash_empty_group_title">Oops, kamu belum punya grup iklan</string>
+    <string name="topads_dash_empty_group_desc">Kelola iklanmu dengan taruh produk berkategori sama ke dalam satu grup iklan.</string>
+    <string name="topads_dash_empty_group_butt">Buat Grup Iklan</string>
+    <string name="topads_dash_empty_non_group_desc">Pilih produk-produk yang ingin diiklankan dan rutin pantau perkembangannya.</string>
+    <string name="topads_dash_empty_non_group_title">Oops, produkmu belum diiklankan</string>
+    <string name="topads_dash_empty_non_group_butt">Buat Iklan Baru</string>
+    <string name="topads_dash_group_no_search_result_title">Grup iklan tidak ditemukan</string>
+    <string name="topads_dash_group_item_progress_text">Anggaran harian terpakai hari ini</string>
+    <string name="topads_dashboard_empty_product_title">Pastikan produkmu selalu tampil teratas</string>
+    <string name="topads_dashboard_empty_product_desc">Beriklan dengan TopAds bikin produkmu menjangkau banyak pembeli. Yuk, mulai beriklan!</string>
+    <string name="topads_dash_empty_keyword_title">Belum ada kata kunci</string>
+    <string name="topads_dash_empty_keyword_desc">Gunakan kata kunci spesifik agar produkmu lebih mudah ditemukan pembeli</string>
+    <string name="topads_dash_empty_neg_keyword_title">Belum ada kata kunci negatif</string>
+    <string name="topads_dash_empty_neg_keyword_desc">Tambahkan kata kunci negatif agar produkmu tampil di pencarian yang relevan.</string>
+   <string name="topads_dash_add_negative_keyword">Tambah Kata Kunci Negatif</string>
+    <string name="topads_dash_group">Grup (%d)</string>
+    <string name="topads_dash_non_group">Tanpa Grup (%d)</string>
+    <string name="topads_dash_product_count">Produk (%d)</string>
+    <string name="topads_dash_keyword_count">Kata Kunci (%d)</string>
+    <string name="topads_dash_neg_key_count">Kata Negatif (%d)</string>
+    <string name="topads_empty_on_search_desc">Coba tulis ulang pencarianmu.</string>
+    <string name="topads_dash_non_group_no_search_result_title">Iklan produk tidak ditemukan</string>
+    <string name="topads_no_search_keyword_title">Kata kunci tidak ditemukan</string>
+    <string name="topads_empty_on_neg_keywords_title">Kata kunci negatif tidak ditemukan.</string>
+    <string name="topads_dash_perclick">per klik</string>
+    <string name="topads_dash_choose_date">Pilih Tanggal</string>
+    <string name="topads_dash_status">Status</string>
+    <string name="topads_dash_filter_title">Urutkan</string>
+    <string name="topads_dash_filter_sheet_title">Filter dan Urutkan</string>
+    <string name="topads_dash_tidak_tampil">Tidak Tampil</string>
+    <string name="topads_dash_tidak_active">Tidak Aktif</string>
+    <string name="topads_dash_tampil_terbanyak">Tampil terbanyak</string>
+    <string name="topads_dash_klik_terbanyak">Klik terbanyak</string>
+    <string name="topads_dash_follow_terbanyak">Follow terbanyak</string>
+    <string name="topads_dash_terjual_terbanyak">Terjual terbanyak</string>
+    <string name="topads_dash_pendapatan_tertinggi">Pendapatan tertinggi</string>
+    <string name="topads_dash_pengeluaran_tertinggi">Pengeluaran tertinggi</string>
+    <string name="topads_dash_terapkan"> Terapkan</string>
+    <string name="topads_dash_aktifan">Aktifkan</string>
+    <string name="topads_dash_ubah_iklan">Ubah iklan</string>
+    <string name="topads_dash_hapus_iklan">Hapus iklan</string>
+    <string name="topads_dash_nonaktifkan">Nonaktifkan</string>
+    <string name="topads_dash_movetogroup">Pindah Grup</string>
+    <string name="topads_dash_group_del_confirm">Yakin hapus iklan “%s”?</string>
+    <string name="topads_dash_ya_hapus">Ya, Hapus</string>
+    <string name="topads_dash_with_grup_delete_toast">Grup iklan berhasil dihapus.</string>
+    <string name="topads_dash_without_grup_delete_toast">Iklan produk berhasil dihapus.</string>
+    <string name="topads_dash_confirm_delete_product">Yakin hapus %d produk?</string>
+    <string name="topads_dash_confirm_delete_key">Yakin hapus %d kata kunci??</string>
+    <string name="topads_dash_confirm_delete_key_desc">Kata kunci membuat iklan produkmu tampil di halaman pencarian pembeli.</string>
+    <string name="topads_dash_confirm_delete_negkey">Yakin hapus %d kata kunci negatif??</string>
+    <string name="topads_dash_confirm_delete_negkey_desc">Kata kunci negatif menjaga iklanmu dari klik yang tidak menghasilkan penjualan.</string>
+    <string name="topads_dash_delete_all_product_title">Yakin hapus semua produk?</string>
+    <string name="topads_dash_delete_all_product_desc">Hapus semua produk akan menghilangkan grup iklan yang telah dibuat.</string>
+    <string name="topads_dash_confirm_delete_group_title">Yakin hapus %d grup?</string>
+    <string name="topads_dash_confirm_delete_group_desc">Grup iklan dapat memudahkan pengaturan iklan produkmu.</string>
+    <string name="topads_without_product_del_toaster">Iklan produk berhasil dihapus.</string>
+    <string name="topads_keyword_del_toaster">%d kata kunci berhasil dihapus</string>
+    <string name="topads_neg_keyword_del_toaster">%d kata kunci negatif berhasil dihapus</string>
+    <string name="topads_label_top_ads_choose_group">Pilih Grup</string>
+    <string name="topads_dash_moveto_group_butt">Pindahkan</string>
+    <string name="topads_dash_no_product_found">Produk tidak ditemukan</string>
+    <string name="topads_dash_date_today">Hari ini</string>
+    <string name="topads_dash_date_yesterday">Kemarin</string>
+    <string name="topads_dash_date_30days">30 hari terakhir</string>
+    <string name="topads_dash_date_bulan_ini">Bulan ini</string>
+    <string name="topads_dash_search_hint">Cari grup iklan</string>
+    <string name="topads_dash_date_custom">Custom</string>
+    <string name="topads_dash_biaya_pencarian">Biaya Pencarian</string>
+    <string name="topads_dash_anggaran_harian">Anggaran harian</string>
+    <string name="topads_dash_custom_date_desc">Pilih Tanggal</string>
+    <string name="topads_dash_klik">/klik</string>
 
 </resources>

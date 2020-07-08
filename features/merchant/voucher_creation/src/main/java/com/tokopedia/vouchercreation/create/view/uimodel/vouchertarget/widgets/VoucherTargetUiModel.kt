@@ -11,7 +11,8 @@ class VoucherTargetUiModel(val onShouldShowBottomSheet: (CreateVoucherBottomShee
                            val onSetActiveVoucherTargetType: (Int) -> Unit,
                            val voucherTargetList: List<VoucherTargetItemUiModel> = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList(),
                            val onRadioButtonClicked: (Int) -> Unit,
-                           val onChangePromoButtonClicked: () -> Unit)
+                           val onChangePromoButtonClicked: () -> Unit,
+                           val isEditVoucher: Boolean = false)
     : Visitable<VoucherTargetTypeFactory> {
 
     override fun type(typeFactory: VoucherTargetTypeFactory): Int =

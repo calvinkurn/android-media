@@ -30,7 +30,12 @@ object VoucherCreationTracking {
                                        userId: String,
                                        isDuplicate: Boolean = false) {
         sendGeneralTracking(
-                event = VoucherCreationAnalyticConstant.Event.CLICK_ADS_CREATION,
+                event =
+                        if (isDuplicate) {
+                            VoucherCreationAnalyticConstant.Event.CLICK_VOUCHER_DUPLICATE
+                        } else {
+                            VoucherCreationAnalyticConstant.Event.CLICK_ADS_CREATION
+                        },
                 category =
                         when(step) {
                             VoucherCreationStep.TARGET -> VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.TARGET
@@ -146,10 +151,10 @@ object VoucherCreationTracking {
                 screenName = "",
                 userId = userId,
                 pageSource =
-                        if (isDetail) {
-                            VoucherCreationAnalyticConstant.PageSource.DETAIL
-                        } else {
-                            VoucherCreationAnalyticConstant.PageSource.LIST
+                        when {
+                            socmedType != SocmedType.COPY_LINK -> null
+                            isDetail -> VoucherCreationAnalyticConstant.PageSource.DETAIL
+                            else -> VoucherCreationAnalyticConstant.PageSource.LIST
                         }
         )
     }
@@ -245,8 +250,9 @@ object VoucherCreationTracking {
                                     action: String,
                                     label: String,
                                     screenName: String,
-                                    userId: String) {
-        val map = mapOf(
+                                    userId: String,
+                                    pageSource: String? = null) {
+        val map = mutableMapOf<String, Any>(
                 VoucherCreationAnalyticConstant.Key.EVENT to event,
                 VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to category,
                 VoucherCreationAnalyticConstant.Key.EVENT_ACTION to action,
@@ -256,27 +262,9 @@ object VoucherCreationTracking {
                 VoucherCreationAnalyticConstant.Key.USER_ID to userId,
                 VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
         )
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
-    }
-
-    private fun sendGeneralTracking(event: String,
-                                    category: String,
-                                    action: String,
-                                    label: String,
-                                    screenName: String,
-                                    userId: String,
-                                    pageSource: String) {
-        val map = mapOf(
-                VoucherCreationAnalyticConstant.Key.EVENT to event,
-                VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to category,
-                VoucherCreationAnalyticConstant.Key.EVENT_ACTION to action,
-                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to label,
-                VoucherCreationAnalyticConstant.Key.SCREEN_NAME to screenName,
-                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER,
-                VoucherCreationAnalyticConstant.Key.USER_ID to userId,
-                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
-                VoucherCreationAnalyticConstant.Key.PAGE_SOURCE to pageSource
-        )
+        pageSource?.run {
+            map.put(VoucherCreationAnalyticConstant.Key.PAGE_SOURCE, this)
+        }
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 

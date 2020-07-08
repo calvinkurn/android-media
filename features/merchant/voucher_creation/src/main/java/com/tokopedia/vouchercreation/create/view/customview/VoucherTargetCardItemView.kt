@@ -46,6 +46,7 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
     private var isItemEnabled: Boolean = false
     private var isHavePromoCode: Boolean = false
     private var promoCode: String = ""
+    private var enablePromoCode: Boolean = true
 
     override fun setupAttributes() {
         attributes?.run {
@@ -101,7 +102,7 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
         if (isHavePromoCode) {
             voucherTargetPromoCodeInfo?.run {
                 visibility = View.VISIBLE
-                isChangeEnabled = isItemEnabled
+                isChangeEnabled = isItemEnabled && enablePromoCode
                 promoCodeString = promoCode.toBlankOrString()
             }
         } else {
@@ -112,12 +113,13 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
     fun setupCurrentView(voucherTargetType: VoucherTargetCardType,
                          isItemEnabled: Boolean,
                          isHavePromoCode: Boolean,
-                         promoCode: String) {
+                         promoCode: String,
+                         enablePromoCode: Boolean) {
         this.voucherTargetCardType = voucherTargetType
         this.isItemEnabled = isItemEnabled
         this.isHavePromoCode = isHavePromoCode
         this.promoCode = promoCode
-
+        this.enablePromoCode = enablePromoCode
         setupView()
     }
 

@@ -9,7 +9,7 @@ class PowerMerchantRemoteConfig @Inject constructor(
 ) {
 
     fun isFreeShippingEnabled(): Boolean {
-        return !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, false)
+        return !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
     }
 
     fun isTransitionPeriodEnabled(): Boolean {

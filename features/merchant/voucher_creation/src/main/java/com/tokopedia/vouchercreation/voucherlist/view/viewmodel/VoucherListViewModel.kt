@@ -121,7 +121,7 @@ class VoucherListViewModel @Inject constructor(
     val shopBasicLiveData: LiveData<Result<ShopBasicDataResult>>
         get() = _shopBasicLiveData
 
-    fun getActiveVoucherList(isFirstTime: Boolean = false) {
+    fun getActiveVoucherList(isFirstTime: Boolean) {
         launchCatchError(block = {
             if (isFirstTime) {
                 _shopBasicLiveData.value = Success(withContext(Dispatchers.IO) {

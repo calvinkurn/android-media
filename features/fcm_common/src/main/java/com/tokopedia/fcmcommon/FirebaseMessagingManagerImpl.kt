@@ -2,6 +2,7 @@ package com.tokopedia.fcmcommon
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -155,5 +156,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 
     companion object {
         private const val FCM_TOKEN = "pref_fcm_token"
+
+        @JvmStatic
+        fun getFcmTokenFromPref(context: Context): String {
+            return PreferenceManager.getDefaultSharedPreferences(context).getString(FCM_TOKEN, "") ?: ""
+        }
     }
 }

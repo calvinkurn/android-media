@@ -91,7 +91,7 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getPromoCreation(): Result<BaseUiModel> = runBlocking {
         try {
-            val isFreeShippingEnabled = !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+            val isFreeShippingEnabled = !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
             val chatBlastSellerMetadataUiModel = getChatBlastSellerMetadataUseCase.executeOnBackground()
             val broadcastChatExtra = if (chatBlastSellerMetadataUiModel.promo > 0 && chatBlastSellerMetadataUiModel.promoType == 2){
                 context.getString(R.string.centralized_promo_broadcast_chat_extra_free_quota, chatBlastSellerMetadataUiModel.promo)

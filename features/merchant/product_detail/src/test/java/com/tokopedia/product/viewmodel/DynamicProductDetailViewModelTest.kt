@@ -135,6 +135,8 @@ class DynamicProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var sendTopAdsUseCase: SendTopAdsUseCase
+    @RelaxedMockK
+    lateinit var getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase
 
     @RelaxedMockK
     lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase

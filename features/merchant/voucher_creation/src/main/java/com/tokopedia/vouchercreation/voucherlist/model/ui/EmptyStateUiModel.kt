@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.voucherlist.model.ui
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactory
 
 /**
@@ -9,8 +10,13 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherLis
 data class EmptyStateUiModel(
         val isActiveVoucher: Boolean,
         val onSeeHistoryClicked: () -> Unit = {},
-        val onCreateVoucherClicked: () -> Unit = {}
+        val onCreateVoucherClicked: () -> Unit = {},
+        val impressHolder: ImpressHolder = ImpressHolder()
 ) : BaseVoucherListUiModel {
+
+    companion object {
+        const val DATA_KEY = "empty_state"
+    }
 
     override fun type(typeFactory: VoucherListAdapterFactory): Int {
         return typeFactory.type(this)

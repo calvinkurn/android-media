@@ -23,6 +23,7 @@ class SortViewHolder(
         with(itemView) {
             tvMvcSort.text = element.label
             radMvcSort.run{
+                setOnCheckedChangeListener(null)
                 isChecked = element.isSelected
                 setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
@@ -31,7 +32,9 @@ class SortViewHolder(
                 }
             }
             setOnClickListener {
-                onApplyClick(element)
+                if (!radMvcSort.isChecked) {
+                    radMvcSort.isChecked = true
+                }
             }
         }
     }

@@ -25,7 +25,8 @@ class VoucherTargetViewHolder(itemView: View) : AbstractViewHolder<VoucherTarget
                     element.onShouldShowBottomSheet,
                     element.onSetActiveVoucherTargetType,
                     element.onRadioButtonClicked,
-                    element.onChangePromoButtonClicked)
+                    element.onChangePromoButtonClicked,
+                    element.isEditVoucher)
         }
     }
 

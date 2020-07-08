@@ -10,7 +10,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
-import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_BENEFIT
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
@@ -97,7 +96,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
     }
 
     private fun goToTermsAndConditionPage() {
-        val intent = PowerMerchantTermsActivity.createIntent(context, ACTION_ACTIVATE)
+        val intent = PowerMerchantTermsActivity.createIntent(context)
         context.startActivity(intent)
     }
 

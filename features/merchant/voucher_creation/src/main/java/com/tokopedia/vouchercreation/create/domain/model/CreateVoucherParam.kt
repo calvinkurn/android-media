@@ -1,27 +1,65 @@
 package com.tokopedia.vouchercreation.create.domain.model
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 
 data class CreateVoucherParam (
-        val benefit_idr: Int = 0,
-        val benefit_max: Int = 0,
-        val benefit_percent: Int = 0,
-        val benefit_type: String = "",
+        @SerializedName("benefit_idr")
+        @Expose
+        val benefitIdr: Int = 0,
+        @SerializedName("benefit_max")
+        @Expose
+        val benefitMax: Int = 0,
+        @SerializedName("benefit_percent")
+        @Expose
+        val benefitPercent: Int = 0,
+        @SerializedName("benefit_type")
+        @Expose
+        val benefitType: String = "",
+        @SerializedName("code")
+        @Expose
         val code: String = "",
-        val coupon_name: String = "",
-        val coupon_type: String = "",
-        val date_start: String = "",
-        val date_end: String = "",
-        val hour_start: String = "",
-        val hour_end: String = "",
+        @SerializedName("coupon_name")
+        @Expose
+        val couponName: String = "",
+        @SerializedName("coupon_type")
+        @Expose
+        val couponType: String = "",
+        @SerializedName("date_start")
+        @Expose
+        val dateStart: String = "",
+        @SerializedName("date_end")
+        @Expose
+        val dateEnd: String = "",
+        @SerializedName("hour_start")
+        @Expose
+        val hourStart: String = "",
+        @SerializedName("hour_end")
+        @Expose
+        val hourEnd: String = "",
+        @SerializedName("image")
+        @Expose
         var image: String = "",
-        var image_square: String = "",
-        val is_public: Int = 0,
-        val min_purchase: Int = 0,
+        @SerializedName("image_square")
+        @Expose
+        var imageSquare: String = "",
+        @SerializedName("is_public")
+        @Expose
+        val isPublic: Int = 0,
+        @SerializedName("min_purchase")
+        @Expose
+        val minPurchase: Int = 0,
+        @SerializedName("quota")
+        @Expose
         val quota: Int = 0,
+        @SerializedName("token")
+        @Expose
         val token: String = "",
+        @SerializedName("source")
+        @Expose
         val source: String = "") {
 
         companion object {
@@ -36,21 +74,21 @@ data class CreateVoucherParam (
                                      benefitMax = (voucherType as? VoucherImageType.Percentage)?.value ?: 0
                              }
                              CreateVoucherParam(
-                                     benefit_idr = voucherType.value,
-                                     benefit_max = benefitMax,
-                                     benefit_percent = benefitPercent,
-                                     benefit_type = voucherType.benefitType,
+                                     benefitIdr = voucherType.value,
+                                     benefitMax = benefitMax,
+                                     benefitPercent = benefitPercent,
+                                     benefitType = voucherType.benefitType,
                                      code = promoCode,
-                                     coupon_name = voucherName,
-                                     coupon_type = voucherType.couponType,
-                                     date_start = startDate,
-                                     date_end = endDate,
-                                     hour_start = startHour,
-                                     hour_end = endHour,
+                                     couponName = voucherName,
+                                     couponType = voucherType.couponType,
+                                     dateStart = startDate,
+                                     dateEnd = endDate,
+                                     hourStart = startHour,
+                                     hourEnd = endHour,
                                      image = "",
-                                     image_square = "",
-                                     is_public = targetType,
-                                     min_purchase = minPurchase,
+                                     imageSquare = "",
+                                     isPublic = targetType,
+                                     minPurchase = minPurchase,
                                      quota = voucherQuota,
                                      token = token,
                                      source = VoucherSource.SELLERAPP

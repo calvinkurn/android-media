@@ -79,7 +79,7 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
 
     private fun showWarningTicker(expiredDate: String) {
        context?.let {
-           val descriptionText = formatCancellationDate(it, expiredDate)
+           val descriptionText = formatCancellationDate(it, R.string.pm_bottom_sheet_expired_label, expiredDate)
            tickerWarning.setTextDescription(descriptionText)
            tickerWarning.show()
        }

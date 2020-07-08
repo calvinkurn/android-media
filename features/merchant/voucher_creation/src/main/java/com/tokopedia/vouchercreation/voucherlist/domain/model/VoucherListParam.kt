@@ -1,16 +1,32 @@
 package com.tokopedia.vouchercreation.voucherlist.domain.model
 
 import androidx.annotation.StringDef
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 
 data class VoucherListParam (
-        val voucher_type: Int?,
-        val voucher_status: String,
-        val is_public: String?,
+        @SerializedName("voucher_type")
+        @Expose
+        val voucherType: Int?,
+        @SerializedName("voucher_status")
+        @Expose
+        val voucherStatus: String,
+        @SerializedName("is_public")
+        @Expose
+        val isPublic: String?,
+        @SerializedName("page")
+        @Expose
         var page: Int?,
-        val per_page: Int? = 10,
-        val sort_by: String? = null,
-        val is_inverted: Boolean) {
+        @SerializedName("per_page")
+        @Expose
+        val perPage: Int? = 10,
+        @SerializedName("sort_by")
+        @Expose
+        val sortBy: String? = null,
+        @SerializedName("is_inverted")
+        @Expose
+        val isInverted: Boolean) {
 
     companion object {
         @JvmStatic
@@ -21,12 +37,12 @@ data class VoucherListParam (
                         page: Int? = null,
                         isInverted: Boolean = false) : VoucherListParam {
             return VoucherListParam(
-                    voucher_type = type,
-                    voucher_status = status,
-                    is_public = targetList?.joinToString(separator = ","),
+                    voucherType = type,
+                    voucherStatus = status,
+                    isPublic = targetList?.joinToString(separator = ","),
                     page = page,
-                    sort_by = sort,
-                    is_inverted = isInverted
+                    sortBy = sort,
+                    isInverted = isInverted
             )
         }
     }
