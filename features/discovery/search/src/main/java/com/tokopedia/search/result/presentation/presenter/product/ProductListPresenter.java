@@ -375,7 +375,7 @@ final class ProductListPresenter
     }
 
     private String getSearchRows() {
-        return SearchConstant.SearchProduct.PARAMETER_ROWS;
+        return SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS;
     }
 
     private String getSearchSort(Map<String, Object> searchParameter) {
