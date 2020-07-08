@@ -13,6 +13,7 @@ interface InboxListContract {
         fun hideFilter()
         fun showFilter()
         fun toggleEmptyLayout(visibility: Int)
+        fun toggleNoTicketLayout(visibility: Int, name: String)
         fun removeFooter()
         fun addFooter()
         fun getLayoutManager(): LinearLayoutManager

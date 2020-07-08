@@ -21,6 +21,7 @@ import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,19 +30,19 @@ import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 const val ALL = 0
-const val UNREAD = 1
-const val NEEDRATING = 2
-const val INPROGRESS = 3
-const val READ = 4
-const val CLOSED = 5
+const val NEED_RATING = 2
+const val IN_PROGRESS = 1
+const val CLOSED = 3
 
-class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : InboxListPresenter, CustomEditText.Listener, CoroutineScope {
+class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
+                             private val userSession: UserSessionInterface) : InboxListPresenter, CustomEditText.Listener, CoroutineScope {
     private val status: Int = 0
     private var mView: InboxListView? = null
     private val filterList: ArrayList<String> by lazy { ArrayList<String>() }
     private val originalList: ArrayList<InboxTicketListResponse2.Ticket.Data.TicketItem> by lazy { ArrayList<InboxTicketListResponse2.Ticket.Data.TicketItem>() }
     var isLoading = false
     var isLastPage = false
+    private var selectedFilter = 0
     private var page = 1
     var fromFilter: Boolean = false
     private var nextUrl: String? = null
@@ -55,40 +56,42 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
         get() = Dispatchers.Main + SupervisorJob()
 
     override fun getTicketList(requestParams: RequestParams?) {
-            mView?.showProgressBar()
-            launchCatchError(
-                    block = {
-                        val ticketListResponse = mUseCase.getTicketListResponse(requestParams?: mUseCase.getRequestParams(1,0))
-                        when {
-                            !ticketListResponse.ticket?.data?.ticketItems.isNullOrEmpty() -> {
-                                mView?.toggleEmptyLayout(View.GONE)
-                                originalList.clear()
-                                ticketListResponse.ticket?.data?.ticketItems?.let { originalList.addAll(it) }
-                                nextUrl = ticketListResponse.ticket?.data?.nextPage
-                                isLastPage = nextUrl?.isEmpty() == true
-                                mView?.renderTicketList(originalList)
-                                mView?.showFilter()
-                            }
-                            fromFilter -> {
-                                originalList.clear()
-                                mView?.toggleEmptyLayout(View.VISIBLE)
-                                mView?.showFilter()
-                                fromFilter = false
-                            }
-                            else -> {
-                                mView?.toggleEmptyLayout(View.VISIBLE)
-                                mView?.hideFilter()
-                            }
+        mView?.showProgressBar()
+        if (requestParams == null) selectedFilter = 0
+        launchCatchError(
+                block = {
+                    val ticketListResponse = mUseCase.getTicketListResponse(requestParams
+                            ?: mUseCase.getRequestParams(1, 0))
+                    when {
+                        !ticketListResponse.ticket?.data?.ticketItems.isNullOrEmpty() -> {
+                            mView?.toggleEmptyLayout(View.GONE)
+                            originalList.clear()
+                            ticketListResponse.ticket?.data?.ticketItems?.let { originalList.addAll(it) }
+                            nextUrl = ticketListResponse.ticket?.data?.nextPage
+                            isLastPage = nextUrl?.isEmpty() == true
+                            mView?.renderTicketList(originalList)
+                            mView?.showFilter()
                         }
-
-                        mView?.hideProgressBar()
-
-                    },
-                    onError = {
-                        it.printStackTrace()
+                        fromFilter -> {
+                            originalList.clear()
+                            mView?.toggleEmptyLayout(View.VISIBLE)
+                            mView?.showFilter()
+                            fromFilter = false
+                        }
+                        else -> {
+                            mView?.toggleNoTicketLayout(View.VISIBLE, userSession.name)
+                            mView?.hideFilter()
+                        }
                     }
-            )
-        }
+
+                    mView?.hideProgressBar()
+
+                },
+                onError = {
+                    it.printStackTrace()
+                }
+        )
+    }
 
     override fun detachView() {}
     override fun onClickFilter() {
@@ -96,37 +99,35 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
     }
 
     override fun setFilter(position: Int) {
-        var selectedFilter = ""
+        var selected = ""
         fromFilter = true
         when (position) {
             ALL -> {
-                val requestParams = mUseCase.getRequestParams(1,0)
+                val requestParams = mUseCase.getRequestParams(1, 0)
                 getTicketList(requestParams)
-                selectedFilter = getFilterList(filterList, ALL)
-                getFilterAdapter().setSelected(ALL)
+                selected = getFilterList(filterList, ALL)
+                selectedFilter = ALL
             }
-            UNREAD -> {
-//                queryMap = mUseCase.setQueryMap2(1,0)
-//                selectedFilter = getFilterList(filterList, UNREAD)
-//                ticketList
-            }
-            NEEDRATING -> {
-//                queryMap = mUseCase.setQueryMap2(1,0)
-//                selectedFilter = getFilterList(filterList, NEEDRATING)
-//                ticketList
-            }
-            INPROGRESS -> {
-//                queryMap = mUseCase.setQueryMap2(1,0)
+            IN_PROGRESS -> {
+                val requestParams = mUseCase.getRequestParams(1, 1)
+                selected = getFilterList(filterList, IN_PROGRESS)
+                getTicketList(requestParams)
+                selectedFilter = IN_PROGRESS
+//                queryMap = mUseCase.setQueryMap2(1,1)
 //                selectedFilter = getFilterList(filterList, INPROGRESS)
 //                ticketList
             }
-            READ -> {
-//                queryMap = mUseCase.setQueryMap2(1,0)
-//                selectedFilter = getFilterList(filterList, READ)
+            NEED_RATING -> {
+                val requestParams = mUseCase.getRequestParams(1, 2)
+                selected = getFilterList(filterList, NEED_RATING)
+                getTicketList(requestParams)
+                selectedFilter = NEED_RATING
+//                queryMap = mUseCase.setQueryMap2(1,2)
+//                selectedFilter = getFilterList(filterList, NEEDRATING)
 //                ticketList
             }
             CLOSED -> {
-//                queryMap = mUseCase.setQueryMap2(1,0)
+//                queryMap = mUseCase.setQueryMap2(1,2)
 //                selectedFilter = getFilterList(filterList, CLOSED)
 //                ticketList
             }
@@ -134,7 +135,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickFilter,
-                selectedFilter)
+                selected)
         mView?.hideBottomFragment()
     }
 
@@ -179,13 +180,14 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
 
     override fun onDestroy() {}
 
-    private fun getFilterAdapter(): InboxFilterAdapter {
-        return InboxFilterAdapter(filterList, this)
+    private fun getFilterAdapter(selected: Int): InboxFilterAdapter {
+        val adapter: InboxFilterAdapter by lazy { InboxFilterAdapter(filterList, selected, this) }
+        return adapter
     }
 
     override fun getBottomFragment(resID: Int): BottomSheetDialogFragment? {
         val bottomFragment = InboxBottomSheetFragment.getBottomSheetFragment(resID)
-        bottomFragment?.setAdapter(getFilterAdapter())
+        bottomFragment?.setAdapter(getFilterAdapter(selectedFilter))
         return bottomFragment
     }
 
@@ -235,7 +237,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
                 block = {
                     val requestParams = mUseCase.getRequestParams(page, status)
                     val ticketListResponse = mUseCase.getTicketListResponse(requestParams)
-                    if (ticketListResponse.ticket?.data?.ticketItems?.isNullOrEmpty()==false) {
+                    if (ticketListResponse.ticket?.data?.ticketItems?.isNullOrEmpty() == false) {
                         originalList.addAll(ticketListResponse.ticket.data.ticketItems)
                         nextUrl = ticketListResponse.ticket.data.nextPage
                         isLastPage = nextUrl?.isEmpty() == true

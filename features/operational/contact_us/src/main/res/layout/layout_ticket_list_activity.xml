@@ -80,18 +80,42 @@
             app:remoteFileName="filter_no_message_found.png"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_greeting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:text="Halo, Fidelia Zheng!"
+            android:textColor="#f531353b"
+            android:visibility="gone"
+            android:gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_no_ticket" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_no_ticket"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:typographyType="body_2"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_goneMarginTop="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             android:gravity="center_horizontal"
             android:text="@string/display_a_problem_report_here"
             android:visibility="gone"
             android:textColor="#ae31353b"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_no_ticket" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_greeting" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_raise_ticket"
