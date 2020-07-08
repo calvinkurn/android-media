@@ -67,6 +67,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     companion object {
         const val JOB_ID = 13131314
         const val NOTIFICATION_CHANGE_DELAY = 500L
+        const val REQUEST_ENCODE = "UTF-8"
     }
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
@@ -131,7 +132,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 userSession.userId,
                 userSession.email,
                 getErrorMessage(throwable),
-                URLEncoder.encode(gson.toJson(requestParams), "UTF-8"))
+                URLEncoder.encode(gson.toJson(requestParams), REQUEST_ENCODE))
         val exception = AddEditProductUploadException(errorMessage, throwable)
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 

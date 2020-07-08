@@ -390,7 +390,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         // compile variant photos
         colorVariant.options.forEachIndexed { index, optionInputModel ->
             val variantUnitValueName = optionInputModel.value
-            // get variant image urls
+            // get variant image url
             val photoUrl = productInputModel.variantInputModel.products.find {
                 it.combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION) == index
             }?.pictures?.firstOrNull()?.urlOriginal.orEmpty()
