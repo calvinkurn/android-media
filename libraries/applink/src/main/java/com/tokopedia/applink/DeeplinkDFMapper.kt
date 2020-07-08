@@ -301,6 +301,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(VOUCHER_LIST) ||
                     it.startsWith(VOUCHER_DETAIL)}, DF_BASE_SELLER_APP, R.string.title_voucher_creation))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) }, DF_BASE_SELLER_APP, R.string.title_product_add_edit))
+            add(DFP( {it.startsWith(PRODUCT_ADD)}, DF_BASE_SELLER_APP, R.string.title_product_add_edit))
         }
     }
 
