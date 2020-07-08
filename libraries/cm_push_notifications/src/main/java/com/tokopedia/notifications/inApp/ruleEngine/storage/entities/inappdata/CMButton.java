@@ -63,17 +63,17 @@ public class CMButton {
     @Expose
     @ColumnInfo(name = "unifyType")
     @SerializedName("unifyType")
-    private String unifyType;
+    private String unifyType = "main";
 
     @Expose
     @ColumnInfo(name = "unifyVariant")
     @SerializedName("unifyVariant")
-    private String unifyVariant;
+    private String unifyVariant = "filled";
 
     @Expose
     @ColumnInfo(name = "unifySize")
     @SerializedName("unifySize")
-    private String unifySize;
+    private String unifySize = "medium";
 
     public CMButton() {}
 
