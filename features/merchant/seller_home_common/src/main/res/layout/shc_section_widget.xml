@@ -17,7 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:maxLength="30"
         android:maxLines="1"
         android:textColor="@color/Neutral_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
