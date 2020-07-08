@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Typeface.BOLD
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.AbsoluteSizeSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.view.View

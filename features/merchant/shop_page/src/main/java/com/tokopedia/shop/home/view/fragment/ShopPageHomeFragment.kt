@@ -161,9 +161,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onPause() {
+        super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
         shopHomeAdapter.pausePlayCarousel()
-        super.onPause()
     }
 
     override fun onDestroy() {
