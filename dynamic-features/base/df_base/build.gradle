@@ -63,6 +63,7 @@ dependencies {
     implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
+    implementation project(rootProject.ext.features.kol)
     //Digital
     implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.digitalHomepage)

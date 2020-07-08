@@ -132,7 +132,7 @@
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="title_trade_in">Tukar Tambah</string>
     <string name="label_category_explore">Jelajah Tokopedia</string>
-    <string name="label_find_native">Find</string>
+    <string name="title_find_native">Find</string>
     <string name="label_dob">Tanggal Lahir</string>
     <string name="title_activity_catalog">Katalog</string>
     <string name="catalog_host">catalog</string>
@@ -279,5 +279,13 @@
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+
+    <!-- Content -->
+    <string name="kol_title_comment">Comments</string>
+    <string name="kol_title_post_detail">Post Detail</string>
+    <string name="kol_title_media_preview">Media Preview</string>
+    <string name="kol_title_video_detail">Video Detail</string>
+    <string name="kol_title_post_youtube">Post Youtube</string>
+    <string name="kol_title_report">Laporan Konten</string>
 
 </resources>
