@@ -487,6 +487,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         viewModel.productAddResult.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
                     }
+                    viewModel.productAddResult.value?.didBackPress = true
                     when (dataBackPressed) {
                         DETAIL_DATA -> {
                             viewModel.productAddResult.value?.let { displayAddModeDetail(it) }
@@ -600,17 +601,19 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         if(productPhotoAdapter?.itemCount ?: 0 > 1) {
             // to avoid double hit tracker when dragging or touching image product, we have to put if here
             if(countTouchPhoto == 2) {
-                if (viewModel.isEditing.value == true && !viewModel.isAdding) {
-                    ProductEditMainTracking.trackDragPhoto(shopId)
+                if (viewModel.productInputModel.value?.didBackPress == true || viewModel.isAdding) {
+                    ProductAddStepperTracking.trackDragPhoto(shopId)
                 } else {
-                    ProductAddMainTracking.trackDragPhoto(shopId)
+                    ProductEditStepperTracking.trackDragPhoto(shopId)
                 }
             }
         }
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
-        if (viewModel.isEditing.value == true) {
+        if (viewModel.productInputModel.value?.didBackPress == true || viewModel.isAdding) {
+            ProductAddStepperTracking.trackRemoveProductImage(shopId)
+        } else {
             ProductEditStepperTracking.trackRemoveProductImage(shopId)
         }
     }
