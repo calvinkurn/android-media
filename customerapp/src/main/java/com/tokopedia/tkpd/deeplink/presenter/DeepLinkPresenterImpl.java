@@ -356,24 +356,22 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHotel(Uri uri, Bundle bundle) {
-        private void openHotel(Uri uri, Bundle bundle, Activity context) {
-            List<String> linkSegment = uri.getPathSegments();
-            if (linkSegment.size() > 1) {
-                if (linkSegment.get(1).equals("search")) {
-                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_SRP + "?" + uri.getQuery());
-                    context.finish();
-                } else if (linkSegment.size() >= 3 && linkSegment.get(2).equals("h")) {
-                    String hotelId = uri.getQueryParameter("id");
-                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId + "?" + uri.getQuery());
-                    context.finish();
-                } else {
-                    RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
-                    context.finish();
-                }
+        List<String> linkSegment = uri.getPathSegments();
+        if (linkSegment.size() > 1) {
+            if (linkSegment.get(1).equals("search")) {
+                RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_SRP + "?" + uri.getQuery());
+                context.finish();
+            } else if (linkSegment.size() >= 3 && linkSegment.get(2).equals("h")) {
+                String hotelId = uri.getQueryParameter("id");
+                RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId + "?" + uri.getQuery());
+                context.finish();
             } else {
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
                 context.finish();
             }
+        } else {
+            RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
+            context.finish();
         }
     }
 
