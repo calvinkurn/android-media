@@ -86,7 +86,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
 
     private fun showSeeAll(totalQuestion: Int, type: String, name: String, numberOfThreadsShown: String) {
         itemView.productDiscussionMostHelpfulSeeAll.apply {
-            text = getString(R.string.product_detail_discussion_see_all, totalQuestion.toString())
+            text = context.getString(R.string.product_detail_discussion_see_all, totalQuestion)
             setOnClickListener {
                 listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1), numberOfThreadsShown)
             }

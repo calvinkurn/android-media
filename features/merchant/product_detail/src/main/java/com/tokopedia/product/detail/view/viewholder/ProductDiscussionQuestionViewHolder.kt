@@ -27,9 +27,9 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
         with(question) {
             itemView.setOnClickListener { dynamicProductDetailListener.goToTalkReply(questionID, ComponentTrackDataModel(type, name, adapterPosition), itemCount.toString()) }
             showQuestion(content)
-            showInquirerName("")
-            showInquirerProfilePicture("")
-            showInquiryDate("")
+            showInquirerName(userName)
+            showInquirerProfilePicture(userThumbnail)
+            showInquiryDate(createTimeFormatted)
             if(totalAnswer > 0 && answer.answerID.isNotEmpty()) {
                 hideNoAnswersText()
                 showProfilePicture(answer.userThumbnail)
