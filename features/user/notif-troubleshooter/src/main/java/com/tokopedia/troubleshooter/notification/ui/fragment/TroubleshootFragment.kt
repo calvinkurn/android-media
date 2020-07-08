@@ -155,7 +155,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
         if(uri == null) {
             textRingtone.text = "Ringtone tidak ditemukan."
         } else {
-            textRingtone.text = "Ringtone anda berfungsi. Klik untuk bunyikan ringtone."
+            textRingtone.text = "Ringtone anda berfungsi."
         }
     }
 
@@ -179,8 +179,6 @@ class TroubleshootFragment : BaseDaggerFragment() {
                 ticker?.show()
                 when (importance) {
                     NotificationManager.IMPORTANCE_DEFAULT -> {
-                        ticker?.tickerTitle = "Informasi"
-                        ticker?.tickerType = Ticker.TYPE_INFORMATION
                         errorText = "$errorText\nPengaturan notifikasi anda sudah memenuhi standar."
                     }
                     NotificationManager.IMPORTANCE_LOW -> {
