@@ -1,14 +1,13 @@
-query getCartRedirection($params:[CartRedirectionParams]){
-  cart_redirection(params:$params){
-    error_message,
-    status,
+query getCartRedirectionV2($cartRedirectionParams: [[CartRedirectionParamsV2]]) {
+  cart_redirection_v2(params: $cartRedirectionParams) {
+    error_message
+    status
     data {
       config_name
       available_buttons {
         text
         color
         cart_type
-        onboarding_message
         show_recommendation
       }
       unavailable_buttons

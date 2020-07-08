@@ -4,6 +4,7 @@ import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParamV2
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
@@ -29,7 +30,7 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
 
     companion object {
         fun createParams(shopId: Int, productId: String, forceRefresh: Boolean, tradeinParams: TradeInParams,
-                         cartTypeParam: List<CartRedirectionParams>, warehouseId: String?, shopCredibilityExist: Boolean): RequestParams {
+                         cartTypeParam: List<List<CartRedirectionParamV2>>, warehouseId: String?, shopCredibilityExist: Boolean): RequestParams {
             val requestParams = RequestParams()
             requestParams.putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
             requestParams.putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
@@ -55,7 +56,7 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val warehouseId = requestParams.getString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, null)
         val shopCredibilityExist = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_SHOP_CREDIBILITY_EXIST, false)
 
-        val getCartTypeParams = mapOf(ProductDetailCommonConstant.PARAMS to cartTypeParam)
+        val getCartTypeParams = mapOf(ProductDetailCommonConstant.PARAM_CART_REDIRECTION to cartTypeParam)
         val getCartTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_CART_TYPE],
                 CartRedirectionResponse::class.java, getCartTypeParams)
 

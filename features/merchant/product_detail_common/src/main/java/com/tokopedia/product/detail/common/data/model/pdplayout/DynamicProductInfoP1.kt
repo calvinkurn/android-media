@@ -5,7 +5,8 @@ import java.util.concurrent.TimeUnit
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
-        val layoutName: String = ""
+        val layoutName: String = "",
+        val campaignStatus:String = ""
 ) {
 
     fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()

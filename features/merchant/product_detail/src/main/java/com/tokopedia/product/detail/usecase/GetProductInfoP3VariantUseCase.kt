@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParamV2
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP3Variant
@@ -24,7 +25,7 @@ class GetProductInfoP3VariantUseCase @Inject constructor(private val rawQueries:
 
     companion object {
         fun createParams(isVariant: Boolean,
-                         cartTypeParam: List<CartRedirectionParams>): RequestParams = RequestParams.create().apply {
+                         cartTypeParam: List<List<CartRedirectionParamV2>>): RequestParams = RequestParams.create().apply {
             putBoolean(VariantConstant.PARAM_IS_VARIANT, isVariant)
             putObject(ProductDetailCommonConstant.PARAM_CART_TYPE, cartTypeParam)
         }
@@ -44,7 +45,7 @@ class GetProductInfoP3VariantUseCase @Inject constructor(private val rawQueries:
         val p3VariantRequest = mutableListOf<GraphqlRequest>()
 
         if (isVariant) {
-            val getCartTypeParams = mapOf(ProductDetailCommonConstant.PARAMS to cartTypeParams)
+            val getCartTypeParams = mapOf(ProductDetailCommonConstant.PARAM_CART_REDIRECTION to cartTypeParams)
             val getCartTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_CART_TYPE],
                     CartRedirectionResponse::class.java, getCartTypeParams)
             p3VariantRequest.add(getCartTypeRequest)

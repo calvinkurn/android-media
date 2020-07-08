@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParamV2
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
@@ -117,7 +118,7 @@ object DynamicProductDetailMapper {
 
         val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media, videos = mediaData.videos)
 
-        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia)
+        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia,campaignStatus = data.temporaryInfo.campaignStatus)
     }
 
     fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {
@@ -128,28 +129,41 @@ object DynamicProductDetailMapper {
         })
     }
 
-    fun generateCartTypeVariantParams(dynamicProductInfoP1: DynamicProductInfoP1?, productVariant: ProductVariantCommon?): List<CartRedirectionParams> {
+    fun generateCartTypeVariantParams(dynamicProductInfoP1: DynamicProductInfoP1?, productVariant: ProductVariantCommon?): List<List<CartRedirectionParamV2>> {
 
         return productVariant?.children?.map {
-            val listOfFlags = mutableListOf<String>()
-            if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
-            if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
-            if (it.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
+            val campaignId = it.campaign?.campaignID ?: ""
+            val campaignTypeId = it.campaign?.campaignType?.toString() ?: ""
+//            val campaignStatus = dynamicProductInfoP1?.campaignStatus ?: ""
 
-            CartRedirectionParams(it.campaign?.campaignID?.toIntOrNull() ?: 0,
-                    it.campaign?.campaignType ?: 0, listOfFlags)
+            val listOfFlags = mutableListOf<CartRedirectionParamV2>()
+
+            if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_PREORDER, true.toString()))
+            if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_LEASING, true.toString()))
+            if (it.campaign?.isUsingOvo == true) listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_OVO_DEALS, true.toString()))
+            listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_CAMPAIGN_ID, campaignId))
+            listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_CAMPAIGN_TYPE_ID, campaignTypeId))
+//            listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_CAMPAIGN_STATUS, campaignStatus))
+            listOfFlags.add(CartRedirectionParamV2("product_stock", "1")) // remove soon
+
+            listOfFlags
         } ?: listOf()
     }
 
-    fun generateCartTypeParam(dynamicProductInfoP1: DynamicProductInfoP1?): List<CartRedirectionParams> {
+    fun generateCartTypeParam(dynamicProductInfoP1: DynamicProductInfoP1?): List<List<CartRedirectionParamV2>> {
         val campaignId = dynamicProductInfoP1?.data?.campaign?.campaignID?.toIntOrNull() ?: 0
         val campaignTypeId = dynamicProductInfoP1?.data?.campaign?.campaignType?.toIntOrNull() ?: 0
-        val listOfFlags = mutableListOf<String>()
-        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
-        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
-        if (dynamicProductInfoP1?.data?.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
 
-        return listOf(CartRedirectionParams(campaignId, campaignTypeId, listOfFlags))
+        val listOfFlags = mutableListOf<CartRedirectionParamV2>()
+
+        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_PREORDER, true.toString()))
+        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_LEASING, true.toString()))
+        if (dynamicProductInfoP1?.data?.campaign?.isUsingOvo == true) listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_OVO_DEALS, true.toString()))
+        listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_CAMPAIGN_ID, campaignId.toString()))
+        listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_CAMPAIGN_TYPE_ID, campaignTypeId.toString()))
+        listOfFlags.add(CartRedirectionParamV2("product_stock", "1")) // remove soon
+
+        return listOf(listOfFlags)
     }
 
     fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {
