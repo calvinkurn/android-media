@@ -4,20 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
+
+import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
+import com.tokopedia.topads.dashboard.utils.ApplinkUtils;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsCheckProductPromoFragment;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.user.session.UserSession;
 
 /**
