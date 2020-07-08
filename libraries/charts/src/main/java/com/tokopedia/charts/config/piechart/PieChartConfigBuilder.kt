@@ -1,6 +1,7 @@
 package com.tokopedia.charts.config.piechart
 
 import android.graphics.Color
+import com.tokopedia.charts.config.piechart.annotation.PieChartDsl
 import com.tokopedia.charts.config.piechart.annotation.PieChartStyle
 import com.tokopedia.charts.config.piechart.model.PieChartConfig
 
@@ -8,6 +9,7 @@ import com.tokopedia.charts.config.piechart.model.PieChartConfig
  * Created By @ilhamsuaib on 07/07/20
  */
 
+@PieChartDsl
 class PieChartConfigBuilder {
 
     companion object {
