@@ -35,10 +35,7 @@ import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.domain.entity.FeedDetail
-import com.tokopedia.createpost.view.activity.CreatePostActivity
-import com.tokopedia.createpost.view.activity.CreatePostImagePickerActivity
-import com.tokopedia.createpost.view.activity.CreatePostMediaPreviewActivity
-import com.tokopedia.createpost.view.activity.CreatePostVideoPickerActivity
+import com.tokopedia.createpost.view.activity.*
 import com.tokopedia.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.createpost.view.adapter.ProductAttachmentAdapter
 import com.tokopedia.createpost.view.adapter.ProductSuggestionAdapter
@@ -408,8 +405,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             if (arguments!!.getString(DRAFT_ID) != null) {
                 initDraft(arguments!!)
             } else {
-                viewModel.postId = arguments!!.getString(CreatePostActivity.PARAM_POST_ID, "")
-                viewModel.authorType = arguments!!.getString(CreatePostActivity.PARAM_TYPE, "")
+                viewModel.postId = arguments!!.getString(PARAM_POST_ID, "")
+                viewModel.authorType = arguments!!.getString(PARAM_TYPE, "")
 
                 initProductIds()
             }
@@ -419,13 +416,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     protected fun initProductIds() {
-        val productIds = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "")
+        val productIds = arguments!!.getString(PARAM_PRODUCT_ID, "")
                 .split(',')
                 .filterNot { it == "-1" }
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
 
-        val adIds = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "")
+        val adIds = arguments!!.getString(PARAM_AD_ID, "")
                 .split(',')
                 .filterNot { it == "-1" }
                 .toMutableList()

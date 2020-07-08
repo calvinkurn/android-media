@@ -230,7 +230,7 @@ public interface ApplinkConst {
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
     String CONTENT_CREATE_POST = "tokopedia://content/create_post/";
-    String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}/";
+    String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}";
     String INTEREST_PICK = "tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
@@ -246,6 +246,8 @@ public interface ApplinkConst {
     String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";
     String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
+    String AFFILIATE_EDIT = "tokopedia://affiliate/edit/{post_id}";
+    String SHOP_POST_EDIT = "tokopedia://content-shop/edit/{post_id}";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
 

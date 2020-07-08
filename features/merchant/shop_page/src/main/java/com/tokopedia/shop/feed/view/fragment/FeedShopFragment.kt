@@ -512,7 +512,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun goToEditPostShop(postId: Int) {
-        context?.let { RouteManager.route(it, ApplinkConstInternalContent.SHOP_POST_EDIT, postId.toString()) }
+        context?.let { RouteManager.route(it, ApplinkConstInternalContent.INTERNAL_SHOP_POST_EDIT, postId.toString()) }
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {

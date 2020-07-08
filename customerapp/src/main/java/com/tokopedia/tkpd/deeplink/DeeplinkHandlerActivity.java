@@ -29,8 +29,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.createpost.view.applink.CreatePostModule;
-import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
@@ -103,7 +101,6 @@ import timber.log.Timber;
         DigitalBrowseApplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
-        CreatePostModule.class,
         ExploreApplinkModule.class,
         HowtopayApplinkModule.class,
         AccountHomeApplinkModule.class,
@@ -135,7 +132,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new FeedDeeplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
-                    new CreatePostModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
