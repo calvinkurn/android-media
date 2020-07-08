@@ -179,8 +179,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private SimpleDateFormat format1 = new SimpleDateFormat(DATE_FORMAT_1, Locale.getDefault());
     private SimpleDateFormat format2 = new SimpleDateFormat(DATE_FORMAT_2, new Locale("ind", "IND"));
 
-    private String className = "com.tokopedia.buyerorder.list.view.fragment.OrderListFragment";
-
     @Inject
     OrderListAnalytics orderListAnalytics;
 
@@ -662,7 +660,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void sendATCTrackingUrl(String url, String productId, String productName, String imageUrl) {
         String clickUrl = url + "&click_source=ATC_direct_click";
-        new TopAdsUrlHitter(className).hitClickUrl(getContext(), clickUrl, productId, productName, imageUrl);
+        new TopAdsUrlHitter(this.getClass().getCanonicalName()).hitClickUrl(getContext(), clickUrl, productId, productName, imageUrl);
     }
 
     @Override
