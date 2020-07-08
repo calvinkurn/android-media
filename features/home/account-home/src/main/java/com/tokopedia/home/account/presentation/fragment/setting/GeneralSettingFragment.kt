@@ -48,7 +48,7 @@ import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter
 import com.tokopedia.home.account.presentation.listener.LogoutView
 import com.tokopedia.home.account.presentation.listener.SettingOptionsView
-import com.tokopedia.home.account.presentation.presenter.LogoutPresenter
+import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
 import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
@@ -66,7 +66,7 @@ import javax.inject.Inject
 
 class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, GeneralSettingAdapter.SwitchSettingListener, SettingOptionsView {
     @Inject
-    internal lateinit var presenter: LogoutPresenter
+    internal lateinit var presenter: RedDotGimmickPresenter
     @Inject
     internal lateinit var walletPref: WalletPref
 
@@ -335,7 +335,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
     private fun doLogout() {
         activity?.let {
-            FacebookSdk.sdkInitialize(it.applicationContext)
             startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT))
         }
     }
