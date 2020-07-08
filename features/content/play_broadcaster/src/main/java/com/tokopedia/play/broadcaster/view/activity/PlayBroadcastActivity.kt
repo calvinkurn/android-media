@@ -88,7 +88,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         if (savedInstanceState != null) populateSavedState(savedInstanceState)
 
-        initPushStream()
         setupContent()
         initView()
         setupView()
@@ -107,6 +106,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     override fun onStart() {
         super.onStart()
+        initPushStream()
         viewActionBar.rootView.requestApplyInsetsWhenAttached()
     }
 
@@ -124,11 +124,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    }
-
-    override fun onDestroy() {
-        viewModel.destroyPushStream()
-        super.onDestroy()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

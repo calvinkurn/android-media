@@ -95,43 +95,19 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Idle) {
             throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
         }
-        try {
-            mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
-            mTimerDuration?.start()
-            mPlayPusherStatus = PlayPusherStatus.Active
-        } catch (e: Exception) {
-            // crashlytics
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-                throw IllegalStateException(e)
-            }
-        }
+        mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
+        mTimerDuration?.start()
+        mPlayPusherStatus = PlayPusherStatus.Active
     }
 
     override suspend fun restartPush() {
-        try {
-            mAliVcLivePusher?.restartPushAync()
-        } catch (e: Exception) {
-            // crashlytics
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-                throw IllegalStateException(e)
-            }
-        }
+        mAliVcLivePusher?.restartPushAync()
     }
 
     override suspend fun stopPush() {
-        if (!isPushing()) return
-        try {
-            mAliVcLivePusher?.stopPush()
-            mTimerDuration?.stop()
-            mPlayPusherStatus = PlayPusherStatus.Stop
-        } catch (e: Exception) {
-            // crashlytics
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
-        }
+        mAliVcLivePusher?.stopPush()
+        mTimerDuration?.stop()
+        mPlayPusherStatus = PlayPusherStatus.Stop
     }
 
     override suspend fun switchCamera() {
@@ -139,37 +115,23 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override suspend fun resume() {
+        mAliVcLivePusher?.resumeAsync()
         if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Paused) {
             throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
-        }
-        try {
-            mAliVcLivePusher?.resumeAsync()
+        } else {
             mTimerDuration?.resume()
             mPlayPusherStatus = PlayPusherStatus.Active
-        } catch (e: Exception) {
-            // crashlytics
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-                throw IllegalStateException(e)
-            }
         }
     }
 
     override suspend fun pause() {
+        mAliVcLivePusher?.pause()
         if (!isPushing() || mPlayPusherStatus != PlayPusherStatus.Active) {
             throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
+        } else {
+            mTimerDuration?.pause()
+            mPlayPusherStatus = PlayPusherStatus.Paused
         }
-        try {
-                mAliVcLivePusher?.pause()
-                mTimerDuration?.pause()
-                mPlayPusherStatus = PlayPusherStatus.Paused
-            } catch (e: Exception) {
-                // crashlytics
-                if (GlobalConfig.DEBUG) {
-                    e.printStackTrace()
-                    throw IllegalStateException(e)
-                }
-            }
     }
 
     override fun destroy() {
