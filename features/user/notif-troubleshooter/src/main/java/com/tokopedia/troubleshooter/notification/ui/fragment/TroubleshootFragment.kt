@@ -26,6 +26,8 @@ import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.LocalNotificationSettingViewModel
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
@@ -36,6 +38,8 @@ class TroubleshootFragment : BaseDaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: TroubleshootViewModel
     private lateinit var settingViewModel: LocalNotificationSettingViewModel
+
+    private var errorText: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,13 +98,18 @@ class TroubleshootFragment : BaseDaggerFragment() {
         })
 
         viewModel.fcmToken.observe(viewLifecycleOwner, Observer {
-            textSummary?.show()
+            cardToken?.show()
 
             if(!isNewToken(it)) {
-                textSummary?.append("\nToken sudah terbaru : $it")
+                labelToken?.setLabel("Token sudah terbaru")
+                labelToken?.setLabelType(Label.GENERAL_LIGHT_GREEN)
+                textToken?.text = it
             } else {
                 viewModel.updateToken(it)
-                textSummary?.append("\nToken baru saja diperbarui : $it dari ${getTokenFromPref()}")
+                labelToken?.setLabel("Token baru saja diperbarui")
+                labelToken?.setLabelType(Label.GENERAL_LIGHT_ORANGE)
+                val text = "$it \ndari\n ${getTokenFromPref()}"
+                textToken?.text = text
             }
         })
 
@@ -136,8 +145,9 @@ class TroubleshootFragment : BaseDaggerFragment() {
         }
 
         if(uri == null) {
-            textSummary?.show()
-            textSummary?.append("\nRingtone tidak ditemukan.")
+            textRingtone.text = "Ringtone tidak ditemukan."
+        } else {
+            textRingtone.text = "Klik untuk bunyikan ringtone."
         }
     }
 
@@ -152,15 +162,31 @@ class TroubleshootFragment : BaseDaggerFragment() {
                         drawable(it, R.drawable.ic_red_error)
                     })
         }
-        if (importance == Int.MAX_VALUE) {
-            imgStatusCategorySetting?.invisible()
-            textNotificationCategory?.invisible()
-        } else if (importance != NotificationManager.IMPORTANCE_HIGH){
-            textSummary?.append("\nMohon cek pengaturan notifikasi anda. ($importance)\n")
-            textSummary?.show()
+        when {
+            importance == Int.MAX_VALUE -> {
+                imgStatusCategorySetting?.invisible()
+                textNotificationCategory?.invisible()
+            }
+            importance != NotificationManager.IMPORTANCE_HIGH -> {
+                ticker?.show()
+                ticker?.tickerTitle = "Error"
+                ticker?.tickerType = Ticker.TYPE_ERROR
+                errorText = "$errorText\nMohon cek pengaturan notifikasi anda ($importance). Atur ke nilai prioritas lebih tinggi. Klik disini untuk ke pengaturan."
+                ticker?.setTextDescription(errorText)
+            }
+            importance == NotificationManager.IMPORTANCE_DEFAULT -> {
+                ticker?.show()
+                ticker?.tickerTitle = "Informasi"
+                ticker?.tickerType = Ticker.TYPE_INFORMATION
+                errorText = "$errorText\nPengaturan Notifikasi anda sudah memenuhi standar."
+                ticker?.setTextDescription(errorText)
+            }
         }
 
         textNotificationCategory?.setOnClickListener {
+            goToSettingNotification()
+        }
+        ticker?.setOnClickListener {
             goToSettingNotification()
         }
     }
@@ -176,11 +202,16 @@ class TroubleshootFragment : BaseDaggerFragment() {
         }
 
         if (!notificationEnable){
-            textSummary?.append("\nMohon hidupkan pengaturan notifikasi anda.")
-            textSummary?.show()
+            ticker?.show()
+            ticker?.tickerTitle = "Error"
+            errorText = "$errorText\nMohon hidupkan pengaturan notifikasi anda. Klik disini untuk ke pengaturan."
+            ticker?.setTextDescription(errorText)
         }
 
         textNotificationSetting?.setOnClickListener {
+            goToSettingNotification()
+        }
+        ticker?.setOnClickListener {
             goToSettingNotification()
         }
     }
@@ -197,7 +228,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
         }
     }
 
-    fun isNewToken(token: String): Boolean {
+    private fun isNewToken(token: String): Boolean {
         val prefToken = getTokenFromPref()
         return prefToken != null && token != prefToken
     }
