@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
@@ -309,21 +308,15 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             }
             flightHomepageBanner.setPromoList(bannerUrls)
             flightHomepageBanner.buildView()
-            KeyboardHandler.hideSoftKeyboard(requireActivity())
-            KeyboardHandler.DropKeyboard(requireContext(), requireView())
-        } else {
-            hideBannerView()
         }
     }
 
     private fun showBannerView() {
         flightHomepageBannerLayout.visibility = View.VISIBLE
-        flightHomepageBanner.visibility = View.VISIBLE
     }
 
     private fun hideBannerView() {
         flightHomepageBannerLayout.visibility = View.GONE
-        flightHomepageBanner.visibility = View.GONE
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
