@@ -9,28 +9,36 @@
     <include
         android:id="@+id/layout_campaign_stock_product_info"
         layout="@layout/layout_campaign_stock_product_info"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/tabs_campaign_stock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/layout_campaign_stock_product_info"
-        tools:layout_height="@dimen/layout_lvl6"/>
+        tools:layout_height="@dimen/layout_lvl6"
+        tools:visibility="visible"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp2_campaign_stock"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/tabs_campaign_stock"
-        app:layout_constraintBottom_toTopOf="@id/divider_campaign_stock"/>
+        app:layout_constraintBottom_toTopOf="@id/divider_campaign_stock"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_campaign_stock"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        app:layout_constraintBottom_toTopOf="@id/btn_campaign_stock_save"/>
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btn_campaign_stock_save"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_campaign_stock_save"
@@ -42,8 +50,19 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:text="@string/product_manage_campaign_stock_save"
+        android:visibility="gone"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_campaign_stock"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

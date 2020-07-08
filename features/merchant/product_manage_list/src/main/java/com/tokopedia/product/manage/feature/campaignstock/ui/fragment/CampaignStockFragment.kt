@@ -9,8 +9,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
@@ -95,16 +97,16 @@ class CampaignStockFragment: BaseDaggerFragment() {
                     result.data.let { productUrlAndStockDataPair ->
                         applyLayout(productUrlAndStockDataPair.first, productUrlAndStockDataPair.second)
                     }
+                    showResult()
                 }
                 is Fail -> {
-
+                    //Todo: finish activity with cancelled result
                 }
             }
         })
     }
 
     private fun setupView() {
-        showLoading()
         shopId?.let { shopId ->
             productIds?.let { productIds ->
                 mViewModel.getStockAllocation(productIds.toList(), shopId)
@@ -145,8 +147,13 @@ class CampaignStockFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun showLoading() {
-
+    private fun showResult() {
+        layout_campaign_stock_product_info?.visible()
+        tabs_campaign_stock?.visible()
+        vp2_campaign_stock?.visible()
+        divider_campaign_stock?.visible()
+        btn_campaign_stock_save?.visible()
+        loader_campaign_stock?.gone()
     }
 
     private fun changeViewPagerPage(position: Int) {
