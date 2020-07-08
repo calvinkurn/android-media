@@ -47,7 +47,7 @@ object Constants {
     const val KEYWORD_TYPE_PHRASE = 11
     const val KEYWORD_TYPE_EXACT = 21
     const val KEYWORD_TYPE_NEGATIVE_PHRASE = 12
-    const val KEYWORD_TYPE_NEGATIVE_EXACT  = 22
+    const val KEYWORD_TYPE_NEGATIVE_EXACT = 22
     const val REQUEST_OK = 1
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
@@ -72,10 +72,16 @@ object Constants {
     const val NEGATIVE_PHRASE = "negative_phrase"
     const val NEGATIVE_SPECIFIC = "negative_exact"
     const val ACTIVE = "active"
-    const val KEYWORD_SOURCE ="es"
+    const val KEYWORD_SOURCE = "es"
     const val INPUT = "input"
-    const val DEBOUNCE_CONST:Long = 200
+    const val DEBOUNCE_CONST: Long = 200
     const val MULTIPLY_CONST = 50
+    const val groupId = "groupId"
+    const val priceBid = "price_bid"
+    const val priceDaily = "price_daily"
+    const val groupName = "groupName"
+    const val TAB_POSITION = "tab_position"
+
 
     var locale = Locale("in", "ID")
 

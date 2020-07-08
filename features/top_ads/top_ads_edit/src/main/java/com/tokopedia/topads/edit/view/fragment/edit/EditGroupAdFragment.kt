@@ -15,7 +15,7 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.param.DataSuggestions
-import com.tokopedia.topads.edit.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -99,7 +99,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
-        group_name.textFieldInput.setText(arguments?.getString(GROUPKEY))
         budget.textFieldInput.setText(data.priceBid.toString())
         priceDaily = data.priceDaily
         if (priceDaily != 0) {
@@ -252,6 +251,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        group_name.textFieldInput.setText(arguments?.getString(GROUPKEY))
         sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
             productId = it
             getLatestBid()

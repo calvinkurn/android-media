@@ -1,7 +1,7 @@
 package com.tokopedia.topads.auto.view.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -17,12 +17,16 @@ import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.data.network.response.*
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject.QUERY_TOPADS_DEPOSIT
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.IDS
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONException
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -35,40 +39,21 @@ class DailyBudgetViewModel @Inject constructor(
         private val rawQueries: Map<String, String>
 ) : BaseViewModel(dispatcher) {
 
-    val budgetInfoData = MutableLiveData<List<BidInfoData>>()
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
     val topAdsDeposit = MutableLiveData<Int>()
 
-    fun getBudgetInfo(shopId: Int, requestType: String, source: String) {
-        launchCatchError(block = {
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-            val data = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_BID_INFO],
-                        TopadsBidInfo.Response::class.java,
-                        mapOf(SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
-                repository.getReseponse(listOf(request), cacheStrategy)
-            }
-
-            data.getSuccessData<TopadsBidInfo.Response>().bidInfo.data.let {
-                budgetInfoData.postValue(it)
-            }
-        }) {
-            it.printStackTrace()
-        }
-    }
-
     fun getBudgetInfo(shopId: Int, requestType: String, source: String, onSuccess: (TopadsBidInfo.Response) -> Unit) {
         launchCatchError(block = {
+            val dummyId: MutableList<Int> = mutableListOf()
+            val map = mapOf(TYPE to PRODUCT,IDS to dummyId)
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             val data = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_BID_INFO],
                         TopadsBidInfo.Response::class.java,
-                        mapOf(SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
+                        mapOf(ParamObject.SUGGESTION to map,SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
-            data.getSuccessData<TopadsBidInfo.Response>().let {
-                onSuccess(it)
-            }
+            onSuccess(data.getSuccessData<TopadsBidInfo.Response>())
         }) {
             it.printStackTrace()
         }
@@ -140,18 +125,8 @@ class DailyBudgetViewModel @Inject constructor(
         }
     }
 
-
-    fun getPotentialImpression(minBid: Double, maxBid: Double, bid: Double): String {
-        return String.format("%,.0f - %,.0f", calculateImpression(maxBid, bid),
-                calculateImpression(minBid, bid))
-    }
-
-    private fun calculateImpression(bid: Double, `val`: Double): Double {
-        return 100 / 2.5 * (`val` / bid)
-    }
-
-    fun getPotentialImpressionGQL(budget: Double, highImpression: Double): String {
-        return String.format("%,.0f", budget * highImpression)
+    fun getPotentialImpressionGQL(budget: Int, lowClickDivider: Int): String {
+        return String.format("%,.0f", (budget / lowClickDivider).toDouble())
     }
 
     fun checkBudget(number: Double, minDailyBudget: Double, maxDailyBudget: Double): String? {
