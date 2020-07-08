@@ -55,22 +55,22 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
             if (it) {
                 val fragment = HiddenTrialFragment.newInstance()
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.parent_view, fragment, TAG)
+                transaction.replace(com.tokopedia.abstraction.R.id.parent_view, fragment, TAG)
                 transaction.commit()
 
             } else {
 
                 val fragment = TopAdsDashboardFragment.createInstance()
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.parent_view, fragment, TAG)
+                transaction.replace(com.tokopedia.abstraction.R.id.parent_view, fragment, TAG)
                 transaction.commit()
 
             }
 
         })
         topAdsDashboardPresenter.expiryDateHiddenTrial.observe(this, androidx.lifecycle.Observer {
-            if (supportFragmentManager.findFragmentById(R.id.parent_view) is HiddenTrialFragment)
-                (supportFragmentManager.findFragmentById(R.id.parent_view) as HiddenTrialFragment)
+            if (supportFragmentManager.findFragmentById(com.tokopedia.abstraction.R.id.parent_view) is HiddenTrialFragment)
+                (supportFragmentManager.findFragmentById(com.tokopedia.abstraction.R.id.parent_view) as HiddenTrialFragment)
                         .getData(it.substring(0, it.length - 8))
         })
     }
