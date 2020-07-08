@@ -610,22 +610,24 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     @Override
     public void setCourierAdditionalOptionConfig(Integer courierIndex, String additionalOptionQueries) {
-        courierList.get(courierIndex).getAdditionalOptionDatas().clear();
-        try {
-            URI uri = URI.create(additionalOptionQueries);
-            courierList.get(courierIndex).setAdditionalOptionDatas(splitQuery(uri));
-            courierList.get(courierIndex).urlAdditionalOption = additionalOptionQueries;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            view.openWebView(temporaryWebViewResource, courierIndex);
-            Toast.makeText(view.getMainContext(),
-                    view.getMainContext().getString(R.string.error_shipping_dialog_webview),
-                    Toast.LENGTH_LONG).show();
-        } catch (IllegalArgumentException e) {
-            view.openWebView(temporaryWebViewResource, courierIndex);
-            Toast.makeText(view.getMainContext(),
-                    view.getMainContext().getString(R.string.error_shipping_dialog_webview),
-                    Toast.LENGTH_LONG).show();
+        if (courierIndex != null) {
+            courierList.get(courierIndex).getAdditionalOptionDatas().clear();
+            try {
+                URI uri = URI.create(additionalOptionQueries);
+                courierList.get(courierIndex).setAdditionalOptionDatas(splitQuery(uri));
+                courierList.get(courierIndex).urlAdditionalOption = additionalOptionQueries;
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                view.openWebView(temporaryWebViewResource, courierIndex);
+                Toast.makeText(view.getMainContext(),
+                        view.getMainContext().getString(R.string.error_shipping_dialog_webview),
+                        Toast.LENGTH_LONG).show();
+            } catch (IllegalArgumentException e) {
+                view.openWebView(temporaryWebViewResource, courierIndex);
+                Toast.makeText(view.getMainContext(),
+                        view.getMainContext().getString(R.string.error_shipping_dialog_webview),
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 
