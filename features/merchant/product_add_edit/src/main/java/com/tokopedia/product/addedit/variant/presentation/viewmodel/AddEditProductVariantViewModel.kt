@@ -91,6 +91,10 @@ class AddEditProductVariantViewModel @Inject constructor(
         it.productId > 0
     }
 
+    val hasVariant: LiveData<Boolean> = Transformations.map(productInputModel) {
+        it.variantInputModel.selections.isNotEmpty()
+    }
+
     private fun isInputValid(isVariantUnitValuesLevel1Empty: Boolean, isVariantUnitValuesLevel2Empty: Boolean, isSingleVariantTypeIsSelected: Boolean): Boolean {
 
         if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel1Empty) return true

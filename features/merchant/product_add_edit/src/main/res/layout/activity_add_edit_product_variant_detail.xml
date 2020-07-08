@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/toolbar_variant"
+        android:id="@+id/toolbar_variant_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:unify_header_is_show_shadow="false"

@@ -35,11 +35,4 @@ class AddEditProductVariantActivity: BaseSimpleActivity(), HasComponent<AddEditP
                 .addEditProductVariantModule(AddEditProductVariantModule())
                 .build()
     }
-
-    override fun onBackPressed() {
-        val f = fragment
-        if (f != null && f is AddEditProductVariantFragment) {
-            f.onBackPressed()
-        }
-    }
 }
