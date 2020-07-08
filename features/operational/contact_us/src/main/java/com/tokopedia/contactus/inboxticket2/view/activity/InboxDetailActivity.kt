@@ -613,7 +613,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
                 sendGTmEvent(InboxTicketTracking.Label.EventHelpful,
                         InboxTicketTracking.Action.EventRatingCsatOnSlider)
                 closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity())
-                closeComplainBottomSheet?.setCustomContentView(CloseComplainBottomSheet(this@InboxDetailActivity, this), "", true)
+                closeComplainBottomSheet?.setCustomContentView(CloseComplainBottomSheet(this@InboxDetailActivity, this), "", false)
                 closeComplainBottomSheet?.show()
             } else {
                 textToolbar.show()
