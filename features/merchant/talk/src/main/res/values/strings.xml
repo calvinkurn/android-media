@@ -143,4 +143,6 @@
     <string name="write_question_title">Tulis pertanyaan</string>
     <string name="write_question_placeholder">Pertanyaan</string>
 
+    <string name="reply_dot_builder">• %s</string>
+
 </resources>
