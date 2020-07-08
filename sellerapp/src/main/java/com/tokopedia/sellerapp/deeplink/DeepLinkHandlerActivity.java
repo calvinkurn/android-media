@@ -24,8 +24,6 @@ import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
@@ -38,8 +36,6 @@ import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
@@ -59,8 +55,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         TopAdsApplinkModule.class,
         GMApplinkModule.class,
         SellerappAplinkModule.class,
-        TrackingAppLinkModule.class,
-        TopChatAppLinkModule.class,
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
@@ -84,8 +78,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new TopAdsApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
-                new TrackingAppLinkModuleLoader(),
-                new TopChatAppLinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
