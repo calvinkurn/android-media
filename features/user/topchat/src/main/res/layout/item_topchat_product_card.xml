@@ -236,7 +236,8 @@
                 android:id="@+id/iv_free_shipping"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_topchat_20"
-                android:scaleType="fitStart"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitCenter"
                 android:visibility="gone"
                 tools:src="@drawable/ic_close_default"
                 tools:visibility="visible" />
