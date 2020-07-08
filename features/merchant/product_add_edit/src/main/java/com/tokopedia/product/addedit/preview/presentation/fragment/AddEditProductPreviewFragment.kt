@@ -601,20 +601,20 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         if(productPhotoAdapter?.itemCount ?: 0 > 1) {
             // to avoid double hit tracker when dragging or touching image product, we have to put if here
             if(countTouchPhoto == 2) {
-                if (viewModel.productInputModel.value?.didBackPress == false || viewModel.isAdding) {
-                    ProductEditMainTracking.trackDragPhoto(shopId)
-                } else {
+                if (viewModel.productInputModel.value?.didBackPress == true || viewModel.isAdding) {
                     ProductAddMainTracking.trackDragPhoto(shopId)
+                } else {
+                    ProductEditMainTracking.trackDragPhoto(shopId)
                 }
             }
         }
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
-        if (viewModel.productInputModel.value?.didBackPress == false || viewModel.isAdding) {
-            ProductEditStepperTracking.trackRemoveProductImage(shopId)
-        } else {
+        if (viewModel.productInputModel.value?.didBackPress == true || viewModel.isAdding) {
             ProductAddStepperTracking.trackRemoveProductImage(shopId)
+        } else {
+            ProductEditStepperTracking.trackRemoveProductImage(shopId)
         }
     }
 
