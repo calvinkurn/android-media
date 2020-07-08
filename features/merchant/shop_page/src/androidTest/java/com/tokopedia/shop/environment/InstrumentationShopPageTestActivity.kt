@@ -43,6 +43,7 @@ class InstrumentationShopPageTestActivity : AppCompatActivity(),
                 "render"
         )
         performanceMonitoringShop?.startMonitoring("mp_shop")
+        performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
     }
 
     override fun getShopPageLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
