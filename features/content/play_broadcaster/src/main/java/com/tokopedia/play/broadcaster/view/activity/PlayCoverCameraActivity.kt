@@ -3,15 +3,12 @@ package com.tokopedia.play.broadcaster.view.activity
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.CameraView
@@ -26,6 +23,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
+import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
+import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
+import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import java.io.File
 
@@ -46,6 +46,8 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     private val groupAction by lazy { findViewById<Group>(R.id.group_action) }
     private val countDownTimer by lazy { findViewById<PlayTimerCountDown>(R.id.countdown_timer) }
 
+    private val permissionHelper by lazy { PermissionHelperImpl(this) }
+
     private val cameraListener = object : CameraListener() {
         override fun onPictureTaken(result: PictureResult) {
             saveToFile(result.data)
@@ -56,15 +58,12 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_cover_camera)
         initView()
+        setupView()
     }
 
     override fun onResume() {
         super.onResume()
-        if (isCameraPermissionGranted() && isWriteStoragePermissionGranted() && isReadStoragePermissionGranted()) {
-            cvCamera.open()
-        } else {
-            requestCameraPermission()
-        }
+        if (isRequiredPermissionGranted()) cvCamera.open()
     }
 
     override fun onPause() {
@@ -76,6 +75,11 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         cvCamera.close()
         cvCamera.destroy()
         super.onDestroy()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) return
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun initView() {
@@ -105,6 +109,10 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         }
         cvCamera.mapGesture(Gesture.PINCH, GestureAction.ZOOM)
         cvCamera.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
+    }
+
+    private fun setupView() {
+        requestRequiredPermission()
     }
 
     private fun takePicture() {
@@ -203,27 +211,32 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
-                PERMISSION_CODE)
+    private fun requestRequiredPermission() {
+        permissionHelper.requestMultiPermissionsFullFlow(
+                permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
+                requestCode = REQUEST_CODE_PERMISSION,
+                permissionResultListener = object : PermissionResultListener {
+                    override fun onRequestPermissionResult(): PermissionStatusHandler.() -> Unit {
+                        return {
+                            if (isAllGranted()) cvCamera.open()
+                        }
+                    }
+
+                    override fun shouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+                        return false
+                    }
+                }
+        )
     }
 
-    private fun isCameraPermissionGranted() =
-            ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-
-    private fun isWriteStoragePermissionGranted() =
-            ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
-    private fun isReadStoragePermissionGranted() =
-            ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    )
 
     companion object {
         const val EXTRA_IMAGE_URI = "EXTRA_IMAGE_URI"
 
-        private const val PERMISSION_CODE = 1010
+        private const val REQUEST_CODE_PERMISSION = 1010
     }
 
 }
