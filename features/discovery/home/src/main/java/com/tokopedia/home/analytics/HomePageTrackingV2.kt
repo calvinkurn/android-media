@@ -101,6 +101,8 @@ object HomePageTrackingV2 : BaseTracking() {
 
     object LegoBanner{
         private const val LEGO_BANNER_4_IMAGE_NAME = "lego banner 4 image"
+        private const val LEGO_BANNER_3_IMAGE_NAME = "lego banner 3 image"
+        private const val LEGO_BANNER_6_IMAGE_NAME = "lego banner"
 
         fun getLegoBannerFourImageImpression(channel: DynamicHomeChannel.Channels, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
                 event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
@@ -128,6 +130,38 @@ object HomePageTrackingV2 : BaseTracking() {
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
                             creative = grid.attribution,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.channelHeader.name),
+                            position = (index + 1).toString()
+                    )
+                },
+                channelId = channel.id
+        )
+
+        fun getLegoBannerThreeImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
+                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = Action.IMPRESSION.format(LEGO_BANNER_3_IMAGE_NAME),
+                eventLabel = Label.NONE,
+                promotions = channel.channelGrids.mapIndexed { index, grid ->
+                    Promotion(
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
+                            creative = grid.attribution,
+                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_3_IMAGE_NAME, channel.channelHeader.name),
+                            position = (index + 1).toString()
+                    )
+                },
+                channelId = channel.id
+        )
+
+        fun getLegoBannerSixImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
+                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = Action.IMPRESSION.format(LEGO_BANNER_6_IMAGE_NAME),
+                eventLabel = Label.NONE,
+                promotions = channel.channelGrids.mapIndexed { index, grid ->
+                    Promotion(
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
+                            creative = grid.attribution,
+                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_6_IMAGE_NAME, channel.channelHeader.name),
                             position = (index + 1).toString()
                     )
                 },
