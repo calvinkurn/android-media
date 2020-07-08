@@ -33,7 +33,7 @@ interface PermissionHelper {
      * @param permission -> the requested permission
      * @param requestCode -> the unique request code for this request
      */
-    fun requestPermission(permission: String, requestCode: Int, listener: PermissionStatusHandler.() -> Unit)
+    fun requestPermission(permission: String, requestCode: Int, statusHandler: PermissionStatusHandler)
 
     /**
      * This method is used to request multiple permissions from Manifest.permission.*
@@ -43,7 +43,7 @@ interface PermissionHelper {
      * @param permissions -> the requested permissions
      * @param requestCode -> the unique request code for this request
      */
-    fun requestMultiPermissions(permissions: Array<String>, requestCode: Int, listener: PermissionStatusHandler.() -> Unit)
+    fun requestMultiPermissions(permissions: Array<String>, requestCode: Int, statusHandler: PermissionStatusHandler)
 
 
     /**

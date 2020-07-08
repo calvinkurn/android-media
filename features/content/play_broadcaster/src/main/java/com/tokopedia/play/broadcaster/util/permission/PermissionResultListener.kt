@@ -10,7 +10,7 @@ interface PermissionResultListener {
      *
      * @return the function to handle the result
      */
-    fun onRequestPermissionResult(): PermissionStatusHandler.() -> Unit
+    fun onRequestPermissionResult(): PermissionStatusHandler
 
     /**
      * This method will be called once there are permissions that needs to show the user
@@ -22,5 +22,5 @@ interface PermissionResultListener {
      * @return true means the caller has handled the action and the request of the permission will be handled by the caller,
      * false means that the caller has not handled the action and should be handled by the receiver of this param
      */
-    fun shouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean
+    fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean
 }

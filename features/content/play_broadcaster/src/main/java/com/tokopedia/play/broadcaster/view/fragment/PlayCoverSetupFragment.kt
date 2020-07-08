@@ -356,7 +356,7 @@ class PlayCoverSetupFragment @Inject constructor(
             permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
             requestCode = requestCode,
             permissionResultListener = object : PermissionResultListener {
-                override fun onRequestPermissionResult(): PermissionStatusHandler.() -> Unit {
+                override fun onRequestPermissionResult(): PermissionStatusHandler {
                     return {
                         when (requestCode) {
                             REQUEST_CODE_PERMISSION_CROP_COVER -> {
@@ -371,7 +371,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     }
                 }
 
-                override fun shouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+                override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
                     return false
                 }
             }

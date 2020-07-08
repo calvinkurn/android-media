@@ -261,13 +261,13 @@ class PlayCoverCameraActivity : AppCompatActivity() {
                 permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
                 requestCode = REQUEST_CODE_PERMISSION,
                 permissionResultListener = object : PermissionResultListener {
-                    override fun onRequestPermissionResult(): PermissionStatusHandler.() -> Unit {
+                    override fun onRequestPermissionResult(): PermissionStatusHandler {
                         return {
                             if (isAllGranted()) cvCamera.open()
                         }
                     }
 
-                    override fun shouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+                    override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
                         return false
                     }
                 }

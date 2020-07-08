@@ -13,7 +13,7 @@ import kotlin.math.min
  */
 class PermissionHelperImpl : PermissionHelper {
 
-    private val permissionMap: MutableMap<Int, (PermissionStatusHandler) -> Unit> = mutableMapOf()
+    private val permissionMap: MutableMap<Int, (PermissionStatusManager) -> Unit> = mutableMapOf()
 
     private val mContext: Context
     private val permissionRequester: (permissions: Array<String>, requestCode: Int) -> Unit
@@ -44,7 +44,7 @@ class PermissionHelperImpl : PermissionHelper {
             isAllPermissionsGranted(permissions) -> {
                 permissionResultListener.onRequestPermissionResult()
                         .invoke(
-                                PermissionStatusHandler(
+                                PermissionStatusManager(
                                         permissions.associateBy({ it }) { PackageManager.PERMISSION_GRANTED },
                                         requestCode
                                 )
@@ -54,7 +54,7 @@ class PermissionHelperImpl : PermissionHelper {
                 val rationaleList = permissions.filter { shouldShowRequestPermissionRationale(it) }
 
                 if (rationaleList.isNotEmpty()) {
-                    val isHandled = permissionResultListener.shouldShowRequestPermissionRationale(permissions, requestCode)
+                    val isHandled = permissionResultListener.onShouldShowRequestPermissionRationale(permissions, requestCode)
                     if (!isHandled) requestMultiPermissions(permissions, requestCode, permissionResultListener.onRequestPermissionResult())
                 } else {
                     requestMultiPermissions(permissions, requestCode, permissionResultListener.onRequestPermissionResult())
@@ -63,13 +63,13 @@ class PermissionHelperImpl : PermissionHelper {
         }
     }
 
-    override fun requestPermission(permission: String, requestCode: Int, listener: PermissionStatusHandler.() -> Unit) {
-        requestMultiPermissions(arrayOf(permission), requestCode, listener)
+    override fun requestPermission(permission: String, requestCode: Int, statusHandler: PermissionStatusHandler) {
+        requestMultiPermissions(arrayOf(permission), requestCode, statusHandler)
     }
 
-    override fun requestMultiPermissions(permissions: Array<String>, requestCode: Int, listener: PermissionStatusHandler.() -> Unit) {
+    override fun requestMultiPermissions(permissions: Array<String>, requestCode: Int, statusHandler: PermissionStatusHandler) {
         if (!isAllPermissionsGranted(permissions)) {
-            permissionMap[requestCode] = listener
+            permissionMap[requestCode] = statusHandler
             permissionRequester(permissions, requestCode)
         }
     }
@@ -96,7 +96,7 @@ class PermissionHelperImpl : PermissionHelper {
         for (i in 0 until lowestLength) {
             resultMap[permissions[i]] = grantResults[i]
         }
-        listener.invoke(PermissionStatusHandler(resultMap, requestCode))
+        listener.invoke(PermissionStatusManager(resultMap, requestCode))
         permissionMap.remove(requestCode)
         return true
     }
