@@ -205,10 +205,10 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun toggleFlash() {
         if (cvCamera.flash == Flash.OFF) {
-            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_off_flash))
+            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_on_flash))
             cvCamera.flash = Flash.ON
         } else {
-            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_on_flash))
+            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_off_flash))
             cvCamera.flash = Flash.OFF
         }
     }
