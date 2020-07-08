@@ -15,7 +15,6 @@ class AudioManager(var mContext: Context) {
 
     fun playAudio(filePath: String, isLoop: Boolean = false) {
         try {
-            
             mPlayer?.apply {
                 setOnPreparedListener { mp ->
                     mp.start()
