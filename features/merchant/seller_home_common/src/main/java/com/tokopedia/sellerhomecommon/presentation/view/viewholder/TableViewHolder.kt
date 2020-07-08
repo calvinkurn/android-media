@@ -52,10 +52,24 @@ class TableViewHolder(
             commonWidgetErrorState.gone()
             shimmerTableWidgetWidget.gone()
 
-            shcTableView.showTable(element.data?.dataSet.orEmpty())
+            val dataSet = element.data?.dataSet.orEmpty()
+            if (dataSet.isNotEmpty()) {
+                shcTableView.showTable(element.data?.dataSet.orEmpty())
+
+                if (dataSet[0].rows.isEmpty()) {
+                    setOnTableEmpty()
+                }
+            } else {
+                setOnTableEmpty()
+            }
         }
 
         setupCta(element)
+    }
+
+    private fun setOnTableEmpty() = with(itemView) {
+        tvShcTableOnEmpty.visible()
+        shcTableView.gone()
     }
 
     private fun showLoadingState() = with(itemView) {
