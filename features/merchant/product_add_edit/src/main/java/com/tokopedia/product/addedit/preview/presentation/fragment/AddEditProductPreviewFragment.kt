@@ -487,6 +487,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         viewModel.productAddResult.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
                     }
+                    viewModel.productAddResult.value?.didBackPress = true
                     when (dataBackPressed) {
                         DETAIL_DATA -> {
                             viewModel.productAddResult.value?.let { displayAddModeDetail(it) }
@@ -507,7 +508,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             return
                         }
                     }
-                    viewModel.productAddResult.value?.didBackPress = true
                     val productInputModel = viewModel.productAddResult.value ?: ProductInputModel()
                     context?.let {
                         val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
