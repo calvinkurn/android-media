@@ -407,7 +407,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     customTicketView1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            RouteManager.route(context, ApplinkOMSConstant.INTERNAL_EVENTS + metaDataInfo1.getSeoUrl());
+                            RouteManager.route(context, metaDataInfo1.getProductAppUrl());
                         }
                     });
                 }
