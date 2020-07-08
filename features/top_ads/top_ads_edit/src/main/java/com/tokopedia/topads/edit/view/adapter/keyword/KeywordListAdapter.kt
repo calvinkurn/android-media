@@ -125,6 +125,7 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
                 }
             }
         }
+        notifyDataSetChanged()
     }
 
     fun setList(items: MutableList<KeywordViewModel>) {
@@ -161,9 +162,7 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
         items.addAll(list)
         items.add(KeywordGroupViewModel(RECOMMENDED))
         items.addAll(toBeAdded)
-        notifyDataSetChanged()
         setSelectedList(listSelected)
-
     }
 
     companion object {
