@@ -99,7 +99,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
 
-    val isAdding: LiveData<Boolean> get() = Transformations.map(productId) { id -> id.isNullOrBlank() || productInputModel.value?.productId.orZero() == 0L }
+    val isAdding =  MediatorLiveData<Boolean>().apply {
+        addSource(productId) {
+            it.isNullOrEmpty()
+        }
+        addSource(productInputModel) {
+            it.didBackPress
+        }
+    }
 
     var isDuplicate: Boolean = false
 
