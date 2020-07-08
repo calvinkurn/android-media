@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.data.mapper.InAppButtonMapper.mapBtnType
+import com.tokopedia.notifications.data.mapper.InAppButtonMapper.mapBtnSize
+import com.tokopedia.notifications.data.mapper.InAppButtonMapper.mapBtnVariant
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.unifycomponents.UnifyButton
@@ -34,8 +36,8 @@ open class ActionButtonViewHolder(
 
     private fun btnLayout(button: CMButton) {
         btnAction.buttonType = mapBtnType(button.unifyType)
-        btnAction.buttonVariant = mapBtnType(button.unifyVariant)
-        btnAction.buttonSize = mapBtnType(button.unifySize)
+        btnAction.buttonSize = mapBtnSize(button.unifySize)
+        btnAction.buttonVariant = mapBtnVariant(button.unifyVariant)
     }
 
     companion object {
