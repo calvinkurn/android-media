@@ -6,37 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.header.HeaderUnify
-        android:id="@+id/header_campaign_stock"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/transparent"
-        app:title="@string/product_manage_campaign_stock_allocation"
-        app:layout_constraintTop_toTopOf="parent"/>
-
     <include
         android:id="@+id/layout_campaign_stock_product_info"
         layout="@layout/layout_campaign_stock_product_info"
-        app:layout_constraintTop_toBottomOf="@id/header_campaign_stock"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/tabs_campaign_stock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/layout_campaign_stock_product_info"
-        tools:layout_height="@dimen/layout_lvl6">
-
-       <com.google.android.material.tabs.TabItem
-           android:id="@+id/tab_campaign_stock_main"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"/>
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tab_campaign_stock_reserved"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </com.tokopedia.unifycomponents.TabsUnify>
+        tools:layout_height="@dimen/layout_lvl6"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp2_campaign_stock"

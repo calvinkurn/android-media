@@ -9,7 +9,5 @@ class CampaignStockAdapter(fragmentActivity: FragmentActivity,
 
     override fun getItemCount(): Int = fragmentList.size
 
-    override fun createFragment(position: Int): Fragment {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun createFragment(position: Int): Fragment = fragmentList[position]
 }

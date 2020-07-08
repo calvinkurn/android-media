@@ -130,14 +130,15 @@ class CampaignStockFragment: BaseDaggerFragment() {
 
     private fun setupFragmentTabs(summary: GetStockAllocationSummary?) {
         //Todo: set fragment data
-        tabs_campaign_stock?.getUnifyTabLayout()?.run {
-            getTabLayoutItems(summary?.sellableStock.toIntOrZero(), summary?.reserveStock.toIntOrZero()).forEach { tab ->
-                addTab(tab)
-            }
-            addOnTabSelectedListener(onTabSelectedListener)
+        tabs_campaign_stock?.run {
+            addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), summary?.sellableStock.toIntOrZero()))
+            addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), summary?.reserveStock.toIntOrZero()))
+
+            getUnifyTabLayout().addOnTabSelectedListener(onTabSelectedListener)
         }
         vp2_campaign_stock?.run {
             adapter = mAdapter
+            isUserInputEnabled = false
         }
     }
 
@@ -154,14 +155,5 @@ class CampaignStockFragment: BaseDaggerFragment() {
                 getMainStockFragment(),
                 getReservedStockFragment()
         )
-    }
-
-    private fun getTabLayoutItems(mainStock: Int,
-                                  reservedStock: Int): List<TabLayout.Tab> {
-        return listOf(
-                TabLayout.Tab().apply {
-                    text = String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), mainStock.toString()) },
-                TabLayout.Tab().apply {
-                    text = String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), reservedStock.toString()) })
     }
 }
