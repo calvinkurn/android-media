@@ -75,7 +75,7 @@ ext {
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
-    fragmentTest = "1.1.0"
+    fragmentTest = "1.2.5"
 
     debugToolsEnabled = true
 
