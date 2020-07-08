@@ -68,8 +68,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     override fun loadData(page: Int) {
-        if (page != 1) return
-        viewModel.loadVouchers(shopId)
+        viewModel.loadVouchers(page)
     }
 
     private fun setupRecyclerView() {
@@ -96,9 +95,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun observeVoucherResponse() {
         viewModel.filteredVouchers.observe(viewLifecycleOwner, Observer { vouchers ->
-            adapter.clearSelected()
-            clearAllData()
-            renderList(vouchers)
+            renderList(vouchers, viewModel.hasNext)
             if (vouchers.isEmpty()) {
                 changeActionState(View.GONE)
             } else {

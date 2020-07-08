@@ -15,6 +15,8 @@ class AttachVoucherViewModel @Inject constructor(
         private val getVouchersUseCase: GetVoucherUseCase
 ) : ViewModel() {
 
+    val hasNext: Boolean get() = getVouchersUseCase.hasNext
+
     private var _filter: MutableLiveData<Int> = MutableLiveData()
     private var _vouchers: MutableLiveData<List<VoucherUiModel>> = MutableLiveData()
     private var _error: MutableLiveData<Throwable> = MutableLiveData()
@@ -42,13 +44,8 @@ class AttachVoucherViewModel @Inject constructor(
         }
     }
 
-    fun loadVouchers(shopId: String) {
-        if (shopId.isEmpty()) return
-        getVouchersUseCase.getVouchers(
-                ::onSuccessGetVouchers,
-                ::onErrorGetVouchers,
-                shopId.toInt()
-        )
+    fun loadVouchers(page: Int) {
+        getVouchersUseCase.getVouchers(page, ::onSuccessGetVouchers, ::onErrorGetVouchers)
     }
 
     private fun onSuccessGetVouchers(vouchers: List<VoucherUiModel>) {

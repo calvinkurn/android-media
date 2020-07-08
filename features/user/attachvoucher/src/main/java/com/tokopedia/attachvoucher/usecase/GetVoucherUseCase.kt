@@ -16,24 +16,27 @@ class GetVoucherUseCase @Inject constructor(
         private val mapper: VoucherMapper
 ) : CoroutineScope {
 
+    var hasNext = false
+
     private val paramShopId = "shop_id"
     private val paramFilter = "Filter"
 
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
     fun getVouchers(
+            page: Int,
             onSuccess: (List<VoucherUiModel>) -> Unit,
-            onError: (Throwable) -> Unit,
-            shopId: Int
+            onError: (Throwable) -> Unit
     ) {
         launchCatchError(dispatchers.IO,
                 {
-                    val params = generateParams(shopId)
+                    val params = generateParams(page)
                     val response = gqlUseCase.apply {
                         setTypeClass(GetMerchantPromotionGetMVListResponse::class.java)
                         setRequestParams(params)
                         setGraphqlQuery(privateVoucherQuery)
                     }.executeOnBackground()
+                    hasNext = response.merchantPromotionGetMVList.data.paging.hasNext
                     val vouchers = mapper.map(response)
                     withContext(dispatchers.Main) {
                         onSuccess(vouchers)
@@ -53,11 +56,12 @@ class GetVoucherUseCase @Inject constructor(
         }
     }
 
-    private fun generateParams(shopId: Int): Map<String, Any> {
+    private fun generateParams(page: Int): Map<String, Any> {
         return mapOf(
                 paramFilter to mapOf(
                         MVFilter.VoucherStatus.param to MVFilter.VoucherStatus.paramOnGoing,
-                        MVFilter.paramPage to 1
+                        MVFilter.PerPage.param to MVFilter.PerPage.default,
+                        MVFilter.paramPage to page
                 )
         )
     }
@@ -165,7 +169,6 @@ class GetVoucherUseCase @Inject constructor(
 
     object MVFilter {
         const val paramPage = "page"
-
         object VoucherStatus {
             const val param = "voucher_status"
             const val paramOnGoing = "2"
@@ -182,9 +185,12 @@ class GetVoucherUseCase @Inject constructor(
             const val paramDiscount = 2
             const val paramCashback = 3
         }
-
         object IsPublic {
             const val param = "is_public"
+        }
+        object PerPage {
+            const val param = "per_page"
+            const val default = 15
         }
     }
 }
