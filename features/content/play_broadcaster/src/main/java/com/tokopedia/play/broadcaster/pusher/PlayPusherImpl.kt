@@ -9,10 +9,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alivc.live.pusher.*
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherStatus
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherTimerInfoState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
 import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
@@ -29,7 +28,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     private  var mAliVcLivePusher: AlivcLivePusher? = null
     private  var mPlayPusherStatus: PlayPusherStatus = PlayPusherStatus.Idle
 
-    private val _observableInfoState = MutableLiveData<PlayPusherInfoState>()
+    private val _observableInfoState = MutableLiveData<PlayPusherTimerInfoState>()
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
     
     private val mAliVcLivePushConfig: AlivcLivePushConfig = AlivcLivePushConfig().apply {
@@ -61,7 +60,6 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
-                throw IllegalStateException(e)
             }
         }
     }
@@ -206,7 +204,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 
-    override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
+    override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherTimerInfoState> {
         return _observableInfoState
     }
 
@@ -279,19 +277,19 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private val mPlayPusherTimerListener = object : PlayPusherTimerListener{
         override fun onCountDownActive(timeLeft: String) {
-            _observableInfoState.postValue(PlayPusherInfoState.TimerActive(timeLeft))
+            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerActive(timeLeft))
         }
 
         override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
-            _observableInfoState.postValue(PlayPusherInfoState.TimerAlmostFinish(minutesUntilFinished))
+            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerAlmostFinish(minutesUntilFinished))
         }
 
         override fun onCountDownFinish(timeElapsed: String) {
-            _observableInfoState.postValue(PlayPusherInfoState.TimerFinish(timeElapsed))
+            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerFinish(timeElapsed))
         }
 
         override fun onReachMaximumPauseDuration() {
-            _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.ReachMaximumPauseDuration))
+            _observableInfoState.postValue(PlayPusherTimerInfoState.ReachMaximumPauseDuration)
         }
     }
 

@@ -21,7 +21,7 @@ object DeviceInfoUtil {
     }
 
     private fun checkDeviceApi(): Boolean {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2
     }
 
     fun isDeviceSupported(): Boolean {

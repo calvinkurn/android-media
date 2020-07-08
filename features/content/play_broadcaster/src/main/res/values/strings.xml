@@ -129,4 +129,7 @@
         <item quantity="one">%d \nFollower</item>
         <item quantity="other">%d \nFollowers</item>
     </plurals>
+
+    <string name="play_dialog_unsupported_device_title">Perangkat tidak mendukung\n layanan live streaming</string>
+    <string name="play_dialog_unsupported_device_desc">Layanan live streaming tidak didukung pada perangkat Anda.</string>
 </resources>

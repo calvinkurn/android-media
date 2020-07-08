@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +29,9 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import java.io.File
 
 class PlayCoverCameraActivity : AppCompatActivity() {
@@ -54,16 +59,30 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         }
     }
 
+    private var systemUiVisibility: Int
+        get() = window.decorView.systemUiVisibility
+        set(value) {
+            window.decorView.systemUiVisibility = value
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_cover_camera)
         initView()
         setupView()
+        setupInsets()
     }
 
     override fun onResume() {
         super.onResume()
+        setLayoutFullScreen()
         if (isRequiredPermissionGranted()) cvCamera.open()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        tvCancel.requestApplyInsetsWhenAttached()
+        ivFlash.requestApplyInsetsWhenAttached()
     }
 
     override fun onPause() {
@@ -113,6 +132,32 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun setupView() {
         requestRequiredPermission()
+    }
+
+    private fun setupInsets() {
+        tvCancel.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
+        }
+
+        ivFlash.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
+        }
+    }
+
+    private fun setLayoutFullScreen() {
+        systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
     }
 
     private fun takePicture() {
@@ -168,10 +213,10 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun toggleFlash() {
         if (cvCamera.flash == Flash.OFF) {
-            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_off_flash))
+            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_on_flash))
             cvCamera.flash = Flash.ON
         } else {
-            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_on_flash))
+            ivFlash.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_play_camera_off_flash))
             cvCamera.flash = Flash.OFF
         }
     }

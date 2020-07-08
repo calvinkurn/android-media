@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.util.channelNotFound
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
@@ -74,6 +75,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             window.decorView.systemUiVisibility = value
         }
 
+    private var deviceSupported = DeviceInfoUtil.isDeviceSupported()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
@@ -85,11 +88,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         if (savedInstanceState != null) populateSavedState(savedInstanceState)
 
-        viewModel.initPushStream()
+        initPushStream()
         setupContent()
         initView()
         setupView()
         setupInsets()
+
+        if (!deviceSupported) {
+            showDialogWhenUnSupportedDevices()
+            return
+        }
 
         getConfiguration()
 
@@ -109,6 +117,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     override fun onResume() {
         super.onResume()
+        setLayoutFullScreen()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
@@ -177,6 +186,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewModel.checkPermission()
     }
 
+    private fun initPushStream() {
+        viewModel.initPushStream()
+    }
+
     private fun setFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
@@ -208,9 +221,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun setupView() {
-        systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
     }
 
     private fun setupInsets() {
@@ -242,6 +252,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             return currentVisibleFragment.onBackPressed()
         }
         return false
+    }
+
+    private fun setLayoutFullScreen() {
+        systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
     }
 
     //region observe
@@ -326,10 +342,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
     }
 
-    private fun showDialogWhenActiveOnOtherDevices() {
+    private fun showDialogWhenUnSupportedDevices() {
         getDialog(
-                title = getString(R.string.play_dialog_error_active_other_devices_title),
-                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                title = getString(R.string.play_dialog_unsupported_device_title),
+                desc = getString(R.string.play_dialog_unsupported_device_desc),
                 primaryCta = getString(R.string.play_broadcast_exit),
                 primaryListener = { dialog ->
                     dialog.dismiss()
@@ -356,8 +372,19 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         ).show()
     }
 
-    companion object {
+    private fun showDialogWhenActiveOnOtherDevices() {
+        getDialog(
+                title = getString(R.string.play_dialog_error_active_other_devices_title),
+                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                primaryCta = getString(R.string.play_broadcast_exit),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    finish()
+                }
+        ).show()
+    }
 
+    companion object {
         private const val CHANNEL_ID = "channel_id"
     }
 }
