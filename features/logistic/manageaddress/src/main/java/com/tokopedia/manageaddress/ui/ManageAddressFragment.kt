@@ -23,7 +23,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticdata.data.entity.address.AddressModel
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
@@ -221,7 +220,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    private fun renderData(data: List<AddressModel>) {
+    private fun renderData(data: List<RecipientAddressModel>) {
         adapter.addList(data)
     }
 

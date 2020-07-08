@@ -2,9 +2,9 @@ package com.tokopedia.manageaddress.ui.addresschoice
 
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
-import com.tokopedia.purchase_platform.common.feature.addresslist.GetAddressCornerUseCase
-import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
+import com.tokopedia.manageaddress.data.analytics.CheckoutAnalyticsChangeAddress
+import com.tokopedia.manageaddress.domain.GetAddressCornerUseCase
+import com.tokopedia.manageaddress.domain.model.AddressListModel
 import rx.Subscriber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

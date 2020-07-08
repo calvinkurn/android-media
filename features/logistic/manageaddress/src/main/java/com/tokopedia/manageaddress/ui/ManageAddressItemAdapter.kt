@@ -37,7 +37,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         holder.bindData(addressList[position])
     }
 
-    fun addList(data: List<AddressModel>) {
+    fun addList(data: List<RecipientAddressModel>) {
         addressList.clear()
         addressList.addAll(data)
         notifyDataSetChanged()
@@ -58,8 +58,8 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 setVisibility(data)
                 setPrimary(data)
                 address_name.text = data.addressName
-                receiver_name.text = data.receiverName
-                receiver_phone.text = data.receiverPhone
+                receiver_name.text = data.recipientName
+                receiver_phone.text = data.recipientPhoneNumber
                 if (addressStreet.contains(tokopediaNoteCondition)) {
                     val tokopediaNote = tokopediaNoteCondition + addressStreet.substringAfterLast(tokopediaNoteCondition)
                     val newAddress = addressStreet.replace(tokopediaNote, "")

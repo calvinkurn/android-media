@@ -1,6 +1,5 @@
 package com.tokopedia.manageaddress.ui.cornerlist
 
-import com.tokopedia.checkout.subfeature.corner_list.CornerContract
 import com.tokopedia.manageaddress.domain.GetCornerList
 import javax.inject.Inject
 

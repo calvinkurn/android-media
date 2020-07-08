@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.checkout.subfeature.address_choice.view.recyclerview.SampaiViewHolder;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.manageaddress.domain.model.addressoptions.CornerAddressModel;
 import com.tokopedia.manageaddress.ui.addresschoice.RecipientAddressViewHolder;

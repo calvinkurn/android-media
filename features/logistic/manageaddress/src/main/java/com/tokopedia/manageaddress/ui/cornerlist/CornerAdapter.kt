@@ -1,12 +1,12 @@
-package com.tokopedia.checkout.subfeature.corner_list
+package com.tokopedia.manageaddress.ui.cornerlist
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.manageaddress.R
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
+import com.tokopedia.manageaddress.R
 
 /**
  * Created by fajarnuha on 09/02/19.

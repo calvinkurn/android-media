@@ -6,8 +6,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.manageaddress.R;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.manageaddress.R;
 import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.Label;

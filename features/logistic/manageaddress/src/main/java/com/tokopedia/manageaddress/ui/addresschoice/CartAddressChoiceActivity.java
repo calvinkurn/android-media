@@ -6,13 +6,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.manageaddress.R;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
-import com.tokopedia.checkout.subfeature.corner_list.CornerListFragment;
+import com.tokopedia.manageaddress.ui.cornerlist.CornerListFragment;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.manageaddress.R;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
 import com.tokopedia.manageaddress.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListFragment;

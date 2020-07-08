@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.subfeature.address_choice.view.di
+package com.tokopedia.manageaddress.di.addresschoice
 
 import com.tokopedia.manageaddress.ui.addresschoice.AddressListContract
 import com.tokopedia.manageaddress.ui.addresschoice.AddressListPresenter

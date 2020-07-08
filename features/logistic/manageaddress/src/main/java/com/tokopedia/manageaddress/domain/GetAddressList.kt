@@ -1,11 +1,11 @@
 package com.tokopedia.manageaddress.domain
 
 import android.content.Context
-import com.example.manageaddress.R
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.domain.mapper.AddressCornerMapper
 import com.tokopedia.manageaddress.domain.model.AddressListModel
 import com.tokopedia.manageaddress.domain.response.GetPeopleAddressResponse

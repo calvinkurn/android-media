@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.subfeature.corner_list
+package com.tokopedia.manageaddress.ui.cornerlist
 
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 

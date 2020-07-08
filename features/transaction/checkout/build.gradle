@@ -76,7 +76,6 @@ dependencies {
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.manageaddress)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
 

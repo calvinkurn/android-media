@@ -1,7 +1,7 @@
-package com.tokopedia.checkout.subfeature.corner_list.di
+package com.tokopedia.manageaddress.di.cornerlist
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.checkout.subfeature.corner_list.CornerListFragment
+import com.tokopedia.manageaddress.ui.cornerlist.CornerListFragment
 import dagger.Component
 
 /**

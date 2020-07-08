@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.subfeature.corner_list
+package com.tokopedia.manageaddress.ui.cornerlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,16 +8,14 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.manageaddress.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.checkout.subfeature.corner_list.di.DaggerCornerComponent
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
-import com.tokopedia.manageaddress.ui.cornerlist.CornerListPresenter
+import com.tokopedia.manageaddress.R
 import java.util.*
 import javax.inject.Inject
 

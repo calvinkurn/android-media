@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.subfeature.corner_list.di
+package com.tokopedia.manageaddress.di.cornerlist
 
 import javax.inject.Scope
 
