@@ -1,5 +1,7 @@
 package com.tokopedia.topupbills.telco.view.widget
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,8 +10,11 @@ import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
 import org.jetbrains.annotations.NotNull
 import java.util.regex.Pattern
@@ -27,6 +32,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     protected val autoCompleteInputNumber: AutoCompleteTextView
     protected val btnContactPicker: ImageView
     protected val errorInputNumber: TextView
+    protected val layoutInputNumber: ConstraintLayout
+
+    private val inputNumberResult: TextView
+    private val imgOperatorResult: ImageView
+    private val layoutResult: ConstraintLayout
+
     protected val view: View
     private lateinit var listener: ActionListener
 
@@ -38,6 +49,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         autoCompleteInputNumber = view.findViewById(R.id.ac_input_number)
         btnContactPicker = view.findViewById(R.id.btn_contact_picker)
         errorInputNumber = view.findViewById(R.id.error_input_number)
+        layoutInputNumber = view.findViewById(R.id.input_number_layout)
+
+        layoutResult = view.findViewById(R.id.input_number_layout_result)
+        imgOperatorResult = view.findViewById(R.id.img_operator_result)
+        inputNumberResult = view.findViewById(R.id.phone_number_result)
 
         autoCompleteInputNumber.clearFocus()
         btnContactPicker.setOnClickListener { listener.onNavigateToContact() }
@@ -107,8 +123,42 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun setIconOperator(url: String) {
         ImageHandler.LoadImage(imgOperator, url)
+        ImageHandler.LoadImage(imgOperatorResult, url)
         imgOperator.visibility = View.VISIBLE
         hideErrorInputNumber()
+    }
+
+    fun setVisibleResultNumber(show: Boolean) {
+        if (show && getInputNumber().isNotEmpty()) {
+            animateVisibilityView(layoutResult, layoutInputNumber)
+        } else {
+            animateVisibilityView(layoutInputNumber, layoutResult)
+        }
+    }
+
+    /**
+     * @param view1 show
+     * @param view2 hide
+     */
+    private fun animateVisibilityView(view1: View, view2: View) {
+        val shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+        view1.apply {
+            alpha = ALPHA_0F
+            view1.show()
+            animate()
+                    .alpha(ALPHA_1F)
+                    .setDuration(shortAnimationDuration.toLong())
+                    .setListener(null)
+
+            view2.animate()
+                    .alpha(ALPHA_0F)
+                    .setDuration(shortAnimationDuration.toLong())
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(p0: Animator?) {
+                            view2.hide()
+                        }
+                    })
+        }
     }
 
     private fun validatePrefixClientNumber(phoneNumber: String): String {
@@ -136,6 +186,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             return phoneNumberWithPrefix
         }
         return ""
+    }
+
+    companion object {
+        private const val ALPHA_0F = 0f
+        private const val ALPHA_1F = 1f
     }
 
     interface ActionListener {

@@ -48,11 +48,9 @@ import javax.inject.Inject
  */
 abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
-    protected lateinit var mainContainer: NestedScrollView
     protected lateinit var pageContainer: RelativeLayout
     protected lateinit var tickerView: Ticker
     private lateinit var viewModel: SharedTelcoViewModel
-
     protected val listMenu = mutableListOf<TopupBillsTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
 
@@ -219,13 +217,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         }
     }
 
-    protected fun handleFocusClientNumber() {
-        mainContainer.setOnTouchListener { view1, motionEvent ->
-            view1.clearFocus()
-            false
-        }
-    }
-
     protected fun validatePhoneNumber(operatorData: TelcoCatalogPrefixSelect, clientNumberWidget: DigitalClientNumberWidget) {
         for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
             val phoneIsValid = Pattern.compile(validation.rule)
@@ -305,6 +296,10 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         }
         topupAnalytics.eventClickTabMenuTelco(categoryId, userSession.userId, action)
     }
+
+    abstract fun onCollapseAppBar()
+
+    abstract fun onExpandAppBar()
 
     protected abstract fun getTelcoMenuId(): Int
 

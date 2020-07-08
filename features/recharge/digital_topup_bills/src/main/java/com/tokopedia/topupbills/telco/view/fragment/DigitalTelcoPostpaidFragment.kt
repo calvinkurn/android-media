@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -50,6 +51,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     private lateinit var postpaidClientNumberWidget: DigitalPostpaidClientNumberWidget
     private lateinit var buyWidget: TopupBillsCheckoutWidget
+    private lateinit var mainContainer: NestedScrollView
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var loadingShimmering: LinearLayout
@@ -105,7 +107,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         getPrefixOperatorData()
         renderClientNumber()
-        handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
     }
@@ -352,6 +353,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             loadingShimmering.visibility = View.GONE
             mainContainer.visibility = View.VISIBLE
         }
+    }
+
+    override fun onCollapseAppBar() {
+        //do nothing
+    }
+
+    override fun onExpandAppBar() {
+        //do nothing
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
