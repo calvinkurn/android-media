@@ -968,7 +968,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
         if (product.hasStockReserved != true) {
-            //TODO: go to stock campaign page
             context?.run {
                 startActivity(CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)))
             }

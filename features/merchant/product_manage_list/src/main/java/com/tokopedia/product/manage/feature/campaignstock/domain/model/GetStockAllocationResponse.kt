@@ -72,7 +72,7 @@ data class GetStockAllocationEventInfo(
         @SerializedName("action_url")
         val actionUrl: String = "",
         @SerializedName("product")
-        val product: GetStockAllocationReservedProduct = GetStockAllocationReservedProduct()
+        val product: List<GetStockAllocationReservedProduct> = listOf()
 )
 
 data class GetStockAllocationReservedProduct(

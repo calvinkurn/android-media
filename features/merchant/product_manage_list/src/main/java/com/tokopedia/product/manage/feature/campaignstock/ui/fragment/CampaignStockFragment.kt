@@ -20,6 +20,9 @@ import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockA
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationSummary
 import com.tokopedia.product.manage.feature.campaignstock.ui.CampaignStockActivity
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.CampaignStockAdapter
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -47,10 +50,6 @@ class CampaignStockFragment: BaseDaggerFragment() {
 
     private val productIds by lazy {
         activity?.intent?.getStringArrayExtra(CampaignStockActivity.PRODUCT_ID)
-    }
-
-    private val mAdapter by lazy {
-        activity?.let { CampaignStockAdapter(it, getFragmentList()) }
     }
 
     private val onTabSelectedListener by lazy {
@@ -117,7 +116,7 @@ class CampaignStockFragment: BaseDaggerFragment() {
     private fun applyLayout(productImageUrl: String, data: GetStockAllocationData) {
         with(data) {
             setupProductSummary(summary, productImageUrl)
-            setupFragmentTabs(summary)
+            setupFragmentTabs(this)
         }
     }
 
@@ -133,23 +132,29 @@ class CampaignStockFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun setupFragmentTabs(summary: GetStockAllocationSummary?) {
+    private fun setupFragmentTabs(data: GetStockAllocationData) {
         //Todo: set fragment data
-        tabs_campaign_stock?.run {
-            addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), summary?.sellableStock.toIntOrZero()))
-            addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), summary?.reserveStock.toIntOrZero()))
+        with(data) {
+            tabs_campaign_stock?.run {
+                addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), summary.sellableStock.toIntOrZero()))
+                addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), summary.reserveStock.toIntOrZero()))
 
-            getUnifyTabLayout().addOnTabSelectedListener(onTabSelectedListener)
-        }
-        vp2_campaign_stock?.run {
-            adapter = mAdapter
-            isUserInputEnabled = false
+                getUnifyTabLayout().addOnTabSelectedListener(onTabSelectedListener)
+            }
+            vp2_campaign_stock?.run {
+                adapter = activity?.let {
+                    CampaignStockAdapter(it, getFragmentList(
+                            summary.isVariant,
+                            detail.sellable.map { sellable -> CampaignStockMapper.mapToParcellableSellableProduct(sellable) } as ArrayList<SellableStockProductModel>,
+                            detail.reserve.map { reserved -> CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoModel>))
+                }
+                isUserInputEnabled = false
+            }
         }
     }
 
     private fun showResult() {
         layout_campaign_stock_product_info?.visible()
-        tabs_campaign_stock?.visible()
         vp2_campaign_stock?.visible()
         divider_campaign_stock?.visible()
         btn_campaign_stock_save?.visible()
@@ -160,14 +165,20 @@ class CampaignStockFragment: BaseDaggerFragment() {
         vp2_campaign_stock?.currentItem = position
     }
 
-    private fun getMainStockFragment() = CampaignMainStockFragment.createInstance()
+    private fun getMainStockFragment(isVariant: Boolean,
+                                     sellableProductList: ArrayList<SellableStockProductModel>) =
+            CampaignMainStockFragment.createInstance(isVariant, sellableProductList)
 
-    private fun getReservedStockFragment() = CampaignReservedStockFragment.createInstance()
+    private fun getReservedStockFragment(isVariant: Boolean,
+                                         reservedEventInfoList: ArrayList<ReservedEventInfoModel>) =
+            CampaignReservedStockFragment.createInstance(isVariant, reservedEventInfoList)
 
-    private fun getFragmentList(): List<Fragment>{
+    private fun getFragmentList(isVariant: Boolean,
+                                sellableProductList: ArrayList<SellableStockProductModel>,
+                                reservedEventInfoList: ArrayList<ReservedEventInfoModel>): List<Fragment>{
         return listOf(
-                getMainStockFragment(),
-                getReservedStockFragment()
+                getMainStockFragment(isVariant, sellableProductList),
+                getReservedStockFragment(isVariant, reservedEventInfoList)
         )
     }
 }

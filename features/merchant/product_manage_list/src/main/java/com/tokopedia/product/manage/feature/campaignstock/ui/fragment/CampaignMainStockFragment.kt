@@ -7,16 +7,24 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductModel
 
 class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignMainStockFragment>, CampaignStockAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(): CampaignMainStockFragment {
+        fun createInstance(isVariant: Boolean,
+                           sellableProductList: ArrayList<SellableStockProductModel>): CampaignMainStockFragment {
             return CampaignMainStockFragment().apply {
-
+                arguments = Bundle().apply {
+                    putBoolean(EXTRA_IS_VARIANT, isVariant)
+                    putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductList)
+                }
             }
         }
+
+        private const val EXTRA_IS_VARIANT = "extra_is_variant"
+        private const val EXTRA_SELLABLE_PRODUCT_LIST = "extra_sellable"
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
