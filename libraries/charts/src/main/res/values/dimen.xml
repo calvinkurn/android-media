@@ -3,5 +3,5 @@
     <dimen name="charts_6dp">6dp</dimen>
     <dimen name="charts_10dp">10dp</dimen>
     <dimen name="charts_12dp">12dp</dimen>
-    <dimen name="charts_150dp">150dp</dimen>
+    <dimen name="charts_140dp">140dp</dimen>
 </resources>

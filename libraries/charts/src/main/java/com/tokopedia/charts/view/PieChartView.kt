@@ -3,6 +3,7 @@ package com.tokopedia.charts.view
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
@@ -16,6 +17,7 @@ import com.tokopedia.charts.config.piechart.annotation.PieChartStyle
 import com.tokopedia.charts.config.piechart.model.PieChartConfig
 import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.charts.view.adapter.PieChartLegendAdapter
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.view_pie_chart.view.*
@@ -34,8 +36,8 @@ class PieChartView(
         PieChartLegendAdapter()
     }
 
-    private var pieChartWidth: Int = context.resources.getDimensionPixelSize(R.dimen.charts_150dp)
-    private var pieChartHeight: Int = context.resources.getDimensionPixelSize(R.dimen.charts_150dp)
+    private var pieChartWidth: Int = context.resources.getDimensionPixelSize(R.dimen.charts_140dp)
+    private var pieChartHeight: Int = context.resources.getDimensionPixelSize(R.dimen.charts_140dp)
 
     init {
         View.inflate(context, R.layout.view_pie_chart, this)
@@ -73,6 +75,7 @@ class PieChartView(
                 setDrawIcons(false)
                 sliceSpace = cfg.sliceSpaceWidth
                 colors = chartColors
+                selectionShift = 0f
             }
 
             val mData = PieData(pieDataSet)
@@ -93,6 +96,24 @@ class PieChartView(
             } else {
                 rvPieChartLegend.gone()
             }
+
+            setOnEmpty(chartEntries)
+        }
+    }
+
+    private fun setOnEmpty(chartEntries: List<PieChartEntry>) {
+        val isEmpty = chartEntries.sumBy { it.value } == 0
+        if (isEmpty) {
+            pieChart.gone()
+            vPieChartEmpty.visible()
+
+            val emptyDrawableRes: Drawable? = context.getResDrawable(R.drawable.shape_charts_pie_empty)
+            emptyDrawableRes?.let {
+                vPieChartEmpty.background = it
+            }
+        } else {
+            pieChart.visible()
+            vPieChartEmpty.gone()
         }
     }
 
