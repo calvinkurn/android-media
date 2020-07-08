@@ -49,5 +49,4 @@ class GiftBoxTapTapCrackUseCaseTest {
         Assert.assertEquals(map[GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID], param2)
 
     }
-
 }
