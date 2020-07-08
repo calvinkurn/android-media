@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
@@ -23,6 +22,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
+import com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLINK
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
@@ -379,7 +379,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun onAllBannerClicked() {
-        RouteManager.route(context, ApplinkConst.PROMO_LIST)
+        RouteManager.route(context, FLIGHT_PROMO_APPLINK)
     }
 
     private fun renderSearchForm(homepageData: FlightHomepageModel) {
