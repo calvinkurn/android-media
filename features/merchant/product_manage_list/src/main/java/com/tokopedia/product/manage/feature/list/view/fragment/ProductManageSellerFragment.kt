@@ -191,7 +191,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
                 addAction(UploadProductService.ACTION_DRAFT_CHANGED)
                 addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
             }
-            it.registerReceiver(draftBroadCastReceiver, intentFilters)
+            LocalBroadcastManager.getInstance(it).registerReceiver(draftBroadCastReceiver, intentFilters)
         }
     }
 
