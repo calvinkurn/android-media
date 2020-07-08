@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.fragment
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
@@ -12,7 +11,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -30,8 +28,11 @@ import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
 import com.tokopedia.play.broadcaster.util.exhaustive
 import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
+import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
+import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
+import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
+import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.util.showToaster
-import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
@@ -76,6 +77,8 @@ class PlayCoverSetupFragment @Inject constructor(
     private val isEditCoverMode: Boolean
         get() = arguments?.getBoolean(EXTRA_IS_EDIT_COVER_MODE, false) ?: false
 
+    private lateinit var permissionHelper: PermissionHelper
+
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
@@ -104,6 +107,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 .get(PlayCoverSetupViewModel::class.java)
         dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(DataStoreViewModel::class.java)
+        permissionHelper = PermissionHelperImpl(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -125,13 +129,8 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            REQUEST_CODE_PERMISSION_COVER_CHOOSER -> onCoverChooserPermissionResult(grantResults)
-            REQUEST_CODE_PERMISSION_CROP_COVER -> onCoverCropAddPermissionResult(grantResults)
-            REQUEST_CODE_PERMISSION_START_CROP_COVER -> {}
-            REQUEST_CODE_PERMISSION_UPLOAD -> onUploadPermissionResult(grantResults)
-            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
+        if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) return
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -348,45 +347,35 @@ class PlayCoverSetupFragment @Inject constructor(
      * Permission
      */
     private fun isGalleryPermissionGranted(): Boolean {
-        return arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE).map {
-            ContextCompat.checkSelfPermission(requireContext(), it)
-        }.all { it == PackageManager.PERMISSION_GRANTED }
+        return permissionHelper.isAllPermissionsGranted(
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        )
     }
 
-    private fun requestGalleryPermission(requestCode: Int) = requestPermissions(
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), requestCode
+    private fun requestGalleryPermission(requestCode: Int) = permissionHelper.requestMultiPermissionsFullFlow(
+            permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
+            requestCode = requestCode,
+            permissionResultListener = object : PermissionResultListener {
+                override fun onRequestPermissionResult(): PermissionStatusHandler {
+                    return {
+                        when (requestCode) {
+                            REQUEST_CODE_PERMISSION_CROP_COVER -> {
+                                if (isAllGranted()) coverCropView.clickAdd()
+                                else showToaster("Cover Crop Permission Failed", Toaster.TYPE_ERROR)
+                            }
+                            REQUEST_CODE_PERMISSION_UPLOAD -> {
+                                if (isAllGranted()) coverSetupView.clickNext()
+                                else showToaster("Upload Permission Failed", Toaster.TYPE_ERROR)
+                            }
+                        }
+                    }
+                }
+
+                override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+                    return false
+                }
+            }
     )
-
-    private fun onCoverChooserPermissionResult(grantResults: IntArray) {
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) openCoverChooser(CoverSource.None)
-        else {
-            Toaster.make(requireView(), "Cover Chooser Permission Failed")
-        }
-    }
-
-    private fun onCoverCropAddPermissionResult(grantResults: IntArray) {
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) coverCropView.clickAdd()
-        else {
-            Toaster.make(requireView(), "Cover Crop Permission Failed")
-        }
-    }
-
-    private fun onUploadPermissionResult(grantResults: IntArray) {
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) coverSetupView.clickNext()
-        else {
-            Toaster.make(requireView(), "Upload Permission Failed")
-        }
-    }
-
-    private fun openCameraPage() {
-        val cameraIntent = Intent(context, PlayCoverCameraActivity::class.java)
-        startActivityForResult(cameraIntent, REQUEST_CODE_CAMERA_CAPTURE)
-    }
-
-    private fun openGalleryPage() {
-        getImagePickerHelper()
-                .show(CoverSource.Gallery)
-    }
 
     private fun handleCroppingState(state: CoverSetupState.Cropping) {
         when (state) {
@@ -511,12 +500,9 @@ class PlayCoverSetupFragment @Inject constructor(
     companion object {
         const val EXTRA_IS_EDIT_COVER_MODE = "is_edit_cover_mode"
 
-        private const val REQUEST_CODE_PERMISSION_COVER_CHOOSER = 9090
         private const val REQUEST_CODE_PERMISSION_CROP_COVER = 9191
         private const val REQUEST_CODE_PERMISSION_START_CROP_COVER = 9292
         private const val REQUEST_CODE_PERMISSION_UPLOAD = 9393
-
-        private const val REQUEST_CODE_CAMERA_CAPTURE = 2222
     }
 
     interface Listener {
