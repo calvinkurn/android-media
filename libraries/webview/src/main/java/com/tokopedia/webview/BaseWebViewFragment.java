@@ -479,10 +479,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (view.getContext() instanceof BaseSimpleWebViewActivity) {
                 BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) view.getContext();
                 String title = view.getTitle();
-                String activityTitle = activity.getTitle();
+                String activityTitle = activity.getWebViewTitle();
                 if (TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE)) {
                     if (activity.getShowTitleBar()) {
-                        activity.setTitle(title);
+                        activity.setWebViewTitle(title);
                         activity.updateTitle(title);
                     }
                 }
