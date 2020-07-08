@@ -5,6 +5,8 @@ import com.tokopedia.track.interfaces.Analytics
 
 
 private const val KEY_EVENT = "event"
+private const val KEY_EVENT_SCREEN_NAME = "screenName"
+private const val KEY_OPEN_SCREEN_EVENT = "openScreen"
 private const val KEY_EVENT_CATEGORY = "eventCategory"
 private const val KEY_EVENT_ACTION = "eventAction"
 private const val KEY_EVENT_LABEL = "eventLabel"
@@ -12,6 +14,10 @@ private const val KEY_EVENT_CATEGORY_VALUE = "ads creation form"
 private const val KEY_EVENT_VALUE = "clickAdsCreation"
 private const val KEY_EVENT_DASHBOARD_VALUE = "clickAutoAds"
 private const val KEY_EVENT_DASHBOARD_CATEGORY_VALUE = "auto ads dashboard"
+private const val KEY_TOP_ADS_SCREEN_NAME = "/topads - home"
+private const val KEY_TOP_ADS_OBAORDING_SCREEN_NAME = "/autoads - onboarding"
+private const val KEY_EVENT_LOGGED_IN_STATUS = "isLoggedInStatus"
+private const val KEY_EVENT_USER_ID = "userId"
 
 
 class TopAdsCreateAnalytics {
@@ -47,10 +53,19 @@ class TopAdsCreateAnalytics {
 
     fun sendTopAdsOpenOnboardingScreenEvent(isLoggedInStatus: String, userId: String) {
         val map = mapOf(
-                KEY_EVENT to "openScreen",
-                "screenName" to "/autoads - onboarding",
-                "isLoggedInStatus" to isLoggedInStatus,
-                "userId" to userId)
+                KEY_EVENT to KEY_OPEN_SCREEN_EVENT,
+                KEY_EVENT_SCREEN_NAME to KEY_TOP_ADS_OBAORDING_SCREEN_NAME,
+                KEY_EVENT_LOGGED_IN_STATUS to isLoggedInStatus,
+                KEY_EVENT_USER_ID to userId)
+
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendTopAdsOpenScreenEvent() {
+        val map = mapOf(
+                KEY_EVENT to KEY_OPEN_SCREEN_EVENT,
+                KEY_EVENT_SCREEN_NAME to KEY_TOP_ADS_SCREEN_NAME
+        )
 
         getTracker().sendGeneralEvent(map)
     }

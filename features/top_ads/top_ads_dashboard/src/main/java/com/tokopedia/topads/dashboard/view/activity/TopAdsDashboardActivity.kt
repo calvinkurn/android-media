@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -34,6 +35,8 @@ import javax.inject.Inject
 /**
  * Created by hadi.putra on 23/04/2018.
  */
+
+private const val CLICK_BUAT_IKLAN ="click - tambah iklan"
 class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction {
 
     private var tracker: TopAdsDashboardTracking? = null
@@ -54,6 +57,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             } else {
                 openDashboard()
             }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
         }
         header_toolbar?.setNavigationOnClickListener {
             super.onBackPressed()
@@ -102,6 +106,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 }
             }
         })
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
