@@ -99,16 +99,24 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
         viewModel.fcmToken.observe(viewLifecycleOwner, Observer {
             cardToken?.show()
-
-            if(!isNewToken(it)) {
+            textToken?.show()
+            if (!isNewToken(it)) {
                 labelToken?.setLabel("Token sudah terbaru")
                 labelToken?.setLabelType(Label.GENERAL_LIGHT_GREEN)
-                textToken?.text = it
+                textToken?.text = it.substring(it.length - 8)
             } else {
                 viewModel.updateToken(it)
                 labelToken?.setLabel("Token baru saja diperbarui")
                 labelToken?.setLabelType(Label.GENERAL_LIGHT_ORANGE)
-                val text = "$it \ndari\n ${getTokenFromPref()}"
+                val trimmedToken = it.substring(it.length - 8)
+                var trimmedPrefToken: String?
+                try {
+                    trimmedPrefToken = getTokenFromPref()
+                    trimmedPrefToken = trimmedPrefToken?.substring(trimmedPrefToken.length - 8)
+                } catch (e: Exception) {
+                    trimmedPrefToken = ""
+                }
+                val text = "$trimmedToken \ndari\n $trimmedPrefToken"
                 textToken?.text = text
             }
         })
@@ -147,7 +155,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
         if(uri == null) {
             textRingtone.text = "Ringtone tidak ditemukan."
         } else {
-            textRingtone.text = "Klik untuk bunyikan ringtone."
+            textRingtone.text = "Ringtone anda berfungsi. Klik untuk bunyikan ringtone."
         }
     }
 
