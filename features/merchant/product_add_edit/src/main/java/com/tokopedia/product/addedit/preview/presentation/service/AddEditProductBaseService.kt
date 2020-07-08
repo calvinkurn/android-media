@@ -11,6 +11,7 @@ import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -66,6 +67,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     companion object {
         const val JOB_ID = 13131314
         const val NOTIFICATION_CHANGE_DELAY = 500L
+        const val REQUEST_ENCODE = "UTF-8"
     }
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
@@ -90,15 +92,16 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
-        val urlImageCount = imageUrlOrPathList.size
+        val imagePathList = filterPathOnly(imageUrlOrPathList)
+        val pathImageCount = imagePathList.size
         val uploadIdList: ArrayList<String> = ArrayList()
-
-        // if sizeChartPath valid then add to progress
-        notificationManager = getNotificationManager(urlImageCount)
-        notificationManager?.onSubmitUpload()
+        val primaryImagePathOrUrl = imageUrlOrPathList.getOrNull(0).orEmpty()
 
         launchCatchError(block = {
-            repeat(urlImageCount) { i ->
+            notificationManager = getNotificationManager(pathImageCount)
+            notificationManager?.onStartUpload(primaryImagePathOrUrl)
+
+            repeat(pathImageCount) { i ->
                 val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
                 uploadIdList.add(imageId)
             }
@@ -129,7 +132,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 userSession.userId,
                 userSession.email,
                 getErrorMessage(throwable),
-                URLEncoder.encode(gson.toJson(requestParams), "UTF-8"))
+                URLEncoder.encode(gson.toJson(requestParams), REQUEST_ENCODE))
         val exception = AddEditProductUploadException(errorMessage, throwable)
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 
@@ -177,7 +180,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
-                notificationManager?.onAddProgress(filePath)
+                notificationManager?.onAddProgress()
                 result.uploadId
             }
             is UploadResult.Error -> {
@@ -192,6 +195,11 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             }
         }
     }
+
+    private fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
+            imageUrlOrPathList.filterNot {
+                it.startsWith(AddEditProductConstants.HTTP_PREFIX)
+            }
 
     private fun sendSuccessBroadcast() {
         val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)

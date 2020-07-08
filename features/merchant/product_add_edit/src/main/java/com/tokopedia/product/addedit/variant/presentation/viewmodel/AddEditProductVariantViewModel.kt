@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
@@ -309,6 +310,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
 
         return if (productVariant == null) {
+            // condition if adding new product variant (product variant combination not listed in products)
             ProductVariantInputModel(
                     price = productInputModel.value?.detailInputModel?.price.orZero(),
                     stock = MIN_PRODUCT_STOCK_LIMIT,
@@ -317,7 +319,12 @@ class AddEditProductVariantViewModel @Inject constructor(
                     status = STATUS_ACTIVE_STRING
             )
         } else {
-            productVariant.pictures = variantPicture
+            // condition if updating existing product variant
+            val filePath = variantPicture.firstOrNull()?.filePath.orEmpty()
+            if (!filePath.startsWith(HTTP_PREFIX)) {
+                // condition if updating picture (the url is changed to path)
+                productVariant.pictures = variantPicture
+            }
             productVariant
         }
     }
@@ -325,7 +332,8 @@ class AddEditProductVariantViewModel @Inject constructor(
     private fun mapVariantPhoto(variantPhoto: VariantPhoto?): List<PictureVariantInputModel> {
         return if (variantPhoto != null && variantPhoto.imageUrlOrPath.isNotEmpty()) {
             val result = PictureVariantInputModel(
-                    filePath = variantPhoto.imageUrlOrPath
+                    filePath = variantPhoto.imageUrlOrPath,
+                    urlOriginal = variantPhoto.imageUrlOrPath
             )
             listOf(result)
         } else {
@@ -378,15 +386,15 @@ class AddEditProductVariantViewModel @Inject constructor(
         val colorVariant = productInputModel.variantInputModel.selections.firstOrNull {
             it.variantId == COLOUR_VARIANT_TYPE_ID.toString()
         } ?: SelectionInputModel()
-        // get variant image urls
-        val photoUrls = mutableListOf<String>()
-        productInputModel.variantInputModel.productVariantPhotos.forEach {
-            photoUrls.add(it.urlOriginal)
-        }
+
         // compile variant photos
         colorVariant.options.forEachIndexed { index, optionInputModel ->
             val variantUnitValueName = optionInputModel.value
-            val photoUrl = photoUrls.getOrNull(index) ?: ""
+            // get variant image url
+            val photoUrl = productInputModel.variantInputModel.products.find {
+                it.combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION) == index
+            }?.pictures?.firstOrNull()?.urlOriginal.orEmpty()
+
             variantPhotos.add(VariantPhoto(variantUnitValueName, photoUrl))
         }
         return variantPhotos
