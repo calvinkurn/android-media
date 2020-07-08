@@ -164,7 +164,7 @@ class PieChartView(
             if (cfg.donutStyleConfig.isEnabled) {
                 isDrawHoleEnabled = true
 
-                if (cfg.donutStyleConfig.isCurve) {
+                if (cfg.donutStyleConfig.isCurveEnabled) {
                     setDrawSlicesUnderHole(false)
                     setDrawRoundedSlices(true)
                 }

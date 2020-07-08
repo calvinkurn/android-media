@@ -6,6 +6,6 @@ package com.tokopedia.charts.config.piechart.model
 
 data class DonutStyleConfig(
         val isEnabled: Boolean,
-        val isCurve: Boolean,
+        val isCurveEnabled: Boolean,
         val holeRadius: Float
 )

@@ -134,28 +134,38 @@ class DonutStyleConfigBuilder {
 
     var isEnabled: Boolean = false
         private set
-    var isCurve: Boolean = false
+    var isCurveEnabled: Boolean = false
         private set
-    var holeRadius: Float = 80f
+    var holeRadius: Float = 50f
         private set
 
     fun build(): DonutStyleConfig {
         return DonutStyleConfig(
                 isEnabled = isEnabled,
-                isCurve = isCurve,
+                isCurveEnabled = isCurveEnabled,
                 holeRadius = holeRadius
         )
     }
 
+    /**
+     * set this to true to draw the pie center empty. Default false
+     */
     fun enabled(lambda: () -> Boolean) {
         this.isEnabled = lambda()
     }
 
+    /**
+     * sets whether to draw slices in a curved fashion. Default false
+     */
     fun curveEnabled(lambda: () -> Boolean) {
-        this.isCurve = lambda()
+        this.isCurveEnabled = lambda()
     }
 
-    fun holeRadius(lambda: () -> Float) {
+    /**
+     * sets the radius of the hole in the center of the piechart in percent of
+     * the maximum radius (max = the radius of the whole chart), default 50%.
+     */
+    fun holeRadiusPercent(lambda: () -> Float) {
         this.holeRadius = lambda()
     }
 }
