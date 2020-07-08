@@ -22,7 +22,7 @@ interface PlayPusher {
     suspend fun startPreview(surfaceView: SurfaceView)
 
     /**
-     * Stop previewing
+     * Call this method to stop an ongoing preview. However, you cannot call this method to stop a preview during live stream.
      */
     fun stopPreview()
 
@@ -32,12 +32,12 @@ interface PlayPusher {
     suspend fun startPush(ingestUrl: String)
 
     /**
-     * Restart live streaming
+     * Call this method to restart live stream. or after you receive any callback event notification related to an error.
      */
     suspend fun restartPush()
 
     /**
-     * Stop live streaming
+     *  Call this method to stop ongoing live stream.
      */
     suspend fun stopPush()
 
@@ -47,19 +47,20 @@ interface PlayPusher {
     suspend fun switchCamera()
 
     /**
-     * Resume pusher
+     * Call this method to enable disabled live stream. Then, the SDK resumes the audio and video preview and live stream.
+     * After the streaming is resumed, the audio and video preview and streaming are back to normal.
      */
     suspend fun resume()
 
     /**
-     * Pause pusher
+     * Call this method to disable ongoing live stream. Then, the SDK pauses the video preview and video stream at the last frame.
      */
     suspend fun pause()
 
     /**
      * Destroy pusher
      */
-    suspend fun destroy()
+    fun destroy()
 
     /**
      * add maximum live streaming duration

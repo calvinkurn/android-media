@@ -149,7 +149,6 @@ class PlayBroadcastViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         _observableChannelId.removeObserver(channelIdObserver)
-        playSocket.destroy()
         scope.cancel()
     }
 
@@ -343,12 +342,8 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun destroyPushStream() {
-        scope.launchCatchError(dispatcher.io, block = {
-            playPusher.destroy()
-            playSocket.destroy()
-        }) {
-            _observableLiveInfoState.value = Event(BroadcastState.Error(it))
-        }
+        playPusher.destroy()
+        playSocket.destroy()
     }
 
     fun setChannelId(channelId: String) {

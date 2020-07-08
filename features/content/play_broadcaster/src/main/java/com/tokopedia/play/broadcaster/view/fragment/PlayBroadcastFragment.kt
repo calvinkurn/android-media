@@ -73,6 +73,21 @@ class PlayBroadcastFragment @Inject constructor(
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        parentViewModel.resumePushStream()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        parentViewModel.pausePushStream()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        parentViewModel.destroyPushStream()
+    }
+
     //region observe
     /**
      * Observe

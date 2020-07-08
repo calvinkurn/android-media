@@ -88,7 +88,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         if (savedInstanceState != null) populateSavedState(savedInstanceState)
 
-        initPushStream()
         setupContent()
         initView()
         setupView()
@@ -107,6 +106,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     override fun onStart() {
         super.onStart()
+        initPushStream()
         viewActionBar.rootView.requestApplyInsetsWhenAttached()
     }
 
