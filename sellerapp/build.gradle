@@ -269,7 +269,7 @@ dependencies {
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.voucherCreation)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.shopScore)
+    // implementation project(rootProject.ext.features.shopScore)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
