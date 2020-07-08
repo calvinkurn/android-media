@@ -999,7 +999,7 @@ public class GTMAnalytics extends ContextAnalytics {
         // AN-18166
         // globally put sessionIris
         String sessionIris = bundle.getString(SESSION_IRIS);
-        if (!CommonUtils.checkStringNotNull(sessionIris)) {
+        if (TextUtils.isEmpty(sessionIris))  {
             bundle.putString(SESSION_IRIS, iris.getSessionId());
         }
         return bundle;
