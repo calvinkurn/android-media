@@ -18,26 +18,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
+        android:text="@string/product_detail_discussion_title"
         android:visibility="gone"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         app:layout_constraintTop_toBottomOf="@id/talk_top_separator"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/productDiscussionMostHelpfulSeeAll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/product_detail_discussion_see_all"
-        android:textColor="@color/Green_G500"
-        android:visibility="gone"
-        android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        app:layout_constraintTop_toTopOf="@id/productDiscussionMostHelpfulTitle"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productDiscussionMostHelpfulQuestions"
@@ -50,13 +37,21 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/productDiscussionMostHelpfulTitle" />
 
-    <include layout="@layout/partial_dynamic_discussion_most_helpful_single_question"
-        android:id="@+id/productDiscussionMostHelpfulSingleQuestionLayout"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/productDiscussionMostHelpfulSeeAll"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:text="@string/product_detail_discussion_see_all"
+        android:textColor="@color/Green_G500"
         android:visibility="gone"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/productDiscussionMostHelpfulTitle" />
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toBottomOf="@id/productDiscussionMostHelpfulQuestions"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <include layout="@layout/partial_dynamic_discussion_most_helpful_empty_state"
         android:id="@+id/productDiscussionMostHelpfulEmptyLayout"
