@@ -491,7 +491,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             startActivityForResult(intent, REQUEST_PRODUCT_ITEM_CLICK)
         }
         if (item.isTopAds) {
-            hotlistnavViewModel.sendTopAds(item.productClickTrackingUrl)
+            hotlistnavViewModel.sendTopAdsClick(item.productClickTrackingUrl, item.id.toString(), item.name, item.imageURL)
         }
     }
 
@@ -663,7 +663,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     // CPM click listner
 
-    override fun onCpmClicked(applink: String, clickTrackerUrl: String, item: CpmItem) {
+    override fun onCpmClicked(applink: String, clickTrackerUrl: String, item: CpmItem, id: String, name: String, image: String) {
         if (item.is_product) {
             hotlistNavAnalytics.eventCpmTopAdsProductClick(isUserLoggedIn(),
                     hotlistDetail?.shareFilePath ?: "")
@@ -671,12 +671,12 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             hotlistNavAnalytics.eventCpmTopAdsShopClick(isUserLoggedIn(),
                     hotlistDetail?.shareFilePath ?: "")
         }
-        hotlistnavViewModel.sendTopAds(clickTrackerUrl)
+        hotlistnavViewModel.sendTopAdsClick(clickTrackerUrl, id, name, image)
         RouteManager.route(activity, applink)
     }
 
-    override fun onCpmImpression(impressionTrackUrl: String) {
-        hotlistnavViewModel.sendTopAds(impressionTrackUrl)
+    override fun onCpmImpression(impressionTrackUrl: String, id: String, name: String, image: String) {
+        hotlistnavViewModel.sendTopAdsImpressions(impressionTrackUrl, id, name, image)
     }
 
     // share button clicked
@@ -701,8 +701,8 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         DefaultShareData(activity, shareData).show()
     }
 
-    override fun topAdsTrackerUrlTrigger(url: String) {
-        hotlistnavViewModel.sendTopAds(url)
+    override fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String) {
+        hotlistnavViewModel.sendTopAdsImpressions(url, id, name, imageURL)
     }
 
     override fun onDestroyView() {

@@ -319,7 +319,7 @@ class CatalogNavFragment : BaseBannedProductFragment(),
     override fun onShareButtonClicked() {
     }
 
-    override fun topAdsTrackerUrlTrigger(url: String) {
+    override fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String) {
     }
 
     override fun onDestroyView() {
