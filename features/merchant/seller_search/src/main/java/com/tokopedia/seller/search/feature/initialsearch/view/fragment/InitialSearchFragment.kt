@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.util.GlobalSearchConfig
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.InitialSearchAdapter
@@ -33,6 +34,9 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var remoteConfig: GlobalSearchConfig
 
     private val initialSearchAdapterTypeFactory by lazy {
         InitialSearchAdapterTypeFactory(this)
@@ -73,6 +77,9 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(!remoteConfig.isGlobalSearchEnabled()) {
+            activity?.finish()
+        }
         initRecyclerView()
         observeLiveData()
     }
