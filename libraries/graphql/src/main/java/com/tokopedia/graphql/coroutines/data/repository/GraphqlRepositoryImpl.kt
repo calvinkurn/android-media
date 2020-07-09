@@ -21,11 +21,11 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
     private val mRefreshRequests = mutableListOf<GraphqlRequest>()
     private val mIsCachedData = mutableMapOf<Type, Boolean>()
 
-    override suspend fun getReseponse(requests2: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
+    override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
         mResults.clear()
 
-        val originalRequests = requests2.toMutableList();
+        val originalRequests = requests.toMutableList();
 
         return when (cacheStrategy.type) {
             CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
