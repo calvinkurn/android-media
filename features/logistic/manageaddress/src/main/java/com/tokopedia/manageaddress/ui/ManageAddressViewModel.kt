@@ -7,8 +7,8 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.GetPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
-import com.tokopedia.manageaddress.domain.mapper.ManageAddressMapper
-import com.tokopedia.manageaddress.domain.model.ManageAddressModel
+import com.tokopedia.manageaddress.domain.mapper.AddressCornerMapper
+import com.tokopedia.manageaddress.domain.model.AddressListModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.response.GetPeopleAddressResponse
 import javax.inject.Inject
@@ -17,14 +17,14 @@ class ManageAddressViewModel @Inject constructor(
         private val getPeopleAddressUseCase: GetPeopleAddressUseCase,
         private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
         private val setDeletePeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
-        private val mapper: ManageAddressMapper) : ViewModel() {
+        private val mapper: AddressCornerMapper) : ViewModel() {
 
     private val token: Token = Token()
     var savedQuery: String = ""
     var page: Int = 1
 
-    private val _addressList = MutableLiveData<ManageAddressState<ManageAddressModel>>()
-    val addressList: LiveData<ManageAddressState<ManageAddressModel>>
+    private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
+    val addressList: LiveData<ManageAddressState<AddressListModel>>
         get() = _addressList
 
     private val _result = MutableLiveData<ManageAddressState<String>>()
@@ -44,8 +44,8 @@ class ManageAddressViewModel @Inject constructor(
                 })
     }
 
-    private fun mapToModel(responses: GetPeopleAddressResponse): ManageAddressModel {
-        return mapper.mapAddress(responses)
+    private fun mapToModel(responses: GetPeopleAddressResponse): AddressListModel {
+        return mapper.call(responses)
     }
 
     fun getToken(): Token {

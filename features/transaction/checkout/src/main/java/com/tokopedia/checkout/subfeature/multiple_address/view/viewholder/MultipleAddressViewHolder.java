@@ -2,9 +2,6 @@ package com.tokopedia.checkout.subfeature.multiple_address.view.viewholder;
 
 import android.app.Activity;
 import android.content.Context;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
@@ -12,13 +9,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.android.flexbox.FlexboxLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressAdapter;
 import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressItemAdapter;
+import com.tokopedia.manageaddress.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
