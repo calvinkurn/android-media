@@ -227,7 +227,7 @@ class PlayCoverSetupFragment @Inject constructor(
                             )
                         }
 
-                        viewModel.setCroppedCover(croppedUri)
+                        viewModel.setDraftCroppedCover(croppedUri)
                     }
                 } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
