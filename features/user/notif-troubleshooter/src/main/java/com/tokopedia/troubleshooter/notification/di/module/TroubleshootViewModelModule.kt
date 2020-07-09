@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
-import com.tokopedia.troubleshooter.notification.ui.viewmodel.LocalNotificationSettingViewModel
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import dagger.Binds
 import dagger.Module
@@ -25,15 +24,6 @@ import dagger.multibindings.IntoMap
     @ViewModelKey(TroubleshootViewModel::class)
     internal abstract fun bindSettingStateViewModel(
             viewModel: TroubleshootViewModel
-    ): ViewModel
-
-
-    @Binds
-    @IntoMap
-    @TroubleshootScope
-    @ViewModelKey(LocalNotificationSettingViewModel::class)
-    internal abstract fun bindLocalSettingViewModel(
-            viewModel: LocalNotificationSettingViewModel
     ): ViewModel
 
 }

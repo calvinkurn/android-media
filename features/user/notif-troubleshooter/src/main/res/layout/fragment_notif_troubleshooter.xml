@@ -4,10 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_20"
+    android:padding="@dimen/dp_8"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:background="@color/red_300">
+    android:layout_height="match_parent">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker"
@@ -20,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/pgLoaderTestNotif"
@@ -30,8 +29,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ticker"
         tools:background="@color/green_50"
-        android:layout_marginTop="@dimen/dp_16"
-        />
+        android:layout_marginTop="@dimen/dp_16" />
 
     <ImageView
         android:id="@+id/imgStatusTestNotif"
@@ -43,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ticker"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_16"/>
+        android:layout_marginTop="@dimen/dp_16" />
 
     <TextView
         android:layout_width="@dimen/dp_0"
@@ -55,9 +53,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/pgLoaderTestNotif"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pgLoaderTestNotif"
-        app:layout_constraintTop_toTopOf="@+id/pgLoaderTestNotif"
-        />
-
+        app:layout_constraintTop_toTopOf="@+id/pgLoaderTestNotif" />
 
     <ProgressBar
         android:id="@+id/pgLoaderNotificationSetting"
@@ -95,7 +91,6 @@
         app:layout_constraintStart_toEndOf="@+id/pgLoaderNotificationSetting"
         app:layout_constraintTop_toTopOf="@+id/pgLoaderNotificationSetting" />
 
-
     <ProgressBar
         android:id="@+id/pgLoaderCategorySetting"
         android:layout_width="@dimen/dp_32"
@@ -131,7 +126,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pgLoaderCategorySetting"
         app:layout_constraintTop_toTopOf="@+id/pgLoaderCategorySetting" />
-
 
     <ProgressBar
         android:id="@+id/pgLoaderRingtone"
@@ -169,8 +163,6 @@
         app:layout_constraintStart_toEndOf="@+id/pgLoaderRingtone"
         app:layout_constraintTop_toTopOf="@+id/pgLoaderRingtone" />
 
-
-
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardToken"
         android:layout_width="@dimen/dp_0"
@@ -180,14 +172,14 @@
         app:layout_constraintTop_toBottomOf="@+id/textRingtone"
         android:layout_marginTop="@dimen/dp_32"
         android:visibility="gone"
-        tools:visibility="visible"
-        >
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/dp_16">
+
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/labelToken"
                 android:layout_width="wrap_content"
@@ -197,6 +189,7 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"/>
+
             <TextView
                 android:id="@+id/textToken"
                 android:layout_width="wrap_content"
@@ -205,11 +198,9 @@
                 android:textSize="@dimen/sp_16"
                 android:visibility="gone"
                 tools:visibility="visible"/>
+
         </LinearLayout>
 
     </com.tokopedia.unifycomponents.CardUnify>
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

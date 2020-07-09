@@ -24,7 +24,6 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
-import com.tokopedia.troubleshooter.notification.ui.viewmodel.LocalNotificationSettingViewModel
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -32,12 +31,10 @@ import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
 
-
 class TroubleshootFragment : BaseDaggerFragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: TroubleshootViewModel
-    private lateinit var settingViewModel: LocalNotificationSettingViewModel
 
     private var errorText: String = ""
 
@@ -46,10 +43,6 @@ class TroubleshootFragment : BaseDaggerFragment() {
         viewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(TroubleshootViewModel::class.java)
-
-        settingViewModel = ViewModelProviders
-                .of(this, viewModelFactory)
-                .get(LocalNotificationSettingViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -75,9 +68,6 @@ class TroubleshootFragment : BaseDaggerFragment() {
         * */
         Handler().postDelayed({
             viewModel.troubleshoot()
-            activity?.let {
-                settingViewModel.getSetting(it)
-            }
         }, REQ_DELAY)
     }
 
@@ -97,7 +87,7 @@ class TroubleshootFragment : BaseDaggerFragment() {
             onIconStatus(false)
         })
 
-        viewModel.fcmToken.observe(viewLifecycleOwner, Observer {
+        viewModel.token.observe(viewLifecycleOwner, Observer {
             cardToken?.show()
             textToken?.show()
             if (!isNewToken(it)) {
@@ -121,17 +111,17 @@ class TroubleshootFragment : BaseDaggerFragment() {
             }
         })
 
-        settingViewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
+        viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
             pgLoaderNotificationSetting?.invisible()
             setNotificationSettingStatus(it)
         })
 
-        settingViewModel.notificationImportance.observe(viewLifecycleOwner, Observer {
+        viewModel.notificationImportance.observe(viewLifecycleOwner, Observer {
             pgLoaderCategorySetting?.invisible()
             setNotificationImportanceStatus(it)
         })
 
-        settingViewModel.notificationSoundUri.observe(viewLifecycleOwner, Observer {
+        viewModel.notificationSoundUri.observe(viewLifecycleOwner, Observer {
             pgLoaderRingtone?.invisible()
             setUriClick(it)
         })

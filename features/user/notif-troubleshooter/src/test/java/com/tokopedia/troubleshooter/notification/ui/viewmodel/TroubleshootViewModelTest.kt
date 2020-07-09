@@ -1,5 +1,6 @@
 package com.tokopedia.troubleshooter.notification.ui.viewmodel
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
@@ -29,6 +30,7 @@ class TroubleshootViewModelTest {
     private val instanceManager: FirebaseInstanceManager = mockk(relaxed = true)
 
     private lateinit var viewModel: TroubleshootViewModel
+    private val context: Context = mockk(relaxed = true)
 
     private val troubleshootObservable: Observer<NotificationSendTroubleshoot> = mockk(relaxed = true)
     private val errorObservable: Observer<Throwable> = mockk(relaxed = true)
@@ -39,6 +41,7 @@ class TroubleshootViewModelTest {
                 troubleshootUseCase,
                 messagingManager,
                 instanceManager,
+                context,
                 dispatcherProvider
         )
 
