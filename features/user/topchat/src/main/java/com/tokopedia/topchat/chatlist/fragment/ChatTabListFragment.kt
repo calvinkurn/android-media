@@ -178,6 +178,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initTabList() {
+        Log.d("TEST_LOG", userSession.hasShop().toString())
         if (userSession.hasShop()) {
             addSellerTabFragment()
         }

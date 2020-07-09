@@ -1,18 +1,33 @@
 package com.tokopedia.topchat.stub.chatlist.fragment
 
+import android.os.Bundle
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
+import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment
 import com.tokopedia.topchat.stub.chatlist.di.DaggerChatListComponentStub
+import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
+import com.tokopedia.user.session.UserSessionInterface
 
-class ChatTabListFragmentStub: ChatTabListFragment() {
+class ChatTabListFragmentStub : ChatTabListFragment() {
+
+    lateinit var stubUserSession: UserSessionInterface
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun createChatListComponent(): ChatListComponent {
         return DaggerChatListComponentStub
                 .builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .chatListContextModule(ChatListContextModule(context!!))
+                .chatListNetworkModuleStub(ChatListNetworkModuleStub(stubUserSession))
                 .build()
     }
 
     companion object {
-        fun create(): ChatTabListFragment {
+        fun create(): ChatTabListFragmentStub {
             return ChatTabListFragmentStub()
         }
     }

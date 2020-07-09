@@ -2,13 +2,13 @@ package com.tokopedia.topchat.chatlist.activity
 
 
 //import androidx.fragment.app.testing.launchFragmentInContainer
+//import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
-//import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.fragment.ChatTabListFragmentStub
+import com.tokopedia.topchat.stub.common.UserSessionStub
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,15 +22,27 @@ class ChatListActivityTest {
     @JvmField
     var mActivityTestRule = ActivityTestRule(ChatListActivityStub::class.java, true, true)
 
+    private lateinit var chatTabListFragmentStub: ChatTabListFragmentStub
+    private lateinit var userSessionInterface: UserSessionStub
+
     @Before
     fun setup() {
+        chatTabListFragmentStub = ChatTabListFragmentStub.create()
+        userSessionInterface = UserSessionStub(mActivityTestRule.activity.applicationContext)
+        chatTabListFragmentStub.stubUserSession = userSessionInterface
+    }
 
+    @Test
+    fun test_user_session() {
+        userSessionInterface.hasShop = false
+        mActivityTestRule.activity.setupFragment(chatTabListFragmentStub)
     }
 
     @Test
     fun chatListActivityTest() {
-        val fragment: ChatTabListFragment = ChatTabListFragmentStub.create()
-        mActivityTestRule.activity.setupFragment(fragment)
+        userSessionInterface.hasShop = true
+        mActivityTestRule.activity.setupFragment(chatTabListFragmentStub)
+        Thread.sleep(5000)
 //        val scenario = launchFragmentInContainer<ChatTabListFragment>()
 //        val tabView = onView(
 //                allOf(childAtPosition(
