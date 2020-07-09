@@ -1,0 +1,12 @@
+{
+  "mode": "subset",
+  "query": [
+    {
+      "eventName": "click_shipping",
+      "eventCategory": "cart change address",
+      "eventAction": "click checklist kota atau kecamatan pada + address",
+      "eventLabel": "{{.*}}"
+    }
+  ],
+  "readme": "Positive flow district recommendation"
+}
