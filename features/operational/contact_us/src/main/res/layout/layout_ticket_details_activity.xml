@@ -135,7 +135,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:lineSpacingExtra="5sp"
-        android:paddingBottom="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_8"
         android:textColor="#f531353b"
         android:textStyle="normal"
         app:layout_goneMarginTop="@dimen/dp_16"

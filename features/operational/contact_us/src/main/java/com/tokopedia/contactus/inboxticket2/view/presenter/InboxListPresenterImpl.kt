@@ -222,11 +222,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
             if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= PAGE_SIZE) {
                 page++
                 loadMoreItems(page)
-            } else {
-                mView?.addFooter()
             }
-        } else {
-            mView?.removeFooter()
         }
     }
 
@@ -238,14 +234,13 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
                     val requestParams = mUseCase.getRequestParams(page, status)
                     val ticketListResponse = mUseCase.getTicketListResponse(requestParams)
                     if (ticketListResponse.ticket?.data?.ticketItems?.isNullOrEmpty() == false) {
+                        mView?.removeFooter()
                         originalList.addAll(ticketListResponse.ticket.data.ticketItems)
                         nextUrl = ticketListResponse.ticket.data.nextPage
                         isLastPage = nextUrl?.isEmpty() == true
                         mView?.updateDataSet()
                     }
-
                     isLoading = false
-                    mView?.removeFooter()
                 },
                 onError = { isLoading = false }
         )
