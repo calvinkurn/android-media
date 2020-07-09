@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
+import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.LoggingUtils.logGqlSizeCached
 import timber.log.Timber
 import java.lang.reflect.Type
@@ -132,6 +133,8 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 copyRequests[i].isNoCache = true
                 mRefreshRequests.add(copyRequests[i])
                 requests.remove(copyRequests[i])
+
+                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
             }
         } catch (jse: JsonSyntaxException) {
             Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)

@@ -21,6 +21,7 @@ import com.tokopedia.graphql.util.LoggingUtils
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.ConnectionShutdownException
 import retrofit2.Response
+import timber.log.Timber
 import java.io.InterruptedIOException
 import java.net.SocketException
 import java.net.UnknownHostException
@@ -104,6 +105,7 @@ class GraphqlCloudDataStore @Inject constructor(
                                     val objectData = gResponse.originalResponse[index].asJsonObject[GraphqlConstant.GqlApiKeys.DATA]
                                     if (objectData != null && cache != null) {
                                         cacheManager.save(request.cacheKey(), objectData.toString(), cache.maxAge * 1000.toLong())
+                                        Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.query) + " KEY: " + request.cacheKey())
                                     }
                                 }
                             }

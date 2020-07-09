@@ -18,6 +18,7 @@ import com.tokopedia.graphql.data.source.cache.GraphqlCacheDataStore;
 import com.tokopedia.graphql.data.source.cloud.GraphqlCloudDataStore;
 import com.tokopedia.graphql.domain.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.graphql.util.CacheHelper;
 import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.graphql.util.NullCheckerKt;
 
@@ -150,6 +151,8 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 copyRequests.get(i).setNoCache(true);
                 mRefreshRequests.add(copyRequests.get(i));
                 requests.remove(copyRequests.get(i));
+
+                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests.get(i).getQuery()) + " KEY: " + copyRequests.get(i).cacheKey());
             }
         } catch (JsonSyntaxException jse) {
             Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);

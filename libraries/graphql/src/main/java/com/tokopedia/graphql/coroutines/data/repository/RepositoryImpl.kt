@@ -140,6 +140,8 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 copyRequests[i].isNoCache = true
                 mRefreshRequests.add(copyRequests[i])
                 requests.remove(copyRequests[i])
+
+                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
             }
         } catch (jse: JsonSyntaxException) {
             Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
