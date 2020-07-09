@@ -11,6 +11,7 @@ import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.crashlytics.android.Crashlytics
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.NumberTextWatcher
@@ -279,7 +280,9 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 ProductEditWeightType.GRAM ->  R.string.product_label_gram
                 ProductEditWeightType.KILOGRAM ->  R.string.product_label_kilogram
                 else -> {
-                    Crashlytics.logException(IllegalStateException("product_weight_unit is not 1 or 2: $type"))
+                    if (!GlobalConfig.DEBUG) {
+                        Crashlytics.logException(IllegalStateException("product_weight_unit is not 1 or 2: $type"))
+                    }
                     R.string.product_label_gram
                 }
             }
