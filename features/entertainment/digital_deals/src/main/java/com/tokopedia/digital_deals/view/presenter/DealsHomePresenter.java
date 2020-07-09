@@ -434,7 +434,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             }
             RouteManager.route(getView().getActivity(), applink);
         }
-
     }
 
 
