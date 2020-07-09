@@ -22,10 +22,7 @@ import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen2
 import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen3
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_auto_onboarding_activity_layout.*
-import javax.inject.Inject
 
 /**
  * Created by Pika on 27/5/20.
