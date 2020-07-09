@@ -51,7 +51,7 @@ class AutoAdsOnboardingFragScreen1 : BaseDaggerFragment() {
             userId = userSession.userId
         }
 
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenOnboardingScreenEvent(isLoggedInStatus, userId)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenOnboardingScreenEvent(userSession.isLoggedIn, userSession.userId)
     }
 
     private fun addLottieAnimationToView(task: LottieTask<LottieComposition>) {

@@ -28,7 +28,7 @@ import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
-import com.tokopedia.topads.auto.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.internal.NonDeliveryReason
 import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory

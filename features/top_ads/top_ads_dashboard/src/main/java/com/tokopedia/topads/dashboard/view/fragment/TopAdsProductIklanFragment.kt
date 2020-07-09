@@ -28,7 +28,9 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -77,7 +79,6 @@ import kotlin.math.abs
 
 private const val CLICK_COBA_SEKARANG = "click - coba sekarang"
 class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, CustomDatePicker.ActionListener {
-    private var adStatus = 0
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
     private var groupPagerAdapter: GroupNonGroupPagerAdapter? = null
@@ -305,36 +306,34 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     private fun noAds() {
         /*ad switching in progress*/
-        if (adCurrentState == 200 || adCurrentState == 300 || adCurrentState == 400) {
+        if (STATUS_IN_PROGRESS_ACTIVE == adCurrentState || STATUS_IN_PROGRESS_AUTOMANAGE == adCurrentState || STATUS_IN_PROGRESS_INACTIVE == adCurrentState) {
             app_bar_layout_2.visibility = View.VISIBLE
             autoads_layout.visibility = View.VISIBLE
         } else {
-            view_pager_frag.visibility = View.GONE
-            autoads_layout.visibility = View.GONE
-            app_bar_layout_2.visibility = View.GONE
-            empty_view.visibility = View.VISIBLE
-            mulai_beriklan.setOnClickListener {
-                if (GlobalConfig.isSellerApp())
-                    RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
-                else
-                    openDashboard()
-            }
+
         }
     }
 
-    private fun noProduct() {
+    private fun setEmptyView() {
         view_pager_frag.visibility = View.GONE
         autoads_layout.visibility = View.GONE
         app_bar_layout_2.visibility = View.GONE
         empty_view.visibility = View.VISIBLE
+        mulai_beriklan.setOnClickListener {
+            if (GlobalConfig.isSellerApp())
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+            else
+            openDashboard()
+        }
     }
 
-    private fun fetchData() {
-        currentPageNum = 1
-        autoAdsAdapter.items.clear()
-        autoAdsAdapter.notifyDataSetChanged()
-        topAdsDashboardPresenter.getGroupProductData(resources, 1, null, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
+    private fun noProduct() {
+        if (adCurrentState == STATUS_ACTIVE || adCurrentState == STATUS_NOT_DELIVERED) {
+            autoAds()
+            } else {
+                        setEmptyView()
+                  }
+
     }
 
     private fun manualAds() {
@@ -344,6 +343,15 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         autoads_status.visibility = View.VISIBLE
         autoAdsWidget?.visibility = View.GONE
         renderViewPager()
+    }
+
+
+    private fun fetchData() {
+        currentPageNum = 1
+        autoAdsAdapter.items.clear()
+        autoAdsAdapter.notifyDataSetChanged()
+        topAdsDashboardPresenter.getGroupProductData(resources, 1, null, searchBar?.searchBarTextField?.text.toString(),
+        groupFilterSheet.getSelectedSortId(), null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
     }
 
     private fun autoAds() {
@@ -450,7 +458,6 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     fun loadData() {
         topAdsDashboardPresenter.getAutoAdsStatus(resources)
-        topAdsDashboardPresenter.getAdsStatus(GraphqlHelper.loadRawString(resources, R.raw.query_ads_create_ads_creation_shop_info))
         loadStatisticsData()
     }
 
@@ -516,12 +523,12 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     override fun onSuccessAdsInfo(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
         adCurrentState = data.status
+        topAdsDashboardPresenter.getAdsStatus(GraphqlHelper.loadRawString(resources, R.raw.query_ads_create_ads_creation_shop_info))
     }
 
     override fun onSuccessAdStatus(data: AdStatusResponse.TopAdsGetShopInfo.Data) {
-        adStatus = data.category
         swipe_refresh_layout.isRefreshing = false
-        when (adStatus) {
+        when (data.category) {
             1 -> noProduct()
             2 -> noAds()
             3 -> manualAds()

@@ -51,11 +51,11 @@ class TopAdsCreateAnalytics {
         getTracker().sendGeneralEvent(map)
     }
 
-    fun sendTopAdsOpenOnboardingScreenEvent(isLoggedInStatus: String, userId: String) {
+    fun sendTopAdsOpenOnboardingScreenEvent(isLoggedInStatus: Boolean, userId: String) {
         val map = mapOf(
                 KEY_EVENT to KEY_OPEN_SCREEN_EVENT,
                 KEY_EVENT_SCREEN_NAME to KEY_TOP_ADS_OBAORDING_SCREEN_NAME,
-                KEY_EVENT_LOGGED_IN_STATUS to isLoggedInStatus,
+                KEY_EVENT_LOGGED_IN_STATUS to isLoggedInStatus.toString(),
                 KEY_EVENT_USER_ID to userId)
 
         getTracker().sendGeneralEvent(map)
