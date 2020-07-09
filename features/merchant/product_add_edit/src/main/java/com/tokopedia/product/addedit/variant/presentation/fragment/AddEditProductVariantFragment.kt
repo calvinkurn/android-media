@@ -316,6 +316,15 @@ class AddEditProductVariantFragment :
         }
     }
 
+    fun onBackPressed() {
+        // if removing all variants then save the changes
+        if (viewModel.hasVariants.value == false) {
+            submitVariantInput()
+        } else {
+            activity?.finish()
+        }
+    }
+
     private fun deselectVariantType(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
         // hide section
         resetVariantValueSection(layoutPosition)
@@ -570,7 +579,7 @@ class AddEditProductVariantFragment :
         }
     }
 
-    private fun submitVariantInput() {
+    fun submitVariantInput() {
         val productInputModel = viewModel.productInputModel.value
         productInputModel?.apply {
             val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
