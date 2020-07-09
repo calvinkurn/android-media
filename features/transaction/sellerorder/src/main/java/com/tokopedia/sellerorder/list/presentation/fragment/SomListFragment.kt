@@ -36,7 +36,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
-import com.tokopedia.sellerorder.BuildConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -146,6 +145,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     companion object {
         private val TAG_COACHMARK = "coachMark"
         private const val REQUEST_FILTER = 2888
+        private const val ERROR_GET_TICKERS = "Error when get tickers in seller order list page."
+        private const val ERROR_GET_FILTER = "Error when get filters in seller order list page."
+        private const val ERROR_GET_STATUS_LIST = "Error when get order status list in seller order list page."
+        private const val ERROR_GET_ORDER_LIST = "Error when get list of order in seller order list page."
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomListFragment {
@@ -369,7 +372,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 renderInfoTicker(it.data)
             }
             is Fail -> {
-                SomErrorHandler.logExceptionToCrashlytics(it.throwable)
+                SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_TICKERS)
                 ticker_info?.visibility = View.GONE
             }
         }
@@ -389,7 +392,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_FILTER)
                     quick_filter?.visibility = View.GONE
                 }
             }
@@ -408,7 +411,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 loadOrderList(nextOrderId)
             }
             is Fail -> {
-                SomErrorHandler.logExceptionToCrashlytics(it.throwable)
+                SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_STATUS_LIST)
                 loadOrderList(nextOrderId)
             }
         }
@@ -584,7 +587,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_LIST)
                     renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
                 }
             }

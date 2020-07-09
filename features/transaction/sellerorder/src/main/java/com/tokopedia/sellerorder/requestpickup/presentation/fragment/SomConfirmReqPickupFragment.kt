@@ -49,6 +49,9 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        private const val ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA = "Error when get confirm request pickup layout data."
+        private const val ERROR_PROCESSING_REQUEST_PICKUP = "Error when processing request pickup."
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomConfirmReqPickupFragment {
             return SomConfirmReqPickupFragment().apply {
@@ -101,7 +104,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
                     renderConfirmReqPickup()
                 }
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA)
                     Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }
@@ -120,7 +123,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
 
                 }
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_PROCESSING_REQUEST_PICKUP)
                     Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }
