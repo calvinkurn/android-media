@@ -5,7 +5,6 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import com.meituan.robust.ChangeQuickRedirect
-import com.meituan.robust.PatchExecutor
 import com.meituan.robust.PatchesInfo
 import com.tokopedia.tokopatch.model.Patch
 import dalvik.system.DexClassLoader
@@ -87,7 +86,7 @@ class PatchExecutors(
             }
             classLoader = DexClassLoader(
                 patch.tempPath, dexOutputDir.absolutePath,
-                null, PatchExecutor::class.java.classLoader
+                null, PatchExecutors::class.java.classLoader
             )
             var patchClass: Class<*>
             var sourceClass: Class<*>
