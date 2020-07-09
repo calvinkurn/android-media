@@ -1181,7 +1181,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         when {
             topAds -> {
-                activity?.let { TopAdsUrlHitter(it::class.qualifiedName).hitClickUrl(it, clickUrl, productId, productName, imageUrl) }
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, clickUrl, productId, productName, imageUrl) }
             }
         }
         onProductClicked(productId)
@@ -1190,13 +1190,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRecommendationProductImpression(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
         val topAds = recommendationItem.isTopAds
-        val clickUrl = recommendationItem.clickUrl
+        val url = recommendationItem.trackerImageUrl
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
 
         when {
             topAds -> {
-                activity?.let { TopAdsUrlHitter(it::class.qualifiedName).hitImpressionUrl(it, clickUrl, productId, productName, imageUrl) }
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitImpressionUrl(it, url, productId, productName, imageUrl) }
             }
         }
     }
@@ -2930,6 +2930,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val imageUrl = recommendationItem.imageUrl
         val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
 
-        activity?.let { TopAdsUrlHitter(it::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
+        activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
 }
