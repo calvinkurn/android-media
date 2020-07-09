@@ -1,6 +1,6 @@
-package com.tokopedia.test.application.espresso_component.topads
+package com.tokopedia.test.application.assertion.topads
 
-import android.app.Activity
+import android.content.Context
 import com.tokopedia.analyticsdebugger.database.TopAdsLogDB
 import java.io.File
 
@@ -9,8 +9,8 @@ object TopAdsVerificationTestReportUtil {
     private val FILE_TOPADS_LOG = "report-topads-verificator-log.log"
     private val FILE_TOPADS_VERIFICATOR_DATA = "report-topads-verificator.csv"
 
-    fun writeTopAdsVerificatorReportData(activity: Activity, topAdsLogDB: TopAdsLogDB) {
-        val path = activity.getExternalFilesDir(null)
+    fun writeTopAdsVerificatorReportData(context: Context, topAdsLogDB: TopAdsLogDB) {
+        val path = context.getExternalFilesDir(null)
         val topadsVerificatorData = File(path, FILE_TOPADS_REPORT_ROOT)
         if (!topadsVerificatorData.exists()) {
             makeInitialReportDir(topadsVerificatorData)
@@ -24,16 +24,16 @@ object TopAdsVerificationTestReportUtil {
                         "${topAdsLogDB.url}\n")
     }
 
-    fun writeTopAdsVerificatorLog(activity: Activity, message: String) {
-        val path = activity.getExternalFilesDir(null)
+    fun writeTopAdsVerificatorLog(context: Context, message: String) {
+        val path = context.getExternalFilesDir(null)
         val topadsVerificatorData = File(path, FILE_TOPADS_REPORT_ROOT)
         makeInitialLogDir(topadsVerificatorData)
         val logTopAdsFile = File(topadsVerificatorData, FILE_TOPADS_LOG)
         logTopAdsFile.appendText( "${message}\n")
     }
 
-    fun deleteTopAdsVerificatorReportData(activity: Activity) {
-        val path = activity.getExternalFilesDir(null)
+    fun deleteTopAdsVerificatorReportData(context: Context) {
+        val path = context.getExternalFilesDir(null)
         val topadsRootDir = File(path, FILE_TOPADS_REPORT_ROOT)
         val topadsLogData = File(topadsRootDir, FILE_TOPADS_LOG)
         val topadsVerificatorData = File(topadsRootDir, FILE_TOPADS_VERIFICATOR_DATA)

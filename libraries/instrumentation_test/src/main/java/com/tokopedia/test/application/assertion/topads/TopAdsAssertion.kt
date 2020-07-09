@@ -1,4 +1,4 @@
-package com.tokopedia.test.application.espresso_component.topads
+package com.tokopedia.test.application.assertion.topads
 
 import android.app.Activity
 import android.content.Context
@@ -12,9 +12,9 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.TopAdsVerificationNe
 import com.tokopedia.analyticsdebugger.debugger.domain.GetTopAdsLogDataUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
-import com.tokopedia.test.application.espresso_component.topads.TopAdsVerificationTestReportUtil.deleteTopAdsVerificatorReportData
-import com.tokopedia.test.application.espresso_component.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog
-import com.tokopedia.test.application.espresso_component.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorReportData
+import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil.deleteTopAdsVerificatorReportData
+import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog
+import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorReportData
 import com.tokopedia.usecase.RequestParams
 import org.junit.Assert
 
@@ -22,19 +22,19 @@ import org.junit.Assert
  * Created by DevAra
  * TopAds Assertion for instrumentation test
  */
-class TopAdsAssertion(val activity: Activity,
+class TopAdsAssertion(val context: Context,
                       val topAdsVerificatorInterface: TopAdsVerificatorInterface) {
     private var requestParams: RequestParams = RequestParams.create()
 
     init {
-        deleteTopAdsVerificatorReportData(activity)
+        deleteTopAdsVerificatorReportData(context)
     }
 
     /**
      * Call this on @After
      */
     fun after() {
-        activity.deleteDatabase("tkpd_gtm_log_analytics")
+        context.deleteDatabase("tkpd_gtm_log_analytics")
     }
 
     /**
@@ -45,7 +45,7 @@ class TopAdsAssertion(val activity: Activity,
         logTestMessage("Done UI Test")
         logTestMessage("Asserting data...")
 
-        val listTopAdsDbFirst = readDataFromDatabase(activity)
+        val listTopAdsDbFirst = readDataFromDatabase(context)
         val impressedCount = listTopAdsDbFirst.filter { it.eventType == "impression" }.size
         val clickCount = listTopAdsDbFirst.filter { it.eventType == "click" }.size
         val allCount = listTopAdsDbFirst.size
@@ -57,12 +57,12 @@ class TopAdsAssertion(val activity: Activity,
 
         waitForVerificatorReady()
 
-        val listTopAdsDb = readDataFromDatabase(activity)
+        val listTopAdsDb = readDataFromDatabase(context)
 
         listTopAdsDb.forEach {
             logTestMessage(it.sourceName+" - "+it.eventType+" - "+it.eventStatus)
             Assert.assertEquals(STATUS_MATCH, it.eventStatus)
-            writeTopAdsVerificatorReportData(activity, it)
+            writeTopAdsVerificatorReportData(context, it)
         }
     }
 
@@ -108,7 +108,7 @@ class TopAdsAssertion(val activity: Activity,
     }
 
     private fun logTestMessage(message: String) {
-        writeTopAdsVerificatorLog(activity, message)
+        writeTopAdsVerificatorLog(context, message)
         Log.d("TopAdsVerificatorLog", message)
     }
 }
