@@ -3,7 +3,7 @@ package com.tokopedia.home.account.presentation.presenter
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.account.data.pojo.NotifCenterSendNotifData
 import com.tokopedia.home.account.domain.SendNotifUseCase
-import com.tokopedia.home.account.presentation.listener.LogoutView
+import com.tokopedia.home.account.presentation.listener.RedDotGimmickView
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -23,7 +23,7 @@ class RedDotGimmickPresenterTest {
     lateinit var userSession: UserSession
 
     @RelaxedMockK
-    lateinit var logoutView: LogoutView
+    lateinit var redDotGimmickView: RedDotGimmickView
 
     private val redDotPresenter by lazy {
         RedDotGimmickPresenter(sendNotifUseCase)
@@ -35,7 +35,7 @@ class RedDotGimmickPresenterTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        redDotPresenter.attachView(logoutView)
+        redDotPresenter.attachView(redDotGimmickView)
     }
 
     /**

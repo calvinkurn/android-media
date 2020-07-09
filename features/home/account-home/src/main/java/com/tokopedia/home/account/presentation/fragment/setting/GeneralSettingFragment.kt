@@ -16,7 +16,6 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -46,7 +45,7 @@ import com.tokopedia.home.account.presentation.activity.AccountSettingActivity
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter
-import com.tokopedia.home.account.presentation.listener.LogoutView
+import com.tokopedia.home.account.presentation.listener.RedDotGimmickView
 import com.tokopedia.home.account.presentation.listener.SettingOptionsView
 import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
 import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
@@ -64,7 +63,7 @@ import com.tokopedia.url.TokopediaUrl
 import java.util.*
 import javax.inject.Inject
 
-class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, GeneralSettingAdapter.SwitchSettingListener, SettingOptionsView {
+class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, GeneralSettingAdapter.SwitchSettingListener, SettingOptionsView, RedDotGimmickView {
     @Inject
     internal lateinit var presenter: RedDotGimmickPresenter
     @Inject
@@ -289,17 +288,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         val redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif
         if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
             notifPreference.isDisplayedGimmickNotif = true
-            presenter.sendNotif({ (_) ->
-                doLogout()
-                null
-            }, { throwable ->
-                        doLogout()
-                        if (view != null) {
-                            val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-                            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
-                        }
-                        null
-                    })
+            presenter.sendNotif()
         } else {
             doLogout()
         }
@@ -502,18 +491,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         return acct != null
     }
 
-    companion object {
-
-        private val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
-
-        @JvmStatic
-        fun createInstance(): Fragment {
-            return GeneralSettingFragment()
-        }
-
-        private val TAG = GeneralSettingFragment::class.java.simpleName
-    }
-
     override fun refreshSafeSearchOption() {
         if (adapter != null)
             adapter.updateSettingItem(SettingConstant.SETTING_SAFE_SEARCH_ID)
@@ -528,5 +505,28 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
     fun onClickAcceptButton() {
         settingsPresenter.onClickAcceptButton()
+    }
+
+    override fun onSuccessSendNotif() {
+        doLogout()
+    }
+
+    override fun onErrorSendNotif(throwable: Throwable) {
+        if (view != null) {
+            val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    companion object {
+
+        private val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
+
+        @JvmStatic
+        fun createInstance(): Fragment {
+            return GeneralSettingFragment()
+        }
+
+        private val TAG = GeneralSettingFragment::class.java.simpleName
     }
 }
