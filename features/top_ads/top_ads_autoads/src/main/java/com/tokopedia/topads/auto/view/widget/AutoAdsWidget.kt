@@ -280,6 +280,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 it.btn_switch.visibility = View.INVISIBLE
                 it.setting.setOnClickListener {
                     startEditActivity()
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
                 }
             }
         }
