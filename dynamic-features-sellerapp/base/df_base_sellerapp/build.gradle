@@ -89,6 +89,5 @@ dependencies {
 //    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.liveness)
     implementation project(rootProject.ext.features.shopShowcase)
-//    implementation project(rootProject.ext.features.shopScore)
     implementation project(rootProject.ext.features.voucherCreation)
 }
