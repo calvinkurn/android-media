@@ -155,7 +155,7 @@
 /features/logistic/dropoff/                    	        @tokopedia/android-minionbob-dev
 /features/logistic/logisticcart/                		@tokopedia/android-minionbob-dev
 /features/logistic/manageaddress/                		@tokopedia/android-minionbob-dev
-/features/logistic/editshipping/                        @tokopedia/android-minion-bob
+/features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
 
 
 /features/user/chatbot/                         		@tokopedia/android-miniondarth-dev
