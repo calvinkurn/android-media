@@ -1014,10 +1014,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.updateLastAction(DynamicProductDetailTalkGoToReplyDiscussion(questionId))
     }
 
-    override fun onUserDetailsClicked(userId: String) {
-        goToProfileActivity(userId)
-    }
-
     private fun disscussionClicked() {
         goToReadingActivity()
     }

@@ -240,19 +240,19 @@
     <string name="slider_counter_builder">%1$d/%2$d</string>
 
     // Discussion Most Helpful
-    <string name="product_detail_discussion_title">Q&amp;A Paling Membantu (%d)</string>
-    <string name="product_detail_discussion_see_all">Lihat Semua</string>
-    <string name="product_detail_discussion_no_answers">Belum ada jawaban</string>
-    <string name="product_detail_discussion_other_answers">Lihat %d jawaban lainnya</string>
+    <string name="product_detail_discussion_title">Q&amp;A Paling Membantu</string>
+    <string name="product_detail_discussion_see_all">Lihat Semua (%d)</string>
+    <string name="product_detail_discussion_no_answers">Bantu Jawab</string>
     <string name="product_detail_discussion_attached_products">%d produk</string>
-    <string name="product_detail_discussion_empty_subtitle">Tanya di Q&amp;A aja!</string>
-    <string name="product_detail_discussion_empty_description">Masih ragu dengan barang ini? Tanyain langsung aja di sini.</string>
+    <string name="product_detail_discussion_empty_subtitle">Punya Pertanyaan?</string>
+    <string name="product_detail_discussion_empty_description">Tanya aja langsung tentang barang ini di Q&amp;A.</string>
     <string name="product_detail_discussion_empty_button">Tanya Sekarang</string>
     <string name="product_detail_discussion_formatted_date">• %s</string>
-    <string name="product_detail_discussion_total_answers">%d jawaban</string>
+    <string name="product_detail_discussion_total_answers">%d jawaban lainnya</string>
     <string name="product_detail_discussion_seller_label">Penjual</string>
     <string name="product_detail_discussion_local_load_title">Q&amp;A gagal ditampilkan</string>
     <string name="product_detail_discussion_local_load_description">Klik ikon di samping untuk coba lagi.</string>
+    <string name="product_detail_discussion_ellipsis">…</string>
 
     <!--Ticker-->
     <string name="ticker_desc_shop_close">Tenang, kamu bisa kembali belanja di toko ini mulai %1s. &lt;a href="#"&gt;Selengkapnya.&lt;/a&gt;</string>
