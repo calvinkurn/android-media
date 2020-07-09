@@ -135,7 +135,9 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             // check percentage view visible < 49% will take the second item and third item
             // else will take first item and second item
             for(i in startPosition .. endPosition){
-                if(getVisibleVideoSurfaceWidth(i) > 0 && mediaObjects[i] is PlayBannerCarouselItemDataModel && (mediaObjects[i] as PlayBannerCarouselItemDataModel).widgetType != PlayBannerWidgetType.UPCOMING) targetPositions.add(i)
+                if(getVisibleVideoSurfaceWidth(i) > 0 && mediaObjects[i] is PlayBannerCarouselItemDataModel
+                        && (mediaObjects[i] as PlayBannerCarouselItemDataModel).videoUrl.isNotEmpty()
+                        && (mediaObjects[i] as PlayBannerCarouselItemDataModel).widgetType != PlayBannerWidgetType.UPCOMING) targetPositions.add(i)
                 if(targetPositions.size == videoPlayers.size) break
             }
 
@@ -190,10 +192,11 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
     private fun playVideo(videoPlayer: ViewPlayerModel, playPosition: Int){
         val holder = findViewHolderForAdapterPosition(playPosition) ?: return
-        if(holder is PlayBannerCarouselItemViewHolder){
+        val dataObject = (mediaObjects[playPosition] as PlayBannerCarouselItemDataModel)
+        if(holder is PlayBannerCarouselItemViewHolder && dataObject.videoUrl.isNotEmpty() && dataObject.widgetType != PlayBannerWidgetType.UPCOMING){
             removeVideoView(videoPlayer)
             val exoPlayer = videoPlayer.videoPlayer
-            val mediaUrl: String = (mediaObjects[playPosition] as PlayBannerCarouselItemDataModel).videoUrl
+            val mediaUrl = dataObject.videoUrl
             val videoSource: MediaSource = getMediaSourceBySource(context, Uri.parse(mediaUrl), "Tokopedia Android $playPosition")
             exoPlayer.volume = 0f
             videoPlayer.position = playPosition
@@ -303,7 +306,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         this.isAutoPlay = isAutoPlay
 
         // clear old players
-        for (videoPlayer in videoPlayers){
+        for (videoPlayer in videoPlayers) {
             videoPlayer.videoPlayer.release()
             removeVideoView(videoPlayer)
         }
@@ -323,7 +326,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             videoSurfaceView.findViewById<AspectRatioFrameLayout>(R.id.exo_content_frame).requestLayout()
             var timerAutoPause: CountDownTimer?=null
             if(PlayConnectionCommon.isConnectCellular(context)) {
-                 timerAutoPause = object : CountDownTimer(durationPlayWithData.toLong(), 1000) {
+                timerAutoPause = object : CountDownTimer(durationPlayWithData.toLong(), 1000) {
                     override fun onFinish() {
                         videoSurfaceView.getPlayer()?.playWhenReady = false
                     }
