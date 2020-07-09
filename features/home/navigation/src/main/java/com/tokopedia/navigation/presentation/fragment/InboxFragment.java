@@ -459,7 +459,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onClickTopAds(RecommendationItem item) {
-        new TopAdsUrlHitter(getActivity().getClass().getName()).hitClickUrl(getContext(), item.getTrackerImageUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl());
+        new TopAdsUrlHitter(getActivity().getClass().getName()).hitClickUrl(getContext(), item.getClickUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl());
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 
