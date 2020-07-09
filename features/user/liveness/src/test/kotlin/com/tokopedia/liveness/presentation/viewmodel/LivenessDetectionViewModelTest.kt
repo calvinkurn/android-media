@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import java.lang.Exception
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -67,6 +68,10 @@ class LivenessDetectionViewModelTest: Spek({
         }
 
         Scenario("get failed register result from Liveness API") {
+            val resultMock = Success(LivenessData().apply {
+                isSuccessRegister = false
+            })
+
             Given("usecase fail properly") {
                 coEvery {
                     uploadLivenessResultUseCase.uploadImages(ktpPath, facePath, tkpdProjectId)
@@ -92,7 +97,7 @@ class LivenessDetectionViewModelTest: Spek({
 
             Then("The variable isSuccessRegister should be false"){
                 val result = viewModel.livenessResponseLiveData.value
-                assertFalse { (result as Success).data.isSuccessRegister }
+                assertEquals(result, resultMock)
                 viewModel.livenessResponseLiveData.removeObserver(observerSuccess)
             }
         }
