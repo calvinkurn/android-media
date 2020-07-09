@@ -40,7 +40,7 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
 
     private fun bindVoucherView(viewModel: TopChatVoucherUiModel, data: MerchantVoucherViewModel) {
         merchantVoucherView?.onMerchantVoucherViewListener = this
-        merchantVoucherView?.setData(data, false)
+        merchantVoucherView?.setData(data, viewModel.hasCtaCopy())
     }
 
     override fun alwaysShowTime(): Boolean {

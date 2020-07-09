@@ -17,7 +17,7 @@ data class Voucher(
     @SerializedName("hyperlink")
     val hyperlink: Hyperlink = Hyperlink(),
     @SerializedName("is_public")
-    val isPublic: Int = 0,
+    val isPublic: Int = 1,
     @SerializedName("is_quota_avaiable")
     val isQuotaAvaiable: Int = 0,
     @SerializedName("remaining_quota")
@@ -70,4 +70,8 @@ data class Voucher(
     val voucherType: Int = 0,
     @SerializedName("voucher_type_formatted")
     val voucherTypeFormatted: String = ""
-)
+) {
+    fun isPublicVoucher(): Boolean {
+        return isPublic == 1
+    }
+}
