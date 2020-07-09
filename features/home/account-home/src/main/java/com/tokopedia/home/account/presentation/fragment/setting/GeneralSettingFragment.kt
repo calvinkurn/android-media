@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment.setting
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
+import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -23,17 +24,35 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.dialog.AccessRequestDialogFragment
-import com.tokopedia.home.account.AccountConstants.Analytics.*
-import com.tokopedia.home.account.AccountHomeRouter
+import com.tokopedia.home.account.AccountConstants.Analytics.ABOUT_US
+import com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT
+import com.tokopedia.home.account.AccountConstants.Analytics.ADVANCED_SETTING
+import com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW
+import com.tokopedia.home.account.AccountConstants.Analytics.DEVELOPER_OPTIONS
+import com.tokopedia.home.account.AccountConstants.Analytics.HELP_CENTER
+import com.tokopedia.home.account.AccountConstants.Analytics.LOGOUT
+import com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION
+import com.tokopedia.home.account.AccountConstants.Analytics.PAYMENT_METHOD
+import com.tokopedia.home.account.AccountConstants.Analytics.PRIVACY_POLICY
+import com.tokopedia.home.account.AccountConstants.Analytics.SAFE_MODE
+import com.tokopedia.home.account.AccountConstants.Analytics.SETTING
+import com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE
+import com.tokopedia.home.account.AccountConstants.Analytics.SHOP
+import com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
 import com.tokopedia.home.account.constant.SettingConstant
@@ -52,12 +71,14 @@ import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
 import com.tokopedia.navigation_common.model.WalletPref
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import java.util.*
@@ -80,7 +101,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
-
+    private lateinit var tetraDebugger: TetraDebugger
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +111,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         context?.let {
             notifPreference = NotifPreference(it)
         }
+        initTetraDebugger()
 
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(GOOGLE_API_KEY)
@@ -162,8 +184,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay))
         activity?.let {
-            if (it.application is AccountHomeRouter
-                    && (it.application as AccountHomeRouter).getBooleanRemoteConfig(
+            if (remoteConfig.getBoolean(
                             RemoteConfigKey.CHECKOUT_TEMPLATE_SETTING_TOGGLE, false)
             ) {
                 settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
@@ -415,7 +436,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             it.startActivity(intent)
         }
     }
-
+  
     override fun onDestroyView() {
         presenter.detachView()
         super.onDestroyView()

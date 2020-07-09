@@ -1350,13 +1350,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onVideoPlayerClicked(positionInFeed: Int,
                                       contentPosition: Int,
-                                      postId: String) {
+                                      postId: String,
+                                      redirectUrl: String) {
         if (activity != null) {
-            RouteManager.route(
-                    requireContext(),
-                    ApplinkConstInternalContent.VIDEO_DETAIL,
-                    postId
-            )
+            onGoToLink(redirectUrl)
         }
 
         if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {

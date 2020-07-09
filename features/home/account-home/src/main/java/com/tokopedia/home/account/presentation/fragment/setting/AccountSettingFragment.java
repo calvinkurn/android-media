@@ -24,7 +24,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.BuildConfig;
 import com.tokopedia.home.account.R;
@@ -191,43 +190,42 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     public void onItemClicked(int settingId) {
-        if (getActivity().getApplication() instanceof AccountHomeRouter) {
-            AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
-            Intent intent;
-            switch (settingId) {
-                case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
-                    accountAnalytics.eventClickAccountSetting(PERSONAL_DATA);
-                    intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
-                    getActivity().startActivityForResult(intent, 0);
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_PASS_ID:
-                    accountAnalytics.eventClickAccountSetting(PASSWORD);
-                    accountAnalytics.eventClickAccountPassword();
-                    intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
-                    startActivity(intent);
-                    break;
-                case SettingConstant.SETTING_PIN:
-                    accountAnalytics.eventClickPinSetting();
-                    onPinMenuClicked();
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
-                    accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
-                    intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
-                    startActivity(intent);
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_KYC_ID:
-                    onKycMenuClicked();
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_SAMPAI_ID:
-                    goToTokopediaCorner();
-                    break;
-                case SettingConstant.SETTING_BANK_ACCOUNT_ID:
-                    accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
-                    gotoAccountBank();
-                    break;
-                default:
-                    break;
-            }
+
+        Intent intent;
+        switch (settingId) {
+            case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
+                accountAnalytics.eventClickAccountSetting(PERSONAL_DATA);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
+                getActivity().startActivityForResult(intent, 0);
+                break;
+            case SettingConstant.SETTING_ACCOUNT_PASS_ID:
+                accountAnalytics.eventClickAccountSetting(PASSWORD);
+                accountAnalytics.eventClickAccountPassword();
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
+                startActivity(intent);
+                break;
+            case SettingConstant.SETTING_PIN:
+                accountAnalytics.eventClickPinSetting();
+                onPinMenuClicked();
+                break;
+            case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
+                accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
+                startActivity(intent);
+                break;
+            case SettingConstant.SETTING_ACCOUNT_KYC_ID:
+                onKycMenuClicked();
+                break;
+            case SettingConstant.SETTING_ACCOUNT_SAMPAI_ID:
+                goToTokopediaCorner();
+                break;
+            case SettingConstant.SETTING_BANK_ACCOUNT_ID:
+                accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
+                gotoAccountBank();
+                break;
+            default:
+                break;
+
         }
     }
 
