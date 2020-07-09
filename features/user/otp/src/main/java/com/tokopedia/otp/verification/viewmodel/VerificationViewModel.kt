@@ -124,11 +124,4 @@ class VerificationViewModel @Inject constructor(
             _otpValidateResult.postValue(Fail(it))
         })
     }
-
-    override fun flush() {
-        getVerificationMethodUseCase.cancelJobs()
-        otpValidateUseCase.cancelJobs()
-        sendOtpUseCase.cancelJobs()
-        super.flush()
-    }
 }

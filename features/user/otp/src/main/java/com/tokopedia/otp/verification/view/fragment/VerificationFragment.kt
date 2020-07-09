@@ -101,14 +101,14 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
         initView()
         initObserver()
-    }
-
-    override fun onStart() {
-        super.onStart()
         if (modeListData.modeText != OtpConstant.OtpMode.PIN &&
                 modeListData.modeText != OtpConstant.OtpMode.GOOGLE_AUTH) {
             sendOtp()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
         analytics.trackScreen(screenName)
     }
 
@@ -161,7 +161,6 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
             }
         }
 
-        KeyboardHandler.hideSoftKeyboard(activity)
         showLoading()
         viewModel.otpValidate(
                 code = code,
@@ -281,7 +280,6 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         return { throwable ->
             throwable.printStackTrace()
             hideLoading()
-            viewBound.pin?.hasClearButton = true
             viewBound.pin?.isError = true
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
