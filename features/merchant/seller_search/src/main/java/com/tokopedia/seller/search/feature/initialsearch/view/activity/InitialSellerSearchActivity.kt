@@ -127,4 +127,12 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         KeyboardHandler.DropKeyboard(this, searchBarView)
     }
 
+    override fun onDestroy() {
+        if (searchBarView?.compositeSubscription != null && searchBarView?.compositeSubscription?.hasSubscriptions() == true) {
+            searchBarView?.compositeSubscription?.unsubscribe()
+        }
+        searchBarView?.mHandler?.removeCallbacksAndMessages(null)
+        super.onDestroy()
+    }
+
 }

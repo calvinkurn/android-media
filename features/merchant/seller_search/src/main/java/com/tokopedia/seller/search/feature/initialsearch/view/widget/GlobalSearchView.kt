@@ -33,7 +33,9 @@ class GlobalSearchView : BaseCustomView {
 
     private var activity: AppCompatActivity? = null
 
-    private var compositeSubscription: CompositeSubscription? = null
+    var compositeSubscription: CompositeSubscription? = null
+
+    var mHandler: Handler? = null
 
     private var searchViewListener: GlobalSearchViewListener? = null
     private var searchTextBoxListener: SearchTextBoxListener? = null
@@ -48,6 +50,10 @@ class GlobalSearchView : BaseCustomView {
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
+    }
+
+    init {
+        mHandler = Handler()
     }
 
     private fun init() {
@@ -204,7 +210,7 @@ class GlobalSearchView : BaseCustomView {
     }
 
     private fun onEditTextChangeListener(listener: () -> Unit) {
-        Handler().postDelayed({ listener() }, DEBOUNCE_DELAY_MILLIS)
+        mHandler?.postDelayed({ listener() }, DEBOUNCE_DELAY_MILLIS)
     }
 
     private fun btnBackHome() {
