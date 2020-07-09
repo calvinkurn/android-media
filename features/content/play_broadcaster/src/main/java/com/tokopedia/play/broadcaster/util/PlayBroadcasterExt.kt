@@ -1,8 +1,10 @@
 package com.tokopedia.play.broadcaster.util
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
@@ -181,4 +183,8 @@ internal fun Fragment.cleanBackstack() {
     for (i in 0 until backStackCount) {
         childFragmentManager.popBackStackImmediate()
     }
+}
+
+internal fun Uri.isLocal(): Boolean {
+    return scheme in arrayOf(ContentResolver.SCHEME_CONTENT, ContentResolver.SCHEME_FILE)
 }
