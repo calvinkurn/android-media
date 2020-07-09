@@ -18,12 +18,6 @@
       "item_list": "{{.*}}",
       "eventLabel": "{{.*}}",
       "channelId": "{{.*}}"
-    },
-    {
-      "eventCategory": "homepage",
-      "event": "clickHomepage",
-      "eventAction": "click view all on dynamic channel left carousel",
-      "eventLabel": "{{.*}}"
     }
   ]
 }

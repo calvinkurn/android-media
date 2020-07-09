@@ -17,12 +17,6 @@
       "eventLabel": "{{.*}}",
       "channelId": "{{.*}}",
       "campaignCode": "{{.*}}"
-    },
-    {
-      "eventCategory": "homepage",
-      "event": "clickHomepage",
-      "eventAction": "click view all on dynamic channel top carousel",
-      "eventLabel": "{{.*}}"
     }
   ]
 }

@@ -182,10 +182,9 @@ class DynamicChannelComponentAnalyticsTest {
 
         if (status != Status.SUCCESS) {
             logTestMessage("FAILED Asserting Status...")
-            Log.d(TAG,"\"$eventAction\" event status = $status.")
+            throw AssertionError("\"$eventAction\" event status = $status.")
         } else
             Log.d(TAG, "\"$eventAction\" event success. Total hits: ${matches.size}.")
-
 
         Log.d(TAG, "==============================================")
     }
