@@ -3,8 +3,11 @@ package com.tokopedia.categorylevels.di
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.categorylevels.domain.usecase.SubCategoryV3UseCase
+import com.tokopedia.categorylevels.view.activity.CategoryNavActivity
 import com.tokopedia.common_category.usecase.*
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -130,5 +133,15 @@ class CategoryNavUseCaseModule {
     @CategoryNavScope
     @Provides
     fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
+
+    @CategoryNavScope
+    @Provides
+    fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
+        return PageLoadTimePerformanceCallback(
+                CategoryNavActivity.CATEGORY_LEVELS_PLT_PREPARE_METRICS,
+                CategoryNavActivity.CATEGORY_LEVELS_PLT_NETWORK_METRICS,
+                CategoryNavActivity.CATEGORY_LEVELS_PLT_RENDER_METRICS,0,0,0,0,null
+        )
+    }
 
 }

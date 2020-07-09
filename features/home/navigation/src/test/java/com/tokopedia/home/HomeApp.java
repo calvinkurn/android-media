@@ -11,9 +11,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.home.account.AccountHomeRouter;
-import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
-import com.tokopedia.home.account.di.AccountHomeInjection;
+
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -27,45 +25,10 @@ import okhttp3.Response;
 import static org.mockito.Mockito.mock;
 
 @Instrument
-public class HomeApp extends BaseMainApplication implements AccountHomeRouter, GlobalNavRouter, NetworkRouter, AbstractionRouter {
+public class HomeApp extends BaseMainApplication implements GlobalNavRouter, NetworkRouter, AbstractionRouter {
     @Override
     public void onCreate() {
         super.onCreate();
-    }
-
-    @Override
-    public void doLogoutAccount(Context activity) {
-
-    }
-
-    @Override
-    public Intent getManageAddressIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public void goToManageShopShipping(Context context) {
-
-    }
-
-    @Override
-    public void goToManageShopProduct(Context context) {
-
-    }
-
-    @Override
-    public void goToSaldo(Context context) {
-
-    }
-
-    @Override
-    public AccountHomeInjection getAccountHomeInjection() {
-        return null;
-    }
-
-    @Override
-    public String getStringRemoteConfig(String key, String defaultValue) {
-        return null;
     }
 
     @Override
@@ -76,26 +39,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     @Override
     public void sendOpenHomeEvent() {
 
-    }
-
-    @Override
-    public Intent getTrainOrderListIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public void sendAnalyticsUserAttribute(UserAttributeData userAttributeData) {
-
-    }
-
-    @Override
-    public void goToCreateMerchantRedirect(Context context) {
-
-    }
-
-    @Override
-    public boolean isEnableInterestPick() {
-        return false;
     }
 
     @Override
