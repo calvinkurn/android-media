@@ -1,5 +1,7 @@
-query displayTopAds($params: String) {
-  productAds: displayAdsV3(displayParams: $params) {
+package com.tokopedia.common_category.data.raw
+
+const val GQL_NAV_TOP_ADS: String ="""query displayTopAds(${'$'}params: String) {
+  productAds: displayAdsV3(displayParams: ${'$'}params) {
     status {
       error_code
       message
@@ -90,3 +92,4 @@ query displayTopAds($params: String) {
     }
   }
 }
+"""

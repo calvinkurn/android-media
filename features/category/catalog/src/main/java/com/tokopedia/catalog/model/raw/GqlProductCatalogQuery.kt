@@ -1,5 +1,7 @@
-query ProductCatalogQuery($catalog_id: String!) {
-  ProductCatalogQuery(catalog_id: $catalog_id) {
+package raw
+
+const val GQL_PRODUCT_CATALOG_QUERY: String = """query ProductCatalogQuery(${'$'}catalog_id: String!) {
+  ProductCatalogQuery(catalog_id: ${'$'}catalog_id) {
     header {
       process_time
       status
@@ -55,3 +57,4 @@ query ProductCatalogQuery($catalog_id: String!) {
     }
   }
 }
+"""

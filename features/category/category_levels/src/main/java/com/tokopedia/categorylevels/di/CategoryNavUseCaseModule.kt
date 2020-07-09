@@ -70,8 +70,8 @@ class CategoryNavUseCaseModule {
     @CategoryNavScope
     @Named("topAdsProductListing")
     @Provides
-    fun provideTopAdsUseCase(context: Context): TopAdsProductsUseCase {
-        return TopAdsProductsUseCase(context)
+    fun provideTopAdsUseCase(): TopAdsProductsUseCase {
+        return TopAdsProductsUseCase()
     }
 
 
