@@ -136,7 +136,10 @@ object HomeQuery{
             }
           }
           homeFlag{
-            flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints"){
+            prompt_server_time
+            prompt_refresh_time
+            prompt_refresh_message
+            flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,prompt_refresh"){
               name
               is_active
             }

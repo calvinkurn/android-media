@@ -3,20 +3,32 @@ package com.tokopedia.home.beranda.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class HomeFlag {
+data class HomeFlag(
+        @SerializedName("prompt_server_time")
+        @Expose
+        val promptServerTime: Long = 0,
+        @SerializedName("prompt_refresh_time")
+        @Expose
+        val promptRefreshTime: String = "",
+        @SerializedName("prompt_refresh_message")
+        @Expose
+        val promptRefreshMessage: String = ""
+) {
     companion object {
         val DYNAMIC_ICON_WRAP_STRING = "dynamic_icon_wrap"
         val HAS_RECOM_NAV_BUTTON_STRING = "has_recom_nav_button"
         val HAS_TOKOPOINTS_STRING = "has_tokopoints"
+        val PROMPT_REFRESH_STRING = "prompt_refresh"
     }
     enum class TYPE {
-        DYNAMIC_ICON_WRAP, HAS_TOKOPOINTS, HAS_RECOM_NAV_BUTTON;
+        DYNAMIC_ICON_WRAP, HAS_TOKOPOINTS, HAS_RECOM_NAV_BUTTON, PROMPT_REFRESH;
 
         override fun toString(): String {
             return when(this){
                 DYNAMIC_ICON_WRAP -> DYNAMIC_ICON_WRAP_STRING
                 HAS_RECOM_NAV_BUTTON -> HAS_RECOM_NAV_BUTTON_STRING
                 HAS_TOKOPOINTS -> HAS_TOKOPOINTS_STRING
+                PROMPT_REFRESH -> PROMPT_REFRESH_STRING
             }
         }
     }

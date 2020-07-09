@@ -272,6 +272,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
     private var lock = Object()
+    private var autoRefreshFlag = HomeFlag()
 
 
     override fun onAttach(context: Context) {
@@ -972,6 +973,14 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun configureHomeFlag(homeFlag: HomeFlag) {
         floatingTextButton.visibility = if (homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation) View.VISIBLE else View.GONE
+        if (homeFlag.getFlag(HomeFlag.TYPE.PROMPT_REFRESH)) {
+            autoRefreshFlag = homeFlag
+
+        }
+    }
+
+    private fun doHomeDataRefresh() {
+        getHomeViewModel().refreshHomeData()
     }
 
     private fun onGoToSell() {
