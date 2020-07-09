@@ -28,12 +28,9 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
@@ -44,37 +41,28 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.editshipping.ui.EditShippingActivity;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
-import com.tokopedia.home.account.AccountHomeRouter;
-import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
-import com.tokopedia.home.account.di.AccountHomeInjection;
-import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.iris.Iris;
@@ -83,13 +71,11 @@ import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -123,11 +109,9 @@ import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
-import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
-import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -138,7 +122,6 @@ import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -164,7 +147,6 @@ import timber.log.Timber;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 
 /**
@@ -183,7 +165,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactNativeRouter,
         NetworkRouter,
         GlobalNavRouter,
-        AccountHomeRouter,
         OmsModuleRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
@@ -397,30 +378,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToCreateMerchantRedirect(Context context) {
-        Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
-        context.startActivity(intent);
-    }
-
-    @Override
     public Interceptor getChuckerInterceptor() {
         return getAppComponent().ChuckerInterceptor();
-    }
-
-
-    @Override
-    public Intent getTrainOrderListIntent(Context context) {
-        String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getTIKET();
-        String KAI_WEBVIEW = WEB_DOMAIN + "kereta-api";
-        String PATH_USER_BOOKING_LIST = "/user/bookings";
-        String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
-        String TRAIN_ORDER_LIST = KAI_WEBVIEW + PATH_USER_BOOKING_LIST + PARAM_DIGITAL_ISPULSA;
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, TRAIN_ORDER_LIST);
-    }
-
-    @Override
-    public void sendAnalyticsUserAttribute(UserAttributeData userAttributeData) {
-        HomeAnalytics.setUserAttribute(this, userAttributeData);
     }
 
     @Override
@@ -715,45 +674,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getManageAddressIntent(Context context) {
-        return new Intent(context, ManagePeopleAddressActivity.class);
-    }
-
-    @Override
-    public void goToManageShopShipping(Context context) {
-        UnifyTracking.eventManageShopShipping(context);
-        context.startActivity(new Intent(context, EditShippingActivity.class));
-    }
-
-    @Override
-    public void goToManageShopProduct(Context context) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goToSaldo(Context context) {
-
-        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
-        } else {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                    ApplinkConst.WebViewUrl.SALDO_DETAIL));
-        }
-
-        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(),
-                "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
-    }
-
-    @Override
     public ApplicationUpdate getAppUpdate(Context context) {
         return new FirebaseRemoteAppUpdate(context);
-    }
-
-    @Override
-    public String getStringRemoteConfig(String key, String defaultValue) {
-        return remoteConfig.getString(key, defaultValue);
     }
 
     @Override
@@ -776,37 +698,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public AccountHomeInjection getAccountHomeInjection() {
-        return new AccountHomeInjectionImpl();
-    }
-
-    public void doLogoutAccount(Context activity) {
-        new GlobalCacheManager().deleteAll();
-        PersistentCacheManager.instance.delete();
-        EtalaseUtils.clearEtalaseCache(getApplicationContext());
-        TrackApp.getInstance().getMoEngage().logoutEvent();
-        SessionHandler.clearUserData(activity);
-        NotificationModHandler notif = new NotificationModHandler(activity);
-        notif.dismissAllActivedNotifications();
-        NotificationModHandler.clearCacheAllNotification(activity);
-
-        Intent intent = getHomeIntent(activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        activity.startActivity(intent);
-        AppWidgetUtil.sendBroadcastToAppWidget(activity);
-        refreshFCMTokenFromForegroundToCM();
-
-        setTetraUserId("");
-    }
-
-    @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
-    }
-
-    @Override
-    public boolean isEnableInterestPick() {
-        return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
     }
 
     @Override

@@ -62,5 +62,6 @@ object ApplinkConstInternalPromo {
     const val INTERNAL_GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
     const val INTERNAL_GAMIFICATION_SMC_REFERRAL = "$INTERNAL_GLOBAL/smc-referral"
     const val INTERNAL_GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
+    const val INTERNAL_GAMIFICATION_TAP_TAP_GIFT = "$INTERNAL_GLOBAL/gamification_gift_60s"
 
 }

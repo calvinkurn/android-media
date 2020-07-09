@@ -77,7 +77,7 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
         ImageHandler.loadImage(holder.itemView.context,
                 holder.shopBadge,
                 item.badge_url,
-                R.drawable.loading_page)
+                com.tokopedia.topads.sdk.R.drawable.loading_page)
         holder.shopCpmParent.setOnClickListener {
             cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item.click_url ?: "", item)
         }
@@ -89,7 +89,7 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
         holder.productPrice.text = item.price_format
         ImageHandler.loadImage(holder.itemView.context,
                 holder.productImage,
-                item.image, R.drawable.loading_page)
+                item.image, com.tokopedia.topads.sdk.R.drawable.loading_page)
         holder.productCpmParent.setOnClickListener {
             cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item.click_url ?: "", item)
         }
