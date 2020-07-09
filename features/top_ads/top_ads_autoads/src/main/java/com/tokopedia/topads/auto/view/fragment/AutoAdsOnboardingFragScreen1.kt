@@ -43,14 +43,6 @@ class AutoAdsOnboardingFragScreen1 : BaseDaggerFragment() {
         val lottieFileZipStream = ZipInputStream(context?.assets?.open(ANIMATION_JSON))
         val task = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
         addLottieAnimationToView(task)
-
-        var isLoggedInStatus = "false"
-        var userId = ""
-        if(userSession.isLoggedIn) {
-            isLoggedInStatus = "true"
-            userId = userSession.userId
-        }
-
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenOnboardingScreenEvent(userSession.isLoggedIn, userSession.userId)
     }
 
