@@ -69,7 +69,7 @@ public class AddAddressActivity extends BaseSimpleActivity {
 
 
     public static Intent createInstanceEditAddressFromManageAddress(@NonNull Activity activity,
-                                                                    @Nullable AddressModel addressModel,
+                                                                    @Nullable RecipientAddressModel addressModel,
                                                                     @Nullable Token token) {
         return createInstance(
                 activity, addressModel, token,

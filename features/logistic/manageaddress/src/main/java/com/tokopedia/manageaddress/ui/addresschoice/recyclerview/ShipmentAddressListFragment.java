@@ -33,6 +33,7 @@ import com.tokopedia.manageaddress.R;
 import com.tokopedia.manageaddress.data.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.manageaddress.data.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.manageaddress.data.analytics.CornerAnalytics;
+import com.tokopedia.manageaddress.di.addresschoice.DaggerAddressChoiceComponent;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
 import com.tokopedia.manageaddress.ui.addresschoice.AddressListContract;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;

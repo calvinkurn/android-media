@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.di.cornerlist.DaggerCornerComponent
 import java.util.*
 import javax.inject.Inject
 

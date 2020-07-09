@@ -11,5 +11,4 @@
     <string name="path_order_tracking" translatable="false">/shipping/tracking/.*</string>
 
     <string name="path_manage_address" translatable="false">/manageaddress/</string>
-    <string name="path_checkout_address_selection" translatable="false">/checkout-address-selection</string>
 </resources>
