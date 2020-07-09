@@ -1,13 +1,10 @@
 package com.tokopedia.interestpick.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.data.pojo.GetInterestData
+import com.tokopedia.interestpick.data.raw.GQL_QUERY_GET_INTEREST
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -15,10 +12,9 @@ import javax.inject.Inject
  * @author by milhamj on 07/09/18.
  */
 @Deprecated("use GetInterestPickUseCase.kt instead", ReplaceWith("GetInterestPickUseCase"))
-class GetInterestUseCase @Inject constructor(@ApplicationContext val context: Context,
-                                             val graphqlUseCase: GraphqlUseCase) {
+class GetInterestUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase) {
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_get_interest)
+        val query = GQL_QUERY_GET_INTEREST
         val graphqlRequest = GraphqlRequest(query, GetInterestData::class.java)
 
         graphqlUseCase.clearRequest()
