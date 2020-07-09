@@ -6,7 +6,7 @@
     
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl8"
+        android:layout_height="@dimen/dp_104"
         app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
