@@ -86,7 +86,7 @@ buildscript {
         jcenter()
         maven { url 'https://hansel.io/maven' }
         maven {
-            url 'https://jitpack.io'
+            url 'https://www.jitpack.io'
         }
     }
     dependencies {

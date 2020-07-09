@@ -27,7 +27,7 @@ ext {
     lottieVersion = '2.7.0'
     reactNativeVersion = '0.60.5'
     powerMockVersion = '1.6.2'
-    roomVersion = '2.2.1'
+    roomVersion = '2.2.5'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     constraintLayoutVersion = '2.0.0-beta3'
