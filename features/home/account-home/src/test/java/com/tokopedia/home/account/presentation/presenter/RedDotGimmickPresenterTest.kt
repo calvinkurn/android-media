@@ -44,7 +44,6 @@ class RedDotGimmickPresenterTest {
     @Test
     fun `send notification`() {
         val notificaSendNotifData = NotifCenterSendNotifData()
-        val onError = mockk<(Throwable) -> Unit>()
 
         every {
             sendNotifUseCase.executeCoroutines(captureLambda(), any())
@@ -53,9 +52,7 @@ class RedDotGimmickPresenterTest {
             onSuccess.invoke(notificaSendNotifData)
         }
 
-        redDotPresenter.sendNotif({
-            Assert.assertEquals(it, notificaSendNotifData)
-        }, onError)
+        redDotPresenter.sendNotif()
 
         verify {
             sendNotifUseCase.executeCoroutines(any(), any())
