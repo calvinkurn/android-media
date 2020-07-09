@@ -20,21 +20,23 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
     private val mRefreshRequests = mutableListOf<GraphqlRequest>()
     private val mIsCachedData = mutableMapOf<Type, Boolean>()
 
-    override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
+    override suspend fun getReseponse(requests2: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
         mResults.clear()
 
+        val originalRequests = requests2.toMutableList();
+
         return when (cacheStrategy.type) {
             CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
-                getCloudResponse(requests.toMutableList(), cacheStrategy)
+                getCloudResponse(originalRequests.toMutableList(), cacheStrategy)
             }
-            CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(requests, cacheStrategy)
+            CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
             else -> {
                 try {
-                    val responseCache = graphqlCacheDataStore.getResponse(requests, cacheStrategy)
+                    val responseCache = graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
                     val tempRequestCloud = ArrayList<GraphqlRequest>()
                     responseCache.indexOfEmptyCached.forEachIndexed { index, i ->
-                        tempRequestCloud.add(requests.get(i))
+                        tempRequestCloud.add(originalRequests?.get(i))
                     }
                     var responseCloud: GraphqlResponseInternal? = null
                     if (!tempRequestCloud.isNullOrEmpty()) {
@@ -46,10 +48,10 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                     GraphqlResponseInternal(responseCache.originalResponse, responseCache.indexOfEmptyCached)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    getCloudResponse(requests.toMutableList(), cacheStrategy)
+                    getCloudResponse(originalRequests.toMutableList(), cacheStrategy)
                 }
             }
-        }.toGraphqlResponse(requests)
+        }.toGraphqlResponse(originalRequests)
     }
 
     private fun List<GraphqlRequest>.regroup(indexOfEmptyCached: List<Int>?): MutableList<GraphqlRequest> {
@@ -108,27 +110,28 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
      */
     private suspend fun getCloudResponse(requests: MutableList<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         try {
-            for (i in 0 until requests.size) {
-                if (requests[i].isNoCache) {
+            val copyRequests = mutableListOf<GraphqlRequest>()
+            copyRequests.addAll(requests);
+
+            for (i in 0 until copyRequests.size) {
+                if (copyRequests[i].isNoCache) {
                     continue
                 }
 
+                val cKey = copyRequests[i].cacheKey()
                 val cachesResponse = graphqlCloudDataStore.cacheManager
-                        .get(requests[i].cacheKey())
+                        .get(cKey)
 
                 if (cachesResponse == null || cachesResponse.isEmpty()) {
                     continue
                 }
 
                 //Lookup for data
-                mResults[requests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, requests[i].typeOfT)
-
-                logGqlSizeCached("kt", requests.toString(), cachesResponse)
-
-                mIsCachedData[requests[i].typeOfT] = true
-                requests[i].isNoCache = true
-                mRefreshRequests.add(requests[i])
-                requests.remove(requests[i])
+                mResults[copyRequests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                mIsCachedData[copyRequests[i].typeOfT] = true
+                copyRequests[i].isNoCache = true
+                mRefreshRequests.add(copyRequests[i])
+                requests.remove(copyRequests[i])
             }
         } catch (jse: JsonSyntaxException) {
             Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
@@ -136,6 +139,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
 
         return graphqlCloudDataStore.getResponse(requests, cacheStrategy)
     }

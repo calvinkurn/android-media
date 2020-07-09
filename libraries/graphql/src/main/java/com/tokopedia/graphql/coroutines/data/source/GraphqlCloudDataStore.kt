@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.source
 
+import android.util.Log
 import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
