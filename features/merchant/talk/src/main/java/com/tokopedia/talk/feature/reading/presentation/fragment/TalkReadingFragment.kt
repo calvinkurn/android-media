@@ -67,7 +67,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     companion object {
         const val TOASTER_CTA_WIDTH = 300
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
-        const val DEFAULT_INITIAL_PAGE = 0
+        const val DEFAULT_INITIAL_PAGE = 1
         const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
@@ -179,6 +179,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onThreadClicked(questionID: String) {
+        TalkReadingTracking.eventClickThread(
+                getSelectedCategories(),
+                viewModel.userId,
+                productId,
+                questionID
+        )
         if(viewModel.isUserLoggedIn) {
             goToReplyActivity(questionID)
             return
@@ -330,6 +336,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             when (it) {
                 is Success -> {
                     it.data.discussionData.let { data ->
+                        TalkReadingTracking.eventLoadData((viewModel.viewState.value as? ViewState.Success)?.page.toString(), it.data.discussionData.question.size.toString(), viewModel.userId, productId)
                         if (data.question.isNotEmpty()) {
                             stopNetworkRequestPerformanceMonitoring()
                             startRenderPerformanceMonitoring()
@@ -426,7 +433,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun onSuccessCreateQuestion() {
         showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
-        viewModel.updateSelectedSort(SortOption.SortByTime())
+        talkReadingHeader.clearAllSort()
+        resetSortOptions()
+        unselectCategories()
     }
 
     private fun onSuccessDeleteQuestion(questionID: String) {
@@ -491,7 +500,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getDiscussionData(page: Int = DEFAULT_INITIAL_PAGE, withDelay: Boolean = false, isRefresh: Boolean = false) {
         val selectedSort = TalkReadingMapper.mapSelectedSortToString(viewModel.sortOptions.value?.first { it.isSelected })
-        val selectedCategories = viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString { it.categoryName } ?: ""
+        val selectedCategories = getSelectedCategories()
         viewModel.getDiscussionData(productId, shopId, page, DEFAULT_DISCUSSION_DATA_LIMIT, selectedSort, selectedCategories, withDelay, isRefresh)
     }
 
@@ -533,6 +542,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun resetSortOptions() {
         isLoadingInitialData = true
         viewModel.resetSortOptions()
+    }
+
+    private fun getSelectedCategories(): String {
+        return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString { it.categoryName } ?: ""
     }
 
 }
