@@ -13,7 +13,8 @@ class TalkReplyHeaderModel(
         val isMasked: Boolean,
         val maskedContent: String,
         val userThumbnail: String,
-        val userName:String
+        val userName: String,
+        val userId: Int
 ) : Visitable<TalkReplyAdapterTypeFactory> {
 
     override fun type(typeFactory: TalkReplyAdapterTypeFactory): Int {

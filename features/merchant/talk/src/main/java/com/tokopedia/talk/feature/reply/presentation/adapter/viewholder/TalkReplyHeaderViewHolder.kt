@@ -36,10 +36,9 @@ class TalkReplyHeaderViewHolder(view: View,
             showQuestionWithCondition(isMasked, question, maskedContent)
             showKebabWithConditions(allowReport, allowDelete, onKebabClickedListener)
             showFollowWithCondition(allowFollow, isFollowed, talkReplyHeaderListener)
-            showProfilePictureWithCondition(element.userThumbnail)
+            showProfilePictureAndNameWithCondition(element.userThumbnail, element.userName, element.userId.toString())
             showHeaderDateWithCondition(date)
             itemView.apply {
-                replyUserName.text = element.userName
                 replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
                 replyHeaderTNC.setCustomMovementMethod { talkReplyHeaderListener.onTermsAndConditionsClicked() }
             }
@@ -55,11 +54,21 @@ class TalkReplyHeaderViewHolder(view: View,
         }
     }
 
-    private fun showProfilePictureWithCondition(userThumbnail: String) = with(itemView) {
+    private fun showProfilePictureAndNameWithCondition(userThumbnail: String, userName: String, userId: String) = with(itemView) {
         replyUserImage?.shouldShowWithAction(userThumbnail.isNotEmpty()) {
             replyUserImage?.apply {
                 loadImage(userThumbnail)
+                setOnClickListener {
+                    threadListener.goToProfilePage(userId)
+                }
                 show()
+            }
+        }
+
+        replyUserName?.apply {
+            text = userName
+            setOnClickListener {
+                threadListener.goToProfilePage(userId)
             }
         }
     }

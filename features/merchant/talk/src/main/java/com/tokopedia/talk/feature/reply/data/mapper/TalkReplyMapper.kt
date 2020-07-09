@@ -20,7 +20,8 @@ object TalkReplyMapper {
                     questionState.isMasked,
                     maskedContent,
                     userThumbnail,
-                    userName)
+                    userName,
+                    userId)
         }
     }
 
