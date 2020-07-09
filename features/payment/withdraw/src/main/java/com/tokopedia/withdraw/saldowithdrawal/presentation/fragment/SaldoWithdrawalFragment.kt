@@ -191,12 +191,18 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         if (data.isNotEmpty()) {
             withdrawalRekeningCarouselView.visible()
             withdrawalRekeningCarouselView.apply {
-                indicatorPosition = CarouselUnify.INDICATOR_BL
                 activeIndex = 0
                 autoplay = false
-                slideToShow = 1.1f
                 centerMode = true
-                addItems(R.layout.swd_widget_banner_item, data as ArrayList<Any>, ::carouselItemListener)
+                if (data.size > 1) {
+                    indicatorPosition = CarouselUnify.INDICATOR_BL
+                    slideToShow = 1.1f
+                    addItems(R.layout.swd_widget_banner_item, data as ArrayList<Any>, ::carouselItemListener)
+                } else {
+                    indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
+                    slideToShow = 1.0f
+                    addItems(R.layout.swd_widget_banner_single_item, data as ArrayList<Any>, ::carouselItemListener)
+                }
             }
 
         }

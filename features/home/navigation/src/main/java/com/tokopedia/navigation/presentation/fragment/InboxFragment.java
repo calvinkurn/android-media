@@ -119,6 +119,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             boolean wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                     false);
             int position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1);
+            if(position < 0 || adapter.getList().size() < position) return;
+
             if(adapter.getList().get(position) instanceof  Recommendation){
                 Recommendation recommendation = (Recommendation) adapter.getList().get(position);
                 recommendation.getRecommendationItem().setWishlist(wishlistStatusFromPdp);
