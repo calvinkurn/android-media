@@ -1,5 +1,6 @@
 package com.tokopedia.logisticorder.presenter
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.logisticorder.usecase.GetRetryAvailability
 import com.tokopedia.logisticorder.usecase.RetryPickup
 import com.tokopedia.logisticorder.usecase.TrackCourierUseCase
@@ -7,150 +8,186 @@ import com.tokopedia.logisticorder.usecase.entity.RetryAvailability
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
 import com.tokopedia.logisticorder.view.ITrackingPageFragment
+import com.tokopedia.logisticorder.viewmodel.TrackingUiModel
 import com.tokopedia.user.session.UserSession
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import io.mockk.*
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import rx.Observable
+import rx.Subscriber
 
-object TrackingPagePresenterTest : Spek({
-    val useCase: TrackCourierUseCase = mockk(relaxed = true)
-    val getRetryUseCase : GetRetryAvailability = mockk(relaxed = true)
-    val retryPickUpUseCase : RetryPickup = mockk(relaxed = true)
-    val userSession: UserSession = mockk(relaxed = true)
-    val view: ITrackingPageFragment = mockk(relaxed = true)
+class TrackingPagePresenterTest {
+    @get:Rule
+    var  instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val presenter : TrackingPagePresenter by memoized{
-        TrackingPagePresenter(useCase, getRetryUseCase, retryPickUpUseCase, userSession, view)
+    private val useCase: TrackCourierUseCase = mockk(relaxed = true)
+    private val getRetryUseCase : GetRetryAvailability = mockk(relaxed = true)
+    private val retryPickUpUseCase : RetryPickup = mockk(relaxed = true)
+    private val userSession: UserSession = mockk(relaxed = true)
+    private val view: ITrackingPageFragment = mockk(relaxed = true)
+    private val deadlineTime = 0L
+
+    private val trackingPagePresenter by lazy {
+        TrackingPagePresenter(
+                useCase,
+                getRetryUseCase,
+                retryPickUpUseCase,
+                userSession,
+                view)
     }
 
-    beforeEachTest {
+    @Before
+    fun setup(){
         MockKAnnotations.init(this)
-        presenter.attachView(view)
+        trackingPagePresenter.attachView(view)
     }
 
-    Feature("tracking"){
+    /**
+     * Get Retry Availability
+     * */
+    @Test
+    fun `get retry availability | on success | all true`() {
+        val retryAvailability = RetryAvailability()
+        retryAvailability.showRetryButton = true
+        retryAvailability.availabilityRetry = true
+        retryAvailability.deadlineRetryUnixtime = "0"
 
-        Scenario("presenter onDetach"){
-            When("presenter onDetach"){
-                presenter.onDetach()
-            }
-            Then("useCase unsubscribed"){
-                verify { useCase.unsubscribe() }
-            }
-            Then("retryAvailUseCase unsubscribed"){
-                verify { getRetryUseCase.unsubscribe() }
-            }
-            Then("retryPickupUseCase unsubscribed"){
-                verify { retryPickUpUseCase.unsubscribe() }
-            }
+        val retryAvailabilityResponse = RetryAvailabilityResponse(retryAvailability)
+
+        every {
+            getRetryUseCase.execute(any() )
+        } answers {
+            Observable.just(retryAvailabilityResponse)
         }
 
-        Scenario("onSuccessRetryPickup"){
-            Given("retryPickUpUseCase success"){
-                every { retryPickUpUseCase.execute(any()) } returns Observable.just(RetryBookingResponse())
-            }
-            When("onRetryPickup"){
-                presenter.onRetryPickup("")
-            }
-            Then("view should startSuccessCountdown"){
-                verify { view.startSuccessCountdown() }
+        trackingPagePresenter.onGetRetryAvailability("")
 
-            }
+        verify { view.setRetryButton(true,  deadlineTime) }
+    }
 
+    @Test
+    fun  `get retry availability | on success | availabilityRetry false`() {
+        val retryAvailability = RetryAvailability()
+        retryAvailability.availabilityRetry = false
+        retryAvailability.deadlineRetryUnixtime = "0"
+
+        val retryAvailabilityResponse = RetryAvailabilityResponse(retryAvailability)
+
+        every { getRetryUseCase.execute(any())
+        } answers {
+            Observable.just(retryAvailabilityResponse)
         }
 
-        Scenario("onFailedRetryPickup"){
-            Given("retryPickUpUseCase failed"){
-                every { retryPickUpUseCase.execute(any()) } returns Observable.error(Exception())
-            }
-            When("onRetryPickup"){
-                presenter.onRetryPickup("")
-            }
-            Then("error view"){
-                verify { view.showError(any()) }
+        trackingPagePresenter.onGetRetryAvailability("")
 
-            }
+        verify { view.setRetryButton(false, deadlineTime) }
+    }
 
+    @Test
+    fun  `get retry availability | on success | showRetryButton false`() {
+        val retryAvailability = RetryAvailability()
+        retryAvailability.showRetryButton = false
+        retryAvailability.deadlineRetryUnixtime = "0"
+
+        val retryAvailabilityResponse = RetryAvailabilityResponse(retryAvailability)
+
+        every { getRetryUseCase.execute(any())
+        } answers {
+            Observable.just(retryAvailabilityResponse)
         }
 
-        Scenario("onSuccessRetryAvailability all true"){
-            Given("retryAvailUseCase success"){
-                val retryAvailability = RetryAvailability()
-                retryAvailability.showRetryButton = true
-                retryAvailability.availabilityRetry = true
-                retryAvailability.deadlineRetryUnixtime = "0"
+        trackingPagePresenter.onGetRetryAvailability("")
 
-                val retryAvailabilityResponse = RetryAvailabilityResponse(retryAvailability)
+        verify { view.setRetryButton(false, deadlineTime) }
+    }
 
-                every { getRetryUseCase.execute(any()) } returns Observable.just(retryAvailabilityResponse)
-            }
-            When("onRetryAvailability"){
-                presenter.onGetRetryAvailability("")
-            }
-            Then("view should setRetryButton"){
-                verify { view.setRetryButton(true, 0L) }
-
-            }
-
+    @Test
+    fun `get retry availability | on fail`() {
+        every {
+            getRetryUseCase.execute(any())
+        } answers {
+            Observable.error(Exception())
         }
 
-        Scenario("onSuccessRetryAvailability getAvailabilityRetry false"){
-            Given("retryAvailUseCase success"){
-                val retryAvailability = RetryAvailability()
-                retryAvailability.availabilityRetry = false
-                retryAvailability.deadlineRetryUnixtime = "100"
+        trackingPagePresenter.onGetRetryAvailability("")
 
-                val retryAvailabilityResponse = RetryAvailabilityResponse(retryAvailability)
+        verify { view.showSoftError(any()) }
+    }
 
-                every { getRetryUseCase.execute(any()) } returns Observable.just(retryAvailabilityResponse)
-            }
-            When("onRetryAvailability"){
-                presenter.onGetRetryAvailability("")
-            }
-            Then("view should setRetryButton"){
-                verify { view.setRetryButton(false, 100L ) }
-
-            }
-
+    /**
+     * Retry Pickup
+     * */
+    @Test
+    fun `retry pickup | on success`(){
+        val retryBookingResponse = RetryBookingResponse()
+        every {
+            retryPickUpUseCase.execute(any())
+        } answers {
+            Observable.just(retryBookingResponse)
         }
 
-        Scenario("onSuccessRetryAvailability getAvailabilityRetry true, getShowRetryButton false"){
-            Given("retryAvailUseCase success"){
-                val retryAvailability = RetryAvailability()
-                retryAvailability.availabilityRetry = false
-                retryAvailability.availabilityRetry = true
-                retryAvailability.deadlineRetryUnixtime = "0"
+        trackingPagePresenter.onRetryPickup("")
 
-                val retryAvailabilityResponse = RetryAvailabilityResponse(retryAvailability)
+        verify { view.startSuccessCountdown() }
+    }
 
-                every { getRetryUseCase.execute(any()) } returns Observable.just(retryAvailabilityResponse)
-            }
-            When("onRetryAvailability"){
-                presenter.onGetRetryAvailability("")
-            }
-            Then("view should setRetryButton"){
-                verify { view.setRetryButton(false, 0L ) }
-
-            }
-
+    @Test
+    fun `retry pickup | on fail`(){
+        every {
+            retryPickUpUseCase.execute(any())
+        } answers {
+            Observable.error(Exception())
         }
 
-        Scenario("onFailedGetRetryAvailability"){
-            Given("retryAvailability failed"){
-                every { getRetryUseCase.execute(any()) } returns Observable.error(Exception())
-            }
-            When("onRetryAvailability"){
-                presenter.onGetRetryAvailability("")
-            }
-            Then("error view"){
-                verify { view.showSoftError(any()) }
+        trackingPagePresenter.onRetryPickup("")
 
-            }
+        verify { view.showError(any()) }
+    }
 
+    /**
+     * Get Tracking Data
+     * */
+    @Test
+    fun `get tracking data | on success`() {
+        val trackingUiModel = TrackingUiModel()
+        every { useCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<TrackingUiModel>>().onNext(trackingUiModel)
+        }
+
+        trackingPagePresenter.onGetTrackingData("")
+
+        verifyOrder {
+            view.hideLoading()
+            view.populateView(trackingUiModel)}
+    }
+
+    @Test
+    fun `get tracking data | on fail`() {
+        every { useCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<TrackingUiModel>>().onError(Throwable())
+        }
+
+        trackingPagePresenter.onGetTrackingData("")
+
+        verifyOrder {
+            view.hideLoading()
+            view.showError(any())}
+    }
+
+    /**
+     * OnDestroy
+     * */
+    @Test
+    fun `on destroy`() {
+        trackingPagePresenter.onDetach()
+
+        verify {
+            useCase.unsubscribe()
+            getRetryUseCase.unsubscribe()
+            retryPickUpUseCase.unsubscribe()
         }
     }
-})
+}

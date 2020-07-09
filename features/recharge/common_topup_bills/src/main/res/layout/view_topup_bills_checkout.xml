@@ -28,7 +28,7 @@
         android:layout_marginTop="@dimen/checkout_view_label_margin"
         android:lines="1"
         android:text="@string/common_topup_checkout_view_total_value_label"
-        android:textColor="?attr/N700_96"
+        android:textColor="@color/Neutral_N700_96"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography

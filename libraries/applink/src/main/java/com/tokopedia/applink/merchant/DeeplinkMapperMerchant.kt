@@ -186,7 +186,11 @@ object DeeplinkMapperMerchant {
     fun getSellerInfoDetailApplink(uri: Uri?): String {
         return uri?.let {
             val url = uri.getQueryParameter(PARAM_URL)
-            return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
+            if (url.isNullOrEmpty()) {
+                return ApplinkConst.SELLER_INFO
+            } else {
+                return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
+            }
         } ?: ""
     }
 

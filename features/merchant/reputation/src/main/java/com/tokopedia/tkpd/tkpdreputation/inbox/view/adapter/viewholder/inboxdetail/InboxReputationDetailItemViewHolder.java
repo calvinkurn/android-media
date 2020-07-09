@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
@@ -288,11 +287,6 @@ public class InboxReputationDetailItemViewHolder extends
                 viewListener.onSendReplyReview(element, sellerAddReplyEditText.getText().toString());
             }
         });
-
-        if(GlobalConfig.isSellerApp()) {
-            sellerReplyLayout.setVisibility(View.GONE);
-            sellerAddReplyLayout.setVisibility(View.GONE);
-        }
     }
 
     private void showOrHideGiveReviewLayout(InboxReputationDetailItemViewModel element) {

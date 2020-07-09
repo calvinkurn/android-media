@@ -27,7 +27,6 @@ include "libraries:kotlin_extensions"
 include 'libraries:iris'
 include 'libraries:permissionchecker'
 include "libraries:play_core"
-include "libraries:promotions_target"
 include "libraries:remote_config"
 include "libraries:sharedata"
 include "libraries:linker"
@@ -36,7 +35,7 @@ include "libraries:track"
 include "libraries:weaver"
 
 
-
+include "features:promo:promotions_target"
 
 include 'tkpdcore'
 include 'tkpdabstraction'

@@ -4,17 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.core.app.TaskStackBuilder;
 import android.text.TextUtils;
+
+import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.common.ResolutionUrl;
@@ -49,8 +50,7 @@ public class DetailResChatActivity extends BasePresenterActivity<DetailResChatAc
     private static Intent getApplinkIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             if (GlobalConfig.isSellerApp()) {
-                return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW,
-                        String.format(ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
+                return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, String.format(ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
             } else {
                 return ((ResolutionRouter) context.getApplicationContext()).getApplinkIntent(context,
                         String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
@@ -107,8 +107,8 @@ public class DetailResChatActivity extends BasePresenterActivity<DetailResChatAc
             bundle.putString(PARAM_SHOP_NAME, shopNameSpanned);
         }
         destinationIntent.putExtras(bundle);
-        if (context.getApplicationContext() instanceof TkpdInboxRouter) {
-            Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
+        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
             taskStackBuilder.addNextIntent(intent);
         }
         taskStackBuilder.addNextIntent(parentIntent);

@@ -10,12 +10,11 @@ import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 
-import com.tkpd.library.viewpagerindicator.LinePageIndicator;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.adapter.ImagePagerAdapter;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotFragmentView;
@@ -79,7 +78,7 @@ public class PictureView extends BaseView<ProductDetailData, SnapShotFragmentVie
         vpImage.setAdapter(imagePagerAdapter);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
-            int resId = com.tokopedia.core2.R.drawable.product_no_photo_default;
+            int resId = R.drawable.product_no_photo_default;
             Resources res = getContext().getResources();
             Uri resUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + res.getResourcePackageName(resId)

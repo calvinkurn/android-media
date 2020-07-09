@@ -47,6 +47,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.tkpdLibDependencies.showcase
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.networkDependencies.glide
 }
 
 project.ext {

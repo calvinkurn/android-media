@@ -45,11 +45,11 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnUpgrade"
             android:text="@string/power_merchant_upgrade_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/textWarning"
+            app:layout_constraintRight_toRightOf="@id/textWarning"
             app:layout_constraintTop_toBottomOf="@id/textWarning"
             app:unifyButtonSize="medium" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -154,65 +154,13 @@
         android:id="@+id/btnPerformanceTips"
         android:text="@string/power_merchant_performance_tips"
         android:visibility="gone"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/power_merchant_tips_btn_size"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl6"
         app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
-        app:layout_constraintRight_toRightOf="@id/rightGuideline"
         app:layout_constraintTop_toBottomOf="@id/textShopScoreHint"
         app:unifyButtonSize="medium"
         tools:visibility="visible" />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/dividerTop"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/power_merchant_divider_height"
-        android:layout_marginTop="@dimen/layout_lvl5"
-        app:layout_constraintTop_toBottomOf="@id/btnPerformanceTips" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textPremiumAccount"
-        android:text="@string/power_merchant_premium_account"
-        android:textColor="@color/light_N700"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:drawableLeft="@drawable/ic_pm_premium_account"
-        android:drawableStart="@drawable/ic_pm_premium_account"
-        android:drawablePadding="@dimen/spacing_lvl3"
-        app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
-        app:layout_constraintTop_toBottomOf="@id/dividerTop"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold"/>
-
-    <com.tokopedia.unifycomponents.Label
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/power_merchant_label_height"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        app:labelType="general_dark_red"
-        app:labelTitle="@string/power_merchant_label_new"
-        app:layout_constraintTop_toTopOf="@id/textPremiumAccount"
-        app:layout_constraintLeft_toRightOf="@id/textPremiumAccount"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textPremiumAccountDescription"
-        android:text="@string/power_merchant_premium_account_description"
-        android:textColor="@color/light_N700"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toBottomOf="@id/textPremiumAccount"
-        app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
-        app:layout_constraintRight_toRightOf="@id/rightGuideline"
-        app:typographyType="body_2" />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/dividerBottom"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/power_merchant_divider_height"
-        android:layout_marginTop="@dimen/power_merchant_horizontal_spacing_small"
-        app:layout_constraintTop_toBottomOf="@id/textPremiumAccountDescription" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"

@@ -22,6 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 /**
  * @author by jessica on 2020-03-19
@@ -50,9 +51,9 @@ class HotelHomepageViewModelTest {
     fun getHotelRecommendationIsLogin_shouldReturnSuccessWithEmptyData() {
         //given
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(PopularSearch.Response::class.java to PopularSearch.Response(),
+                mapOf<Type, Any>(PopularSearch.Response::class.java to PopularSearch.Response(),
                         RecentSearch.Response::class.java to RecentSearch.Response()),
-                mapOf(),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -84,9 +85,9 @@ class HotelHomepageViewModelTest {
             recentSearches.add(RecentSearch(i.toString()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(PopularSearch.Response::class.java to PopularSearch.Response(popularSearches),
+                mapOf<Type, Any>(PopularSearch.Response::class.java to PopularSearch.Response(popularSearches),
                         RecentSearch.Response::class.java to RecentSearch.Response(recentSearches)),
-                mapOf(),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -112,8 +113,8 @@ class HotelHomepageViewModelTest {
     fun getHotelRecommendationIsLogin_shouldFail() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(PopularSearch.Response::class.java to listOf(GraphqlError()),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(PopularSearch.Response::class.java to listOf(GraphqlError()),
                         RecentSearch.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
@@ -144,8 +145,8 @@ class HotelHomepageViewModelTest {
             popularSearches.add(PopularSearch(i.toLong()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(PopularSearch.Response::class.java to PopularSearch.Response(popularSearches)),
-                mapOf(),
+                mapOf<Type, Any>(PopularSearch.Response::class.java to PopularSearch.Response(popularSearches)),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -171,8 +172,8 @@ class HotelHomepageViewModelTest {
             popularSearches.add(PopularSearch(i.toLong()))
         }
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(PopularSearch.Response::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(PopularSearch.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -198,8 +199,8 @@ class HotelHomepageViewModelTest {
             searchDestinations.add(SearchDestination(i.toLong()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(HotelSuggestion.Response::class.java to HotelSuggestion.Response(HotelSuggestion(searchDestinationList = searchDestinations))),
-                mapOf(),
+                mapOf<Type, Any>(HotelSuggestion.Response::class.java to HotelSuggestion.Response(HotelSuggestion(searchDestinationList = searchDestinations))),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -217,8 +218,8 @@ class HotelHomepageViewModelTest {
     fun getHotelSearchDestination_shouldReturnFail() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(HotelSuggestion.Response::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(HotelSuggestion.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -236,8 +237,8 @@ class HotelHomepageViewModelTest {
     fun deleteRecentSearch_successInDeleteRecentSearch() {
         //given
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(RecentSearch.DeleteResponse::class.java to RecentSearch.DeleteResponse(RecentSearch.DeleteResponse.DeleteResult(true))),
-                mapOf(),
+                mapOf<Type, Any>(RecentSearch.DeleteResponse::class.java to RecentSearch.DeleteResponse(RecentSearch.DeleteResponse.DeleteResult(true))),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -258,8 +259,8 @@ class HotelHomepageViewModelTest {
     fun deleteRecentSearch_failDeleteRecentSearch() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(RecentSearch.DeleteResponse::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(RecentSearch.DeleteResponse::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())

@@ -49,10 +49,10 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
-import com.tokopedia.logisticaddaddress.utils.LocationUtilsKt;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.util.LocationHelperKt;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
@@ -265,7 +265,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     @Override
     public void initMapListener() {
-        composite.add(LocationUtilsKt.rxPinPoint(googleMap)
+        composite.add(LocationHelperKt.rxPinPoint(googleMap)
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {

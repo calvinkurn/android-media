@@ -19,15 +19,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
@@ -58,7 +58,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 07/01/19
  */
-open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, FlightSearchAdapterTypeFactory>(),
+open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSearchAdapterTypeFactory>(),
         FlightSearchContract.View, FlightSearchAdapterTypeFactory.OnFlightSearchListener,
         ErrorNetworkModel.OnRetryListener, FlightFilterBottomSheet.FlightFilterBottomSheetListener {
 
@@ -66,7 +66,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         @Inject set
 
     protected var flightSearchComponent: FlightSearchComponent? = null
-    protected lateinit var flightSearchPassData: FlightSearchPassDataViewModel
+    protected lateinit var flightSearchPassData: FlightSearchPassDataModel
     protected var onFlightSearchFragmentListener: OnFlightSearchFragmentListener? = null
     private lateinit var flightAirportCombineModelList: FlightAirportCombineModelList
 
@@ -193,8 +193,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     override fun getAdapterTypeFactory(): FlightSearchAdapterTypeFactory =
             FlightSearchAdapterTypeFactory(this)
 
-    override fun createAdapterInstance(): BaseListAdapter<FlightJourneyViewModel, FlightSearchAdapterTypeFactory> {
-        val adapter: BaseListAdapter<FlightJourneyViewModel, FlightSearchAdapterTypeFactory> = super.createAdapterInstance()
+    override fun createAdapterInstance(): BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> {
+        val adapter: BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> = super.createAdapterInstance()
 
         val errorNetworkModel: ErrorNetworkModel = adapter.errorNetworkModel
         errorNetworkModel.iconDrawableRes = R.drawable.ic_flight_empty_state
@@ -210,15 +210,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         onFlightSearchFragmentListener = context as OnFlightSearchFragmentListener
     }
 
-    override fun loadInitialData() {
+    override fun loadInitialData() {}
 
-    }
+    override fun loadData(page: Int) {}
 
-    override fun loadData(page: Int) {
-
-    }
-
-    override fun renderList(list: MutableList<FlightJourneyViewModel>) {
+    override fun renderList(list: MutableList<FlightJourneyModel>) {
         hideLoading()
 
         // remove all unneeded element (empty/retry/loading/etc)
@@ -270,7 +266,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         this.clearFindViewByIdCache()
     }
 
-    override fun getSearchPassData(): FlightSearchPassDataViewModel = flightSearchPassData
+    override fun getSearchPassData(): FlightSearchPassDataModel = flightSearchPassData
 
     override fun isReturning(): Boolean = false
 
@@ -302,7 +298,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true, fromCombo)
     }
 
-    override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
+    override fun renderSearchList(list: List<FlightJourneyModel>, needRefresh: Boolean) {
         if (!flightSearchPassData.isOneWay && !adapter.isLoading
                 && !adapter.isContainData) {
             showSearchRouteTitle()
@@ -320,8 +316,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         }
     }
 
-    override fun renderTickerView(travelTickerViewModel: TravelTickerViewModel) {
-        TravelTickerUtils.buildTravelTicker(context, travelTickerViewModel, flight_ticker_view)
+    override fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        TravelTickerUtils.buildTravelTicker(context, travelTickerModel, flight_ticker_view)
     }
 
     override fun addToolbarElevation() {
@@ -348,8 +344,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         setUpProgress()
     }
 
-    override fun setSearchPassData(passDataViewModel: FlightSearchPassDataViewModel) {
-        flightSearchPassData = passDataViewModel
+    override fun setSearchPassData(passDataModel: FlightSearchPassDataModel) {
+        flightSearchPassData = passDataModel
     }
 
     override fun showDepartureDateMaxTwoYears(resId: Int) {
@@ -408,21 +404,21 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         activity!!.finish()
     }
 
-    override fun navigateToTheNextPage(selectedId: String, selectedTerm: String, fareViewModel: FlightPriceViewModel, isBestPairing: Boolean) {
+    override fun navigateToTheNextPage(selectedId: String, selectedTerm: String, fareModel: FlightPriceModel, isBestPairing: Boolean) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener!!.selectFlight(selectedId, selectedTerm, fareViewModel,
+            onFlightSearchFragmentListener!!.selectFlight(selectedId, selectedTerm, fareModel,
                     isBestPairing, isCombineDone, flightSearchPassData.searchRequestId)
         }
     }
 
-    override fun onGetSearchMeta(flightSearchMetaViewModel: FlightSearchMetaViewModel) {
+    override fun onGetSearchMeta(flightSearchMetaModel: FlightSearchMetaModel) {
         addToolbarElevation()
 
-        val departureAirport = flightSearchMetaViewModel.departureAirport
-        val arrivalAirport = flightSearchMetaViewModel.arrivalAirport
+        val departureAirport = flightSearchMetaModel.departureAirport
+        val arrivalAirport = flightSearchMetaModel.arrivalAirport
         val flightAirportCombineModel = flightAirportCombineModelList.getData(departureAirport, arrivalAirport)
         val localAirlines = flightAirportCombineModel.airlines
-        localAirlines.addAll(flightSearchMetaViewModel.airlines)
+        localAirlines.addAll(flightSearchMetaModel.airlines)
         flightAirportCombineModel.airlines = localAirlines
         val size: Int = flightAirportCombineModelList.data.size
         val halfProgressAmount: Int = divideTo(divideTo(MAX_PROGRESS, size), 2)
@@ -432,28 +428,28 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         }
 
         if (!isReturning()) {
-            flightSearchPassData.searchRequestId = flightSearchMetaViewModel.searchRequestId
+            flightSearchPassData.searchRequestId = flightSearchMetaModel.searchRequestId
         }
 
         if (flightAirportCombineModel.isNeedRefresh) {
-            if (flightSearchMetaViewModel.isNeedRefresh) {
+            if (flightSearchMetaModel.isNeedRefresh) {
                 var noRetry: Int = flightAirportCombineModel.noOfRetry
                 noRetry++
                 flightAirportCombineModel.noOfRetry = noRetry
-                progress += divideTo(halfProgressAmount, flightSearchMetaViewModel.maxRetry)
+                progress += divideTo(halfProgressAmount, flightSearchMetaModel.maxRetry)
 
                 // already reach max retry limit, end retry
-                if (noRetry > flightSearchMetaViewModel.maxRetry) {
+                if (noRetry > flightSearchMetaModel.maxRetry) {
                     flightAirportCombineModel.isNeedRefresh = false
                 } else {
                     // retry load data
                     flightSearchPresenter.fetchSearchDataCloud(flightSearchPassData,
-                            flightAirportCombineModel, flightSearchMetaViewModel.refreshTime)
+                            flightAirportCombineModel, flightSearchMetaModel.refreshTime)
                 }
             } else {
                 flightAirportCombineModel.isNeedRefresh = false
-                progress += (flightSearchMetaViewModel.maxRetry - flightAirportCombineModel.noOfRetry) *
-                        divideTo(halfProgressAmount, flightSearchMetaViewModel.maxRetry)
+                progress += (flightSearchMetaModel.maxRetry - flightAirportCombineModel.noOfRetry) *
+                        divideTo(halfProgressAmount, flightSearchMetaModel.maxRetry)
             }
         }
 
@@ -463,7 +459,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 flightAirportCombineModel.isNeedRefresh)
     }
 
-    override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyViewModel) {
+    override fun onSuccessGetDetailFlightDeparture(flightJourneyModel: FlightJourneyModel) {
         // DO NOTHING
     }
 
@@ -488,26 +484,26 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         fetchFlightSearchData()
     }
 
-    override fun onDetailClicked(journeyViewModel: FlightJourneyViewModel?, adapterPosition: Int) {
-        flightSearchPresenter.onSeeDetailItemClicked(journeyViewModel!!, adapterPosition)
-        val flightDetailViewModel = FlightDetailViewModel()
-        flightDetailViewModel.build(journeyViewModel)
+    override fun onDetailClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
+        flightSearchPresenter.onSeeDetailItemClicked(journeyModel!!, adapterPosition)
+        val flightDetailViewModel = FlightDetailModel()
+        flightDetailViewModel.build(journeyModel)
         flightDetailViewModel.build(flightSearchPassData)
 
-        if (journeyViewModel.fare.adultNumericCombo != 0) {
-            flightDetailViewModel.total = journeyViewModel.comboPrice
-            flightDetailViewModel.totalNumeric = journeyViewModel.comboPriceNumeric
-            flightDetailViewModel.adultNumericPrice = journeyViewModel.fare.adultNumericCombo
-            flightDetailViewModel.childNumericPrice = journeyViewModel.fare.childNumericCombo
-            flightDetailViewModel.infantNumericPrice = journeyViewModel.fare.infantNumericCombo
+        if (journeyModel.fare.adultNumericCombo != 0) {
+            flightDetailViewModel.total = journeyModel.comboPrice
+            flightDetailViewModel.totalNumeric = journeyModel.comboPriceNumeric
+            flightDetailViewModel.adultNumericPrice = journeyModel.fare.adultNumericCombo
+            flightDetailViewModel.childNumericPrice = journeyModel.fare.childNumericCombo
+            flightDetailViewModel.infantNumericPrice = journeyModel.fare.infantNumericCombo
         }
 
         startActivityForResult(FlightDetailActivity.createIntent(activity,
                 flightDetailViewModel, true), REQUEST_CODE_SEE_DETAIL_FLIGHT)
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyViewModel?, adapterPosition: Int) {
-        flightSearchPresenter.onSearchItemClicked(journeyViewModel, adapterPosition)
+    override fun onItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
+        flightSearchPresenter.onSearchItemClicked(journeyModel, adapterPosition)
     }
 
     override fun onShowAllClicked() {
@@ -518,17 +514,17 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         // need in return search
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyViewModel?) {
-        flightSearchPresenter.onSearchItemClicked(journeyViewModel = journeyViewModel)
+    override fun onItemClicked(journeyModel: FlightJourneyModel?) {
+        flightSearchPresenter.onSearchItemClicked(journeyModel = journeyModel)
     }
 
     override fun getScreenName(): String = ""
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        val emptyResultViewModel = EmptyResultViewModel()
+        val emptyResultViewModel = EmptyResultModel()
         emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
         if (inFilterMode) {
-            emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter
+            emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter_description
             emptyResultViewModel.buttonTitleRes = R.string.reset_filter
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
@@ -540,8 +536,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 }
             }
         } else {
-            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available
-            emptyResultViewModel.buttonTitleRes = R.string.change_date
+            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_description
+            emptyResultViewModel.buttonTitleRes = R.string.flight_search_change_search_empty_button_label
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
 
@@ -576,7 +572,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     private fun getNoFlightRouteDataViewModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
-        val emptyResultViewModel = EmptyResultViewModel()
+        val emptyResultViewModel = EmptyResultModel()
         emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
         emptyResultViewModel.title = message
         emptyResultViewModel.buttonTitleRes = R.string.flight_change_search_content_button
@@ -609,10 +605,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         }
     }
 
-    open fun getDepartureAirport(): FlightAirportViewModel =
+    open fun getDepartureAirport(): FlightAirportModel =
             flightSearchPassData.departureAirport
 
-    open fun getArrivalAirport(): FlightAirportViewModel =
+    open fun getArrivalAirport(): FlightAirportModel =
             flightSearchPassData.arrivalAirport
 
     private fun showSearchRouteTitle() {
@@ -894,10 +890,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     interface OnFlightSearchFragmentListener {
 
-        fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
+        fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
                          isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
 
-        fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel)
+        fun changeDate(flightSearchPassDataModel: FlightSearchPassDataModel)
     }
 
     companion object {
@@ -931,9 +927,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private const val FLIGHT_QUICK_FILTER_MEAL = "In-flight Meal"
         private const val FLIGHT_QUICK_FILTER_TRANSIT = "Transit"
 
-        fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {
+        fun newInstance(passDataModel: FlightSearchPassDataModel): FlightSearchFragment {
             val bundle = Bundle()
-            bundle.putParcelable(FlightSearchActivity.EXTRA_PASS_DATA, passDataViewModel)
+            bundle.putParcelable(FlightSearchActivity.EXTRA_PASS_DATA, passDataModel)
 
             val fragment = FlightSearchFragment()
             fragment.arguments = bundle

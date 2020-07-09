@@ -1032,4 +1032,27 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         gtmMap.put(ExtraKey.USER_ID, userId);
         sendGeneralEvent(gtmMap);
     }
+
+    public void eventViewSummaryTransactionTickerCourierNotComplete(String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
+                ""
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void clickCekOnSummaryTransactionTickerCourierNotComplete(String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
+                ""
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
 }

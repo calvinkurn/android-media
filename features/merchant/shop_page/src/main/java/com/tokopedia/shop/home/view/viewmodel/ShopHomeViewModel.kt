@@ -108,14 +108,14 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun addProductToCart(
-            productId: String,
+            product: ShopHomeProductViewModel,
             shopId: String,
             onSuccessAddToCart: (dataModelAtc: DataModel) -> Unit,
             onErrorAddToCart: (exception: Throwable) -> Unit
     ) {
         launchCatchError(block = {
             val addToCartSubmitData = withContext(dispatcherProvider.io()) {
-                submitAddProductToCart(shopId, productId)
+                submitAddProductToCart(shopId, product)
             }
             if (addToCartSubmitData.data.success == 1)
                 onSuccessAddToCart(addToCartSubmitData.data)
@@ -218,8 +218,8 @@ class ShopHomeViewModel @Inject constructor(
         )
     }
 
-    private fun submitAddProductToCart(shopId: String, productId: String): AddToCartDataModel {
-        val requestParams = AddToCartUseCase.getMinimumParams(productId, shopId)
+    private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {
+        val requestParams = AddToCartUseCase.getMinimumParams(product.id ?: "", shopId, productName = product.name ?: "", price = product.displayedPrice ?: "")
         return addToCartUseCase.createObservable(requestParams).toBlocking().first()
     }
 

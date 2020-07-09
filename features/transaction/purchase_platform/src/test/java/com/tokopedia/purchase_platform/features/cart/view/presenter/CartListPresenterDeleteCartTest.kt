@@ -94,7 +94,7 @@ object CartListPresenterDeleteCartTest : Spek({
             When("process delete cart item") {
                 val cartItemData = CartItemData()
                 cartItemData.originData = CartItemData.OriginData()
-                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
+                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false)
             }
 
             Then("should render success") {
@@ -121,7 +121,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             When("process delete cart item") {
                 cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
-                        arrayListOf(firstCartItemData), arrayListOf(), false, false)
+                        arrayListOf(firstCartItemData), false, false)
             }
 
             Then("should success delete") {
@@ -148,7 +148,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             When("process delete cart item") {
                 cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
-                        arrayListOf(firstCartItemData), arrayListOf(), false, false)
+                        arrayListOf(firstCartItemData), false, false)
             }
 
             Then("should success delete") {
@@ -171,7 +171,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
 
             When("process delete cart item") {
-                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
+                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false)
             }
 
             Then("should show error message") {
@@ -193,7 +193,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
 
             When("process delete cart item") {
-                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
+                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false)
             }
 
             Then("should show error message") {

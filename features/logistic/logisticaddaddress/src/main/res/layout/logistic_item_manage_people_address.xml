@@ -74,7 +74,6 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_detail"
-            style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/address_name"
@@ -85,7 +84,7 @@
             android:paddingTop="@dimen/dp_5"
             android:paddingBottom="@dimen/dp_10"
             android:text="@string/detail_address"
-            app:typographyType="body_2" />
+            app:typographyType="body_3"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_pinpoint_state"

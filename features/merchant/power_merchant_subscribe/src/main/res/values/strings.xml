@@ -14,7 +14,8 @@
     <string name="pm_label_transition_period_button">Upload KTP Sekarang</string>
     <string name="pm_label_transition_period_learnmore">Pelajari Power Merchant Selengkapnya.</string>
 
-    <string name="expired_label">Pengajuan untuk berhenti jadi Power Merchant berhasil. Layanan otomatis berhenti pada %1$s, pukul 04.00 WIB.</string>
+    <string name="expired_label">Pengajuan untuk berhenti jadi Power Merchant berhasil. Layanan otomatis berhenti pada %1$s, pukul %2$s WIB.</string>
+    <string name="pm_bottom_sheet_expired_label">Layanan otomatis berhenti pada %1$s, pukul %2$s WIB.</string>
     <string name="pm_title_activity">Power Merchant</string>
 
     <string name="pm_label_bottom_sheet_cancel_header">Yakin mau turun status \nke Regular Merchant?</string>
@@ -46,7 +47,10 @@
     <string name="power_merchant_bebas_ongkir">Pengiriman Bebas Ongkir</string>
     <string name="power_merchant_bebas_ongkir_description">Proses pengiriman pesanan dengan layanan SiCepat dan Anteraja. Syarat &amp; Ketentuan berlaku.</string>
     <string name="power_merchant_featured_feature">Fitur Unggulan</string>
-    <string name="power_merchant_featured_feature_description">Optimalkan penjualan dengan **Broadcast Chat, Modal Toko,** dan **fitur eksklusif** lainnya.</string>
+    <string name="power_merchant_featured_feature_description">Optimalkan penjualan dengan Broadcast Chat, Modal Toko, dan fitur eksklusif lainnya. Pelajari Selengkapnya.</string>
+    <string name="power_merchant_featured_feature_description_bold_1">Broadcast Chat, Modal Toko,</string>
+    <string name="power_merchant_featured_feature_description_bold_2">fitur eksklusif</string>
+    <string name="power_merchant_featured_feature_clickable_text">Pelajari Selengkapnya.</string>
     <string name="power_merchant_shop_benefit">Jadi toko pilihan pembeli</string>
     <string name="power_merchant_shop_benefit_description">Dilihat banyak pembeli dengan fitur Etalase Toko (200 Etalase), Produk Unggulan, dan Sampul Toko.</string>
     <string name="power_merchant_top_ads_benefit">Tambahan kredit TopAds</string>
@@ -67,6 +71,7 @@
     <string name="power_merchant_register_title">Upgrade ke Power Merchant</string>
     <string name="power_merchant_shop_score_hint">Pastikan skor performa toko lebih dari 75</string>
     <string name="power_merchant_exclusive_feature">Fitur Eksklusif Power Merchant</string>
+    <string name="power_merchant_benefit_feature">Keuntungan Power Merchant</string>
     <string name="power_merchant_free_shipping_clickable_text">Syarat &amp; Ketentuan berlaku.</string>
     <string name="power_merchant_broadcast_chat_clickable_text">syarat &amp; ketentuan.</string>
     <string name="power_merchant_benefit_title">Keuntungan menjadi Power Merchant</string>
@@ -96,6 +101,23 @@
     <string name="power_merchant_ok_label">Oke</string>
     <string name="power_merchant_success_title">Selamat! Tokomu sudah menjadi\nPower Merchant</string>
     <string name="power_merchant_success_description">Tingkatkan penjualan tokomu dengan mengakses fitur-fitur andalan **Power Merchant!**</string>
-    <string name="power_merchant_bottom_sheet_score_title">Yaah, Power Merchant sementara tidak aktif</string>
-    <string name="power_merchant_bottom_sheet_score_description">Skor performa tokomu kurang dari 65. Segera tingkatkan performa toko untuk kembali menggunakan fitur-fitur Power Merchant.</string>
+    <string name="power_merchant_bottom_sheet_score_title">Yaah, pengajuan kamu belum berhasil</string>
+    <string name="power_merchant_bottom_sheet_score_description">Skor performa tokomu kurang dari 75. Segera tingkatkan performa toko untuk menjadi Power Merchant.</string>
+
+    <string name="power_merchant_free_shipping">Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_eligible_title">Tokomu memenuhi syarat untuk Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_not_eligible_title">Pelajari tentang Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_transition_title">Perubahan Skema Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_transition_description"><![CDATA[<strong><font color=\"#31353b\">Per 13 Juli 2020,</font></strong> skema baru akan diterapkan. Pelajari lebih lanjut.]]></string>
+    <string name="power_merchant_free_shipping_description"><![CDATA[Tingkatkan potensi penjualanmu <strong><font color=\"#31353b\">hingga 50%.</font></strong>]]></string>
+    <string name="power_merchant_free_shipping_not_eligible_description">Tarik perhatian pembeli dan tingkatkan penjualanmu.</string>
+    <string name="power_merchant_free_shipping_active_description">Cek penggunaan Bebas Ongkir-mu</string>
+    <string name="power_merchant_free_shipping_title">Status Bebas Ongkir : <![CDATA[<strong><font color=\"#31353b\">Aktif</font></strong>]]></string>
+    <string name="power_merchant_free_shipping_shop_score_description">Aktivasi ulang setelah performa tokomu meningkat.</string>
+    <string name="power_merchant_free_shipping_shop_score_title">Status Bebas Ongkir : <![CDATA[<strong><font color=\"#31353b\">Tidak aktif</font></strong>]]></string>
+    <string name="power_merchant_free_shipping_load_error">Bebas Ongkir tak bisa ditampilkan</string>
+    <string name="power_merchant_free_shipping_activate">Aktifkan Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_learn_more">Pelajari Bebas Ongkir</string>
+    <string name="power_merchant_click_to_reload">Ketuk ikon untuk memuat ulang</string>
+    <string name="power_merchant_success_free_shipping_description">Yuk, aktivasi fitur Bebas Ongkir untuk meningkatkan penjualan tokomu.</string>
 </resources>

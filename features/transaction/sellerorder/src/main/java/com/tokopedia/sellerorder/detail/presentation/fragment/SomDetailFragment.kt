@@ -561,7 +561,15 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         if (detailResponse.flagOrderMeta.flagFreeShipping) {
             showFreeShippingAcceptOrderDialog(buttonResp)
         } else {
-            showAcceptOrderDialog(buttonResp)
+            acceptOrder(buttonResp)
+        }
+    }
+
+    private fun acceptOrder(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+        val mapParam = buttonResp.param.convertStrObjToHashMap()
+        if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
+            somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
+                    mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
         }
     }
 
@@ -638,32 +646,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
     }
 
-    private fun showAcceptOrderDialog(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
-        view?.context?.let {
-            val dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
-                setTitle(buttonResp.title)
-                setDescription(buttonResp.content)
-                setPrimaryCTAText(getString(R.string.terima_pesanan))
-                setPrimaryCTAClickListener {
-                    val mapParam = buttonResp.param.convertStrObjToHashMap()
-                    if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
-                        somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
-                            mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
-                        dismiss()
-                    }
-                }
-                setSecondaryCTAText(getString(R.string.kembali))
-                setSecondaryCTAClickListener {
-                    dismiss()
-                }
-            }
-            dialogUnify.show()
-        }
-    }
-
     private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
         var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse.orderId.toString())
-
         val uriBuilder = Uri.Builder()
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, buttonResp.url)
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)

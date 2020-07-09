@@ -5,9 +5,9 @@ import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellati
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestAttachment;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestAttribute;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -43,8 +43,8 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
     }
 
     public RequestParams createRequest(String invoiceId, String reason, String reasonId,
-                                       List<FlightCancellationAttachmentViewModel> attachments,
-                                       List<FlightCancellationViewModel> journeyCancellations) {
+                                       List<FlightCancellationAttachmentModel> attachments,
+                                       List<FlightCancellationModel> journeyCancellations) {
         RequestParams requestParams = RequestParams.create();
 
         FlightCancellationRequestAttribute flightCancellationRequestAttribute = new FlightCancellationRequestAttribute();
@@ -63,7 +63,7 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
         return requestParams;
     }
 
-    private List<FlightCancellationRequestAttachment> transformIntoRequestAttachments(List<FlightCancellationAttachmentViewModel> attachments) {
+    private List<FlightCancellationRequestAttachment> transformIntoRequestAttachments(List<FlightCancellationAttachmentModel> attachments) {
         if (attachments != null && attachments.size() > 0) {
             List<FlightCancellationRequestAttachment> requestAttachments = new ArrayList<>();
 
@@ -71,7 +71,7 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
             attachment.setDocsId(DEFAULT_DOCS_ID);
             attachment.setDocsLinks(new ArrayList<>());
 
-            for (FlightCancellationAttachmentViewModel item : attachments) {
+            for (FlightCancellationAttachmentModel item : attachments) {
                 attachment.getDocsLinks().add(item.getImageurl());
             }
 
@@ -83,10 +83,10 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
         }
     }
 
-    private List<FlightCancellationDetailRequestBody> transformIntoDetails(List<FlightCancellationViewModel> journeyCancellations) {
+    private List<FlightCancellationDetailRequestBody> transformIntoDetails(List<FlightCancellationModel> journeyCancellations) {
         List<FlightCancellationDetailRequestBody> detailRequestBodies = new ArrayList<>();
-        for (FlightCancellationViewModel viewModel : journeyCancellations) {
-            for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
+        for (FlightCancellationModel viewModel : journeyCancellations) {
+            for (FlightCancellationPassengerModel passengerViewModel : viewModel.getPassengerViewModelList()) {
                 FlightCancellationDetailRequestBody detailRequestBody = new FlightCancellationDetailRequestBody();
                 detailRequestBody.setJourneyId(Long.parseLong(viewModel.getFlightCancellationJourney().getJourneyId()));
                 detailRequestBody.setPassengerId(Long.parseLong(passengerViewModel.getPassengerId()));

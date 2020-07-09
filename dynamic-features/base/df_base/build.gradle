@@ -67,6 +67,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.rechargeCreditCard)
     implementation project(rootProject.ext.features.digitalEmoney)
+    implementation project(rootProject.ext.features.digitalBrizzi)
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
@@ -81,9 +82,11 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     //IM
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
+    //Logistic
+    implementation project(rootProject.ext.features.dropOff)
     //Merchant
-    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.talk)
     //Operational
 
     //Payment
@@ -106,10 +109,12 @@ dependencies {
     implementation project(rootProject.ext.features.kyccentralized)
     implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.notifCenter)
-    implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.attachvoucher)
     implementation project(rootProject.ext.features.topchat)
     //Entertainment
     implementation project(rootProject.ext.features.eventHome)
     implementation project(rootProject.ext.features.eventSearch)
+    implementation project(rootProject.ext.features.orderhistory)
+    //Logistic
+    implementation project(rootProject.ext.features.logisticorder)
 }

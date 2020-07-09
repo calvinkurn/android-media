@@ -1,8 +1,6 @@
 package com.tokopedia.home.test.widgets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -11,26 +9,17 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.Config
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.model.VideoStream
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
-import com.tokopedia.home.test.rules.TestDispatcherProvider
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -39,7 +28,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class PlayBannerUITest{
+class PlayBannerUITest : BaseWidgetUiTest(){
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)
@@ -57,38 +46,35 @@ class PlayBannerUITest{
     private val getCoroutinePendingCashbackUseCase = mockk<GetCoroutinePendingCashbackUseCase> (relaxed = true)
     private val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase> (relaxed = true)
     private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase> (relaxed = true)
-    private val getHomeUseCase = mockk<HomeUseCase> (relaxed = true)
-    private val getSendGeolocationInfoUseCase = mockk<SendGeolocationInfoUseCase> (relaxed = true)
+    private val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
+    private val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
     private val getStickyLoginUseCase = mockk<StickyLoginUseCase> (relaxed = true)
     private val getBusinessWidgetTab = mockk<GetBusinessWidgetTab> (relaxed = true)
     private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
     private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
-    private val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
     private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
+    private val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
+    private val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
+    private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
+    val injectCouponTimeBasedUseCase = mockk<InjectCouponTimeBasedUseCase>(relaxed = true)
     private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
-
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
-    
+
     companion object{
         private val CONTAINER = R.id.play_frame_layout
         private val TITLE = R.id.title
         private val TITLE_CONTENT = R.id.title_play
-        
+
     }
-    
-//    @Before
-//    fun setup(){
-//        every { userSessionInterface.isLoggedIn } returns false
-//    }
 
     @Test
     fun test_when_no_data_skeleton_from_home_api_and_expect_the_widget_not_show(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
@@ -121,8 +107,8 @@ class PlayBannerUITest{
                         )
                 )
         )
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
@@ -143,8 +129,8 @@ class PlayBannerUITest{
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_and_the_url_not_valid_the_widget_should_not_visible_into_user(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
@@ -178,8 +164,8 @@ class PlayBannerUITest{
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_but_the_return_is_empty_and_expect_the_widget_not_visible_into_user(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
@@ -198,8 +184,8 @@ class PlayBannerUITest{
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_but_the_api_throw_error_and_the_widget_should_not_visible(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } throws RuntimeException()
@@ -214,10 +200,10 @@ class PlayBannerUITest{
 
     @Test
     fun test_given_data_play_and_try_update_new_data_but_the_new_data_is_empty_and_expect_the_widget_will_removed(){
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {
             emit(Result.success(""))
         }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             var json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
             var homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
@@ -260,10 +246,10 @@ class PlayBannerUITest{
 
     @Test
     fun test_given_data_play_and_try_update_into_new_data_expect_widget_show_the_new_data(){
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {
             emit(Result.success(""))
         }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             var json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.play_widget_json)
             var homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
@@ -324,7 +310,7 @@ class PlayBannerUITest{
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
-
+  
     private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
@@ -356,6 +342,9 @@ class PlayBannerUITest{
             stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
             getAtcUseCase = getAtcUseCase,
-            sendTopAdsUseCase = sendTopAdsUseCase
+            closeChannelUseCase = closeChannelUseCase,
+            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
     )
 }

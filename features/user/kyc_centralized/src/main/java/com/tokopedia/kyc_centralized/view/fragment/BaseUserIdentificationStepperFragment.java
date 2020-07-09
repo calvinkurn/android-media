@@ -122,6 +122,8 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_file_too_big));
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_NOT_EXIST) {
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_cant_be_accessed));
+        } else if (resultCode == KYCConstant.IS_FILE_LIVENESS_IMAGE_NOT_EXIST) {
+            NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_liveness_image_cant_be_accessed));
         } else if (resultCode == KYCConstant.NOT_SUPPORT_LIVENESS && requestCode == REQUEST_CODE_CAMERA_FACE) {
             UserIdentificationFormActivity.isSupportedLiveness = false;
             Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), PARAM_VIEW_MODE_FACE);

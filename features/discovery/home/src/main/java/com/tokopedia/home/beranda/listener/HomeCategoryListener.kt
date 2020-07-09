@@ -25,9 +25,9 @@ interface HomeCategoryListener {
 
     val eggListener: HomeEggListener
 
-    val trackingQueue: TrackingQueue
+    fun getTrackingQueueObj(): TrackingQueue?
 
-    val childFragmentManager: FragmentManager
+    val childsFragmentManager: FragmentManager
 
     val windowHeight: Int
 
@@ -96,6 +96,8 @@ interface HomeCategoryListener {
     fun getWindowWidth(): Int
 
     fun refreshHomeData()
+
+    fun isShowSeeAllCard(): Boolean
 
     fun getTabBusinessWidget(position: Int)
 

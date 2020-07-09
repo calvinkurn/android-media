@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
+import android.app.Activity.RESULT_OK
 import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -17,6 +18,8 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.DRAFT_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
@@ -48,7 +51,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
     @Inject
     lateinit var productDraftListCountViewModel: ProductDraftListCountViewModel
 
-    override fun getScreenName(): String = "ProductListActivity"
+    private var alreadySendScreenNameAfterAddEditProduct: Boolean = false
+
+    override fun getScreenName(): String = "/product list page"
 
     override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller
 
@@ -85,7 +90,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
             productDraftListCountViewModel.fetchAllDraftCountWithUpdateUploading()
         }
         if (userVisibleHint) {
-            ProductManageTracking.sendScreen(screenName)
+            sendNormalSendScreen()
         }
     }
 
@@ -99,7 +104,34 @@ class ProductManageSellerFragment : ProductManageFragment() {
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
+            sendNormalSendScreen()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT ->
+                    sendScreenWithCustomDimension(ProductManageDataLayer.CUSTOM_DIMENSION_PAGE_SOURCE_ADD_PRODUCT)
+                ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT ->
+                    sendScreenWithCustomDimension(ProductManageDataLayer.CUSTOM_DIMENSION_PAGE_SOURCE_EDIT_PRODUCT)
+                else -> super.onActivityResult(requestCode, resultCode, intent)
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, intent)
+        }
+    }
+
+    private fun sendScreenWithCustomDimension(pageSource: String) {
+        ProductManageTracking.sendScreen(screenName, pageSource)
+        alreadySendScreenNameAfterAddEditProduct = true
+    }
+
+    private fun sendNormalSendScreen() {
+        if (!alreadySendScreenNameAfterAddEditProduct) {
             ProductManageTracking.sendScreen(screenName)
+        } else {
+            alreadySendScreenNameAfterAddEditProduct = false
         }
     }
 

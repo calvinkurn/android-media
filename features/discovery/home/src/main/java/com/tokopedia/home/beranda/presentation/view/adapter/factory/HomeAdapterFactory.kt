@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.factory
 
 import android.view.View
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -33,8 +32,7 @@ import java.util.*
  * @author by errysuprayogi on 11/28/17.
  */
 
-class HomeAdapterFactory(private val fragmentManager: FragmentManager, private val listener: HomeCategoryListener,
-                         private val inspirationListener: HomeInspirationListener,
+class HomeAdapterFactory(private val listener: HomeCategoryListener, private val inspirationListener: HomeInspirationListener,
                          private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
@@ -175,6 +173,12 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
 
             /**
+             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget}
+             * used by category widget
+             */
+            DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> CategoryWidgetViewHolder.LAYOUT
+
+            /**
              * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_deals}
              * used by deals widget to show 1 product item
              */
@@ -254,6 +258,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
             ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
             RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener, listener)
+            CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

@@ -3,6 +3,8 @@ package com.tokopedia.fcmcommon.service
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
+import com.crashlytics.android.Crashlytics
+import com.tokopedia.fcmcommon.BuildConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
@@ -34,15 +36,31 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
         }
     }
 
-    override fun onSuccess() { }
+    override fun onSuccess() {}
 
-    override fun onError(exception: Exception?) { }
+    override fun onError(exception: Exception?) {}
 
     companion object {
         const val JOB_ID = 91219
         fun startService(context: Context) {
-            val intent = Intent(context, SyncFcmTokenService::class.java)
-            enqueueWork(context, SyncFcmTokenService::class.java, JOB_ID, intent)
+            // https://issuetracker.google.com/issues/112157099
+            try {
+                val intent = Intent(context, SyncFcmTokenService::class.java)
+                enqueueWork(context, SyncFcmTokenService::class.java, JOB_ID, intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                logExceptionToCrashlytic(e)
+            }
+        }
+
+        private fun logExceptionToCrashlytic(exception: Exception) {
+            try {
+                if (!BuildConfig.DEBUG) {
+                    Crashlytics.logException(exception)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

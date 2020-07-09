@@ -14,19 +14,10 @@ import com.tokopedia.design.component.BottomSheets;
  */
 
 public interface ReputationRouter {
-    Intent getInboxReputationIntent(Context context);
 
     Fragment getReputationHistoryFragment();
 
     Fragment getReviewSellerFragment();
-
-    Intent getLoginIntent(Context context);
-
-    Intent getShopPageIntent(Context context, String shopId);
-
-    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
-
-    Intent getTopProfileIntent(Context context, String reviewUserId);
 
     void showAppFeedbackRatingDialog(
             FragmentManager fragmentManager,

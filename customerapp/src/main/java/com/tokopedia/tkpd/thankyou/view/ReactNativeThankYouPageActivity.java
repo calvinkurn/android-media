@@ -4,11 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import android.view.KeyEvent;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
@@ -96,21 +97,23 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
         boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
 
-        if (enableInAppReview && !hasShownInAppReviewBefore) {
+        if (enableInAppReview && !hasShownInAppReviewBefore && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             requestInAppReviewFlow();
         }
     }
 
     private void requestInAppReviewFlow() {
-        inAppReviewManager = InAppReviewManagerFactory.create(this);
-        inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
-            @Override
-            public void onComplete(Task<InAppReviewInfo> request) {
-                if (request.isSuccessful()) {
-                    inAppReviewRequest = request;
+        try {
+            inAppReviewManager = InAppReviewManagerFactory.create(this);
+            inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
+                @Override
+                public void onComplete(Task<InAppReviewInfo> request) {
+                    if (request.isSuccessful()) {
+                        inAppReviewRequest = request;
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) { }
     }
 
     @Override
@@ -200,24 +203,26 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     @Override
     public void onBackPressed() {
-        FragmentManager manager = getSupportFragmentManager();
-        if (isDigital() && manager != null) {
-            if (inAppReviewManager != null && inAppReviewRequest != null) {
-                inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
-                    @Override
-                    public void onComplete(Task<Integer> task) {
-                        setInAppReviewHasShownBefore();
-                        closeThankyouPage();
-                    }
-                });
+        try {
+            FragmentManager manager = getSupportFragmentManager();
+            if (isDigital() && manager != null) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && inAppReviewManager != null && inAppReviewRequest != null) {
+                    inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
+                        @Override
+                        public void onComplete(Task<Integer> task) {
+                            setInAppReviewHasShownBefore();
+                            closeThankyouPage();
+                        }
+                    });
+                } else {
+                    AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+                    rating.setDialogDismissListener(this::closeThankyouPage);
+                    rating.showDialog(manager, this);
+                }
             } else {
-                AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                rating.setDialogDismissListener(this::closeThankyouPage);
-                rating.showDialog(manager, this);
+                closeThankyouPage();
             }
-        } else {
-            closeThankyouPage();
-        }
+        } catch (Exception e) { closeThankyouPage();}
     }
 
     private boolean getInAppReviewHasShownBefore() {
@@ -254,32 +259,17 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     @Override
-    public Intent getInboxReputationIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Fragment getReputationHistoryFragment() {
         return null;
     }
 
     @Override
-    public Intent getLoginIntent(Context context) {
+    public Fragment getReviewSellerFragment() {
         return null;
     }
 
     @Override
-    public Intent getShopPageIntent(Context context, String shopId) {
-        return null;
-    }
-
-    @Override
-    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return null;
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String reviewUserId) {
+    public Fragment getReviewSellerFragment() {
         return null;
     }
 
@@ -292,4 +282,5 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public void showSimpleAppRatingDialog(Activity activity) {
 
     }
+
 }

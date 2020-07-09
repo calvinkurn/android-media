@@ -11,7 +11,7 @@ import com.tokopedia.utils.image.ImageUtils
 
 class RandomRewardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     companion object {
-        val LAYOUT = R.layout.list_item_random_reward
+        val LAYOUT = com.tokopedia.gamification.R.layout.list_item_random_reward
     }
 
     private val image: AppCompatImageView = itemView.findViewById(R.id.image)

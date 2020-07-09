@@ -5,22 +5,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.crashlytics.android.Crashlytics;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -34,6 +35,7 @@ import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -140,9 +142,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     public void showError(String message) {
         hideLoading();
         if (getView() != null) {
-            ToasterError.make(getView(), message)
-                    .setAction(getString(R.string.title_try_again), view -> getMenuToggle())
-                    .show();
+            Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.title_try_again), view -> getMenuToggle());
         }
     }
 
@@ -200,13 +201,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                     accountAnalytics.eventClickAccountSetting(PASSWORD);
-                    if (userSession.hasPassword()) {
-                        intent = RouteManager.getIntent(getActivity(), ApplinkConst
-                                .CHANGE_PASSWORD);
-                        getActivity().startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
-                    } else {
-                        intentToAddPassword();
-                    }
+                    accountAnalytics.eventClickAccountPassword();
+                    intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
+                    startActivity(intent);
                     break;
                 case SettingConstant.SETTING_PIN:
                     accountAnalytics.eventClickPinSetting();

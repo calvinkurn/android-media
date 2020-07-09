@@ -11,6 +11,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -390,7 +391,8 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "dimension87", "search result",
                 "dimension88", "search - product",
                 "dimension90", searchRef,
-                "dimension96", getBoosterList()
+                "dimension96", getBoosterList(),
+                "dimension99", System.currentTimeMillis()
         );
     }
 

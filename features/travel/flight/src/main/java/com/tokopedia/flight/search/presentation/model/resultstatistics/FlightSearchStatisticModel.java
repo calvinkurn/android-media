@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.presentation.model.resultstatistics;
 
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
 
 import java.util.List;
 
@@ -61,17 +61,17 @@ public class FlightSearchStatisticModel {
         return airlineStatList;
     }
 
-    public FlightAirlineViewModel getAirline(String airlineID) {
+    public FlightAirlineModel getAirline(String airlineID) {
         List<AirlineStat> airlineStatList = getAirlineStatList();
         if (airlineStatList != null) {
             for (int i = 0, sizei = airlineStatList.size(); i < sizei; i++) {
-                FlightAirlineViewModel flightAirlineDB = airlineStatList.get(i).getAirlineDB();
+                FlightAirlineModel flightAirlineDB = airlineStatList.get(i).getAirlineDB();
                 if (airlineID.equals(flightAirlineDB.getId())) {
                     return flightAirlineDB;
                 }
             }
         }
-        return new FlightAirlineViewModel(airlineID, "", "", "");
+        return new FlightAirlineModel(airlineID, "", "", "");
     }
 
     public List<DepartureStat> getDepartureTimeStatList() {

@@ -1,17 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-
-android{
-    /*dataBinding {
-        enabled = true
-    }*/
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
-}
+apply plugin: "de.mannodermaus.android-junit5"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -19,15 +9,26 @@ repositories {
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
+    }
+}
+
+android{
+    testOptions {
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
     }
 }
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -43,7 +44,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.coach_mark
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -53,13 +54,16 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.scannerZxing
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
-
-    implementation rootProject.ext.miscDependencies.scannerZxing
+    testImplementation rootProject.ext.testDependencies.androidxTest
 }
 
 project.ext {

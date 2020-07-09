@@ -19,8 +19,8 @@ class MockInterceptor(val responseList: Map<String, String>) : Interceptor {
                 responseList.forEach {
                     if (requestString.contains(it.key)) {
                         responseString = it.value
-                        return chain.proceed(chain.request())
-                                .newBuilder()
+                        return Response.Builder()
+                                .request(copy)
                                 .code(200)
                                 .protocol(Protocol.HTTP_2)
                                 .message(responseString)

@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:parentTag="com.tokopedia.unifycomponents.CardUnify">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,7 +12,7 @@
         <ImageView
             android:id="@+id/iv_card_header"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/dp_52"
             android:src="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +25,6 @@
             android:background="@color/Neutral_N100"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_card_header" />
-
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_card_header"
@@ -50,8 +48,10 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             app:labelTitle="@string/lbl_default_preference"
-            app:labelType="general_dark_green"
+            app:labelType="general_light_grey"
             app:layout_constraintBottom_toBottomOf="@id/iv_card_header"
+            app:layout_constraintEnd_toStartOf="@+id/iv_edit_preference"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/tv_card_header"
             app:layout_constraintTop_toTopOf="@id/iv_card_header" />
 
@@ -59,8 +59,8 @@
             android:id="@+id/iv_edit_preference"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/dp_18"
-            android:layout_marginRight="@dimen/dp_18"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="@+id/iv_card_header"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/iv_card_header"
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_16"
             android:lines="1"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:lines="1"
@@ -203,15 +203,41 @@
             tools:text="8098097230948209384" />
 
         <View
-            android:id="@+id/diviver_bottom"
+            android:id="@+id/divider_bottom"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_14"
             android:background="@color/Neutral_N100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_payment" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/cb_main_preference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_18"
+            android:layout_marginLeft="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_bottom" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_main_preference"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Pilihan Utama"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintBottom_toBottomOf="@+id/cb_main_preference"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/cb_main_preference"
+            app:layout_constraintTop_toTopOf="@+id/cb_main_preference"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_choose_preference"
@@ -220,7 +246,7 @@
             android:lines="1"
             android:paddingStart="@dimen/dp_6"
             android:paddingLeft="@dimen/dp_6"
-            android:paddingTop="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_12"
@@ -228,7 +254,7 @@
             android:textColor="@color/Green_G500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/diviver_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/divider_bottom"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:visibility="visible" />
@@ -241,7 +267,7 @@
             android:lines="1"
             android:paddingStart="@dimen/dp_6"
             android:paddingLeft="@dimen/dp_6"
-            android:paddingTop="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_12"
@@ -251,7 +277,7 @@
             app:drawableLeftCompat="@drawable/ic_action_check"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/diviver_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/divider_bottom"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:visibility="visible" />

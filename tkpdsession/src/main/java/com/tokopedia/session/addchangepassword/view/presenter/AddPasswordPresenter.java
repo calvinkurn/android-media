@@ -16,8 +16,11 @@ public class AddPasswordPresenter
         extends BaseDaggerPresenter<AddPasswordListener.View>
         implements AddPasswordListener.Presenter {
 
-    private final static int MIN_COUNT = 6;
+    private final static int MIN_COUNT = 8;
     private final static int MAX_COUNT = 32;
+    private final static String ERROR_FIELD_REQUIRED = "Harus diisi";
+    private final static String ERROR_MIN_CHAR = "minimum 8 karakter";
+    private final static String ERROR_MAX_CHAR = "Maksimum 32 karakter";
 
     private AddPasswordUseCase addPasswordUseCase;
 
@@ -44,15 +47,25 @@ public class AddPasswordPresenter
     public void checkPassword(String password) {
         if (isValidPassword(password)) {
             getView().enableNextButton();
-        } else  {
+        } else {
             getView().disableNextButton();
         }
     }
 
-    public boolean isValidPassword(String password) {
-        if (password.length() < MIN_COUNT) return false;
-        else if(password.length() > MAX_COUNT) return false;
-        return true;
+    private boolean isValidPassword(String password) {
+        if (password.isEmpty()) {
+            getView().setErrorMessage(ERROR_FIELD_REQUIRED);
+            return false;
+        } else if (password.length() < MIN_COUNT) {
+            getView().setErrorMessage(ERROR_MIN_CHAR);
+            return false;
+        } else if (password.length() > MAX_COUNT) {
+            getView().setErrorMessage(ERROR_MAX_CHAR);
+            return false;
+        } else {
+            getView().setErrorMessage("");
+            return true;
+        }
     }
 
     @Override

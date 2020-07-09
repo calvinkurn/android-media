@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageViewModel
 import kotlinx.android.synthetic.main.card_preference.view.*
 
 class PreferenceListViewHolder(itemView: View, private val listener: PreferenceListAdapter.PreferenceListAdapterListener) : RecyclerView.ViewHolder(itemView) {
@@ -20,6 +21,8 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
     private val ivEditPreference = itemView.iv_edit_preference
     private val tvCardHeader = itemView.tv_card_header
     private val lblMainPreference = itemView.lbl_main_preference
+    private val cbMainPreference = itemView.cb_main_preference
+    private val tvMainPreference = itemView.tv_main_preference
 
     private val tvAddressName = itemView.tv_address_name
     private val tvAddressReceiver = itemView.tv_address_receiver
@@ -32,21 +35,30 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
     private val tvPaymentName = itemView.tv_payment_name
     private val tvPaymentDetail = itemView.tv_payment_detail
 
-    private var show_delete_button: Boolean = true
-
     fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
         tvCardHeader.text = itemView.context.getString(R.string.preference_number, adapterPosition + 1)
 
         if (currentProfileId < 0) {
             tvChosenPreference.gone()
+            tvChoosePreference.gone()
+            cbMainPreference.visible()
+            tvMainPreference.visible()
             if (preference.status == 2) {
                 lblMainPreference.visible()
-                tvChoosePreference.gone()
+                cbMainPreference.isChecked = true
+                cbMainPreference.isEnabled = false
+                cbMainPreference.setOnClickListener {  }
             } else {
                 lblMainPreference.gone()
-                tvChoosePreference.visible()
+                cbMainPreference.isChecked = false
+                cbMainPreference.isEnabled = true
+                cbMainPreference.setOnClickListener {
+                    listener.onPreferenceSelected(preference)
+                }
             }
         } else {
+            cbMainPreference.gone()
+            tvMainPreference.gone()
             if (preference.status == 2) {
                 lblMainPreference.visible()
             } else {
@@ -60,6 +72,9 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
                 tvChosenPreference.gone()
                 tvChoosePreference.text = itemView.context.getString(R.string.label_choose_this_preference)
                 tvChoosePreference.visible()
+            }
+            tvChoosePreference.setOnClickListener {
+                listener.onPreferenceSelected(preference)
             }
         }
 
@@ -83,8 +98,14 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         tvAddressDetail.text = addressModel?.fullAddress ?: ""
 
         val shipmentModel = preference.shipmentModel
-        tvShippingName.text = shipmentModel?.serviceName ?: ""
-        tvShippingDuration.text = shipmentModel?.serviceDuration ?: ""
+        tvShippingName.text = "Pengiriman ${shipmentModel?.serviceName?.capitalize() ?: ""}"
+        val tempServiceDuration = shipmentModel?.serviceDuration ?: ""
+        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+            "Durasi ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
+        } else {
+            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
+        }
+        tvShippingDuration.text = serviceDur
 
         val paymentModel = preference.paymentModel
         ImageHandler.loadImageFitCenter(itemView.context, ivPayment, paymentModel?.image)
@@ -97,9 +118,6 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
             tvPaymentDetail.gone()
         }
 
-        tvChoosePreference.setOnClickListener {
-            listener.onPreferenceSelected(preference)
-        }
         ivEditPreference.setOnClickListener {
             listener.onPreferenceEditClicked(preference, adapterPosition + 1, profileSize)
         }

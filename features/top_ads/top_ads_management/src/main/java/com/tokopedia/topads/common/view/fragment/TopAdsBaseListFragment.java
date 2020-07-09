@@ -5,16 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.MenuRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.Px;
-import com.google.android.material.appbar.AppBarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -24,6 +14,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.MenuRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.Px;
+import androidx.appcompat.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
@@ -32,19 +33,20 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.utils.DateLabelUtils;
-import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
-import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.common.view.adapter.TopAdsMultipleCheckListAdapter;
 import com.tokopedia.topads.common.view.adapter.TopAdsOptionMenuAdapter;
 import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
-import com.tokopedia.topads.common.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -364,7 +366,9 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     @Override
     public void onSearchSubmitted(String text) {
-        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
+        if(getActivity() != null) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
+        }
         if (TextUtils.isEmpty(text)) {
             return;
         }
@@ -638,7 +642,9 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     protected void showBottomsheetOptionMore(String title, @MenuRes int menuId,
                                              final TopAdsMenuBottomSheets.OnMenuItemSelected listener){
-        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
+        if (getActivity() != null) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
+        }
 
         final TopAdsMenuBottomSheets bottomSheetMenu = new TopAdsMenuBottomSheets()
                 .setContext(getContext())

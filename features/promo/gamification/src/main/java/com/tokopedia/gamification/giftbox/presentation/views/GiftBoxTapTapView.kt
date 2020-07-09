@@ -46,7 +46,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
     constructor(context: Context) : super(context)
 
-    override fun getLayout(): Int = R.layout.view_gift_box_tap_tap
+    override fun getLayout(): Int = com.tokopedia.gamification.R.layout.view_gift_box_tap_tap
 
     override fun initViews() {
 
@@ -255,9 +255,9 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             TOTAL_ASYNC_IMAGES -= 1
         }
 
-//        var drawableRedForLid = R.drawable.gf_ic_lid_frame_7
+//        var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_7
 //        if (state == TokenUserState.ACTIVE) {
-            var drawableRedForLid = R.drawable.gf_ic_lid_frame_0
+            var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_0
 //        }
 
         Glide.with(this)

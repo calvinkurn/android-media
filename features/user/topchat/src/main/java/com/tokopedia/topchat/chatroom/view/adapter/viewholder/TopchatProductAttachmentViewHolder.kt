@@ -30,9 +30,9 @@ open class TopchatProductAttachmentViewHolder(
         private val listener: ProductAttachmentListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
-    private var wishListBtn: UnifyButton? = null
-    private var cardContainer: SingleProductAttachmentContainer? = null
-    private var emptyStock: Label? = null
+    private var wishListBtn: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
+    private var cardContainer: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.containerProductAttachment)
+    private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
 
     private val white = "#ffffff"
     private val white2 = "#fff"
@@ -43,7 +43,6 @@ open class TopchatProductAttachmentViewHolder(
     override fun bind(product: ProductAttachmentViewModel?) {
         if (product == null) return
         super.bind(product)
-        bindView()
         bindLayoutGravity(product)
         bindProductClick(product)
         bindImage(product)
@@ -57,12 +56,6 @@ open class TopchatProductAttachmentViewHolder(
         bindEmptyStockLabel(product)
         bindChatReadStatus(product)
         listener.trackSeenProduct(product)
-    }
-
-    private fun bindView() {
-        wishListBtn = itemView.findViewById(R.id.tv_wishlist)
-        cardContainer = itemView.findViewById(R.id.containerProductAttachment)
-        emptyStock = itemView.findViewById(R.id.lb_empty_stock)
     }
 
     private fun bindLayoutGravity(product: ProductAttachmentViewModel) {

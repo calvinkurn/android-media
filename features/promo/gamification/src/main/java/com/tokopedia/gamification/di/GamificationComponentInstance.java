@@ -1,8 +1,6 @@
 package com.tokopedia.gamification.di;
 
-import android.app.Application;
-
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import android.content.Context;
 
 /**
  * Created by hendry on 02/04/18.
@@ -11,10 +9,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 public class GamificationComponentInstance {
     private static GamificationComponent gamificationComponent;
 
-    public static GamificationComponent getComponent(Application application) {
+    public static GamificationComponent getComponent(Context context) {
         if (gamificationComponent == null) {
             gamificationComponent = DaggerGamificationComponent.builder()
-                    .baseAppComponent(((BaseMainApplication) application).getBaseAppComponent())
+                    .activityContextModule(new ActivityContextModule(context))
                     .build();
         }
         return gamificationComponent;

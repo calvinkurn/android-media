@@ -160,6 +160,9 @@
     <string name="title_chat_bot">Chat Sekarang</string>
     <string name="title_module_chat_bot">Chat Sekarang</string>
 
+    <!--    Logistic-->
+    <string name="title_dropoff_picker">Pilih Lokasi Titik Ambil</string>
+    <string name="title_autocomplete_page">Cari Lokasi</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
@@ -229,8 +232,8 @@
     <string name="title_upload_user_identification_common">Upload Foto</string>
 
     <!-- Dynamic feature for user talk-->
-    <string name="write_new_talk">Tulis Diskusi Baru</string>
-    <string name="title_product_discussion">Diskusi Produk</string>
+    <string name="write_new_talk">Kirim Pertanyaan</string>
+    <string name="title_product_discussion">Q&amp;A</string>
     <string name="title_report_talk">Laporkan</string>
 
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>
@@ -251,5 +254,13 @@
 
     <!--Play-->
     <string name="title_play_df">Play</string>
+
+    <!--Logistic-->
+    <string name="label_tracking_activity">Lacak</string>
+    <string name="title_receipt_shipement_barcode_scanner">Scan Barcode</string>
+    <string name="title_confirm_shipment_logistic_module">Konfirmasi Pengiriman</string>
+
+    <!--Promo-->
+    <string name="title_gamification_df">Gamification</string>
 
 </resources>

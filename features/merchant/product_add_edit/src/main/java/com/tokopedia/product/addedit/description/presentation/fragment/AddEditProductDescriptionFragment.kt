@@ -129,6 +129,7 @@ class AddEditProductDescriptionFragment:
         }
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        updateSaveButtonStatus()
     }
 
     override fun onTextChanged(url: String, position: Int) {
@@ -372,6 +373,7 @@ class AddEditProductDescriptionFragment:
                 getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
             }
             refreshDuplicateVideo(position)
+            updateSaveButtonStatus()
         })
     }
 
@@ -636,5 +638,12 @@ class AddEditProductDescriptionFragment:
 
     private fun getFilteredValidVideoLink() = adapter.data.filter {
         it.inputUrl.isNotBlank() && it.errorMessage.isBlank()
+    }
+
+    private fun updateSaveButtonStatus() {
+        with (descriptionViewModel.validateInputVideo(adapter.data)) {
+            btnSave.isEnabled = this
+            btnNext.isEnabled = this
+        }
     }
 }

@@ -14,7 +14,9 @@ import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantCombinationViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -153,7 +155,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
-                    is Fail -> ProductInputModel()
+                    is Fail -> {
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                        ProductInputModel()
+                    }
                 }
             }
             addSource(productAddResult) {
@@ -260,7 +265,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }.let { Success(it) }
         }, onError = {
             mGetProductDraftResult.value = Fail(it)
-            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
         })
     }
 
@@ -272,7 +276,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }.let { Success(it) }
         }, onError = {
             saveProductDraftResultMutableLiveData.value = Fail(it)
-            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
         })
     }
 

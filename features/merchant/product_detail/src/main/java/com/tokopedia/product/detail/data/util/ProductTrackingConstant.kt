@@ -28,6 +28,9 @@ object ProductTrackingConstant {
         const val KEY_DETAIl = "detail"
         const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
+        const val KEY_BUSINESS_UNIT = "businessUnit"
+        const val KEY_CURRENT_SITE = "currentSite"
+        const val KEY_SCREEN_NAME = "screenName"
 
         const val KEY_USER_ID_VARIANT = "userId"
 
@@ -63,6 +66,9 @@ object ProductTrackingConstant {
         const val KEY_COMPONENT = "component"
         const val KEY_ISLOGGIN = "isLoggedInStatus"
         const val KEY_ADD = "add"
+        const val BUSINESS_UNIT = "physical goods"
+        const val CURRENT_SITE = "tokopediamarketplace"
+        const val KEY_DISCUSSION_USER_ID = "userId"
 
         const val KEY_DIMENSION_81 = "dimension81"
         const val KEY_DIMENSION_83 = "dimension83"
@@ -77,15 +83,16 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_98 = "dimension98"
 
     }
-
     object Action {
         const val CLICK = "click"
+        const val ADD = "add"
         const val IMPRESSION = "impression"
         const val CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header"
         const val PRODUCT_CLICK = "productClick"
         const val PRODUCT_VIEW = "productView"
         const val RECOMMENDATION_CLICK = "clickRecommendation"
         const val TOPADS_CLICK = "click - product recommendation"
+        const val TOPADS_ATC_CLICK = "click add to cart on product card after atc"
         const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_BY_ME = "click - by.me"
         const val CLICK_VARIANT = "click - variant"
@@ -103,11 +110,11 @@ object ProductTrackingConstant {
         const val CLICK_SEE_MORE_WIDGET = "click - see more on widget %s"
         const val CLICK_SHARE_PDP = "click - share button"
         const val CLICK_READ_MORE = "click - baca selengkapnya"
-        const val CLICK_CATEGORY = "click - category"
+        const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
         const val CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION = "click - tab spesifikasi on description area"
-        const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - lihat semua metode on simulasi cicilan widget"
+        const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
         const val CLICK_PAGE_CHAT = "click - page chat"
         const val CLICK_BELI = "click - beli"
         const val CLICK_ADD_TO_CART = "click - tambah ke keranjang"
@@ -132,6 +139,7 @@ object ProductTrackingConstant {
         const val CLICK_VARIANT_GUIDELINE = "click - lihat panduan on size chart"
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
+        const val CLICK_WHOLESALE = "click - info harga grosir"
 
         const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
         const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
@@ -145,12 +153,20 @@ object ProductTrackingConstant {
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
+
+        const val CLICK_DISCUSSION_SEE_ALL = "click - lihat semua diskusi on diskusi terakhir"
+        const val CLICK_THREAD_DETAIL_DISCUSSION = "click - thread detail on diskusi"
+        const val CLICK_SEND_QUESTION = "click - kirim pertanyaan on diskusi"
     }
+
 
     object Label {
         const val EMPTY_LABEL = ""
         const val CLICK = "click"
         const val PDP = "pdp"
+        const val DISCUSSION_EMPTY_QUESTION = "count thread:{{0}};"
+        const val DISCUSSION_SEE_ALL ="count thread:{{%s}};"
+        const val DISCUSSION_DETAIL = "talk id:{{%s}};count thread:{{%s}};"
     }
 
     object Report {

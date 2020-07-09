@@ -60,7 +60,6 @@ class DynamicChannelMixTopViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
-            dcEventHandler.flashSaleImpression(dynamicChannelData)
             setupHeader(dynamicChannelData)
             setupContent(dynamicChannelData)
         }
@@ -91,7 +90,6 @@ class DynamicChannelMixTopViewHolder(
                         setOnClickListener {
                             dcEventHandler.onMixFlashSaleSeeAllClicked( channel,header.applink)
                         }
-                        setTextColor(MethodChecker.getColor(itemView.context, R.color.bg_button_green_border_outline))
                     }
                 } else {
                     headerActionText.visibility = View.GONE
@@ -177,7 +175,7 @@ class DynamicChannelMixTopViewHolder(
         recyclerViewProductList.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerViewProductList.layoutManager = layoutManager
-        val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, channel)
+        val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, null, channel)
         val productDataList = convertDataToProductData(channel)
         adapter = MixWidgetAdapter(typeFactoryImpl)
         adapter?.addElement(productDataList)

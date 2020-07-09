@@ -2,11 +2,11 @@ package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.emoney.data.EmoneyInquiry
-import com.tokopedia.emoney.data.EmoneyInquiryResponse
-import com.tokopedia.emoney.data.NfcCardErrorTypeDef
-import com.tokopedia.emoney.util.NFCUtils
-import com.tokopedia.emoney.util.SingleLiveEvent
+import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.data.EmoneyInquiryResponse
+import com.tokopedia.common_electronic_money.util.NFCUtils
+import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
+import com.tokopedia.common_electronic_money.util.SingleLiveEvent
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -20,7 +20,6 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                                                  val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val cardIsNotEmoney = SingleLiveEvent<Boolean>()
     val issuerId = SingleLiveEvent<Int>()
     val errorCardMessage = SingleLiveEvent<String>()
     val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
@@ -30,43 +29,44 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
     fun processEmoneyTagIntent(isoDep: IsoDep, balanceRawQuery: String, idCard: Int) {
         //do something with tagFromIntent
-        try {
-            this.isoDep = isoDep
-            isoDep.close()
-            isoDep.connect()
-            isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out
-
-            val commandSelectEMoney = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_SELECT_EMONEY))
-            val commandCardAttribute = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_CARD_ATTRIBUTE))
-            val commandCardInfo = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_CARD_INFO))
-            val commandLastBalance = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_LAST_BALANCE))
-
+        if (isoDep != null) {
             run {
-                val cardUID = isoDep.tag.id
+                try {
+                    this.isoDep = isoDep
+                    isoDep.connect()
+                    isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out
 
-                val responseSelectEMoney = NFCUtils.toHex(commandSelectEMoney)
-                val responseCardAttribute = NFCUtils.toHex(commandCardAttribute)
-                val responseCardUID = NFCUtils.toHex(cardUID)
-                val responseCardInfo = NFCUtils.toHex(commandCardInfo)
-                val responseCardLastBalance = NFCUtils.toHex(commandLastBalance)
+                    val commandSelectEMoney = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_SELECT_EMONEY))
+                    val commandCardAttribute = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_CARD_ATTRIBUTE))
+                    val commandCardInfo = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_CARD_INFO))
+                    val commandLastBalance = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_LAST_BALANCE))
+                    val cardUID = isoDep.tag.id
 
-                //success scan card e-money
-                if (responseSelectEMoney == COMMAND_SUCCESSFULLY_EXECUTED) {
-                    issuerId.postValue(ISSUER_ID_EMONEY)
-                    val mapAttributes = HashMap<String, Any>()
-                    mapAttributes[PARAM_CARD_ATTRIBUTE] = responseCardAttribute
-                    mapAttributes[PARAM_CARD_INFO] = responseCardInfo
-                    mapAttributes[PARAM_ISSUER_ID] = ISSUER_ID_EMONEY
-                    mapAttributes[PARAM_CARD_UUID] = responseCardUID
-                    mapAttributes[PARAM_LAST_BALANCE] = responseCardLastBalance
-                    getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
-                } else {
+                    val responseSelectEMoney = NFCUtils.toHex(commandSelectEMoney)
+                    val responseCardAttribute = NFCUtils.toHex(commandCardAttribute)
+                    val responseCardUID = NFCUtils.toHex(cardUID)
+                    val responseCardInfo = NFCUtils.toHex(commandCardInfo)
+                    val responseCardLastBalance = NFCUtils.toHex(commandLastBalance)
+
                     isoDep.close()
-                    cardIsNotEmoney.postValue(true)
+                    //success scan card e-money
+                    if (responseSelectEMoney == COMMAND_SUCCESSFULLY_EXECUTED) {
+                        issuerId.postValue(ISSUER_ID_EMONEY)
+                        val mapAttributes = HashMap<String, Any>()
+                        mapAttributes[PARAM_CARD_ATTRIBUTE] = responseCardAttribute
+                        mapAttributes[PARAM_CARD_INFO] = responseCardInfo
+                        mapAttributes[PARAM_ISSUER_ID] = ISSUER_ID_EMONEY
+                        mapAttributes[PARAM_CARD_UUID] = responseCardUID
+                        mapAttributes[PARAM_LAST_BALANCE] = responseCardLastBalance
+                        getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
+                    } else {
+                        errorCardMessage.postValue(NfcCardErrorTypeDef.CARD_NOT_FOUND)
+                    }
+                } catch (e: IOException) {
+                    errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
                 }
             }
-        } catch (e: IOException) {
-            isoDep.close()
+        } else {
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
     }
@@ -115,6 +115,8 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 }
             } catch (e: IOException) {
                 errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE)
+            } finally {
+                isoDep.close()
             }
         } else {
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE)

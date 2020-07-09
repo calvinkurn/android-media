@@ -30,4 +30,7 @@ object ApplinkConstInternalCategory {
     const val INTERNAL_FIND = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_FIND}"
     const val INTERNAL_EXPLORE_CATEGORY = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_EXPLORE_CATEGORY}"
     const val INTERNAL_BELANJA_CATEGORY = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_BELANJA_CATEGORY}"
+
+    @JvmField
+    val INTERNAL_CATEGORY_DETAIL = "$INTERNAL_CATEGORY/{DEPARTMENT_ID}"
 }

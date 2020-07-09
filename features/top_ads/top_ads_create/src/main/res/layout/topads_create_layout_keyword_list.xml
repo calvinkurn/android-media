@@ -131,7 +131,7 @@
         android:textAllCaps="false"
         app:buttonCompatSize="medium"
         android:visibility="visible"
-        app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
+        app:buttonDrawableLeftCompat="@drawable/topads_ic_tips"
         app:layout_constraintBottom_toTopOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

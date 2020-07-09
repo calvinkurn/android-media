@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
@@ -47,6 +48,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var layoutProgressBar: ProgressBar
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+
+    private var traceStop = false
 
     private var operatorSelected: TelcoCustomDataCollection? = null
         set(value) {
@@ -67,6 +71,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
+            performanceMonitoring = PerformanceMonitoring.start(DG_TELCO_POSTPAID_TRACE)
+
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             enquiryViewModel = viewModelProvider.get(DigitalTelcoEnquiryViewModel::class.java)
             sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
@@ -339,7 +345,19 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun setFavNumbers(data: TopupBillsFavNumber) {
+        performanceMonitoringStopTrace()
         favNumberList.addAll(data.favNumberList)
+    }
+
+    override fun errorSetFavNumbers() {
+        performanceMonitoringStopTrace()
+    }
+
+    private fun performanceMonitoringStopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace()
+            traceStop = true
+        }
     }
 
     override fun showErrorCartDigital(message: String) {
@@ -366,6 +384,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
+        private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
         const val KEY_CLIENT_NUMBER = "clientNumber"
         const val KEY_PRODUCT_ID = "productId"
 

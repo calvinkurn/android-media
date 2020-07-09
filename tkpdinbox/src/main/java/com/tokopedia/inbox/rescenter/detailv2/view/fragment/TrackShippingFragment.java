@@ -66,7 +66,7 @@ public class TrackShippingFragment extends BaseDaggerFragment implements TrackSh
         ResolutionDetailComponent resolutionDetailComponent =
                 DaggerResolutionDetailComponent.builder()
                         .appComponent(appComponent)
-                        .resolutionDetailModule(new ResolutionDetailModule(this))
+                        .resolutionDetailModule(new ResolutionDetailModule())
                         .build();
         resolutionDetailComponent.inject(this);
     }

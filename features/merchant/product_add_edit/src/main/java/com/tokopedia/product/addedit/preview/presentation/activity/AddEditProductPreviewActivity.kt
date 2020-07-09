@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.preview.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -7,13 +8,13 @@ import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.product.addedit.R
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
@@ -100,6 +101,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
                 setDescription(getString(R.string.label_description_on_dialog_edit))
                 setSecondaryCTAClickListener {
+                    setResult(Activity.RESULT_CANCELED)
                     super.onBackPressed()
                 }
                 setPrimaryCTAClickListener {
@@ -108,6 +110,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             } else {
                 setDescription(getString(R.string.label_description_on_dialog))
                 setSecondaryCTAClickListener {
+                    setResult(Activity.RESULT_CANCELED)
                     saveProductToDraft()
                     moveToManageProduct()
                     onCtaYesPressedHitTracking()

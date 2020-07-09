@@ -51,4 +51,7 @@
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
 
+    <!-- Voucher Creation -->
+    <string name="title_voucher_creation">Voucher Creation</string>
+
 </resources>

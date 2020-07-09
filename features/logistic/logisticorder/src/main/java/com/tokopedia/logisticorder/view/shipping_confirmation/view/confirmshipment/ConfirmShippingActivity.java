@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -36,11 +37,10 @@ import com.tokopedia.logisticorder.view.shipping_confirmation.di.OrderCourierCom
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
-import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
-import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
-import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailShipmentModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderShipmentTypeDef;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -281,7 +281,7 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
     private void removeServiceSelectionFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
+                .setCustomAnimations(R.animator.slide_out_right_logistic, R.animator.slide_out_right_logistic)
                 .remove(getSupportFragmentManager()
                         .findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG)).commit();
     }
@@ -377,7 +377,7 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
         LayoutInflater.from(this).inflate(R.layout.activity_confirm_shipping_logistic_module, frameLayout);
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         progressDialog.setCancelable(false);
 
         courierName = findViewById(R.id.courier_name);

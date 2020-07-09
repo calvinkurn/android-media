@@ -15,10 +15,12 @@ public class ReputationTrackingConstant {
     public static final String OFFICIAL_STORE_SHOP_PAGE_BUYER = "official store shop page - buyer";
     public static final String OFFICIAL_STORE_SHOP_PAGE_BRAND = "official store shop page - brand";
     public static final String PRODUCT_DETAIL_PAGE = "product detail page";
-    public static final String REVIEW_DETAIL_PAGE = "review detail page";
     public static final String REVIEW_PAGE = "ulasan page";
     public static final String SELLER_FEEDBACK_PAGE = "seller feedback page";
     public static final String FILTER_INVOICE_PAGE = "filter invoice review";
+    public static final String WAITING_REVIEWED = "menunggu diulas";
+    public static final String INVOICE = "invoice";
+    public static final String REVIEW_DETAIL_PAGE = "product review detail page";
 
     //Action
     public static final String TOP_CONTENT_CLICK = " - top content - click";
@@ -49,6 +51,11 @@ public class ReputationTrackingConstant {
     public static final String CLICK_OVERFLOW_MENU_EDIT = "click - ubah on three dots menu";
     public static final String CLICK_OVERFLOW_MENU_SHARE = "click - bagikan on three dots menu";
     public static final String CLICK_SEE_REPLY_TEXT = "click - lihat balasan on product";
+    public static final String VIEW_OVO_INCENTIVES_TICKER = "view - ovo incentives ticker";
+    public static final String CLICK_READ_SK_OVO_INCENTIVES_TICKER = "click - baca s&k on ovo incentives ticker";
+    public static final String CLICK_DISMISS_OVO_INCENTIVES_TICKER = "click - dismiss ovo incentives ticker";
+    public static final String CLICK_DISMISS_OVO_INCENTIVES_BOTTOMSHEET = "click - dismiss ovo incentives s&k bottomsheet";
+    public static final String CLICK_CONTINUE_SEND_REVIEW_0N_OVO_INCENTIVES = "click - lanjut kirim ulasan on ovo incentives s&k bottomsheet";
 
     //Label
     public static final String CLICK_REVIEW = "click review -";
@@ -66,6 +73,7 @@ public class ReputationTrackingConstant {
     public static final String CLICK_SEE_MORE = "click see more";
     public static final String CLICK_ON_WHITESPACE = "click on whitespace";
     public static final String CLICK_ON_TEXT_REVIEW = "click on beri ulasan";
+    public static final String MESSAGE = "message:";
     public static final String REVIEW_DETAIL_PAGE_SCREEN = "review detail page - report abuse";
 
 

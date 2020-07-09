@@ -11,8 +11,8 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;
 import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.presentation.model.Duration;
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
 import com.tokopedia.flight.search.util.DurationUtil;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
  * @author by furqan on 02/10/18.
  */
 
-public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyViewModel> {
+public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyModel> {
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_search;
 
@@ -59,7 +59,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     }
 
     @Override
-    public void bind(final FlightJourneyViewModel flightJourneyViewModel) {
+    public void bind(final FlightJourneyModel flightJourneyViewModel) {
         tvDeparture.setText(String.format("%s %s", flightJourneyViewModel.getDepartureTime(), flightJourneyViewModel.getDepartureAirport()));
         tvArrival.setText(String.format("%s %s", flightJourneyViewModel.getArrivalTime(), flightJourneyViewModel.getArrivalAirport()));
         tvPrice.setText(flightJourneyViewModel.getFare().getAdult());
@@ -102,7 +102,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         }
     }
 
-    private void setArrivalAddDay(FlightJourneyViewModel flightJourneyViewModel) {
+    private void setArrivalAddDay(FlightJourneyModel flightJourneyViewModel) {
         if (flightJourneyViewModel.getAddDayArrival() > 0) {
             arrivalAddDay.setVisibility(View.VISIBLE);
             arrivalAddDay.setText(itemView.getContext().getString(
@@ -112,7 +112,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         }
     }
 
-    void setDuration(FlightJourneyViewModel flightJourneyViewModel) {
+    void setDuration(FlightJourneyModel flightJourneyViewModel) {
         Duration duration = DurationUtil.convertFormMinute(flightJourneyViewModel.getDurationMinute());
         String durationString = DurationUtil.getReadableString(itemView.getContext(), duration);
         if (flightJourneyViewModel.getTotalTransit() > 0) {
@@ -124,7 +124,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         }
     }
 
-    private void setSavingPrice(FlightJourneyViewModel flightJourneyViewModel) {
+    private void setSavingPrice(FlightJourneyModel flightJourneyViewModel) {
 
         if (flightJourneyViewModel.getBeforeTotal() != null &&
                 flightJourneyViewModel.getBeforeTotal().length() > 0) {
@@ -135,7 +135,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         }
     }
 
-    private void setDiscountPriceTag(FlightJourneyViewModel flightJourneyViewModel) {
+    private void setDiscountPriceTag(FlightJourneyModel flightJourneyViewModel) {
         if (flightJourneyViewModel.isShowSpecialPriceTag()) {
             discountTag.setVisibility(View.VISIBLE);
             discountTag.setText(flightJourneyViewModel.getSpecialTagText());
@@ -144,14 +144,14 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         }
     }
 
-    private void setAirline(FlightJourneyViewModel flightJourneyViewModel) {
+    private void setAirline(FlightJourneyModel flightJourneyViewModel) {
         if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() > 1) {
-            List<FlightAirlineViewModel> flightAirlineDBs = flightJourneyViewModel.getAirlineDataList();
+            List<FlightAirlineModel> flightAirlineDBs = flightJourneyViewModel.getAirlineDataList();
             flightMultiAirlineView.setAirlineLogos(null);
             tvAirline.setText("");
             int airlineIndex = 0;
-            for (FlightAirlineViewModel airline : flightAirlineDBs) {
+            for (FlightAirlineModel airline : flightAirlineDBs) {
                 if (airlineIndex < flightAirlineDBs.size() - 1) {
                     tvAirline.append(airline.getShortName() + " + ");
                 } else {
@@ -166,7 +166,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         }
     }
 
-    private void setBestPairingPrice(FlightJourneyViewModel flightJourneyViewModel) {
+    private void setBestPairingPrice(FlightJourneyModel flightJourneyViewModel) {
         if (flightJourneyViewModel.isBestPairing()) {
             bestPairingTag.setVisibility(View.VISIBLE);
             discountTag.setVisibility(View.GONE);

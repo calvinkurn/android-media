@@ -12,6 +12,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewMode
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -34,12 +35,27 @@ class InitialStatePresenter @Inject constructor(
     private var listVistable = mutableListOf<Visitable<*>>()
     private var searchParameter = HashMap<String, String>()
 
+    override fun getQueryKey(): String {
+        return searchParameter[SearchApiConst.Q] ?: ""
+    }
+
     fun setSearchParameter(searchParameter: HashMap<String, String>) {
         this.searchParameter = searchParameter
     }
 
     fun getSearchParameter(): Map<String, String> {
         return searchParameter
+    }
+
+    override fun getInitialStateData() {
+        initialStateUseCase.execute(
+                InitialStateUseCase.getParams(
+                        searchParameter,
+                        userSession.deviceId,
+                        userSession.userId
+                ),
+                getInitialStateSubscriber()
+        )
     }
 
     private fun getInitialStateSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
@@ -56,8 +72,23 @@ class InitialStatePresenter @Inject constructor(
             for (initialStateData in list) {
                 if (initialStateData.items.isNotEmpty()) {
                     when (initialStateData.id) {
-                        RECENT_SEARCH, RECENT_VIEW, POPULAR_SEARCH -> {
+                        RECENT_SEARCH-> {
                             initialStateViewModel.addList(initialStateData)
+                            initialStateData.items.withNotEmpty{
+                                onRecentSearchImpressed(this)
+                            }
+                        }
+                        RECENT_VIEW -> {
+                            initialStateViewModel.addList(initialStateData)
+                            initialStateData.items.withNotEmpty{
+                                onRecentViewImpressed(this)
+                            }
+                        }
+                        POPULAR_SEARCH -> {
+                            initialStateViewModel.addList(initialStateData)
+                            initialStateData.items.withNotEmpty{
+                                onPopularSearchImpressed(this)
+                            }
                         }
                     }
                 }
@@ -68,85 +99,40 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    private fun getPopularSearchSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
-        override fun onCompleted() {}
-
-        override fun onError(e: Throwable) {
-            e.printStackTrace()
-        }
-
-        override fun onNext(listData: List<InitialStateData>) {
-            val initialStateViewModel = InitialStateViewModel()
-            initialStateViewModel.searchTerm = querySearch
-            val newData: InitialStateData? = listData.find { it.id == POPULAR_SEARCH }
-            var refreshedPopularSearchData = listOf<BaseItemInitialStateSearch>()
-            newData?.let {
-                refreshedPopularSearchData = convertListPopularSearchToBaseItemInitialStateSearch(it.items)
-            }
-
-            listVistable.forEachIndexed { _, visitable ->
-                if (visitable is PopularSearchViewModel) {
-                    visitable.list = refreshedPopularSearchData
-                }
-            }
-
-            view.refreshPopularSearch(listVistable)
-        }
+    private fun <E: Any, T: Collection<E>> T.withNotEmpty(func: T.() -> Unit): Unit {
+        if (this.isNotEmpty()) with (this) { func() }
     }
 
-    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Boolean> = object : Subscriber<Boolean>() {
-        override fun onCompleted() {}
-
-        override fun onError(e: Throwable) {
-            e.printStackTrace()
-        }
-
-        override fun onNext(isSuccessful: Boolean) {
-            if (isSuccessful) {
-                var needDelete = false
-                listVistable.forEachIndexed { _, visitable ->
-                    if (visitable is RecentSearchViewModel) {
-                        if (visitable.list.size == 1) {
-                            needDelete = true
-                        } else {
-                            val deleted = visitable.list.find { it.title == keyword }
-                            visitable.list.remove(deleted)
-                        }
-                    }
-                }
-                if (needDelete) {
-                    removeRecentSearchTitle()
-                    removeRecentSearch()
-                }
-                view.deleteRecentSearch(listVistable)
-            }
-        }
+    private fun onRecentViewImpressed(list: List<InitialStateItem>) {
+        view.onRecentViewImpressed(getDataLayerForRecentView(list))
     }
 
-    private fun removeRecentSearchTitle() {
-        val titleViewModel = listVistable.filterIsInstance<RecentSearchTitleViewModel>()
-        listVistable.removeAll(titleViewModel)
+    private fun getDataLayerForRecentView(list: List<InitialStateItem>): MutableList<Any> {
+        val dataLayerList: MutableList<Any> = mutableListOf()
+
+        list.forEachIndexed { index, item ->
+            val position = index + 1
+            dataLayerList.add(item.getObjectDataLayerForRecentView(position))
+        }
+        return dataLayerList
     }
 
-    private fun removeRecentSearch() {
-        val recentSearchViewModel = listVistable.filterIsInstance<RecentSearchViewModel>()
-        listVistable.removeAll(recentSearchViewModel)
+    private fun onRecentSearchImpressed(list: List<InitialStateItem>) {
+        view.onRecentSearchImpressed(getDataLayerForPromo(list))
     }
 
-    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Boolean> = object : Subscriber<Boolean>() {
-        override fun onCompleted() {}
+    private fun getDataLayerForPromo(list: List<InitialStateItem>): MutableList<Any> {
+        val dataLayerList: MutableList<Any> = mutableListOf()
 
-        override fun onError(e: Throwable) {
-            e.printStackTrace()
+        list.forEachIndexed { index, item ->
+            val position = index + 1
+            dataLayerList.add(item.getObjectDataLayerForPromo(position))
         }
+        return dataLayerList
+    }
 
-        override fun onNext(isSuccessful: Boolean) {
-            if (isSuccessful) {
-                removeRecentSearchTitle()
-                removeRecentSearch()
-                view.deleteRecentSearch(listVistable)
-            }
-        }
+    private fun onPopularSearchImpressed(list: List<InitialStateItem>) {
+        view.onPopularSearchImpressed(getDataLayerForPromo(list))
     }
 
     private fun getInitialStateResult(list: MutableList<InitialStateData>): MutableList<Visitable<*>> {
@@ -196,6 +182,43 @@ class InitialStatePresenter @Inject constructor(
         return this
     }
 
+    override fun refreshPopularSearch() {
+        refreshPopularSearchUseCase.execute(
+                RefreshPopularSearchUseCase.getParams(
+                        searchParameter,
+                        userSession.deviceId,
+                        userSession.userId
+                ),
+                getPopularSearchSubscriber()
+        )
+    }
+
+    private fun getPopularSearchSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(listData: List<InitialStateData>) {
+            val initialStateViewModel = InitialStateViewModel()
+            initialStateViewModel.searchTerm = querySearch
+            val newData: InitialStateData? = listData.find { it.id == POPULAR_SEARCH }
+            var refreshedPopularSearchData = listOf<BaseItemInitialStateSearch>()
+            newData?.let {
+                refreshedPopularSearchData = convertListPopularSearchToBaseItemInitialStateSearch(it.items)
+            }
+
+            listVistable.forEachIndexed { _, visitable ->
+                if (visitable is PopularSearchViewModel) {
+                    visitable.list = refreshedPopularSearchData
+                }
+            }
+
+            view.refreshPopularSearch(listVistable)
+        }
+    }
+
     fun convertListPopularSearchToBaseItemInitialStateSearch(items: List<InitialStateItem>): List<BaseItemInitialStateSearch> {
         val childList = ArrayList<BaseItemInitialStateSearch>()
         for (item in items) {
@@ -218,17 +241,6 @@ class InitialStatePresenter @Inject constructor(
         return childList
     }
 
-    override fun getInitialStateData() {
-        initialStateUseCase.execute(
-                InitialStateUseCase.getParams(
-                        searchParameter,
-                        userSession.deviceId,
-                        userSession.userId
-                ),
-                getInitialStateSubscriber()
-        )
-    }
-
     override fun deleteRecentSearchItem(keyword: String) {
         val params = DeleteRecentSearchUseCase.getParams(
                 keyword,
@@ -239,6 +251,45 @@ class InitialStatePresenter @Inject constructor(
                 params,
                 getDeleteRecentSearchSubscriber(keyword)
         )
+    }
+
+    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Boolean> = object : Subscriber<Boolean>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
+                var needDelete = false
+                listVistable.forEachIndexed { _, visitable ->
+                    if (visitable is RecentSearchViewModel) {
+                        if (visitable.list.size == 1) {
+                            needDelete = true
+                        } else {
+                            val deleted = visitable.list.find { it.title == keyword }
+                            visitable.list.remove(deleted)
+                        }
+                    }
+                }
+                if (needDelete) {
+                    removeRecentSearchTitle()
+                    removeRecentSearch()
+                }
+                view.deleteRecentSearch(listVistable)
+            }
+        }
+    }
+
+    private fun removeRecentSearchTitle() {
+        val titleViewModel = listVistable.filterIsInstance<RecentSearchTitleViewModel>()
+        listVistable.removeAll(titleViewModel)
+    }
+
+    private fun removeRecentSearch() {
+        val recentSearchViewModel = listVistable.filterIsInstance<RecentSearchViewModel>()
+        listVistable.removeAll(recentSearchViewModel)
     }
 
     override fun deleteAllRecentSearch() {
@@ -252,15 +303,20 @@ class InitialStatePresenter @Inject constructor(
         )
     }
 
-    override fun refreshPopularSearch() {
-        refreshPopularSearchUseCase.execute(
-                RefreshPopularSearchUseCase.getParams(
-                        searchParameter,
-                        userSession.deviceId,
-                        userSession.userId
-                ),
-                getPopularSearchSubscriber()
-        )
+    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Boolean> = object : Subscriber<Boolean>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
+                removeRecentSearchTitle()
+                removeRecentSearch()
+                view.deleteRecentSearch(listVistable)
+            }
+        }
     }
 
     override fun detachView() {

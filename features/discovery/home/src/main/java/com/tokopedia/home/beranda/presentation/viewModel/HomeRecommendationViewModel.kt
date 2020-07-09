@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.SendTopAdsUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -13,7 +12,6 @@ import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
         private val getHomeRecommendationUseCase: GetHomeRecommendationUseCase,
-        private val sendTopAdsUseCase: SendTopAdsUseCase,
         homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
@@ -81,9 +79,5 @@ class HomeRecommendationViewModel @Inject constructor(
             )
             _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list.copy()))
         }
-    }
-
-    fun sendTopAds(url: String){
-        sendTopAdsUseCase.executeOnBackground(url)
     }
 }

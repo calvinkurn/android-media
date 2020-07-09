@@ -14,6 +14,9 @@ import kotlinx.android.synthetic.main.centralized_promo_item_promo_creation.view
 
 class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiModel>(view) {
 
+    var onFreeShippingImpression: (() -> Unit)? = null
+    var onFreeShippingClicked: (() -> Unit)? = null
+
     companion object {
         val RES_LAYOUT = centralized_promo_item_promo_creation
     }
@@ -42,18 +45,36 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             }
 
             addOnImpressionListener(element.impressHolder) {
-                CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+                if(isFreeShippingPromo(element.title)) {
+                    onFreeShippingImpression?.invoke()
+                } else {
+                    CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+                }
             }
 
-            setOnClickListener { openApplink(element.applink, element.title) }
+            setOnClickListener {
+                openApplink(element.applink, element.title)
+            }
         }
     }
 
     private fun openApplink(url: String, title: String) {
         with(itemView) {
             if (RouteManager.route(context, url)) {
-                CentralizedPromoTracking.sendClickPromoCreation(title)
+                trackClickPromo(title)
             }
         }
+    }
+
+    private fun trackClickPromo(title: String) {
+        if (isFreeShippingPromo(title)) {
+            onFreeShippingClicked?.invoke()
+        } else {
+            CentralizedPromoTracking.sendClickPromoCreation(title)
+        }
+    }
+
+    private fun isFreeShippingPromo(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_free_shipping_title)
     }
 }

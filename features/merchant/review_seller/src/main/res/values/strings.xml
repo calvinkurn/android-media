@@ -64,7 +64,7 @@
     <string name="variant_feedback_label">Varian:</string>
     <string name="otomatis_reply">Balasan Otomatis</string>
     <string name="user_reply">Balasan Kamu</string>
-    <string name="review_not_found">Ulasan tidak terserdia.</string>
+    <string name="review_not_found">Ulasan tidak tersedia.</string>
     <string name="user_reply_feedback">Balasan %s</string>
     <string name="label_read_more">Selengkapnya</string>
     <string name="label_ellipsis_read_more">...</string>

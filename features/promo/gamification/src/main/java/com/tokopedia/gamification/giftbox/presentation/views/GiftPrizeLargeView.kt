@@ -38,7 +38,7 @@ class GiftPrizeLargeView : FrameLayout {
         init(null)
     }
 
-    fun getLayout() = R.layout.view_gift_benefits_large
+    fun getLayout() = com.tokopedia.gamification.R.layout.view_gift_benefits_large
 
     fun init(attrs: AttributeSet?) {
         LayoutInflater.from(context).inflate(getLayout(), this, true)

@@ -13,6 +13,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.android.synthetic.main.fragment_login_with_phone.view.*
 
 /**
@@ -21,6 +22,10 @@ import kotlinx.android.synthetic.main.fragment_login_with_phone.view.*
  */
 
 class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
+
+    private lateinit var remoteConfig: RemoteConfig
+    private var isEnableSeamlessLogin = false
+
     companion object {
         private const val REMOTE_CONFIG_SEAMLESS_LOGIN = "android_user_seamless_login"
         const val REQUEST_SEAMLESS_LOGIN = 122
@@ -32,14 +37,6 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
         }
     }
 
-    private fun isEnableSeamlessLogin(): Boolean {
-        context?.run {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this)
-            return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SEAMLESS_LOGIN, false)
-        }
-        return false
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isEnableSmartLock = false
@@ -47,17 +44,38 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if(isEnableSeamlessLogin() && GlobalConfig.isSellerApp()) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalSellerapp.SEAMLESS_CHOOSE_ACCOUNT)
-            arguments?.run { intent.putExtras(this) }
-            startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
+        super.onViewCreated(view, savedInstanceState)
+        fetchRemoteConfig()
+        showFullProgressBar()
+    }
+
+    private fun fetchRemoteConfig(){
+        remoteConfig = FirebaseRemoteConfigImpl(context)
+        remoteConfig.fetch(object: RemoteConfig.Listener {
+            override fun onComplete(remoteConfig: RemoteConfig?) {
+                isEnableSeamlessLogin = remoteConfig?.getBoolean(REMOTE_CONFIG_SEAMLESS_LOGIN, false) ?: false
+                checkForSeamless()
+            }
+
+            override fun onError(e: Exception?) {
+                e?.printStackTrace()
+                RouteManager.route(context, ApplinkConst.LOGIN)
+                activity?.finish()
+            }
+        })
+    }
+
+    private fun checkForSeamless(){
+        if(isEnableSeamlessLogin && GlobalConfig.isSellerApp()) {
+            context?.run {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SEAMLESS_CHOOSE_ACCOUNT)
+                arguments?.run { intent.putExtras(this) }
+                startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
+            }
         }else {
             RouteManager.route(context, ApplinkConst.LOGIN)
             activity?.finish()
         }
-
-        super.onViewCreated(view, savedInstanceState)
-        showFullProgressBar()
     }
 
     private fun showFullProgressBar(){

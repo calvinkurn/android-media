@@ -3,7 +3,6 @@ package com.tokopedia.tokopoints.view.sendgift;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
 public interface SendGiftContract {
 

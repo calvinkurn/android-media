@@ -7,11 +7,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.IsoDep;
+import android.nfc.tech.MifareClassic;
 import android.os.Bundle;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
+import com.tokopedia.common_electronic_money.util.CardUtils;
+import com.tokopedia.common_electronic_money.util.NFCUtils;
+
+import java.io.IOException;
 
 public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
 
@@ -22,8 +29,13 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
         if (intent != null &&
                 (intent.getAction() == NfcAdapter.ACTION_TAG_DISCOVERED ||
                         intent.getAction() == NfcAdapter.ACTION_TECH_DISCOVERED)) {
-            Intent newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD, DigitalExtraParam.EXTRA_NFC);
-            newIntent.putExtras(intent.getExtras());
+            Intent newIntent;
+            if (CardUtils.cardIsEmoney(intent)) {
+                newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, DigitalExtraParam.EXTRA_NFC);
+            } else {
+                newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, DigitalExtraParam.EXTRA_NFC);
+            }
+            newIntent.replaceExtras(intent);
             newIntent.setAction(intent.getAction());
             context.startActivity(newIntent);
         }

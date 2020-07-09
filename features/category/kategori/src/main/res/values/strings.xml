@@ -1,4 +1,5 @@
 <resources>
     <string name="kategori">kategori</string>
     <string name="belanja_screen_name">"/kategori-belanja"</string>
+    <string name="belanja_browse_home_title">Belanja di Tokopedia</string>
 </resources>

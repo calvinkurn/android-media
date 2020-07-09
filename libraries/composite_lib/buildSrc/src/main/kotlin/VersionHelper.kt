@@ -24,12 +24,11 @@ private fun String.toIntegerTruncated() :Int {
 
 fun Int.toVersion(configMap:Map<String, Int>):String{
     val tail = configMap["Tail"]?: 100
-    val mid = configMap["Mid"] ?: 10
-    val head = 1
-    return toVersion(head, mid, tail)
+    val mid = configMap["Mid"] ?: 100
+    return toVersion(mid, tail)
 }
 
-fun Int.toVersion(head:Int, mid:Int, tail:Int):String{
+fun Int.toVersion(mid:Int, tail:Int):String{
     val unitMultiply = listOf(mid*tail, tail, 1)
     val result = mutableListOf<Int>()
     var tempInt = this
@@ -43,8 +42,7 @@ fun Int.toVersion(head:Int, mid:Int, tail:Int):String{
 // version config to set maximum head:mid:tail
 fun String.versionToInt(configMap:Map<String, Int>):Pair<Int, String>{
     val tail = configMap["Tail"]?: 100
-    val mid = configMap["Mid"] ?: 10
-    val head = configMap["Head"] ?: 1
+    val mid = configMap["Mid"] ?: 100
     val unitMultiply = listOf(mid*tail, tail, 1)
 
     val splits = split(".")
@@ -52,5 +50,5 @@ fun String.versionToInt(configMap:Map<String, Int>):Pair<Int, String>{
     splits.forEachIndexed { index, str ->
         valueInteger += str.toIntegerTruncated() * unitMultiply[index]
     }
-    return (valueInteger) to ((valueInteger).toVersion(head, mid, tail))
+    return (valueInteger) to ((valueInteger).toVersion(mid, tail))
 }

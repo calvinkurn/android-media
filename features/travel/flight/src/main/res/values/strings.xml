@@ -10,7 +10,7 @@
     <string name="flight_search_date_departure_title">Tanggal Pergi</string>
     <string name="flight_search_date_arrival_title">Tanggal Pulang</string>
     <string name="flight_search_passenger_title">Penumpang</string>
-    <string name="flight_search_passenger_class_title">Kelas</string>
+    <string name="flight_search_passenger_class_title">Kelas Penerbangan</string>
     <string name="flight_search_search_ticket">Cari Tiket</string>
 
     <string name="flight_title_promo">Promo</string>
@@ -19,23 +19,21 @@
     <string name="search_flight">Search Flight</string>
     <string name="flight_label_city">%1$s, %2$s</string>
     <string name="flight_label_airport">%1$s - %2$s</string>
-    <string name="flight_label_search_hint_airport">Ketik kota atau bandara %s</string>
+    <string name="flight_label_search_hint_airport">Cari bandara atau kota yang dituju</string>
     <string name="flight_label_search_hint_phone_code">Cari kode telepon negara</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="select_passenger_adult_subtitle">(Lebih dari 12 tahun)</string>
+    <string name="select_passenger_adult_subtitle">Usia 12 tahun ke atas</string>
     <string name="select_passenger_adult_title">Dewasa</string>
-    <string name="select_passenger_children_subtitle">(2 – 12 tahun)</string>
+    <string name="select_passenger_children_subtitle">Usia 2 – 12 tahun</string>
     <string name="select_passenger_children_title">Anak</string>
-    <string name="select_passenger_infant_subtitle">(Kurang dari 2 tahun)</string>
+    <string name="select_passenger_infant_subtitle">Usia di bawah 2 tahun</string>
     <string name="select_passenger_infant_title">Bayi</string>
     <string name="select_passenger_total_passenger_error_message">Total Penumpang maksimal 7 penumpang (Dewasa dan Anak)</string>
-    <string name="select_passenger_infant_greater_than_adult_error_message">Jumlah penumpang bayi tidak boleh melebihi jumlah penumpang dewasa</string>
+    <string name="select_passenger_infant_greater_than_adult_error_message">Jumlah bayi tidak boleh melebihi penumpang dewasa</string>
     <string name="select_passenger_infant_more_than_four_error_message">Total penumpang bayi maksimal 4 penumpang</string>
     <string name="select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
     <string name="select_passenger_submit_button">Simpan</string>
-    <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
+    <string name="select_passenger_toolbar_title">Jumlah penumpang</string>
     <string name="flight_label">PENERBANGAN</string>
     <string name="flight_label_facility">FASILITAS</string>
     <string name="flight_label_price">HARGA</string>
@@ -47,20 +45,20 @@
     <string name="flight_search_filter_transit">Transit</string>
     <string name="flight_search_filter_airplane">Maskapai penerbangan</string>
     <string name="flight_search_filter_facility">Fasilitas</string>
-    <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
-    <string name="flight_search_filter_arrival_time">Waktu Tiba</string>
+    <string name="flight_search_filter_departure_time">Waktu keberangkatan</string>
+    <string name="flight_search_filter_arrival_time">Waktu tiba</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
     <string name="flight_search_filter_ticket_price_label">Harga tiket</string>
     <string name="flight_search_filter_baggage_label">Gratis Bagasi</string>
     <string name="flight_search_filter_meal_label">In-flight Meal</string>
-    <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
+    <string name="flight_classes_toolbar_title">Kelas penerbangan</string>
     <string name="flight_labe_all_airport">Semua Bandara</string>
     <string name="flight_dashboard_adult_passenger">Dewasa</string>
     <string name="flight_dashboard_adult_children">Anak</string>
     <string name="flight_dashboard_adult_infant">Bayi</string>
     <string name="flight_dashboard_departure_empty_error">Anda belum memilih airport pemberangkatan</string>
     <string name="flight_dashboard_arrival_empty_error">Anda belum memilih airport kedatangan</string>
-    <string name="flight_dashboard_arrival_departure_same_error">Airport kedatangan dan keberangkatan tidak boleh sama</string>
+    <string name="flight_dashboard_arrival_departure_same_error">Bandara keberangkatan dan tujuan tidak boleh sama</string>
     <string name="flight_dashboard_departure_should_atleast_today_error">Tanggal keberangkatan harus lebih besar sama dengan hari ini</string>
     <string name="flight_dashboard_departure_max_one_years_from_today_error">Tanggal keberangkatan maksimal satu tahun dari hari ini</string>
     <string name="flight_dashboard_return_should_greater_equal_error">Tanggal keberangkatan pulang harus lebih besar sama dengan tanggal keberangkatan</string>
@@ -88,19 +86,19 @@
     <string name="partial_refundable">Partial Refundable</string>
     <string name="flight_search_sort_label">Urutkan</string>
     <string name="flight_search_sort_title">Urutkan</string>
-    <string name="flight_search_sort_item_earliest_departure">Waktu Keberangkatan Terpagi</string>
-    <string name="flight_search_sort_item_latest_departure">Waktu Keberangkatan Termalam</string>
-    <string name="flight_search_sort_item_earliest_arrival">Waktu Tiba Terpagi</string>
-    <string name="flight_search_sort_item_latest_arrival">Waktu Tiba Termalam</string>
+    <string name="flight_search_sort_item_earliest_departure">Waktu Keberangkatan Terawal</string>
+    <string name="flight_search_sort_item_latest_departure">Waktu Keberangkatan Terakhir</string>
+    <string name="flight_search_sort_item_earliest_arrival">Waktu Tiba Terawal</string>
+    <string name="flight_search_sort_item_latest_arrival">Waktu Tiba Terakhir</string>
     <string name="flight_search_sort_item_shortest_duration">Durasi Terpendek</string>
     <string name="flight_search_sort_item_longest_duration">Durasi Terlama</string>
     <string name="flight_search_sort_shortest_duration">Perjalanan Tercepat</string>
-    <string name="flight_search_sort_item_cheapest_price">Harga Termurah</string>
-    <string name="flight_search_sort_item_most_expensive_price">Harga Termahal</string>
+    <string name="flight_search_sort_item_cheapest_price">Harga Terendah</string>
+    <string name="flight_search_sort_item_most_expensive_price">Harga Tertinggi</string>
     <string name="flight_search_sort_dialog_title">Urutkan berdasarkan</string>
     <string name="flight_filter_label">Filter</string>
     <string name="flight_reset_label">Reset</string>
-    <string name="airline">Maskapai Penerbangan</string>
+    <string name="airline">Maskapai penerbangan</string>
     <string name="refundable_policy">Kebijakan Pengembalian</string>
     <string name="transit">Transit</string>
     <string name="start_from_x">Mulai dari %1$s</string>
@@ -151,9 +149,9 @@
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
     <string name="activity_label_flight_saved_passenger">Pilih Penumpang</string>
     <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
-    <string name="flight_label_adult">Dewasa x%1$d</string>
-    <string name="flight_label_child">Anak x%1$d</string>
-    <string name="flight_label_infant">Bayi x%1$d</string>
+    <string name="flight_label_adult">Dewasa (x%1$d)</string>
+    <string name="flight_label_child">Anak (x%1$d)</string>
+    <string name="flight_label_infant">Bayi (x%1$d)</string>
     <string name="flight_label_finish_review_time">Selesaikan Pesanan Anda Dalam</string>
     <string name="flight_label_departure_flight">Penerbangan Pergi</string>
     <string name="flight_label_passenger_data">Data Penumpang</string>
@@ -174,15 +172,14 @@
     <string name="activity_label_flight_search_departure">Pencarian Pergi</string>
     <string name="flight_dashboard_departure_airport_hint">Penerbangan Asal</string>
     <string name="flight_dashboard_arrival_airport_hint">Penerbangan Tujuan</string>
-    <string name="flight_airportpicker_departure_title">Penerbangan Asal</string>
-    <string name="flight_airportpicker_arrival_title">Penerbangan Tujuan</string>
+    <string name="flight_airportpicker_title">Tujuan</string>
     <string name="flight_title_return">Pencarian Pulang</string>
     <string name="flight_label_saving_price_html"><![CDATA[<strike>%1$s</strike>]]></string>
     <string name="flight_label_duration_transit">%1$s (%2$s transit)</string>
     <string name="flight_label_duration_direct">%1$s (langsung)</string>
     <string name="flight_label_duration_add_day">(+%1$d Hari)</string>
     <string name="flight_label_see_detail">Lihat Detail</string>
-    <string name="flight_label_transit">Transit di %1$s • %2$s</string>
+    <string name="flight_label_transit">Transit di %1$s • %2$s %3$s</string>
     <string name="flight_label_currency">Rp%1$s</string>
     <string name="flight_booking_passenger_adult_title">Penumpang Dewasa</string>
     <string name="flight_booking_passenger_child_title">Penumpang Anak</string>
@@ -209,9 +206,11 @@
     <string name="flight_booking_passenger_meal_fill_label">Isi Data</string>
     <string name="flight_booking_luggage_toolbar_title">Bagasi</string>
     <string name="flight_booking_meal_toolbar_title">Makanan</string>
-    <string name="flight_there_is_no_flight_available">Tidak ada penerbangan yang tersedia</string>
-    <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
-    <string name="change_date">Ubah Tanggal</string>
+    <string name="flight_there_is_no_flight_available_title">Yaah... Rute ini nggak ada</string>
+    <string name="flight_there_is_no_flight_available_description">Rute yang kamu cari belum tersedia. Coba cari rute lainnya, yuk!</string>
+    <string name="flight_there_is_zero_flight_for_the_filter_title">Yang kamu cari nggak ada di sini</string>
+    <string name="flight_there_is_zero_flight_for_the_filter_description">Jangan panik, coba ubah filter kamu dulu.</string>
+    <string name="flight_search_change_search_empty_button_label">Cari Rute Lainnya</string>
     <string name="reset_filter">Reset Filter</string>
     <string name="flight_booking_passenger_first_name_hint">Nama Depan (sesuai KTP/Paspor/Lainnya)</string>
     <string name="flight_booking_passenger_firstname_secondary_hint">Isi Nama Depan</string>
@@ -347,8 +346,8 @@
     <string name="flight_passenger_update_abort_dialog_description">Perubahan data penumpang akan dibatalkan. Anda yakin?</string>
     <string name="flight_passenger_update_ok_button">Lanjut ubah</string>
     <string name="flight_passenger_update_cancel_button">Ya, batalkan</string>
-    <string name="flight_detail_total_stop_over_label">%1$d kali berhenti</string>
-    <string name="flight_detail_transit_label">Transit :</string>
+    <string name="flight_detail_total_stop_over_label">Transit : %1$d kali berhenti</string>
+    <string name="flight_detail_transit_stop_over_label">Transit : </string>
     <string name="flight_detail_operating_by" formatted="false">Dioperasikan oleh %s</string>
     <string name="flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years">Umur penumpang anak maksimal 12 tahun saat waktu pemberangkatan</string>
     <string name="flight_search_discount_tag">HARGA KHUSUS</string>
@@ -495,7 +494,13 @@
     <string name="flight_search_choose_departure_flight">Pilih Penerbangan Pergi</string>
     <string name="flight_search_choose_return_flight">Pilih Penerbangan Pulang</string>
     <string name="flight_terminal_info">Terminal %s*</string>
-    <string name="flight_airport_less_than_three_keyword_error">Lengkapi nama kota atau bandara yang kamu cari</string>
+    <string name="flight_airport_less_than_three_keyword_title_error">Oops, belum ada hasil</string>
+    <string name="flight_airport_less_than_three_keyword_error">Coba lengkapi nama kota atau bandara yang kamu cari. Tuliskan min. 3 huruf, ya!</string>
+    <string name="flight_airport_not_found_title_error">Nggak ada hasil yang cocok</string>
+    <string name="flight_airport_not_found_description_error">Coba cari ulang pakai kata kunci lain</string>
+    <string name="flight_airport_connection_title_error">Koneksi internetmu terganggu!</string>
+    <string name="flight_airport_connection_description_error">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan
+di tempatmu.</string>
 
     <string name="flight_min_date_label">Pergi</string>
     <string name="flight_max_date_label">Pulang</string>
@@ -510,6 +515,23 @@
     <string name="flight_search_passenger_label">Jumlah Penumpang</string>
 
     <string name="flight_change_search_label">Ubah pencarian</string>
-    <string name="flight_search_coach_mark_change_title">Ganti Pencarian</string>
-    <string name="flight_search_coach_mark_change_description">Tidak menemukan penerbangan yang sesuai? Klik disini untuk mengganti pencarian yang sesuai.</string>
+    <string name="flight_search_coach_mark_change_title">Mau ubah detail pencarian?</string>
+    <string name="flight_search_coach_mark_change_description">Kamu bisa langsung ganti kota atau bandara, tanggal penerbangan, dan jumlah penumpang di halaman ini.</string>
+    <string name="flight_search_coach_mark_from_widget">Kamu sedang lihat jadwal penerbangan hari ini. Klik ikon di kanan atas untuk ubah tanggal.</string>
+    <string name="flight_search_people_label">/orang</string>
+
+    <string name="flight_search_see_other_journey_title">Mau cek penerbangan pulang lainnya?</string>
+    <string name="flight_search_see_other_journey_description"><![CDATA[Kalau pilih penerbangan di luar Best Pairing, harga tiket berangkatmu akan berubah jadi <b>%1$s</b>.]]></string>
+    <string name="flight_search_see_other_journey_button">Cek Penerbangan Lain</string>
+
+    <string name="flight_search_see_only_best_pairing_journey_title">Mau pesan tiket dari pilihan sebelumnya?</string>
+    <string name="flight_search_see_only_best_pairing_journey_description"><![CDATA[Harga tiket berangkatmu akan berubah ke harga semula yaitu <b>%1$s</b>.]]></string>
+    <string name="flight_search_see_only_best_pairing_journey_button">Cek Penerbangan Best Pairing</string>
+
+    <string name="flight_detail_bottom_sheet_title">Detail tiket</string>
+    <string name="flight_detail_bottom_sheet_tab_journey_title">Perjalanan</string>
+    <string name="flight_detail_bottom_sheet_tab_facility_title">Fasilitas</string>
+    <string name="flight_detail_bottom_sheet_tab_price_title">Harga</string>
+    <string name="flight_detail_bottom_sheet_tab_price_subtotal">Subtotal</string>
+
 </resources>

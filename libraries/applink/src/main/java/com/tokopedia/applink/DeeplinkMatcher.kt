@@ -53,6 +53,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "blog")) to BLOG)
             add(Pattern(GT, 0, mapOf(0 to "peluang")) to PELUANG)
             add(Pattern(GT, 0, mapOf(0 to "peluang.pl")) to PELUANG)
+            add(Pattern(GT, 0, mapOf(0 to "category")) to CATEGORY)
             add(Pattern(GT, 0, mapOf(0 to "p")) to CATEGORY)
             add(Pattern(GT, 0, mapOf(0 to "search")) to BROWSE)
             add(Pattern(EQ, 1, mapOf(0 to "hot")) to HOT_LIST)

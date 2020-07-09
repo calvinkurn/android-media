@@ -8,7 +8,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_60">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -212,7 +213,7 @@
                 android:layout_margin="@dimen/dp_16"
                 android:textColor="@color/g_500"/>
 
-            <com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView
+            <com.tokopedia.sellerorder.common.widget.CustomMultipleFilterView
                 android:id="@+id/quick_filter_order_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -256,7 +257,7 @@
                 android:layout_margin="@dimen/dp_16"
                 android:textColor="@color/g_500"/>
 
-            <com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView
+            <com.tokopedia.sellerorder.common.widget.CustomMultipleFilterView
                 android:id="@+id/quick_filter_order_courier"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

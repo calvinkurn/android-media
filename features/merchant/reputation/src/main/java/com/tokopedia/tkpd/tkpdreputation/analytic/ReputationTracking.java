@@ -522,6 +522,96 @@ public class ReputationTracking {
         ));
     }
 
+    public void onSuccessGetIncentiveOvoTracker(String message, String category) {
+        if(category.isEmpty()) {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.VIEW_REVIEW,
+                    ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
+                    ReputationTrackingConstant.VIEW_OVO_INCENTIVES_TICKER,
+                    ReputationTrackingConstant.MESSAGE + message + ";"
+            ));
+        } else {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.VIEW_REVIEW,
+                    ReputationTrackingConstant.REVIEW_PAGE + " - " + category,
+                    ReputationTrackingConstant.VIEW_OVO_INCENTIVES_TICKER,
+                    ReputationTrackingConstant.MESSAGE + message + ";"
+            ));
+        }
+    }
+
+    public void onClickReadSkIncentiveOvoTracker(String message, String category) {
+        if(category.isEmpty()) {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                    ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
+                    ReputationTrackingConstant.CLICK_READ_SK_OVO_INCENTIVES_TICKER,
+                    ReputationTrackingConstant.MESSAGE + message + ";"
+            ));
+        } else {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                    ReputationTrackingConstant.REVIEW_PAGE + " - " + category,
+                    ReputationTrackingConstant.CLICK_READ_SK_OVO_INCENTIVES_TICKER,
+                    ReputationTrackingConstant.MESSAGE + message + ";"
+            ));
+        }
+    }
+
+    public void onClickDismissIncentiveOvoTracker(String message, String category) {
+        if(category.isEmpty()) {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                    ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
+                    ReputationTrackingConstant.CLICK_DISMISS_OVO_INCENTIVES_TICKER,
+                    ReputationTrackingConstant.MESSAGE + message + ";"
+            ));
+        } else  {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                    ReputationTrackingConstant.REVIEW_PAGE + " - " + category,
+                    ReputationTrackingConstant.CLICK_DISMISS_OVO_INCENTIVES_TICKER,
+                    ReputationTrackingConstant.MESSAGE + message + ";"
+            ));
+        }
+    }
+
+    public void onClickDismissIncentiveOvoBottomSheetTracker(String category) {
+        if(category.isEmpty()) {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                    ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
+                    ReputationTrackingConstant.CLICK_DISMISS_OVO_INCENTIVES_BOTTOMSHEET,
+                    ""
+            ));
+        } else {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                    ReputationTrackingConstant.REVIEW_PAGE + " - " + category,
+                    ReputationTrackingConstant.CLICK_DISMISS_OVO_INCENTIVES_BOTTOMSHEET,
+                    ""
+            ));
+        }
+    }
+
+    public void onClickContinueIncentiveOvoBottomSheetTracker(String category) {
+        if(category.isEmpty()) {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                    ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
+                    ReputationTrackingConstant.CLICK_CONTINUE_SEND_REVIEW_0N_OVO_INCENTIVES,
+                    ""
+            ));
+        } else {
+            tracker.sendGeneralEvent(createEventMap(
+                    ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                    ReputationTrackingConstant.REVIEW_PAGE + " - " + category,
+                    ReputationTrackingConstant.CLICK_CONTINUE_SEND_REVIEW_0N_OVO_INCENTIVES,
+                    ""
+            ));
+        }
+    }
+
     public void onClickRadioButtonReportAbuse(String reasonSelected) {
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 ReputationTrackingConstant.EVENT, ReputationTrackingConstant.CLICK_REVIEW_OLD,

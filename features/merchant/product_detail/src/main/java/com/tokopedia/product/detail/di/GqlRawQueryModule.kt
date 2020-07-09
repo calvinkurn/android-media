@@ -103,6 +103,13 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL)
+    fun provideRawDiscussionMostHelpful(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_talk_discussion_most_helpful)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_DISPLAY_ADS)
     fun provideRawDisplayAds(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.get_topads_query)

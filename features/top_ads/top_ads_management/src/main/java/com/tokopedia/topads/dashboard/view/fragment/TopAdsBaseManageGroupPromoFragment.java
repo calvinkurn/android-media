@@ -2,8 +2,6 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import androidx.annotation.IdRes;
-import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -12,6 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.IdRes;
+
+import com.google.android.material.textfield.TextInputLayout;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
@@ -27,7 +29,6 @@ import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomRadioGroup;
 import com.tokopedia.topads.dashboard.view.widget.TopAdsRadioExpandView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -177,7 +178,9 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
                 } else if (checkedId == R.id.radio_promo_choose_group) {
                     inputChooseGroup.requestFocus();
                 } else if (checkedId == R.id.radio_promo_not_in_group) {
-                    CommonUtils.hideKeyboard(getActivity(), getView());
+                    if (getActivity() != null) {
+                        KeyboardHandler.hideSoftKeyboard(getActivity());
+                    }
                 }
             }
         });

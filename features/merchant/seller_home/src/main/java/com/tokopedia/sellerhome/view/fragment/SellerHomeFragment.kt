@@ -109,7 +109,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePostList: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeCarousel: PerformanceMonitoring? = null
 
-
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
     override fun initInjector() {
@@ -152,8 +151,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (userVisibleHint)
+        if (userVisibleHint) {
             SellerHomeTracking.sendScreen(screenName)
+            view?.post {
+                requestVisibleWidgetsData()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -462,15 +465,32 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
+            startHomeLayoutRenderMonitoring()
+
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
                 is Fail -> setOnErrorGetLayout(result.throwable)
             }
+
             stopPerformanceMonitoringSellerHomeLayout()
+            stopHomeLayoutRenderMonitoring()
         })
 
         setProgressBarVisibility(true)
+        startHomeLayoutNetworkMonitoring()
         sellerHomeViewModel.getWidgetLayout()
+    }
+
+    private fun startHomeLayoutNetworkMonitoring() {
+        (activity as? SellerHomeActivity)?.startHomeLayoutNetworkMonitoring()
+    }
+
+    private fun startHomeLayoutRenderMonitoring() {
+        (activity as? SellerHomeActivity)?.startHomeLayoutRenderMonitoring()
+    }
+
+    private fun stopHomeLayoutRenderMonitoring() {
+        (activity as? SellerHomeActivity)?.stopHomeLayoutRenderMonitoring()
     }
 
     private fun stopPerformanceMonitoringSellerHomeLayout() {

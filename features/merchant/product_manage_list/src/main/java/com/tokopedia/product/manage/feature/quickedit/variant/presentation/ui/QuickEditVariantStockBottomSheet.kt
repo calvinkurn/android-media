@@ -47,7 +47,6 @@ class QuickEditVariantStockBottomSheet(
     }
 
     override fun onStockChanged(variantId: String, stock: Int) {
-        ProductManageTracking.eventClickChangeAmountVariant()
         viewModel.setVariantStock(variantId, stock)
     }
 

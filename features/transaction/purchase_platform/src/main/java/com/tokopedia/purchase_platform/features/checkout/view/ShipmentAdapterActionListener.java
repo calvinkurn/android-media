@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.checkout.view;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
@@ -32,14 +31,7 @@ public interface ShipmentAdapterActionListener {
 
     void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
-                                  List<ShopShipment> shopShipmentList,
                                   int cartPosition);
-
-    void onChoosePickupPoint(RecipientAddressModel addressAdapterData);
-
-    void onClearPickupPoint(RecipientAddressModel addressAdapterData);
-
-    void onEditPickupPoint(RecipientAddressModel addressAdapterData);
 
     void onTotalPaymentChange(String totalPayment);
 
@@ -48,8 +40,6 @@ public interface ShipmentAdapterActionListener {
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
     void resetTotalPrice();
-
-    void showBottomSheetTotalBenefit();
 
     void onInsuranceChecked(int position);
 
@@ -81,13 +71,11 @@ public interface ShipmentAdapterActionListener {
 
     void onChangeShippingDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
-                                  List<ShopShipment> shopShipmentList,
                                   int position);
 
-    void onChangeShippingCourier(List<ShippingCourierUiModel> shippingCourierUiModels,
-                                 RecipientAddressModel recipientAddressModel,
+    void onChangeShippingCourier(RecipientAddressModel recipientAddressModel,
                                  ShipmentCartItemModel shipmentCartItemModel,
-                                 List<ShopShipment> shopShipmentList, int position);
+                                 int position);
 
     void hideSoftKeyboard();
 
@@ -95,7 +83,7 @@ public interface ShipmentAdapterActionListener {
                              ShipmentDetailData shipmentDetailData,
                              ShipmentCartItemModel shipmentCartItemModel,
                              List<ShopShipment> shopShipmentList,
-                             boolean isCourierRecommendation, boolean isTradeInDropOff);
+                             boolean isTradeInDropOff);
 
     void onCourierPromoCanceled(String shipperName, String promoCode);
 
@@ -126,4 +114,8 @@ public interface ShipmentAdapterActionListener {
     void onSendAnalyticsClickPromoCheckout(Boolean isApplied, List<String> listAllPromoCodes);
 
     void onSendAnalyticsViewPromoCheckoutApplied();
+
+    void onCheckShippingCompletionClicked();
+
+    void onShowTickerShippingCompletion();
 }

@@ -42,13 +42,6 @@ public abstract class BaseNotification implements Visitable {
         configuration.setSoundUri(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
     }
 
-    public NotificationPass getNotificationPassData(){
-        if(mNotificationPass != null){
-            return mNotificationPass;
-        }
-        throw new IllegalArgumentException("Notification pass not allowed to null");
-    }
-
     protected void showNotification(Bundle incomingMessage){
         mBuildAndShowNotification.buildAndShowNotification(mNotificationPass, incomingMessage, configuration);
     }

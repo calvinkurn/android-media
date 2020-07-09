@@ -421,7 +421,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private File writeImageToTkpdPath(Bitmap bitmap) {
-        File cacheDir = new File(Objects.requireNonNull(getContext()).getCacheDir(), FileUtils.generateUniqueFileName() + JPG_EXT);
+        File cacheDir = new File(Objects.requireNonNull(getContext()).getExternalCacheDir(), FileUtils.generateUniqueFileName() + JPG_EXT);
         String cachePath = cacheDir.getAbsolutePath();
 
         File file = new File(cachePath);

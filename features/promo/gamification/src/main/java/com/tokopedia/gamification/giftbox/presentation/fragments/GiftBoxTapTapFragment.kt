@@ -16,10 +16,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
+import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
@@ -60,13 +59,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var viewModel: GiftBoxTapTapViewModel
 
 
-    override fun getLayout() = R.layout.fragment_gift_tap_tap
+    override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_tap_tap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
-                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                    .activityContextModule(ActivityContextModule(it))
                     .build()
             component.inject(this)
 
@@ -80,8 +79,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
 
-        colorDim = ContextCompat.getColor(activity!!, R.color.gf_dim)
-        colorBlackTransParent = ContextCompat.getColor(activity!!, R.color.gf_black_transparent)
+        colorDim = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_dim)
+        colorBlackTransParent = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_black_transparent)
 //        showLoader()
 //        v.postDelayed({
 //            hideLoader()
@@ -310,7 +309,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
 
         giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
-            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_height)
+            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_height)
             val lidTop = fmGiftBox.top
             val translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
 
@@ -388,7 +387,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     fun setShadows() {
         context?.let {
-            val shadowColor = ContextCompat.getColor(it, R.color.gf_box_text_shadow)
+            val shadowColor = ContextCompat.getColor(it, com.tokopedia.gamification.R.color.gf_box_text_shadow)
             val shadowRadius = tvProgressCount.dpToPx(5)
             val shadowOffset = tvProgressCount.dpToPx(4)
 
@@ -536,13 +535,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         //intial yellow to white
         val waktuImageAnimation = ValueAnimator.ofInt(1)
         waktuImageAnimation.addUpdateListener {
-            imageWaktu.setImageResource(R.drawable.gf_ic_waktu_white)
+            imageWaktu.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_waktu_white)
         }
         waktuImageAnimation.startDelay = translateAnimationDuration - 100L
 
         val habisImageAnimation = ValueAnimator.ofInt(1)
         habisImageAnimation.addUpdateListener {
-            imageHabis.setImageResource(R.drawable.gf_ic_habis_white)
+            imageHabis.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_habis_white)
         }
         habisImageAnimation.startDelay = translateAnimationDuration - 100L
 
@@ -562,14 +561,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSetAfterCollision.playTogether(habisTranslateAt45, waktuTranslateAt45)
 
         //last image animation
-        val waktuFinalImages = arrayOf(R.drawable.gf_ic_waktu, R.drawable.gf_ic_waktu_white, R.drawable.gf_ic_waktu)
+        val waktuFinalImages = arrayOf(com.tokopedia.gamification.R.drawable.gf_ic_waktu, com.tokopedia.gamification.R.drawable.gf_ic_waktu_white, com.tokopedia.gamification.R.drawable.gf_ic_waktu)
         val waktuFinalImageAnimation = ValueAnimator.ofInt(0, 1, 2)
         waktuFinalImageAnimation.addUpdateListener {
             val index = it.animatedValue as Int
             imageWaktu.setImageResource(waktuFinalImages[index])
         }
 
-        val habisFinalImages = arrayOf(R.drawable.gf_ic_habis, R.drawable.gf_ic_habis_white, R.drawable.gf_ic_habis)
+        val habisFinalImages = arrayOf(com.tokopedia.gamification.R.drawable.gf_ic_habis, com.tokopedia.gamification.R.drawable.gf_ic_habis_white, com.tokopedia.gamification.R.drawable.gf_ic_habis)
         val habisFinalImageAnimation = ValueAnimator.ofInt(0, 1, 2)
         habisFinalImageAnimation.addUpdateListener {
             val index = it.animatedValue as Int

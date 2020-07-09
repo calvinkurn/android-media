@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.room.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -26,7 +25,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
@@ -611,40 +609,48 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun setSnackBarConnectingWebSocket() {
-        if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
-            isSnackbarEnded = false
-            snackBarWebSocket?.removeCallback(snackBarCallback)
-            snackBarWebSocket?.addCallback(snackBarCallback)
-            snackBarWebSocket?.let {
-                it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
-                if (isPortrait) it.show()
+        try {
+            if (userSession.isLoggedIn && !viewState.errorViewShown() && view != null) {
+                snackBarWebSocket = Snackbar.make(view!!, getString(R.string.connecting), Snackbar.LENGTH_INDEFINITE)
+                isSnackbarEnded = false
+                snackBarWebSocket?.removeCallback(snackBarCallback)
+                snackBarWebSocket?.addCallback(snackBarCallback)
+                snackBarWebSocket?.let {
+                    it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
+                    if (isPortrait) it.show()
+                }
             }
+        } catch (e: java.lang.Exception) {
+            // ignore
         }
     }
 
     override fun setSnackBarRetryConnectingWebSocket() {
-        if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            if (isPortrait) snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.error_websocket_play))
-            isSnackbarEnded = false
-            snackBarWebSocket?.removeCallback(snackBarCallback)
-            snackBarWebSocket?.addCallback(snackBarCallback)
-            snackBarWebSocket?.let {
-                it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
-                it.setAction(getString(R.string.retry)) {
-                    viewState.getChannelInfo()?.let { channelInfo ->
-                        presenter.openWebSocket(
-                                userSession,
-                                channelInfo.channelId,
-                                channelInfo.groupChatToken,
-                                channelInfo.settingGroupChat,
-                                true
-                        )
-                        setSnackBarConnectingWebSocket()
+        try {
+            if (userSession.isLoggedIn && !viewState.errorViewShown() && view != null) {
+                if (isPortrait) snackBarWebSocket = Snackbar.make(view!!, getString(R.string.error_websocket_play), Snackbar.LENGTH_INDEFINITE)
+                isSnackbarEnded = false
+                snackBarWebSocket?.removeCallback(snackBarCallback)
+                snackBarWebSocket?.addCallback(snackBarCallback)
+                snackBarWebSocket?.let {
+                    it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
+                    it.setAction(getString(R.string.retry)) {
+                        viewState.getChannelInfo()?.let { channelInfo ->
+                            presenter.openWebSocket(
+                                    userSession,
+                                    channelInfo.channelId,
+                                    channelInfo.groupChatToken,
+                                    channelInfo.settingGroupChat,
+                                    true
+                            )
+                            setSnackBarConnectingWebSocket()
+                        }
                     }
+                    it.show()
                 }
-                it.show()
             }
+        } catch (e: java.lang.Exception) {
+            // ignore
         }
     }
 
@@ -695,7 +701,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?) {
         viewState.onErrorSendMessage(pendingChatViewModel, exception)
-        ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
+        view?.let {
+            Snackbar.make(it, exception?.message!!, Snackbar.LENGTH_LONG).show()
+        }
     }
 
     override fun onFloatingIconClicked(it: DynamicButton, applink: String) {
@@ -820,7 +828,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 loadFirstTime()
             }
             STICKY_COMPONENT -> {
-                ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.play_atc_success))
+                view?.let {
+                    Snackbar.make(it, getString(R.string.play_atc_success), Snackbar.LENGTH_LONG).show()
+                }
             }
         }
     }

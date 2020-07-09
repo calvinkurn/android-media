@@ -7,12 +7,19 @@ import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
-import com.tokopedia.kategori.view.fragments.CategoryLevelTwoFragment
-import com.tokopedia.kategori.view.fragments.CategoryLevelOneFragment
-import com.tokopedia.kategori.view.fragments.Listener
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kategori.Constants.CATEGORY_PLT_NETWORK_METRICS
+import com.tokopedia.kategori.Constants.CATEGORY_PLT_PREPARE_METRICS
+import com.tokopedia.kategori.Constants.CATEGORY_PLT_RENDER_METRICS
+import com.tokopedia.kategori.Constants.CATEGORY_RESULT_TRACE
 import com.tokopedia.kategori.R
+import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
+import com.tokopedia.kategori.view.PerformanceMonitoringListener
+import com.tokopedia.kategori.view.fragments.CategoryLevelOneFragment
+import com.tokopedia.kategori.view.fragments.CategoryLevelTwoFragment
+import com.tokopedia.kategori.view.fragments.Listener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -20,7 +27,7 @@ import kotlinx.android.synthetic.main.activity_category_browse.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener {
+open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener, PerformanceMonitoringListener {
 
     private val trackingQueue: TrackingQueue by lazy {
         TrackingQueue(this)
@@ -31,6 +38,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     private var toolbarName = "Kategori"
     private lateinit var globalError: GlobalError
     private val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun getScreenName(): String = getString(R.string.belanja_screen_name)
 
@@ -39,12 +47,23 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
         val uri = intent.data
         uri?.getQueryParameter(EXTRA_CATEGORY_NAME)?.let {
             deepLinkCategoryName = it
         }
         super.onCreate(savedInstanceState)
         setupToolbar(toolbarName)
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                CATEGORY_PLT_PREPARE_METRICS,
+                CATEGORY_PLT_NETWORK_METRICS,
+                CATEGORY_PLT_RENDER_METRICS,0,0,0,0,null
+        )
+        pageLoadTimePerformanceMonitoring?.startMonitoring(CATEGORY_RESULT_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
     override fun onPause() {
@@ -93,6 +112,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     override fun onAttachFragment(fragment: Fragment) {
         if (fragment is CategoryLevelOneFragment) {
             fragment.activityStateListener = this
+            fragment.performanceMonitoringListener = this
         } else if (fragment is CategoryLevelTwoFragment) {
             fragment.activityStateListener = this
         }
@@ -138,6 +158,35 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun getActivityTrackingQueue(): TrackingQueue {
         return trackingQueue
+    }
+
+    override fun startPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
     }
 }
 

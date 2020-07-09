@@ -134,6 +134,34 @@
             app:typographyWeight="bold"
             app:typographyType="body_2"/>
 
+        <ImageView
+            android:id="@+id/imageFreeShipping"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_width="@dimen/power_merchant_image_icon_medium"
+            android:layout_height="@dimen/power_merchant_image_icon_medium"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageBroadcastChat"
+            app:srcCompat="@drawable/ic_pm_free_shipping"
+            tools:src="@drawable/ic_pm_free_shipping"
+            tools:ignore="ContentDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textFreeShipping"
+            android:text="@string/power_merchant_free_shipping"
+            android:textColor="@color/light_N700"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/power_merchant_horizontal_spacing_small"
+            android:layout_marginStart="@dimen/power_merchant_horizontal_spacing_small"
+            android:visibility="gone"
+            app:layout_constraintLeft_toRightOf="@id/imageFreeShipping"
+            app:layout_constraintTop_toTopOf="@id/imageFreeShipping"
+            app:layout_constraintBottom_toBottomOf="@id/imageFreeShipping"
+            app:typographyWeight="bold"
+            app:typographyType="body_2"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textBottomDescription"
             android:text="@string/pm_label_bs_cancel_desc_2"
@@ -141,7 +169,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            app:layout_constraintTop_toBottomOf="@id/imageBroadcastChat"
+            app:layout_constraintTop_toBottomOf="@id/textFreeShipping"
             app:typographyType="body_2"/>
 
         <com.tokopedia.unifycomponents.ticker.Ticker

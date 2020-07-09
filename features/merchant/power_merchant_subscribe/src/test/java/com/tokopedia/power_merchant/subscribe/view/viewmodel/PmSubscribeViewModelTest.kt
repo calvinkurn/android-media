@@ -15,7 +15,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
 
         onGetPowerMerchantStatusUseCase_thenReturn(powerMerchantStatus)
 
-        viewModel.getPmStatusInfo("1")
+        viewModel.getPmStatusInfo()
 
         val expectedResult = Success(powerMerchantStatus)
 
@@ -31,7 +31,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
 
         onGetPowerMerchantStatusUseCase_thenReturn(error)
 
-        viewModel.getPmStatusInfo("2")
+        viewModel.getPmStatusInfo()
 
         val expectedResult = Fail(error)
 

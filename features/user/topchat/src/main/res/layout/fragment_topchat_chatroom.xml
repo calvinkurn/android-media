@@ -9,62 +9,60 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/header"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:descendantFocusability="beforeDescendants"
+        android:scrollbars="vertical" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
+        android:id="@+id/ll_transaction_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@drawable/cards_ui_with_padding"
-        android:visibility="gone">
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-        <LinearLayout
-            android:id="@+id/reputation_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="@dimen/dp_topchat_5"
-            android:layout_marginRight="@dimen/dp_topchat_5"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/dp_topchat_10"
-            android:paddingRight="@dimen/dp_topchat_10">
-
-            <ImageView
-                android:id="@+id/rep_icon"
-                android:layout_width="@dimen/dp_topchat_15"
-                android:layout_height="@dimen/dp_topchat_15" />
-
-            <TextView
-                android:id="@+id/rep_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_topchat_5"
-                android:gravity="center_vertical"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fontSize_lvl2" />
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/notifier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/topchat_header_chat"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/dp_topchat_56"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        tools:visibility="invisible">
 
         <TextView
-            android:id="@+id/msg_title"
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            tools:text="Terjadi gangguan pada koneksi. mencoba menghubungkan..." />
+
+        <ProgressBar
+            android:id="@+id/action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/reputation_view"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/dp_topchat_10"
-            android:paddingRight="@dimen/dp_topchat_10"
-            android:singleLine="true" />
+            android:textColor="@color/white" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
@@ -73,14 +71,14 @@
             android:id="@+id/chat_blocked_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/dp_topchat_5"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:background="@drawable/border_green_white_box"
             android:padding="@dimen/spacing_lvl3"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
                 android:id="@+id/blocked_text"
@@ -119,8 +117,8 @@
                 android:paddingTop="@dimen/dp_topchat_12"
                 android:paddingEnd="@dimen/spacing_lvl4"
                 android:visibility="gone"
-                tools:layout_marginBottom="@dimen/spacing_lvl3"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:layout_marginBottom="@dimen/spacing_lvl3"
                 tools:listitem="@layout/item_template_chat_layout"
                 tools:orientation="horizontal"
                 tools:scrollbars="horizontal"
@@ -162,8 +160,8 @@
                     android:hint="@string/chat_edit_text"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
-                    android:paddingStart="@dimen/dp_topchat_12"
-                    android:paddingLeft="@dimen/dp_topchat_12"
+                    android:paddingStart="@dimen/spacing_lvl7"
+                    android:paddingLeft="@dimen/spacing_lvl7"
                     android:paddingTop="@dimen/dp_topchat_10"
                     android:paddingEnd="@dimen/spacing_lvl8"
                     android:paddingRight="@dimen/spacing_lvl8"
@@ -171,49 +169,36 @@
                     android:textSize="@dimen/fontSize_lvl4"
                     tools:text="@tools:sample/lorem/random" />
 
-                <FrameLayout
+                <ImageView
+                    android:id="@+id/iv_chat_sticker"
+                    android:layout_width="@dimen/spacing_lvl7"
+                    android:layout_height="@dimen/spacing_lvl7"
+                    android:layout_alignStart="@+id/new_comment"
+                    android:layout_alignLeft="@+id/new_comment"
+                    android:layout_alignBottom="@+id/new_comment"
+                    android:padding="@dimen/spacing_lvl3"
+                    app:srcCompat="@drawable/ic_topchat_sticker" />
+
+                <ImageView
+                    android:id="@+id/iv_chat_menu"
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
                     android:layout_alignEnd="@+id/new_comment"
                     android:layout_alignRight="@+id/new_comment"
                     android:layout_alignBottom="@+id/new_comment"
-                    android:layout_marginEnd="@dimen/spacing_lvl3"
-                    android:layout_marginRight="@dimen/spacing_lvl3"
-                    android:background="@drawable/bg_oval_transparent">
-
-                    <ImageView
-                        android:id="@+id/iv_chat_menu"
-                        android:layout_width="@dimen/spacing_lvl7"
-                        android:layout_height="@dimen/spacing_lvl7"
-                        android:padding="@dimen/spacing_lvl3"
-                        app:srcCompat="@drawable/ic_add_grey_chat_common" />
-                </FrameLayout>
+                    android:layout_marginEnd="@dimen/spacing_lvl1"
+                    android:layout_marginRight="@dimen/spacing_lvl1"
+                    android:padding="@dimen/spacing_lvl3"
+                    app:srcCompat="@drawable/ic_add_grey_chat_common" />
 
             </RelativeLayout>
 
-            <FrameLayout
-                android:id="@+id/rv_attachment_menu_container"
+            <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+                android:id="@+id/fl_chat_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spacing_lvl3"
-                    android:layout_gravity="top"
-                    android:background="@drawable/bg_shadow_attachment_menu_chat_common" />
-
-                <com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
-                    android:id="@+id/rv_attachment_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:paddingTop="@dimen/spacing_lvl5"
-                    android:paddingBottom="@dimen/spacing_lvl5"
-                    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    tools:spanCount="2" />
-
-            </FrameLayout>
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
@@ -224,58 +209,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
-        android:layout_below="@id/header"
+        android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
-        android:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/footer"
-        android:layout_below="@id/header"
-        android:layout_gravity="center"
-        android:descendantFocusability="beforeDescendants"
-        android:scrollbars="vertical" />
-
-    <TextView
-        android:id="@+id/header_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/recycler_view"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/bg_yellow_border_yelow"
-        android:gravity="center_horizontal"
-        android:padding="@dimen/dp_topchat_5"
-        android:singleLine="true"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/notifier"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/topchat_header_chat"
-        android:gravity="center_vertical"
-        android:minHeight="@dimen/dp_topchat_56"
-        android:orientation="horizontal"
-        android:padding="@dimen/spacing_lvl4"
         android:visibility="gone"
-        tools:visibility="visible">
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/white"
-            tools:text="JJJJ" />
-
-        <ProgressBar
-            android:id="@+id/action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
+        tools:visibility="visible" />
 
 </RelativeLayout>

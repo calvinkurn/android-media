@@ -3,6 +3,7 @@ package com.tokopedia.play.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -10,6 +11,8 @@ import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.DiscountedPrice
+import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
@@ -88,7 +91,13 @@ class PlayBottomSheetViewModel @Inject constructor(
                         product.id,
                         product.shopId,
                         product.minQty,
-                        notes
+                        notes,
+                        AddToCartRequestParams.ATC_FROM_PLAY,
+                        product.title,
+                        price = when (product.price) {
+                            is OriginalPrice -> product.price.priceNumber.toString()
+                            is DiscountedPrice -> product.price.discountedPriceNumber.toString()
+                        }
                 )
                 postAddToCartUseCase.executeOnBackground()
             }

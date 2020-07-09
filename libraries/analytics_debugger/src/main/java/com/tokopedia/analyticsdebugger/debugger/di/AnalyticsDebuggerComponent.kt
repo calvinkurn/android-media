@@ -3,11 +3,13 @@ package com.tokopedia.analyticsdebugger.debugger.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.debugger.ui.fragment.ApplinkDebuggerFragment
 import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerFragment
+import com.tokopedia.analytics.debugger.ui.fragment.TopAdsDebuggerFragment
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
 import com.tokopedia.analyticsdebugger.debugger.ui.fragment.AnalyticsDebuggerFragment
 import com.tokopedia.analyticsdebugger.debugger.ui.fragment.AnalyticsDebuggerGtmErrorFragment
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.ApplinkDebugger
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.FpmDebugger
+import com.tokopedia.analyticsdebugger.debugger.ui.presenter.TopAdsDebugger
 import dagger.Component
 import javax.inject.Named
 
@@ -20,6 +22,7 @@ interface AnalyticsDebuggerComponent {
     fun inject(fragment: AnalyticsDebuggerFragment?)
     fun inject(fragment: FpmDebuggerFragment?)
     fun inject(fragment: ApplinkDebuggerFragment?)
+    fun inject(fragment: TopAdsDebuggerFragment?)
     fun inject(fragment: AnalyticsDebuggerGtmErrorFragment?)
 
     @get:Named(NAMED_GTM_ANALYTICS)
@@ -30,6 +33,9 @@ interface AnalyticsDebuggerComponent {
 
     @get:Named(NAMED_APPLINK)
     val applinkPresenter: ApplinkDebugger.Presenter
+
+    @get:Named(NAMED_TOPADS)
+    val topAdsPresenter: TopAdsDebugger.Presenter
 
     @get:Named(NAMED_GTM_ERROR_ANALYTICS)
     val gtmErrorPresenter: AnalyticsDebugger.Presenter

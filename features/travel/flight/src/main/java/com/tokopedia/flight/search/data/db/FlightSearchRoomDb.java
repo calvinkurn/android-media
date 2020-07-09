@@ -1,14 +1,15 @@
 package com.tokopedia.flight.search.data.db;
 
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
+import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.DatabaseConfiguration;
 import androidx.room.InvalidationTracker;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
-import android.content.Context;
-import androidx.annotation.NonNull;
+import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 /**
  * Created by Rizky on 01/10/18.
@@ -19,13 +20,17 @@ import androidx.annotation.NonNull;
                 FlightJourneyTable.class,
                 FlightRouteTable.class
         },
-        version = 12)
+        version = 13)
 @TypeConverters({FlightTypeConverters.class})
 public abstract class FlightSearchRoomDb extends RoomDatabase {
 
     public abstract FlightComboDao flightComboDao();
     public abstract FlightJourneyDao flightJourneyDao();
     public abstract FlightRouteDao flightRouteDao();
+
+    public abstract com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao flightJourneyCoroutineDao();
+    public abstract com.tokopedia.flight.searchV4.data.FlightRouteDao flightRouteCoroutineDao();
+    public abstract com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao flightComboCoroutineDao();
 
     @NonNull
     @Override

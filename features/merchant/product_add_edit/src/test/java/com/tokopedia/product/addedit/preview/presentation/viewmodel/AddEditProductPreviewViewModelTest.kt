@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.model.*
@@ -15,6 +16,8 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
@@ -26,7 +29,7 @@ import java.util.concurrent.TimeoutException
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
 
     @Test
-    fun `When SuccessGetProductVariant Expect ExpectedBehaviour`() {
+    fun `When SuccessGetProductVariant Expect ExpectedBehaviour`() = runBlocking {
         val productVariant = ProductVariantByCatModel().apply {
             this.name = "hello"
             this.variantId = 3
@@ -35,12 +38,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         onGetProductVariant_thenReturn(productVariant)
         viewModel.getVariantList("")
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify { getProductVariantUseCase.executeOnBackground() }
         verifyGetProductVariantResult(Success(listOf(productVariant)))
     }
 
     @Test
-    fun `When SuccessSaveAndGetProductDraft Expect ExpectedBehaviour`() {
+    fun `When SuccessSaveAndGetProductDraft Expect ExpectedBehaviour`() = runBlocking {
         val productDraft = ProductDraft().apply {
             draftId = 1112
             productId = 220
@@ -53,6 +58,8 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         onGetProductDraft_thenReturn(productDraft)
         viewModel.getProductDraft(productDraft.draftId)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify { saveProductDraftUseCase.executeOnBackground() }
         coVerify { getProductDraftUseCase.executeOnBackground() }
 
@@ -61,7 +68,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When SuccessGetProduct Expect ExpectedBehaviour`() {
+    fun  `When SuccessGetProduct Expect ExpectedBehaviour`() = runBlocking {
         val product: Product = Product().copy(
                 productID = "01919",
                 productName = "mainan",
@@ -70,26 +77,32 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         onGetProduct_thenReturn(product)
         viewModel.getProductData(product.productID)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify { getProductUseCase.executeOnBackground() }
         verifyGetProductResult(Success(product))
     }
 
     @Test
-    fun  `When FailedGetProductVariant Expect ExpectedBehaviour`() {
+    fun  `When FailedGetProductVariant Expect ExpectedBehaviour`() = runBlocking {
         onGetProductVariant_thenFailed()
         viewModel.getVariantList("")
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify { getProductVariantUseCase.executeOnBackground() }
         verifyGetProductVariantFailed()
     }
 
     @Test
-    fun `When FailedSaveAndGetProductDraft Expect ExpectedBehaviour`() {
+    fun `When FailedSaveAndGetProductDraft Expect ExpectedBehaviour`() = runBlocking {
         onSaveProductDraft_thenFailed()
         viewModel.saveProductDraft(ProductDraft(), 3, false)
 
         onGetProductDraft_thenFailed()
         viewModel.getProductDraft(3)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify { saveProductDraftUseCase.executeOnBackground() }
         coVerify { getProductDraftUseCase.executeOnBackground() }
@@ -99,9 +112,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When FailedGetProduct Expect ExpectedBehaviour`() {
+    fun  `When FailedGetProduct Expect ExpectedBehaviour`() = runBlocking {
         onGetProduct_thenFailed()
         viewModel.getProductData("4")
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify { getProductUseCase.executeOnBackground() }
         verifyGetProductFailed()

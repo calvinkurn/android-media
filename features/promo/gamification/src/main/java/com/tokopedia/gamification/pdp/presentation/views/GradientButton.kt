@@ -42,7 +42,7 @@ class GradientButton : FrameLayout {
         init(null)
     }
 
-    fun getLayout() = R.layout.widget_egg_source
+    fun getLayout() = com.tokopedia.gamification.R.layout.widget_egg_source
 
     fun init(attrs: AttributeSet?) {
         inflateLayout()
@@ -53,22 +53,22 @@ class GradientButton : FrameLayout {
     private fun readAttrs(attrs: AttributeSet?) {
         if (attrs != null) {
             val typedArray =
-                    context.theme.obtainStyledAttributes(attrs, R.styleable.GradientButton, 0, 0)
-            innerStartColor = typedArray.getColor(R.styleable.GradientButton_gbInnerStartColor, 0)
-            innerEndColor = typedArray.getColor(R.styleable.GradientButton_gbInnerEndColor, 0)
-            outerStartColor = typedArray.getColor(R.styleable.GradientButton_gbOuterStartColor, 0)
-            outerEndColor = typedArray.getColor(R.styleable.GradientButton_gbOuterEndColor, 0)
-            outerEndColor = typedArray.getColor(R.styleable.GradientButton_gbOuterEndColor, 0)
-            textColor = typedArray.getColor(R.styleable.GradientButton_gbTextColor, 0)
-            title = typedArray.getString(R.styleable.GradientButton_gbTitle)
-            shade = Shade.values()[typedArray.getInt(R.styleable.GradientButton_gbShade, Shade.EMPTY.ordinal)]
+                    context.theme.obtainStyledAttributes(attrs, com.tokopedia.gamification.R.styleable.GradientButton, 0, 0)
+            innerStartColor = typedArray.getColor(com.tokopedia.gamification.R.styleable.GradientButton_gbInnerStartColor, 0)
+            innerEndColor = typedArray.getColor(com.tokopedia.gamification.R.styleable.GradientButton_gbInnerEndColor, 0)
+            outerStartColor = typedArray.getColor(com.tokopedia.gamification.R.styleable.GradientButton_gbOuterStartColor, 0)
+            outerEndColor = typedArray.getColor(com.tokopedia.gamification.R.styleable.GradientButton_gbOuterEndColor, 0)
+            outerEndColor = typedArray.getColor(com.tokopedia.gamification.R.styleable.GradientButton_gbOuterEndColor, 0)
+            textColor = typedArray.getColor(com.tokopedia.gamification.R.styleable.GradientButton_gbTextColor, 0)
+            title = typedArray.getString(com.tokopedia.gamification.R.styleable.GradientButton_gbTitle)
+            shade = Shade.values()[typedArray.getInt(com.tokopedia.gamification.R.styleable.GradientButton_gbShade, Shade.EMPTY.ordinal)]
             typedArray.recycle()
         }
     }
 
     private fun inflateLayout() {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
-        tv = findViewById(R.id.text_egg_source)
+        tv = findViewById(com.tokopedia.gamification.R.id.text_egg_source)
         fmOuter = findViewById(R.id.fmOuter)
         fmInner = findViewById(R.id.fmInner)
     }
@@ -84,20 +84,20 @@ class GradientButton : FrameLayout {
 
         when (shade) {
             Shade.BLUE -> {
-                val outerColorArray = arrayOf(ContextCompat.getColor(context, R.color.gf_grad_btn_outer_start_blue),
-                        ContextCompat.getColor(context, R.color.gf_grad_btn_outer_end_blue))
-                val innerColorArray = arrayOf(ContextCompat.getColor(context, R.color.gf_grad_btn_inner_start_blue),
-                        ContextCompat.getColor(context, R.color.gf_grad_btn_inner_end_blue))
+                val outerColorArray = arrayOf(ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_grad_btn_outer_start_blue),
+                        ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_grad_btn_outer_end_blue))
+                val innerColorArray = arrayOf(ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_grad_btn_inner_start_blue),
+                        ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_grad_btn_inner_end_blue))
 
                 fmOuter.background = getBg(outerColorArray[0], outerColorArray[1])
                 fmInner.background = getBg(innerColorArray[0], innerColorArray[1])
             }
             Shade.GREEN -> {
 
-                val outerColorArray = arrayOf(ContextCompat.getColor(context, R.color.gf_grad_btn_outer_start_green),
-                        ContextCompat.getColor(context, R.color.gf_grad_btn_outer_end_green))
-                val innerColorArray = arrayOf(ContextCompat.getColor(context, R.color.gf_grad_btn_inner_start_green),
-                        ContextCompat.getColor(context, R.color.gf_grad_btn_inner_end_green))
+                val outerColorArray = arrayOf(ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_grad_btn_outer_start_green),
+                        ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_grad_btn_outer_end_green))
+                val innerColorArray = arrayOf(ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_grad_btn_inner_start_green),
+                        ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_grad_btn_inner_end_green))
 
 
                 fmOuter.background = getBg(outerColorArray[0], outerColorArray[1])

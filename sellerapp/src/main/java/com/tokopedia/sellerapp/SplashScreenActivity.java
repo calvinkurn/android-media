@@ -22,6 +22,8 @@ import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
 import com.tokopedia.selleronboarding.utils.OnboardingPreference;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -81,7 +83,8 @@ public class SplashScreenActivity extends SplashScreen {
             return;
         }
 
-        if (SessionHandler.isUserHasShop(this)) {
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.hasShop()) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
                 String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
                 DeepLinkDelegate delegate = DeepLinkHandlerActivity.getDelegateInstance();
@@ -135,7 +138,7 @@ public class SplashScreenActivity extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByConfig(getApplication(), remoteConfig);
+                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
             }
 
             @Override

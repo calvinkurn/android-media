@@ -56,7 +56,7 @@ open class GiftBoxDailyView : FrameLayout {
         setup(null)
     }
 
-    open fun getLayout() = R.layout.view_gift_box_daily
+    open fun getLayout() = com.tokopedia.gamification.R.layout.view_gift_box_daily
 
     private fun setup(attrs: AttributeSet?) {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
@@ -103,9 +103,9 @@ open class GiftBoxDailyView : FrameLayout {
                   lidImages: ArrayList<String>,
                   imageCallback: ((isLoaded: Boolean) -> Unit)) {
 
-        var drawableRedForLid = R.drawable.gf_ic_lid_frame_7
+        var drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_7
         if (state == TokenUserState.ACTIVE) {
-            drawableRedForLid = R.drawable.gf_ic_lid_frame_0
+            drawableRedForLid = com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_0
         }
         Glide.with(this)
                 .load(drawableRedForLid)
@@ -232,14 +232,14 @@ open class GiftBoxDailyView : FrameLayout {
         //todo Rahul Need to chang logic once images will come from backend
         //ImageHandler.loadImageWithSignature(imageGiftBoxLid, url, GLIDE_SIGNATURE)
         val drawableArray = arrayOf(
-                R.drawable.gf_ic_lid_frame_0,
-                R.drawable.gf_ic_lid_frame_1,
-                R.drawable.gf_ic_lid_frame_2,
-                R.drawable.gf_ic_lid_frame_3,
-                R.drawable.gf_ic_lid_frame_4,
-                R.drawable.gf_ic_lid_frame_5,
-                R.drawable.gf_ic_lid_frame_6,
-                R.drawable.gf_ic_lid_frame_7
+                com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_0,
+                com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_1,
+                com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_2,
+                com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_3,
+                com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_4,
+                com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_5,
+                com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_6,
+                com.tokopedia.gamification.R.drawable.gf_ic_lid_frame_7
         )
         val valueAnimator = ValueAnimator.ofInt(drawableArray.size - 1)
         valueAnimator.addUpdateListener {

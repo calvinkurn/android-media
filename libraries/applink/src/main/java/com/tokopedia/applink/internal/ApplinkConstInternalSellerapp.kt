@@ -54,6 +54,8 @@ object ApplinkConstInternalSellerapp {
     //CentralizedPromoActivity
     @JvmField
     val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
+    @JvmField
+    val CENTRALIZED_PROMO_FIRST_VOUCHER = "$INTERNAL_SELLERAPP/first-voucher-centralized-promo"
 
     //MenuSettingActivity
     @JvmField
@@ -63,4 +65,19 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
 
+
+    //CreateMerchantVoucherStepsActivity
+    @JvmField
+    val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
+
+    //VoucherListActivity
+    @JvmField
+    val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
+    @JvmField
+    val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
+    @JvmField
+    val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
+
+    @JvmStatic
+    val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
 }

@@ -7,14 +7,14 @@ import androidx.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
+import com.tokopedia.flight.detail.view.model.FlightDetailPassenger;
+import com.tokopedia.flight.detail.view.model.SimpleModel;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
-import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public interface FlightDetailOrderContract {
 
         void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers);
 
-        void updatePrice(List<SimpleViewModel> priceList, String totalPrice);
+        void updatePrice(List<SimpleModel> priceList, String totalPrice);
 
         void updateOrderData(String eTicketLink, String invoiceLink, String cancelUrl);
 

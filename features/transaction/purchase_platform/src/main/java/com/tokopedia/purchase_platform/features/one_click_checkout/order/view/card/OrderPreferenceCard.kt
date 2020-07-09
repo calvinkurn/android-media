@@ -73,12 +73,19 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     private fun showHeader() {
-        val profileIndex = preference.profileIndex
-        tvCardHeader?.text = profileIndex
-        if (preference.preference.status == 2) {
-            lblMainPreference?.visible()
+        if (preference.profileRecommendation.isNullOrEmpty()) {
+            val profileIndex = preference.profileIndex
+            tvCardHeader?.text = profileIndex
+            if (preference.preference.status == 2) {
+                lblMainPreference?.visible()
+            } else {
+                lblMainPreference?.gone()
+            }
+            tvChoosePreference?.text = view.context.getString(R.string.label_choose_other_preference)
         } else {
+            tvCardHeader?.text = preference.profileRecommendation
             lblMainPreference?.gone()
+            tvChoosePreference?.text = view.context.getString(R.string.label_create_other_preference)
         }
 
         ivEditPreference?.setOnClickListener {
@@ -91,8 +98,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         val shipmentModel = preference.preference.shipment
 
         val shipping = preference.shipping
-        tvShippingName?.text = shipping?.serviceName ?: shipmentModel.serviceName
-        tvShippingDuration?.text = shipping?.serviceDuration ?: shipmentModel.serviceDuration
+        tvShippingName?.text = "Pengiriman ${shipmentModel.serviceName.capitalize()}"
+        val tempServiceDuration = shipping?.serviceDuration ?: shipmentModel.serviceDuration
+        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+            "Durasi " + tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+        } else {
+            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
+        }
+        tvShippingDuration?.text = serviceDur
 
         if (shipping == null) {
             tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
@@ -101,7 +114,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
-                    tvShippingDuration?.text = "${shipping.serviceDuration} - ${shipping.shipperName}"
+                    tvShippingDuration?.text = "Durasi ${shipping.serviceDuration} - ${shipping.shipperName}"
                     tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
                     tvShippingDuration?.setOnClickListener { }
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
@@ -151,6 +164,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                 } else {
+                    tvShippingName?.text = "Pengiriman"
+                    tvShippingDuration?.text = shipping.serviceName
                     tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     tvShippingDuration?.setOnClickListener {
                         listener.chooseDuration()
@@ -235,6 +250,26 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             tvPaymentDetail?.visible()
         } else {
             tvPaymentDetail?.gone()
+        }
+    }
+
+    fun setPaymentError(isError: Boolean) {
+        if (isError) {
+            ivPayment?.alpha = 0.5f
+            tvPaymentName?.alpha = 0.5f
+            tvPaymentDetail?.alpha = 0.5f
+            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)
+            if (color != null) {
+                tvPaymentDetail?.setTextColor(color)
+            }
+        } else {
+            ivPayment?.alpha = 1f
+            tvPaymentName?.alpha = 1f
+            tvPaymentDetail?.alpha = 1f
+            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
+            if (color != null) {
+                tvPaymentDetail?.setTextColor(color)
+            }
         }
     }
 

@@ -73,8 +73,8 @@ class SellerHomeViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    private val mViewModel: SellerHomeViewModel by lazy {
-        SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
+    private fun createViewModel(): SellerHomeViewModel {
+        return SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
                 getShopLocationUseCase, getCardDataUseCase, getLineGraphDataUseCase, getProgressDataUseCase,
                 getPostDataUseCase, getCarouselDataUseCase, Dispatchers.Unconfined)
     }
@@ -90,17 +90,19 @@ class SellerHomeViewModelTest {
             getTickerUseCase.executeOnBackground()
         } returns tickerList
 
-        mViewModel.getTicker()
-
-        coVerify {
-            getTickerUseCase.executeOnBackground()
+        val viewModel = createViewModel()
+        runBlocking {
+            viewModel.getTicker()
+            delay(100)
+            coVerify {
+                getTickerUseCase.executeOnBackground()
+            }
         }
-
-        assertEquals(Success(tickerList), mViewModel.homeTicker.value)
+        assertEquals(Success(tickerList), viewModel.homeTicker.value)
     }
 
     @Test
-    fun `get shop status should success`() {
+    fun `get shop status should success`() = runBlocking {
         val shopStatus = GetShopStatusResponse()
         val shopId = "123456"
 
@@ -113,22 +115,22 @@ class SellerHomeViewModelTest {
         coEvery {
             getShopStatusUseCase.executeOnBackground()
         } returns shopStatus
+        val viewModel = createViewModel()
+        viewModel.getShopStatus()
 
-        mViewModel.getShopStatus()
-
-        verify {
+        delay(100)
+        coVerify {
             userSession.shopId
         }
-
         coVerify {
             getShopStatusUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(shopStatus), mViewModel.shopStatus.value)
+        assertEquals(Success(shopStatus), viewModel.shopStatus.value)
     }
 
     @Test
-    fun `get shop status should failed`() {
+    fun `get shop status should failed`() = runBlocking {
         val throwable = MessageErrorException("error")
         val shopId = "123456"
 
@@ -138,13 +140,15 @@ class SellerHomeViewModelTest {
             userSession.shopId
         } returns shopId
 
+        delay(100)
         coEvery {
             getShopStatusUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getShopStatus()
+        val viewModel = createViewModel()
+        viewModel.getShopStatus()
 
-        verify {
+        coVerify {
             userSession.shopId
         }
 
@@ -152,11 +156,11 @@ class SellerHomeViewModelTest {
             getShopStatusUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.shopStatus.value is Fail)
+        assert(viewModel.shopStatus.value is Fail)
     }
 
     @Test
-    fun `get widget layout should success`() {
+    fun `get widget layout should success`() = runBlocking {
         val layoutList: List<BaseWidgetUiModel<*>> = emptyList()
         val shopId = "123456"
         val page = "seller-home"
@@ -171,21 +175,22 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         } returns layoutList
 
-        mViewModel.getWidgetLayout()
+        val viewModel = createViewModel()
+        viewModel.getWidgetLayout()
 
-        verify {
+        delay(100)
+        coVerify {
             userSession.shopId
         }
-
-        coEvery {
+        coVerify {
             getLayoutUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(layoutList), mViewModel.widgetLayout.value)
+        assertEquals(Success(layoutList), viewModel.widgetLayout.value)
     }
 
     @Test
-    fun `get widget layout should failed`() {
+    fun `get widget layout should failed`() = runBlocking {
         val throwable = MessageErrorException("error message")
         val shopId = "123456"
         val page = "seller-home"
@@ -200,21 +205,22 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getWidgetLayout()
+        val viewModel = createViewModel()
+        viewModel.getWidgetLayout()
 
-        verify {
+        coVerify {
             userSession.shopId
         }
 
-        coEvery {
+        coVerify {
             getLayoutUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.widgetLayout.value is Fail)
+        assert(viewModel.widgetLayout.value is Fail)
     }
 
     @Test
-    fun `get shop location then returns success result`() {
+    fun `get shop location then returns success result`() = runBlocking {
         val shopId = "123456"
         getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
 
@@ -228,21 +234,22 @@ class SellerHomeViewModelTest {
             getShopLocationUseCase.executeOnBackground()
         } returns shopLocation
 
-        mViewModel.getShopLocation()
+        val viewModel = createViewModel()
+        viewModel.getShopLocation()
 
-        verify {
+        delay(100)
+        coVerify {
             userSession.shopId
         }
-
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(shopLocation), mViewModel.shopLocation.value)
+        assertEquals(Success(shopLocation), viewModel.shopLocation.value)
     }
 
     @Test
-    fun `get shop location then returns failed result`() {
+    fun `get shop location then returns failed result`() = runBlocking {
         val throwable = MessageErrorException("error message")
         val shopId = "123456"
 
@@ -256,13 +263,15 @@ class SellerHomeViewModelTest {
             getShopLocationUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getShopLocation()
+        val viewModel = createViewModel()
+        viewModel.getShopLocation()
 
+        delay(100)
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.shopLocation.value is Fail)
+        assert(viewModel.shopLocation.value is Fail)
     }
 
     @Test
@@ -278,23 +287,26 @@ class SellerHomeViewModelTest {
             getCardDataUseCase.executeOnBackground()
         } returns cardDataResult
 
-        mViewModel.getCardWidgetData(dataKeys)
-
-        verify {
-            userSession.shopId
-        }
-
-        coVerify {
-            getCardDataUseCase.executeOnBackground()
+        val viewModel = createViewModel()
+        runBlocking {
+            viewModel.getCardWidgetData(dataKeys)
+            delay(100)
+            verify {
+                userSession.shopId
+            }
+            coVerify {
+                getCardDataUseCase.executeOnBackground()
+            }
         }
 
         val expectedResult = Success(cardDataResult)
         assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, mViewModel.cardWidgetData.value)
+        assertEquals(expectedResult, viewModel.cardWidgetData.value)
     }
 
     @Test
-    fun `get card widget data then returns failed result`() = runBlocking {
+    fun `get card widget data then returns failed result`()  {
+        val shopId = "12345"
         val dataKeys = listOf("a", "b", "c")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
@@ -303,20 +315,22 @@ class SellerHomeViewModelTest {
 
         getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
-        coEvery {
-            getCardDataUseCase.executeOnBackground()
-        } throws throwable
+        val viewModel = createViewModel()
+        runBlocking {
+            coEvery {
+                getCardDataUseCase.executeOnBackground()
+            } throws throwable
+            viewModel.getCardWidgetData(dataKeys)
 
-        mViewModel.getCardWidgetData(dataKeys)
-
-        delay(100)
-
-        val result = mViewModel.cardWidgetData.value
-        assert(result is Fail)
+            delay(300)
+            val result = viewModel.cardWidgetData.value
+            assert(result is Fail)
+        }
     }
 
     @Test
-    fun `get line graph widget data then returns success result`() {
+    fun `get line graph widget data then returns success result`() = runBlocking {
+        val shopId = "12345"
         val dataKeys = listOf("x", "y", "z")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
@@ -328,23 +342,25 @@ class SellerHomeViewModelTest {
             getLineGraphDataUseCase.executeOnBackground()
         } returns lineGraphDataResult
 
-        mViewModel.getLineGraphWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getLineGraphWidgetData(dataKeys)
 
-        verify {
+        delay(100)
+        coVerify {
             userSession.shopId
         }
-
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
 
         val expectedResult = Success(lineGraphDataResult)
         assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, mViewModel.lineGraphWidgetData.value)
+        assertEquals(expectedResult, viewModel.lineGraphWidgetData.value)
     }
 
     @Test
-    fun `get line graph widget data then returns failed result`() {
+    fun `get line graph widget data then returns failed result`() = runBlocking {
+        val shopId = "12345"
         val dataKeys = listOf("x", "y", "z")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
@@ -356,17 +372,20 @@ class SellerHomeViewModelTest {
             getLineGraphDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getLineGraphWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getLineGraphWidgetData(dataKeys)
 
+        delay (100)
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.lineGraphWidgetData.value is Fail)
+        assert(viewModel.lineGraphWidgetData.value is Fail)
     }
 
     @Test
-    fun `get progress widget data then returns success result`() {
+    fun `get progress widget data then returns success result`() = runBlocking {
+        val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val progressDataList = listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
@@ -377,19 +396,22 @@ class SellerHomeViewModelTest {
             getProgressDataUseCase.executeOnBackground()
         } returns progressDataList
 
-        mViewModel.getProgressWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getProgressWidgetData(dataKeys)
 
+        delay (100)
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
 
         val expectedResult = Success(progressDataList)
         assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, mViewModel.progressWidgetData.value)
+        assertEquals(expectedResult, viewModel.progressWidgetData.value)
     }
 
     @Test
-    fun `get progress widget data then returns failed result`() {
+    fun `get progress widget data then returns failed result`() = runBlocking {
+        val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val throwable = MessageErrorException("error")
@@ -400,17 +422,20 @@ class SellerHomeViewModelTest {
             getProgressDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getProgressWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getProgressWidgetData(dataKeys)
 
+        delay (100)
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.progressWidgetData.value is Fail)
+        assert(viewModel.progressWidgetData.value is Fail)
     }
 
     @Test
-    fun `get post widget data then returns success result`() {
+    fun `get post widget data then returns success result`() = runBlocking {
+        val shopId = 12345
         val dataKeys = listOf("x", "x")
         val startDate = "02-02-2020"
         val endDate = "07-02-2020"
@@ -422,9 +447,11 @@ class SellerHomeViewModelTest {
             getPostDataUseCase.executeOnBackground()
         } returns postList
 
-        mViewModel.getPostWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getPostWidgetData(dataKeys)
 
-        verify {
+        delay (100)
+        coVerify {
             userSession.shopId
         }
 
@@ -434,7 +461,7 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(postList)
         assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, mViewModel.postListWidgetData.value)
+        assertEquals(expectedResult, viewModel.postListWidgetData.value)
     }
 
     @Test
@@ -450,17 +477,19 @@ class SellerHomeViewModelTest {
             getPostDataUseCase.executeOnBackground()
         } throws exception
 
-        mViewModel.getPostWidgetData(dataKeys)
-
-        verify {
-            userSession.shopId
+        val viewModel = createViewModel()
+        runBlocking {
+            viewModel.getPostWidgetData(dataKeys)
+            delay (100)
+            verify {
+                userSession.shopId
+            }
+            coVerify {
+                getPostDataUseCase.executeOnBackground()
+            }
         }
 
-        coVerify {
-            getPostDataUseCase.executeOnBackground()
-        }
-
-        assert(mViewModel.postListWidgetData.value is Fail)
+        assert(viewModel.postListWidgetData.value is Fail)
     }
 
     @Test
@@ -474,19 +503,23 @@ class SellerHomeViewModelTest {
             getCarouselDataUseCase.executeOnBackground()
         } returns carouselList
 
-        mViewModel.getCarouselWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        runBlocking {
+            viewModel.getCarouselWidgetData(dataKeys)
 
-        coVerify {
-            getCarouselDataUseCase.executeOnBackground()
+            delay (100)
+            coVerify {
+                getCarouselDataUseCase.executeOnBackground()
+            }
         }
 
         val expectedResult = Success(carouselList)
         assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, mViewModel.carouselWidgetData.value)
+        assertEquals(expectedResult, viewModel.carouselWidgetData.value)
     }
 
     @Test
-    fun `get carousel widget data then returns failed results`() {
+    fun `get carousel widget data then returns failed results`() = runBlocking{
         val dataKeys = listOf(anyString(), anyString(), anyString(), anyString())
         val throwable = MessageErrorException("error")
 
@@ -496,12 +529,14 @@ class SellerHomeViewModelTest {
             getCarouselDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getCarouselWidgetData(dataKeys)
+        val viewModel = createViewModel()
+        viewModel.getCarouselWidgetData(dataKeys)
 
+        delay(100)
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.carouselWidgetData.value is Fail)
+        assert(viewModel.carouselWidgetData.value is Fail)
     }
 }

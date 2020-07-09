@@ -10,19 +10,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 
 /**
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteViewModel, FlightDetailRouteTypeFactory> implements FlightDetailAdapterTypeFactory.OnFlightDetailListener {
+public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteModel, FlightDetailRouteTypeFactory> implements FlightDetailAdapterTypeFactory.OnFlightDetailListener {
 
     public static final String EXTRA_FLIGHT_DETAIL_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
-    private FlightDetailViewModel flightDetailViewModel;
+    private FlightDetailModel flightDetailViewModel;
 
-    public static FlightDetailFragment createInstance(FlightDetailViewModel flightDetailViewModel) {
+    public static FlightDetailFragment createInstance(FlightDetailModel flightDetailViewModel) {
         FlightDetailFragment flightDetailFragment = new FlightDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_FLIGHT_DETAIL_MODEL, flightDetailViewModel);
@@ -69,7 +69,7 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
     }
 
     @Override
-    public void onItemClicked(FlightDetailRouteViewModel flightDetailRouteViewModel) {
+    public void onItemClicked(FlightDetailRouteModel flightDetailRouteViewModel) {
 
     }
 

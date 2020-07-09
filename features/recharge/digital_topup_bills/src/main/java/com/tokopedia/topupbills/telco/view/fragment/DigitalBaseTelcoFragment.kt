@@ -35,7 +35,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifyprinciples.UnifyThemeHelper
 import javax.inject.Inject
 
 /**
@@ -60,8 +59,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            UnifyThemeHelper.setTheme(it)
-
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             customViewModel = viewModelProvider.get(DigitalTelcoCustomViewModel::class.java)
         }
@@ -92,6 +89,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected abstract fun setupCheckoutData()
 
     abstract fun setFavNumbers(data: TopupBillsFavNumber)
+    abstract fun errorSetFavNumbers()
 
     fun renderTicker(tickers: List<TopupBillsTicker>) {
         if (tickers.isNotEmpty()) {
@@ -284,7 +282,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onEnquiryError(error: Throwable) {
-
     }
 
     override fun onMenuDetailError(error: Throwable) {
@@ -296,6 +293,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onFavoriteNumbersError(error: Throwable) {
+        errorSetFavNumbers()
         Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
     }
 

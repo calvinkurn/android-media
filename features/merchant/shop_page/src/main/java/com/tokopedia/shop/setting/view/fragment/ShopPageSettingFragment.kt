@@ -23,6 +23,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -238,19 +240,28 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     private fun clickShareButton() {
-        (shopPageSettingViewModel.shopInfoResp.value as? Success)?.data?.let {
+        (shopPageSettingViewModel.shopInfoResp.value as? Success)?.data?.let {shopInfo ->
             shopPageSettingTracking?.clickShareButton(customDimensionShopPage)
             var shopShareMsg: String = remoteConfig?.getString(RemoteConfigKey.SHOP_SHARE_MSG) ?: ""
             shopShareMsg = if (!TextUtils.isEmpty(shopShareMsg)) {
                 FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
-                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(it.shopCore.name).toString(),
-                        SHOP_LOCATION_PLACEHOLDER, it.location)
+                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(shopInfo.shopCore.name).toString(),
+                        SHOP_LOCATION_PLACEHOLDER, shopInfo.location)
             } else {
                 getString(R.string.shop_label_share_formatted,
-                        MethodChecker.fromHtml(it.shopCore.name).toString(), it.location)
+                        MethodChecker.fromHtml(shopInfo.shopCore.name).toString(), shopInfo.location)
             }
-            (activity?.application as ShopModuleRouter).goToShareShop(activity,
-                    shopId, it.shopCore.url, shopShareMsg)
+            activity?.let {
+                val shareData = LinkerData.Builder.getLinkerBuilder()
+                        .setType(LinkerData.SHOP_TYPE)
+                        .setName(getString(R.string.message_share_shop))
+                        .setTextContent(shopShareMsg)
+                        .setCustMsg(shopShareMsg)
+                        .setUri(shopInfo.shopCore.url)
+                        .setId(shopId)
+                        .build()
+                DefaultShare(it, shareData).show()
+            }
         }
     }
 

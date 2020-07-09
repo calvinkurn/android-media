@@ -17,6 +17,7 @@ object PowerMerchantSpannableUtil {
         highlightText: String,
         @ColorInt colorId: Int,
         isBold: Boolean = false,
+        boldTextList: List<String>? = null,
         onClick: (() -> Unit)? = null
     ): SpannableString {
         val spannableString = SpannableString(text)
@@ -41,6 +42,14 @@ object PowerMerchantSpannableUtil {
         if(isBold) {
             val styleSpan = StyleSpan(Typeface.BOLD)
             spannableString.setSpan(styleSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
+        boldTextList?.forEach {
+            val boldStartIndex = text.indexOf(it)
+            val boldEndIndex = boldStartIndex + it.length
+
+            val styleSpan = StyleSpan(Typeface.BOLD)
+            spannableString.setSpan(styleSpan, boldStartIndex, boldEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
         return spannableString

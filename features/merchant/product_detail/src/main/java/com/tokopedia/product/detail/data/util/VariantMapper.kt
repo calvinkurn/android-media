@@ -1,5 +1,10 @@
 package com.tokopedia.product.detail.data.util
 
+import android.content.Intent
+import androidx.collection.ArrayMap
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
@@ -7,14 +12,62 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.view.util.toDate
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantChildCommon
-import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
+import com.tokopedia.variant_common.model.*
 
 /**
  * Created by Yehezkiel on 2020-02-26
  */
 object VariantMapper {
+
+    fun putChatProductInfoTo(
+            intent: Intent?,
+            productId: String?,
+            productInfo: DynamicProductInfoP1?,
+            variantResp: ProductVariantCommon?
+    ) {
+        if (intent == null || productId == null) return
+        val variants = variantResp?.mapSelectedProductVariants(productId)
+        val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
+        val productName = productInfo?.getProductName ?: ""
+        val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
+        val priceBeforeInt = productInfo?.priceBeforeInt ?: 0
+        val priceBefore = if (priceBeforeInt > 0) {
+            priceBeforeInt.getCurrencyFormatted()
+        } else {
+            ""
+        }
+        val dropPercentage = productInfo?.dropPercentage ?: ""
+        val productUrl = productInfo?.basic?.url ?: ""
+        val isActive = productInfo?.basic?.isActive() ?: true
+        val productFsIsActive = productInfo?.data?.getFsProductIsActive() ?: false
+        val productFsImageUrl = productInfo?.data?.getFsProductImageUrl() ?: ""
+        val productColorVariant = variants?.get("colour")?.get("value") ?: ""
+        val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
+        val productSizeVariant = variants?.get("size")?.get("value") ?: ""
+        val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
+        val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
+        val productPreview = ProductPreview(
+                productId,
+                productImageUrl,
+                productName,
+                productPrice,
+                productColorVariantId,
+                productColorVariant,
+                productColorHexVariant,
+                productSizeVariantId,
+                productSizeVariant,
+                productUrl,
+                productFsIsActive,
+                productFsImageUrl,
+                priceBefore,
+                priceBeforeInt,
+                dropPercentage,
+                isActive
+        )
+        val productPreviews = listOf(productPreview)
+        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+    }
 
     fun updateSelectedMultiOrigin(oldData: VariantMultiOriginWarehouse, newData: VariantChildCommon?): VariantMultiOriginWarehouse {
 

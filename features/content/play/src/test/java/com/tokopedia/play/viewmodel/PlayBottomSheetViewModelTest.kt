@@ -15,7 +15,9 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
+import com.tokopedia.variant_common.util.VariantCommonMapper
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
@@ -39,6 +41,7 @@ class PlayBottomSheetViewModelTest {
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
     private val modelBuilder = ModelBuilder()
+    private val mockProductVariantResponse: ProductDetailVariantCommonResponse = modelBuilder.buildProductVariant()
 
     private lateinit var playBottomSheetViewModel: PlayBottomSheetViewModel
 
@@ -60,14 +63,23 @@ class PlayBottomSheetViewModelTest {
     }
 
     @Test
-    fun `test observe product variant`() {
-        val expectedModel = modelBuilder.buildVariantSheetUiModel()
+    fun `when get product variant is success, then it should show the un-clicked variant list`() {
+        val product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct())
+        val action = ProductAction.AddToCart
+        val selectedVariants = VariantCommonMapper.mapVariantIdentifierToHashMap(mockProductVariantResponse.data)
+        val categoryVariants = VariantCommonMapper.processVariant(mockProductVariantResponse.data,
+                mapOfSelectedVariant = selectedVariants)
+        val expectedModel = modelBuilder.buildVariantSheetUiModel(
+                product = product,
+                action = action,
+                parentVariant = mockProductVariantResponse.data,
+                mapOfSelectedVariants = selectedVariants,
+                listOfVariantCategory = categoryVariants.orEmpty(),
+                stockWording = null
+        )
         val expectedResult = PlayResult.Success(expectedModel)
 
-        playBottomSheetViewModel.getProductVariant(
-                PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
-                ProductAction.AddToCart
-        )
+        playBottomSheetViewModel.getProductVariant(product, action)
 
         Assertions
                 .assertThat(playBottomSheetViewModel.observableProductVariant.getOrAwaitValue())

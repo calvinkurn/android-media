@@ -40,7 +40,7 @@ public class MyEtalaseCloud {
 
     private TKPDMapParam<String, String> generateFetchMyEtalaseParam(int page) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(SHOP_ID, new SessionHandler(context).getShopID());
+        param.put(SHOP_ID, SessionHandler.getShopID(context));
         param.put(PAGE, String.valueOf(page));
         return param;
     }
