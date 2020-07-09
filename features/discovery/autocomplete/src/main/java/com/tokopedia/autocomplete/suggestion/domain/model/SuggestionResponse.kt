@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.suggestion.data
+package com.tokopedia.autocomplete.suggestion.domain.model
 
 import com.google.gson.annotations.SerializedName
 

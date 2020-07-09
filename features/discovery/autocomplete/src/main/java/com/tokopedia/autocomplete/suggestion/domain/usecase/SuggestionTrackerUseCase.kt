@@ -1,7 +1,7 @@
-package com.tokopedia.autocomplete.suggestion
+package com.tokopedia.autocomplete.suggestion.domain.usecase
 
-import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.autocomplete.suggestion.SuggestionRepository
 import com.tokopedia.autocomplete.util.UrlParamHelper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
