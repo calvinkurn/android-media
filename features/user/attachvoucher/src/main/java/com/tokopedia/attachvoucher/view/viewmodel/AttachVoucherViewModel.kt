@@ -12,16 +12,16 @@ class AttachVoucherViewModel @Inject constructor(
 ) : ViewModel() {
 
     val hasNext: Boolean get() = getVouchersUseCase.hasNext
+    var currentPage = 0
 
     private var _filter: MutableLiveData<Int> = MutableLiveData()
     val filter: LiveData<Int> get() = _filter
 
     private var _error: MutableLiveData<Throwable> = MutableLiveData()
+    val error: LiveData<Throwable> get() = _error
 
     private val _vouchers: MutableLiveData<List<VoucherUiModel>> = MutableLiveData()
     val voucher: LiveData<List<VoucherUiModel>> get() = _vouchers
-
-    val error: LiveData<Throwable> get() = _error
 
     fun toggleFilter(filterType: Int) {
         val currentFilter = _filter.value
@@ -33,6 +33,7 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     fun loadVouchers(page: Int) {
+        currentPage = page
         if (getVouchersUseCase.isLoading) {
             getVouchersUseCase.cancelCurrentLoad()
         }

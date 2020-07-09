@@ -23,6 +23,8 @@ import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactory
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactoryImpl
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.fragment_attachvoucher_attach_voucher.*
@@ -91,13 +93,17 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun observeVoucherResponse() {
         viewModel.voucher.observe(viewLifecycleOwner, Observer { vouchers ->
-            renderList(vouchers, viewModel.hasNext)
-            if (vouchers.isEmpty()) {
+            if (isFirstPage() && vouchers.isEmpty()) {
                 changeActionState(View.GONE)
             } else {
                 changeActionState(View.VISIBLE)
             }
+            renderList(vouchers, viewModel.hasNext)
         })
+    }
+
+    private fun isFirstPage(): Boolean {
+        return viewModel.currentPage == 1
     }
 
     private fun changeActionState(visibility: Int) {
@@ -117,6 +123,11 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun observeError() {
         viewModel.error.observe(viewLifecycleOwner, Observer { throwable ->
+            if (isFirstPage()) {
+                flAttach?.hide()
+            } else {
+                flAttach?.show()
+            }
             showGetListError(throwable)
             disableAttachButton()
         })
