@@ -15,7 +15,7 @@ public class TopAdsUrlHitter {
     private String sourceClassName;
     private Context context;
 
-    @Inject
+    @Deprecated
     public TopAdsUrlHitter(Context context){
         this.context = context;
     }
@@ -35,11 +35,13 @@ public class TopAdsUrlHitter {
         TopAdsLogger.getInstance(context).save(url, TYPE_IMPRESSION, sourceClassName, productId, productName, imageUrl);
     }
 
+    @Deprecated
     public void hitClickUrl(String className, String url, String productId, String productName, String imageUrl) {
         new ImpresionTask(className).execute(url);
         TopAdsLogger.getInstance(context).save(url, TYPE_CLICK, className, productId, productName, imageUrl);
     }
 
+    @Deprecated
     public void hitImpressionUrl(String className, String url, String productId, String productName, String imageUrl) {
         new ImpresionTask(className).execute(url);
         TopAdsLogger.getInstance(context).save(url, TYPE_IMPRESSION, className, productId, productName, imageUrl);
