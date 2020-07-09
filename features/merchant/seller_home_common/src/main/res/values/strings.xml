@@ -5,4 +5,5 @@
     <string name="shc_more">Selengkapnya</string>
     <string name="shc_score">Skor</string>
     <string name="shc_max_progress">/100</string>
+    <string name="shc_table_widget_on_empty_message">Oops, belum ada data yang dapat \nditampilkan saat ini.</string>
 </resources>

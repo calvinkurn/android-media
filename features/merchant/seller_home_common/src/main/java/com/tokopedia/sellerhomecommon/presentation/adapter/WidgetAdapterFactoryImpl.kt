@@ -33,6 +33,8 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(tableWidgetUiModel: TableWidgetUiModel): Int = TableViewHolder.RES_LAYOUT
 
+    override fun type(pieChartWidget: PieChartWidgetUiModel): Int = PieChartViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
@@ -43,6 +45,7 @@ class WidgetAdapterFactoryImpl(
             ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, listener)
             PostListViewHolder.RES_LAYOUT -> PostListViewHolder(parent, listener)
             TableViewHolder.RES_LAYOUT -> TableViewHolder(parent, listener)
+            PieChartViewHolder.RES_LAYOUT -> PieChartViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

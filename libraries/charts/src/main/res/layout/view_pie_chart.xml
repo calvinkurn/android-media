@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal">
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pieChart"
+        android:layout_width="@dimen/charts_140dp"
+        android:layout_height="@dimen/charts_140dp"
+        android:layout_marginTop="@dimen/layout_lvl3" />
+
+    <View
+        android:id="@+id/vPieChartEmpty"
+        android:layout_width="@dimen/charts_140dp"
+        android:layout_height="@dimen/charts_140dp"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPieChartLegend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_pie_chart_legend" />
+</LinearLayout>

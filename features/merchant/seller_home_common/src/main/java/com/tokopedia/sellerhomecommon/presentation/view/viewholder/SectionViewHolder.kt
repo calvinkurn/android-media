@@ -1,14 +1,14 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
-import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
-import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.asUpperCase
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import kotlinx.android.synthetic.main.shc_section_widget.view.*
 
 /**
@@ -26,7 +26,7 @@ class SectionViewHolder(
 
     override fun bind(element: SectionWidgetUiModel) {
         with(itemView) {
-            tvSectionTitle.text = element.title
+            tvSectionTitle.text = getSectionTitle(element.title)
             tvSectionSubTitle.visibility = if (element.subtitle.isNotBlank()) View.VISIBLE else View.GONE
             tvSectionSubTitle.text = element.subtitle.parseDateTemplate().toString().parseAsHtml()
 
@@ -42,6 +42,15 @@ class SectionViewHolder(
                 } else
                     btnSectionInfo.gone()
             }
+        }
+    }
+
+    private fun getSectionTitle(title: String): String {
+        val maxLength = 30
+        return if (title.length > maxLength) {
+            title.substring(0, maxLength) + "..."
+        } else {
+            title
         }
     }
 

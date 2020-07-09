@@ -9,8 +9,8 @@
         <attr name="lcvLineWidth" format="float" />
         <attr name="lcvLineColor" format="color" />
         <attr name="lcvLineMode" format="enum">
-            <enum name="LINEAR" value="0"/>
-            <enum name="CONTINUES" value="1"/>
+            <enum name="LINEAR" value="0" />
+            <enum name="CONTINUES" value="1" />
         </attr>
 
         <!--chart dot-->
@@ -27,5 +27,10 @@
         <!--chart axis-->
         <attr name="lcvXAxisTextColor" format="color" />
         <attr name="lcvYAxisTextColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="PieChartView">
+        <attr name="pcvChartWidth" format="dimension" />
+        <attr name="pcvChartHeight" format="dimension" />
     </declare-styleable>
 </resources>

@@ -13,6 +13,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -31,6 +32,7 @@ class StatisticViewModel @Inject constructor(
         private val getPostDataUseCase: GetPostDataUseCase,
         private val getCarouselDataUseCase: GetCarouselDataUseCase,
         private val getTableDataUseCase: GetTableDataUseCase,
+        private val getPieChartDataUseCase: GetPieChartDataUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -53,6 +55,8 @@ class StatisticViewModel @Inject constructor(
         get() = _carouselWidgetData
     val tableWidgetData: LiveData<Result<List<TableDataUiModel>>>
         get() = _tableWidgetData
+    val pieChartWidgetData: LiveData<Result<List<PieChartDataUiModel>>>
+        get() = _pieChartWidgetData
 
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -62,6 +66,7 @@ class StatisticViewModel @Inject constructor(
     private val _postListWidgetData = MutableLiveData<Result<List<PostListDataUiModel>>>()
     private val _carouselWidgetData = MutableLiveData<Result<List<CarouselDataUiModel>>>()
     private val _tableWidgetData = MutableLiveData<Result<List<TableDataUiModel>>>()
+    private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
 
     private var startDate: String = ""
     private var endDate: String = ""
@@ -153,6 +158,18 @@ class StatisticViewModel @Inject constructor(
             _tableWidgetData.postValue(result)
         }, onError = {
             _tableWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getPieChartWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<PieChartDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, startDate, endDate)
+                return@withContext getPieChartDataUseCase.executeOnBackground()
+            })
+            _pieChartWidgetData.postValue(result)
+        }, onError = {
+            _pieChartWidgetData.postValue(Fail(it))
         })
     }
 }
