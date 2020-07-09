@@ -5,6 +5,7 @@ import com.tokopedia.gamification.giftbox.data.di.modules.*
 import com.tokopedia.gamification.giftbox.data.di.scope.GiftBoxScope
 import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxDailyFragment
 import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxTapTapFragment
+import com.tokopedia.gamification.giftbox.presentation.viewholder.CouponListResultVH
 import dagger.Component
 
 @GiftBoxScope
@@ -12,4 +13,5 @@ import dagger.Component
 interface GiftBoxComponent {
     fun inject(fragment: GiftBoxDailyFragment)
     fun inject(fragment: GiftBoxTapTapFragment)
+    fun inject(viewHolder: CouponListResultVH)
 }

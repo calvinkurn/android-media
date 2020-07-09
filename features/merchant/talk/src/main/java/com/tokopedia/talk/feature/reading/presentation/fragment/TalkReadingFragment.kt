@@ -486,7 +486,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID))
                         .buildUpon()
-                        .appendQueryParameter(PARAM_PRODUCT_ID, productId)
                         .appendQueryParameter(PARAM_SHOP_ID, shopId)
                         .build().toString()
         )
