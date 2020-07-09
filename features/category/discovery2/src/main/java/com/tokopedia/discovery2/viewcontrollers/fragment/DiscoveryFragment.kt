@@ -34,7 +34,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -60,7 +59,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
     private lateinit var ivToTop: ImageView
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy {
@@ -110,7 +108,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun initView(view: View) {
-        permissionCheckerHelper = PermissionCheckerHelper()
         mDiscoveryFab = view.findViewById(R.id.fab)
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
@@ -245,9 +242,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             ivShare.show()
             ivShare.setOnClickListener {
                 getDiscoveryAnalytics().trackShareClick()
-                permissionHelper {
-                    Utils.shareData(activity, data.share.description, data.share.url, discoveryViewModel.getBitmapFromURL(data.share.image))
-                }
+                Utils.shareData(activity, data.share.description, data.share.url)
             }
         } else {
             ivShare.hide()
@@ -274,36 +269,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             if (appLinks.isNotEmpty() && shopId != 0) {
                 activity?.let { it1 -> discoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
             }
-        }
-    }
-
-    private fun permissionHelper(grantedPermission: () -> Unit) {
-        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener {
-            override fun onPermissionDenied(permissionText: String) {
-                context?.let {
-                    permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                }
-            }
-
-            override fun onNeverAskAgain(permissionText: String) {
-                context?.let {
-                    permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                }
-            }
-
-            override fun onPermissionGranted() {
-                grantedPermission()
-            }
-
-        })
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(context!!,
-                    requestCode, permissions,
-                    grantResults)
         }
     }
 
