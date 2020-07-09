@@ -1,10 +1,7 @@
 package com.tokopedia.home.account.presentation.fragment.setting
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -16,15 +13,12 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -54,7 +48,6 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemV
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
@@ -63,7 +56,7 @@ import com.tokopedia.url.TokopediaUrl
 import java.util.*
 import javax.inject.Inject
 
-class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, GeneralSettingAdapter.SwitchSettingListener, SettingOptionsView, RedDotGimmickView {
+class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, GeneralSettingAdapter.SwitchSettingListener, SettingOptionsView {
     @Inject
     internal lateinit var presenter: RedDotGimmickPresenter
     @Inject
@@ -328,35 +321,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         }
     }
 
-    private fun showLoading(isLoading: Boolean) {
-        val shortAnimTime = resources.getInteger(
-                android.R.integer.config_shortAnimTime)
-
-        loadingView.let {
-            it.animate().setDuration(shortAnimTime.toLong())
-                    .alpha((if (isLoading) 1 else 0).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            loadingView.let { view ->
-                                view.visibility = if (isLoading) View.VISIBLE else View.GONE
-                            }
-                        }
-                    })
-        }
-
-        baseSettingView.let {
-            it.animate().setDuration(shortAnimTime.toLong())
-                    .alpha((if (isLoading) 0 else 1).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            baseSettingView.let { view ->
-                                view.visibility = if (isLoading) View.GONE else View.VISIBLE
-                            }
-                        }
-                    })
-        }
-    }
-
     private fun saveSettingValue(key: String, isChecked: Boolean) {
         val settings = PreferenceManager.getDefaultSharedPreferences(activity)
         val editor = settings.edit()
@@ -457,11 +421,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         accessDialog.setPositiveButton(dialogPositiveButton)
         accessDialog.setNegativeButton(dialogNegativeButton)
         accessDialog.show(activity!!.supportFragmentManager, AccessRequestDialogFragment.TAG)
-    }
-
-    private fun isGoogleAccount(): Boolean {
-        val acct = GoogleSignIn.getLastSignedInAccount(context!!)
-        return acct != null
     }
 
     override fun refreshSafeSearchOption() {
