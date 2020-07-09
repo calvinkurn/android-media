@@ -27,8 +27,8 @@ object PlayWidgetMapper {
                                 isShowTotalView = it.video.isShowTotalView,
                                 isPromo = it.config.hasPromo,
                                 widgetType = when(it.widgetType){
-                                    "VOD" -> PlayBannerWidgetType.VOD
-                                    "UPCOMING" -> PlayBannerWidgetType.UPCOMING
+                                    "WATCH_AGAIN" -> PlayBannerWidgetType.VOD
+                                    "COMING_SOON" -> PlayBannerWidgetType.UPCOMING
                                     "LIVE" -> PlayBannerWidgetType.LIVE
                                     else -> PlayBannerWidgetType.NONE
                                 },
@@ -55,7 +55,8 @@ object PlayWidgetMapper {
                 imageUrl = playWidget.meta.overlayImage,
                 serverTimeOffset = playWidget.meta.serverTimeOffset,
                 channelList = list,
-                gradients = playWidget.meta.gradient
+                gradients = playWidget.meta.gradient,
+                durationPlayWithData = playWidget.meta.maxAutoplayCell
         )
     }
 }

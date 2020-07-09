@@ -86,6 +86,7 @@ class GetPlayWidgetUseCase(
                 overlayImageWebLink
                 gradient
                 serverTimeOffset
+                maxAutoplayCell
               }
             } 
           }

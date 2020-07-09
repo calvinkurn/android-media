@@ -74,7 +74,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     private var isAutoPlay: Boolean = false
 
     /* In Millisecond */
-    private var durationPlayWithWifi: Int = 0
     private var durationPlayWithData: Int = 0
     private var delayDuration: Int = 0
 
@@ -294,10 +293,9 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     }
 
     /* in seconds */
-    fun setDelayDuration(delayPlayVideo: Int, stopTimeVideoWihData: Int, stopTimeVideoWithWifi: Int){
+    fun setDelayDuration(delayPlayVideo: Int, stopTimeVideoWihData: Int){
         /* convert to millisecond */
         delayDuration = delayPlayVideo * 1000
-        durationPlayWithWifi = stopTimeVideoWithWifi * 1000
         durationPlayWithData = stopTimeVideoWihData * 1000
     }
 
@@ -323,19 +321,21 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             layoutParams.height = this.resources.getDimensionPixelOffset(R.dimen.play_banner_item_carousel_height)
             videoSurfaceView.layoutParams = layoutParams
             videoSurfaceView.findViewById<AspectRatioFrameLayout>(R.id.exo_content_frame).requestLayout()
+            var timerAutoPause: CountDownTimer?=null
+            if(PlayConnectionCommon.isConnectCellular(context)) {
+                 timerAutoPause = object : CountDownTimer(durationPlayWithData.toLong(), 1000) {
+                    override fun onFinish() {
+                        videoSurfaceView.getPlayer()?.playWhenReady = false
+                    }
 
-            val timerAutoPause = object : CountDownTimer(if(PlayConnectionCommon.isConnectWifi(context)) durationPlayWithWifi.toLong() else durationPlayWithData.toLong(), 1000){
-                override fun onFinish() {
-                    videoSurfaceView.getPlayer()?.playWhenReady = false
+                    override fun onTick(millisUntilFinished: Long) {}
                 }
-
-                override fun onTick(millisUntilFinished: Long) {}
             }
 
             val timerAutoPlay = object : CountDownTimer(delayDuration.toLong(), 1000) {
                 override fun onFinish() {
                     exoPlayer.playWhenReady = true
-                    timerAutoPause.start()
+                    timerAutoPause?.start()
                 }
 
                 override fun onTick(millisUntilFinished: Long) {}
