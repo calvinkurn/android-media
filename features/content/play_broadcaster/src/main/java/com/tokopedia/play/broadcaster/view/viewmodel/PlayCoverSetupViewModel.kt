@@ -181,9 +181,10 @@ class PlayCoverSetupViewModel @Inject constructor(
         val currentCropState = cropState
         if (currentCropState is CoverSetupState.Cropped.Draft) {
             val validatedImageUri = validateImageMinSize(currentCropState.coverImage)
-            if (validatedImageUri.path != null) {
+            val validatedImagePath = validatedImageUri.path
+            if (validatedImagePath != null) {
                 /**
-                 * Validate Image
+                 * Set validated image cover as draft
                  */
                 setupDataStore.setFullCover(
                         PlayCoverUiModel(
@@ -193,9 +194,9 @@ class PlayCoverSetupViewModel @Inject constructor(
                         )
                 )
                 /**
-                 * Upload Cover
+                 * Upload Cover Image to remote store
                  */
-                val uploadedImageUri = uploadCover(validatedImageUri)
+                val uploadedImageUri = Uri.parse(uploadImageToRemoteStore(validatedImagePath))
                 setupDataStore.setFullCover(
                         PlayCoverUiModel(
                                 croppedCover = CoverSetupState.Cropped.Uploaded(validatedImageUri, uploadedImageUri, source),
@@ -209,12 +210,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         }
     }
 
-    private suspend fun uploadCover(validatedImageUri: Uri): Uri {
-        val validatedImagePath = validatedImageUri.path ?: throw IllegalStateException("Cover Image not found")
-        return Uri.parse(uploadCoverImage(validatedImagePath))
-    }
-
-    private suspend fun uploadCoverImage(imagePath: String): String = withContext(dispatcher.io) {
+    private suspend fun uploadImageToRemoteStore(imagePath: String): String = withContext(dispatcher.io) {
         val params = hashMapOf<String, RequestBody>()
         params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
         params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_700)
