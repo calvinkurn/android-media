@@ -108,6 +108,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         super.onStart()
         initPushStream()
         viewActionBar.rootView.requestApplyInsetsWhenAttached()
+        viewRequestPermission.requestApplyInsetsWhenAttached()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -226,6 +227,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private fun setupInsets() {
         viewActionBar.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
             v.updatePadding(top = insets.systemWindowInsetTop)
+        }
+
+        viewRequestPermission.doOnApplyWindowInsets { v, insets, _, _ ->
+            v.updatePadding(top = insets.systemWindowInsetTop, bottom = insets.systemWindowInsetBottom)
         }
     }
 
