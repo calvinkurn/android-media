@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.preference.list.view
 
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -160,6 +161,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                 }
                 is OccState.Failed -> {
                     progressDialog?.dismiss()
+                    adapter.notifyDataSetChanged()
                     it.getFailure()?.let { failure ->
                         view?.let { view ->
                             if (failure.throwable is MessageErrorException) {
@@ -227,6 +229,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     private fun initViews() {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         buttonPreferenceListAction?.setOnClickListener {
             preferenceListAnalytics.eventAddPreferenceFromPurchaseSetting()
             val profileNumber = adapter.itemCount + 1

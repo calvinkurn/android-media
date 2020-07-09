@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditBackPressedListener
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.url.TokopediaUrl
@@ -25,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_payment_method.*
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-class PaymentMethodFragment : BaseDaggerFragment() {
+class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedListener {
 
     companion object {
 
@@ -179,4 +180,11 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onBackPressed(): Boolean {
+        if (web_view.canGoBack()) {
+            web_view.goBack()
+            return true
+        }
+        return false
+    }
 }

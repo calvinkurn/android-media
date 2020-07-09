@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -290,6 +291,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         mainContent = view?.findViewById(R.id.main_content)
         buttonSavePreference = view?.findViewById(R.id.btn_save)

@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -192,6 +193,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun initView() {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         addressList = view?.findViewById(R.id.address_list_rv)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         searchInputView = view?.findViewById(R.id.search_input_view)

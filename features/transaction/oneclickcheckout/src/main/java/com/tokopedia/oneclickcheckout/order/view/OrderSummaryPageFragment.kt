@@ -243,6 +243,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViews(view: View) {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
         orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener(), orderSummaryAnalytics)
         btnPromoCheckout?.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
