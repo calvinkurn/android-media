@@ -192,7 +192,7 @@ class GlobalSearchView : BaseCustomView {
 
 
             searchBarTextField.setOnEditorActionListener { _, actionId, event ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     searchViewListener?.onQueryTextChangeListener(searchBarTextField.text.trim().toString())
                     hideKeyboard(searchBarView.searchBarTextField)
                     return@setOnEditorActionListener true
