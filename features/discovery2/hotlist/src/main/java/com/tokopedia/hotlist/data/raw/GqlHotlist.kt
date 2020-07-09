@@ -1,5 +1,9 @@
-query hotlistDetail($productKey: String!) {
-            hotlistDetail(productKey: $productKey) {
+package com.tokopedia.hotlist.data.raw
+
+object GqlHotlist {
+
+    const val GQL_HOTLIST: String = """query hotlistDetail(${'$'}productKey: String!) {
+            hotlistDetail(productKey: ${'$'}productKey) {
                 id
                 aliasKey
                 title
@@ -78,4 +82,5 @@ query hotlistDetail($productKey: String!) {
                 createTime
                 cityID
             }
-        }
+        }"""
+}

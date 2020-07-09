@@ -1,5 +1,9 @@
-query ($params: String) {
-  displayAdsV3(displayParams: $params) {
+package com.tokopedia.hotlist.data.raw
+
+object GqlCpmTopAds {
+    const val GQL_CPM_TOP_ADS: String = """
+   query (${'$'}params: String) {
+  displayAdsV3(displayParams: ${'$'}params) {
     data {
       id
       ad_ref_key
@@ -47,4 +51,7 @@ query ($params: String) {
     }
 
   }
+}
+
+"""
 }

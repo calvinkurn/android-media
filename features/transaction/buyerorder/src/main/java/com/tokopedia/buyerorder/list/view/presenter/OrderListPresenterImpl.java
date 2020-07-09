@@ -483,6 +483,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         String productPrice = "";
         String externalSource = "";
         String clickUrl = "";
+        String imageUrl = "";
         if (productModel instanceof OrderListRecomViewModel) {
             OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
             productId = orderListRecomViewModel.getRecommendationItem().getProductId();
@@ -492,10 +493,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             productPrice = orderListRecomViewModel.getRecommendationItem().getPrice();
             externalSource = "recommendation_list";
             clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
+            imageUrl = orderListRecomViewModel.getRecommendationItem().getImageUrl();
         }
 
         if(!clickUrl.isEmpty()) {
-            getView().sendATCTrackingUrl(clickUrl);
+            getView().sendATCTrackingUrl(clickUrl, String.valueOf(productId), productName, imageUrl);
         }
         AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
         addToCartRequestParams.setProductId(productId);
