@@ -103,8 +103,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
-import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
+import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
@@ -281,6 +280,8 @@ open class HomeFragment : BaseDaggerFragment(),
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
     private var lock = Object()
+    private var autoRefreshHandler = Handler()
+    private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
 
 
     override fun onAttach(context: Context) {
@@ -981,16 +982,27 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun configureHomeFlag(homeFlag: HomeFlag) {
         floatingTextButton.visibility = if (homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation) View.VISIBLE else View.GONE
+        initAutoRefreshHandler()
         if (homeFlag.getFlag(HomeFlag.TYPE.PROMPT_REFRESH)) {
 //            setAutoRefreshOnHome(homeFlag)
         }
-
         setDummyButton()
     }
 
+    private fun initAutoRefreshHandler() {
+        stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
+        autoRefreshRunnable = TimerRunnable(listener = this)
+        autoRefreshHandler = Handler()
+    }
+
     private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag)  {
+        initAutoRefreshHandler()
         val serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(autoRefreshFlag.promptServerTime)
-        runAutoRefreshJob(serverOffsetTime, DateHelper.getExpiredTime(autoRefreshFlag.promptRefreshTime), Handler(), this)
+        val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.promptRefreshTime)
+        if (!isExpired(getServerRealTime(0), expiredTime)) {
+            autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
+            runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
+        }
     }
 
     private fun setDummyButton() {
@@ -998,20 +1010,26 @@ open class HomeFragment : BaseDaggerFragment(),
         val btnRefresh: Button? = activity?.findViewById(R.id.btn_refresh_home)
         val btnSetTimer: Button? = activity?.findViewById(R.id.btn_set_timer)
 
+        layoutDummyBtn?.visibility = View.VISIBLE
         btnRefresh?.setOnClickListener {
+            initAutoRefreshHandler()
             doHomeDataRefresh()
         }
         btnSetTimer?.setOnClickListener {
+            initAutoRefreshHandler()
             setRefreshDummy()
         }
 
     }
 
     private fun setRefreshDummy() {
-//        autoRefreshFlag.promptServerTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(System.currentTimeMillis())
-        val refreshTime = Date(System.currentTimeMillis()+5000)
-        Toast.makeText(context, "tes 5 detik lagi refresh", Toast.LENGTH_SHORT).show()
-        runAutoRefreshJob(0, refreshTime, Handler(), this)
+        val refreshTime = Date(System.currentTimeMillis() + 4000)
+        Toast.makeText(context, "tes 4 detik lagi refresh", Toast.LENGTH_SHORT).show()
+
+        if (!isExpired(getServerRealTime(0), refreshTime)) {
+            autoRefreshRunnable = getAutoRefreshRunnableThread(0, refreshTime, autoRefreshHandler, this)
+            runAutoRefreshJob( autoRefreshHandler, autoRefreshRunnable)
+        }
     }
 
     override fun onHomeAutoRefreshTriggered() {

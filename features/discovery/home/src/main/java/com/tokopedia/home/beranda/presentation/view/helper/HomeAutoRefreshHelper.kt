@@ -1,25 +1,32 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
 import android.os.Handler
-import com.tokopedia.design.countdown.CountDownView
 import java.util.*
 
 /**
  * @author by yoasfs on 09/07/20
  */
 
-fun runAutoRefreshJob(serverTimeOffset: Long, expiredTime: Date,
-              refreshCounterHandler: Handler,
-              listener: HomeAutoRefreshListener) {
+fun runAutoRefreshJob(refreshCounterHandler: Handler,
+                      runnableRefreshCounter: TimerRunnable) {
+    startAutoRefreshCounter(refreshCounterHandler, runnableRefreshCounter)
+}
+
+fun stopAutoRefreshJob(refreshCounterHandler: Handler,
+                       runnableRefreshCounter: TimerRunnable)  {
+    stopAutoRefreshCounter(refreshCounterHandler, runnableRefreshCounter)
+}
+
+fun getAutoRefreshRunnableThread(serverTimeOffset: Long, expiredTime: Date,
+                                 refreshCounterHandler: Handler,
+                                 listener: HomeAutoRefreshListener) : TimerRunnable {
+    return TimerRunnable(getServerRealTime(serverTimeOffset), expiredTime, serverTimeOffset, listener, refreshCounterHandler)
+}
+
+fun getServerRealTime(serverTimeOffset: Long): Date {
     val serverTime = Date(System.currentTimeMillis())
     serverTime.time = serverTime.time + serverTimeOffset
-    if (isExpired(serverTime, expiredTime)) {
-        handleExpiredTime(listener)
-        return
-    }
-    startAutoRefreshCounter(
-            refreshCounterHandler,
-            TimerRunnable(serverTime, expiredTime, serverTimeOffset, listener, refreshCounterHandler))
+    return serverTime
 }
 
 private fun startAutoRefreshCounter(refreshCounterHandler: Handler, runnableRefreshCounter: TimerRunnable) {
@@ -27,17 +34,23 @@ private fun startAutoRefreshCounter(refreshCounterHandler: Handler, runnableRefr
     refreshCounterHandler.post(runnableRefreshCounter)
 }
 
-private fun isExpired(serverTime: Date, expiredTime: Date): Boolean {
+private fun stopAutoRefreshCounter(refreshCounterHandler: Handler, runnableRefreshCounter: TimerRunnable) {
+    runnableRefreshCounter.stop()
+    refreshCounterHandler.removeCallbacks(runnableRefreshCounter)
+
+}
+
+fun isExpired(serverTime: Date, expiredTime: Date): Boolean {
     return serverTime.after(expiredTime)
 }
 
 
-class TimerRunnable (
-        private val serverTime: Date,
-        private val expiredTime: Date,
-        private val serverTimeOffset: Long,
+data class TimerRunnable (
+        private val serverTime: Date = Date(),
+        private val expiredTime: Date = Date(),
+        private val serverTimeOffset: Long = 0,
         private val listener: HomeAutoRefreshListener,
-        private val refreshCounterHandler: Handler) : Runnable {
+        private val refreshCounterHandler: Handler = Handler()) : Runnable {
     private var stop = false
     fun stop() {
         stop = true
@@ -63,6 +76,7 @@ class TimerRunnable (
 private fun handleExpiredTime(listener: HomeAutoRefreshListener) {
     listener.onHomeAutoRefreshTriggered()
 }
+
 
 interface HomeAutoRefreshListener {
     fun onHomeAutoRefreshTriggered()
