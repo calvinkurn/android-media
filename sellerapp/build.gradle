@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+if (project.hasProperty("auto-patch")) {
+    apply plugin: 'auto-patch-plugin'
+}
 apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
