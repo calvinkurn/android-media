@@ -14,10 +14,7 @@ import javax.crypto.spec.SecretKeySpec
  */
 class Decoder {
     companion object {
-        var cipher: Cipher = Cipher.getInstance(
-            "AES/GCM/NoPadding",
-            Security.getProvider("BC")
-        )
+        var cipher: Cipher = Cipher.getInstance("AES/GCM/NoPadding")
 
         @Throws(Exception::class)
         fun decrypt(signature: String, encryptedText: String): ByteArray {
