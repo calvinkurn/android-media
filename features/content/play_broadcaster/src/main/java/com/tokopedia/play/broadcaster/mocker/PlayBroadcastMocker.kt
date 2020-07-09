@@ -158,7 +158,6 @@ object PlayBroadcastMocker {
             TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, "1200"),
             TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, "1042"),
             TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, "320"),
-            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, "200"),
-            TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, "50")
+            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, "200")
     )
 }

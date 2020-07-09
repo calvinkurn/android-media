@@ -89,8 +89,7 @@ object PlayBroadcastUiMapper {
                 TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, metrics.visitShop),
                 TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, metrics.visitPdp),
                 TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, metrics.addToCart),
-                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, metrics.paymentVerified),
-                TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop)
+                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, metrics.paymentVerified)
         )
 
     fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
