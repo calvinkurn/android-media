@@ -828,7 +828,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToEditPostAffiliate(postId: Int) {
-        context?.let { RouteManager.route(it, ApplinkConstInternalContent.INTERNAL_AFFILIATE_EDIT, postId.toString()) }
+        context?.let { RouteManager.route(it, ApplinkConstInternalContent.AFFILIATE_EDIT, postId.toString()) }
     }
 
     private fun getShopIntent(

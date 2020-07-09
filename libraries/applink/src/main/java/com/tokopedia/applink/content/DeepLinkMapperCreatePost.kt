@@ -20,10 +20,10 @@ object DeepLinkMapperCreatePost {
                 return deepLink.replace(ApplinkConst.AFFILIATE_DRAFT_POST.substringBefore("{"), ApplinkConstInternalContent.INTERNAL_AFFILIATE_DRAFT_POST)
             }
             deepLink.startsWithPattern(ApplinkConst.AFFILIATE_EDIT) -> {
-                return deepLink.replace(ApplinkConst.AFFILIATE_EDIT.substringBefore("{"), ApplinkConstInternalContent.INTERNAL_AFFILIATE_EDIT)
+                return deepLink.replace(ApplinkConst.AFFILIATE_EDIT.substringBefore("{"), ApplinkConstInternalContent.AFFILIATE_EDIT.substringBefore("{"))
             }
             deepLink.startsWithPattern(ApplinkConst.SHOP_POST_EDIT) -> {
-                return deepLink.replace(ApplinkConst.SHOP_POST_EDIT.substringBefore("{"), ApplinkConstInternalContent.INTERNAL_SHOP_POST_EDIT)
+                return deepLink.replace(ApplinkConst.SHOP_POST_EDIT.substringBefore("{"), ApplinkConstInternalContent.SHOP_POST_EDIT.substringBefore("{"))
             }
         }
 

@@ -4,19 +4,17 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalContent {
     const val HOST_CONTENT = "content"
-    const val HOST_CONTENT_SHOP = "content-shop"
     const val HOST_AFFILIATE = "affiliate"
 
     const val INTERNAL_AFFILIATE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_AFFILIATE"
-    const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
-    const val INTERNAL_CONTENT_SHOP = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT_SHOP"
+    private const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
 
     const val INTERNAL_CONTENT_CREATE_POST = "$INTERNAL_CONTENT/create_post/"
     const val INTERNAL_CONTENT_DRAFT_POST = "$INTERNAL_CONTENT/draft/"
     const val INTERNAL_AFFILIATE_CREATE_POST = "$INTERNAL_AFFILIATE/create_post/"
     const val INTERNAL_AFFILIATE_DRAFT_POST = "$INTERNAL_AFFILIATE/draft/"
-    const val INTERNAL_AFFILIATE_EDIT = "$INTERNAL_AFFILIATE/edit/"
-    const val INTERNAL_SHOP_POST_EDIT = "$INTERNAL_CONTENT_SHOP/edit/"
+    const val AFFILIATE_EDIT = "$INTERNAL_CONTENT/affiliate/{id}/edit"
+    const val SHOP_POST_EDIT = "$INTERNAL_CONTENT/content-shop/{id}/edit"
 
     const val HASHTAG_PAGE = "$INTERNAL_CONTENT/explore-hashtag/{hashtag}/"
 
@@ -40,9 +38,8 @@ object ApplinkConstInternalContent {
     private const val ARGS_FROM_APPLINK = "isFromApplink"
     private const val KOL_YOUTUBE = "kolyoutube/{youtube_url}"
     private const val ARGS_FROM_APPLINK_VALUE = "true"
-    const val ARG_MEDIA_INDEX = "media_index"
+    private const val ARG_MEDIA_INDEX = "media_index"
     const val DUMMY_MEDIA_INDEX = "{index}"
-    const val INTERNAL_POST_DETAIL = "$INTERNAL_CONTENT_POST_DETAIL{post_id}"
     const val COMMENT_EXTRA_PARAM = "?$ARGS_FROM_APPLINK=$ARGS_FROM_APPLINK_VALUE"
     const val INTERNAL_KOL_YOUTUBE = "${DeeplinkConstant.SCHEME_INTERNAL}://${KOL_YOUTUBE}"
     const val INTERNAL_MEDIA_PREVIEW = "$MEDIA_PREVIEW?$ARG_MEDIA_INDEX=$DUMMY_MEDIA_INDEX"

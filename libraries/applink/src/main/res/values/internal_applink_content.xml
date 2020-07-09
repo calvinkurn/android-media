@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_content" translatable="false">content</string>
-    <string name="applink_host_content_shop" translatable="false">content-shop</string>
     <string name="path_edit_post_affiliate" translatable="false">/affiliate/.*\\/edit</string>
     <string name="path_edit_post_shop" translatable="false">/content-shop/.*\\/edit</string>
     <string name="path_hashtag_page_landing" translatable="false">/explore-hashtag/.*\\/</string>
     <string name="path_post_shop_picker" translatable="false">/content-shop/picker</string>
     <string name="applink_cp_path_create_post" translatable="false">/create_post/.*\</string>
     <string name="applink_cp_path_draft_post" translatable="false">/draft/.*\</string>
-    <string name="applink_cp_path_edit_post" translatable="false">/edit/.*\</string>
 
     <string name="applink_kol_post_detail_path_pattern">/post-detail/.*\</string>
     <string name="path_content_report" translatable="false">/content-report/.*\</string>

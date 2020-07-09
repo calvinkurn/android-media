@@ -6,9 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.createpost.TYPE_AFFILIATE
-import com.tokopedia.createpost.TYPE_CONTENT
-import com.tokopedia.createpost.TYPE_CONTENT_SHOP
+import com.tokopedia.createpost.*
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.fragment.AffiliateCreatePostFragment
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragment
@@ -37,22 +35,39 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
-        val uri = intent.data
+        intent.data?.let { uri ->
+            if (uri.lastPathSegment == TYPE_EDIT) {
+                val segmentUri = uri.pathSegments
+                intent.putExtra(PARAM_POST_ID, segmentUri[segmentUri.size - 2])
+                intent.putExtra(PARAM_TYPE, segmentUri[0])
+            }
 
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
+            val segmentUri = uri.pathSegments
+            if (segmentUri[0] == TYPE_CREATE_POST && segmentUri.size == 3) {
+                intent.putExtra(PARAM_PRODUCT_ID, segmentUri[1])
+                intent.putExtra(PARAM_AD_ID, segmentUri[2])
+                uri.getQueryParameter(TOKEN)?.let {
+                    intent.putExtra(TOKEN, uri.getQueryParameter(TOKEN))
+                }
+            }
+            if (segmentUri[0] == TYPE_DRAFT) {
+                intent.putExtra(DRAFT_ID, uri.lastPathSegment)
+            }
+
+            if(bundle.getString(PARAM_TYPE)==null){
+                if (uri.host?.contains(TYPE_CONTENT, false) == true) {
+                    intent.putExtra(PARAM_TYPE, TYPE_CONTENT_SHOP)
+                } else {
+                    intent.putExtra(PARAM_TYPE, TYPE_AFFILIATE)
+                }
+            }
+
+            if (intent.extras != null) {
+                bundle.putAll(intent.extras)
+            }
         }
 
-        if (uri?.pathSegments?.get(0)?.equals("edit") == true) {
-            intent.putExtra(PARAM_POST_ID, uri.lastPathSegment)
-        }
-
-        if (uri?.host?.contains(TYPE_CONTENT, false) == true) {
-            intent?.putExtra(PARAM_TYPE, TYPE_CONTENT_SHOP)
-        } else {
-            intent?.putExtra(PARAM_TYPE, TYPE_AFFILIATE)
-        }
-        return when (intent?.extras?.get(PARAM_TYPE)) {
+        return when (intent.extras?.get(PARAM_TYPE)) {
             TYPE_AFFILIATE -> AffiliateCreatePostFragment.createInstance(bundle)
             TYPE_CONTENT_SHOP -> ContentCreatePostFragment.createInstance(bundle)
             else -> {

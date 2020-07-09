@@ -246,8 +246,8 @@ public interface ApplinkConst {
     String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";
     String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
-    String AFFILIATE_EDIT = "tokopedia://affiliate/edit/{post_id}";
-    String SHOP_POST_EDIT = "tokopedia://content-shop/edit/{post_id}";
+    String AFFILIATE_EDIT = "tokopedia://content/affiliate/{id}/edit";
+    String SHOP_POST_EDIT = "tokopedia://content/content-shop/{id}/edit";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
 
