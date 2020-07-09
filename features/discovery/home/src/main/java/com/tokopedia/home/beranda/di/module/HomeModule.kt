@@ -13,6 +13,8 @@ import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaul
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactory
+import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.repository.HomeRepository
@@ -28,6 +30,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 @Module(includes = [
     HomeDataSourceModule::class,
@@ -80,6 +83,10 @@ class HomeModule {
     @Provides
     @HomeScope
     fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface!!, remoteConfig)
+
+    @Provides
+    @HomeScope
+    fun provideHomeDynamicChannelVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface!!, remoteConfig)
 
     @HomeScope
     @Provides

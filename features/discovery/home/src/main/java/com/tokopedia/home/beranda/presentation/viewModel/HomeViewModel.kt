@@ -678,6 +678,8 @@ open class HomeViewModel @Inject constructor(
                         list = visitableMutableList)
             }
         }
+        if (detectHomeRecom == null) getFeedTabData()
+
         return homeDataModel
     }
 
@@ -713,8 +715,9 @@ open class HomeViewModel @Inject constructor(
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
-                    updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
+//                    updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     getHeaderData()
+                    getDynamicChannelData()
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
@@ -803,6 +806,27 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getDynamicChannelData(){
+        launchCatchError(coroutineContext, block = {
+            getDynamicChannelsUseCase.get().setParams()
+            val data = getDynamicChannelsUseCase.get().executeOnBackground()
+            if(data.isNotEmpty()){
+                val newList = _homeLiveData.value?.list?.toMutableList()
+                newList?.addAll(data)
+
+                val newHomeDataModel = _homeLiveData.value?.copy(list = newList?.toList()?: listOf(), isCache = false)
+
+                updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA,
+                        homeData = newHomeDataModel
+                ))
+
+//                _trackingLiveData.postValue(Event(data) as Event<List<HomeVisitable>>?)
+            }
+        }){
+            it.printStackTrace()
+        }
+    }
+
     fun getDynamicChannelData(dynamicChannelDataModel: DynamicChannelDataModel, position: Int){
         launchCatchError(coroutineContext, block = {
             getDynamicChannelsUseCase.get().setParams(dynamicChannelDataModel.channel?.groupId ?: "")
@@ -819,7 +843,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+//                _trackingLiveData.postValue(Event(data) as Event<List<HomeVisitable>>?)
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
@@ -842,7 +866,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+//                _trackingLiveData.postValue(Event(data) as Event<List<HomeVisitable>>?)
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))

@@ -12,6 +12,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
@@ -23,6 +24,8 @@ import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -406,10 +409,10 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDataMapper: HomeDataMapper): GetDynamicChannelsUseCase{
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
+    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetDynamicChannelsUseCase{
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeChannelData>(graphqlRepository)
         useCase.setGraphqlQuery(dynamicChannelQuery)
-        return GetDynamicChannelsUseCase(useCase, homeDataMapper)
+        return GetDynamicChannelsUseCase(useCase, homeDynamicChannelDataMapper)
     }
 
     @Provides

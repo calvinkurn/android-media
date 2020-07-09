@@ -24,7 +24,6 @@ class HomeDataMapper(
                 .addUserWalletVisitable()
                 .addDynamicIconVisitable()
                 .addGeolocationVisitable()
-                .addDynamicChannelVisitable()
                 .build()
         BenchmarkHelper.endSystraceSection()
         return HomeDataModel(homeData.homeFlag, list, isCache)

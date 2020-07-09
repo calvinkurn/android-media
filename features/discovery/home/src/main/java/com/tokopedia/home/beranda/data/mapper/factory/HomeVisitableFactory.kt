@@ -12,6 +12,5 @@ interface HomeVisitableFactory {
     fun addUserWalletVisitable(): HomeVisitableFactory
     fun addGeolocationVisitable(): HomeVisitableFactory
     fun addDynamicIconVisitable(): HomeVisitableFactory
-    fun addDynamicChannelVisitable(): HomeVisitableFactory
     fun build(): List<Visitable<*>>
 }

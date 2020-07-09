@@ -1,9 +1,13 @@
 package com.tokopedia.home.beranda.domain.interactor
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.usecase.RequestParams
@@ -11,27 +15,27 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetDynamicChannelsUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<HomeData>,
-        private val homeDataMapper: HomeDataMapper
-) : UseCase<List<DynamicChannelDataModel>>(){
+        private val graphqlUseCase: GraphqlUseCase<HomeChannelData>,
+        private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
+) : UseCase<List<Visitable<*>>>(){
     private val params = RequestParams.create()
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        graphqlUseCase.setTypeClass(HomeData::class.java)
+        graphqlUseCase.setTypeClass(HomeChannelData::class.java)
     }
 
-    fun setParams(groupIds: String){
+    fun setParams(groupIds: String = ""){
         params.parameters.clear()
         params.putString(GROUP_IDS, groupIds)
     }
 
-    override suspend fun executeOnBackground(): List<DynamicChannelDataModel> {
+    override suspend fun executeOnBackground(): List<Visitable<*>> {
         graphqlUseCase.clearCache()
         graphqlUseCase.setRequestParams(params.parameters)
-        val homeData = graphqlUseCase.executeOnBackground()
-        val homeViewModel = homeDataMapper.mapToHomeViewModel(homeData, false)
-        return homeViewModel.list.filterIsInstance(DynamicChannelDataModel::class.java)
+        val dynamicChannelData = graphqlUseCase.executeOnBackground()
+        val homeViewModel = homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(dynamicChannelData, false)
+        return homeViewModel
     }
 
     companion object{

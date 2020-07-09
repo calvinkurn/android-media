@@ -998,42 +998,6 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickProductChannelMix(String type,
-                                                   DynamicHomeChannel.Channels bannerChannel,
-                                                   boolean isFreeOngkir,
-                                                   int gridPosition) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition, isFreeOngkir, type)
-            );
-        }
-    }
-
-    public static void eventClickBannerChannelMix(DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    HomePageTracking.getEnhanceClickBannerChannelMix(bannerChannel)
-            );
-        }
-    }
-
-    public static void eventClickBannerButtonChannelMix(Context context, DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickBannerButtonChannelMix()
-            );
-        }
-    }
-
-    private static String getHomeAttribution(int position, String creativeName, String homeAttribution) {
-        if (homeAttribution != null)
-            return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
-        return "";
-    }
-
     public static HashMap<String, Object> getEnhanceImpressionSprintSaleHomePage(
             String channelId,
             DynamicHomeChannel.Grid[] grid,
