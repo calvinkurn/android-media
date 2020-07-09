@@ -73,12 +73,13 @@ class ContainerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val currentFragment = PageFragment(currentFragmentType)
 
         homeFragmentTitle = context?.getString(R.string.sah_home).orEmpty()
         homeFragment.bindListener(sellerHomeListener)
 
         setupView()
-        showHomePage()
+        showSelectedPage(currentFragment)
     }
 
     private fun setupView() = view?.run {
@@ -99,11 +100,6 @@ class ContainerFragment : Fragment() {
         }
     }
 
-    private fun showHomePage() {
-        val homePage = PageFragment(FragmentType.HOME)
-        showFragment(homeFragment, homePage, homeFragmentTitle)
-    }
-
     private fun showFragment(fragment: Fragment?, page: PageFragment, title: String) {
         handler.post {
             if (null == fragment || !isAdded) {
@@ -119,7 +115,7 @@ class ContainerFragment : Fragment() {
                 manager.fragments.forEach { fmt ->
                     if (fragmentName == fmt.javaClass.name) {
                         when (page.type) {
-                            FragmentType.PRODUCT -> showProductMangePage(fmt, transaction, page, fragmentName)
+                            FragmentType.PRODUCT -> showProductManagePage(fmt, transaction, page, fragmentName)
                             FragmentType.ORDER -> showSomPage(fmt, transaction, page, fragmentName)
                             else -> transaction.show(fmt)
                         }
@@ -171,7 +167,11 @@ class ContainerFragment : Fragment() {
     }
 
     private fun addFragmentToTransaction(transaction: FragmentTransaction, fragment: Fragment, fragmentName: String) {
-        transaction.add(R.id.sahFragmentContainer, fragment, fragmentName).show(fragment)
+        if(fragment.isAdded) {
+            transaction.show(fragment)
+        } else {
+            transaction.add(R.id.sahFragmentContainer, fragment, fragmentName).show(fragment)
+        }
     }
 
     private fun addProductFragment(fragment: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
@@ -192,6 +192,7 @@ class ContainerFragment : Fragment() {
         if (page.tabPage.isNotBlank() && SomTabConst.STATUS_ALL_ORDER != page.tabPage) {
             val mSomListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
             if (null != mSomListFragment) {
+                transaction.remove(fragment)
                 addFragmentToTransaction(transaction, mSomListFragment, fragmentName)
             } else {
                 addFragmentToTransaction(transaction, fragment, fragmentName)
@@ -201,7 +202,7 @@ class ContainerFragment : Fragment() {
         }
     }
 
-    private fun showProductMangePage(fmt: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
+    private fun showProductManagePage(fmt: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
         val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
         if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
             val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock))
@@ -231,7 +232,7 @@ class ContainerFragment : Fragment() {
     }
 
     fun showSelectedPage(page: PageFragment) {
-        currentFragmentType = page.type
+        setCurrentFragment(page)
 
         when (page.type) {
             FragmentType.HOME -> showFragment(homeFragment, page, homeFragmentTitle)
@@ -240,6 +241,10 @@ class ContainerFragment : Fragment() {
             FragmentType.ORDER -> showFragment(somListFragment, page, getString(R.string.sah_sale))
             else -> updateFragmentVisibilityHint(null)
         }
+    }
+
+    fun setCurrentFragment(page: PageFragment) {
+        currentFragmentType = page.type
     }
 
     fun showNotifCenterBadge(notif: NotificationCenterUnreadUiModel) {

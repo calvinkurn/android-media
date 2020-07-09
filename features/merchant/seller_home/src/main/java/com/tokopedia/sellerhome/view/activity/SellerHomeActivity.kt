@@ -46,8 +46,6 @@ import javax.inject.Inject
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     companion object {
-        private const val KEY_LAST_PAGE = "last_page"
-
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 
@@ -80,7 +78,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     @FragmentType
     private var currentSelectedMenu = FragmentType.NONE
     private var canExitApp = false
-    private var lastProductMangePage = PageFragment(FragmentType.PRODUCT)
+    private var lastProductManagePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
 
     private var statusBarCallback: StatusBarCallback? = null
@@ -93,8 +91,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         setContentView(R.layout.activity_sah_seller_home)
 
         initInjector()
-        setupBottomNav()
         setupDefaultPage()
+        setupBottomNav()
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
@@ -155,9 +153,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         DeepLinkHandler.handleAppLink(intent) { page ->
             when(page.type) {
                 FragmentType.ORDER -> lastSomTab = page
-                FragmentType.PRODUCT -> lastProductMangePage = page
+                FragmentType.PRODUCT -> lastProductManagePage = page
             }
-            showSelectedPage(page)
+            showPageFromAppLink(page)
         }
     }
 
@@ -191,7 +189,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
                 }
                 R.id.menu_sah_product -> {
                     UpdateShopActiveService.startService(this)
-                    onClickBottomNav(lastProductMangePage, TrackingConstant.CLICK_PRODUCT)
+                    onClickBottomNav(lastProductManagePage, TrackingConstant.CLICK_PRODUCT)
                 }
                 R.id.menu_sah_chat -> {
                     UpdateShopActiveService.startService(this)
@@ -229,7 +227,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private fun resetPages(page: PageFragment) {
         when(page.type) {
-            FragmentType.PRODUCT -> lastProductMangePage = PageFragment(FragmentType.PRODUCT)
+            FragmentType.PRODUCT -> lastProductManagePage = PageFragment(FragmentType.PRODUCT)
             FragmentType.ORDER -> lastSomTab = PageFragment(FragmentType.ORDER)
         }
     }
@@ -243,7 +241,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         currentSelectedMenu = type
 
         showFragment(otherSettingsFragment)
-        showSelectedPage(PageFragment(type))
+        setSelectedPage(PageFragment(type))
 
         NavigationTracking.sendClickBottomNavigationMenuEvent(TrackingConstant.CLICK_OTHERS)
     }
@@ -270,12 +268,18 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             if(remoteConfig.isImprovementDisabled()) {
                 transaction.commitNowAllowingStateLoss()
             } else {
-                transaction.commit()
+                transaction.commitAllowingStateLoss()
             }
         }
     }
 
-    private fun showSelectedPage(page: PageFragment) {
+    private fun showPageFromAppLink(page: PageFragment) {
+        containerFragment.setCurrentFragment(page)
+        showFragment(containerFragment)
+        setSelectedPage(page)
+    }
+
+    private fun setSelectedPage(page: PageFragment) {
         val pageType = page.type
         setCurrentFragmentType(pageType)
         sahBottomNav.currentItem = pageType
