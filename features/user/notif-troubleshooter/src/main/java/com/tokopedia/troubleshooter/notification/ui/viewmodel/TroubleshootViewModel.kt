@@ -14,7 +14,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface TroubleshootContract {
-    fun updateToken()
+    fun getNewToken()
+    fun updateToken(newToken: String)
     fun troubleshoot()
 }
 
@@ -31,6 +32,9 @@ class TroubleshootViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
+    private val _token = MutableLiveData<String>()
+    val fcmToken: LiveData<String> get() = _token
+
     override fun troubleshoot() {
         launchCatchError(block = {
             val result = troubleshootUseCase(RequestParams.EMPTY)
@@ -42,10 +46,14 @@ class TroubleshootViewModel @Inject constructor(
         })
     }
 
-    override fun updateToken() {
+    override fun getNewToken() {
         instanceManager.getNewToken { token ->
-            messagingManager.onNewToken(token)
+            _token.value = token
         }
+    }
+
+    override fun updateToken(newToken: String) {
+        messagingManager.onNewToken(newToken)
     }
 
 }
