@@ -30,12 +30,13 @@ import org.junit.Rule
 import org.junit.Test
 
 
-private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/home/mix_left.json"
-private const val TAG = "MixLeftTrackingUiTest"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT = "tracker/home/mix_left.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP = "tracker/home/mix_top.json"
+private const val TAG = "DynamicChannelComponentAnalyticsTest"
 /**
  * @author by yoasfs on 07/07/20
  */
-class MixLeftTrackingUiTest {
+class DynamicChannelComponentAnalyticsTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<InstrumentationHomeTestActivity> = ActivityTestRule(InstrumentationHomeTestActivity::class.java)
@@ -44,8 +45,6 @@ class MixLeftTrackingUiTest {
 
     @Test
     fun testMixLeftHome() {
-        addDebug()
-
         initTest()
 
         doActivityTest()
@@ -57,28 +56,17 @@ class MixLeftTrackingUiTest {
         addDebugEnd()
     }
 
-
-
     private fun initTest() {
         gtmLogDBSource.deleteAll().subscribe()
-//        login()
         waitForData()
-    }
-
-    private fun login() {
-        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
     private fun waitForData() {
         Thread.sleep(5000)
     }
 
-    private fun addDebug() {
-        Thread.sleep(10000)
-    }
-
     private fun addDebugEnd() {
-        Thread.sleep(1000000)
+        Thread.sleep(5000)
     }
 
     private fun doActivityTest()  {
@@ -88,13 +76,27 @@ class MixLeftTrackingUiTest {
             scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
             checkProductOnDynamicChannel(homeRecyclerView, i)
         }
+        activityRule.activity.finish()
         logTestMessage("Done UI Test")
     }
 
     private fun doAnalyticDebuggerTest() {
-        assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME) {
+        waitForData()
+        assertMixLeftData()
+        assertMixTopData()
+    }
+
+    private fun assertMixLeftData() {
+        assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT) {
+            logTestMessage("Asserting Mix Left Data...")
             it.assertStatus()
-            logTestMessage("Asserting Status...")
+        }
+    }
+
+    private fun assertMixTopData() {
+        assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP) {
+            logTestMessage("Asserting Mix Top Data...")
+            it.assertStatus()
         }
     }
 
@@ -117,6 +119,14 @@ class MixLeftTrackingUiTest {
             is MixLeftComponentViewHolder -> {
                 logTestMessage("VH MixLeftComponentViewHolder")
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
+            }
+            is MixTopBannerViewHolder -> {
+                logTestMessage("VH MixTopBannerViewHolder")
+                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv)
+            }
+            is MixTopComponentViewHolder -> {
+                logTestMessage("VH MixTopComponentViewHolder")
+                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv)
             }
         }
     }
@@ -162,14 +172,17 @@ class MixLeftTrackingUiTest {
     }
 
     private fun Validator.assertStatus() {
-        logTestMessage("Start Asserting Status...")
         val eventAction = data["eventAction"]
+        logTestMessage("Start Asserting Status \"$eventAction\"...")
 
         if (status != Status.SUCCESS) {
             logTestMessage("FAILED Asserting Status...")
-            throw AssertionError("\"$eventAction\" event status = $status.")
+            Log.d(TAG,"\"$eventAction\" event status = $status.")
         } else
             Log.d(TAG, "\"$eventAction\" event success. Total hits: ${matches.size}.")
+
+
+        Log.d(TAG, "==============================================")
     }
 
 }

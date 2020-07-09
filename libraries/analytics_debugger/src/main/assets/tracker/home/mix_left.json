@@ -4,20 +4,20 @@
   "query": [
     {
       "eventCategory": "homepage",
-      "event": "view_item_list",
-      "eventAction": "impression on product dynamic channel left carousel",
-      "item_list": "{{.*}}",
-      "eventLabel": "{{.*}}",
-      "channelId": "{{.*}}"
-    },
-    {
-      "eventCategory": "homepage",
       "event": "select_content",
       "eventAction": "click on product dynamic channel left carousel",
       "item_list": "{{.*}}",
       "eventLabel": "{{.*}}",
       "channelId": "{{.*}}",
       "campaignCode": "{{.*}}"
+    },
+    {
+      "eventCategory": "homepage",
+      "event": "view_item_list",
+      "eventAction": "impression on product dynamic channel left carousel",
+      "item_list": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "channelId": "{{.*}}"
     },
     {
       "eventCategory": "homepage",
