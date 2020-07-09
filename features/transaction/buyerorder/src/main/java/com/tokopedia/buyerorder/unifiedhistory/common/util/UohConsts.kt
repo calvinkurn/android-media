@@ -15,4 +15,12 @@ object UohConsts {
     const val TYPE_FILTER_CATEGORY = 2
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
+
+    const val TICKER_TYPE_ANNOUNCEMENT = "announcement"
+    const val TICKER_TYPE_ERROR = "error"
+    const val TICKER_TYPE_INFORMATION = "information"
+    const val TICKER_TYPE_WARNING = "warning"
+
+    const val TICKER_URL = "#url"
+    const val TICKER_LABEL = "#label"
 }

@@ -296,24 +296,57 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun renderTicker() {
-        val listTickerData = arrayListOf<TickerData>()
-        listTickerData.add(TickerData("Ini Testing Feature Flag 1", "This content can consists of Html Tags", Ticker.TYPE_ANNOUNCEMENT, true))
-        listTickerData.add(TickerData("Ini Testing Feature Flag 2", "This content can consists of Html Tags", Ticker.TYPE_ANNOUNCEMENT, true))
-        context?.let {
-            val adapter = TickerPagerAdapter(it, listTickerData)
-            adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                }
-            })
-            ticker_info?.setDescriptionClickEvent(object: TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+        ticker_info?.visible()
 
-                override fun onDismiss() {
+        if (orderList.tickers.size > 1) {
+            val listTickerData = arrayListOf<TickerData>()
+            orderList.tickers.forEach {
+                var desc = it.text
+                if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
+                    desc += " ${getString(R.string.ticker_info_selengkapnya)
+                            .replace(UohConsts.TICKER_URL, it.action.appUrl)
+                            .replace(UohConsts.TICKER_LABEL, it.action.label)}"
                 }
+                listTickerData.add(TickerData(it.title, desc, getTickerType(it.text), true))
+            }
+            context?.let {
+                val adapter = TickerPagerAdapter(it, listTickerData)
+                adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                        // TODO : cek lagi url applink nya, make sure lagi nanti
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                    }
+                })
+                ticker_info?.setDescriptionClickEvent(object: TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
-            })
-            ticker_info?.addPagerView(adapter, listTickerData)
+                    override fun onDismiss() {
+                    }
+
+                })
+                ticker_info?.addPagerView(adapter, listTickerData)
+            }
+        } else {
+            orderList.tickers.first().let {
+                ticker_info?.tickerTitle = it.title
+                var desc = it.text
+                if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
+                    desc += " ${getString(R.string.ticker_info_selengkapnya)
+                            .replace(UohConsts.TICKER_URL, it.action.appUrl)
+                            .replace(UohConsts.TICKER_LABEL, it.action.label)}"
+                }
+                ticker_info?.setHtmlDescription(desc)
+                ticker_info?.tickerType = getTickerType(it.type)
+                ticker_info?.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                    }
+
+                    override fun onDismiss() {
+                    }
+
+                })
+            }
         }
     }
 
@@ -358,7 +391,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     desc_empty?.text = resources.getString(R.string.uoh_no_order_desc)
                     btn_empty?.visible()
                     btn_empty?.text = resources.getString(R.string.uoh_no_order_btn)
-                    // TODO : larinya kemana klo mulai belanja?
+                    // TODO : larinya kemana klo mulai belanja? answ : home
                 }
             }
         }
@@ -539,6 +572,26 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     datePicker.setTitle(getString(R.string.uoh_custom_end_date))
                 }
                 datePicker.setCloseClickListener { datePicker.dismiss() }
+            }
+        }
+    }
+
+    private fun getTickerType(typeStr: String): Int {
+        return when (typeStr) {
+            UohConsts.TICKER_TYPE_ANNOUNCEMENT -> {
+                Ticker.TYPE_ANNOUNCEMENT
+            }
+            UohConsts.TICKER_TYPE_ERROR -> {
+                Ticker.TYPE_ERROR
+            }
+            UohConsts.TICKER_TYPE_INFORMATION -> {
+                Ticker.TYPE_INFORMATION
+            }
+            UohConsts.TICKER_TYPE_WARNING -> {
+                Ticker.TYPE_WARNING
+            }
+            else -> {
+                Ticker.TYPE_ANNOUNCEMENT
             }
         }
     }

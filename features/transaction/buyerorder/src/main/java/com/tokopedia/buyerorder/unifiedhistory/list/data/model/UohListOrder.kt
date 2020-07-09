@@ -28,7 +28,7 @@ data class UohListOrder(
             val dateLimit: String = "",
 
             @SerializedName("tickers")
-            val tickers: List<Any> = listOf()
+            val tickers: List<Ticker> = listOf()
         ) {
             data class Order(
                 @SerializedName("orderUUID")
@@ -96,7 +96,7 @@ data class UohListOrder(
                         val totalPrice: TotalPrice = TotalPrice(),
 
                         @SerializedName("tickers")
-                        val tickers: List<Any> = listOf(),
+                        val tickers: List<Ticker> = listOf(),
 
                         @SerializedName("buttons")
                         val buttons: List<Button> = listOf(),
@@ -234,6 +234,43 @@ data class UohListOrder(
                 @SerializedName("label")
                 val label: String = ""
             )
+
+            data class Ticker(
+                    @SerializedName("action")
+                    val action: Action = Action(),
+
+                    @SerializedName("title")
+                    val title: String = "",
+
+                    @SerializedName("text")
+                    val text: String = "",
+
+                    @SerializedName("type")
+                    val type: String = "",
+
+                    @SerializedName("isFull")
+                    val isFull: Boolean = false
+            ) {
+                data class Action(
+                        @SerializedName("actionType")
+                        val actionType: String = "",
+
+                        @SerializedName("appURL")
+                        val appUrl: String = "",
+
+                        @SerializedName("webURL")
+                        val webUrl: String = "",
+
+                        @SerializedName("label")
+                        val label: String = "",
+
+                        @SerializedName("textColor")
+                        val textColor: String = "",
+
+                        @SerializedName("bgColor")
+                        val bgColor: String = ""
+                )
+            }
         }
     }
 }

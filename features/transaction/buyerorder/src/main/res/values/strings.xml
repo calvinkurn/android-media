@@ -467,4 +467,14 @@ Anda di sini.</string>
     <string name="uoh_apply_filter_label">Terapkan</string>
     <string name="uoh_custom_start_date">Mulai dari</string>
     <string name="uoh_custom_end_date">Sampai</string>
+
+    <string name="ticker_info_selengkapnya">
+        <![CDATA[
+        <html>
+        <body>
+        <a href="#url"><strong style="color: green;">#label</strong></a>
+        </body>
+        </html>
+        ]]>
+    </string>
 </resources>
