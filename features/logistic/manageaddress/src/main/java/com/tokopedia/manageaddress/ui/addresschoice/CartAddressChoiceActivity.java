@@ -8,21 +8,18 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
-import com.tokopedia.manageaddress.ui.cornerlist.CornerListFragment;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.manageaddress.R;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
-import com.tokopedia.manageaddress.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListFragment;
+import com.tokopedia.manageaddress.ui.cornerlist.CornerListFragment;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
@@ -56,70 +53,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private Token token;
     private String PARAM_ADDRESS_MODEL = "EDIT_PARAM";
     private CheckoutAnalyticsChangeAddress mAnalytics = new CheckoutAnalyticsChangeAddress();
-
-    public static Intent createInstance(Activity activity,
-                                        ArrayList<MultipleAddressAdapterData> dataList,
-                                        int parentPosition) {
-        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);
-        intent.putExtra(EXTRA_MULTIPLE_ADDRESS_DATA_LIST, dataList);
-        intent.putExtra(EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
-        return intent;
-    }
-
-    public static Intent createInstance(Activity activity,
-                                        RecipientAddressModel currentAddress,
-                                        ArrayList<MultipleAddressAdapterData> dataList,
-                                        int childPosition,
-                                        int parentPosition) {
-        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);
-        intent.putExtra(EXTRA_MULTIPLE_ADDRESS_DATA_LIST, dataList);
-        intent.putExtra(EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, childPosition);
-        intent.putExtra(EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
-        intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
-        return intent;
-    }
-
-    public static Intent createInstance(Activity activity,
-                                        RecipientAddressModel currentAddress,
-                                        int typeRequest) {
-        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, typeRequest);
-        if (currentAddress != null) {
-            intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
-        }
-        return intent;
-    }
-
-    public static Intent createInstance(Activity activity,
-                                        RecipientAddressModel currentAddress,
-                                        Token token,
-                                        int typeRequest) {
-        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, typeRequest);
-        intent.putExtra(EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
-        if (currentAddress != null) {
-            intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
-        }
-        return intent;
-    }
-
-    public static Intent createInstance(Activity activity,
-                                        int typeRequest) {
-        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, typeRequest);
-        return intent;
-    }
-
-    public static Intent createInstance(Activity activity,
-                                        int typeRequest,
-                                        Token token) {
-        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, typeRequest);
-        intent.putExtra(EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
-        return intent;
-    }
 
     @Override
     public void onAttachFragment(Fragment fragment) {
