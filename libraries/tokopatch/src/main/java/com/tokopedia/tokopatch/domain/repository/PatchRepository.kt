@@ -49,6 +49,10 @@ class PatchRepository(private val dataDao: DataDao, version: String) {
         dataDao.insertAll(result)
     }
 
+    suspend fun flush(){
+        dataDao.deleteAll()
+    }
+
     fun getPatch(applicationId: String, versionName: String, onSuccess: ((DataResponse) -> Unit),
                  onError: ((Throwable) -> Unit)) {
         client.getPatch(applicationId, versionName).enqueue(object : Callback<DataResponse>{

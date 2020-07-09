@@ -19,4 +19,6 @@ interface DataDao {
     @Delete
     suspend fun delete(result: DataResponse.Result)
 
+    @Query("DELETE FROM result")
+    suspend fun deleteAll()
 }

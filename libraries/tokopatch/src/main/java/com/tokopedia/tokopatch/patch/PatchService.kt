@@ -88,6 +88,7 @@ class PatchService : JobIntentService() {
     private fun onSuccessGetPatch(data: DataResponse) {
         GlobalScope.launch {
             data.result?.let {
+                repository.flush()
                 it.forEachIndexed { index, result ->
                     result.uid = index
                     repository.insert(result)
