@@ -81,7 +81,6 @@ import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.manageaddress.ui.addresschoice.CartAddressChoiceActivity;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
@@ -750,18 +749,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent;
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION);;
         if (shipmentAddressFormData.getKeroDiscomToken() != null &&
                 shipmentAddressFormData.getKeroUnixTime() != 0) {
             Token token = new Token();
             token.setUt(shipmentAddressFormData.getKeroUnixTime());
             token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
 
-            intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS, token);
+            intent.putExtra(CheckoutConstant.EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
+            intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
+            /*intent = CartAddressChoiceActivity.createInstance(getActivity(),
+                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS, token);*/
         } else {
-            intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
+            intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
+            /*intent = CartAddressChoiceActivity.createInstance(getActivity(),
+                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);*/
         }
 
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
@@ -1265,7 +1267,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
                 break;
 
-            case CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS:
+            case CheckoutConstant.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS:
                 shipmentPresenter.processInitialLoadCheckoutPage(
                         false, isOneClickShipment(), isTradeIn(), false,
                         false, null, getDeviceId(), getCheckoutLeasingId()
@@ -1287,10 +1289,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onChangeAddress() {
         sendAnalyticsOnClickChangeAddress();
         sendAnalyticsOnClickChooseOtherAddressShipment();
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION);
+        intent.putExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS, shipmentPresenter.getRecipientAddressModel());
+        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST,  CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
+        startActivityForResult(intent,CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
+        /*Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 shipmentPresenter.getRecipientAddressModel(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
-        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
+        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);*/
     }
 
     @Override
@@ -2192,10 +2198,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel) {
         if (getActivity() != null) {
             checkoutAnalyticsCourierSelection.eventClickGantiNomor(isTradeIn());
-            Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.CHECKOUT);
+            intent.putExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS, shipmentPresenter.getRecipientAddressModel());
+            intent.putExtra(CheckoutConstant.EXTRA_DISTRICT_RECOMMENDATION_TOKEN, shipmentPresenter.getKeroToken());
+            intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN);
+            startActivityForResult(intent, REQUEST_CODE_EDIT_ADDRESS );
+          /*  Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                     shipmentPresenter.getRecipientAddressModel(), shipmentPresenter.getKeroToken(),
                     CartAddressChoiceActivity.TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN);
-            startActivityForResult(intent, REQUEST_CODE_EDIT_ADDRESS);
+            startActivityForResult(intent, REQUEST_CODE_EDIT_ADDRESS);*/
         }
     }
 
