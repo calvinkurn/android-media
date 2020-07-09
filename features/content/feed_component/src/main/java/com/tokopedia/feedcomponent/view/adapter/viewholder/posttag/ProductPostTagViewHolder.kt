@@ -114,7 +114,7 @@ class ProductPostTagViewHolder(val mainView: View,
             tag.textColor = getDefaultTextColor()
         }
         textView.setTextColor(Color.parseColor(tag.textColor.hex))
-        textView.background = renderDrawable(tag.bgColor.hex, tag.bgColor.opacity)
+        textView.background = renderDrawable(tag.bgColor.hex, OPACITY_70)
     }
 
     private fun renderDrawable(hex: String, opacity: String): Drawable {
@@ -128,7 +128,7 @@ class ProductPostTagViewHolder(val mainView: View,
 
     private fun calculateBackgroundAlpha(opacityString: String): Int {
         val floatValue = opacityString.toFloat()
-        return ((floatValue / 100) * 255).toInt()
+        return (floatValue * 255).toInt()
     }
 
     private fun getDefaultBackgroundColor(): ColorPojo {
