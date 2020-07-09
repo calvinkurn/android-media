@@ -7,8 +7,7 @@
       "event": "view_item_list",
       "eventAction": "impression on product dynamic channel top carousel",
       "item_list": "{{.*}}",
-      "eventLabel": "{{.*}}",
-      "channelId": "{{.*}}"
+      "eventLabel": "{{.*}}"
     },
     {
       "eventCategory": "homepage",
