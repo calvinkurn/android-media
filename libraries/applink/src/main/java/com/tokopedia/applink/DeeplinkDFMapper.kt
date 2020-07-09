@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_HOTL
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
@@ -174,7 +175,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DF_BASE, R.string.applink_title_affiliate))
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(KOL_COMMENT) }, DF_BASE, R.string.applink_kol_title_comment))
-            add(DFP({ it.startsWithPattern(CONTENT_DETAIL) }, DF_BASE, R.string.applink_kol_title_post_detail))
+            add(DFP({ it.startsWithPattern(INTERNAL_CONTENT_POST_DETAIL) }, DF_BASE, R.string.applink_kol_title_post_detail))
             add(DFP({ it.startsWithPattern(KOL_YOUTUBE) }, DF_BASE, R.string.applink_kol_title_post_youtube))
             add(DFP({ it.startsWithPattern(KOL_CONTENT_REPORT) }, DF_BASE, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(KOL_VIDEO_DETAIL) }, DF_BASE, R.string.applink_kol_title_video_detail))
