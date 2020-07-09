@@ -51,6 +51,7 @@ class ShopHomeAdapter(
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
+        visitables.clear()
         val lastIndex = visitables.size
         visitables.addAll(data)
         notifyItemRangeInserted(lastIndex, data.size)
