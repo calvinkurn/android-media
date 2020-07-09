@@ -7,8 +7,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.util.AttributeSet
-import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -188,8 +188,11 @@ class GlobalSearchView : BaseCustomView {
                 }
             })
 
+            searchBarTextField.imeOptions = EditorInfo.IME_ACTION_DONE
+
             searchBarTextField.setOnEditorActionListener { _, actionId, event ->
-                if ((actionId == KeyEvent.KEYCODE_ENTER) && (event.action == KeyEvent.ACTION_DOWN)) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    searchViewListener?.onQueryTextChangeListener(searchBarTextField.text.trim().toString())
                     hideKeyboard(searchBarView.searchBarTextField)
                     return@setOnEditorActionListener true
                 }
