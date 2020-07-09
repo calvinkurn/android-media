@@ -487,12 +487,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         coachMarkSummary = CoachMarkItem(itemViewSummary?.findViewById(R.id.cardSummary),
                 getString(R.string.average_rating_title),
                 getString(R.string.average_rating_desc))
-
-        if (productItemList?.isEmpty() == true) {
-            coachMarkFilterAndSort()
-            coachMarkSummary()
-            showCoachMark()
-        }
     }
 
     override fun onAddedCoachMarkItemProduct(view: View) {
@@ -505,8 +499,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             coachMarkItemRatingProduct()
             coachMarkFilterAndSort()
             coachMarkSummary()
-            showCoachMark()
+        } else {
+            coachMarkFilterAndSort()
+            coachMarkSummary()
         }
+
+        showCoachMark()
     }
 
     private fun showCoachMark() {
