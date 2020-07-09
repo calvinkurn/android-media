@@ -20,7 +20,7 @@ class DFDownloadWorker(private val appContext: Context, params: WorkerParameters
             try {
                 val retryDelay = getDefaultDelayFromConfigInMillis(context)
                 val initialDelay = if (isImmediate) {
-                    10
+                    1000 //1s
                 } else {
                     retryDelay
                 }
