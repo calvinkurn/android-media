@@ -37,7 +37,7 @@
 
     </RelativeLayout>
 
-    <com.tokopedia.shop_score.view.widget.SquareProgressBar
+    <com.tokopedia.shop.score.view.widget.SquareProgressBar
         android:id="@+id/progress_bar_shop_score_detail"
         android:layout_width="match_parent"
         android:layout_height="12dp"

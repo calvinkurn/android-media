@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.shop_score">
+    package="com.tokopedia.shop.score">
 
-    <application>
+    <application
+        android:hasCode="true">
         <activity
             android:name=".view.activity.ShopScoreDetailActivity"
-            android:label="@string/title_shop_score_seller"
+            android:label="@string/title_shopscore"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -87,4 +87,7 @@
 
     <!-- Dynamic features Shop Showcase -->
     <string name="title_shop_showcase">Shop Showcase</string>
+
+    <!-- Shop Score Title  -->
+    <string name="title_shopscore">Performa Toko/ Shop Score</string>
 </resources>
