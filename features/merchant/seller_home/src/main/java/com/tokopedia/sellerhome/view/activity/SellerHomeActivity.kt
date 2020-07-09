@@ -22,6 +22,7 @@ import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
+import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
@@ -35,7 +36,6 @@ import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
-import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -46,6 +46,8 @@ import javax.inject.Inject
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     companion object {
+        private const val KEY_LAST_PAGE = "last_page"
+
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 

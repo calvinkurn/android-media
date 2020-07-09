@@ -37,6 +37,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
+import com.tokopedia.sellerorder.BuildConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -216,7 +217,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun showSellerMigrationTicker() {
-        if (isSellerMigrationEnabled(context)) {
+        if(isSellerMigrationEnabled(context)) {
             somListSellerMigrationTicker.apply {
                 tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
                 setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
@@ -224,7 +225,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     override fun onDescriptionViewClick(charSequence: CharSequence) {
                         openSellerMigrationBottomSheet()
                     }
-
                     override fun onDismiss() {
                         // No Op
                     }
@@ -473,7 +473,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             SomAnalytics.eventClickSeeMoreOnTicker(itemData.toString())
                         }
                     })
-                    ticker_info?.setDescriptionClickEvent(object : TickerCallback {
+                    ticker_info?.setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                         override fun onDismiss() {
@@ -579,7 +579,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     if (orderList.orders.isNotEmpty()) {
                         renderOrderList()
                         showCoachMarkProducts()
-                    } else {
+                    }
+
+                    else {
                         if (isFilterApplied) {
                             if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
                                 val inputFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -757,7 +759,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         val msg = data.getStringExtra(RESULT_SET_DELIVERED)
                         refreshThenShowToasterOk(msg)
                     }
-                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP) -> {
+                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP)  ->  {
                         val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
                         refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
                     }
@@ -768,9 +770,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun refreshThenShowToasterOk(message: String) {
         refreshHandler?.startRefresh()
-        val toasterSuccess = Toaster
         view?.let { v ->
-            toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, SomConsts.ACTION_OK)
+            val toasterSuccess = Toaster.build(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, SomConsts.ACTION_OK)
+            toasterSuccess.show()
         }
     }
 

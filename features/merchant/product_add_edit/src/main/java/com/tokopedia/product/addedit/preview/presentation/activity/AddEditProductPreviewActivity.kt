@@ -54,7 +54,9 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         return AddEditProductPreviewFragment.createInstance(productId, draftId, isDuplicate)
     }
 
-    override fun getLayoutRes() = R.layout.activity_add_edit_product_preview
+    override fun getLayoutRes() = com.tokopedia.product.addedit.R.layout.activity_add_edit_product_preview
+
+    override fun getParentViewResourceID(): Int = com.tokopedia.product.addedit.R.id.parent_view
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // get draftId from failed notif

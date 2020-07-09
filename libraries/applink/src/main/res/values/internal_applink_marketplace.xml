@@ -62,6 +62,7 @@
     <string name="path_mitra_toppers_dashboard" translatable="false">/mitra-toppers-dashboard</string>
     <string name="path_seller_info" translatable="false">/seller-info</string>
     <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
+    <string name="path_shop_favourite_list" translatable="false">/shop-favourites</string>
 
     <string name="path_review_inbox" translatable="false">/review</string>
     <string name="path_review_inbox_detail" translatable="false">/review/.*\\/</string>

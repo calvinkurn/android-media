@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -29,6 +30,9 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
+import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
@@ -87,8 +91,13 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         ViewModelProvider(this, viewModelFactory)
     }
 
+
     private val viewModel by lazy {
         viewModelProvider.get(CreateMerchantVoucherStepsViewModel::class.java)
+    }
+
+    private val performanceMonitoring: MvcPerformanceMonitoringInterface by lazy {
+        MvcPerformanceMonitoring(MvcPerformanceMonitoringType.Create)
     }
 
     private val viewPagerAdapter by lazy {
@@ -245,6 +254,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private var bannerBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring.initMvcPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_merchant_voucher_steps)
         initInjector()
@@ -325,6 +335,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private fun initiateVoucherPage() {
+        performanceMonitoring.startNetworkMvcPerformanceMonitoring()
         when {
             checkIfDuplicate() -> return
             checkIfEdit() -> {
@@ -358,6 +369,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             }
         })
         viewModel.initiateVoucherLiveData.observe(this, Observer { result ->
+            performanceMonitoring.startRenderMvcPerformanceMonitoring()
             createMerchantVoucherLoader?.gone()
             when(result) {
                 is Success -> {
@@ -393,6 +405,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             createMerchantVoucherViewPager?.currentItem = step
                         }
                     }
+                    createMerchantVoucherViewPager?.setOnLayoutListenerReady()
                 }
                 is Fail -> {
                     val returnIntent = Intent().apply {
@@ -562,6 +575,17 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                 userId = userSession.userId
         )
         cancelDialog.show()
+    }
+
+    private fun View.setOnLayoutListenerReady() {
+        viewTreeObserver?.run {
+            addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    performanceMonitoring.stopPerformanceMonitoring()
+                    removeOnGlobalLayoutListener(this)
+                }
+            })
+        }
     }
 
     private fun onReturnToStep(@VoucherCreationStep step: Int) {

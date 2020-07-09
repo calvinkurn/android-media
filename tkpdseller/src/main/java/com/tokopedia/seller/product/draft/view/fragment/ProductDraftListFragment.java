@@ -28,7 +28,6 @@ import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.product.addedit.tracking.ProductAddEditDraftListPageTracking;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
@@ -39,6 +38,7 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.draft.analytic.ProductDraftListTracker;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
+import com.tokopedia.seller.product.draft.tracking.ProductAddEditDraftListPageTracking;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
@@ -201,14 +201,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
                     startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
                     return true;
-                }
-            });
-            item.getSubMenu().findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    Intent intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(getContext());
-                    startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE);
-                    return false;
                 }
             });
         }
