@@ -10,8 +10,9 @@ import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNaviga
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationExploreCategory
 import com.tokopedia.applink.category.DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeepLinkMapperCreatePost.getContentCreatePostDeepLink
-import com.tokopedia.applink.content.DeepLinkMapperKol.getKolDeepLink
+import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationInterestPick
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationPlay
@@ -299,12 +300,9 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalGlobal.FORGOT_PASSWORD),
             DLP.startWith(ApplinkConst.PRODUCT_ADD) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
             DLP.startWithPattern(ApplinkConst.KOL_COMMENT) { _, _, deeplink -> getKolDeepLink(deeplink) },
-            DLP(logic = { _, uri, _ -> uri.host == Uri.parse(ApplinkConst.CONTENT_DETAIL).host && uri.pathSegments.size == 1 },
+            DLP(logic = { _, uri, _ -> DeeplinkMapperContent.isPostDetailDeepLink(uri) },
                     targetDeeplink = { _, _, deeplink -> getKolDeepLink(deeplink) }),
             DLP.startWithPattern(ApplinkConst.KOL_YOUTUBE) { _, _, deeplink -> getKolDeepLink(deeplink) },
-            DLP.startWithPattern(ApplinkConst.KOL_CONTENT_REPORT) { _, _, deeplink -> getKolDeepLink(deeplink) },
-            DLP.startWithPattern(ApplinkConst.KOL_VIDEO_DETAIL) { _, _, deeplink -> getKolDeepLink(deeplink) },
-            DLP.startWithPattern(ApplinkConst.KOL_MEDIA_PREVIEW) { _, _, deeplink -> getKolDeepLink(deeplink) },
             DLP.startWith(ApplinkConst.CONTENT_CREATE_POST) { _, _, deeplink -> getContentCreatePostDeepLink(deeplink) },
             DLP.startWithPattern(ApplinkConst.CONTENT_DRAFT_POST) { _, _, deeplink -> getContentCreatePostDeepLink(deeplink) },
             DLP.startWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST) { _, _, deeplink -> getContentCreatePostDeepLink(deeplink) },

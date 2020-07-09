@@ -35,7 +35,7 @@
 
                 <data
                     android:host="@string/host_content"
-                    android:pathPattern="@string/applink_kol_post_detail_path_pattern"
+                    android:pathPattern="@string/kol_applink_post_detail_path_pattern"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
