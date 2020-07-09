@@ -13,6 +13,7 @@
 /features/user/groupchat/                       		@tokopedia/android-miniondave-dev
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeperanalytic-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
+/features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
 /features/discovery/home_recom/                     	@tokopedia/android-miniondave-dev
 /features/discovery/home_wishlist/                     	@tokopedia/android-miniondave-dev
 /features/discovery/recentview/                     	@tokopedia/android-miniondave-dev
@@ -155,7 +156,9 @@
 /features/logistic/logisticorder/                    	@tokopedia/android-minionbob-dev
 /features/logistic/dropoff/                    	        @tokopedia/android-minionbob-dev
 /features/logistic/logisticcart/                		@tokopedia/android-minionbob-dev
+/features/logistic/manageaddress/                		@tokopedia/android-minionbob-dev
 /features/logistic/editshipping/                        @tokopedia/android-minion-bob
+
 
 /features/user/chatbot/                         		@tokopedia/android-miniondarth-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev

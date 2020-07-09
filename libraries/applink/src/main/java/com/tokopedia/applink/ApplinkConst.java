@@ -234,6 +234,9 @@ public interface ApplinkConst {
     String INTEREST_PICK = "tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
+    String KOL_CONTENT_REPORT = "tokopedia://content-report/{content_id}";
+    String KOL_VIDEO_DETAIL = "tokopedia://video-detail/{PARAM_ID}";
+    String KOL_MEDIA_PREVIEW = "tokopedia://media-preview/{post_id}";
 
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
@@ -316,6 +319,7 @@ public interface ApplinkConst {
         String CRACK = "tokopedia://gamification";
         String TAP_TAP_MANTAP = "tokopedia://gamification2";
         String DAILY_GIFT_BOX = "tokopedia://gamification_gift_daily";
+        String GIFT_TAP_TAP = "tokopedia://gamification_gift_60s";
     }
 
     interface Digital {
