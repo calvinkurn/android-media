@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.BroadcastState
 import com.tokopedia.play.broadcaster.view.state.BroadcastTimerState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -45,6 +46,7 @@ import javax.inject.Inject
 class PlayBroadcastViewModel @Inject constructor(
         private val mDataStore: PlayBroadcastDataStore,
         private val hydraConfigStore: HydraConfigStore,
+        private val sharedPref: HydraSharedPreferences,
         private val playPusher: PlayPusher,
         private val permissionUtil: PlayPermissionUtil,
         private val getConfigurationUseCase: GetConfigurationUseCase,
@@ -59,6 +61,9 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
+
+    val isFirstStreaming: Boolean
+        get() = sharedPref.isFirstStreaming()
 
     val channelId: String
         get() = hydraConfigStore.getChannelId()
@@ -281,6 +286,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun startCountDown() {
+        sharedPref.setNotFirstStreaming()
         _observableLiveInfoState.value = Event(BroadcastState.Init)
     }
 
