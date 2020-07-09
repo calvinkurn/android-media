@@ -150,6 +150,7 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/action_variant_save"
+        app:unifyButtonSize="medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 

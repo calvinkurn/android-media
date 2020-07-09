@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
@@ -20,6 +21,8 @@ class AddEditProductVariantDetailActivity: BaseSimpleActivity(), HasComponent<Ad
                         .putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
     }
 
+    override fun getLayoutRes() = R.layout.activity_add_edit_product_variant_detail
+
     override fun getNewFragment(): Fragment {
         val cacheManagerId = intent?.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
         return AddEditProductVariantDetailFragment.createInstance(cacheManagerId)
@@ -31,12 +34,5 @@ class AddEditProductVariantDetailActivity: BaseSimpleActivity(), HasComponent<Ad
                 .addEditProductComponent(AddEditProductComponentBuilder.getComponent(application))
                 .addEditProductVariantModule(AddEditProductVariantModule())
                 .build()
-    }
-
-    override fun onBackPressed() {
-        val f = fragment
-        if (f != null && f is AddEditProductVariantDetailFragment) {
-            f.onBackPressed()
-        }
     }
 }

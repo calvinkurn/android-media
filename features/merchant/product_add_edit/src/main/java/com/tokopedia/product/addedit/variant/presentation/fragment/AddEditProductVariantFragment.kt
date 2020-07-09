@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.gone
@@ -104,6 +105,7 @@ class AddEditProductVariantFragment :
     private var variantUnitPicker: BottomSheetUnify? = null
     private var customVariantValueInputForm: BottomSheetUnify? = null
     private var cancellationDialog: DialogUnify? = null
+    private var tvDeleteAll: TextView? = null
 
     private var userSession: UserSessionInterface? = null
     private var isLoggedin = ""
@@ -144,7 +146,6 @@ class AddEditProductVariantFragment :
         return inflater.inflate(R.layout.fragment_add_edit_product_variant, container, false)
     }
 
-    private var tvDeleteAll: AppCompatTextView? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -179,6 +180,7 @@ class AddEditProductVariantFragment :
         observeSizechartVisibility()
         observeVariantPhotosVisibility()
         observeIsEditMode()
+        observeHasVariants()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -214,10 +216,7 @@ class AddEditProductVariantFragment :
             startAddEditProductVariantDetailActivity()
         }
 
-        tvDeleteAll = activity?.findViewById(R.id.tv_delete_all)
-        tvDeleteAll?.setOnClickListener {
-            showRemoveVariantDialog()
-        }
+        setupToolbarActions()
     }
 
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
@@ -314,6 +313,15 @@ class AddEditProductVariantFragment :
         } else {
             deselectVariantType(layoutPosition, adapterPosition, variantDetail)
             true
+        }
+    }
+
+    fun onBackPressed() {
+        // if removing all variants then save the changes
+        if (viewModel.hasVariants.value == false) {
+            submitVariantInput()
+        } else {
+            activity?.finish()
         }
     }
 
@@ -571,7 +579,7 @@ class AddEditProductVariantFragment :
         }
     }
 
-    private fun submitVariantInput() {
+    fun submitVariantInput() {
         val productInputModel = viewModel.productInputModel.value
         productInputModel?.apply {
             val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
@@ -664,6 +672,8 @@ class AddEditProductVariantFragment :
 
     private fun observeGetCategoryVariantCombinationResult() {
         viewModel.getCategoryVariantCombinationResult.observe(this, Observer { result ->
+            // clear adapter before rendering
+            variantTypeAdapter?.setData(emptyList())
             when (result) {
                 is Success -> {
                     // all variant details
@@ -729,8 +739,13 @@ class AddEditProductVariantFragment :
             // track the screen
             if (isEditMode) ProductEditVariantTracking.trackScreen(isLoggedin, userId)
             else ProductAddVariantTracking.trackScreen(isLoggedin, userId)
-            // hide reset button in edit mode
-            tvDeleteAll?.visibility = if (isEditMode) View.VISIBLE else View.GONE
+        })
+    }
+
+    private fun observeHasVariants() {
+        viewModel.hasVariants.observe(this, Observer { hasVariants ->
+            // hide reset button if has variants
+            tvDeleteAll?.visibility = if (hasVariants) View.VISIBLE else View.GONE
         })
     }
 
@@ -830,15 +845,12 @@ class AddEditProductVariantFragment :
     }
 
     private fun removeVariant() {
-        val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
-        categoryId?.let { viewModel.getCategoryVariantCombination(it) }
-        variantTypeAdapter?.setData(emptyList())
+        viewModel.removeVariant()
         variantValueAdapterLevel1?.setData(emptyList())
         variantValueAdapterLevel2?.setData(emptyList())
+        variantPhotoAdapter?.setData(emptyList())
         variantValueLevel1Layout.hide()
         variantValueLevel2Layout.hide()
-        variantPhotoAdapter?.setData(emptyList())
-        viewModel.removeVariant()
         removeSizechart()
         layoutSizechart.hide()
     }
@@ -858,10 +870,19 @@ class AddEditProductVariantFragment :
     }
 
     private fun showEditorSizechartPicker() {
-        val url = viewModel.variantSizechart.value?.filePath.orEmpty()
+        val urlOrPath = viewModel.variantSizechart.value?.run {
+            if (urlOriginal.isNotEmpty()) {
+                // if sizechart image is from server, then use image url
+                urlOriginal
+            } else {
+                // if sizechart image is from device, then use file path
+                filePath
+            }
+        }.orEmpty()
+
         context?.apply {
             val isEditMode = viewModel.isEditMode.value ?: false
-            val editorIntent = SizechartPickerEditPhotoActivity.createIntent(this, url, isEditMode)
+            val editorIntent = SizechartPickerEditPhotoActivity.createIntent(this, urlOrPath, isEditMode)
             startActivityForResult(editorIntent, REQUEST_CODE_SIZECHART_IMAGE)
         }
     }
@@ -937,7 +958,17 @@ class AddEditProductVariantFragment :
         else ProductAddVariantTracking.removeVariantUnitValue(eventLabel, shopId)
     }
 
-    fun onBackPressed() {
-        activity?.finish()
+    private fun setupToolbarActions() {
+        activity?.findViewById<HeaderUnify>(R.id.toolbar_variant)?.apply {
+            headerTitle = getString(R.string.title_variant_activity)
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+            actionTextView?.setOnClickListener {
+                showRemoveVariantDialog()
+            }
+            actionTextView?.text = getString(R.string.action_variant_delete)
+            tvDeleteAll = actionTextView
+        }
     }
 }

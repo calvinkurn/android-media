@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -134,6 +135,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         observeSelectedVariantSize()
         observeInputStatus()
         observeHasWholesale()
+
+        setupToolbarActions()
     }
 
     override fun onHeaderClicked(adapterPosition: Int): Boolean {
@@ -198,10 +201,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         ProductAddVariantDetailTracking.saveMainVariant(
                 viewModel.getPrimaryVariantTitle(combination),
                 userSession.shopId)
-    }
-
-    fun onBackPressed() {
-        activity?.finish()
     }
 
     private fun observeSelectedVariantSize() {
@@ -360,6 +359,15 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                     userSession.isLoggedIn.toString(),
                     userSession.userId
             )
+        }
+    }
+
+    private fun setupToolbarActions() {
+        activity?.findViewById<HeaderUnify>(R.id.toolbar_variant_detail)?.apply {
+            headerTitle = "Variant"
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
         }
     }
 }
