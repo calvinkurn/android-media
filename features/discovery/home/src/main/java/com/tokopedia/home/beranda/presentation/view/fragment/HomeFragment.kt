@@ -113,6 +113,7 @@ import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
@@ -280,7 +281,6 @@ open class HomeFragment : BaseDaggerFragment(),
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
     private var lock = Object()
-    private var autoRefreshFlag = HomeFlag()
 
 
     override fun onAttach(context: Context) {
@@ -982,9 +982,15 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun configureHomeFlag(homeFlag: HomeFlag) {
         floatingTextButton.visibility = if (homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation) View.VISIBLE else View.GONE
         if (homeFlag.getFlag(HomeFlag.TYPE.PROMPT_REFRESH)) {
-            autoRefreshFlag = homeFlag
+//            setAutoRefreshOnHome(homeFlag)
         }
+
         setDummyButton()
+    }
+
+    private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag)  {
+        val serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(autoRefreshFlag.promptServerTime)
+        runAutoRefreshJob(serverOffsetTime, DateHelper.getExpiredTime(autoRefreshFlag.promptRefreshTime), Handler(), this)
     }
 
     private fun setDummyButton() {
