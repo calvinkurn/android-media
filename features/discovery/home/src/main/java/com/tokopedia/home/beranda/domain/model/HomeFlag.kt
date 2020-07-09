@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 data class HomeFlag(
         @SerializedName("prompt_server_time")
         @Expose
-        val promptServerTime: Long = 0,
+        var promptServerTime: Long = 0,
         @SerializedName("prompt_refresh_time")
         @Expose
-        val promptRefreshTime: String = "",
+        var promptRefreshTime: String = "",
         @SerializedName("prompt_refresh_message")
         @Expose
-        val promptRefreshMessage: String = ""
+        var promptRefreshMessage: String = ""
 ) {
     companion object {
         val DYNAMIC_ICON_WRAP_STRING = "dynamic_icon_wrap"

@@ -16,7 +16,10 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -100,6 +103,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
+import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
+import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
 import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
@@ -108,6 +113,7 @@ import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -131,6 +137,7 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
@@ -166,7 +173,8 @@ open class HomeFragment : BaseDaggerFragment(),
         HomeFeedsListener,
         HomeReviewListener,
         PopularKeywordListener,
-        FramePerformanceIndexInterface{
+        FramePerformanceIndexInterface,
+        HomeAutoRefreshListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -975,8 +983,33 @@ open class HomeFragment : BaseDaggerFragment(),
         floatingTextButton.visibility = if (homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation) View.VISIBLE else View.GONE
         if (homeFlag.getFlag(HomeFlag.TYPE.PROMPT_REFRESH)) {
             autoRefreshFlag = homeFlag
-
         }
+        setDummyButton()
+    }
+
+    private fun setDummyButton() {
+        val layoutDummyBtn: LinearLayout? = activity?.findViewById(R.id.layout_dummy_btn)
+        val btnRefresh: Button? = activity?.findViewById(R.id.btn_refresh_home)
+        val btnSetTimer: Button? = activity?.findViewById(R.id.btn_set_timer)
+
+        btnRefresh?.setOnClickListener {
+            doHomeDataRefresh()
+        }
+        btnSetTimer?.setOnClickListener {
+            setRefreshDummy()
+        }
+
+    }
+
+    private fun setRefreshDummy() {
+//        autoRefreshFlag.promptServerTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(System.currentTimeMillis())
+        val refreshTime = Date(System.currentTimeMillis()+5000)
+        Toast.makeText(context, "tes 5 detik lagi refresh", Toast.LENGTH_SHORT).show()
+        runAutoRefreshJob(0, refreshTime, Handler(), this)
+    }
+
+    override fun onHomeAutoRefreshTriggered() {
+        doHomeDataRefresh()
     }
 
     private fun doHomeDataRefresh() {
