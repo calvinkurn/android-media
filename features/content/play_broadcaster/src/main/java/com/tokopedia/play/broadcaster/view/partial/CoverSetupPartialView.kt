@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.doOnLayout
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
+import com.tokopedia.play.broadcaster.util.isLocal
 import com.tokopedia.play.broadcaster.util.setTextFieldColor
 import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -123,21 +124,24 @@ class CoverSetupPartialView(
 
     fun setImage(uri: Uri?) {
         if (uri != null) {
-            loaderImage.show()
-            Glide.with(ivCoverImage.context)
-                    .load(uri)
-                    .addListener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            loaderImage.hide()
-                            return false
-                        }
+            if (uri.isLocal()) ivCoverImage.setImageURI(uri)
+            else {
+                loaderImage.show()
+                Glide.with(ivCoverImage.context)
+                        .load(uri)
+                        .addListener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                loaderImage.hide()
+                                return false
+                            }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, isFirstResource: Boolean): Boolean {
-                            loaderImage.hide()
-                            return false
-                        }
-                    })
-                    .into(ivCoverImage)
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, isFirstResource: Boolean): Boolean {
+                                loaderImage.hide()
+                                return false
+                            }
+                        })
+                        .into(ivCoverImage)
+            }
         }
         else {
             ivCoverImage.setImageDrawable(null)
