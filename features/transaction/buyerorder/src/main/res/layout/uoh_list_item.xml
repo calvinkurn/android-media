@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/ic_uoh_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/icon_placeholder" />
@@ -102,8 +102,9 @@
             app:layout_constraintTop_toBottomOf="@id/ticker_info_inside_card"
             app:layout_constraintLeft_toLeftOf="@id/constraint_layout"
             app:layout_constraintStart_toStartOf="@id/constraint_layout"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            app:layout_constraintEnd_toStartOf="@id/tv_uoh_product_name"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_12">
 
@@ -111,7 +112,8 @@
                 android:id="@+id/iv_uoh_product"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"
+                android:background="@color/grey_450"/>
 
         </androidx.cardview.widget.CardView>
 
@@ -132,7 +134,6 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/cv_uoh_product"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_product_name"
-            app:layout_constraintBottom_toBottomOf="@id/cv_uoh_product"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="1 Barang (0.100 kg)"
@@ -142,8 +143,8 @@
             android:id="@+id/tv_uoh_total_belanja"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/cv_uoh_product"
-            app:layout_constraintTop_toBottomOf="@id/cv_uoh_product"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_uoh_product_desc"
             android:layout_marginTop="@dimen/dp_16"
             app:typographyWeight="reguler"
             app:typographyType="small"
@@ -169,7 +170,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Revisi File"
-            android:textStyle="bold"/>
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

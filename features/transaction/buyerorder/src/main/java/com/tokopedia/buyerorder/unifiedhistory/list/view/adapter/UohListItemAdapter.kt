@@ -30,6 +30,7 @@ class UohListItemAdapter : RecyclerView.Adapter<UohListItemAdapter.ViewHolder>()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (uohItemList.isNotEmpty()) {
+            holder.itemView.ic_uoh_vertical?.loadImage(uohItemList[position].metadata.verticalLogo)
             holder.itemView.tv_uoh_categories?.text = uohItemList[position].metadata.verticalLabel
             holder.itemView.tv_uoh_date?.text = uohItemList[position].metadata.paymentDateStr
             holder.itemView.label_uoh_order?.text = uohItemList[position].status
@@ -41,7 +42,7 @@ class UohListItemAdapter : RecyclerView.Adapter<UohListItemAdapter.ViewHolder>()
                 if (uohItemList[position].metadata.products.first().imageURL.isNotEmpty()) {
                     holder.itemView.iv_uoh_product?.loadImage(uohItemList[position].metadata.products.first().imageURL)
                 } else {
-                    holder.itemView.iv_uoh_product?.gone()
+                    holder.itemView.cv_uoh_product?.gone()
                 }
             }
 
