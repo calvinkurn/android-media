@@ -34,13 +34,14 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
         setupChatBubbleAlignment(isOwner, viewModel)
 
         itemView.setOnClickListener {
+            data.isPublic = !viewModel.hasCtaCopy()
             voucherListener.onVoucherClicked(data)
         }
     }
 
     private fun bindVoucherView(viewModel: TopChatVoucherUiModel, data: MerchantVoucherViewModel) {
         merchantVoucherView?.onMerchantVoucherViewListener = this
-        merchantVoucherView?.setData(data, viewModel.hasCtaCopy())
+        merchantVoucherView?.setData(data, false)
     }
 
     override fun alwaysShowTime(): Boolean {

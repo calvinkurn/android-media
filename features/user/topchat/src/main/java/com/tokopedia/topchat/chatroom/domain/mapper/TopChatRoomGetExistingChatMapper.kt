@@ -148,7 +148,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 item.replyId.toString(),
                 item.blastId.toString(),
                 item.source,
-                1 // TODO refactor this
+                voucher.isPublic
         )
     }
 
