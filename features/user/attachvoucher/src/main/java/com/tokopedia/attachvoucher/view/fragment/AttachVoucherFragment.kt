@@ -30,7 +30,6 @@ import javax.inject.Inject
 
 class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFactory>() {
 
-    var shopId: String = ""
     private val screenName = "attach_voucher"
 
     @Inject
@@ -55,16 +54,10 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initializeArguments(arguments)
         setupRecyclerView()
         setupObserver()
         setupFilter()
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    private fun initializeArguments(arguments: Bundle?) {
-        if (arguments == null) return
-        shopId = arguments.getString(ApplinkConst.AttachVoucher.PARAM_SHOP_ID) ?: ""
     }
 
     override fun loadData(page: Int) {
@@ -186,13 +179,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     override fun onItemClicked(t: Visitable<*>?) {}
 
     companion object {
-        fun createInstance(shopId: String): AttachVoucherFragment {
-            val args = Bundle().apply {
-                putString(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId)
-            }
-            return AttachVoucherFragment().apply {
-                arguments = args
-            }
+        fun createInstance(): AttachVoucherFragment {
+            return AttachVoucherFragment()
         }
     }
 }

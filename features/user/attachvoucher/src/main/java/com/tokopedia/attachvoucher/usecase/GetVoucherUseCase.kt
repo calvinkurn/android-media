@@ -21,7 +21,6 @@ class GetVoucherUseCase @Inject constructor(
     var isLoading = false
 
     private var getVouchersJob: Job? = null
-    private val paramShopId = "shop_id"
     private val paramFilter = "Filter"
 
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
@@ -91,45 +90,6 @@ class GetVoucherUseCase @Inject constructor(
         requestParam[paramFilter] = paramMVFilter
         return requestParam
     }
-
-    private val query = """
-        query getPublicMerchantVoucherList($$paramShopId: Int!) {
-          getPublicMerchantVoucherList(shop_id:$$paramShopId) {
-            vouchers {
-              merchant_voucher_id
-              voucher_id
-              voucher_name
-              voucher_code
-              minimum_spend
-              minimum_spend_formatted
-              in_use_expiry
-              valid_thru
-              tnc
-              restricted_for_liquid_product
-              owner {
-                owner_id
-                identifier
-              }
-              voucher_type {
-                voucher_type
-                identifier
-              }
-              amount {
-                amount_type
-                amount
-              }
-              banner {
-                desktop_url
-                mobile_url
-              }
-              status {
-                status
-                identifier
-              }
-            }
-          }
-        }
-    """.trimIndent()
 
     private val privateVoucherQuery = """
         query MerchantPromotionGetMVListQuery($$paramFilter: MVFilter!){
