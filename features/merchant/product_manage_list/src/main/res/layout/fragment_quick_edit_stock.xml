@@ -17,6 +17,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/product_manage_quick_edit_stock_active_product"
+            android:textColor="@color/product_manage_title_color"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -42,6 +45,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/product_manage_quick_edit_stock_total_stock"
+            android:textColor="@color/product_manage_title_color"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
