@@ -149,6 +149,8 @@ class GlobalSearchView : BaseCustomView {
 
     private fun initSearchBarView() {
         searchBarView?.apply {
+            searchBarTextField.imeOptions = EditorInfo.IME_ACTION_SEARCH
+
             isClearable = true
             clearListener = {
                 searchTextBoxListener?.onClearTextBoxListener()
@@ -188,7 +190,6 @@ class GlobalSearchView : BaseCustomView {
                 }
             })
 
-            searchBarTextField.imeOptions = EditorInfo.IME_ACTION_DONE
 
             searchBarTextField.setOnEditorActionListener { _, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
