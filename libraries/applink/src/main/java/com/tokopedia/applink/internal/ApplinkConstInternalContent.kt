@@ -28,13 +28,11 @@ object ApplinkConstInternalContent {
     const val PLAY_DETAIL = "$INTERNAL_PLAY/{channel_id}"
 
     private const val ARGS_FROM_APPLINK = "isFromApplink"
-    private const val KOL_YOUTUBE = "kolyoutube/{youtube_url}"
     private const val ARGS_FROM_APPLINK_VALUE = "true"
     private const val ARG_MEDIA_INDEX = "media_index"
     const val DUMMY_MEDIA_INDEX = "{index}"
     const val INTERNAL_CONTENT_POST_DETAIL = "$INTERNAL_CONTENT/post-detail/"
     const val COMMENT_EXTRA_PARAM = "?$ARGS_FROM_APPLINK=$ARGS_FROM_APPLINK_VALUE"
-    const val INTERNAL_KOL_YOUTUBE = "${DeeplinkConstant.SCHEME_INTERNAL}://${KOL_YOUTUBE}"
     const val INTERNAL_MEDIA_PREVIEW = "$MEDIA_PREVIEW?$ARG_MEDIA_INDEX=$DUMMY_MEDIA_INDEX"
 
 }
