@@ -26,6 +26,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,6 +44,11 @@ class DynamicChannelComponentAnalyticsTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
 
+    @Before
+    fun resetAll() {
+        gtmLogDBSource.deleteAll().subscribe()
+    }
+
     @Test
     fun testMixLeftHome() {
         initTest()
@@ -57,7 +63,6 @@ class DynamicChannelComponentAnalyticsTest {
     }
 
     private fun initTest() {
-        gtmLogDBSource.deleteAll().subscribe()
         waitForData()
     }
 
