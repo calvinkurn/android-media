@@ -17,3 +17,4 @@
 #}
 
 -keep class com.facebook.hermes.unicode.** { *; }
+-keep public class com.android.installreferrer.** { *; }
