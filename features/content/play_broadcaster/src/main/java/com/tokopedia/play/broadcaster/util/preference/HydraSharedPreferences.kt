@@ -29,7 +29,7 @@ class HydraSharedPreferences @Inject constructor(
         mSharedPrefs.edit()
                 .putBoolean(
                         String.format(KEY_FIRST_STREAMING, userSession.userId, userSession.shopId),
-                        true
+                        false
                 ).apply()
     }
 
