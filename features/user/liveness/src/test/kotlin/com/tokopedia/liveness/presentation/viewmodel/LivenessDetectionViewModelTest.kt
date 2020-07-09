@@ -52,7 +52,7 @@ class LivenessDetectionViewModelTest: Spek({
             }
 
             Then("It should return response from API correctly") {
-//                verify { observerSuccess.onChanged(Success(livenessData)) }
+                verify { observerSuccess.onChanged(Success(livenessData)) }
             }
 
             Then("Liveness Live Data should be instance of Success"){
@@ -91,11 +91,8 @@ class LivenessDetectionViewModelTest: Spek({
             }
 
             Then("The variable isSuccessRegister should be false"){
-
-                /** skip this temporary for passed janky test issue. */
-//                val result = viewModel.livenessResponseLiveData.value
-//                assertFalse { (result as Success).data.isSuccessRegister }
-
+                val result = viewModel.livenessResponseLiveData.value
+                assertFalse { (result as Success).data.isSuccessRegister }
                 viewModel.livenessResponseLiveData.removeObserver(observerSuccess)
             }
         }
