@@ -54,8 +54,6 @@ import com.tokopedia.design.countdown.CountDownView.CountDownListener
 import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.design.keyboard.KeyboardHelper.OnKeyboardVisibilityChangedListener
 import com.tokopedia.home.R
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
@@ -108,6 +106,8 @@ import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -952,7 +952,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 MixLeftComponentCallback(this),
                 MixTopComponentCallback(this),
                 HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
-                        SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())))
+                        SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())),
+                ProductHighlightComponentCallback(this)
+        )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1581,13 +1583,13 @@ open class HomeFragment : BaseDaggerFragment(),
         sendPopularKeywordClickReload(channel)
     }
 
-    override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
-        getTrackingQueueObj()?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword) as HashMap<String, Any>)
+    override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
+        getTrackingQueueObj()?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword, positionInWidget) as HashMap<String, Any>)
     }
 
-    override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
+    override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
         RouteManager.route(context, applink)
-        sendPopularKeywordClickItem(channel, position, keyword)
+        sendPopularKeywordClickItem(channel, position, keyword, positionInWidget)
     }
 
     protected fun registerBroadcastReceiverTokoCash() {
@@ -1925,7 +1927,7 @@ open class HomeFragment : BaseDaggerFragment(),
             DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
-                    channel, true
+                    channel, getHomeViewModel().getUserId(), true
             ) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBanneImpression(
                     channel.grids.toList(),
@@ -1937,15 +1939,12 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun setupViewportImpression(visitables: List<Visitable<*>>) {
-        var index = 0
-        for (visitable in visitables) {
+        for ((index, visitable) in visitables.withIndex()) {
             if (visitable is DynamicChannelDataModel) {
-                val dynamicChannelDataModel = visitable
-                if (!dynamicChannelDataModel.isCache && !dynamicChannelDataModel.channel!!.isInvoke) {
-                    addRecyclerViewScrollImpressionListener(dynamicChannelDataModel, index)
+                if (!visitable.isCache && !visitable.channel!!.isInvoke) {
+                    addRecyclerViewScrollImpressionListener(visitable, index)
                 }
             }
-            index++
         }
     }
 

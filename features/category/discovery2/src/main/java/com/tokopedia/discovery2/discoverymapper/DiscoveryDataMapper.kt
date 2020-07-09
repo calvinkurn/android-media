@@ -23,6 +23,7 @@ class DiscoveryDataMapper {
             val list = ArrayList<ComponentsItem>()
             itemList.forEachIndexed { index, it ->
                 val componentsItem = ComponentsItem()
+                componentsItem.position = index
                 val id = "${CHIPS}_$index"
                 componentsItem.name = subComponentName
                 componentsItem.id = id
@@ -45,6 +46,7 @@ class DiscoveryDataMapper {
                     isSelectedFound = true
                 }
                 val componentsItem = ComponentsItem()
+                componentsItem.position = index
                 componentsItem.name = subComponentName
                 componentsItem.pageEndPoint = component.pageEndPoint
                 it.positionForParentItem = position
@@ -73,8 +75,9 @@ class DiscoveryDataMapper {
     fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,
                                               categoryHeaderPosition: Int): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
-        itemList.forEach {
+        itemList.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
+            componentsItem.position = index
             componentsItem.name = subComponentName
             val dataItem = mutableListOf<DataItem>()
             it.title = categoryHeaderName
@@ -112,6 +115,7 @@ class DiscoveryDataMapper {
         val list = ArrayList<ComponentsItem>()
         listOfProduct?.forEachIndexed { index, element ->
             val componentsItem = ComponentsItem()
+            componentsItem.position = index
             componentsItem.name = getComponentName(index)
             val litDataItem = mutableListOf<DataItem>()
             val dataItem = DataItem()
@@ -132,8 +136,9 @@ class DiscoveryDataMapper {
 
     fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, typeProductCard: String = ""): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
-        itemList?.forEach {
+        itemList?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
+            componentsItem.position = index
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             val dataItem = mutableListOf<DataItem>()
@@ -153,8 +158,9 @@ class DiscoveryDataMapper {
 
     fun mapListToComponentList(child: List<ChildItem?>?): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
-        child?.forEach {
+        child?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
+            componentsItem.position = index
             componentsItem.name = ComponentNames.HorizontalCategoryNavigationIem.componentName
             val dataItemlist = mutableListOf<DataItem>()
             val dataItem = DataItem()

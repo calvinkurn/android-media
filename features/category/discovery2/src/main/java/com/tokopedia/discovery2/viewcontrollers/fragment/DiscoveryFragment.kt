@@ -41,6 +41,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -48,8 +49,9 @@ import javax.inject.Inject
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
+private const val SCROLL_TOP_DIRECTION = -1
 
-class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
+class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -57,14 +59,20 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var typographyHeader: Typography
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
+    private lateinit var ivToTop: ImageView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
-    private val analytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
+    private val analytics: DiscoveryAnalytics by lazy {
+        DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType,
+                pageIdentifier = discoveryViewModel.pageIdentifier)
+    }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: ProgressBar
     var pageEndPoint = ""
     private var componentPosition: Int? = null
+    private var openScreenStatus = false
+
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -116,8 +124,27 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
         mProgressBar = view.findViewById(R.id.progressBar)
+        ivToTop = view.findViewById(R.id.toTopImg)
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
+        ivToTop.setOnClickListener(this)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    ivToTop.hide()
+                } else if (dy < 0) {
+                    ivToTop.show()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    ivToTop.hide()
+                }
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -132,21 +159,28 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
         discoveryViewModel.getDiscoveryData()
-
         setUpObserver()
-
     }
 
     fun reSync() {
         discoveryViewModel.getDiscoveryData()
     }
 
+    private fun sendOpenScreenAnalytics(identifier: String?) {
+        if (identifier.isNullOrEmpty()) {
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, isUserLoggedIn())
+        } else {
+            getDiscoveryAnalytics().trackOpenScreen(identifier, isUserLoggedIn())
+        }
+        openScreenStatus = true
+    }
+
     private fun setUpObserver() {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    it.data?.let {
-                        discoveryAdapter.addDataList(it)
+                    it.data.let { listComponent ->
+                        discoveryAdapter.addDataList(listComponent)
                     }
                     mProgressBar.hide()
                 }
@@ -197,7 +231,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             }
         })
     }
-
 
     private fun setPageInfo(data: PageInfo?) {
         typographyHeader.text = data?.name
@@ -258,7 +291,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
 
-
             override fun onPermissionGranted() {
                 grantedPermission()
             }
@@ -282,12 +314,15 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
+        getDiscoveryAnalytics().clearProductViewIds()
     }
 
     override fun onRefresh() {
-        discoveryAdapter.clearListViewModel()
+        trackingQueue.sendAll()
+        getDiscoveryAnalytics().clearProductViewIds()
         discoveryViewModel.clearPageData()
         discoveryViewModel.getDiscoveryData()
+        getDiscoveryAnalytics().clearProductViewIds()
     }
 
     fun openLoginScreen(componentPosition: Int = -1) {
@@ -341,5 +376,51 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             closeableBottomSheetDialog.dismiss()
             getDiscoveryAnalytics().trackQuickCouponPhoneVerifyCancel()
         }
+    }
+
+    override fun onClick(view: View?) {
+        when (view) {
+            ivToTop -> {
+                recyclerView.smoothScrollToPosition(0)
+                ivToTop.hide()
+            }
+        }
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        return UserSession(activity).isLoggedIn
+    }
+
+    override fun onResume() {
+        super.onResume()
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+            if (!openScreenStatus) {
+                when (it) {
+                    is Success -> {
+                        sendOpenScreenAnalytics(it.data.identifier)
+                    }
+
+                    is Fail -> {
+                        sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
+                    }
+                }
+            }
+        })
+
+        if (!openScreenStatus) {
+            when (val discoPageInfo = discoveryViewModel.getDiscoveryPageInfo().value) {
+                is Success -> {
+                    sendOpenScreenAnalytics(discoPageInfo.data.identifier)
+                }
+                is Fail -> {
+                    sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
+                }
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        openScreenStatus = false
     }
 }
