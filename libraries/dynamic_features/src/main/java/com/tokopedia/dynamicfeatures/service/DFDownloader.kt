@@ -95,7 +95,6 @@ object DFDownloader {
                             needRetry = true
                             isImmediate = immediate
                         }
-                        successResult = ListenableWorker.Result.success()
                     } else {
                         if (remainingList.isEmpty()) {
                             successResult = ListenableWorker.Result.success()
@@ -120,6 +119,8 @@ object DFDownloader {
                     } else {
                         successResult = ListenableWorker.Result.retry()
                     }
+                } else {
+                    successResult = ListenableWorker.Result.success()
                 }
             }
             return@withContext successResult
