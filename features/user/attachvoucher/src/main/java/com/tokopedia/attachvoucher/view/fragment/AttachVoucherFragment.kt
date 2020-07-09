@@ -16,8 +16,8 @@ import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.analytic.AttachVoucherAnalytic
 import com.tokopedia.attachvoucher.data.VoucherUiModel
-import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.di.AttachVoucherComponent
+import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase.MVFilter.VoucherType
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherAdapter
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactory
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactoryImpl
@@ -84,17 +84,20 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun observeFilter() {
         viewModel.filter.observe(viewLifecycleOwner, Observer { type ->
+            adapter.clearSelected()
+            clearAllData()
+            loadInitialData()
             analytic.trackOnChangeFilter(type)
             when (type) {
-                VoucherType.CASH_BACK -> setActiveFilter(filterCashBack, filterFreeOngkir)
-                VoucherType.FREE_ONGKIR -> setActiveFilter(filterFreeOngkir, filterCashBack)
+                VoucherType.paramCashback -> setActiveFilter(filterCashBack, filterFreeOngkir)
+                VoucherType.paramFreeOngkir -> setActiveFilter(filterFreeOngkir, filterCashBack)
                 AttachVoucherViewModel.NO_FILTER -> clearFilter()
             }
         })
     }
 
     private fun observeVoucherResponse() {
-        viewModel.filteredVouchers.observe(viewLifecycleOwner, Observer { vouchers ->
+        viewModel.voucher.observe(viewLifecycleOwner, Observer { vouchers ->
             renderList(vouchers, viewModel.hasNext)
             if (vouchers.isEmpty()) {
                 changeActionState(View.GONE)
@@ -163,10 +166,10 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun setupFilter() {
         filterCashBack?.setOnClickListener {
-            viewModel.toggleFilter(VoucherType.CASH_BACK)
+            viewModel.toggleFilter(VoucherType.paramCashback)
         }
         filterFreeOngkir?.setOnClickListener {
-            viewModel.toggleFilter(VoucherType.FREE_ONGKIR)
+            viewModel.toggleFilter(VoucherType.paramFreeOngkir)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.attachvoucher.usecase
 
+import androidx.collection.ArrayMap
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
 import com.tokopedia.attachvoucher.mapper.VoucherMapper
@@ -25,12 +26,13 @@ class GetVoucherUseCase @Inject constructor(
 
     fun getVouchers(
             page: Int,
+            filter: Int,
             onSuccess: (List<VoucherUiModel>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         launchCatchError(dispatchers.IO,
                 {
-                    val params = generateParams(page)
+                    val params = generateParams(page, filter)
                     val response = gqlUseCase.apply {
                         setTypeClass(GetMerchantPromotionGetMVListResponse::class.java)
                         setRequestParams(params)
@@ -56,14 +58,19 @@ class GetVoucherUseCase @Inject constructor(
         }
     }
 
-    private fun generateParams(page: Int): Map<String, Any> {
-        return mapOf(
-                paramFilter to mapOf(
-                        MVFilter.VoucherStatus.param to MVFilter.VoucherStatus.paramOnGoing,
-                        MVFilter.PerPage.param to MVFilter.PerPage.default,
-                        MVFilter.paramPage to page
-                )
-        )
+    private fun generateParams(page: Int, filter: Int): Map<String, Any> {
+        val requestParam = ArrayMap<String, Any>()
+        val paramMVFilter = ArrayMap<String, Any>().apply {
+            put(MVFilter.VoucherStatus.param, MVFilter.VoucherStatus.paramOnGoing)
+            put(MVFilter.PerPage.param, MVFilter.PerPage.default)
+            put(MVFilter.paramPage, page)
+        }
+
+        if (filter != MVFilter.VoucherType.noFilter) {
+            paramMVFilter[MVFilter.VoucherType.param] = filter
+        }
+        requestParam[paramFilter] = paramMVFilter
+        return requestParam
     }
 
     private val query = """
@@ -169,6 +176,7 @@ class GetVoucherUseCase @Inject constructor(
 
     object MVFilter {
         const val paramPage = "page"
+
         object VoucherStatus {
             const val param = "voucher_status"
             const val paramOnGoing = "2"
@@ -184,10 +192,13 @@ class GetVoucherUseCase @Inject constructor(
             const val paramFreeOngkir = 1
             const val paramDiscount = 2
             const val paramCashback = 3
+            const val noFilter = -1
         }
+
         object IsPublic {
             const val param = "is_public"
         }
+
         object PerPage {
             const val param = "per_page"
             const val default = 15
