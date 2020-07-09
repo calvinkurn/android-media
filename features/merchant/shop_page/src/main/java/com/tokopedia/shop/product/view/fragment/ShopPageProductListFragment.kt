@@ -1169,6 +1169,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if (shopProductAdapter.isLoading) {
             return
         }
+        shopPageTracking?.clickClearFilter(
+                isOwner,
+                customDimensionShopPage
+        )
         sortId = ""
         sortName = ""
         shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
