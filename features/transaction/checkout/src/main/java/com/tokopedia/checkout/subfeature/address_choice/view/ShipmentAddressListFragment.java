@@ -46,8 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
@@ -94,7 +92,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        bundle.putParcelable(CheckoutConstant.EXTRA_CURRENT_ADDRESS, currentAddress);
         bundle.putBoolean(ARGUMENT_DISABLE_CORNER, false);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
@@ -104,7 +102,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress, int requestType) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        bundle.putParcelable(CheckoutConstant.EXTRA_CURRENT_ADDRESS, currentAddress);
         bundle.putBoolean(ARGUMENT_DISABLE_CORNER, false);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         bundle.putInt(CheckoutConstant.EXTRA_TYPE_REQUEST, requestType);
@@ -116,7 +114,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress,
                                                           boolean isDisableCorner) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        bundle.putParcelable(CheckoutConstant.EXTRA_CURRENT_ADDRESS, currentAddress);
         bundle.putBoolean(ARGUMENT_DISABLE_CORNER, isDisableCorner);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
@@ -128,7 +126,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             (RecipientAddressModel currentAddress,
              boolean isDisableCorner) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        bundle.putParcelable(CheckoutConstant.EXTRA_CURRENT_ADDRESS, currentAddress);
         bundle.putBoolean(ARGUMENT_DISABLE_CORNER, isDisableCorner);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
@@ -178,7 +176,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         super.onCreate(savedInstanceState);
         chooseAddressTracePerformance = PerformanceMonitoring.start(CHOOSE_ADDRESS_TRACE);
         if (getArguments() != null) {
-            mCurrentAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
+            mCurrentAddress = getArguments().getParcelable(CheckoutConstant.EXTRA_CURRENT_ADDRESS);
             isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false);
             requestType = getArguments().getInt(CheckoutConstant.EXTRA_TYPE_REQUEST, 0);
             originDirectionType = getArguments().getInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
