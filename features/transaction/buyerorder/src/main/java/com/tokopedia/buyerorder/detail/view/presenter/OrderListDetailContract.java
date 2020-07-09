@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.detail.view.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -115,7 +116,7 @@ public interface OrderListDetailContract {
 
         void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
-        void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText);
+        void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText,RelativeLayout actionButtonLayout);
 
         List<ActionButton> getActionList();
 
