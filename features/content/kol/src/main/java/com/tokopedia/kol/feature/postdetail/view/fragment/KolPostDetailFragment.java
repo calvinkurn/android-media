@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
@@ -74,8 +75,6 @@ import com.tokopedia.kol.feature.postdetail.view.analytics.KolPostDetailAnalytic
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
-import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
-import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kolcommon.util.PostMenuListener;
@@ -714,10 +713,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void goToContentReport(int contentId) {
         if (getContext() != null) {
-            Intent intent = ContentReportActivity.Companion.createIntent(
-                    getContext(),
-                    contentId
-            );
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalContent.CONTENT_REPORT, String.valueOf(contentId));
             startActivityForResult(intent, OPEN_CONTENT_REPORT);
         }
     }
@@ -838,7 +834,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onMediaGridClick(int positionInFeed, int contentPosition,
                                  @NotNull String redirectLink, boolean isSingleItem) {
         if (!isSingleItem && getActivity() != null){
-            startActivity(MediaPreviewActivity.createIntent(getActivity(), postId.toString(), contentPosition));
+            String appLinkPatternWithQueryParams = ApplinkConstInternalContent.INTERNAL_MEDIA_PREVIEW.replace(ApplinkConstInternalContent.DUMMY_MEDIA_INDEX,
+                    String.valueOf(contentPosition));
+            RouteManager.route(getContext(), appLinkPatternWithQueryParams, postId.toString());
         }
     }
 
@@ -912,8 +910,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
-        startActivityForResult(VideoDetailActivity.getInstance(requireContext(), postId), OPEN_VIDEO_DETAIL);
+    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId, String redirectUrl) {
+        Intent videoDetailIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalContent.VIDEO_DETAIL, postId);
+        startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL);
     }
 
     @Override

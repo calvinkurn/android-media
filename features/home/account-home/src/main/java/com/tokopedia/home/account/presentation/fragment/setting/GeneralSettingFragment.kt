@@ -26,8 +26,21 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.dialog.AccessRequestDialogFragment
-import com.tokopedia.home.account.AccountConstants.Analytics.*
-import com.tokopedia.home.account.AccountHomeRouter
+import com.tokopedia.home.account.AccountConstants.Analytics.ABOUT_US
+import com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT
+import com.tokopedia.home.account.AccountConstants.Analytics.ADVANCED_SETTING
+import com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW
+import com.tokopedia.home.account.AccountConstants.Analytics.DEVELOPER_OPTIONS
+import com.tokopedia.home.account.AccountConstants.Analytics.HELP_CENTER
+import com.tokopedia.home.account.AccountConstants.Analytics.LOGOUT
+import com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION
+import com.tokopedia.home.account.AccountConstants.Analytics.PAYMENT_METHOD
+import com.tokopedia.home.account.AccountConstants.Analytics.PRIVACY_POLICY
+import com.tokopedia.home.account.AccountConstants.Analytics.SAFE_MODE
+import com.tokopedia.home.account.AccountConstants.Analytics.SETTING
+import com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE
+import com.tokopedia.home.account.AccountConstants.Analytics.SHOP
+import com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
 import com.tokopedia.home.account.constant.SettingConstant
@@ -73,7 +86,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
-
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,8 +167,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay))
         activity?.let {
-            if (it.application is AccountHomeRouter
-                    && (it.application as AccountHomeRouter).getBooleanRemoteConfig(
+            if (remoteConfig.getBoolean(
                             RemoteConfigKey.CHECKOUT_TEMPLATE_SETTING_TOGGLE, false)
             ) {
                 settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
