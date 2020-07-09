@@ -18,12 +18,12 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
+import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
+import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.checkout.subfeature.multiple_address.domain.model.cartlist.CartListData;
 import com.tokopedia.checkout.subfeature.multiple_address.view.di.DaggerNewMultipleAddressComponent;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.manageaddress.domain.model.MultipleAddressAdapterData;
-import com.tokopedia.manageaddress.domain.model.MultipleAddressItemData;
-import com.tokopedia.manageaddress.ui.addresschoice.CartAddressChoiceActivity;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
@@ -38,9 +38,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT;
+import static com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS;
 import static com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
-import static com.tokopedia.manageaddress.ui.addresschoice.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT;
-import static com.tokopedia.manageaddress.ui.addresschoice.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS;
 
 /**
  * Created by kris on 1/24/18. Tokopedia

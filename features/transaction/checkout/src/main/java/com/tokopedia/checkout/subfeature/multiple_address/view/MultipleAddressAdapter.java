@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
+import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.checkout.subfeature.multiple_address.view.viewholder.MultipleAddressViewHolder;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.manageaddress.domain.model.MultipleAddressAdapterData;
-import com.tokopedia.manageaddress.domain.model.MultipleAddressItemData;
 
 import java.util.ArrayList;
 import java.util.List;
