@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
@@ -24,13 +23,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
-import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.constants.TalkConstants.READING_SOURCE
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
@@ -94,11 +95,16 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
+        talkReadingRecyclerView.adapter = adapter
         return talkReadingRecyclerView
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_talk_reading, container, false)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory> {
+        return TalkReadingAdapter(adapterTypeFactory)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -170,10 +176,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
         return readingSwipeToRefresh
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory> {
-        return TalkReadingAdapter(adapterTypeFactory)
     }
 
     override fun onThreadClicked(questionID: String) {
@@ -495,6 +497,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun renderDiscussionData(discussionData: List<TalkReadingUiModel>, hasNextPage: Boolean) {
         renderList(discussionData, hasNextPage)
+        if(!hasNextPage) {
+            (adapter as? TalkReadingAdapter)?.addEmptySpace()
+        }
     }
 
     private fun selectUnselectCategory(categoryName: String, isSelected: Boolean) {
