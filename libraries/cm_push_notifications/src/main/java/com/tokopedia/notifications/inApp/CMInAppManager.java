@@ -2,13 +2,13 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
+import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -19,6 +19,7 @@ import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
+import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -27,6 +28,8 @@ import androidx.annotation.NonNull;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 
 
 /**
@@ -94,13 +97,58 @@ public class CMInAppManager implements CmInAppListener {
         );
     }
 
-    private void showDialog(CMInApp data) {
+    /**
+     * legacy dialog, such as:
+     * 1. full screen
+     * 2. full screen_img
+     * 3. border top
+     * 4. border bottom
+     * 5. alert
+     * 6. ticker top
+     * 7. ticker bottom
+     * @param cmInApp
+     */
+    private void showLegacyDialog(CMInApp cmInApp) {
+        Activity activity = getCurrentActivity();
+        ViewEngine viewEngine = new ViewEngine(currentActivity.get());
+
+        final View view = viewEngine.createView(cmInApp);
+        if (view == null) return;
+
+        View inAppViewPrev = activity.findViewById(R.id.mainContainer);
+        //In-App view already present on Activity
+        if (null != inAppViewPrev) return;
+
+        FrameLayout root = (FrameLayout) activity.getWindow()
+                .getDecorView()
+                .findViewById(android.R.id.content)
+                .getRootView();
+        root.addView(view);
+        dataConsumed(cmInApp);
+    }
+
+    /**
+     * dialog for interstitial and interstitialImg
+     * @param data
+     */
+    private void interstitialDialog(CMInApp data) {
         if (getCurrentActivity() == null) return;
         Activity activity = getCurrentActivity();
         try {
             BannerView.create(activity, data);
         } catch (Exception e) {
             onCMInAppInflateException(data);
+        }
+    }
+
+    private void showDialog(CMInApp data) {
+        switch (data.getType()) {
+            case TYPE_FULL_SCREEN_IMAGE_ONLY:
+                interstitialDialog(data);
+            case TYPE_INTERSTITIAL:
+                interstitialDialog(data);
+            default:
+                showLegacyDialog(data);
         }
     }
 
