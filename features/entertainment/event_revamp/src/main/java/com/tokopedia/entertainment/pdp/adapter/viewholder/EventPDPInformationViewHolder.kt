@@ -35,6 +35,7 @@ class EventPDPInformationViewHolder(view: View, val onBindItemListener: OnBindIt
                         rv_event_pdp_information.gone()
                     }
                 } else {
+                    container.gone()
                     rv_event_pdp_information.gone()
                 }
             } else {

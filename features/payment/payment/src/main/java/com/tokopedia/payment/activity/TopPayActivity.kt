@@ -517,6 +517,16 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             return super.shouldInterceptRequest(view, request)
         }
 
+        override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
+            url?.let {
+                if (it.contains(ORDER_LIST_EVENT)) {
+                    RouteManager.route(this@TopPayActivity, ApplinkConst.EVENTS_ORDER)
+                    finish()
+                }
+            }
+            return super.shouldInterceptRequest(view, url)
+        }
+
         override fun onPageFinished(view: WebView?, url: String?) {
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
@@ -657,6 +667,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
+        private const val ORDER_LIST_EVENT = "order-list?tab=EVENTS"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
 

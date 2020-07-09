@@ -23,6 +23,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
@@ -172,7 +175,19 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                             val intentHomeEvent = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
                             taskStackBuilder.addNextIntent(intentHomeEvent)
                             taskStackBuilder.startActivities()
-                            ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(com.tokopedia.oms.R.string.pembayaran))
+
+                            val checkoutResultData = PaymentPassData()
+                            checkoutResultData.queryString = paymentData
+                            checkoutResultData.redirectUrl = paymentURL
+
+                            val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                            val intent = RouteManager.getIntent(context, paymentCheckoutString)
+
+                            intent?.run {
+                                putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+                                taskStackBuilder.addNextIntent(this)
+                                taskStackBuilder.startActivities()
+                            }
                         } else {
                             view?.let {
                                 Toaster.make(it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
