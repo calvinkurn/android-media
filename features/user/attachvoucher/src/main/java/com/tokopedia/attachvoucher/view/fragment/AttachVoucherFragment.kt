@@ -93,13 +93,21 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun observeVoucherResponse() {
         viewModel.voucher.observe(viewLifecycleOwner, Observer { vouchers ->
-            if (isFirstPage() && vouchers.isEmpty()) {
-                changeActionState(View.GONE)
-            } else {
-                changeActionState(View.VISIBLE)
-            }
+            changeState(vouchers)
             renderList(vouchers, viewModel.hasNext)
         })
+    }
+
+    private fun changeState(vouchers: List<VoucherUiModel>) {
+        if (isFirstPage() && vouchers.isEmpty()) {
+            if (viewModel.hasNoFilter()) {
+                changeActionState(View.GONE)
+            } else {
+                flAttach?.hide()
+            }
+        } else {
+            changeActionState(View.VISIBLE)
+        }
     }
 
     private fun isFirstPage(): Boolean {

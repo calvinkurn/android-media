@@ -53,6 +53,10 @@ class AttachVoucherViewModel @Inject constructor(
         _error.value = throwable
     }
 
+    fun hasNoFilter(): Boolean {
+        return filter.value == null || filter.value == NO_FILTER
+    }
+
     companion object {
         const val NO_FILTER = GetVoucherUseCase.MVFilter.VoucherType.noFilter
     }
