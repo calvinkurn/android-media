@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -48,6 +50,9 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private lateinit var tvTermsCondition: TextView
 
     private lateinit var loadingFragment: LoadingDialogFragment
+
+    private val isFirstStreaming: Boolean
+        get() = parentViewModel.isFirstStreaming
 
     private val setupListener = object : SetupResultListener {
         override fun onSetupCanceled() {
@@ -123,24 +128,30 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     }
 
     private fun setupTermsCondition() {
-        val termsConditionText = getString(R.string.play_terms_condition)
-        val fullTermsConditionText = getString(
-                R.string.play_terms_condition_full,
-                btnSetup.text,
-                termsConditionText
-        )
-        val termsConditionIndex = fullTermsConditionText.indexOf(termsConditionText)
-        val spannedTermsConditionText = SpannableString(fullTermsConditionText)
-        spannedTermsConditionText.setSpan(
-                ForegroundColorSpan(
-                        MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.dark_G500)
-                ), termsConditionIndex, termsConditionIndex + termsConditionText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-        )
+        if (isFirstStreaming) {
+            val termsConditionText = getString(R.string.play_terms_condition)
+            val fullTermsConditionText = getString(
+                    R.string.play_terms_condition_full,
+                    btnSetup.text,
+                    termsConditionText
+            )
+            val termsConditionIndex = fullTermsConditionText.indexOf(termsConditionText)
+            val spannedTermsConditionText = SpannableString(fullTermsConditionText)
+            spannedTermsConditionText.setSpan(
+                    ForegroundColorSpan(
+                            MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.dark_G500)
+                    ), termsConditionIndex, termsConditionIndex + termsConditionText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+            )
 
-        tvTermsCondition.text = spannedTermsConditionText
+            tvTermsCondition.text = spannedTermsConditionText
 
-        tvTermsCondition.setOnClickListener {
-            openTermsConditionPage()
+            tvTermsCondition.setOnClickListener {
+                openTermsConditionPage()
+            }
+
+            tvTermsCondition.visible()
+        } else {
+            tvTermsCondition.gone()
         }
     }
 
