@@ -144,11 +144,12 @@ public class CMInAppManager implements CmInAppListener {
     private void showDialog(CMInApp data) {
         switch (data.getType()) {
             case TYPE_FULL_SCREEN_IMAGE_ONLY:
-                interstitialDialog(data);
             case TYPE_INTERSTITIAL:
                 interstitialDialog(data);
+                break;
             default:
                 showLegacyDialog(data);
+                break;
         }
     }
 
