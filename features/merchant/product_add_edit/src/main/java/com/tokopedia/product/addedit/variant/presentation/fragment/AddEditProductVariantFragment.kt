@@ -861,10 +861,19 @@ class AddEditProductVariantFragment :
     }
 
     private fun showEditorSizechartPicker() {
-        val url = viewModel.variantSizechart.value?.filePath.orEmpty()
+        val urlOrPath = viewModel.variantSizechart.value?.run {
+            if (urlOriginal.isNotEmpty()) {
+                // if sizechart image is from server, then use image url
+                urlOriginal
+            } else {
+                // if sizechart image is from device, then use file path
+                filePath
+            }
+        }.orEmpty()
+
         context?.apply {
             val isEditMode = viewModel.isEditMode.value ?: false
-            val editorIntent = SizechartPickerEditPhotoActivity.createIntent(this, url, isEditMode)
+            val editorIntent = SizechartPickerEditPhotoActivity.createIntent(this, urlOrPath, isEditMode)
             startActivityForResult(editorIntent, REQUEST_CODE_SIZECHART_IMAGE)
         }
     }
