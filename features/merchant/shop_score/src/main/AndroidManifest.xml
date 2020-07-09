@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.shop.score">
 
-    <application>
+    <application
+        android:hasCode="true">
         <activity
             android:name=".view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shopscore"
