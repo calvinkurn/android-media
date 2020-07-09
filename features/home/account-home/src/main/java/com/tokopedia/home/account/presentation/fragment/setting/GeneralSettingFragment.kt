@@ -416,33 +416,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         }
     }
 
-    override fun logoutFacebook() {
-        LoginManager.getInstance().logOut()
-    }
-
-    override fun onErrorLogout(throwable: Throwable) {
-        showLoading(false)
-        NetworkErrorHelper.showCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, throwable))
-    }
-
-    override fun onSuccessLogout() {
-        showLoading(false)
-        activity?.let {
-            if (it.application is AccountHomeRouter) {
-                (it.application as AccountHomeRouter).doLogoutAccount(activity)
-            }
-        }
-
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-
-        if (isGoogleAccount()) {
-            googleSignInClient.signOut()
-        }
-
-        val stickyPref = activity!!.getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE)
-        stickyPref.edit().clear().apply()
-    }
-
     override fun onDestroyView() {
         presenter.detachView()
         super.onDestroyView()
