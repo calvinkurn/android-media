@@ -30,7 +30,7 @@ import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.R
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
-
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 
 /**
  * @author lalit.singh
@@ -143,7 +143,7 @@ public class CMInAppManager implements CmInAppListener {
 
     private void showDialog(CMInApp data) {
         switch (data.getType()) {
-            case TYPE_FULL_SCREEN_IMAGE_ONLY:
+            case TYPE_INTERSTITIAL_IMAGE_ONLY:
             case TYPE_INTERSTITIAL:
                 interstitialDialog(data);
                 break;
