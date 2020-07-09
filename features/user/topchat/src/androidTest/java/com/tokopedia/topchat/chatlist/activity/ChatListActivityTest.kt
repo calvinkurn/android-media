@@ -1,24 +1,14 @@
 package com.tokopedia.topchat.chatlist.activity
 
 
-import android.view.View
-import android.view.ViewGroup
 //import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 //import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment
-import com.tokopedia.topchat.stub.activity.ChatListActivityStub
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.TypeSafeMatcher
+import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
+import com.tokopedia.topchat.stub.chatlist.fragment.ChatTabListFragmentStub
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,7 +29,7 @@ class ChatListActivityTest {
 
     @Test
     fun chatListActivityTest() {
-        val fragment = ChatTabListFragment.create()
+        val fragment: ChatTabListFragment = ChatTabListFragmentStub.create()
         mActivityTestRule.activity.setupFragment(fragment)
 //        val scenario = launchFragmentInContainer<ChatTabListFragment>()
 //        val tabView = onView(

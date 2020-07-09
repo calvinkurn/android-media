@@ -31,6 +31,7 @@ import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER
 import com.tokopedia.topchat.chatlist.adapter.ChatListPagerAdapter
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
+import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
@@ -45,7 +46,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment {
+open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment {
 
     override fun getScreenName(): String = "chat-tab-list"
 
@@ -65,10 +66,17 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     lateinit var webSocketViewModel: WebSocketViewModel
     lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
 
+    private var chatListComponent: ChatListComponent? = null
+
     private var fragmentViewCreated = false
 
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        startInject()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_chat_tab_list, container, false)
@@ -76,7 +84,6 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         bindView(view)
-        initInjector()
         initViewModel()
         initTabList()
         initViewPagerAdapter()
@@ -107,6 +114,44 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         flushAllViewModel()
     }
 
+    override fun initInjector() {
+        chatListComponent = createChatListComponent()
+    }
+
+    override fun loadNotificationCounter() {
+        chatNotifCounterViewModel.queryGetNotifCounter()
+    }
+
+    override fun notifyViewCreated() {
+        if (!fragmentViewCreated) {
+            webSocketViewModel.connectWebSocket()
+            fragmentViewCreated = true
+        }
+    }
+
+    override fun increaseUserNotificationCounter() {
+        increaseNotificationCounter(R.drawable.ic_chat_icon_account)
+    }
+
+    override fun increaseSellerNotificationCounter() {
+        increaseNotificationCounter(R.drawable.ic_chat_icon_shop)
+    }
+
+    override fun decreaseUserNotificationCounter() {
+        decreaseNotificationCounter(R.drawable.ic_chat_icon_account)
+    }
+
+    override fun decreaseSellerNotificationCounter() {
+        decreaseNotificationCounter(R.drawable.ic_chat_icon_shop)
+    }
+
+    protected open fun createChatListComponent(): ChatListComponent {
+        return DaggerChatListComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .chatListContextModule(context?.let { ChatListContextModule(it) })
+                .build()
+    }
+
     private fun initChatCounterObserver() {
         chatNotifCounterViewModel.chatNotifCounter.observe(this,
                 Observer { result ->
@@ -128,12 +173,8 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         viewPager = view.findViewById(R.id.vp_chat_list)
     }
 
-    override fun initInjector() {
-        DaggerChatListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .chatListContextModule(context?.let { ChatListContextModule(it) })
-                .build()
-                .inject(this)
+    private fun startInject() {
+        chatListComponent?.inject(this)
     }
 
     private fun initTabList() {
@@ -392,33 +433,6 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
 
     private fun initData() {
         loadNotificationCounter()
-    }
-
-    override fun loadNotificationCounter() {
-        chatNotifCounterViewModel.queryGetNotifCounter()
-    }
-
-    override fun notifyViewCreated() {
-        if (!fragmentViewCreated) {
-            webSocketViewModel.connectWebSocket()
-            fragmentViewCreated = true
-        }
-    }
-
-    override fun increaseUserNotificationCounter() {
-        increaseNotificationCounter(R.drawable.ic_chat_icon_account)
-    }
-
-    override fun increaseSellerNotificationCounter() {
-        increaseNotificationCounter(R.drawable.ic_chat_icon_shop)
-    }
-
-    override fun decreaseUserNotificationCounter() {
-        decreaseNotificationCounter(R.drawable.ic_chat_icon_account)
-    }
-
-    override fun decreaseSellerNotificationCounter() {
-        decreaseNotificationCounter(R.drawable.ic_chat_icon_shop)
     }
 
     private fun decreaseNotificationCounter(iconId: Int) {

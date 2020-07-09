@@ -106,7 +106,13 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    // spek
+    // TODO fix this dagger impl
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    testAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    testImplementation rootProject.ext.miscDependencies.dagger
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
 }

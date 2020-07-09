@@ -11,7 +11,7 @@
         tools:replace="android:debuggable,android:label">
 
         <activity
-            android:name=".stub.activity.ChatListActivityStub"
+            android:name="com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>

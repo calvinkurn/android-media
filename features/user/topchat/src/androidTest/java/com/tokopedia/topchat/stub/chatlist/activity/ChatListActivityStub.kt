@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.stub.activity
+package com.tokopedia.topchat.stub.chatlist.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
