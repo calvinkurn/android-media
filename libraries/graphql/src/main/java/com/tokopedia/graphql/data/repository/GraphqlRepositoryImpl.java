@@ -123,29 +123,33 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
     private Observable<GraphqlResponseInternal> getCloudResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
         try {
-            int counter = requests.size();
+            List<GraphqlRequest> copyRequests = new ArrayList<>();
+            copyRequests.addAll(requests);
+
+            int counter = copyRequests.size();
             for (int i = 0; i < counter; i++) {
-                if (requests.get(i).isNoCache()) {
+                if (copyRequests.get(i).isNoCache()) {
                     continue;
                 }
 
                 String cachesResponse = mGraphqlCloudDataStore.getCacheManager()
-                        .get(requests.get(i).cacheKey());
+                        .get(copyRequests.get(i).cacheKey());
+
                 if (TextUtils.isEmpty(cachesResponse)) {
                     continue;
                 }
 
-                Object object = CommonUtils.fromJson(cachesResponse, requests.get(i).getTypeOfT());
-                checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
+                Object object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT());
+                checkForNull(object, copyRequests.get(i).getQuery(), copyRequests.get(i).isShouldThrow());
                 //Lookup for data
-                mResults.put(requests.get(i).getTypeOfT(), object);
+                mResults.put(copyRequests.get(i).getTypeOfT(), object);
 
                 LoggingUtils.logGqlSizeCached("java", requests.toString(), cachesResponse);
 
-                mIsCachedData.put(requests.get(i).getTypeOfT(), true);
-                requests.get(i).setNoCache(true);
-                mRefreshRequests.add(requests.get(i));
-                requests.remove(requests.get(i));
+                mIsCachedData.put(copyRequests.get(i).getTypeOfT(), true);
+                copyRequests.get(i).setNoCache(true);
+                mRefreshRequests.add(copyRequests.get(i));
+                requests.remove(copyRequests.get(i));
             }
         } catch (JsonSyntaxException jse) {
             Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
