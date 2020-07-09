@@ -4,4 +4,5 @@
     <color name="product_manage_title_color">#f531353b</color>
     <color name="product_manage_charcoal_grey">#ae31353b</color>
     <color name="redTransparant">#AAd50000</color>
+    <color name="product_manage_campaign_stock_event_name_color">#393D43</color>
 </resources>

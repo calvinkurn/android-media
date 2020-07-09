@@ -6,22 +6,33 @@
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl2"
     android:paddingRight="@dimen/layout_lvl2"
+    android:background="@color/transparent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/transparent">
-
+    xmlns:tools="http://schemas.android.com/tools">
+    
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_campaign_stock_amount"
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_campaign_stock_variant_editor_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/product_manage_campaign_stock_stock_amount"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.5"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Merah | S"/>
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
-        android:id="@+id/qte_campaign_stock_amount"
+        android:id="@+id/qte_campaign_stock_variant_editor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_campaign_stock_variant_editor_name"
+        app:layout_constraintEnd_toStartOf="@id/switch_campaign_stock_variant_editor"/>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+        android:id="@+id/switch_campaign_stock_variant_editor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"

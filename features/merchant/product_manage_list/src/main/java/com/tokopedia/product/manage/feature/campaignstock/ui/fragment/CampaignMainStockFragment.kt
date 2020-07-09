@@ -7,24 +7,33 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ActiveProductSwitchUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
 
 class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignMainStockFragment>, CampaignStockAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(isVariant: Boolean,
-                           sellableProductList: ArrayList<SellableStockProductModel>): CampaignMainStockFragment {
+                           sellableProductUIList: ArrayList<SellableStockProductUIModel>): CampaignMainStockFragment {
             return CampaignMainStockFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_VARIANT, isVariant)
-                    putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductList)
+                    putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductUIList)
                 }
             }
         }
 
         private const val EXTRA_IS_VARIANT = "extra_is_variant"
         private const val EXTRA_SELLABLE_PRODUCT_LIST = "extra_sellable"
+    }
+
+    private val isVariant by lazy {
+        arguments?.getBoolean(EXTRA_IS_VARIANT) ?: false
+    }
+
+    private val sellableProductList by lazy {
+        arguments?.getParcelableArrayList<SellableStockProductUIModel>(EXTRA_SELLABLE_PRODUCT_LIST)?.toList().orEmpty()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -59,9 +68,18 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignMainStockFra
     }
 
     private fun setupView() {
+        if (sellableProductList.isNotEmpty()) {
+            setupAdapterModels(isVariant)
+        }
     }
 
-    private fun applyLayout() {
-
+    private fun setupAdapterModels(isVariant: Boolean) {
+        if (isVariant) {
+            //Todo: show variants
+        } else {
+            //Todo: Show editstock, same as bottomsheet
+        }
+        adapter.addElement(ActiveProductSwitchUiModel(false))
     }
+
 }

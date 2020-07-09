@@ -953,8 +953,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditStockButton(product: ProductViewModel) {
-        val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(product, this) }
-        editStockBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
+        if (product.hasStockReserved) {
+            context?.run {
+                startActivity(CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)))
+            }
+        } else {
+            val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(product, this) }
+            editStockBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
+        }
         ProductManageTracking.eventEditStock(product.id)
     }
 
@@ -967,7 +973,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
-        if (product.hasStockReserved != true) {
+        if (product.hasStockReserved) {
             context?.run {
                 startActivity(CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)))
             }

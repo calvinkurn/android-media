@@ -3,15 +3,15 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.util
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationDetailReserve
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationDetailSellable
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationReservedProduct
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedStockProductModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
 
 object CampaignStockMapper {
 
-    fun mapToParcellableSellableProduct(dataModel: GetStockAllocationDetailSellable): SellableStockProductModel =
+    fun mapToParcellableSellableProduct(dataModel: GetStockAllocationDetailSellable): SellableStockProductUIModel =
             with(dataModel) {
-                SellableStockProductModel(
+                SellableStockProductUIModel(
                         productId = productId,
                         warehouseId = warehouseId,
                         productName = productName,
@@ -19,9 +19,9 @@ object CampaignStockMapper {
                 )
             }
 
-    fun mapToParcellableReserved(dataModel: GetStockAllocationDetailReserve): ReservedEventInfoModel =
+    fun mapToParcellableReserved(dataModel: GetStockAllocationDetailReserve): ReservedEventInfoUiModel =
             with(dataModel.eventInfo) {
-                ReservedEventInfoModel(
+                ReservedEventInfoUiModel(
                         eventType = eventType,
                         eventName = eventName,
                         eventDesc = description,

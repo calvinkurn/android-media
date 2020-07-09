@@ -4,18 +4,18 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
 
 class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignMainStockFragment>, CampaignStockAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(isVariant: Boolean,
-                           reservedEventInfoList: ArrayList<ReservedEventInfoModel>): CampaignReservedStockFragment =
+                           reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>): CampaignReservedStockFragment =
                 CampaignReservedStockFragment().apply {
                     arguments = Bundle().apply {
                         putBoolean(EXTRA_IS_VARIANT, isVariant)
-                        putParcelableArrayList(EXTRA_RESERVED_EVENT_INFO_LIST, reservedEventInfoList)
+                        putParcelableArrayList(EXTRA_RESERVED_EVENT_INFO_LIST, reservedEventInfoUiList)
                     }
                 }
 

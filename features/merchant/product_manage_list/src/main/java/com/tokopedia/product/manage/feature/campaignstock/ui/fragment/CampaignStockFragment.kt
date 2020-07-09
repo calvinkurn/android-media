@@ -20,8 +20,8 @@ import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockA
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationSummary
 import com.tokopedia.product.manage.feature.campaignstock.ui.CampaignStockActivity
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.CampaignStockAdapter
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -145,8 +145,8 @@ class CampaignStockFragment: BaseDaggerFragment() {
                 adapter = activity?.let {
                     CampaignStockAdapter(it, getFragmentList(
                             summary.isVariant,
-                            detail.sellable.map { sellable -> CampaignStockMapper.mapToParcellableSellableProduct(sellable) } as ArrayList<SellableStockProductModel>,
-                            detail.reserve.map { reserved -> CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoModel>))
+                            detail.sellable.map { sellable -> CampaignStockMapper.mapToParcellableSellableProduct(sellable) } as ArrayList<SellableStockProductUIModel>,
+                            detail.reserve.map { reserved -> CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoUiModel>))
                 }
                 isUserInputEnabled = false
             }
@@ -166,19 +166,19 @@ class CampaignStockFragment: BaseDaggerFragment() {
     }
 
     private fun getMainStockFragment(isVariant: Boolean,
-                                     sellableProductList: ArrayList<SellableStockProductModel>) =
-            CampaignMainStockFragment.createInstance(isVariant, sellableProductList)
+                                     sellableProductUIList: ArrayList<SellableStockProductUIModel>) =
+            CampaignMainStockFragment.createInstance(isVariant, sellableProductUIList)
 
     private fun getReservedStockFragment(isVariant: Boolean,
-                                         reservedEventInfoList: ArrayList<ReservedEventInfoModel>) =
-            CampaignReservedStockFragment.createInstance(isVariant, reservedEventInfoList)
+                                         reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>) =
+            CampaignReservedStockFragment.createInstance(isVariant, reservedEventInfoUiList)
 
     private fun getFragmentList(isVariant: Boolean,
-                                sellableProductList: ArrayList<SellableStockProductModel>,
-                                reservedEventInfoList: ArrayList<ReservedEventInfoModel>): List<Fragment>{
+                                sellableProductUIList: ArrayList<SellableStockProductUIModel>,
+                                reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>): List<Fragment>{
         return listOf(
-                getMainStockFragment(isVariant, sellableProductList),
-                getReservedStockFragment(isVariant, reservedEventInfoList)
+                getMainStockFragment(isVariant, sellableProductUIList),
+                getReservedStockFragment(isVariant, reservedEventInfoUiList)
         )
     }
 }
