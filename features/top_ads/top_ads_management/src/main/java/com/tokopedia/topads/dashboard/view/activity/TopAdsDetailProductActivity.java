@@ -18,7 +18,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsManagementRouter;
@@ -32,6 +31,8 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,8 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
         if (GlobalConfig.isSellerApp()) {
             String userId = extras.getString("user_id", "");
             if (!TextUtils.isEmpty(userId)) {
-                if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
+                UserSessionInterface userSession = new UserSession(context);
+                if (userSession.getUserId().equalsIgnoreCase(userId)) {
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context, extras.getString("ad_id", ""))
                             .setData(uri.build())

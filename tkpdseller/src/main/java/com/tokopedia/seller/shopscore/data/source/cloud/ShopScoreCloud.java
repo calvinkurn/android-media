@@ -3,8 +3,9 @@ package com.tokopedia.seller.shopscore.data.source.cloud;
 import com.tokopedia.core.network.apiservices.goldmerchant.apis.GoldMerchantApi;
 import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServiceModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopscore.data.common.GetData;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -15,23 +16,23 @@ import rx.Observable;
  */
 public class ShopScoreCloud {
     private final GoldMerchantApi api;
-    private final SessionHandler sessionHandler;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public ShopScoreCloud(GoldMerchantApi api, SessionHandler sessionHandler) {
+    public ShopScoreCloud(GoldMerchantApi api, UserSessionInterface userSession) {
         this.api = api;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     public Observable<ShopScoreSummaryServiceModel> getShopScoreSummaryData() {
         return api
-                .getShopScoreSummary(sessionHandler.getShopID())
+                .getShopScoreSummary(userSession.getShopId())
                 .map(new GetData<ShopScoreSummaryServiceModel>());
     }
 
     public Observable<ShopScoreDetailServiceModel> getShopScoreDetailData() {
         return api
-                .getShopScoreDetail(sessionHandler.getShopID())
+                .getShopScoreDetail(userSession.getShopId())
                 .map(new GetData<ShopScoreDetailServiceModel>());
     }
 }

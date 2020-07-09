@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -15,6 +14,8 @@ import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGrou
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,8 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
     private CreateGroupRequest getCreateGroupRequest(RequestParams requestParams) {
         CreateGroupRequest createGroupRequest = new CreateGroupRequest();
         createGroupRequest.setGroupName(requestParams.getString(REQ_GROUP_NAME, ""));
-        createGroupRequest.setShopId(SessionHandler.getShopID(MainApplication.getAppContext()));
+        UserSessionInterface userSession = new UserSession(MainApplication.getAppContext());
+        createGroupRequest.setShopId(userSession.getShopId());
 
         TopAdsDetailGroupViewModel viewModel = (TopAdsDetailGroupViewModel) requestParams.getObject(REQ_GROUP_VIEW_MODEL);
         List<TopAdsProductViewModel> productList = (List<TopAdsProductViewModel>) requestParams.getObject(REQ_PRODUCT_LIST);

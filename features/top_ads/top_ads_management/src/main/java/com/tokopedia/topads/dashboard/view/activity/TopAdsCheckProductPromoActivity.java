@@ -13,12 +13,13 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsCheckProductPromoFragment;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by hadi.putra on 17/04/18.
@@ -37,7 +38,8 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
         if (GlobalConfig.isSellerApp()) {
             String userId = extras.getString(PARAM_USER_ID, "");
             if (!TextUtils.isEmpty(userId)) {
-                if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
+                UserSessionInterface userSession = new UserSession(context);
+                if (userSession.getUserId().equalsIgnoreCase(userId)) {
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context)
                             .setData(uri.build())

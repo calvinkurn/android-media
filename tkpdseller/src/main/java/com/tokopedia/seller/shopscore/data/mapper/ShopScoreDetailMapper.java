@@ -1,14 +1,16 @@
 package com.tokopedia.seller.shopscore.data.mapper;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailItemServiceModel;
 import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailItemDomainModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailSummaryDomainModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,8 @@ public class ShopScoreDetailMapper
     }
 
     private int mapShopScoreDetailStateDomainModels(ShopScoreDetailServiceModel serviceModel) {
-        if (SessionHandler.isGoldMerchant(context)) {
+        UserSessionInterface userSession = new UserSession(context);
+        if (userSession.isGoldMerchant()) {
             if (isScoreHigherThanLimit(serviceModel)) {
                 return ShopScoreDetailDomainModel.GOLD_MERCHANT_QUALIFIED_BADGE;
             } else {

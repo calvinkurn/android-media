@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -21,6 +20,8 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsCheckProductPromoView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsCheckProductPromoPresenter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -143,7 +144,8 @@ public class TopAdsCheckProductPromoFragment extends BaseDaggerFragment
 
     private void reloadData() {
         showLoadingProgress();
-        presenter.checkPromoAds(shopId, itemId, SessionHandler.getLoginID(getActivity()));
+        UserSessionInterface userSession = new UserSession(getActivity());
+        presenter.checkPromoAds(shopId, itemId, userSession.getUserId());
     }
 
     @Override

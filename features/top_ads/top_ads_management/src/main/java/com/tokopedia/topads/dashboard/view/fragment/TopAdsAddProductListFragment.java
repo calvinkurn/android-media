@@ -19,13 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.MenuTintUtils;
 import com.tokopedia.seller.common.utils.NetworkStatus;
@@ -45,6 +44,8 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBin
 import com.tokopedia.topads.dashboard.view.listener.AdapterSelectionListener;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -297,8 +298,8 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     private void inject() {
         //[START] This is for dependent component
-        TopAdsManagementService topAdsSearchProductService = new TopAdsManagementService(new SessionHandler(getActivity()));
-        SessionHandler sessionHandler = new SessionHandler(getActivity());
+        UserSessionInterface userSessionInterface = new UserSession(getActivity());
+        TopAdsManagementService topAdsSearchProductService = new TopAdsManagementService(userSessionInterface);
         SearchProductEOFMapper searchProductMapper = new SearchProductEOFMapper();
         CloudTopAdsSearchProductDataSource cloudTopAdsSeachProductDataSource = new CloudTopAdsSearchProductDataSource(
                 getActivity(),
@@ -308,7 +309,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         TopAdsSearchProductRepositoryImpl topAdsSeachProductRepository = new TopAdsSearchProductRepositoryImpl(getActivity(), cloudTopAdsSeachProductDataSource);
         TopAdsProductListUseCase topAdsProductListUseCase = new TopAdsProductListUseCase(topAdsSeachProductRepository);
 
-        topAdsAddProductListPresenter.setSessionHandler(sessionHandler);
+        topAdsAddProductListPresenter.setUserSession(userSessionInterface);
         topAdsAddProductListPresenter.setTopAdsProductListUseCase(topAdsProductListUseCase);
         topAdsAddProductListPresenter.setErrorNetworkListener(this);
         //[END] This is for dependent component

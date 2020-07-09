@@ -8,7 +8,6 @@ import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.transaction.neworder.data.NewOrderApi;
 import com.tokopedia.seller.transaction.neworder.data.repository.GetNewOrderRepositoryImpl;
 import com.tokopedia.seller.transaction.neworder.data.source.GetNewOrderDataSource;
@@ -51,7 +50,7 @@ public class NewOrderWidgetModule {
     @NewOrderWidgetScope
     @Provides
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
-        return new LocalCacheHandler(context, SessionHandler.DRAWER_CACHE);
+        return new LocalCacheHandler(context, "DRAWER_CACHE");
     }
 
     @NewOrderWidgetScope
