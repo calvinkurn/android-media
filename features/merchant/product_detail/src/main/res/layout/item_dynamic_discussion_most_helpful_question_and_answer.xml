@@ -18,6 +18,7 @@
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
+            app:unify_image_type="circle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
