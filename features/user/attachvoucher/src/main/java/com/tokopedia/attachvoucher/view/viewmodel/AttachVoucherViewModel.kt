@@ -33,6 +33,9 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     fun loadVouchers(page: Int) {
+        if (getVouchersUseCase.isLoading) {
+            getVouchersUseCase.cancelCurrentLoad()
+        }
         getVouchersUseCase.getVouchers(
                 page,
                 filter.value ?: NO_FILTER,

@@ -18,7 +18,9 @@ class GetVoucherUseCase @Inject constructor(
 ) : CoroutineScope {
 
     var hasNext = false
+    var isLoading = false
 
+    private var getVouchersJob: Job? = null
     private val paramShopId = "shop_id"
     private val paramFilter = "Filter"
 
@@ -30,8 +32,9 @@ class GetVoucherUseCase @Inject constructor(
             onSuccess: (List<VoucherUiModel>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        launchCatchError(dispatchers.IO,
+        getVouchersJob = launchCatchError(dispatchers.IO,
                 {
+                    startLoading()
                     val params = generateParams(page, filter)
                     val response = gqlUseCase.apply {
                         setTypeClass(GetMerchantPromotionGetMVListResponse::class.java)
@@ -42,14 +45,30 @@ class GetVoucherUseCase @Inject constructor(
                     val vouchers = mapper.map(response)
                     withContext(dispatchers.Main) {
                         onSuccess(vouchers)
+                        stopLoading()
                     }
                 },
                 { exception ->
                     withContext(dispatchers.Main) {
                         onError(exception)
+                        stopLoading()
                     }
                 }
         )
+    }
+
+    private fun stopLoading() {
+        isLoading = false
+    }
+
+    private fun startLoading() {
+        isLoading = true
+    }
+
+    fun cancelCurrentLoad() {
+        getVouchersJob?.cancel()
+        gqlUseCase.cancelJobs()
+        stopLoading()
     }
 
     fun safeCancel() {
