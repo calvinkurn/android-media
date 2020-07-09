@@ -345,6 +345,9 @@
 #discovery
 -keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
 
+#tokopoints
+-keep class com.tokopedia.tokopoints.view.couponlisting.** {*;}
+
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
 
