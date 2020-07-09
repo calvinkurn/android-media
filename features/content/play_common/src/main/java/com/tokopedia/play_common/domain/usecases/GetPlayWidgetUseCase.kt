@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play_common.domain.mapper.PlayWidgetMapper
 import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
-import com.tokopedia.play_common.widget.playBannerCarousel.model.*
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -32,6 +32,7 @@ class GetPlayWidgetUseCase(
                   widgetType
                   appLink
                   webLink
+                  startTime
                   config{
                     hasPromo
                     isReminderSet
@@ -86,6 +87,7 @@ class GetPlayWidgetUseCase(
                 overlayImageWebLink
                 gradient
                 serverTimeOffset
+                maxAutoplayCell
               }
             } 
           }
