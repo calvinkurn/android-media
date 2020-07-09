@@ -107,7 +107,6 @@ object DFDownloader {
                             }
                             needRetry = true
                             isImmediate = immediate
-                            successResult = ListenableWorker.Result.failure()
                         }
                     }
                 }
@@ -117,6 +116,7 @@ object DFDownloader {
                 if (needRetry) {
                     if (isImmediate) {
                         startSchedule(applicationContext, isImmediate = isImmediate, isAppendingExisting = true)
+                        successResult = ListenableWorker.Result.success()
                     } else {
                         successResult = ListenableWorker.Result.retry()
                     }
