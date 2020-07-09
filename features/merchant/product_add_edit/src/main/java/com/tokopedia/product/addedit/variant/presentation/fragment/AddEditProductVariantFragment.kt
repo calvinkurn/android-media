@@ -663,6 +663,8 @@ class AddEditProductVariantFragment :
 
     private fun observeGetCategoryVariantCombinationResult() {
         viewModel.getCategoryVariantCombinationResult.observe(this, Observer { result ->
+            // clear adapter before rendering
+            variantTypeAdapter?.setData(emptyList())
             when (result) {
                 is Success -> {
                     // all variant details
@@ -834,15 +836,12 @@ class AddEditProductVariantFragment :
     }
 
     private fun removeVariant() {
-        val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
-        categoryId?.let { viewModel.getCategoryVariantCombination(it) }
-        variantTypeAdapter?.setData(emptyList())
+        viewModel.removeVariant()
         variantValueAdapterLevel1?.setData(emptyList())
         variantValueAdapterLevel2?.setData(emptyList())
+        variantPhotoAdapter?.setData(emptyList())
         variantValueLevel1Layout.hide()
         variantValueLevel2Layout.hide()
-        variantPhotoAdapter?.setData(emptyList())
-        viewModel.removeVariant()
         removeSizechart()
         layoutSizechart.hide()
     }

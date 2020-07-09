@@ -225,10 +225,18 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun removeVariant() {
         productInputModel.value?.variantInputModel = VariantInputModel()
-        variantValuesLayoutMap = TreeMap()
-        selectedVariantUnitValuesMap = HashMap()
+        selectedVariantDetails = mutableListOf()
         mSelectedVariantUnitValuesLevel1.value = emptyList()
         mSelectedVariantUnitValuesLevel2.value = emptyList()
+        selectedVariantUnitValuesMap = HashMap()
+        variantValuesLayoutMap = TreeMap()
+        selectedVariantUnitMap = HashMap()
+        mIsVariantPhotosVisible.value = false
+
+        productInputModel.value?.detailInputModel?.categoryId?.let {
+            getCategoryVariantCombination(it)
+        }
+
     }
 
     private fun mapSelections(variantDetailsSelected: List<VariantDetail>): List<SelectionInputModel> {
