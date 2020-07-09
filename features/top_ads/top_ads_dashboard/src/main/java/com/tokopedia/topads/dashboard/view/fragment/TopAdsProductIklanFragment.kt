@@ -30,7 +30,6 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
