@@ -214,7 +214,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             TALK_WRITE_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateQuestion()
             }
-            LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK && viewModel.isUserLoggedIn) {
+            LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 when (viewModel.talkLastAction) {
                     is TalkGoToReply -> {
                         goToReplyActivity((viewModel.talkLastAction as TalkGoToReply).questionId)
