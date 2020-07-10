@@ -136,21 +136,15 @@ object HomeQuery{
             }
           }
           homeFlag{
-            flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints"){
-              name
-              is_active
+                server_time
+                refresh_time
+                refresh_message
+                flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_auto_refresh"){
+                    name
+                    is_active
+                }
             }
-          }
         }
     """.trimIndent()
 }
 
-//homeFlag{
-//    server_time
-//    refresh_time
-//    refresh_message
-//    flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_auto_refresh"){
-//        name
-//        is_active
-//    }
-//}
