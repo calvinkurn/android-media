@@ -593,6 +593,7 @@ open class HomeFragment : BaseDaggerFragment(),
             activityStateListener!!.onResume()
         }
         adjustStatusBarColor()
+        autoRefreshHandler.post(autoRefreshRunnable)
     }
 
     private fun conditionalViewModelRefresh(){
@@ -625,6 +626,7 @@ open class HomeFragment : BaseDaggerFragment(),
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
+        autoRefreshHandler.removeCallbacks(autoRefreshRunnable)
     }
 
     override fun onDestroy() {
@@ -1023,8 +1025,8 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun setRefreshDummy() {
-        val refreshTime = Date(System.currentTimeMillis() + 4000)
-        Toast.makeText(context, "tes 4 detik lagi refresh", Toast.LENGTH_SHORT).show()
+        val refreshTime = Date(System.currentTimeMillis() + 5000)
+        Toast.makeText(context, "tes 5 detik lagi refresh", Toast.LENGTH_SHORT).show()
 
         if (!isExpired(getServerRealTime(0), refreshTime)) {
             autoRefreshRunnable = getAutoRefreshRunnableThread(0, refreshTime, autoRefreshHandler, this)
