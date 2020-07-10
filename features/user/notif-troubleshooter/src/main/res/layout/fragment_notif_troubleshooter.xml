@@ -21,157 +21,21 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <ProgressBar
-        android:id="@+id/pgLoaderTestNotif"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lstConfig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/ticker"
-        tools:background="@color/green_50"
-        android:layout_marginTop="@dimen/dp_16" />
-
-    <ImageView
-        android:id="@+id/imgStatusTestNotif"
-        android:src="@drawable/ic_red_error"
-        android:layout_gravity="center_vertical"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ticker"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_16" />
-
-    <TextView
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:text="Test Push Notification"
-        android:textSize="@dimen/sp_16"
-        app:layout_constraintBottom_toBottomOf="@+id/pgLoaderTestNotif"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pgLoaderTestNotif"
-        app:layout_constraintTop_toTopOf="@+id/pgLoaderTestNotif" />
-
-    <ProgressBar
-        android:id="@+id/pgLoaderNotificationSetting"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pgLoaderTestNotif"
-        tools:background="@color/green_50"
-        tools:visibility="visible"
-        android:layout_marginTop="@dimen/dp_16"/>
-
-    <ImageView
-        android:id="@+id/imgStatusNotificationSetting"
-        android:src="@drawable/ic_red_error"
-        android:layout_gravity="center_vertical"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pgLoaderTestNotif"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_16"/>
-
-    <TextView
-        android:id="@+id/textNotificationSetting"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:text="Pengaturan Notifikasi"
-        android:textSize="@dimen/sp_16"
-        app:layout_constraintBottom_toBottomOf="@+id/pgLoaderNotificationSetting"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pgLoaderNotificationSetting"
-        app:layout_constraintTop_toTopOf="@+id/pgLoaderNotificationSetting" />
-
-    <ProgressBar
-        android:id="@+id/pgLoaderCategorySetting"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pgLoaderNotificationSetting"
-        tools:background="@color/green_50"
-        tools:visibility="visible"
-        android:layout_marginTop="@dimen/dp_16"/>
-
-    <ImageView
-        android:id="@+id/imgStatusCategorySetting"
-        android:src="@drawable/ic_red_error"
-        android:layout_gravity="center_vertical"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pgLoaderNotificationSetting"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_16"/>
-
-    <TextView
-        android:id="@+id/textNotificationCategory"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:text="Pengaturan Kategori"
-        android:textSize="@dimen/sp_16"
-        app:layout_constraintBottom_toBottomOf="@+id/pgLoaderCategorySetting"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pgLoaderCategorySetting"
-        app:layout_constraintTop_toTopOf="@+id/pgLoaderCategorySetting" />
-
-    <ProgressBar
-        android:id="@+id/pgLoaderRingtone"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pgLoaderCategorySetting"
-        tools:background="@color/green_50"
-        tools:visibility="visible"
-        android:layout_marginTop="@dimen/dp_16"/>
-
-    <ImageView
-        android:id="@+id/imgStatusRingtone"
-        android:src="@drawable/ic_red_error"
-        android:layout_gravity="center_vertical"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pgLoaderCategorySetting"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_16"/>
-
-    <TextView
-        android:id="@+id/textRingtone"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:text="Ringtone"
-        android:textSize="@dimen/sp_16"
-        app:layout_constraintBottom_toBottomOf="@+id/pgLoaderRingtone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pgLoaderRingtone"
-        app:layout_constraintTop_toTopOf="@+id/pgLoaderRingtone" />
+        tools:layout_editor_absoluteX="8dp" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardToken"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textRingtone"
-        android:layout_marginTop="@dimen/dp_32"
-        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/lstConfig"
         tools:visibility="visible">
 
         <LinearLayout
@@ -184,20 +48,20 @@
                 android:id="@+id/labelToken"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:labelTitle="Sample Label"/>
+                app:labelTitle="Sample Label" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8"/>
+                android:layout_height="@dimen/dp_8" />
 
             <TextView
                 android:id="@+id/textToken"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Token"
                 android:textSize="@dimen/sp_16"
                 android:visibility="gone"
-                tools:visibility="visible"/>
+                tools:text="Token"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

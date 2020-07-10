@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
@@ -24,17 +25,29 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
+import com.tokopedia.troubleshooter.notification.ui.adapter.TroubleshooterAdapter
+import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterItemFactory
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Categories as Categories
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Notification as Notification
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.PushNotification as PushNotification
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone as Ringtone
 
 class TroubleshootFragment : BaseDaggerFragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: TroubleshootViewModel
+
+    private val adapter by lazy(LazyThreadSafetyMode.NONE) {
+        TroubleshooterAdapter(TroubleshooterItemFactory())
+    }
 
     private var errorText: String = ""
 
@@ -59,8 +72,8 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         initObservable()
-        showLoading()
 
         /*
         * adding interval to request
@@ -71,20 +84,20 @@ class TroubleshootFragment : BaseDaggerFragment() {
         }, REQ_DELAY)
     }
 
+    private fun initView() {
+        lstConfig?.layoutManager = LinearLayoutManager(context)
+        lstConfig?.adapter = adapter
+
+        adapter.addElement(ConfigUIView.items())
+    }
+
     private fun initObservable() {
         viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
-            pgLoaderTestNotif?.invisible()
-            if (it.isSuccess == 1) {
-                onIconStatus(true)
-                viewModel.getNewToken()
-            } else {
-                onIconStatus(false)
-            }
+            adapter.updateStatus(PushNotification, it.isSuccess == 1)
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            pgLoaderTestNotif?.invisible()
-            onIconStatus(false)
+            //onIconStatus(false)
         })
 
         viewModel.token.observe(viewLifecycleOwner, Observer {
@@ -112,58 +125,43 @@ class TroubleshootFragment : BaseDaggerFragment() {
         })
 
         viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
-            pgLoaderNotificationSetting?.invisible()
             setNotificationSettingStatus(it)
         })
 
         viewModel.notificationImportance.observe(viewLifecycleOwner, Observer {
-            pgLoaderCategorySetting?.invisible()
             setNotificationImportanceStatus(it)
         })
 
         viewModel.notificationSoundUri.observe(viewLifecycleOwner, Observer {
-            pgLoaderRingtone?.invisible()
             setUriClick(it)
         })
     }
 
     private fun setUriClick(uri: Uri?) {
-        activity?.let {
-            imgStatusRingtone.show()
-            imgStatusRingtone?.setImageDrawable(
-                    if (uri != null) {
-                        drawable(it, R.drawable.ic_green_checked)
-                    } else {
-                        drawable(it, R.drawable.ic_red_error)
-                    })
-        }
+        adapter.updateStatus(Ringtone, uri != null)
+
         uri?.let {
             val ringtone = RingtoneManager.getRingtone(context, uri)
-            textRingtone?.setOnClickListener { ringtone.play() }
+            //textRingtone?.setOnClickListener { ringtone.play() } TODO update ke adapter
         }
 
         if(uri == null) {
-            textRingtone.text = "Ringtone tidak ditemukan."
+            //textRingtone.text = "Ringtone tidak ditemukan." TODO update ke adapter
         } else {
-            textRingtone.text = "Ringtone anda berfungsi."
+            //textRingtone.text = "Ringtone anda berfungsi." TODO update ke adapter
         }
     }
 
     private fun setNotificationImportanceStatus(importance: Int) {
-        activity?.let {
-            imgStatusCategorySetting?.show()
-            imgStatusCategorySetting?.setImageDrawable(
-                    if (importance == NotificationManager.IMPORTANCE_HIGH
-                            ||importance == NotificationManager.IMPORTANCE_DEFAULT) {
-                        drawable(it, R.drawable.ic_green_checked)
-                    } else {
-                        drawable(it, R.drawable.ic_red_error)
-                    })
-        }
+        // TODO handle for important categories
+        val isSuccess = importance == NotificationManager.IMPORTANCE_HIGH
+                ||importance == NotificationManager.IMPORTANCE_DEFAULT
+        adapter.updateStatus(Categories, isSuccess)
+
         when {
             importance == Int.MAX_VALUE -> {
-                imgStatusCategorySetting?.invisible()
-                textNotificationCategory?.invisible()
+                //imgStatusCategorySetting?.invisible() TODO update ke adapter
+                //textNotificationCategory?.invisible() TODO update ke adapter
             }
             importance != NotificationManager.IMPORTANCE_HIGH -> {
                 ticker?.show()
@@ -193,23 +191,16 @@ class TroubleshootFragment : BaseDaggerFragment() {
             }
         }
 
-        textNotificationCategory?.setOnClickListener {
-            goToSettingNotification()
-        }
+//        textNotificationCategory?.setOnClickListener {
+//            goToSettingNotification()
+//        }
         ticker?.setOnClickListener {
             goToSettingNotification()
         }
     }
 
     private fun setNotificationSettingStatus(notificationEnable: Boolean) {
-        activity?.let {
-            imgStatusNotificationSetting?.show()
-            imgStatusNotificationSetting?.setImageDrawable(if (notificationEnable) {
-                drawable(it, R.drawable.ic_green_checked)
-            } else {
-                drawable(it, R.drawable.ic_red_error)
-            })
-        }
+        adapter.updateStatus(Notification, notificationEnable)
 
         if (!notificationEnable){
             ticker?.show()
@@ -219,23 +210,11 @@ class TroubleshootFragment : BaseDaggerFragment() {
             ticker?.setTextDescription(errorText)
         }
 
-        textNotificationSetting?.setOnClickListener {
-            goToSettingNotification()
-        }
+//        textNotificationSetting?.setOnClickListener {
+//            goToSettingNotification()
+//        }
         ticker?.setOnClickListener {
             goToSettingNotification()
-        }
-    }
-
-    private fun onIconStatus(isSuccess: Boolean) {
-        imgStatusTestNotif?.show()
-
-        activity?.let {
-            imgStatusTestNotif?.setImageDrawable(if (isSuccess) {
-                drawable(it, R.drawable.ic_green_checked)
-            } else {
-                drawable(it, R.drawable.ic_red_error)
-            })
         }
     }
 
@@ -270,13 +249,6 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
             it.startActivity(intent)
         }
-    }
-
-    private fun showLoading() {
-        pgLoaderTestNotif?.show()
-        pgLoaderNotificationSetting?.show()
-        pgLoaderCategorySetting?.show()
-        pgLoaderRingtone?.show()
     }
 
     private fun setupToolbar() {
