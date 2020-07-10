@@ -21,6 +21,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListParam
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
@@ -37,15 +38,19 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
-import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.btn_apply
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.android.synthetic.main.uoh_empty_list.*
 import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -223,6 +228,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
@@ -282,6 +288,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uoh_sort_filter?.addItem(chips)
         uoh_sort_filter?.sortFilterPrefix?.setOnClickListener {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd")
+            val outputFormat = SimpleDateFormat("d MMM yyyy")
+            val limitDate = inputFormat.parse(orderList.dateLimit)
+            val limitDateStr = outputFormat.format(limitDate)
+            val resetMsg = resources.getString(R.string.uoh_reset_filter_msg).replace(UohConsts.DATE_LIMIT, limitDateStr)
+            showToaster(resetMsg)
+
             uoh_sort_filter?.resetAllFilters()
             filter1?.title = UohConsts.ALL_DATE
             filter2?.title = UohConsts.ALL_STATUS
@@ -307,7 +320,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             .replace(UohConsts.TICKER_URL, it.action.appUrl)
                             .replace(UohConsts.TICKER_LABEL, it.action.label)}"
                 }
-                listTickerData.add(TickerData(it.title, desc, getTickerType(it.text), true))
+                listTickerData.add(TickerData(it.title, desc, UohUtils.getTickerType(it.text), true))
             }
             context?.let {
                 val adapter = TickerPagerAdapter(it, listTickerData)
@@ -336,7 +349,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             .replace(UohConsts.TICKER_LABEL, it.action.label)}"
                 }
                 ticker_info?.setHtmlDescription(desc)
-                ticker_info?.tickerType = getTickerType(it.type)
+                ticker_info?.tickerType = UohUtils.getTickerType(it.type)
                 ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
@@ -576,23 +589,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    private fun getTickerType(typeStr: String): Int {
-        return when (typeStr) {
-            UohConsts.TICKER_TYPE_ANNOUNCEMENT -> {
-                Ticker.TYPE_ANNOUNCEMENT
-            }
-            UohConsts.TICKER_TYPE_ERROR -> {
-                Ticker.TYPE_ERROR
-            }
-            UohConsts.TICKER_TYPE_INFORMATION -> {
-                Ticker.TYPE_INFORMATION
-            }
-            UohConsts.TICKER_TYPE_WARNING -> {
-                Ticker.TYPE_WARNING
-            }
-            else -> {
-                Ticker.TYPE_ANNOUNCEMENT
-            }
+    private fun showToaster(message: String) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "")
         }
     }
 }

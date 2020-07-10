@@ -23,4 +23,5 @@ object UohConsts {
 
     const val TICKER_URL = "#url"
     const val TICKER_LABEL = "#label"
+    const val DATE_LIMIT = "#date_limit"
 }

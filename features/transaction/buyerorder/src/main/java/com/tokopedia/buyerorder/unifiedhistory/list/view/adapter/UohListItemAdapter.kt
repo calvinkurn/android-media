@@ -4,10 +4,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import kotlinx.android.synthetic.main.uoh_list_item.view.*
 
 /**
@@ -35,7 +44,62 @@ class UohListItemAdapter : RecyclerView.Adapter<UohListItemAdapter.ViewHolder>()
             holder.itemView.tv_uoh_date?.text = uohItemList[position].metadata.paymentDateStr
             holder.itemView.label_uoh_order?.text = uohItemList[position].status
 
-            // holder.itemView.ticker_info_inside_card?.tickerTitle = uohItemList[position].metadata.tickers
+            if (uohItemList[position].metadata.tickers.isNotEmpty()) {
+                holder.itemView.ticker_info_inside_card?.visible()
+                if (uohItemList[position].metadata.tickers.size > 1) {
+                    val listTickerData = arrayListOf<TickerData>()
+                    uohItemList[position].metadata.tickers.forEach {
+                        var desc = it.text
+                        if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
+                            desc += " ${holder.itemView.context.getString(R.string.ticker_info_selengkapnya)
+                                    .replace(UohConsts.TICKER_URL, it.action.appUrl)
+                                    .replace(UohConsts.TICKER_LABEL, it.action.label)}"
+                        }
+                        listTickerData.add(TickerData(it.title, desc, UohUtils.getTickerType(it.text), true))
+                    }
+                    holder.itemView.context?.let {
+                        val adapter = TickerPagerAdapter(it, listTickerData)
+                        adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                                // TODO : cek lagi url applink nya, make sure lagi nanti
+                                RouteManager.route(it, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            }
+                        })
+                        holder.itemView.ticker_info_inside_card?.setDescriptionClickEvent(object: TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                            override fun onDismiss() {
+                            }
+
+                        })
+                        holder.itemView.ticker_info_inside_card?.addPagerView(adapter, listTickerData)
+                    }
+                } else {
+                    uohItemList[position].metadata.tickers.first().let {
+                        holder.itemView.ticker_info_inside_card?.tickerTitle = it.title
+                        var desc = it.text
+                        if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
+                            desc += " ${holder.itemView.context.getString(R.string.ticker_info_selengkapnya)
+                                    .replace(UohConsts.TICKER_URL, it.action.appUrl)
+                                    .replace(UohConsts.TICKER_LABEL, it.action.label)}"
+                        }
+                        holder.itemView.ticker_info_inside_card?.setHtmlDescription(desc)
+                        holder.itemView.ticker_info_inside_card?.tickerType = UohUtils.getTickerType(it.type)
+                        holder.itemView.ticker_info_inside_card?.setDescriptionClickEvent(object : TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                RouteManager.route(holder.itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            }
+
+                            override fun onDismiss() {
+                            }
+
+                        })
+                    }
+                }
+            } else {
+                holder.itemView.ticker_info_inside_card?.gone()
+            }
+
             if (uohItemList[position].metadata.products.isNotEmpty()) {
                 holder.itemView.tv_uoh_product_name?.text = uohItemList[position].metadata.products.first().title
                 holder.itemView.tv_uoh_product_desc?.text = uohItemList[position].metadata.products.first().inline1.label

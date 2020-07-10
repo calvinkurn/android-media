@@ -93,36 +93,65 @@
             app:closeButtonVisibility="gone"
             android:layout_marginTop="@dimen/dp_8"/>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_uoh_product"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
-            app:cardCornerRadius="6dp"
-            app:cardElevation="@dimen/dp_0"
+        <RelativeLayout
+            android:id="@+id/rl_uoh_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/ticker_info_inside_card"
             app:layout_constraintLeft_toLeftOf="@id/constraint_layout"
             app:layout_constraintStart_toStartOf="@id/constraint_layout"
-            app:layout_constraintEnd_toStartOf="@id/tv_uoh_product_name"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_12">
 
-            <ImageView
-                android:id="@+id/iv_uoh_product"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_uoh_product"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
-                tools:ignore="ContentDescription"
-                android:background="@color/grey_450"/>
+                app:cardCornerRadius="6dp"
+                app:cardElevation="@dimen/dp_0"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20">
 
-        </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/iv_uoh_product"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
+                    tools:ignore="ContentDescription"
+                    android:background="@color/grey_450"/>
 
-        <com.tokopedia.unifyprinciples.Typography
+            </androidx.cardview.widget.CardView>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_uoh_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cv_uoh_product"
+                android:layout_toRightOf="@id/cv_uoh_product"
+                app:typographyWeight="bold"
+                app:typographyType="heading_5"
+                android:textColor="@color/tkpd_transaction_font_title_recharge_widget"
+                tools:text="Kartu Nama Standar"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_uoh_product_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cv_uoh_product"
+                android:layout_toRightOf="@id/cv_uoh_product"
+                android:layout_below="@id/tv_uoh_product_name"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:text="1 Barang (0.100 kg)"
+                android:textColor="@color/gray_product_desc"/>
+
+        </RelativeLayout>
+
+        <!--<com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_uoh_product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/cv_uoh_product"
-            app:layout_constraintTop_toTopOf="@id/cv_uoh_product"
+            app:layout_constraintStart_toEndOf="@id/fl_uoh_product_img"
+            app:layout_constraintTop_toTopOf="@id/fl_uoh_product_img"
             app:typographyWeight="bold"
             app:typographyType="heading_5"
             android:textColor="@color/tkpd_transaction_font_title_recharge_widget"
@@ -132,19 +161,19 @@
             android:id="@+id/tv_uoh_product_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/cv_uoh_product"
+            app:layout_constraintStart_toEndOf="@id/fl_uoh_product_img"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_product_name"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="1 Barang (0.100 kg)"
-            android:textColor="@color/gray_product_desc"/>
+            android:textColor="@color/gray_product_desc"/>-->
         
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_uoh_total_belanja"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_uoh_product_desc"
+            app:layout_constraintTop_toBottomOf="@id/rl_uoh_product"
             android:layout_marginTop="@dimen/dp_16"
             app:typographyWeight="reguler"
             app:typographyType="small"
