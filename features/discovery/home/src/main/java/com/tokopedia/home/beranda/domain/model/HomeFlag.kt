@@ -15,7 +15,7 @@ data class HomeFlag(
         val DYNAMIC_ICON_WRAP_STRING = "dynamic_icon_wrap"
         val HAS_RECOM_NAV_BUTTON_STRING = "has_recom_nav_button"
         val HAS_TOKOPOINTS_STRING = "has_tokopoints"
-        val IS_AUTO_REFRESH_STRING = "is_auto_refresh"
+        val IS_AUTO_REFRESH_STRING = "is_autorefresh"
     }
     enum class TYPE {
         DYNAMIC_ICON_WRAP, HAS_TOKOPOINTS, HAS_RECOM_NAV_BUTTON, IS_AUTO_REFRESH;
