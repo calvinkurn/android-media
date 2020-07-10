@@ -330,7 +330,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         // Calculate total item and price for insurance product
         insuranceChecked = true
-        val returnValueInsuranceProduct = calculatePriceInsuranceProduct(insuranceCartShopsArrayList, totalItemQty, subtotalPrice)
+        val returnValueInsuranceProduct = calculatePriceInsuranceProduct(insuranceCartShopsArrayList)
         totalItemQty += returnValueInsuranceProduct[0] as Int
         subtotalPrice += returnValueInsuranceProduct[1] as Double
 
@@ -545,8 +545,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 if (!it.wholesalePriceData.isNullOrEmpty()) {
                     // Calculate price and cashback for wholesale marketplace product
                     val returnValueWholesaleProduct = calculatePriceWholesaleProduct(it, itemQty, parentId, subtotalWholesalePriceMap, subtotalWholesaleCashbackMap)
-                    subtotalWholesalePriceMap[parentId] = returnValueWholesaleProduct[0] as Double
-                    subtotalWholesaleCashbackMap[parentId] = returnValueWholesaleProduct[1] as Double
+                    if (!subtotalWholesalePriceMap.containsKey(parentId)) {
+                        subtotalWholesalePriceMap[parentId] = returnValueWholesaleProduct[0] as Double
+                    }
+                    if (!subtotalWholesaleCashbackMap.containsKey(parentId)) {
+                        subtotalWholesaleCashbackMap[parentId] = returnValueWholesaleProduct[1] as Double
+                    }
                 } else {
                     // Calculate price and cashback for normal marketplace product
                     val returnValueNormalProduct = calculatePriceNormalProduct(it, itemQty, parentId, cartItemParentIdMap, subtotalPrice, subtotalCashback, cartItemHolderData)
@@ -575,16 +579,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return returnValue
     }
 
-    private fun calculatePriceInsuranceProduct(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>,
-                                               totalItemQty: Int,
-                                               subtotalPrice: Double): Array<Any> {
+    private fun calculatePriceInsuranceProduct(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>): Array<Any> {
         // Return value by index
         // 0 -> totalItemQty
         // 1 -> subtotalPrice
         val returnValue = Array<Any>(3) { }
 
-        var tmpTotalItemQty = totalItemQty
-        var tmpSubTotalPrice = subtotalPrice
+        var tmpTotalItemQty = 0
+        var tmpSubTotalPrice = 0.0
 
         for (insuranceCartShops in insuranceCartShopsArrayList) {
             if (insuranceCartShops.shopItemsList.size > 0) {
