@@ -594,7 +594,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         adjustStatusBarColor()
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
-            runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
+            setAutoRefreshOnHome(autoRefreshFlag)
         }
     }
 
@@ -1012,10 +1012,8 @@ open class HomeFragment : BaseDaggerFragment(),
         initAutoRefreshHandler()
         val serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(autoRefreshFlag.serverTime)
         val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.eventTime)
-        if (!isExpired(getServerRealTime(0), expiredTime)) {
-            autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
-            runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
-        }
+        autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
+        runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
     }
 
     private fun setDummyButton() {
