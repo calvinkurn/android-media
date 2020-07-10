@@ -126,8 +126,6 @@ dependencies {
     implementation project(rootProject.ext.features.managename)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     //Entertainment
-    implementation project(rootProject.ext.features.eventHome)
-    implementation project(rootProject.ext.features.eventSearch)
     implementation project(rootProject.ext.features.orderhistory)
     //Transaction
     implementation project(rootProject.ext.features.checkout)

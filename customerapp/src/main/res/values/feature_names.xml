@@ -257,9 +257,12 @@
     <string name="title_talk_discuss">Diskusi</string>
 
     <!-- Dynamic feature for event-->
-    <string name="entertainment_event_hiburan"><![CDATA[Event & Hiburan]]></string>
-    <string name="entertainment_event_search"><![CDATA[Search Event]]></string>
-    <string name="entertainment_event_location"><![CDATA[Lokasi]]></string>
+    <string name="df_title_entertainment">Entertainment</string>
+    <string name="ent_home_page_event_hiburan"><![CDATA[Event & Hiburan]]></string>
+    <string name="ent_search_title"><![CDATA[Search Event]]></string>
+    <string name="ent_search_event_location"><![CDATA[Lokasi]]></string>
+    <string name="ent_event_checkout_title_page">Ringkasan Pemesanan</string>
+    <string name="ent_pdp_title_form">Data Pemesan</string>
 
 
 
