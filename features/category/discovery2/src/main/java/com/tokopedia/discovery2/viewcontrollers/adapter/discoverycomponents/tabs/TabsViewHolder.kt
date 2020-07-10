@@ -13,7 +13,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifycomponents.TabsUnify
 
 class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private val tabsHolder: TabsUnify = itemView.findViewById(R.id.tabs_holder)
+    private val tabsHolder: TabsUnify = itemView.findViewById(R.id.discovery_tabs_holder)
     private lateinit var tabsViewModel: TabsViewModel
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
