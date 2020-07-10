@@ -34,7 +34,6 @@
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/product_name"
-                    android:contentDescription="text product name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="2"
@@ -50,7 +49,6 @@
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/product_price"
-                    android:contentDescription="text product price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -66,7 +64,6 @@
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/product_shop"
-                    android:contentDescription="text shop name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -96,7 +93,6 @@
 
         <com.tokopedia.product.detail.view.widget.SelectionTextView
             android:id="@+id/txt_product_descr"
-            android:contentDescription="text product descr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
