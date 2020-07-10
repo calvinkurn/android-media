@@ -11,6 +11,8 @@ import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase.MVFilter.VoucherTyp
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel.Companion.NO_FILTER
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -69,6 +71,21 @@ class AttachVoucherViewModelTest {
         verify { voucherObservers.onChanged(Dummy.exVouchers) }
     }
 
+    @Test
+    fun `Cancel previous load voucher`() {
+        // Given
+        every { getVoucherUseCase.isLoading } returns true
+        every {
+            getVoucherUseCase.getVouchers(any(), any(), any(), any())
+        } just Runs
+
+        // When
+        viewModel.loadVouchers(Dummy.firstPage)
+
+        // Then
+        verify { getVoucherUseCase.cancelCurrentLoad() }
+    }
+
 
     @Test
     fun `Filter cashback clicked`() {
@@ -78,12 +95,15 @@ class AttachVoucherViewModelTest {
             getVoucherUseCase.getVouchers(Dummy.firstPage, any(), any(), any())
         } just Runs
 
+        assertTrue(viewModel.hasNoFilter())
+
         // When
         viewModel.toggleFilter(VoucherType.paramCashback)
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
         verify { filterObserver.onChanged(VoucherType.paramCashback) }
+        assertFalse(viewModel.hasNoFilter())
     }
 
     @Test
@@ -131,4 +151,27 @@ class AttachVoucherViewModelTest {
         verify { errorObserver.onChanged(Dummy.exThrowable) }
     }
 
+    @Test
+    fun `hasNext get from use case`() {
+        // Given
+        every { getVoucherUseCase.hasNext } returns true
+
+        // When
+        viewModel.hasNext
+
+        // Then
+        assertTrue(viewModel.hasNext)
+    }
+
+    @Test
+    fun `currentPage is updated when load voucher`() {
+        // Given
+        every { getVoucherUseCase.getVouchers(Dummy.firstPage, any(), any(), any()) } just Runs
+
+        // When
+        viewModel.loadVouchers(Dummy.firstPage)
+
+        // Then
+        assertTrue(viewModel.currentPage == Dummy.firstPage)
+    }
 }
