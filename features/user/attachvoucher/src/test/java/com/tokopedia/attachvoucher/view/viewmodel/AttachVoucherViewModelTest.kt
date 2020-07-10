@@ -102,8 +102,6 @@ class AttachVoucherViewModelTest {
 
     @Test
     fun `Filter cashback clicked then click free-ongkir filter`() {
-//        val filterObserver = mockk<Observer<Int>>(relaxed = true)
-//        val voucherObservers = mockk<Observer<List<VoucherUiModel>>>(relaxed = true)
         //  Given
         viewModel.filter.observeForever(filterObserver)
 
