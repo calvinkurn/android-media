@@ -36,7 +36,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     @JvmField
     @Inject
-    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -91,8 +91,8 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     private fun startPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.startMonitoring(DISCOVERY_RESULT_TRACE)
-        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+        pageLoadTimePerformanceInterface?.startMonitoring(DISCOVERY_RESULT_TRACE)
+        pageLoadTimePerformanceInterface?.startPreparePagePerformanceMonitoring()
     }
 
     override fun initInject() {

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
@@ -71,6 +73,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private var componentPosition: Int? = null
     private var openScreenStatus = false
 
+    @JvmField
+    @Inject
+    var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -180,6 +185,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                         discoveryAdapter.addDataList(listComponent)
                     }
                     mProgressBar.hide()
+                    stopDiscoveryPagePerformanceMonitoring()
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
@@ -354,6 +360,17 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun isUserLoggedIn(): Boolean {
         return UserSession(activity).isLoggedIn
+    }
+
+    private fun stopDiscoveryPagePerformanceMonitoring() {
+        recyclerView.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        pageLoadTimePerformanceInterface?.stopRenderPerformanceMonitoring()
+                        pageLoadTimePerformanceInterface?.stopMonitoring()
+                        recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
     }
 
     override fun onResume() {

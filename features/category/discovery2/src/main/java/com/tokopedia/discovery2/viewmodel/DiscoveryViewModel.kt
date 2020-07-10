@@ -34,7 +34,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                                              private val discoveryUIConfigRepo: DiscoveryUIConfigGQLRepository,
                                              private val userSession: UserSessionInterface,
                                              private val trackingQueue: TrackingQueue,
-                                             private val pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface?) : BaseViewModel(), CoroutineScope {
+                                             private val pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface?) : BaseViewModel(), CoroutineScope {
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
@@ -57,11 +57,11 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryData() {
         launchCatchError(
                 block = {
-                    pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
-                    pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+                    pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
+                    pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
-                    pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
-                    pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+                    pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
+                    pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
