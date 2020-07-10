@@ -599,6 +599,7 @@ class AddEditProductVariantFragment :
             variantValuePicker?.setTitle("Pilih " + variantDetail.name)
             variantValuePicker?.showCloseIcon = false
             variantValuePicker?.showKnob = true
+            variantValuePicker?.isHideable = true
             val variantValuePickerLayout = VariantDetailValuesPicker(context)
             variantValuePickerLayout.setLayoutPosition(layoutPosition)
             variantValuePickerLayout.setSelectedVariantUnit(selectedVariantUnit)
@@ -617,6 +618,7 @@ class AddEditProductVariantFragment :
         variantUnitPicker = BottomSheetUnify()
         variantUnitPicker?.setTitle("Pilih " + variantDetail.name)
         variantUnitPicker?.showCloseIcon = true
+        variantValuePicker?.isHideable = true
         val variantUnitPickerLayout = VariantUnitPicker(context)
         variantUnitPickerLayout.setLayoutPosition(layoutPosition)
         variantUnitPickerLayout.setSelectedVariantUnit(selectedVariantUnit)
@@ -629,6 +631,7 @@ class AddEditProductVariantFragment :
     private fun showCustomVariantInputForm(layoutPosition: Int, variantId: Int, unitName: String) {
         customVariantValueInputForm = BottomSheetUnify()
         customVariantValueInputForm?.isKeyboardOverlap = false
+        variantValuePicker?.isHideable = true
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + unitName)
         val customVariantValueInputLayout = CustomVariantUnitValueForm(context)
         customVariantValueInputLayout.setLayoutPosition(layoutPosition)

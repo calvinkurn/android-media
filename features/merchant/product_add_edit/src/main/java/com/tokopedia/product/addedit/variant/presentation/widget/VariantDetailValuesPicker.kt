@@ -139,6 +139,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
                     listItemUnify.listTitleText == unitValueName
                 }
                 selectedListItemUnify?.listRightCheckbox?.isChecked = true
+                selectedListItemUnify?.listRightCheckbox?.isEnabled = false
             }
 
             // on item click listener
