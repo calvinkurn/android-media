@@ -76,17 +76,20 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private lateinit var dialogRationale: DialogUnify
     private val permissionStatusHandler: PermissionStatusHandler = {
-        when (requestCode) {
-            REQUEST_CODE_PERMISSION_CROP_COVER -> {
-                if (isAllGranted()) coverCropView.clickAdd()
-                else showToaster("Cover Crop Permission Failed", Toaster.TYPE_ERROR)
-            }
-            REQUEST_CODE_PERMISSION_UPLOAD -> {
-                if (isAllGranted()) coverSetupView.clickNext()
-                else showToaster("Upload Permission Failed", Toaster.TYPE_ERROR)
-            }
-            REQUEST_CODE_PERMISSION_COVER_CHOOSER -> {
-                if (isAllGranted()) openCoverChooser(CoverSource.None)
+        if (!isAllGranted()) showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+        else {
+            when (requestCode) {
+                REQUEST_CODE_PERMISSION_CROP_COVER -> {
+                    if (isAllGranted()) coverCropView.clickAdd()
+                    else showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+                }
+                REQUEST_CODE_PERMISSION_UPLOAD -> {
+                    if (isAllGranted()) coverSetupView.clickNext()
+                    else showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+                }
+                REQUEST_CODE_PERMISSION_COVER_CHOOSER -> {
+                    if (isAllGranted()) openCoverChooser(CoverSource.None)
+                }
             }
         }
     }
