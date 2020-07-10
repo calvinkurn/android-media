@@ -22,6 +22,7 @@ import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.webview.KEY_TITLE
 
 private const val RAISE_TICKET_TAG = "raiseTicket"
 class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListener {
@@ -159,6 +160,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     private fun raiseTicket() {
         if (tvRaiseTicket?.tag == RAISE_TICKET_TAG) {
             val contactUsHome = Intent(this, ContactUsHomeActivity::class.java)
+            contactUsHome.putExtra(KEY_TITLE, getString(R.string.contact_us_title_home))
             contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(contactUsHome)
             ContactUsTracking.sendGTMInboxTicket("",

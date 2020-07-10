@@ -72,6 +72,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHE
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
 
 /**
  * @author okasurya on 7/26/18.
@@ -108,7 +109,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     protected void openApplink(String applink) {
         if (getContext() != null && !TextUtils.isEmpty(applink) && isApplink(applink)) {
-            RouteManager.route(getContext(), applink);
+            if(applink.equals(ApplinkConst.CONTACT_US_NATIVE)){
+                Intent intent = RouteManager.getIntent(getContext(),applink);
+                intent.putExtra(KEY_TITLE, getString(R.string.tokopedia_care));
+                startActivity(intent);
+            }else {
+                RouteManager.route(getContext(), applink);
+            }
         }
     }
 
