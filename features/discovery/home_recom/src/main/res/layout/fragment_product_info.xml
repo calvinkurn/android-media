@@ -43,7 +43,7 @@
                                         android:focusable="true"
                                         android:visibility="gone"
                                         tools:visibility="visible"
-                                        app:srcCompat="@drawable/ic_product_action_wishlist_gray_28"
+                                        app:srcCompat="@drawable/recom_ic_product_action_wishlist_gray_28"
                                         android:contentDescription="@string/recom_app_name"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"/>
@@ -70,7 +70,7 @@
                                         android:id="@+id/product_discount"
                                         android:layout_width="@dimen/dp_0"
                                         android:layout_height="wrap_content"
-                                        android:background="@drawable/background_discount_product"
+                                        android:background="@drawable/recom_background_discount_product"
                                         android:textColor="@color/discount"
                                         android:textStyle="bold"
                                         android:textSize="@dimen/sp_10"

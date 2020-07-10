@@ -494,7 +494,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * @param productId the product id of primary product
      */
     private fun onSuccessRemoveWishlist(productId: String?) {
-        showToastSuccess(getString(R.string.msg_success_remove_wishlist))
+        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
         updateWishlist(false)
         sendIntentResusltWishlistChange(productId ?: "", false)
     }
@@ -522,7 +522,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * and update icon wishlist
      */
     private fun onSuccessAddWishlist(productId: String?) {
-        showToastSuccess(getString(R.string.msg_success_add_wishlist))
+        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
         updateWishlist(true)
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
@@ -597,13 +597,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun getRatingDrawable(rating: Int): Int {
         return when (rating) {
-            0 -> R.drawable.ic_star_none
-            1 -> R.drawable.ic_star_one
-            2 -> R.drawable.ic_star_two
-            3 -> R.drawable.ic_star_three
-            4 -> R.drawable.ic_star_four
-            5 -> R.drawable.ic_star_five
-            else -> R.drawable.ic_star_none
+            0 -> com.tokopedia.productcard.R.drawable.ic_star_none
+            1 -> com.tokopedia.productcard.R.drawable.ic_star_one
+            2 -> com.tokopedia.productcard.R.drawable.ic_star_two
+            3 -> com.tokopedia.productcard.R.drawable.ic_star_three
+            4 -> com.tokopedia.productcard.R.drawable.ic_star_four
+            5 -> com.tokopedia.productcard.R.drawable.ic_star_five
+            else -> com.tokopedia.productcard.R.drawable.ic_star_none
         }
     }
 
@@ -623,10 +623,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
         context?.let {
             if (wishlisted) {
                 fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_added_28))
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.recom_ic_product_action_wishlist_added_28))
             } else {
                 fab_detail.isActivated = false
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_gray_28))
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.recom_ic_product_action_wishlist_gray_28))
             }
         }
     }

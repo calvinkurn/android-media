@@ -9,7 +9,7 @@
         android:id="@+id/empty_image"
         android:layout_width="133dp"
         android:layout_height="100dp"
-        android:src="@drawable/empty_product_info"
+        android:src="@drawable/recom_empty_product_info"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
