@@ -44,8 +44,8 @@ android {
     }
 
     project.ext {
-        defaultVersionCode = 299700000;
-        defaultVersionName = "3.70";
+        defaultVersionCode = 299800000;
+        defaultVersionName = "3.80";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
