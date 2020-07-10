@@ -71,11 +71,6 @@ class DigitalTelcoRecommendationFragment : BaseDaggerFragment() {
         })
     }
 
-    override fun onDestroy() {
-        viewModel.flush()
-        super.onDestroy()
-    }
-
     companion object {
         fun newInstance(): Fragment {
             return DigitalTelcoRecommendationFragment()

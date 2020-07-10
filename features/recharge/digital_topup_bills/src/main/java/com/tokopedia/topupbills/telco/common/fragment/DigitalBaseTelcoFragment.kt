@@ -18,7 +18,7 @@ import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
-import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
+import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
@@ -50,7 +50,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected lateinit var pageContainer: RelativeLayout
     protected lateinit var tickerView: Ticker
     private lateinit var viewModel: SharedTelcoViewModel
-    protected val listMenu = mutableListOf<TopupBillsTabItem>()
+    protected var listMenu = mutableListOf<TelcoTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
 
     @Inject
@@ -241,13 +241,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     private fun initiateMenuTelco(recom: List<TopupBillsRecommendation>, promo: List<TopupBillsPromo>) {
         listMenu.clear()
+        var idTab = 1L
         if (promo.isNotEmpty()) {
             viewModel.setPromoTelco(promo)
-            listMenu.add(TopupBillsTabItem(DigitalTelcoPromoFragment.newInstance(), TelcoComponentName.PROMO))
+            listMenu.add(TelcoTabItem(Bundle(), TelcoComponentName.PROMO, idTab++))
         }
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
-            listMenu.add(TopupBillsTabItem(DigitalTelcoRecommendationFragment.newInstance(), TelcoComponentName.RECENTS))
+            listMenu.add(TelcoTabItem(Bundle(), TelcoComponentName.RECENTS, idTab++))
         }
 
         renderPromoAndRecommendation()
@@ -327,7 +328,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected abstract fun onBackPressed()
 
     override fun onDestroy() {
-        viewModel.flush()
+        listMenu.clear()
         super.onDestroy()
     }
 

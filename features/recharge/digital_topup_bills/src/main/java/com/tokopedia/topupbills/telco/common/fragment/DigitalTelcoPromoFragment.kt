@@ -105,11 +105,6 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
         promoListWidget.notifyPromoItemChanges(promoId)
     }
 
-    override fun onDestroy() {
-        viewModel.flush()
-        super.onDestroy()
-    }
-
     companion object {
         const val CLIP_DATA_VOUCHER_CODE_DIGITAL = "digital_telco_clip_data_promo"
 
