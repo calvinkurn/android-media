@@ -1,5 +1,8 @@
 package com.tokopedia.troubleshooter.notification.ui.uiview
 
+import android.app.NotificationManager
+import android.net.Uri
+import android.os.Build
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterTypeFactory
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.PushNotification as PushNotification
@@ -10,8 +13,11 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Loading a
 
 data class ConfigUIView(
         val state: ConfigState = PushNotification,
-        val title: String = "",
-        var status: StatusState = Loading
+        var title: String = "",
+        var message: String = "",
+        var status: StatusState = Loading,
+        var ringtone: Uri? = null,
+        var visibility: Boolean = true
 ): Visitable<TroubleshooterTypeFactory> {
 
     override fun type(typeFactory: TroubleshooterTypeFactory): Int {
@@ -26,6 +32,15 @@ data class ConfigUIView(
                     ConfigUIView(Categories, "Penganturan Kategori"),
                     ConfigUIView(Ringtone, "Ringtone")
             )
+        }
+
+        fun importantNotification(importance: Int): Boolean {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                importance == NotificationManager.IMPORTANCE_HIGH
+                    || importance == NotificationManager.IMPORTANCE_DEFAULT
+            } else {
+                false
+            }
         }
     }
 

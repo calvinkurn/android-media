@@ -1,70 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:padding="@dimen/dp_8"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:titleText="Informasi"
-        app:tickerType="information"
-        app:descriptionText="Mohon cek pengaturan notifikasi anda. Klik disini untuk ke pengaturan."
-        app:closeButtonVisibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        tools:visibility="visible" />
+    <include layout="@layout/item_notification_ticker"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lstConfig"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/ticker"
-        tools:layout_editor_absoluteX="8dp" />
+        android:layout_height="wrap_content" />
 
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/cardToken"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lstConfig"
-        tools:visibility="visible">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/dp_16">
-
-            <com.tokopedia.unifycomponents.Label
-                android:id="@+id/labelToken"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:labelTitle="Sample Label" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8" />
-
-            <TextView
-                android:id="@+id/textToken"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_16"
-                android:visibility="gone"
-                tools:text="Token"
-                tools:visibility="visible" />
-
-        </LinearLayout>
-
-    </com.tokopedia.unifycomponents.CardUnify>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

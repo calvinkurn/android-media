@@ -10,8 +10,8 @@ import com.tokopedia.troubleshooter.notification.data.FirebaseInstanceManagerImp
 import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
 import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
-import com.tokopedia.troubleshooter.notification.util.AppDispatcherProvider
-import com.tokopedia.troubleshooter.notification.util.DispatcherProvider
+import com.tokopedia.troubleshooter.notification.util.dispatchers.AppDispatcherProvider
+import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 

@@ -16,7 +16,7 @@ import com.tokopedia.troubleshooter.notification.data.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
-import com.tokopedia.troubleshooter.notification.util.DispatcherProvider
+import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,6 +28,7 @@ interface TroubleshootContract {
     fun getSetting()
     fun getImportanceNotification()
     fun getSoundNotification()
+    fun onFlush()
 }
 
 class TroubleshootViewModel @Inject constructor(
@@ -103,6 +104,10 @@ class TroubleshootViewModel @Inject constructor(
         _notificationSoundUri.value = RingtoneManager.getDefaultUri(
                 RingtoneManager.TYPE_NOTIFICATION
         )
+    }
+
+    override fun onFlush() {
+        flush()
     }
 
     companion object {

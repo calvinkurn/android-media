@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.ticker.Ticker
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:id="@+id/ticker"
+    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:titleText="Informasi"
-    app:tickerType="information"
-    app:descriptionText="Mohon cek pengaturan notifikasi anda. Klik disini untuk ke pengaturan."
-    app:closeButtonVisibility="gone"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    android:visibility="gone"
-    tools:visibility="visible" />
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@tools:sample/first_names"
+        android:textColor="@color/charcoal_grey_96"
+        app:typographyType="heading_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        tools:text="@tools:sample/lorem"
+        android:textColor="@color/charcoal_grey_68"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnActivation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:unifyButtonType="transaction"
+        app:unifyButtonVariant="filled"
+        android:text="@string/notif_ticker_resolve" />
+
+</LinearLayout>

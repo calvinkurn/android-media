@@ -8,7 +8,7 @@ import com.tokopedia.troubleshooter.notification.data.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationTroubleshoot
-import com.tokopedia.troubleshooter.notification.util.TestDispatcherProvider
+import com.tokopedia.troubleshooter.notification.util.dispatchers.TestDispatcherProvider
 import com.tokopedia.troubleshooter.notification.util.isEqualsTo
 import io.mockk.coEvery
 import io.mockk.every

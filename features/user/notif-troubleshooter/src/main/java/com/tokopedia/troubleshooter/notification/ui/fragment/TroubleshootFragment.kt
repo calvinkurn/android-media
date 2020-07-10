@@ -1,14 +1,11 @@
 package com.tokopedia.troubleshooter.notification.ui.fragment
 
 import android.app.NotificationManager
-import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
@@ -27,26 +23,25 @@ import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
 import com.tokopedia.troubleshooter.notification.ui.adapter.TroubleshooterAdapter
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterItemFactory
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState
+import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
+import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
+import kotlinx.android.synthetic.main.item_notification_ticker.*
 import javax.inject.Inject
-import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Categories as Categories
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Notification as Notification
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.PushNotification as PushNotification
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone as Ringtone
 
-class TroubleshootFragment : BaseDaggerFragment() {
+class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: TroubleshootViewModel
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
-        TroubleshooterAdapter(TroubleshooterItemFactory())
+        TroubleshooterAdapter(TroubleshooterItemFactory(this))
     }
 
     private var errorText: String = ""
@@ -97,20 +92,13 @@ class TroubleshootFragment : BaseDaggerFragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            //onIconStatus(false)
+            adapter.isTroubleshootError()
         })
 
         viewModel.token.observe(viewLifecycleOwner, Observer {
-            cardToken?.show()
-            textToken?.show()
             if (!isNewToken(it)) {
-                labelToken?.setLabel("Token sudah terbaru")
-                labelToken?.setLabelType(Label.GENERAL_LIGHT_GREEN)
-                textToken?.text = it.substring(it.length - 8)
+                adapter.updateTroubleshootMessage("Token sudah terbaru")
             } else {
-                viewModel.updateToken(it)
-                labelToken?.setLabel("Token baru saja diperbarui")
-                labelToken?.setLabelType(Label.GENERAL_LIGHT_ORANGE)
                 val trimmedToken = it.substring(it.length - 8)
                 var trimmedPrefToken: String?
                 try {
@@ -120,7 +108,8 @@ class TroubleshootFragment : BaseDaggerFragment() {
                     trimmedPrefToken = ""
                 }
                 val text = "$trimmedToken \ndari\n $trimmedPrefToken"
-                textToken?.text = text
+                viewModel.updateToken(it)
+                adapter.updateTroubleshootMessage("Token baru saja diperbarui\n$text")
             }
         })
 
@@ -133,70 +122,8 @@ class TroubleshootFragment : BaseDaggerFragment() {
         })
 
         viewModel.notificationSoundUri.observe(viewLifecycleOwner, Observer {
-            setUriClick(it)
+            adapter.updateStatus(Ringtone, it != null)
         })
-    }
-
-    private fun setUriClick(uri: Uri?) {
-        adapter.updateStatus(Ringtone, uri != null)
-
-        uri?.let {
-            val ringtone = RingtoneManager.getRingtone(context, uri)
-            //textRingtone?.setOnClickListener { ringtone.play() } TODO update ke adapter
-        }
-
-        if(uri == null) {
-            //textRingtone.text = "Ringtone tidak ditemukan." TODO update ke adapter
-        } else {
-            //textRingtone.text = "Ringtone anda berfungsi." TODO update ke adapter
-        }
-    }
-
-    private fun setNotificationImportanceStatus(importance: Int) {
-        // TODO handle for important categories
-        val isSuccess = importance == NotificationManager.IMPORTANCE_HIGH
-                ||importance == NotificationManager.IMPORTANCE_DEFAULT
-        adapter.updateStatus(Categories, isSuccess)
-
-        when {
-            importance == Int.MAX_VALUE -> {
-                //imgStatusCategorySetting?.invisible() TODO update ke adapter
-                //textNotificationCategory?.invisible() TODO update ke adapter
-            }
-            importance != NotificationManager.IMPORTANCE_HIGH -> {
-                ticker?.show()
-                when (importance) {
-                    NotificationManager.IMPORTANCE_DEFAULT -> {
-                        errorText = "$errorText\nPengaturan notifikasi anda sudah memenuhi standar."
-                    }
-                    NotificationManager.IMPORTANCE_LOW -> {
-                        ticker?.tickerTitle = "Error"
-                        ticker?.tickerType = Ticker.TYPE_ERROR
-                        errorText = "$errorText\nNilai prioritas \"Notifikasi\": Low ($importance)." +
-                                "\nNotifikasi muncul, tapi tidak ada suara." +
-                                "\nAtur ke nilai prioritas lebih tinggi." +
-                                "\nKlik untuk ke pengaturan."
-                    }
-                    else -> {
-                        ticker?.tickerTitle = "Error"
-                        ticker?.tickerType = Ticker.TYPE_ERROR
-                        errorText = "$errorText\nNilai prioritas \"Notifikasi\": None ($importance)." +
-                                "\nNotifikasi tidak muncul." +
-                                "\nAtur ke nilai prioritas lebih tinggi." +
-                                "\nKlik untuk ke pengaturan."
-                    }
-                }
-                errorText.trimStart()
-                ticker?.setTextDescription(errorText)
-            }
-        }
-
-//        textNotificationCategory?.setOnClickListener {
-//            goToSettingNotification()
-//        }
-        ticker?.setOnClickListener {
-            goToSettingNotification()
-        }
     }
 
     private fun setNotificationSettingStatus(notificationEnable: Boolean) {
@@ -204,17 +131,58 @@ class TroubleshootFragment : BaseDaggerFragment() {
 
         if (!notificationEnable){
             ticker?.show()
-            ticker?.tickerTitle = "Error"
-            errorText = "$errorText\nMohon hidupkan pengaturan notifikasi anda. Klik disini untuk ke pengaturan."
+            errorText = "$errorText\nMohon hidupkan pengaturan notifikasi anda."
             errorText.trimStart()
-            ticker?.setTextDescription(errorText)
+            txtDescription?.text = errorText
         }
 
-//        textNotificationSetting?.setOnClickListener {
-//            goToSettingNotification()
-//        }
         ticker?.setOnClickListener {
-            goToSettingNotification()
+            goToNotificationSettings()
+        }
+    }
+
+    private fun setNotificationImportanceStatus(importance: Int) {
+        val isImportance = importantNotification(importance)
+
+        when {
+            importance == Int.MAX_VALUE -> {
+                adapter.hideNotificationCategory()
+                return
+            }
+            isImportance -> {
+                adapter.updateStatus(Categories, isImportance)
+            }
+            importance != NotificationManager.IMPORTANCE_HIGH -> {
+                adapter.updateStatus(Categories, false)
+                onShowTicker(importance)
+            }
+        }
+    }
+
+    private fun onShowTicker(importance: Int) {
+        ticker?.show()
+
+        when (importance) {
+            NotificationManager.IMPORTANCE_DEFAULT -> {
+                errorText = "$errorText\nPengaturan notifikasi anda sudah memenuhi standar."
+            }
+            NotificationManager.IMPORTANCE_LOW -> {
+                errorText = "$errorText\nNilai prioritas \"Notifikasi\": Low ($importance)." +
+                        "\nNotifikasi muncul, tapi tidak ada suara." +
+                        "\nAtur ke nilai prioritas lebih tinggi." +
+                        "\nKlik untuk ke pengaturan."
+            }
+            else -> {
+                errorText = "$errorText\nNilai prioritas \"Notifikasi\": None ($importance)." +
+                        "\nNotifikasi tidak muncul." +
+                        "\nAtur ke nilai prioritas lebih tinggi."
+            }
+        }
+        errorText.trimStart()
+        txtDescription?.text = errorText
+
+        ticker?.setOnClickListener {
+            goToNotificationSettings()
         }
     }
 
@@ -224,31 +192,17 @@ class TroubleshootFragment : BaseDaggerFragment() {
     }
 
     private fun getTokenFromPref(): String? {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString("pref_fcm_token", "")
+        return PreferenceManager
+                .getDefaultSharedPreferences(context)
+                .getString("pref_fcm_token", "")
     }
 
-    private fun goToSettingNotification() {
-        activity?.let {
-            val intent = Intent()
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                    intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, it.packageName)
-                }
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> {
-                    intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                    intent.putExtra("app_package", it.packageName)
-                    intent.putExtra("app_uid", it.applicationInfo.uid)
-                }
-                else -> {
-                    intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                    intent.addCategory(Intent.CATEGORY_DEFAULT)
-                    intent.data = Uri.parse("package:" + it.packageName)
-                }
-            }
+    override fun onRingtoneTest(uri: Uri) {
+        RingtoneManager.getRingtone(context, uri).play()
+    }
 
-            it.startActivity(intent)
-        }
+    override fun goToNotificationSettings() {
+        context.gotoNotificationSetting()
     }
 
     private fun setupToolbar() {
@@ -269,6 +223,11 @@ class TroubleshootFragment : BaseDaggerFragment() {
                 .troubleshootModule(TroubleshootModule(requireContext()))
                 .build()
                 .inject(this)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.onFlush()
     }
 
     override fun getScreenName() = SCREEN_NAME

@@ -1,4 +1,4 @@
-package com.tokopedia.troubleshooter.notification.util
+package com.tokopedia.troubleshooter.notification.util.dispatchers
 
 import kotlinx.coroutines.CoroutineDispatcher
 

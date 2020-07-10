@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="success_update_token">Berhasil perbaharui token.</string>
+    <string name="notif_ticker_resolve">Aktifkan Notifikasi</string>
+
+    <string name="notif_ringtone_success">Ringtone berjalan dengan baik.</string>
+    <string name="notif_ringtone_error">Ringtone tidak di temukan.</string>
 </resources>
