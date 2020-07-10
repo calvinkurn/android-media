@@ -1009,7 +1009,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag)  {
         initAutoRefreshHandler()
-        val serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(autoRefreshFlag.serverTime)
+        val serverOffsetTime = 0
         val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.eventTime)
         autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
         runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
