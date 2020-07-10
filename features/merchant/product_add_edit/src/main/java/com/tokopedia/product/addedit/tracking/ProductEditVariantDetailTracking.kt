@@ -20,19 +20,19 @@ object ProductEditVariantDetailTracking {
         sendEditProductVariantDetailClick("click lanjut", "", shopId, SCREEN_NAME)
     }
 
-    // 3.3 label = price
+    // 3.3 label = sku
+    fun trackManageAllSku(label: String, shopId: String) {
+        sendEditProductVariantDetailClick("fill in sku", label, shopId, SCREEN_NAME)
+    }
+
+    // 3.4 label = price
     fun trackManageAllPrice(label: String, shopId: String) {
         sendEditProductVariantDetailClick("fill in price", label, shopId, SCREEN_NAME)
     }
 
-    // 3.4 label = stock
+    // 3.5 label = stock
     fun trackManageAllStock(label: String, shopId: String) {
         sendEditProductVariantDetailClick("fill in stock", label, shopId, SCREEN_NAME)
-    }
-
-    // 3.5 label = price
-    fun trackManageAllSku(label: String, shopId: String) {
-        sendEditProductVariantDetailClick("fill in price", label, shopId, SCREEN_NAME)
     }
 
     // 3.6 label = on/off

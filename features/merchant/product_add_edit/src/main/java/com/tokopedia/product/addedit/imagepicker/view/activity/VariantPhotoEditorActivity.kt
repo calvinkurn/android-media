@@ -16,7 +16,7 @@ class VariantPhotoEditorActivity : ImageEditorActivity() {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
         if (intent.hasExtra(EXTRA_IS_EDIT)) {
-            isEdit = intent.hasExtra(EXTRA_IS_EDIT)
+            isEdit = intent.getBooleanExtra(EXTRA_IS_EDIT, false)
         }
     }
 

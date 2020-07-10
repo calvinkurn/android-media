@@ -20,7 +20,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/add_edit_product_variant_type_layout" />
+            <include
+                layout="@layout/add_edit_product_variant_type_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl5" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
@@ -29,17 +33,17 @@
             <include
                 android:id="@+id/variantValueLevel1Layout"
                 layout="@layout/add_edit_product_variant_value_level1_layout"
-                android:visibility="gone" />
-
-            <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:visibility="gone" />
 
             <include
                 android:id="@+id/variantValueLevel2Layout"
                 layout="@layout/add_edit_product_variant_value_level2_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl5"
                 android:visibility="gone" />
 
             <com.tokopedia.unifycomponents.DividerUnify
@@ -52,12 +56,6 @@
                 android:id="@+id/variantPhotoLayout"
                 layout="@layout/add_edit_product_variant_photo_layout"
                 android:visibility="gone" />
-
-            <com.tokopedia.unifycomponents.DividerUnify
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4" />
 
             <include layout="@layout/add_edit_product_variant_sizechart_layout" />
 
