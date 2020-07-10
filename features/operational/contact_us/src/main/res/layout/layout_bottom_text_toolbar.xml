@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:background="#fafbfc"
+        android:background="@color/white_bg"
         android:orientation="horizontal"
         android:scrollbars="horizontal"
         android:visibility="gone"
@@ -22,7 +22,7 @@
 
     <View
         android:id="@+id/divider_rv"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:background="@drawable/top_shadow_gradient"
@@ -47,15 +47,15 @@
 
     <EditText
         android:id="@+id/ed_message"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
         android:layout_marginBottom="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
         android:background="@drawable/rounded_grey_rectangle_border"
         android:hint="@string/contact_us_type_here"
-        android:textColorHint="#7031353b"
+        android:textColorHint="@color/contact_us_grey_n_700_44"
         android:includeFontPadding="false"
         android:lineSpacingExtra="6sp"
         android:maxLines="4"

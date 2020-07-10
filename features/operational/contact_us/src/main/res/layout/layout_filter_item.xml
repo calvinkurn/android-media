@@ -16,7 +16,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_18"
-        android:textColor="#f531353b"
+        android:textColor="@color/contact_us_grey_n_700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

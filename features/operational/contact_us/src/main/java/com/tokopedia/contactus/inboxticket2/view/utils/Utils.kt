@@ -68,7 +68,7 @@ class Utils {
         val roundedBackgroundSpan = RoundedBackgroundSpan(background, textColor, convertSpToPx(textSizeSp, mContext),
                 convertDpToPx(8, mContext), convertDpToPx(4, mContext), convertDpToPx(2, mContext), convertDpToPx(2, mContext))
         spannableString.setSpan(roundedBackgroundSpan, start, src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(AbsoluteSizeSpan(convertSpToPx(10,mContext).toInt()), start,
+        spannableString.setSpan(AbsoluteSizeSpan(convertSpToPx(10, mContext).toInt()), start,
                 src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return spannableString
     }

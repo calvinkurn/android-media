@@ -8,7 +8,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
-import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse2
+import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListPresenter
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
@@ -27,9 +27,9 @@ private const val RATING_CLOSED = 0
 private const val READ = "read"
 private const val UNREAD = "unread"
 
-class TicketListAdapter(private val itemList: MutableList<InboxTicketListResponse2.Ticket.Data.TicketItem>,
+class TicketListAdapter(private val itemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>,
                         private val mPresenter: InboxListPresenter) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val footerItem = InboxTicketListResponse2.Ticket.Data.TicketItem()
+    private val footerItem = InboxTicketListResponse.Ticket.Data.TicketItem()
     private var isFooterAdded = false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(
@@ -74,16 +74,16 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
         }
     }
 
-    private fun getItem(position: Int): InboxTicketListResponse2.Ticket.Data.TicketItem {
+    private fun getItem(position: Int): InboxTicketListResponse.Ticket.Data.TicketItem {
         return itemList[position]
     }
 
-    fun add(item: InboxTicketListResponse2.Ticket.Data.TicketItem) {
+    fun add(item: InboxTicketListResponse.Ticket.Data.TicketItem) {
         itemList.add(item)
         notifyItemInserted(itemList.size - 1)
     }
 
-    private fun remove(item: InboxTicketListResponse2.Ticket.Data.TicketItem) {
+    private fun remove(item: InboxTicketListResponse.Ticket.Data.TicketItem) {
         val position = itemList.indexOf(item)
         if (position > -1) {
             itemList.removeAt(position)
@@ -137,7 +137,7 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
             group = view.findViewById(R.id.group)
         }
 
-        fun bindViewHolder(item: InboxTicketListResponse2.Ticket.Data.TicketItem) {
+        fun bindViewHolder(item: InboxTicketListResponse.Ticket.Data.TicketItem) {
             val mContext = itemView.context
             val utils = Utils()
             if (UNREAD.equals(item.readStatus, true)) {
@@ -159,7 +159,7 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
                 tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_closed))
                 tvTicketStatus?.setText(R.string.closed)
             } else if (CLOSED.equals(item.status, true) && item.needRating == NEED_RATING) {
-                MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_orange))
+                MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_pink))
                 tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_need_rating))
                 tvTicketStatus?.setText(R.string.need_rating)
             }

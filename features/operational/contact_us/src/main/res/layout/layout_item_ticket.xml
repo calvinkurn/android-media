@@ -5,7 +5,7 @@
     android:id="@+id/layout_item_ticket"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#66ebffef"
+    android:background="@color/contact_us_unread_ticket_bg_color"
     android:clickable="true"
     android:focusable="true"
     android:longClickable="true">
@@ -24,7 +24,7 @@
         android:paddingTop="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_4"
-        android:textColor="#fa591d"
+        android:textColor="@color/contact_us_in_process"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:background="@drawable/rounded_rect_yellow"
@@ -41,8 +41,8 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="5dp"
-        android:layout_height="5dp"
+        android:layout_width="@dimen/dp_5"
+        android:layout_height="@dimen/dp_5"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
         android:background="@drawable/grey_rounded_dot"
@@ -63,7 +63,7 @@
 
     <View
         android:id="@+id/verticalView"
-        android:layout_width="1dp"
+        android:layout_width="@dimen/dp_1"
         android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
@@ -81,7 +81,7 @@
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         android:gravity="center"
-        android:textColor="#7a08c9"
+        android:textColor="@color/contact_us_priority_label_color"
         app:layout_constraintBottom_toBottomOf="@id/verticalView"
         app:layout_constraintStart_toEndOf="@id/verticalView"
         app:layout_constraintTop_toTopOf="@id/verticalView"
@@ -89,7 +89,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_ticket_title"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         android:layout_marginStart="@dimen/dp_16"
@@ -99,7 +99,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textColor="#f531353b"
+        android:textColor="@color/contact_us_grey_n_700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_ticket_status"
@@ -113,7 +113,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_12"
-        android:textColor="#7031353b"
+        android:textColor="@color/contact_us_grey_n_700_44"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_ticket_title"
@@ -127,7 +127,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="#7031353b"
+        android:textColor="@color/contact_us_grey_n_700_44"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"

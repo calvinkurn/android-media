@@ -109,6 +109,9 @@
     <string name="contactus_error_field_required">Harus diisi</string>
     <string name="contactus_error_invalid_email">Email ini tidak valid.</string>
     <string name="contact_us_something_went_wrong">Something went wrong</string>
+    <string name="contact_us_no_ticket_message">Di sini tempatmu mengecek seluruh balasan dari Tim Tokopedia Care. Butuh bantuan lainnya?</string>
+    <string name="contact_us_tokopedia_care">Ke Tokopedia Care</string>
+    <string name="contact_us_transaction_details">Detail Transaksi</string>
 
     <string-array name="contactus_csat_question">
         <item>Apa yang bisa diperbaiki dari layanan kami?</item>

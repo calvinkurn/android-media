@@ -10,7 +10,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity
-import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse2
+import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxFilterAdapter
@@ -39,7 +39,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
     private val status: Int = 0
     private var mView: InboxListView? = null
     private val filterList: ArrayList<String> by lazy { ArrayList<String>() }
-    private val originalList: ArrayList<InboxTicketListResponse2.Ticket.Data.TicketItem> by lazy { ArrayList<InboxTicketListResponse2.Ticket.Data.TicketItem>() }
+    private val originalList: ArrayList<InboxTicketListResponse.Ticket.Data.TicketItem> by lazy { ArrayList<InboxTicketListResponse.Ticket.Data.TicketItem>() }
     var isLoading = false
     var isLastPage = false
     private var selectedFilter = 0
@@ -62,12 +62,13 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
                 block = {
                     val ticketListResponse = mUseCase.getTicketListResponse(requestParams
                             ?: mUseCase.getRequestParams(1, 0))
+                    val ticketData = ticketListResponse.ticket?.data
                     when {
-                        !ticketListResponse.ticket?.data?.ticketItems.isNullOrEmpty() -> {
+                        !ticketData?.ticketItems.isNullOrEmpty() -> {
                             mView?.toggleEmptyLayout(View.GONE)
                             originalList.clear()
-                            ticketListResponse.ticket?.data?.ticketItems?.let { originalList.addAll(it) }
-                            nextUrl = ticketListResponse.ticket?.data?.nextPage
+                            ticketData?.ticketItems?.let { originalList.addAll(it) }
+                            nextUrl = ticketData?.nextPage
                             isLastPage = nextUrl?.isEmpty() == true
                             mView?.renderTicketList(originalList)
                             mView?.showFilter()
@@ -200,8 +201,8 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
     }
 
     override fun reAttachView() {
-//        val requestParams = mUseCase.getRequestParams(1,status)
-//        getTicketList(requestParams)
+        val requestParams = mUseCase.getRequestParams(0, status)
+        getTicketList(requestParams)
     }
 
     override fun clickCloseSearch() {
@@ -233,10 +234,11 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
                 block = {
                     val requestParams = mUseCase.getRequestParams(page, status)
                     val ticketListResponse = mUseCase.getTicketListResponse(requestParams)
-                    if (ticketListResponse.ticket?.data?.ticketItems?.isNullOrEmpty() == false) {
+                    val ticketData = ticketListResponse.ticket?.data
+                    if (ticketData?.ticketItems?.isNullOrEmpty() == false) {
                         mView?.removeFooter()
-                        originalList.addAll(ticketListResponse.ticket.data.ticketItems)
-                        nextUrl = ticketListResponse.ticket.data.nextPage
+                        originalList.addAll(ticketData.ticketItems)
+                        nextUrl = ticketData.nextPage
                         isLastPage = nextUrl?.isEmpty() == true
                         mView?.updateDataSet()
                     }

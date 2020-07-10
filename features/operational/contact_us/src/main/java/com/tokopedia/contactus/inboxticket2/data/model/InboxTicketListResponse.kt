@@ -2,7 +2,7 @@ package com.tokopedia.contactus.inboxticket2.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class InboxTicketListResponse2(
+data class InboxTicketListResponse(
     @SerializedName("ticket")
     val ticket: Ticket?
 ) {

@@ -13,7 +13,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity
-import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse2
+import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.view.adapter.TicketListAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListPresenter
@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
+private const val RAISE_TICKET_TAG = "raiseTicket"
 class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListener {
     private var ivNoTicket: DeferredImageView? = null
     private var tvNoTicket: Typography? = null
@@ -36,7 +37,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     private var mAdapter: TicketListAdapter? = null
     private var btnFilterTv: TextView? = null
 
-    override fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse2.Ticket.Data.TicketItem>) {
+    override fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>) {
         if (mAdapter == null) {
             mAdapter = TicketListAdapter(ticketItemList, mPresenter as InboxListPresenter)
         } else {
@@ -68,10 +69,10 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     override fun toggleNoTicketLayout(visibility: Int, name: String) {
         ivNoTicket?.loadRemoteImageDrawable("no_messages.png")
         ivNoTicket?.visibility = visibility
-        tvNoTicket?.text = "Di sini tempatmu mengecek seluruh balasan dari Tim Tokopedia Care. Butuh bantuan lainnya?"
+        tvNoTicket?.text = getString(R.string.contact_us_no_ticket_message)
         tvNoTicket?.visibility = visibility
-        tvRaiseTicket?.text = "Ke Tokopedia Care"
-        tvRaiseTicket?.tag = "raiseTicket"
+        tvRaiseTicket?.text = getString(R.string.contact_us_tokopedia_care)
+        tvRaiseTicket?.tag = RAISE_TICKET_TAG
         tvRaiseTicket?.visibility = visibility
         tvGreetNoTicket?.text = String.format("Halo, %s!", name)
         tvGreetNoTicket?.visibility = visibility
@@ -156,7 +157,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     }
 
     private fun raiseTicket() {
-        if (tvRaiseTicket?.tag == "raiseTicket") {
+        if (tvRaiseTicket?.tag == RAISE_TICKET_TAG) {
             val contactUsHome = Intent(this, ContactUsHomeActivity::class.java)
             contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(contactUsHome)

@@ -324,11 +324,6 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun onClickUpload() {
-//        if (rvSelectedImages.visibility != View.VISIBLE) showImagePickerDialog() else {
-//           // rvSelectedImages.hide()
-//            rvMessageList.setPadding(0, 0, 0,
-//                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
-//        }
         showImagePickerDialog()
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,

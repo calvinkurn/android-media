@@ -81,7 +81,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_greeting"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             app:typographyType="heading_2"
             app:typographyWeight="bold"
@@ -90,17 +90,17 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
-            android:text="Halo, Fidelia Zheng!"
-            android:textColor="#f531353b"
+            android:textColor="@color/contact_us_grey_n_700_96"
             android:visibility="gone"
             android:gravity="center_horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_no_ticket" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_no_ticket"
+            tools:text="Halo, Fidelia Zheng!"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_no_ticket"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             app:typographyType="body_2"
             android:layout_marginTop="@dimen/dp_12"
@@ -112,7 +112,7 @@
             android:gravity="center_horizontal"
             android:text="@string/display_a_problem_report_here"
             android:visibility="gone"
-            android:textColor="#ae31353b"
+            android:textColor="@color/contact_us_text_field_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_greeting" />
@@ -172,8 +172,8 @@
             app:typographyType="heading_6"
             app:typographyWeight="bold"
             android:gravity="center"
-            android:text="Filter"
-            android:textColor="#ae31353b" />
+            android:text="@string/filter"
+            android:textColor="@color/contact_us_text_field_color" />
     </androidx.cardview.widget.CardView>
 
     <FrameLayout
