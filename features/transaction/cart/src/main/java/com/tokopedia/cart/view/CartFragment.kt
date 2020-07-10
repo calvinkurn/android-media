@@ -374,7 +374,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     fun onBackPressed() {
         sendAnalyticsOnClickBackArrow()
         if (isAtcExternalFlow()) {
-            RouteManager.route(activity, ApplinkConst.HOME)
+            val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
         activity?.finish()
     }
