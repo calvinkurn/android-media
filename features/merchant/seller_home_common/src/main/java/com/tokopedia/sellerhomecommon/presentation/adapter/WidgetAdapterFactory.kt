@@ -25,4 +25,6 @@ interface WidgetAdapterFactory {
     fun type(tableWidgetUiModel: TableWidgetUiModel): Int
 
     fun type(pieChartWidget: PieChartWidgetUiModel): Int
+
+    fun type(barChartWidget: BarChartWidgetUiModel): Int
 }
