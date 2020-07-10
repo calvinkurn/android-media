@@ -36,7 +36,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.addedit.BuildConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -55,7 +54,7 @@ import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
-import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductPicture
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
@@ -557,7 +556,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         }
                         if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                             val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
-                                    object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
+                                    object : TypeToken<ProductPicture>() {}.type, ProductPicture())
                             viewModel.updateSizeChart(productPictureViewModel)
                         }
                         showEmptyVariantState(productInputModel.variantInputModel.productSizeChart == null)
