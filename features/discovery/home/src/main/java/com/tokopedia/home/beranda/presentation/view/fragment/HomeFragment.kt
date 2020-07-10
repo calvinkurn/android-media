@@ -137,7 +137,6 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
@@ -280,6 +279,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
     private var lock = Object()
+    private var autoRefreshFlag = HomeFlag()
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
 
@@ -593,7 +593,9 @@ open class HomeFragment : BaseDaggerFragment(),
             activityStateListener!!.onResume()
         }
         adjustStatusBarColor()
-        autoRefreshHandler.post(autoRefreshRunnable)
+//        if (isEnableToAutoRefresh(autoRefreshFlag)) {
+            runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
+//        }
     }
 
     private fun conditionalViewModelRefresh(){
@@ -626,7 +628,9 @@ open class HomeFragment : BaseDaggerFragment(),
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
-        autoRefreshHandler.removeCallbacks(autoRefreshRunnable)
+//        if (isEnableToAutoRefresh(autoRefreshFlag)) {
+            stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
+//        }
     }
 
     override fun onDestroy() {
@@ -985,10 +989,17 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun configureHomeFlag(homeFlag: HomeFlag) {
         floatingTextButton.visibility = if (homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation) View.VISIBLE else View.GONE
         initAutoRefreshHandler()
-        if (homeFlag.getFlag(HomeFlag.TYPE.PROMPT_REFRESH)) {
+        if (isEnableToAutoRefresh(homeFlag)) {
+            autoRefreshFlag = homeFlag
 //            setAutoRefreshOnHome(homeFlag)
         }
         setDummyButton()
+    }
+
+    private fun isEnableToAutoRefresh(homeFlag: HomeFlag): Boolean {
+        return homeFlag.getFlag(HomeFlag.TYPE.IS_AUTO_REFRESH)
+                && homeFlag.serverTime != 0L
+                && homeFlag.eventTime.isNotEmpty()
     }
 
     private fun initAutoRefreshHandler() {
@@ -999,8 +1010,8 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag)  {
         initAutoRefreshHandler()
-        val serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(autoRefreshFlag.promptServerTime)
-        val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.promptRefreshTime)
+        val serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(autoRefreshFlag.serverTime)
+        val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.eventTime)
         if (!isExpired(getServerRealTime(0), expiredTime)) {
             autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
             runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
