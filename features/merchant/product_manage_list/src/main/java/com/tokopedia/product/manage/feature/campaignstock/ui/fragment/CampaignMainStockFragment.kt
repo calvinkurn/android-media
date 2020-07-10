@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
+import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ActiveProductSwitchUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.TotalStockEditorUiModel
 
-class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignMainStockFragment>, CampaignStockAdapterTypeFactory>() {
+class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
@@ -48,7 +51,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignMainStockFra
 
     override fun getAdapterTypeFactory(): CampaignStockAdapterTypeFactory = CampaignStockAdapterTypeFactory()
 
-    override fun onItemClicked(t: Visitable<CampaignMainStockFragment>?) {}
+    override fun onItemClicked(t: Visitable<CampaignStockTypeFactory>?) {}
 
     override fun getScreenName(): String = ""
 
@@ -75,11 +78,14 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignMainStockFra
 
     private fun setupAdapterModels(isVariant: Boolean) {
         if (isVariant) {
-            //Todo: show variants
+            renderList(sellableProductList)
         } else {
-            //Todo: Show editstock, same as bottomsheet
+            renderList(listOf(
+                    ActiveProductSwitchUiModel(false),
+                    TotalStockEditorUiModel(sellableProductList.firstOrNull()?.stock.toIntOrZero())
+            ))
         }
-        adapter.addElement(ActiveProductSwitchUiModel(false))
+
     }
 
 }

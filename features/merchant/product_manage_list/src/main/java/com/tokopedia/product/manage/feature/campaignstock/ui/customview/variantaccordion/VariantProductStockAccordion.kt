@@ -49,6 +49,7 @@ class VariantProductStockAccordion @JvmOverloads constructor(
 
         layoutManager = linearLayoutManager
         adapter = mAdapter.apply {
+            clearAllElements()
             addElement(VariantProductStockActionUiModel(actionWording))
         }
         setBackground()
