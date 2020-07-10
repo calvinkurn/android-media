@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.di.broadcast
 
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import dagger.Binds
 import dagger.Module
 
@@ -41,4 +43,11 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @PlayBroadcastScope
     abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
+
+    /**
+     * Pref
+     */
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindPermissionSharedPrefs(sharedPref: HydraSharedPreferences): PermissionSharedPreferences
 }
