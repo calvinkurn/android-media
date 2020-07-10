@@ -15,6 +15,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.util.loadImageFromUrl
@@ -68,14 +69,15 @@ class ProductSelectableViewHolder(
         ivImage.compatTransitionName = item.transitionName
 
         tvProductName.text = item.name
-        tvProductAmount.text = getString(R.string.play_product_stock_amount, item.stock)
 
-        if (item.hasStock) {
+        if (item.stock is StockAvailable) {
             lblEmptyStock.gone()
             cbSelected.isEnabled = true
+            tvProductAmount.text = getString(R.string.play_product_stock_amount, item.stock.stock)
         } else {
             lblEmptyStock.show()
             cbSelected.isEnabled = false
+            tvProductAmount.text = getString(R.string.play_product_stock_amount, 0)
         }
 
         itemView.setOnClickListener {
