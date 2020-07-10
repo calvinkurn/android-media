@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name="com.tokopedia.manageaddress.ui.ManageAddressActivity"
+            android:name="com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity"
             android:label="@string/label_manage_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">

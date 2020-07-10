@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui
+package com.tokopedia.manageaddress.ui.manageaddress
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
-import com.tokopedia.manageaddress.di.ManageAddressComponent
+import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
 import kotlinx.android.synthetic.main.activity_manage_address.*
 
-class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener{
+class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {
 
     override fun getComponent(): ManageAddressComponent {
         return DaggerManageAddressComponent.builder()

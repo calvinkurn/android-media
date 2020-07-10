@@ -1,8 +1,8 @@
-package com.tokopedia.manageaddress.di
+package com.tokopedia.manageaddress.di.manageaddress
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.manageaddress.ui.ManageAddressActivity
-import com.tokopedia.manageaddress.ui.ManageAddressFragment
+import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
+import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressFragment
 import dagger.Component
 
 @ManageAddressScope

@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui
+package com.tokopedia.manageaddress.ui.manageaddress
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

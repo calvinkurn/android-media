@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.di
+package com.tokopedia.manageaddress.di.manageaddress
 
 import javax.inject.Scope
 

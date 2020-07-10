@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui
+package com.tokopedia.manageaddress.ui.manageaddress
 
 import android.annotation.SuppressLint
 import android.view.View

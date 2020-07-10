@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.di
+package com.tokopedia.manageaddress.di.manageaddress
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

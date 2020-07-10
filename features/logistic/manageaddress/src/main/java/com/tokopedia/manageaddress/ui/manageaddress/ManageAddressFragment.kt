@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui
+package com.tokopedia.manageaddress.ui.manageaddress
 
 import android.content.Context
 import android.content.Intent
@@ -27,7 +27,7 @@ import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
-import com.tokopedia.manageaddress.di.ManageAddressComponent
+import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
@@ -47,7 +47,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener{
+class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -328,7 +328,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val EMPTY_SEARCH_PICT_URL = "https://ecs7.tokopedia.net/android/others/address_not_found3x.png"
 
-        fun newInstance() : ManageAddressFragment{
+        fun newInstance() : ManageAddressFragment {
             return ManageAddressFragment()
         }
     }
