@@ -50,8 +50,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     @Inject
     lateinit var presenter: BuyerAccount.Presenter
 
-    @Inject
-    lateinit var remoteConfig: RemoteConfig
 
     private val adapter: BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -141,7 +139,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         } else {
             context?.let {
                 adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, remoteConfig))
+                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig()))
             }
         }
 

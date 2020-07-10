@@ -1583,13 +1583,13 @@ open class HomeFragment : BaseDaggerFragment(),
         sendPopularKeywordClickReload(channel)
     }
 
-    override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
-        getTrackingQueueObj()?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword) as HashMap<String, Any>)
+    override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
+        getTrackingQueueObj()?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword, positionInWidget) as HashMap<String, Any>)
     }
 
-    override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
+    override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
         RouteManager.route(context, applink)
-        sendPopularKeywordClickItem(channel, position, keyword)
+        sendPopularKeywordClickItem(channel, position, keyword, positionInWidget)
     }
 
     protected fun registerBroadcastReceiverTokoCash() {

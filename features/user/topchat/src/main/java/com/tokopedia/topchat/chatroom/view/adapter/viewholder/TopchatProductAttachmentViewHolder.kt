@@ -8,6 +8,8 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -27,6 +29,7 @@ import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContain
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
 open class TopchatProductAttachmentViewHolder(
@@ -39,6 +42,11 @@ open class TopchatProductAttachmentViewHolder(
     private var cardContainer: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.containerProductAttachment)
     private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
     private var loadView: LoaderUnify? = itemView?.findViewById(R.id.iv_attachment_shimmer)
+    private var freeShippingImage: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
+    private var statusContainer: LinearLayout? = itemView?.findViewById(R.id.ll_status_container)
+    private var reviewStar: ImageView? = itemView?.findViewById(R.id.iv_review_star)
+    private var reviewScore: Typography? = itemView?.findViewById(R.id.tv_review_score)
+    private var reviewCount: Typography? = itemView?.findViewById(R.id.tv_review_count)
 
     private val white = "#ffffff"
     private val white2 = "#fff"
@@ -72,6 +80,8 @@ open class TopchatProductAttachmentViewHolder(
             bindVariant(product)
             bindCampaign(product)
             bindPrice(product)
+            bindStatusContainer(product)
+            bindRating(product)
             bindFreeShipping(product)
             bindFooter(product)
             bindEmptyStockLabel(product)
@@ -224,12 +234,35 @@ open class TopchatProductAttachmentViewHolder(
         itemView.tv_price?.text = product.productPrice
     }
 
+    private fun bindStatusContainer(product: ProductAttachmentViewModel) {
+        if (product.hasFreeShipping() || (product.hasReview() && product.fromBroadcast())) {
+            statusContainer?.show()
+        } else {
+            statusContainer?.hide()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun bindRating(product: ProductAttachmentViewModel) {
+        if (product.hasReview() && product.fromBroadcast()) {
+            reviewScore?.text = product.rating.score.toString()
+            reviewCount?.text = "(${product.rating.count})"
+            reviewStar?.show()
+            reviewScore?.show()
+            reviewCount?.show()
+        } else {
+            reviewStar?.hide()
+            reviewScore?.hide()
+            reviewCount?.hide()
+        }
+    }
+
     private fun bindFreeShipping(product: ProductAttachmentViewModel) {
         if (product.hasFreeShipping()) {
-            itemView.iv_free_shipping?.show()
-            ImageHandler.loadImageRounded2(itemView.context, itemView.iv_free_shipping, product.getFreeShippingImageUrl())
+            freeShippingImage?.show()
+            ImageHandler.loadImageRounded2(itemView.context, freeShippingImage, product.getFreeShippingImageUrl())
         } else {
-            itemView.iv_free_shipping?.hide()
+            freeShippingImage?.hide()
         }
     }
 
