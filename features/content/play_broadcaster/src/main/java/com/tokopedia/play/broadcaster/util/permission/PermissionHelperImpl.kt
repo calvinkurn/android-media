@@ -101,6 +101,7 @@ class PermissionHelperImpl : PermissionHelper {
         val lowestLength = min(permissions.size, grantResults.size)
         val resultMap = mutableMapOf<String, Int>()
         for (i in 0 until lowestLength) {
+            permissionPref?.setHasBeenAsked(permissions[i])
             resultMap[permissions[i]] = grantResults[i]
         }
         listener.invoke(PermissionStatusManager(resultMap, requestCode))
