@@ -261,6 +261,8 @@ class CashbackVoucherCreateViewModelTest {
 
             validateCashbackPercentageValues()
 
+            coroutineContext[Job]?.children?.forEach { it.join() }
+
             coVerify {
                 cashbackPercentageValidationUseCase.executeOnBackground()
             }
@@ -302,6 +304,8 @@ class CashbackVoucherCreateViewModelTest {
             refreshValue()
             refreshValue()
 
+            coroutineContext[Job]?.children?.forEach { it.join() }
+
             assert((voucherImageValueLiveData.value as? VoucherImageType.Rupiah)?.value == DUMMY_MAX_VALUE)
         }
     }
@@ -314,6 +318,8 @@ class CashbackVoucherCreateViewModelTest {
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
             refreshValue()
             refreshValue()
+
+            coroutineContext[Job]?.children?.forEach { it.join() }
 
             val isSuccess = (voucherImageValueLiveData.value as? VoucherImageType.Percentage)?.run {
                 value == DUMMY_MAX_VALUE && percentage == DUMMY_PERCENTAGE

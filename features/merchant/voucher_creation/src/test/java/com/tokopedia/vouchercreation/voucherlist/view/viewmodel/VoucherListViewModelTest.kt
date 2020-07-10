@@ -246,9 +246,11 @@ class VoucherListViewModelTest {
     }
 
     @Test
-    fun `setting search keyword will change local voucher list`() {
+    fun `setting search keyword will change local voucher list`() = runBlocking {
         with(mViewModel) {
             setSearchKeyword(anyString())
+
+            coroutineContext[Job]?.children?.forEach { it.join() }
 
             assert(localVoucherListLiveData.value is Success)
         }
