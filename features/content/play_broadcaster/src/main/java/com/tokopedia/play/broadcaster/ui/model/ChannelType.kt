@@ -12,6 +12,15 @@ enum class ChannelType(val value: String) {
 
     companion object {
 
+        private val values = ChannelType.values()
+
+        fun getByValue(value: String): ChannelType {
+            values.forEach {
+                if (it.value.equals(value, true)) return it
+            }
+            return Unknown
+        }
+
         fun getChannelType(
                 activeLiveChannel: Int,
                 pausedChannel: Int,
