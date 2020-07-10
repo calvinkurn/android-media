@@ -41,7 +41,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
                     hideMultipleQuestion()
                     hideTitle()
                 }
-                (totalQuestion < 1 && element.questions?.isEmpty() == true) -> {
+                (element.questions?.isEmpty() == true) -> {
                     showEmptyState(type, name)
                     hideLocalLoad()
                     hideShimmer()
