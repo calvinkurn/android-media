@@ -517,16 +517,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             return super.shouldInterceptRequest(view, request)
         }
 
-        override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
-            url?.let {
-                if (it.contains(ORDER_LIST_EVENT)) {
-                    RouteManager.route(this@TopPayActivity, ApplinkConst.EVENTS_ORDER)
-                    finish()
-                }
-            }
-            return super.shouldInterceptRequest(view, url)
-        }
-
         override fun onPageFinished(view: WebView?, url: String?) {
             presenter.clearTimeoutSubscription()
             hideProgressLoading()

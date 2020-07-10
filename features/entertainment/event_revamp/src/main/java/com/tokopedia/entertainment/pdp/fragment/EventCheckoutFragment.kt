@@ -21,10 +21,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
+import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
@@ -59,6 +61,7 @@ import kotlinx.android.synthetic.main.partial_event_checkout_footer.*
 import kotlinx.android.synthetic.main.partial_event_checkout_passenger.*
 import kotlinx.android.synthetic.main.partial_event_checkout_summary.*
 import kotlinx.android.synthetic.main.widget_event_checkout_passenger.*
+import okhttp3.Route
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -171,23 +174,17 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         val paymentURL: String = data.checkout.data.data.redirectUrl
 
                         if (!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
-                            val taskStackBuilder = TaskStackBuilder.create(context)
-                            val intentHomeEvent = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
-                            taskStackBuilder.addNextIntent(intentHomeEvent)
-                            taskStackBuilder.startActivities()
 
                             val checkoutResultData = PaymentPassData()
                             checkoutResultData.queryString = paymentData
                             checkoutResultData.redirectUrl = paymentURL
+                            checkoutResultData.callbackSuccessUrl = ORDER_LIST_EVENT
 
                             val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
                             val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                            intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+                            startActivityForResult(intent, PAYMENT_SUCCESS)
 
-                            intent?.run {
-                                putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-                                taskStackBuilder.addNextIntent(this)
-                                taskStackBuilder.startActivities()
-                            }
                         } else {
                             view?.let {
                                 Toaster.make(it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
@@ -347,6 +344,17 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                     setPassengerData(forms)
                 }
             }
+        } else if(resultCode == PAYMENT_SUCCESS){
+            val taskStackBuilder = TaskStackBuilder.create(context)
+            val intentHomeEvent = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
+            taskStackBuilder.addNextIntent(intentHomeEvent)
+            taskStackBuilder.startActivities()
+
+            val intent = RouteManager.getIntent(context, ApplinkConst.EVENTS_ORDER)
+            intent?.run {
+                taskStackBuilder.addNextIntent(this)
+                taskStackBuilder.startActivities()
+            }
         }
 
         super.onActivityResult(requestCode, resultCode, data)
@@ -388,6 +396,8 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         const val PASSENGER_EMAIL = "email"
 
         const val ENT_CHECKOUT_PERFORMANCE = "et_event_checkout"
+
+        const val ORDER_LIST_EVENT = "/order-list"
 
         fun newInstance(urlPDP: String, metadata: MetaDataResponse, packageID: String) = EventCheckoutFragment().also {
             it.arguments = Bundle().apply {
