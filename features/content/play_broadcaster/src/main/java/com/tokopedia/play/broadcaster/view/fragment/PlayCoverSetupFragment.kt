@@ -408,11 +408,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 showToaster(
                         message = e.localizedMessage,
                         type = Toaster.TYPE_ERROR,
-                        actionLabel = getString(R.string.play_broadcast_try_again),
-                        actionListener = View.OnClickListener {
-                            getOriginalProductImage(productCropping)
-                        },
-                        duration = Toaster.LENGTH_INDEFINITE
+                        duration = Toaster.LENGTH_LONG
                 )
             }
         }

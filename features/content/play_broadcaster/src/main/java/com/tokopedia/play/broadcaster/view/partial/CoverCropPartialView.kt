@@ -68,7 +68,6 @@ class CoverCropPartialView(
 
             Handler().postDelayed({
                 btnCropAdd.isEnabled = true
-                btnCropChange.isEnabled = true
                 btnCropAdd.isLoading = false
             }, 1500)
 
@@ -95,7 +94,6 @@ class CoverCropPartialView(
         } else {
             loaderImage.show()
             btnCropAdd.isEnabled = false
-            btnCropChange.isEnabled = false
         }
 
         btnCropChange.setOnClickListener {
