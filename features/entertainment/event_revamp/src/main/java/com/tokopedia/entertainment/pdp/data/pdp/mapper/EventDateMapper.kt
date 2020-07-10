@@ -31,9 +31,9 @@ object EventDateMapper{
         return listActiveDate.sortedBy {it}
     }
 
-    fun checkDate(list : List<String>, selectedDate: String): Boolean {
-        for(date in list){
-            if (selectedDate.isEmpty() && list.size == 1)
+    fun checkDate(listActiveDate : List<String>, selectedDate: String): Boolean {
+        for(date in listActiveDate){
+            if (selectedDate.isEmpty() && listActiveDate.size == 1)
                 return true
             else if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
                 return true
@@ -42,9 +42,9 @@ object EventDateMapper{
         return false
     }
 
-    fun getDate(list : List<String>, selectedDate: String): String {
-        for(date in list){
-            if (selectedDate.isEmpty() && list.size == 1)
+    fun getDate(listActiveDate : List<String>, selectedDate: String): String {
+        for(date in listActiveDate){
+            if (selectedDate.isEmpty() && listActiveDate.size == 1)
                 return date
             else if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
                 return date
