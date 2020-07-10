@@ -1,16 +1,16 @@
-package com.tokopedia.topads.auto.internal;
+package com.tokopedia.topads.common.data.internal;
 
 import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.topads.auto.internal.AutoAdsStatus.STATUS_ACTIVE;
-import static com.tokopedia.topads.auto.internal.AutoAdsStatus.STATUS_INACTIVE;
-import static com.tokopedia.topads.auto.internal.AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE;
-import static com.tokopedia.topads.auto.internal.AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE;
-import static com.tokopedia.topads.auto.internal.AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE;
-import static com.tokopedia.topads.auto.internal.AutoAdsStatus.STATUS_NOT_DELIVERED;
+import static com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_ACTIVE;
+import static com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_INACTIVE;
+import static com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE;
+import static com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE;
+import static com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE;
+import static com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_NOT_DELIVERED;
 
 /**
  * Author errysuprayogi on 14,May,2019
