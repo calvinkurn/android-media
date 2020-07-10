@@ -229,7 +229,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
                 view.bottom_sheet_calendar.apply {
                     getActiveDate(productDetailData).firstOrNull()?.let {
-                        calendarPickerView?.init(it,getActiveDate(productDetailData).last(), listHoliday, getActiveDate(productDetailData))
+                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData))
                                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                     }
 
