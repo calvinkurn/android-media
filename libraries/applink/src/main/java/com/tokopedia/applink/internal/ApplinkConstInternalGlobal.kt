@@ -447,6 +447,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
 
+    // AccountSettingActivity
+    // tokopedia-android-internal://global/account-setting
+    @JvmField
+    val ACCOUNT_SETTING = "$INTERNAL_GLOBAL/account-setting"
+
     // GeneralSettingActivity
     // tokopedia-android-internal://global/general-setting
     @JvmField
