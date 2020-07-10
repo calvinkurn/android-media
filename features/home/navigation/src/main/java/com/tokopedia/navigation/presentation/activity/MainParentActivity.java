@@ -460,6 +460,10 @@ public class MainParentActivity extends BaseActivity implements
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
         checkApplinkCouponCode(intent);
         checkAgeVerificationExtra(intent);
+
+        setIntent(intent);
+        showSelectedPage();
+        handleAppLinkBottomNavigation(null);
     }
 
     private void initInjector() {
