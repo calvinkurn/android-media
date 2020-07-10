@@ -8,10 +8,7 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.HydraSetupData
 import com.tokopedia.play.broadcaster.data.model.ProductData
-import com.tokopedia.play.broadcaster.domain.model.LiveDuration
-import com.tokopedia.play.broadcaster.domain.model.Metric
-import com.tokopedia.play.broadcaster.domain.model.TotalLike
-import com.tokopedia.play.broadcaster.domain.model.TotalView
+import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
@@ -24,6 +21,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.BroadcastState
 import com.tokopedia.play.broadcaster.view.state.BroadcastTimerState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -42,6 +40,7 @@ import javax.inject.Inject
 class PlayBroadcastViewModel @Inject constructor(
         private val mDataStore: PlayBroadcastDataStore,
         private val hydraConfigStore: HydraConfigStore,
+        private val sharedPref: HydraSharedPreferences,
         private val playPusher: PlayPusher,
         private val getConfigurationUseCase: GetConfigurationUseCase,
         private val getChannelUseCase: GetChannelUseCase,
@@ -55,6 +54,9 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
+
+    val isFirstStreaming: Boolean
+        get() = sharedPref.isFirstStreaming()
 
     val channelId: String
         get() = hydraConfigStore.getChannelId()
@@ -259,6 +261,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun startCountDown() {
+        sharedPref.setNotFirstStreaming()
         _observableLiveInfoState.value = Event(BroadcastState.Init)
     }
 
@@ -341,6 +344,7 @@ class PlayBroadcastViewModel @Inject constructor(
                         is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(data)
                         is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(data)
                         is LiveDuration -> restartLiveDuration(data)
+                        is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
                     }
                 }
 

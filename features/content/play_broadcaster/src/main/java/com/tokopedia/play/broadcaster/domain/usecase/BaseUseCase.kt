@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.usecase.coroutines.UseCase
 import java.lang.reflect.Type
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 
@@ -28,7 +29,7 @@ abstract class BaseUseCase<T : Any>: UseCase<T>() {
             gqlResponse =  gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
         } catch (throwable: Throwable) {
 //            Crashlytics.log(0, TAG, throwable.localizedMessage) // TODO uncomment Crashlytics
-            if (throwable is UnknownHostException) throw DefaultNetworkThrowable()
+            if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw DefaultNetworkThrowable()
         }
         val errors = gqlResponse?.getError(typeOfT)
         if (!errors.isNullOrEmpty()) {

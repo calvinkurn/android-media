@@ -25,15 +25,12 @@ import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 /**
  * @author by furqan on 09/06/2020
@@ -105,45 +102,24 @@ class PlayCoverSetupViewModel @Inject constructor(
         return coverTitle.isNotEmpty() && coverTitle.length <= MAX_CHARS
     }
 
-    suspend fun getOriginalImageUrl(productId: Long, resizedImageUrl: String): String? = suspendCancellableCoroutine {
-        launchCatchError(dispatcher.io, block = {
-            val originalImageUrlList = getOriginalProductImageUseCase.apply {
-                params = GetOriginalProductImageUseCase.createParams(productId)
-            }.executeOnBackground()
-            yield()
-            val resizedUrlLastSegments = resizedImageUrl.split("/")
-                    .let { it[it.lastIndex] }
-            val originalImageUrl = originalImageUrlList.first {
-                it.contains(resizedUrlLastSegments)
-            }
-            it.resume(originalImageUrl)
-        }) { err ->
-            err.printStackTrace()
-            it.resumeWithException(err)
+    suspend fun getOriginalImageUrl(productId: Long, resizedImageUrl: String): String? = withContext(dispatcher.io) {
+        val originalImageUrlList = getOriginalProductImageUseCase.apply {
+            params = GetOriginalProductImageUseCase.createParams(productId)
+        }.executeOnBackground()
+        yield()
+
+        val resizedUrlLastSegments = resizedImageUrl.split("/")
+                .let { it[it.lastIndex] }
+
+        return@withContext originalImageUrlList.first {
+            it.contains(resizedUrlLastSegments)
         }
     }
 
     fun uploadCover(coverTitle: String) {
         _observableUploadCoverEvent.value = NetworkResult.Loading
         launchCatchError(block = {
-            val currentCropState = cropState
-            if (currentCropState is CoverSetupState.Cropped.Draft) {
-                val validatedImageUri = validateImageMinSize(currentCropState.coverImage)
-                val validatedImagePath = validatedImageUri.path
-                if (validatedImagePath != null) {
-                    val finalUrl = Uri.parse(uploadCoverToCloud(validatedImagePath))
-                    setupDataStore.setFullCover(
-                            PlayCoverUiModel(
-                                    croppedCover = CoverSetupState.Cropped.Uploaded(validatedImageUri, finalUrl, source),
-                                    title = coverTitle,
-                                    state = SetupDataState.Draft
-                            )
-                    )
-                }
-                else throw IllegalStateException("Error in validating image")
-            } else if (currentCropState !is CoverSetupState.Cropped.Uploaded) {
-                throw IllegalStateException("Cover is not cropped yet")
-            }
+            uploadImageAndUpdateCoverState(coverTitle)
 
             val result = setupDataStore.uploadSelectedCover(channelId)
             if (result is NetworkResult.Success) _observableUploadCoverEvent.value = result.map { Event(Unit) }
@@ -156,7 +132,7 @@ class PlayCoverSetupViewModel @Inject constructor(
 
     fun coverChangeState(): CoverChangeState {
         return if (observableUploadCoverEvent.value !is NetworkResult.Loading) Changeable
-        else NotChangeable(CoverChangeForbiddenException("Cover is uploading"))
+        else NotChangeable(CoverChangeForbiddenException("Cover is being uploaded to server. Please wait..."))
     }
 
     fun setCroppingCoverByUri(coverUri: Uri, source: CoverSource) {
@@ -178,7 +154,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         )
     }
 
-    fun setCroppedCover(coverUri: Uri) {
+    fun setDraftCroppedCover(coverUri: Uri) {
         setupDataStore.updateCoverState(
                 CoverSetupState.Cropped.Draft(coverUri, source)
         )
@@ -194,7 +170,40 @@ class PlayCoverSetupViewModel @Inject constructor(
         setupDataStore.updateCoverTitle(coverTitle)
     }
 
-    private suspend fun uploadCoverToCloud(imagePath: String): String = withContext(dispatcher.io) {
+    private suspend fun uploadImageAndUpdateCoverState(coverTitle: String) {
+        val currentCropState = cropState
+        if (currentCropState is CoverSetupState.Cropped.Draft) {
+            val validatedImageUri = validateImageMinSize(currentCropState.coverImage)
+            val validatedImagePath = validatedImageUri.path
+            if (validatedImagePath != null) {
+                /**
+                 * Set validated image cover as draft
+                 */
+                setupDataStore.setFullCover(
+                        PlayCoverUiModel(
+                                croppedCover = CoverSetupState.Cropped.Draft(validatedImageUri, source),
+                                title = coverTitle,
+                                state = SetupDataState.Draft
+                        )
+                )
+                /**
+                 * Upload Cover Image to remote store
+                 */
+                val uploadedImageUri = Uri.parse(uploadImageToRemoteStore(validatedImagePath))
+                setupDataStore.setFullCover(
+                        PlayCoverUiModel(
+                                croppedCover = CoverSetupState.Cropped.Uploaded(validatedImageUri, uploadedImageUri, source),
+                                title = coverTitle,
+                                state = SetupDataState.Draft
+                        )
+                )
+            } else throw IllegalStateException("Error in validating image")
+        } else if (currentCropState !is CoverSetupState.Cropped.Uploaded) {
+            throw IllegalStateException("Cover is not cropped yet")
+        }
+    }
+
+    private suspend fun uploadImageToRemoteStore(imagePath: String): String = withContext(dispatcher.io) {
         val params = hashMapOf<String, RequestBody>()
         params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
         params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_700)

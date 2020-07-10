@@ -86,6 +86,9 @@ class PlayBroadcastSocketImpl constructor(
                     PlaySocketEnum.Metric.value -> {
                         data = mapMetric(webSocketResponse)
                     }
+                    PlaySocketEnum.ProductTag.value -> {
+                        data = mapProductTag(webSocketResponse)
+                    }
                 }
 
                 if (data != null) {
@@ -151,6 +154,10 @@ class PlayBroadcastSocketImpl constructor(
 
     private fun mapTotalLike(response: WebSocketResponse): TotalLike? {
         return convertToModel(response.jsonObject, TotalLike::class.java)
+    }
+
+    private fun mapProductTag(response: WebSocketResponse): ProductTagging? {
+        return convertToModel(response.jsonObject, ProductTagging::class.java)
     }
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {
