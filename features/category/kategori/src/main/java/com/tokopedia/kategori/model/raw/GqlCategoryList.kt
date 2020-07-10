@@ -1,5 +1,7 @@
-query AllCategoryQuery($depth :Int,$isTrending: Boolean!) {
-  categoryAllList(depth:$depth,isTrending:$isTrending) {
+package com.tokopedia.kategori.model.raw
+
+const val GQL_CATEGORY_LIST: String = """query AllCategoryQuery(${'$'}depth :Int,${'$'}isTrending: Boolean!) {
+  categoryAllList(depth:${'$'}depth,isTrending:${'$'}isTrending) {
     categories {
       id
       name
@@ -35,4 +37,4 @@ query AllCategoryQuery($depth :Int,$isTrending: Boolean!) {
       }
     }
   }
-}
+}"""

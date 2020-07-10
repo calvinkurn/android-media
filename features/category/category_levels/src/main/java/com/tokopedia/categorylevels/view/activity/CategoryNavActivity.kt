@@ -15,6 +15,7 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.categorylevels.R
@@ -79,6 +80,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private lateinit var categoryNavComponent: com.tokopedia.categorylevels.di.CategoryNavComponent
 
+    @JvmField
+    @Inject
+    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -90,18 +95,29 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         private const val ORDER_BY = "ob"
         private const val SCREEN_NAME = "/p"
         const val EXTRA_CATEGORY_NAME = "categoryName"
+
+        const val CATEGORY_LEVELS_RESULT_TRACE = "category_levels_result_trace"
+        const val CATEGORY_LEVELS_PLT_PREPARE_METRICS = "category_levels_plt_prepare_metrics"
+        const val CATEGORY_LEVELS_PLT_NETWORK_METRICS = "category_levels_plt_network_metrics"
+        const val CATEGORY_LEVELS_PLT_RENDER_METRICS = "category_levels_plt_render_metrics"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
+        startPerformanceMonitoring()
         setContentView(R.layout.activity_category_nav)
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
         searchNavContainer = findViewById(R.id.category_search_nav_container)
-        initInjector()
         fetchIntentData()
         initToolbar()
         prepareView()
         initializeSearchParameter(intent)
+    }
+
+    private fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startMonitoring(CATEGORY_LEVELS_RESULT_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
     override fun sendScreenAnalytics() {
@@ -266,6 +282,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         loadSection()
         initSwitchButton()
         initBottomSheetListener()
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+        stopPerformanceMonitoring()
     }
 
     private fun openAdultPage() {
@@ -515,5 +533,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     override fun onBannedFragmentAttached() {
         hideBottomNavigation()
+    }
+
+    private fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
     }
 }

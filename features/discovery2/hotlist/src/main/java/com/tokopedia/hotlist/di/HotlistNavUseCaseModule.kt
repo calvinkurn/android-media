@@ -42,12 +42,6 @@ class HotlistNavUseCaseModule {
 
     @HotlistNavScope
     @Provides
-    fun provideTopAdsUseCase(context: Context): TopAdsProductsUseCase {
-        return TopAdsProductsUseCase(context)
-    }
-
-    @HotlistNavScope
-    @Provides
     fun getProductListUseCase(categoryProductUseCase: CategoryProductUseCase
                               , topAdsProductsUseCase
                               : TopAdsProductsUseCase)
