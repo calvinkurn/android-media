@@ -29,7 +29,7 @@ class PltProductPerformanceTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = ProductDetailActivity.createIntent(context, "220891000")
         activityRule.launchActivity(intent)
-        activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+        activityRule.activity.deleteDatabase("tokopedia_graphql")
     }
 
     @Test
