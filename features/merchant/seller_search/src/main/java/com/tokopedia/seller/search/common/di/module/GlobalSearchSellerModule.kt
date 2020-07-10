@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.search.common.di.scope.GlobalSearchSellerScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -40,9 +39,4 @@ class GlobalSearchSellerModule {
     @GlobalSearchSellerScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
-    @GlobalSearchSellerScope
-    @Provides
-    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
-            FirebaseRemoteConfigImpl(context)
 }

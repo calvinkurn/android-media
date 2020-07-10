@@ -28,6 +28,11 @@ class InitialSearchModule {
 
     @InitialSearchScope
     @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
+            FirebaseRemoteConfigImpl(context)
+
+    @InitialSearchScope
+    @Provides
     fun provideGlobalSearchRemoteConfig(remoteConfig: FirebaseRemoteConfigImpl): GlobalSearchConfig {
         return GlobalSearchConfig(remoteConfig)
     }
