@@ -159,7 +159,7 @@ class DigitalHomePageViewModelTest {
     @Test
     fun getRechargeHomepageSections_Success() {
         val sectionsResponse = RechargeHomepageSections(listOf(
-                RechargeHomepageSections.Section(1, "Test", "test", "TOP_ICONS", listOf(
+                RechargeHomepageSections.Section(1, "Test", "test", "TOP_ICONS", listOf(), "", listOf(
                         RechargeHomepageSections.Item(1, "Test1", "test1")
         ))))
         val result = HashMap<Type, Any>()
@@ -201,7 +201,7 @@ class DigitalHomePageViewModelTest {
     fun createRechargeHomepageSectionsParams() {
         with (DigitalHomePageViewModel.Companion) {
             val enablePersonalize = true
-            val actual = digitalHomePageViewModel.createRechargeHomepageSectionsParams(enablePersonalize)
+            val actual = digitalHomePageViewModel.createRechargeHomepageSectionsParams(31, enablePersonalize)
             assertEquals(actual, mapOf(PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize))
         }
     }
@@ -209,7 +209,7 @@ class DigitalHomePageViewModelTest {
     @Test
     fun createRechargeHomepageSectionsParams_Default() {
         with (DigitalHomePageViewModel.Companion) {
-            val actual = digitalHomePageViewModel.createRechargeHomepageSectionsParams()
+            val actual = digitalHomePageViewModel.createRechargeHomepageSectionsParams(31)
             assertEquals(actual, mapOf(PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to false))
         }
     }

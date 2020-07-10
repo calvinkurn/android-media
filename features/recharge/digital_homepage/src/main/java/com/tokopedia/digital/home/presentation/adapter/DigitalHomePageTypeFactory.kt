@@ -117,6 +117,10 @@ class DigitalHomePageTypeFactory(
         return 0
     }
 
+    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
+        return 0
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             // Old Sub-homepage
