@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.giftbox.data.entities
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.gamification.taptap.data.entiity.TokenAsset
 
 data class GiftBoxEntity(@SerializedName("gamiLuckyHome") val gamiLuckyHome: GamiLuckyHome)
 
@@ -13,12 +14,12 @@ data class ResultStatus(
 
 data class GamiLuckyHome(
 
-    @SerializedName("resultStatus") val resultStatus: ResultStatus,
-    @SerializedName("tokensUser") val tokensUser: TokensUser,
-    @SerializedName("tokenAsset") val tokenAsset: TokenAsset,
-    @SerializedName("actionButton") val actionButton: List<ActionButton>?,
-    @SerializedName("prizeList") val prizeList: List<PrizeList>?,
-    @SerializedName("reminder") val reminder: Reminder?
+        @SerializedName("resultStatus") val resultStatus: ResultStatus,
+        @SerializedName("tokensUser") val tokensUser: TokensUser,
+        @SerializedName("tokenAsset") val tokenAsset: TokenAsset,
+        @SerializedName("actionButton") val actionButton: List<ActionButton>?,
+        @SerializedName("prizeList") val prizeList: List<PrizeList>?,
+        @SerializedName("reminder") val reminder: Reminder?
 )
 
 data class TokensUser(
@@ -28,12 +29,6 @@ data class TokensUser(
     @SerializedName("text") val text: String?,
     @SerializedName("desc") val desc: String?,
     @SerializedName("campaignSlug") val campaignSlug: String?
-)
-
-data class TokenAsset(
-
-    @SerializedName("backgroundImgURL") val backgroundImgURL: String,
-    @SerializedName("imageV2URLs") val imageV2URLs: List<String>
 )
 
 data class ActionButton(
