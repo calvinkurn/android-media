@@ -54,18 +54,21 @@ class CashbackVoucherCreateViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    lateinit var mViewModel: CashbackVoucherCreateViewModel
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        mViewModel = createViewModel()
 
-        //mViewModel.expenseEstimationLiveData.observeForever(expenseEstimationObserver)
-        //mViewModel.cashbackPercentageInfoUiModelLiveData.observeForever(cashbackPercentageInfoUiModelObserver)
+        mViewModel.expenseEstimationLiveData.observeForever(expenseEstimationObserver)
+        mViewModel.cashbackPercentageInfoUiModelLiveData.observeForever(cashbackPercentageInfoUiModelObserver)
     }
 
     @After
     fun cleanup() {
-        //mViewModel.expenseEstimationLiveData.removeObserver(expenseEstimationObserver)
-        //mViewModel.cashbackPercentageInfoUiModelLiveData.removeObserver(cashbackPercentageInfoUiModelObserver)
+        mViewModel.expenseEstimationLiveData.removeObserver(expenseEstimationObserver)
+        mViewModel.cashbackPercentageInfoUiModelLiveData.removeObserver(cashbackPercentageInfoUiModelObserver)
 
         testDispatcher.cleanupTestCoroutines()
     }
@@ -77,8 +80,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `adding rupiah maximum discount text field value will change expense estimation value if quota is already set`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Rupiah.VoucherQuota)
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
 
@@ -88,8 +90,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `adding rupiah maximum discount text field value wont change expense estimation value if quota hasn't been set`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             val initialValue = expenseEstimationLiveData.value
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
 
@@ -99,8 +100,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `adding rupiah voucher quota text field value will change expense estimation value if maximum discount is already set`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Rupiah.VoucherQuota)
 
@@ -110,8 +110,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `adding rupiah voucher quota text field value wont change expense estimation value if maximum discount hasn't been set`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             val initialValue = expenseEstimationLiveData.value
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Rupiah.VoucherQuota)
 
@@ -121,8 +120,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `adding percentage maximum discount text field value will change expense estimation value if quota is already set`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Percentage.VoucherQuota)
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
 
@@ -132,8 +130,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `adding percentage maximum discount text field value wont change expense estimation value if quota hasn't been set`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             val initialValue = expenseEstimationLiveData.value
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
 
@@ -143,8 +140,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `adding percentage voucher quota text field value will change expense estimation value if maximum discount is already set`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Percentage.VoucherQuota)
 
@@ -154,8 +150,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `adding percentage voucher quota text field value wont change expense estimation value if maximum discount hasn't been set`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             val initialValue = expenseEstimationLiveData.value
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Percentage.VoucherQuota)
 
@@ -165,8 +160,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `setting cashback type to Rupiah will change expense estimation value if required values are provided`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Rupiah.VoucherQuota)
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
             changeCashbackType(CashbackType.Rupiah)
@@ -177,8 +171,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `setting cashback type to Percentage will change expense estimation value if required values are provided`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Percentage.VoucherQuota)
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
             changeCashbackType(CashbackType.Percentage)
@@ -189,8 +182,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `setting cashback type to Rupiah without provided value will change expense estimation value to zero`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             changeCashbackType(CashbackType.Rupiah)
 
             assert(expenseEstimationLiveData.value == 0)
@@ -199,8 +191,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `setting cashback type to Percentage without provided value will change expense estimation value to zero`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             changeCashbackType(CashbackType.Percentage)
 
             assert(expenseEstimationLiveData.value == 0)
@@ -215,8 +206,7 @@ class CashbackVoucherCreateViewModelTest {
             cashbackRupiahValidationUseCase.executeOnBackground()
         } returns successResponse
 
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
             addTextFieldValueToCalculation(DUMMY_MIN_PURCHASE, PromotionType.Cashback.Rupiah.MinimumPurchase)
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Rupiah.VoucherQuota)
@@ -241,8 +231,7 @@ class CashbackVoucherCreateViewModelTest {
             cashbackRupiahValidationUseCase.executeOnBackground()
         } throws throwable
 
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
             addTextFieldValueToCalculation(DUMMY_MIN_PURCHASE, PromotionType.Cashback.Rupiah.MinimumPurchase)
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Rupiah.VoucherQuota)
@@ -267,8 +256,7 @@ class CashbackVoucherCreateViewModelTest {
             cashbackPercentageValidationUseCase.executeOnBackground()
         } returns successResponse
 
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
             addTextFieldValueToCalculation(DUMMY_MIN_PURCHASE, PromotionType.Cashback.Percentage.MinimumPurchase)
@@ -292,8 +280,7 @@ class CashbackVoucherCreateViewModelTest {
             cashbackPercentageValidationUseCase.executeOnBackground()
         } throws throwable
 
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
             addTextFieldValueToCalculation(DUMMY_MIN_PURCHASE, PromotionType.Cashback.Percentage.MinimumPurchase)
@@ -313,8 +300,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `refreshing value twice without initially changing cashback type will change voucher image value to rupiah`() = runBlocking {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
             refreshValue()
             refreshValue()
@@ -325,8 +311,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `refreshing value twice with changing cashback type will change voucher image value to percentage`() = runBlocking {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             changeCashbackType(CashbackType.Percentage)
             addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
@@ -343,8 +328,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `changing cashback type will change value list live data`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             changeCashbackType(CashbackType.Rupiah)
 
             assert(rupiahValueList.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt()))
@@ -359,8 +343,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `adding error pair will change error pair live data`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             val dummyPair = Pair(true, DUMMY_ERROR_MESSAGE)
             addErrorPair(dummyPair.first, dummyPair.second, PromotionType.Cashback.Rupiah.MaximumDiscount)
             addErrorPair(dummyPair.first, dummyPair.second, PromotionType.Cashback.Rupiah.MinimumPurchase)
@@ -384,8 +367,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `changing cashback type will change its live data`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             changeCashbackType(CashbackType.Percentage)
 
             assert(cashbackTypeData.value == CashbackType.Percentage)
@@ -394,8 +376,7 @@ class CashbackVoucherCreateViewModelTest {
 
     @Test
     fun `changing percentage maximum discount will change cashback percentage info ui model`() {
-        val viewModel = createViewModel()
-        with(viewModel) {
+        with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
 
             assert(cashbackPercentageInfoUiModelLiveData.value == CashbackPercentageInfoUiModel(
