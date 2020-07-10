@@ -13,5 +13,6 @@ enum class PlaySocketEnum(var value: String) {
     TotalLike("TOTAL_LIKE"),
     Metric("BULK_EVENT_NOTIF"),
     LiveStats("REPORT_CHANNEL"),
-    LiveDuration("LIVE_DURATION")
+    LiveDuration("LIVE_DURATION"),
+    ProductTag("PRODUCT_TAG"),
 }

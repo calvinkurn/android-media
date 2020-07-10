@@ -9,10 +9,7 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.HydraSetupData
 import com.tokopedia.play.broadcaster.data.model.ProductData
-import com.tokopedia.play.broadcaster.domain.model.LiveDuration
-import com.tokopedia.play.broadcaster.domain.model.Metric
-import com.tokopedia.play.broadcaster.domain.model.TotalLike
-import com.tokopedia.play.broadcaster.domain.model.TotalView
+import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
@@ -369,6 +366,7 @@ class PlayBroadcastViewModel @Inject constructor(
                         is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(data)
                         is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(data)
                         is LiveDuration -> restartLiveDuration(data)
+                        is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
                     }
                 }
 
