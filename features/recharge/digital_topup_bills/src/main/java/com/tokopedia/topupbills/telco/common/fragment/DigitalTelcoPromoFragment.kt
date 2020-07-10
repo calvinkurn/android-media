@@ -32,6 +32,7 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
@@ -62,6 +63,10 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
 
         viewModel.promos.observe(this, Observer {
             promoListWidget.setPromoList(it)
+        })
+
+        viewModel.titleMenu.observe(this, Observer {
+            promoListWidget.toggleTitle(it)
         })
 
         promoListWidget.setListener(object : TopupBillsPromoListWidget.ActionListener {

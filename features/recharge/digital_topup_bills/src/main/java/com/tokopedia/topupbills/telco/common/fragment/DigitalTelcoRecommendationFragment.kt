@@ -26,6 +26,7 @@ class DigitalTelcoRecommendationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
@@ -58,6 +59,10 @@ class DigitalTelcoRecommendationFragment : BaseDaggerFragment() {
             recentNumbersWidget.setRecentNumbers(it)
         })
 
+        viewModel.titleMenu.observe(this, Observer {
+            recentNumbersWidget.toggleTitle(it)
+        })
+
         recentNumbersWidget.setListenerRecentTelco(object : TopupBillsRecentNumberListener {
             override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int,
                                              position: Int) {
@@ -72,6 +77,7 @@ class DigitalTelcoRecommendationFragment : BaseDaggerFragment() {
     }
 
     companion object {
+
         fun newInstance(): Fragment {
             return DigitalTelcoRecommendationFragment()
         }

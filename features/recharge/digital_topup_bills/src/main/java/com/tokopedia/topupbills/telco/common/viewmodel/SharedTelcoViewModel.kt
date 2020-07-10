@@ -40,6 +40,10 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
     val catalogPrefixSelect: LiveData<Result<TelcoCatalogPrefixSelect>>
         get() = _catalogPrefixSelect
 
+    private val _titleMenu = MutableLiveData<Boolean>()
+    val titleMenu: LiveData<Boolean>
+        get() = _titleMenu
+
     fun setRecommendationTelco(recommendationTelco: List<TopupBillsRecommendation>) {
         _recommendation.postValue(recommendationTelco)
     }
@@ -50,6 +54,10 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun setSelectedRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
         _selectedRecentNumber.postValue(topupBillsRecommendation)
+    }
+
+    fun setTitleMenu(show: Boolean) {
+        _titleMenu.postValue(show)
     }
 
     fun getPrefixOperator(rawQuery: String, menuId: Int) {

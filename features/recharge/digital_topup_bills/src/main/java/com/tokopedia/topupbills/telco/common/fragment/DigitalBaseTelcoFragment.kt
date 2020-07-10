@@ -20,6 +20,7 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -244,13 +245,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         var idTab = 1L
         if (promo.isNotEmpty()) {
             viewModel.setPromoTelco(promo)
-            listMenu.add(TelcoTabItem(Bundle(), TelcoComponentName.PROMO, idTab++))
+            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
         }
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
-            listMenu.add(TelcoTabItem(Bundle(), TelcoComponentName.RECENTS, idTab++))
+            listMenu.add(TelcoTabItem(null, TelcoComponentName.RECENTS, idTab++))
         }
 
+        viewModel.setTitleMenu(listMenu.size < 2)
         renderPromoAndRecommendation()
     }
 

@@ -22,11 +22,9 @@ import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
-import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.config.GlobalConfig
@@ -41,6 +39,7 @@ import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
 import com.tokopedia.topupbills.telco.common.generateRechargeCheckoutToken
+import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
 import com.tokopedia.topupbills.telco.data.RechargePrefix
 import com.tokopedia.topupbills.telco.data.TelcoProduct
@@ -171,7 +170,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         })
         viewPager.adapter = pagerAdapter
-        viewPager.isUserInputEnabled = false
         viewPager.registerOnPageChangeCallback(viewPagerCallback)
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -191,6 +189,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
+            tabLayout.getTabAt(position)?.let {
+                it.select()
+            }
             val tabs = telcoTabViewModel.getAll()
             if (showProducts) {
                 nestedScrollView.fling(0)
@@ -245,9 +246,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             if (listMenu.size > 1) {
                 tabLayout.show()
                 separator.show()
-                (viewPager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
-                (viewPager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
-
             } else {
                 separator.hide()
                 tabLayout.hide()

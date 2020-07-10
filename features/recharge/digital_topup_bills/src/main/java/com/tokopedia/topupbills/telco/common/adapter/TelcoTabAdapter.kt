@@ -2,9 +2,9 @@ package com.tokopedia.topupbills.telco.common.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.fragment.DigitalTelcoPromoFragment
 import com.tokopedia.topupbills.telco.common.fragment.DigitalTelcoRecommendationFragment
+import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoProductFragment
 
 class TelcoTabAdapter(fragment: Fragment, listener: Listener) : FragmentStateAdapter(fragment) {
@@ -16,14 +16,17 @@ class TelcoTabAdapter(fragment: Fragment, listener: Listener) : FragmentStateAda
     }
 
     override fun createFragment(position: Int): Fragment {
-        return if (tabList.size == 2) {
-            when (position) {
-                0 -> DigitalTelcoPromoFragment.newInstance()
-                1 -> DigitalTelcoRecommendationFragment.newInstance()
-                else -> DigitalTelcoPromoFragment.newInstance()
-            }
+        return if (tabList[position].bundle != null) {
+            DigitalTelcoProductFragment.newInstance(tabList[position].bundle!!)
         } else {
-            DigitalTelcoProductFragment.newInstance(tabList[position].bundle)
+            val promoFragment = DigitalTelcoPromoFragment.newInstance()
+            val recomFragment = DigitalTelcoRecommendationFragment.newInstance()
+
+            when (position) {
+                0 -> promoFragment
+                1 -> recomFragment
+                else -> promoFragment
+            }
         }
     }
 
