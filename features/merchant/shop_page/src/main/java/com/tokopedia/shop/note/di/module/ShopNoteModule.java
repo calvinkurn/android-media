@@ -5,10 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.note.data.repository.ShopNoteRepositoryImpl;
-import com.tokopedia.shop.note.data.source.ShopNoteDataSource;
 import com.tokopedia.shop.note.di.scope.ShopNoteScope;
-import com.tokopedia.shop.note.domain.repository.ShopNoteRepository;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -23,12 +20,6 @@ import static com.tokopedia.shop.product.data.GQLQueryConstant.SHOP_NOTES;
 @ShopNoteScope
 @Module
 public class ShopNoteModule {
-
-    @ShopNoteScope
-    @Provides
-    public ShopNoteRepository provideShopNoteRepository(ShopNoteDataSource shopNoteDataSource){
-        return new ShopNoteRepositoryImpl(shopNoteDataSource);
-    }
 
     @ShopNoteScope
     @Provides
