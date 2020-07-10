@@ -15,6 +15,7 @@ object WidgetType {
     const val POST_LIST = "post"
     const val TABLE = "searchTable"
     const val PIE_CHART = "pieChart"
+    const val BAR_CHART = "barChart"
 
     fun isValidWidget(widgetType: String): Boolean {
         return getWidgetList().contains(widgetType)
@@ -30,7 +31,8 @@ object WidgetType {
                 PROGRESS,
                 SECTION,
                 TABLE,
-                PIE_CHART
+                PIE_CHART,
+                BAR_CHART
         )
     }
 }
