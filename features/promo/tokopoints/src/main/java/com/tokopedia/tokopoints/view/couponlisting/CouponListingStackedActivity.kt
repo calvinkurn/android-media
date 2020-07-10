@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.tabs.TabLayout
@@ -34,6 +35,7 @@ import javax.inject.Inject
 
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.TAB_SETUP_DELAY_MS
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.tp_activity_stacked_coupon_list.*
 
 class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivityContract.View, HasComponent<TokopointBundleComponent> {
@@ -169,6 +171,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
                 val ids = getSelectedCategoryId(data)
                 currentItem = ids[1]
                 loadFirstTab(ids[0])
+                Toast.makeText(context,"FirstLaod = ${ids[0]}",Toast.LENGTH_LONG).show()
             }, TAB_SETUP_DELAY_MS.toLong())
         }
         //Setting up sort types tabsK
@@ -200,6 +203,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
         val fragment = mAdapter?.getRegisteredFragment(view_pager_sort_type.currentItem) as CouponListingStackedFragment?
         fragment?.apply {
             if(isAdded ){
+                Toast.makeText(context,"SecondLaod = ${categoryId}", Toast.LENGTH_LONG).show()
                 presenter.getCoupons(categoryId)
             }
         }
