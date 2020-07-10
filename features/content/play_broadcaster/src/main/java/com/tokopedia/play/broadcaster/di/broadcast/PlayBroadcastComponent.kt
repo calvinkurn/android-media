@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
+import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
@@ -26,6 +27,8 @@ import dagger.Component
 interface PlayBroadcastComponent {
 
     @ApplicationContext fun appContext(): Context
+
+    fun permissionPrefs(): PermissionSharedPreferences
 
     fun userSession(): UserSessionInterface
 

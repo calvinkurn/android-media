@@ -34,6 +34,8 @@
     <string name="play_ok">Oke</string>
     <string name="play_cancel">Cancel</string>
     <string name="play_change">Ganti</string>
+    <string name="play_yes">Ya</string>
+    <string name="play_no">Tidak</string>
     <string name="play_broadcast_try_again">Coba Lagi</string>
     <string name="play_broadcast_exit">Keluar</string>
     <string name="play_broadcast_end">Akhiri</string>
@@ -132,4 +134,7 @@
 
     <string name="play_dialog_unsupported_device_title">Perangkat tidak mendukung\n layanan live streaming</string>
     <string name="play_dialog_unsupported_device_desc">Layanan live streaming tidak didukung pada perangkat Anda.</string>
+
+    <string name="play_storage_permission_rationale_title">Aktifkan akses foto, media, &amp; file</string>
+    <string name="play_storage_permission_rationale_desc">Akses ini dibutuhkan untuk memudahkanmu saat tambah cover live streaming.</string>
 </resources>

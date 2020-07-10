@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
@@ -27,11 +28,13 @@ import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
 import com.tokopedia.play.broadcaster.util.exhaustive
+import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
+import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
@@ -52,7 +55,8 @@ import javax.inject.Inject
  */
 class PlayCoverSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider
+        private val dispatcher: CoroutineDispatcherProvider,
+        private val permissionPref: PermissionSharedPreferences
 ) : PlayBaseSetupFragment() {
 
     private val job = SupervisorJob()
@@ -69,6 +73,33 @@ class PlayCoverSetupFragment @Inject constructor(
     private lateinit var coverCropView: CoverCropPartialView
 
     private lateinit var imagePickerHelper: CoverImagePickerHelper
+
+    private lateinit var dialogRationale: DialogUnify
+    private val permissionStatusHandler: PermissionStatusHandler = {
+        when (requestCode) {
+            REQUEST_CODE_PERMISSION_CROP_COVER -> {
+                if (isAllGranted()) coverCropView.clickAdd()
+                else showToaster("Cover Crop Permission Failed", Toaster.TYPE_ERROR)
+            }
+            REQUEST_CODE_PERMISSION_UPLOAD -> {
+                if (isAllGranted()) coverSetupView.clickNext()
+                else showToaster("Upload Permission Failed", Toaster.TYPE_ERROR)
+            }
+            REQUEST_CODE_PERMISSION_COVER_CHOOSER -> {
+                if (isAllGranted()) openCoverChooser(CoverSource.None)
+            }
+        }
+    }
+    private val permissionResultListener = object : PermissionResultListener {
+        override fun onRequestPermissionResult(): PermissionStatusHandler {
+            return permissionStatusHandler
+        }
+
+        override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+            showDialogPermissionRationale()
+            return true
+        }
+    }
 
     private var mListener: Listener? = null
 
@@ -109,7 +140,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 .get(PlayCoverSetupViewModel::class.java)
         dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(DataStoreViewModel::class.java)
-        permissionHelper = PermissionHelperImpl(this)
+        permissionHelper = PermissionHelperImpl(this, permissionPref)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -194,7 +225,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 listener = object : CoverSetupPartialView.Listener {
                     override fun onImageAreaClicked(view: CoverSetupPartialView) {
                         viewModel.saveCover(coverSetupView.coverTitle)
-                        openCoverChooser(CoverSource.None)
+                        requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
                     }
 
                     override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
@@ -321,6 +352,11 @@ class PlayCoverSetupFragment @Inject constructor(
         }
     }
 
+    private fun showDialogPermissionRationale() {
+        getDialogRationale()
+                .show()
+    }
+
     private fun getImagePickerHelper(): CoverImagePickerHelper {
         if (!::imagePickerHelper.isInitialized) {
             imagePickerHelper = CoverImagePickerHelper(
@@ -347,6 +383,24 @@ class PlayCoverSetupFragment @Inject constructor(
         return imagePickerHelper
     }
 
+    private fun getDialogRationale(): DialogUnify {
+        if (!::dialogRationale.isInitialized) {
+            dialogRationale = requireContext().getDialog(
+                    actionType = DialogUnify.HORIZONTAL_ACTION,
+                    title = getString(R.string.play_storage_permission_rationale_title),
+                    desc = getString(R.string.play_storage_permission_rationale_desc),
+                    primaryCta = getString(R.string.play_yes),
+                    primaryListener = { dialog ->
+                        dialog.dismiss()
+                        requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = false)
+                    },
+                    secondaryCta = getString(R.string.play_no),
+                    secondaryListener = { dialog -> dialog.dismiss() }
+            )
+        }
+        return dialogRationale
+    }
+
     /**
      * Permission
      */
@@ -356,30 +410,22 @@ class PlayCoverSetupFragment @Inject constructor(
         )
     }
 
-    private fun requestGalleryPermission(requestCode: Int) = permissionHelper.requestMultiPermissionsFullFlow(
-            permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
-            requestCode = requestCode,
-            permissionResultListener = object : PermissionResultListener {
-                override fun onRequestPermissionResult(): PermissionStatusHandler {
-                    return {
-                        when (requestCode) {
-                            REQUEST_CODE_PERMISSION_CROP_COVER -> {
-                                if (isAllGranted()) coverCropView.clickAdd()
-                                else showToaster("Cover Crop Permission Failed", Toaster.TYPE_ERROR)
-                            }
-                            REQUEST_CODE_PERMISSION_UPLOAD -> {
-                                if (isAllGranted()) coverSetupView.clickNext()
-                                else showToaster("Upload Permission Failed", Toaster.TYPE_ERROR)
-                            }
-                        }
-                    }
-                }
-
-                override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
-                    return false
-                }
-            }
-    )
+    private fun requestGalleryPermission(requestCode: Int, isFullFlow: Boolean = true) {
+        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (isFullFlow) {
+            permissionHelper.requestMultiPermissionsFullFlow(
+                    permissions = permissions,
+                    requestCode = requestCode,
+                    permissionResultListener = permissionResultListener
+            )
+        } else {
+            permissionHelper.requestMultiPermissions(
+                    permissions = permissions,
+                    requestCode = requestCode,
+                    statusHandler = permissionStatusHandler
+            )
+        }
+    }
 
     private fun handleCroppingState(state: CoverSetupState.Cropping) {
         when (state) {
@@ -515,6 +561,7 @@ class PlayCoverSetupFragment @Inject constructor(
         private const val REQUEST_CODE_PERMISSION_CROP_COVER = 9191
         private const val REQUEST_CODE_PERMISSION_START_CROP_COVER = 9292
         private const val REQUEST_CODE_PERMISSION_UPLOAD = 9393
+        private const val REQUEST_CODE_PERMISSION_COVER_CHOOSER = 9494
     }
 
     interface Listener {

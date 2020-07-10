@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import kotlin.math.min
 
 /**
@@ -15,17 +16,21 @@ class PermissionHelperImpl : PermissionHelper {
 
     private val permissionMap: MutableMap<Int, (PermissionStatusManager) -> Unit> = mutableMapOf()
 
+    private val permissionPref: PermissionSharedPreferences?
+
     private val mContext: Context
     private val permissionRequester: (permissions: Array<String>, requestCode: Int) -> Unit
     private val showRationaleHandler: (permission: String) -> Boolean
 
-    constructor(fragment: Fragment) {
+    constructor(fragment: Fragment, permissionSharedPreferences: PermissionSharedPreferences? = null) {
         mContext = fragment.requireContext()
         permissionRequester = fragment::requestPermissions
         showRationaleHandler = fragment::shouldShowRequestPermissionRationale
+
+        permissionPref = permissionSharedPreferences
     }
 
-    constructor(activity: Activity) {
+    constructor(activity: Activity, permissionSharedPreferences: PermissionSharedPreferences? = null) {
         mContext = activity
         permissionRequester = { permissions, requestCode ->
             ActivityCompat.requestPermissions(activity, permissions, requestCode)
@@ -33,6 +38,8 @@ class PermissionHelperImpl : PermissionHelper {
         showRationaleHandler = { permission ->
             ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
         }
+
+        permissionPref = permissionSharedPreferences
     }
 
     override fun requestPermissionFullFlow(permission: String, requestCode: Int, permissionResultListener: PermissionResultListener) {
@@ -86,7 +93,7 @@ class PermissionHelperImpl : PermissionHelper {
     }
 
     override fun shouldShowRequestPermissionRationale(permission: String): Boolean {
-        return showRationaleHandler(permission)
+        return permissionPref?.hasBeenAsked(permission) == false || showRationaleHandler(permission)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray): Boolean {
