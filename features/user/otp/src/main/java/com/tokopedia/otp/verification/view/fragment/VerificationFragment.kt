@@ -259,7 +259,10 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                     activity?.let { activity ->
                         val bundle = Bundle().apply {
                             putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
+                            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
                             putString(ApplinkConstInternalGlobal.PARAM_MSISDN, otpData.msisdn)
+                            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
+                            putString(ApplinkConstInternalGlobal.PARAM_SOURCE, otpData.source)
                             putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
                         }
                         activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))

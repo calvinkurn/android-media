@@ -134,18 +134,43 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
         return { otpModeListData ->
             if (otpModeListData.success && otpModeListData.modeList.isNotEmpty()) {
                 hideLoading()
-                adapter.setList(otpModeListData.modeList)
-                when (otpModeListData.linkType) {
-                    TYPE_HIDE_LINK -> onTypeHideLink()
-                    TYPE_CHANGE_PHONE_UPLOAD_KTP -> onChangePhoneUploadKtpType()
-                    TYPE_PROFILE_SETTING -> onProfileSettingType()
-                    else -> onTypeHideLink()
+                if(!otpData.isShowChooseMethod) {
+                    val modeList = otpModeListData.modeList.singleOrNull {
+                        it.modeText == otpData.otpMode
+                    }
+
+                    if(modeList != null) {
+                        skipView(modeList)
+                    } else {
+                        showListView(otpModeListData)
+                    }
+                } else {
+                    showListView(otpModeListData)
                 }
+
             } else if (otpModeListData.errorMessage.isEmpty()) {
                 onFailedGetVerificationMethod().invoke(MessageErrorException(otpModeListData.errorMessage))
             } else {
                 onFailedGetVerificationMethod().invoke(Throwable())
             }
+        }
+    }
+
+    private fun showListView(otpModeListData: OtpModeListData) {
+        adapter.setList(otpModeListData.modeList)
+        when (otpModeListData.linkType) {
+            TYPE_HIDE_LINK -> onTypeHideLink()
+            TYPE_CHANGE_PHONE_UPLOAD_KTP -> onChangePhoneUploadKtpType()
+            TYPE_PROFILE_SETTING -> onProfileSettingType()
+            else -> onTypeHideLink()
+        }
+    }
+
+    private fun skipView(modeListData: ModeListData) {
+        if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
+            (activity as VerificationActivity).goToOnboardingMiscallPage(modeListData)
+        } else {
+            (activity as VerificationActivity).goToVerificationPage(modeListData)
         }
     }
 

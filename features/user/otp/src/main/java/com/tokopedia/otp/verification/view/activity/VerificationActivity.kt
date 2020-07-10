@@ -39,6 +39,7 @@ import javax.inject.Inject
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_EMAIL]
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_MSISDN]
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_OTP_TYPE]
+ * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE]
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE]
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD]
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD]
@@ -122,6 +123,7 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
     private fun setupParams() {
         otpData.userId = userSession.userId ?: userSession.temporaryUserId
         otpData.otpType = intent?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0) ?: 0
+        otpData.otpMode = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "") ?: ""
         otpData.email = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "") ?: ""
         otpData.msisdn = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 ?: ""

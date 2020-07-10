@@ -16,6 +16,7 @@ data class OtpData(
         @Expose @SerializedName("msisdn") var msisdn: String = "",
         @Expose @SerializedName("email") var email: String = "",
         @Expose @SerializedName("otpType") var otpType: Int = 0,
+        @Expose @SerializedName("otpMode") var otpMode: String = "",
         @Expose @SerializedName("canUseOtherMethod") var canUseOtherMethod: Boolean = false,
         @Expose @SerializedName("isShowChooseMethod") var isShowChooseMethod: Boolean = false,
         @Expose @SerializedName("source") var source: String = ""

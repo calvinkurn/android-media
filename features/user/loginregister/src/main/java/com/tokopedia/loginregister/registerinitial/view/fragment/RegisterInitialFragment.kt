@@ -749,7 +749,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, EMAIL_TYPE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         startActivityForResult(intent, REQUEST_OTP_VALIDATE)
     }
 
@@ -758,6 +761,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ACTIVATE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
     }
 
