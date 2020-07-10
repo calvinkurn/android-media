@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -32,19 +33,20 @@ import kotlin.coroutines.CoroutineContext
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
                                              private val discoveryUIConfigRepo: DiscoveryUIConfigGQLRepository,
                                              private val userSession: UserSessionInterface,
-                                             private val trackingQueue: TrackingQueue) : BaseViewModel(), CoroutineScope {
+                                             private val trackingQueue: TrackingQueue,
+                                             private val pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface?) : BaseViewModel(), CoroutineScope {
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryUIConfig = MutableLiveData<Result<String>>()
-    private val phoneVerificationLiveData = MutableLiveData<Boolean>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
+
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
 
@@ -55,7 +57,11 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryData() {
         launchCatchError(
                 block = {
+                    pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+                    pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
+                    pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+                    pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
                     data.let {
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
@@ -105,20 +111,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             discoveryFabLiveData.postValue(Fail(Throwable()))
         }
 
-    }
-
-
-    fun getBitmapFromURL(src: String?): Bitmap? = runBlocking {
-        getBitmap(src).await()
-    }
-
-    fun getBitmap(src: String?) = async(Dispatchers.IO) {
-        val url = URL(src)
-        val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-        connection.doInput = true
-        connection.connect()
-        val input: InputStream = connection.inputStream
-        BitmapFactory.decodeStream(input)
     }
 
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo

@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -22,11 +23,20 @@ import javax.inject.Inject
 
 const val NATIVE = "native"
 const val REACT_NATIVE = "react-native"
-private const val TAG = "DiscoveryActivity"
+
+
+const val DISCOVERY_RESULT_TRACE = "discovery_result_trace"
+const val DISCOVERY_PLT_PREPARE_METRICS = "discovery_plt_prepare_metrics"
+const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
+const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
 
 class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
+
+    @JvmField
+    @Inject
+    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -78,6 +88,11 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
                         ?: intent?.getStringExtra(END_POINT) ?: "")
         )
         finish()
+    }
+
+    private fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startMonitoring(DISCOVERY_RESULT_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
     override fun initInject() {
