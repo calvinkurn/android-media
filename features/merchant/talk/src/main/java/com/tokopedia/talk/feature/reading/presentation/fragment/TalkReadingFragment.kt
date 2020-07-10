@@ -180,7 +180,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun onThreadClicked(questionID: String) {
         TalkReadingTracking.eventClickThread(
-                getSelectedCategories(),
+                getSelectedCategoryDisplayName(),
                 viewModel.userId,
                 productId,
                 questionID
@@ -554,6 +554,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getSelectedCategories(): String {
         return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString { it.categoryName } ?: ""
+    }
+
+    private fun getSelectedCategoryDisplayName(): String {
+        return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString { it.displayName } ?: ""
     }
 
 }
