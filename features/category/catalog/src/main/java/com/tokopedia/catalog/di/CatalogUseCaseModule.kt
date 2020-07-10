@@ -29,15 +29,15 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
-    fun getProductCatalogOneUseCase(context: Context, graphqlUseCase: GraphqlUseCase): GetProductCatalogOneUseCase {
-        return GetProductCatalogOneUseCase(context, graphqlUseCase)
+    fun getProductCatalogOneUseCase(graphqlUseCase: GraphqlUseCase): GetProductCatalogOneUseCase {
+        return GetProductCatalogOneUseCase(graphqlUseCase)
     }
 
     @CatalogScope
     @Named("topAdsProductListing")
     @Provides
-    fun provideTopAdsUseCase(context: Context): TopAdsProductsUseCase {
-        return TopAdsProductsUseCase(context)
+    fun provideTopAdsUseCase(): TopAdsProductsUseCase {
+        return TopAdsProductsUseCase()
     }
 
     @CatalogScope

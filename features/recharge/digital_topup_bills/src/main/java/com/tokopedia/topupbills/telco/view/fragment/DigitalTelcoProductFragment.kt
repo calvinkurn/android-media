@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
@@ -176,7 +177,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
                     if (activeCategory == titleProduct && selectedProduct > 0) {
                         for (i in dataCollections.indices) {
-                            if (dataCollections[i].id.toInt() == selectedProduct) {
+                            if (dataCollections[i].id == selectedProduct.toString()) {
                                 dataCollections[i].attributes.selected = true
                                 position = i
                                 break
@@ -193,7 +194,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private fun setMarginProductList(spaceTop: Int, view: View) {
         val params =  RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT)
-        params.setMargins(MARGIN_0, spaceTop, MARGIN_0, MARGIN_16)
+        params.setMargins(MARGIN_0, spaceTop, MARGIN_0, MARGIN_0)
         view.layoutParams = params
     }
 
