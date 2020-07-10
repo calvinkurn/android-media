@@ -3,6 +3,8 @@ package com.tokopedia.home.account.data.mapper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -40,7 +42,6 @@ import com.tokopedia.user_identification_common.KYCConstant;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import rx.functions.Func1;
