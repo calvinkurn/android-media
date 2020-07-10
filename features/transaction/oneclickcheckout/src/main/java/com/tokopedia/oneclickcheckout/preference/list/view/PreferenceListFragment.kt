@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
@@ -31,8 +30,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.domain.model.OccState
-import com.tokopedia.oneclickcheckout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.list.di.PreferenceListComponent
@@ -50,7 +50,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var preferencelistAnalytics: PreferenceListAnalytics
+    lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: PreferenceListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PreferenceListViewModel::class.java]
@@ -62,7 +62,6 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
     private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
     private val preferenceList by lazy { view?.findViewById<RecyclerView>(R.id.rv_preference_list) }
-    private val progressBar by lazy { view?.findViewById<ProgressBar>(R.id.progress_bar) }
     private val buttonPreferenceListAction by lazy { view?.findViewById<UnifyButton>(R.id.btn_preference_list_action) }
 
     private val ivEmptyState by lazy { view?.findViewById<ImageView>(R.id.iv_empty) }
@@ -112,7 +111,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     swipeRefreshLayout?.isRefreshing = false
                     globalError?.gone()
                     mainContent?.visible()
-                    val profiles = it.data.profiles ?: ArrayList()
+                    val profiles = it.data.profiles
                     val maxProfiles = it.data.maxProfile
                     adapter.submitList(profiles)
                     if (profiles.isEmpty()) {
@@ -123,23 +122,26 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                         preferenceList?.gone()
                         buttonPreferenceListAction?.isEnabled = true
                         buttonPreferenceListAction?.setText(R.string.add_first_preference)
+                        buttonPreferenceListAction?.visible()
                     } else if (profiles.isNotEmpty() && profiles.size >= maxProfiles) {
                         emptyStateGroup?.gone()
                         preferenceList?.visible()
                         buttonPreferenceListAction?.setText(R.string.add_preference)
                         buttonPreferenceListAction?.isEnabled = false
+                        buttonPreferenceListAction?.visible()
                     } else {
                         emptyStateGroup?.gone()
                         preferenceList?.visible()
                         buttonPreferenceListAction?.isEnabled = true
                         buttonPreferenceListAction?.setText(R.string.add_preference)
+                        buttonPreferenceListAction?.visible()
                     }
                 }
-                is OccState.Fail -> {
-                    if (!it.isConsumed) {
+                is OccState.Failed -> {
+                    it.getFailure()?.let { failure ->
                         swipeRefreshLayout?.isRefreshing = false
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
+                        if (failure.throwable != null) {
+                            handleError(failure.throwable)
                         }
                     }
                 }
@@ -151,26 +153,22 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                 is OccState.Success -> {
                     progressDialog?.dismiss()
                     view?.let { view ->
-                        if (it.data.messages.isNotEmpty()) {
-                            Toaster.make(view, it.data.messages[0])
-                        } else {
-                            Toaster.make(view, "Success")
+                        it.data.getData()?.let { message ->
+                            Toaster.make(view, message)
                         }
                     }
                 }
-                is OccState.Fail -> {
+                is OccState.Failed -> {
                     progressDialog?.dismiss()
-                    view?.let { view ->
-                        if (it.throwable != null) {
-                            if (it.throwable is MessageErrorException) {
-                                Toaster.make(view, it.throwable.message
-                                        ?: "Failed", type = Toaster.TYPE_ERROR)
+                    it.getFailure()?.let { failure ->
+                        view?.let { view ->
+                            if (failure.throwable is MessageErrorException) {
+                                Toaster.make(view, failure.throwable.message
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                             } else {
-                                Toaster.make(view, it.throwable.localizedMessage
-                                        ?: "Failed", type = Toaster.TYPE_ERROR)
+                                Toaster.make(view, failure.throwable?.localizedMessage
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                             }
-                        } else {
-                            Toaster.make(view, "Failed", type = Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -217,7 +215,6 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                 }
             }
         }
-        viewModel.consumePreferenceListFail()
     }
 
     private fun showGlobalError(type: Int) {
@@ -231,7 +228,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
 
     private fun initViews() {
         buttonPreferenceListAction?.setOnClickListener {
-            preferencelistAnalytics.eventAddPreferenceFromPurchaseSetting()
+            preferenceListAnalytics.eventAddPreferenceFromPurchaseSetting()
             val profileNumber = adapter.itemCount + 1
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.preference_number_summary) + " " + profileNumber)
@@ -244,28 +241,32 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         preferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.left = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt() ?: 0
-                outRect.right = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt() ?: 0
-                outRect.top = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt() ?: 0
-                outRect.bottom = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt() ?: 0
+                outRect.left = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt()
+                        ?: 0
+                outRect.right = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt()
+                        ?: 0
+                outRect.top = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt()
+                        ?: 0
+                outRect.bottom = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt()
+                        ?: 0
             }
         })
     }
 
     override fun onPreferenceSelected(preference: ProfilesItemModel) {
-        preferencelistAnalytics.eventClickJadikanPilihanUtama()
+        preferenceListAnalytics.eventClickJadikanPilihanUtama()
         viewModel.changeDefaultPreference(preference)
     }
 
     override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {
-        preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
+        preferenceListAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
             putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, profileSize > 1)
             putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.lbl_summary_preference_option) + " " + position)
             putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
-            putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
-            putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
-            putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode)
+            putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel.addressId)
+            putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel.serviceId)
+            putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel.gatewayCode)
         }
         startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
     }

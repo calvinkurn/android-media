@@ -25,20 +25,19 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
-import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -125,7 +124,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             stopTrace()
         })
 
-        flightHomepageViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
+        flightHomepageViewModel.homepageData.observe(viewLifecycleOwner, Observer {
             renderSearchForm(it)
         })
 
@@ -383,17 +382,17 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         RouteManager.route(context, ApplinkConst.PROMO_LIST)
     }
 
-    private fun renderSearchForm(dashboardData: FlightDashboardModel) {
-        dashboardData.departureAirport?.let {
+    private fun renderSearchForm(homepageData: FlightHomepageModel) {
+        homepageData.departureAirport?.let {
             flightHomepageSearchForm.setOriginAirport(it)
         }
-        dashboardData.arrivalAirport?.let {
+        homepageData.arrivalAirport?.let {
             flightHomepageSearchForm.setDestinationAirport(it)
         }
-        dashboardData.flightPassengerViewModel?.let {
+        homepageData.flightPassengerViewModel?.let {
             flightHomepageSearchForm.setPassengerView(it)
         }
-        dashboardData.flightClass?.let {
+        homepageData.flightClass?.let {
             flightHomepageSearchForm.setClassView(it)
         }
     }
@@ -489,14 +488,8 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun navigateToSearchPage(flightSearchData: FlightSearchPassDataModel) {
-        val newSearchEnabledStatus = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)
-        if (newSearchEnabledStatus) {
-            startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
-                    REQUEST_CODE_SEARCH)
-        } else {
-            startActivityForResult(com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.getCallingIntent(requireContext(),
-                    flightSearchData), REQUEST_CODE_SEARCH)
-        }
+        startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
+                REQUEST_CODE_SEARCH)
     }
 
     companion object {

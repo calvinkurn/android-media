@@ -5,6 +5,7 @@ import android.text.Html
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.ReminderWidgetListener
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -20,12 +21,19 @@ class ReminderWidgetViewHolder(
         val reminderWidgetListener : ReminderWidgetListener
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private val performanceTraceName = "mp_home_recharge_widget_load_time"
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_reminder_widget
     }
 
+    init {
+        performanceMonitoring = PerformanceMonitoring()
+    }
+
     override fun bind(element: ReminderWidgetModel) {
+        performanceMonitoring?.startTrace(performanceTraceName)
         initView(element, itemView)
     }
 
@@ -38,6 +46,8 @@ class ReminderWidgetViewHolder(
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
                 reminderWidgetListener.getReminderWidget(element.source)
+                performanceMonitoring?.stopTrace()
+                performanceMonitoring = null
             } else {
                 home_reminder_recommendation_loading.hide()
 
@@ -75,6 +85,8 @@ class ReminderWidgetViewHolder(
                 ic_close_reminder_recommendation.setOnClickListener {
                     reminderWidgetListener.onReminderWidgetDeclineClickListener(element, true)
                 }
+                performanceMonitoring?.stopTrace()
+                performanceMonitoring = null
             }
         }
     }
