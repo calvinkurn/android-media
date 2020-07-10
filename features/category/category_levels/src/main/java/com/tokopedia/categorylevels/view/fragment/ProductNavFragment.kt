@@ -490,7 +490,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             startActivityForResult(intent, 1002)
         }
         if (item.isTopAds) {
-            productNavViewModel.sendTopAds(item.productClickTrackingUrl)
+            productNavViewModel.sendTopAdsClick(item.productClickTrackingUrl, item.id.toString(), item.name, item.imageURL)
         }
         catAnalyticsInstance.eventClickProductList(item.id.toString(),
                 mDepartmentId,
@@ -679,8 +679,8 @@ open class ProductNavFragment : BaseBannedProductFragment(),
                 viewedTopAdsList)
     }
 
-    override fun topAdsTrackerUrlTrigger(url: String) {
-        productNavViewModel.sendTopAds(url)
+    override fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String) {
+        productNavViewModel.sendTopAdsImpressions(url, id, name, imageURL)
     }
 
     override fun onPause() {
