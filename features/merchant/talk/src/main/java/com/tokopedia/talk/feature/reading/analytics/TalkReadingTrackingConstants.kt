@@ -10,5 +10,5 @@ object TalkReadingTrackingConstants {
     const val EVENT_ACTION_GO_TO_REPLY = "${TalkTrackingConstants.EVENT_ACTION_CLICK} question to view thread"
     const val EVENT_LABEL_GO_TO_REPLY = "talk id:%s;"
     const val EVENT_ACTION_LOAD_DATA = "${TalkTrackingConstants.EVENT_ACTION_CLICK} lazy load on talk detail"
-    const val EVENT_LABEL_LOAD_DATA = "count page load:%s;\ncount thread:%s;"
+    const val EVENT_LABEL_LOAD_DATA = "count page load:%s;count thread:%s;"
 }
