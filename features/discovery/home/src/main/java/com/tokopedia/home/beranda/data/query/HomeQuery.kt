@@ -136,9 +136,8 @@ object HomeQuery{
             }
           }
           homeFlag{
+                event_time
                 server_time
-                refresh_time
-                refresh_message
                 flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_auto_refresh"){
                     name
                     is_active
