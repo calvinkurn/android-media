@@ -164,12 +164,9 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
         }
     }
 
-    private void checkForNull(Object object, String query, boolean shouldThrow) {
-        if (shouldThrow) {
-            NullCheckerKt.throwIfNull(object,
-                    GraphqlUseCase.class,
-                    (query.length() >= 16) ? query.substring(0, 16) : query
-            );
+    private void checkForNull(Object object, String request, boolean shouldThrow) {
+        if (shouldThrow && !TextUtils.isEmpty(request)) {
+            NullCheckerKt.throwIfNull(object, GraphqlUseCase.class, request);
         }
     }
 }
