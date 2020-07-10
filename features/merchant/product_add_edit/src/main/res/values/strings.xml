@@ -216,6 +216,7 @@
     <string name="error_image_too_large">Oops, file foto kamu melebihi %1$dMB</string>
 
     <!-- Variant -->
+    <string name="title_variant_activity">Variant</string>
     <string name="action_variant_apply">Terapkan</string>
     <string name="action_variant_next">Lanjut</string>
     <string name="action_variant_save">Simpan</string>

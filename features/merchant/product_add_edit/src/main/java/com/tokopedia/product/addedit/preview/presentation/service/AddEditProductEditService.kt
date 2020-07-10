@@ -66,22 +66,18 @@ class AddEditProductEditService : AddEditProductBaseService() {
     private fun saveProductToDraft() {
         launch {
             productDraftId = withContext(Dispatchers.IO){
-                saveProductDraftUseCase.params = SaveProductDraftUseCase
-                        .createRequestParams(mapProductInputModelDetailToDraft(productInputModel),
-                                productInputModel.draftId, false)
+                saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
+                        mapProductInputModelDetailToDraft(productInputModel),
+                        productInputModel.draftId, false)
                 saveProductDraftUseCase.executeOnBackground()
             }
+
+            val detailInputModel = productInputModel.detailInputModel
+            val variantInputModel = productInputModel.variantInputModel
             // (2)
-            uploadProductImages(
-                    filterPathOnly(productInputModel.detailInputModel.imageUrlOrPathList),
-                    productInputModel.variantInputModel)
+            uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
         }
     }
-
-    private fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
-            imageUrlOrPathList.filterNot {
-                it.startsWith(HTTP_PREFIX)
-            }
 
     override fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel) {
         // (3)
