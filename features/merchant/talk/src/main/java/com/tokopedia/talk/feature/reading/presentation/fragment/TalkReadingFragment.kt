@@ -184,7 +184,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 productId,
                 questionID
         )
-        if(viewModel.isUserLoggedIn) {
+        if(viewModel.isUserLoggedIn()) {
             goToReplyActivity(questionID)
             return
         }
@@ -281,7 +281,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         addFloatingActionButton.hide()
         pageEmpty.show()
         readingEmptyAskButton.setOnClickListener {
-            if(viewModel.isUserLoggedIn) {
+            if(viewModel.isUserLoggedIn()) {
                 goToWriteActivity()
             } else {
                 updateLastAction(TalkGoToWrite)
@@ -532,7 +532,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun initFab() {
         addFloatingActionButton.setOnClickListener {
-            if(viewModel.isUserLoggedIn) {
+            if(viewModel.isUserLoggedIn()) {
                 goToWriteActivity()
             } else {
                 updateLastAction(TalkGoToWrite)

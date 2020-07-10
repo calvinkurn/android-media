@@ -102,6 +102,7 @@
     <string name="reading_other_answers">%d jawaban lainnya</string>
     <string name="reading_ellipsis">…</string>
     <string name="reading_ticker">Diskusi kini ganti tampilan jadi Q&amp;A. Kamu bisa tanya dan jawab seputar info barang di sini.</string>
+    <string name="reading_dot">•</string>
 
     <string name="toaster_follow_success">Kamu berhasil follow Q&amp;A ini. Nantikan notifikasinya di Inbox, ya!</string>
     <string name="toaster_unfollow_success">Kamu berhasil unfollow Q&amp;A ini.</string>

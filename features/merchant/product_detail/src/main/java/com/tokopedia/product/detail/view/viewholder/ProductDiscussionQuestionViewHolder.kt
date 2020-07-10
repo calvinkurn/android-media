@@ -66,7 +66,7 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
     private fun showInquiryDate(date: String) {
         if(date.isNotEmpty()) {
             itemView.productDetailDiscussionInquiryDate.apply {
-                text = addBulletPointToDate(date)
+                text = date
                 show()
             }
         } else {
@@ -111,7 +111,7 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
             itemView.productDetailDiscussionRespondentResponseDate.apply {
-                text = addBulletPointToDate(date)
+                text = date
                 show()
             }
         } else {
@@ -126,10 +126,6 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
         } else {
             itemView.productDetailDiscussionRespondentSellerLabel.hide()
         }
-    }
-
-    private fun addBulletPointToDate(date: String): String {
-        return String.format(itemView.context.getString(R.string.product_detail_discussion_formatted_date), date)
     }
 
     private fun showNoAnswersText() {
