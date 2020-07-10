@@ -117,7 +117,7 @@
     <string name="delete_toaster_network_error">Jawaban belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="delete_dialog_title">Beneran mau dihapus?</string>
     <string name="delete_dialog_content">Soalnya, satu jawaban kamu bisa berikan manfaat bagi ratusan calon pembeli lain</string>
-    <string name="delete_dialog_question_description">Semua jawaban di Tanya-Jawab ini akan hilang jika pertanyaan dihapus</string>
+    <string name="delete_dialog_question_description">Semua jawaban di Q&amp;A ini akan hilang jika pertanyaan dihapus</string>
     <string name="delete_confirm_button">Hapus</string>
     <string name="delete_cancel_button">Batal</string>
     <string name="delete_question_toaster_fail">Pertanyaan belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
