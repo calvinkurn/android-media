@@ -26,7 +26,7 @@ object PopularKeywordTracking: BaseTracking() {
             promotions = listOf(
                 Promotion(
                         id = channel.id,
-                        creative = "",
+                        creative = channel.name,
                         name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
                         position = (position + 1).toString()
                 )
@@ -43,7 +43,7 @@ object PopularKeywordTracking: BaseTracking() {
             promotions = popularKeywordList.mapIndexed{ pos, data ->
                 Promotion(
                         id = channel.id,
-                        creative = "",
+                        creative = channel.name,
                         name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, data.title),
                         position = (pos + 1).toString()
                 )
@@ -64,7 +64,7 @@ object PopularKeywordTracking: BaseTracking() {
             promotions = listOf(
                 Promotion(
                         id = channel.id,
-                        creative = "",
+                        creative = channel.name,
                         name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
                         position = (position + 1).toString()
                 )
