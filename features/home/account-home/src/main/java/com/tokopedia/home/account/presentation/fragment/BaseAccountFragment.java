@@ -380,9 +380,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onGMInfoClicked() {
-        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, POWER_MERCHANT_URL));
-        }
+        openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, POWER_MERCHANT_URL));
     }
 
     @Override
