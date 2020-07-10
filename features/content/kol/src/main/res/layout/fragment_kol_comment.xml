@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="@dimen/dp_10"
-            app:srcCompat="@drawable/ic_send_24dp_green"/>
+            app:srcCompat="@drawable/kol_ic_send_24dp_green"/>
 
     </LinearLayout>
 

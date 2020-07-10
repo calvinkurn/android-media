@@ -68,6 +68,7 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.unifycomponents.Toaster;
@@ -657,9 +658,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void sendATCTrackingUrl(String url) {
+    public void sendATCTrackingUrl(String url, String productId, String productName, String imageUrl) {
         String clickUrl = url + "&click_source=ATC_direct_click";
-        new ImpresionTask(getActivity().getClass().getSimpleName(), userSession).execute(clickUrl);
+        new TopAdsUrlHitter(this.getClass().getCanonicalName()).hitClickUrl(getContext(), clickUrl, productId, productName, imageUrl);
     }
 
     @Override

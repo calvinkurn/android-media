@@ -225,13 +225,7 @@ class HomeVisitableFactoryImpl(
                     }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
                         createMixLeftComponent(channel, position, isCache)
-                    } else {
-                        createDynamicChannel(
-                                channel = channel
-                        )
-                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
@@ -247,13 +241,7 @@ class HomeVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> {
-                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
                         createMixTopComponent(channel, position, isCache)
-                    } else {
-                        createDynamicChannel(
-                                channel = channel
-                        )
-                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createReminderWidget(ReminderEnum.RECHARGE) }
                 DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> {
