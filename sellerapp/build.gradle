@@ -1,4 +1,8 @@
 apply plugin: 'com.android.application'
+if (project.hasProperty("auto-patch")) {
+    apply plugin: 'auto-patch-plugin'
+}
+apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.bugsnag.android.gradle'
@@ -355,6 +359,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.robust
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
@@ -362,6 +367,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.libraries.tokopatch)
 
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
