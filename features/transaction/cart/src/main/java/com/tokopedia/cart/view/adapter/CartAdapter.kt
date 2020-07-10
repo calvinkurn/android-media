@@ -476,8 +476,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return cartDataList.size
     }
 
-    fun unsubscribeSubscription() {
-        compositeSubscription.unsubscribe()
+    fun clearCompositeSubscription() {
+        compositeSubscription.clear()
     }
 
     fun addAvailableDataList(shopGroupAvailableDataList: List<ShopGroupAvailableData>) {

@@ -15,13 +15,13 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
-import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator
-import com.tokopedia.flight.search.domain.FlightDeleteAllFlightSearchDataUseCase
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
+import com.tokopedia.flight.searchV4.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,7 +38,7 @@ class FlightHomepageViewModel @Inject constructor(
         private val travelTickerUseCase: TravelTickerCoroutineUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
         private val dashboardCache: FlightDashboardCache,
-        private val deleteAllFlightSearchDataUseCase: FlightDeleteAllFlightSearchDataUseCase,
+        private val deleteAllFlightSearchDataUseCase: FlightSearchDeleteAllDataUseCase,
         private val passengerValidator: FlightSelectPassengerValidator,
         private val userSessionInterface: UserSessionInterface,
         private val dispatcherProvider: TravelDispatcherProvider)
@@ -48,8 +48,8 @@ class FlightHomepageViewModel @Inject constructor(
     val bannerList: LiveData<Result<TravelCollectiveBannerModel>>
         get() = mutableBannerList
 
-    private val mutableDashboardData = MutableLiveData<FlightDashboardModel>()
-    val dashboardData: LiveData<FlightDashboardModel>
+    private val mutableDashboardData = MutableLiveData<FlightHomepageModel>()
+    val homepageData: LiveData<FlightHomepageModel>
         get() = mutableDashboardData
 
     private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
@@ -61,7 +61,7 @@ class FlightHomepageViewModel @Inject constructor(
         get() = mutableAutoSearch
 
     fun init() {
-        mutableDashboardData.value = FlightDashboardModel()
+        mutableDashboardData.value = FlightHomepageModel()
         mutableAutoSearch.value = false
     }
 
@@ -147,7 +147,7 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun onDepartureAirportChanged(departureAirport: FlightAirportModel) {
         flightAnalytics.eventOriginClick(departureAirport.cityName, departureAirport.airportCode)
-        dashboardData.value?.let {
+        homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.departureAirport = departureAirport
             mutableDashboardData.value = newDashboardData
@@ -156,7 +156,7 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun onArrivalAirportChanged(arrivalAirport: FlightAirportModel) {
         flightAnalytics.eventDestinationClick(arrivalAirport.cityName, arrivalAirport.airportCode)
-        dashboardData.value?.let {
+        homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.arrivalAirport = arrivalAirport
             mutableDashboardData.value = newDashboardData
@@ -165,7 +165,7 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun onClassChanged(classModel: FlightClassModel) {
         flightAnalytics.eventClassClick(classModel.title)
-        dashboardData.value?.let {
+        homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightClass = classModel
             mutableDashboardData.value = newDashboardData
@@ -174,7 +174,7 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun onPassengerChanged(passengerModel: FlightPassengerModel) {
         flightAnalytics.eventPassengerClick(passengerModel.adult, passengerModel.children, passengerModel.infant)
-        dashboardData.value?.let {
+        homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightPassengerViewModel = passengerModel
             mutableDashboardData.value = newDashboardData
@@ -243,7 +243,7 @@ class FlightHomepageViewModel @Inject constructor(
     fun onSearchTicket(flightSearchData: FlightSearchPassDataModel) {
         launch(dispatcherProvider.ui()) {
             flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData))
-            deleteAllFlightSearchDataUseCase.executeCoroutine()
+            deleteAllFlightSearchDataUseCase.execute()
         }
     }
 
@@ -261,13 +261,13 @@ class FlightHomepageViewModel @Inject constructor(
         }
     }
 
-    private fun mapSearchPassDataToDashboardModel(flightSearchData: FlightSearchPassDataModel): FlightDashboardModel {
-        val dashboardModel = FlightDashboardModel()
+    private fun mapSearchPassDataToDashboardModel(flightSearchData: FlightSearchPassDataModel): FlightHomepageModel {
+        val dashboardModel = FlightHomepageModel()
 
         dashboardModel.departureAirport = flightSearchData.departureAirport
         dashboardModel.arrivalAirport = flightSearchData.arrivalAirport
         dashboardModel.isOneWay = flightSearchData.isOneWay
-        dashboardModel.flightPassengerViewModel = flightSearchData.flightPassengerViewModel
+        dashboardModel.flightPassengerViewModel = flightSearchData.flightPassengerModel
         dashboardModel.flightClass = flightSearchData.flightClass
         dashboardModel.departureDate = flightSearchData.departureDate
         dashboardModel.returnDate = flightSearchData.returnDate
@@ -275,8 +275,8 @@ class FlightHomepageViewModel @Inject constructor(
         return dashboardModel
     }
 
-    private fun cloneViewModel(currentDashboardData: FlightDashboardModel): FlightDashboardModel =
-            currentDashboardData.clone() as FlightDashboardModel
+    private fun cloneViewModel(currentHomepageData: FlightHomepageModel): FlightHomepageModel =
+            currentHomepageData.clone() as FlightHomepageModel
 
     companion object {
         private const val MAX_YEAR_FOR_FLIGHT = 1

@@ -30,6 +30,10 @@ class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : Re
         itemView.rv_wishlist.layoutManager = layoutManager
         itemView.rv_wishlist.adapter = wishlistAdapter
         itemView.rv_wishlist.scrollToPosition(element.lastFocussPosition)
+        if (!element.hasSentImpressionAnalytics) {
+            listener?.onWishlistImpression()
+            element.hasSentImpressionAnalytics = true
+        }
     }
 
 }
