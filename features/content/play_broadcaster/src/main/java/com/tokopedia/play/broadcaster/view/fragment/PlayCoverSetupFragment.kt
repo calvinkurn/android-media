@@ -82,6 +82,8 @@ class PlayCoverSetupFragment @Inject constructor(
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
+        try { Toaster.snackBar.dismiss() } catch (e: Throwable) {}
+
         val state = viewModel.cropState
         val coverChangeState = viewModel.coverChangeState()
         return when {
@@ -251,7 +253,7 @@ class PlayCoverSetupFragment @Inject constructor(
         })
     }
 
-    private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "") {
+    private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "", actionListener: View.OnClickListener = View.OnClickListener { }) {
         if (toasterBottomMargin == 0) {
             val coverSetupBottomActionHeight = coverSetupView.getBottomActionView().height
             val bottomActionHeight = if (coverSetupBottomActionHeight != 0) coverSetupBottomActionHeight else coverCropView.getBottomActionView().height
@@ -264,6 +266,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 type = type,
                 duration = duration,
                 actionLabel = actionLabel,
+                actionListener = actionListener,
                 bottomMargin = toasterBottomMargin
         )
     }
@@ -387,18 +390,27 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private fun getOriginalProductImage(productCropping: CoverSetupState.Cropping.Product) {
         showCoverCropLayout(null)
-        scope.launch {
-            val originalImageUrl = viewModel.getOriginalImageUrl(productCropping.productId, productCropping.imageUrl)
-            Glide.with(requireContext())
-                    .asBitmap()
-                    .load(originalImageUrl)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            viewModel.setCroppingCoverByBitmap(resource, CoverSource.Product(productCropping.productId))
-                        }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
+        scope.launch {
+            try {
+                val originalImageUrl = viewModel.getOriginalImageUrl(productCropping.productId, productCropping.imageUrl)
+                Glide.with(requireContext())
+                        .asBitmap()
+                        .load(originalImageUrl)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                viewModel.setCroppingCoverByBitmap(resource, CoverSource.Product(productCropping.productId))
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {}
+                        })
+            } catch (e: Throwable) {
+                showToaster(
+                        message = e.localizedMessage,
+                        type = Toaster.TYPE_ERROR,
+                        duration = Toaster.LENGTH_LONG
+                )
+            }
         }
     }
 
