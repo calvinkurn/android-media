@@ -137,8 +137,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
-import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutine
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
 import org.jetbrains.annotations.NotNull
 import rx.Observable
@@ -605,7 +604,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 return sendScreen()
             }
         }
-        executeWeaveCoRoutine(sendScrWeave, WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, getRemoteConfig()))
+        executeWeaveCoRoutineWithFirebase(sendScrWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, context?.applicationContext)
     }
 
     override fun onPause() {
