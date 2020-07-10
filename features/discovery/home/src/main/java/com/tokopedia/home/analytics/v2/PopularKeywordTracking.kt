@@ -3,6 +3,7 @@ package com.tokopedia.home.analytics.v2
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 
 /**
  * @author by yoasfs on 08/07/20
@@ -17,7 +18,7 @@ object PopularKeywordTracking: BaseTracking() {
     private const val IMPRESSION_POPULAR_KEYWORDS = "impression on popular keyword banner"
     private const val POPULAR_KEYWORDS_NAME = "popular keyword banner"
 
-    fun getPopularKeywordImpressionItem(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, keyword: String, positionInWidget: Int) = HomePageTrackingV2.getBasicPromotionView(
+    fun getPopularKeywordImpressionItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) = HomePageTrackingV2.getBasicPromotionView(
             event = Event.PROMO_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = IMPRESSION_POPULAR_KEYWORDS,
@@ -25,7 +26,7 @@ object PopularKeywordTracking: BaseTracking() {
             promotions = listOf(
                 Promotion(
                         id = channel.id,
-                        creative = grid.attribution,
+                        creative = "",
                         name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
                         position = (position + 1).toString()
                 )
@@ -33,23 +34,23 @@ object PopularKeywordTracking: BaseTracking() {
             )
     )
 
-    fun getPopularKeywordImpressionIrisItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) = HomePageTrackingV2.getBasicPromotionChannelView(
+    fun getPopularKeywordImpressionIris(channel: DynamicHomeChannel.Channels, popularKeywordList: MutableList<PopularKeywordDataModel> ,positionInWidget: Int) = HomePageTrackingV2.getBasicPromotionChannelView(
             event = Event.PROMO_VIEW_IRIS,
             eventCategory = Category.HOMEPAGE,
             eventAction = IMPRESSION_POPULAR_KEYWORDS,
-            eventLabel = String.format(Label.FORMAT_2_ITEMS, channel.header.name, keyword),
+            eventLabel = channel.header.name,
             channelId = channel.id,
-            promotions = channel.grids.map {
+            promotions = popularKeywordList.mapIndexed{ pos, data ->
                 Promotion(
                         id = channel.id,
-                        creative = it.attribution,
-                        name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
-                        position = (position + 1).toString()
+                        creative = "",
+                        name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, data.title),
+                        position = (pos + 1).toString()
                 )
 
             })
 
-    fun getPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, keyword: String, positionInWidget: Int) = HomePageTrackingV2.getBasicPromotionChannelClick(
+    fun getPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) = HomePageTrackingV2.getBasicPromotionChannelClick(
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CLICK_POPULAR_KEYWORDS,
@@ -63,7 +64,7 @@ object PopularKeywordTracking: BaseTracking() {
             promotions = listOf(
                 Promotion(
                         id = channel.id,
-                        creative = grid.attribution,
+                        creative = "",
                         name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
                         position = (position + 1).toString()
                 )
@@ -71,7 +72,7 @@ object PopularKeywordTracking: BaseTracking() {
             ))
 
     fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
-        getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, channel.grids[position], position, keyword, positionInWidget))
+        getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, keyword, positionInWidget))
     }
 
     fun getPopularKeywordClickReload(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {

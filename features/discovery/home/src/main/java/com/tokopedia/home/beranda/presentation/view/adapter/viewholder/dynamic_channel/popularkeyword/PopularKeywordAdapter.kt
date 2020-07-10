@@ -70,7 +70,6 @@ class PopularKeywordAdapter(private val popularKeywordListener: PopularKeywordVi
             } else tvCount.hide()
             itemView.addOnImpressionListener(data.impressHolder) {
                 popularKeywordListener.onPopularKeywordItemImpressed(channel, adapterPosition, data.title, positionInWidget)
-                homeCategoryListener.sendIrisTrackerHashMap(PopularKeywordTracking.getPopularKeywordImpressionIrisItem(channel, adapterPosition, data.title, positionInWidget) as HashMap<String, Any>)
             }
             cardProduct.setOnClickListener{
                 popularKeywordListener.onPopularKeywordItemClicked(data.applink, channel, adapterPosition, data.title, positionInWidget)
