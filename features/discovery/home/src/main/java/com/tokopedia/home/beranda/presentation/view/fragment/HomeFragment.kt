@@ -593,9 +593,9 @@ open class HomeFragment : BaseDaggerFragment(),
             activityStateListener!!.onResume()
         }
         adjustStatusBarColor()
-//        if (isEnableToAutoRefresh(autoRefreshFlag)) {
+        if (isEnableToAutoRefresh(autoRefreshFlag)) {
             runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
-//        }
+        }
     }
 
     private fun conditionalViewModelRefresh(){
@@ -628,9 +628,9 @@ open class HomeFragment : BaseDaggerFragment(),
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
-//        if (isEnableToAutoRefresh(autoRefreshFlag)) {
+        if (isEnableToAutoRefresh(autoRefreshFlag)) {
             stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
-//        }
+        }
     }
 
     override fun onDestroy() {
@@ -991,9 +991,9 @@ open class HomeFragment : BaseDaggerFragment(),
         initAutoRefreshHandler()
         if (isEnableToAutoRefresh(homeFlag)) {
             autoRefreshFlag = homeFlag
-//            setAutoRefreshOnHome(homeFlag)
+            setAutoRefreshOnHome(homeFlag)
         }
-        setDummyButton()
+//        setDummyButton()
     }
 
     private fun isEnableToAutoRefresh(homeFlag: HomeFlag): Boolean {
