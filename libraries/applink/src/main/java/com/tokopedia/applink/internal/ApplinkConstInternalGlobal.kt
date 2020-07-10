@@ -440,6 +440,8 @@ object ApplinkConstInternalGlobal {
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
     @JvmField
     val PARAM_IS_RETURN_HOME = "return_to_home"
+    @JvmField
+    val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
@@ -477,6 +479,7 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
     val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
+    val GAMIFICATION_TAP_TAP_GIFT = "$INTERNAL_GLOBAL/gamification_gift_60s"
 
     //ManageNotificationActivity
     @JvmField

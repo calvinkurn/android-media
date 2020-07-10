@@ -44,8 +44,8 @@ android {
     }
 
     project.ext {
-        defaultVersionCode = 299700000;
-        defaultVersionName = "3.70";
+        defaultVersionCode = 299800000;
+        defaultVersionName = "3.80";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -170,6 +170,11 @@ dependencies {
         exclude module: 'recyclerview-v7'
     })
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
+
+    //you can comment below line if you use old login
+    implementation project(rootProject.ext.features.logintestapp)
 
 //    implementation project(rootProject.ext.libraries.logger)
 //    implementation (rootProject.ext.debugToolsDependencies.timber){

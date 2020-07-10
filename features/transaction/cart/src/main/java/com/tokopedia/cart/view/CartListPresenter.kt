@@ -5,17 +5,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
-import com.tokopedia.purchase_platform.common.feature.insurance.request.*
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
@@ -28,9 +17,20 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
+import com.tokopedia.purchase_platform.common.feature.insurance.request.*
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -569,13 +569,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     // ANALYTICS IMPRESSION
-    override fun generateRecommendationImpressionDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
+    override fun generateRecommendationImpressionDataAnalytics(position: Int, cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
         val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
-            var position = 1
+            var tmpPosition = position
+            if (cartRecommendationItemHolderDataList.size == 1) tmpPosition += 1
             for (cartRecommendationItemHolderData in cartRecommendationItemHolderDataList) {
-                val enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationMapData(cartRecommendationItemHolderData.recommendationItem, isEmptyCart, position)
+                val enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationMapData(cartRecommendationItemHolderData.recommendationItem, isEmptyCart, tmpPosition)
                 addImpression(enhancedECommerceProductCartMapData.getProduct())
-                position++
+                tmpPosition++
             }
 
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
@@ -729,7 +730,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
             setActionField(enhancedECommerceActionField.actionFieldMap)
-                addProduct(enhancedECommerceProductCartMapData.getProduct())
+            addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
         stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
@@ -1044,7 +1045,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var productCategory = ""
         var productPrice = ""
         var externalSource = ""
-        var clickUrl = ""
         if (productModel is CartWishlistItemHolderData) {
             productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
             shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
@@ -1059,18 +1059,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productPrice = productModel.price
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
         } else if (productModel is CartRecommendationItemHolderData) {
-            val (recommendationItem) = productModel
+            val (_, recommendationItem) = productModel
             productId = recommendationItem.productId
             shopId = recommendationItem.shopId
             productName = recommendationItem.name
             productCategory = recommendationItem.categoryBreadcrumbs
             productPrice = recommendationItem.price
             externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
-            clickUrl = recommendationItem.clickUrl
-        }
 
-        if(!clickUrl.isEmpty())
-            view?.sendATCTrackingURL(clickUrl)
+            val clickUrl = recommendationItem.clickUrl
+            if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
+        }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
             this.productId = productId.toLong()
@@ -1149,9 +1148,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     }
 
-    override fun doValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
+    override fun doValidateUse(promoRequest: ValidateUsePromoRequest) {
         val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequestValidateUse)
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
         validateUsePromoRevampUseCase.createObservable(requestParams)
                 .subscribeOn(schedulers.io)
                 .unsubscribeOn(schedulers.io)
@@ -1159,7 +1158,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 .subscribe(ValidateUseSubscriber(view, this))
     }
 
-    override fun doUpdateCartAndValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
+    override fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemData>()
             cartListView.getAllSelectedCartDataList()?.let { listCartItemData ->
@@ -1173,7 +1172,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
-            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequestValidateUse)
+            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
 
             compositeSubscription.add(
                     updateCartAndValidateUseUseCase.createObservable(requestParams)

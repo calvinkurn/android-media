@@ -132,10 +132,14 @@
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="title_trade_in">Tukar Tambah</string>
     <string name="label_category_explore">Jelajah Tokopedia</string>
+    <string name="title_find_native">Find</string>
     <string name="label_dob">Tanggal Lahir</string>
     <string name="title_activity_catalog">Katalog</string>
     <string name="catalog_host">catalog</string>
     <string name="label_kategori">Belanja di Tokopedia</string>
+    <string name="label_category">category</string>
+    <string name="hotlist_label">hotlist</string>
+
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
@@ -170,6 +174,12 @@
     <!--    Logistic-->
     <string name="title_dropoff_picker">Pilih Lokasi Titik Ambil</string>
     <string name="title_autocomplete_page">Cari Lokasi</string>
+
+    <string name="label_tracking_activity">Lacak</string>
+    <string name="title_receipt_shipement_barcode_scanner">Scan Barcode</string>
+    <string name="title_confirm_shipment_logistic_module">Konfirmasi Pengiriman</string>
+
+    <string name="label_manage_address">Daftar Alamat</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
@@ -255,10 +265,8 @@
     <!--Play-->
     <string name="title_play_df">Play</string>
 
-    <!--Logistic-->
-    <string name="label_tracking_activity">Lacak</string>
-    <string name="title_receipt_shipement_barcode_scanner">Scan Barcode</string>
-    <string name="title_confirm_shipment_logistic_module">Konfirmasi Pengiriman</string>
+    <!--Interest Pick-->
+    <string name="ip_title">Pilih Inspirasi Kamu</string>
 
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
@@ -274,5 +282,13 @@
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+
+    <!-- Content -->
+    <string name="kol_title_comment">Comments</string>
+    <string name="kol_title_post_detail">Post Detail</string>
+    <string name="kol_title_media_preview">Media Preview</string>
+    <string name="kol_title_video_detail">Video Detail</string>
+    <string name="kol_title_post_youtube">Post Youtube</string>
+    <string name="kol_title_report">Laporan Konten</string>
 
 </resources>
