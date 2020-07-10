@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -118,6 +119,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private val ANIMATION_TYPE = "translationY"
     private val TRANSLATION_LENGTH = 500f
 
+    private var searchKeyword = ""
+
     private lateinit var somListItemAdapter: SomListItemAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private var filterList: List<SomListFilter.Data.OrderFilterSom.StatusList> = listOf()
@@ -182,6 +185,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             filterStatusId = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
             isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
+        getDefaultKeywordOptionFromApplink()
         loadTicker()
         loadFilterList()
         activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
@@ -204,6 +208,16 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingStatusList()
         observingOrders()
         context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    private fun getDefaultKeywordOptionFromApplink() {
+        if (GlobalConfig.isSellerApp()) {
+            context?.let {
+                activity?.intent?.data?.apply {
+                    searchKeyword = getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
+                }
+            }
+        }
     }
 
     private fun showSellerMigrationTicker() {
@@ -339,6 +353,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun setListeners() {
+        if (GlobalConfig.isSellerApp()) {
+            if (searchKeyword.isNotBlank()) {
+                paramOrder.search = searchKeyword
+                search_input_view.searchTextView.setText(searchKeyword)
+                search_input_view.searchTextView.text?.length?.let { search_input_view.searchTextView.setSelection(it) }
+            }
+        }
         search_input_view?.setListener(this)
         search_input_view?.setResetListener(this)
         search_input_view?.searchTextView?.setOnClickListener {

@@ -339,6 +339,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         defaultFilterOptions = filterOptions
     }
 
+    fun setSearchKeywordOptions(keyword: String) {
+        isLoadingInitialData = true
+        tabSortFilter?.show()
+        searchBar?.show()
+        searchBar?.searchTextView?.setText(keyword)
+        showLoadingProgress()
+        getProductList()
+        searchBar.clearFocus()
+    }
+
     private fun showProductEmptyState(): Boolean {
         val selectedFilters = viewModel.selectedFilterAndSort.value
         val searchKeyword = searchBar.searchTextView.text.toString()
