@@ -7,7 +7,6 @@ import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.OPTION_SEPARATOR
 import com.tokopedia.filter.testutils.jsonToObject
 import org.junit.Test
