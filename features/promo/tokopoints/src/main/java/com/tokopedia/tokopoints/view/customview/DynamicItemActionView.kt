@@ -33,7 +33,6 @@ class DynamicItemActionView @JvmOverloads constructor(
     lateinit var notifRightLayout: NotificationUnify
     lateinit var dividerOne: View
     lateinit var dividerTwo: View
-    private val dynamicItem = "dynamicItem"
 
     init {
         setUpUI()
@@ -83,8 +82,8 @@ class DynamicItemActionView @JvmOverloads constructor(
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, text),
-                    "")
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
+                    text)
         }
     }
 
@@ -113,8 +112,8 @@ class DynamicItemActionView @JvmOverloads constructor(
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, text),
-                    "")
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
+                    text)
         }
     }
 
@@ -143,8 +142,8 @@ class DynamicItemActionView @JvmOverloads constructor(
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, text),
-                    "")
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
+                    text)
         }
     }
 

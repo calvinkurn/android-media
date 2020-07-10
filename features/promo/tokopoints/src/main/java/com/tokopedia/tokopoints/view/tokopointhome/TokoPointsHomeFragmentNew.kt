@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -116,7 +117,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             appBarHeader.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout: AppBarLayout?, verticalOffset: Int -> handleAppBarOffsetChange(verticalOffset) })
             appBarHeader.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout: AppBarLayout?, verticalOffset: Int -> handleAppBarIconChange(appBarLayout, verticalOffset) })
         }
-        setLayoutParams()
         return view
     }
 
@@ -137,7 +137,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         addRewardIntroObserver()
     }
 
-    private fun setLayoutParams() {
+    private fun setLayoutParams(cardheight: Int) {
         val statusBarHeight = getStatusBarHeight(activity)
         val layoutParams = tokoPointToolbar!!.layoutParams as FrameLayout.LayoutParams
         layoutParams.topMargin = statusBarHeight
@@ -146,7 +146,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         imageEggLp.topMargin = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
         mImgEgg!!.layoutParams = imageEggLp
         val imageBigLp = mImgBackground!!.layoutParams as RelativeLayout.LayoutParams
-        imageBigLp.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height)).toInt()
+        imageBigLp.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
         mImgBackground!!.layoutParams = imageBigLp
     }
 
@@ -380,6 +380,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun renderToolbarWithHeader(data: TokopediaRewardTopSection?) {
+        cardTierInfo.doOnLayout {
+            setLayoutParams(it.height)
+        }
         tokoPointToolbar?.setScrolledItem(data?.dynamicActionList)
         mTextMembershipLabel?.text = data?.introductionText
 
@@ -398,7 +401,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
         ImageHandler.loadImageCircle2(activityContext, mImgEgg, data?.profilePicture)
         mTextMembershipValueBottom?.text = mValueMembershipDescription
-        collapsingToolbarLayout?.title = data?.title
         data?.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
@@ -548,6 +550,35 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             mExploreSectionPagerAdapter!!.onDestroyView()
         }
         super.onDestroyView()
+    }
+
+    inline fun View.doOnLayout(crossinline action: (view: View) -> Unit) {
+        if (ViewCompat.isLaidOut(this) && !isLayoutRequested) {
+            action(this)
+        } else {
+            doOnNextLayout {
+                action(it)
+            }
+        }
+    }
+
+    inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
+        addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                    view: View,
+                    left: Int,
+                    top: Int,
+                    right: Int,
+                    bottom: Int,
+                    oldLeft: Int,
+                    oldTop: Int,
+                    oldRight: Int,
+                    oldBottom: Int
+            ) {
+                view.removeOnLayoutChangeListener(this)
+                action(view)
+            }
+        })
     }
 
     companion object {

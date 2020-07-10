@@ -175,10 +175,10 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     override fun onEmptyCatalog() {
         mContainer!!.displayedChild = CONTAINER_EMPTY
-        view?.findViewById<TextView>(R.id.text_title_error2)?.text = "Kupon kategori ini sedang disiapkan"
-        view?.findViewById<TextView>(R.id.text_label_error2)?.text = "Sabar! Kami punya banyak kupon spesial buatmu yang menunggu saatnya dikeluarkan."
+        view?.findViewById<TextView>(R.id.text_title_error2)?.text = getString(R.string.tp_catalog_empty_title)
+        view?.findViewById<TextView>(R.id.text_label_error2)?.text = getString(R.string.tp_catalog_empty_description)
         val btnCOntinue = view?.findViewById<TextView>(R.id.button_continue)
-        btnCOntinue?.text = "Lihat Kupon Tersedia"
+        btnCOntinue?.text = getString(R.string.tp_catalog_empty_button)
         btnCOntinue?.setOnClickListener {
             RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
         }

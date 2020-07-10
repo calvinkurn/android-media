@@ -1,10 +1,9 @@
 package com.tokopedia.applink.promo
 
 import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 
 fun getRegisteredNavigationTokopoints(context: Context, deeplink: String) =
@@ -20,6 +19,8 @@ fun getRegisteredNavigationTokopoints(context: Context, deeplink: String) =
 fun getDynamicDeeplinkForTokopoints(context: Context, deeplink: String): String {
 
     var deepLinkInternal = ""
+    val path = Uri.parse(deeplink)
+
     if (deeplink.contains(ApplinkConst.TOKOPOINTS)) {
         deepLinkInternal = deeplink.replace(ApplinkConst.TOKOPOINTS, ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS)
     } else if (deeplink.contains(ApplinkConst.TOKOPEDIA_REWARD)) {
@@ -28,18 +29,14 @@ fun getDynamicDeeplinkForTokopoints(context: Context, deeplink: String): String 
     if (deepLinkInternal.contains(ApplinkConst.TokoPoints.COUPON_DETAIL)) {
         return deepLinkInternal.replace(ApplinkConst.TokoPoints.COUPON_DETAIL, ApplinkConst.TokoPoints.COUPON_DETAIL_VALUE)
     }
-    val regex = "kupon-saya/?[a-z]*".toRegex()
-    if (regex.containsMatchIn(deepLinkInternal)) {
-        return deepLinkInternal.replace(regex, "kupon-saya")
-    }
     if (deepLinkInternal.contains(ApplinkConst.TokoPoints.CATALOG_DETAIL)) {
         return deepLinkInternal.replace(ApplinkConst.TokoPoints.CATALOG_DETAIL, ApplinkConst.TokoPoints.CATALOG_DETAIL_VALUE)
     }
     if (deepLinkInternal.contains(ApplinkConst.TokoPoints.CATALOG_DETAIL_NEW)) {
         return deepLinkInternal.replace(ApplinkConst.TokoPoints.CATALOG_DETAIL_NEW, ApplinkConst.TokoPoints.CATALOG_DETAIL_VALUE)
     }
-    if (deepLinkInternal.contains(ApplinkConst.TokoPoints.CATALOG_LIST_NEW)) {
-        return deepLinkInternal.replace(ApplinkConst.TokoPoints.CATALOG_LIST_NEW, ApplinkConst.TokoPoints.CATALOG_LIST_VALUE)
+    if (deepLinkInternal.contains(ApplinkConst.TokoPoints.CATALOG_LIST_NEW) && path.pathSegments[0] == ApplinkConst.TokoPoints.CATALOG_LIST_NEW) {
+        return deepLinkInternal.replaceFirst(ApplinkConst.TokoPoints.CATALOG_LIST_NEW, ApplinkConst.TokoPoints.CATALOG_LIST_VALUE)
     }
 
     return deepLinkInternal

@@ -16,18 +16,15 @@
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/notif_dynamic"
-        android:layout_width="16dp"
-        android:layout_height="14dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignTop="@id/iv_dynamic"
         android:layout_alignEnd="@id/iv_dynamic"
         android:layout_alignRight="@id/iv_dynamic"
         android:gravity="center"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
         android:textSize="@dimen/tp_text_size_xsmall"
         android:visibility="gone"
         app:notificationColor="color_primary"
         app:notificationTitle="3"
-        app:notificationType="counter_type" />
+        app:notificationType="text_type" />
 </RelativeLayout>

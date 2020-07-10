@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:lineSpacingExtra="6sp"
         android:textColor="#f531353b"
-        android:textSize="16sp"
+        android:textSize="10sp"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintHeight_default="wrap"

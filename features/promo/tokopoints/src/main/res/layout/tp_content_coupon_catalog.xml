@@ -45,7 +45,7 @@
                 android:textColor="@color/clr_f531353b"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_banner"
-                app:typographyType="heading_4"
+                app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -102,14 +102,13 @@
                 android:textColor="@color/clr_f531353b"
                 app:layout_constraintLeft_toLeftOf="@+id/top_separator"
                 app:layout_constraintTop_toBottomOf="@+id/top_separator"
-                app:typographyType="heading_4"
+                app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.webview.TkpdWebView
                 android:id="@+id/tnc_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
@@ -152,14 +151,13 @@
                 android:textColor="@color/clr_f531353b"
                 app:layout_constraintLeft_toLeftOf="@+id/tp_mid_separator"
                 app:layout_constraintTop_toBottomOf="@+id/tp_mid_separator"
-                app:typographyType="heading_4"
+                app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.webview.TkpdWebView
                 android:id="@+id/how_to_use_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_16"
                 android:scrollbars="none"

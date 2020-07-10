@@ -1,5 +1,7 @@
 package com.tokopedia.home.account.presentation.view.buyercardview;
 
+import android.opengl.Visibility;
+
 /**
  * @author okasurya on 8/29/18.
  */
@@ -43,6 +45,10 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
             if (buyerCard.getTokomemberSize() == 0) {
                 view.setVisibilityRightLayout(0);
                 view.setVisibilityDividerSecond(0);
+            }
+
+            if (buyerCard.getTokopointSize() == 0 && buyerCard.getCouponSize() == 0 && buyerCard.getTokomemberSize() == 0){
+                view.setWidgetVisibility(0);
             }
         }
     }

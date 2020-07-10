@@ -15,8 +15,10 @@ import android.os.Build
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatImageButton
@@ -31,6 +33,7 @@ import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem

@@ -107,4 +107,7 @@
     <string name="tp_catalog_code_error_desc">Mungkin kamu salah jalan atau alamat. Ayo balik sebelum gelap!</string>
     <string name="tp_catalog_code_error_btn">Ke Homepage</string>
     <string name="tp_see_all">See All</string>
+    <string name="tp_catalog_empty_title">Kupon kategori ini sedang disiapkan</string>
+    <string name="tp_catalog_empty_description">Sabar! Kami punya banyak kupon spesial buatmu yang menunggu saatnya dikeluarkan.</string>
+    <string name="tp_catalog_empty_button">Lihat Kupon Tersedia</string>
 </resources>

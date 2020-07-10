@@ -515,4 +515,18 @@ public interface ApplinkConst {
         String MOBILE =  "/mobile";
         String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
     }
+
+    interface RewardFallback {
+
+        interface RemoteConfig {
+            String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
+        }
+        interface RewardWebview{
+            String REWARD_WEBVIEW = "https://m.tokopedia.com/tokopoints";
+        }
+        interface Reward{
+            String REWARDS= "rewards";
+        }
+    }
+
 }

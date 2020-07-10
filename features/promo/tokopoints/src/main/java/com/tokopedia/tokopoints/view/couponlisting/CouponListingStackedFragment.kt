@@ -179,9 +179,6 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         if (view == null || errors == null) {
             return
         }
-
-        //  (view!!.findViewById<View>(R.id.text_title_error2) as TextView).text = errors[CommonConstant.CouponMapKeys.TITLE]
-        //(view!!.findViewById<View>(R.id.text_label_error2) as TextView).text = errors[CommonConstant.CouponMapKeys.SUB_TITLE]
         view!!.findViewById<View>(R.id.button_continue).visibility = View.VISIBLE
 
         container.displayedChild = CONTAINER_EMPTY

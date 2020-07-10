@@ -39,6 +39,8 @@ interface BuyerCardContract {
 
         void setVisibilityDividerSecond(int visibility);
 
+        void setWidgetVisibility(int visibility);
+
         void setEggImage(String eggImageUrl);
 
         void setMemberStatus(String status);

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
@@ -47,6 +48,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private View dividerTwo;
     private AppCompatImageView ivMemberBadge;
     private BuyerCardPresenter buyerCardPresenter;
+    private CardView widget;
 
     public BuyerCardView(@NonNull Context context) {
         super(context);
@@ -85,6 +87,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         dividerOne = view.findViewById(R.id.divider1);
         dividerTwo = view.findViewById(R.id.divider2);
         ivMemberBadge = view.findViewById(R.id.ivMemberBadge);
+        widget=view.findViewById(R.id.cardView);
         buyerCardPresenter = new BuyerCardPresenter();
         buyerCardPresenter.attachView(this);
     }
@@ -170,12 +173,9 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         byMeButton.setOnClickListener(listener);
     }
 
-    public void setOnClickBadge(View.OnClickListener listener) {
-        ivMemberBadge.setOnClickListener(listener);
-    }
-
     public void setOnClickMemberDetail(View.OnClickListener listener) {
         textProfileCompletion.setOnClickListener(listener);
+        ivMemberBadge.setOnClickListener(listener);
     }
 
     @Override
@@ -207,6 +207,12 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     public void setVisibilityDividerSecond(int visibility) {
         dividerTwo.setVisibility(visibility);
     }
+
+    @Override
+    public void setWidgetVisibility(int visibility) {
+         widget.setVisibility(View.GONE);
+    }
+
 
     @Override
     public void setMemberStatus(String status) {

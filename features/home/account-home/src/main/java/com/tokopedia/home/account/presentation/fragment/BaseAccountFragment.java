@@ -84,6 +84,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final int OPEN_SHOP_SUCCESS = 100;
     public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
+    private boolean mShowTokopointNative = false;
 
     private AccountAnalytics accountAnalytics;
     UserSession userSession;
@@ -142,7 +143,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
-        }else if(applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)){
+        } else if (applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)) {
             return true;
         }
 
@@ -162,14 +163,14 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onBuyerTokopointClicked(String element) {
-        accountAnalytics.eventAccountPromoClick(CREATIVE_TOKOPOINTS, CREATIVE_TOKOPOINTS, POSITION_TOKOPOINT);
+    public void onBuyerTokopointClicked(String element, String title) {
+        accountAnalytics.eventAccountPromoClick(title);
         RouteManager.route(getContext(), element);
     }
 
     @Override
-    public void onBuyerVoucherClicked(String element) {
-        accountAnalytics.eventAccountPromoClick(CREATIVE_KUPON_SAYA, CREATIVE_KUPON_SAYA, POSITION_KUPON_SAYA);
+    public void onBuyerVoucherClicked(String element, String title) {
+        accountAnalytics.eventAccountPromoClick(title);
         openApplink(element);
     }
 
@@ -192,13 +193,17 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onMemberBadgeClicked() {
-        RouteManager.route(getContext(), ApplinkConst.TokoPoints.HOMEPAGE);
-    }
-
-    @Override
     public void onClickMemberDetail() {
-        RouteManager.route(getContext(), ApplinkConst.TokoPoints.HOMEPAGE);
+        //Fallback strategy for new Rewards Page
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        mShowTokopointNative = firebaseRemoteConfig.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, false);
+        if (mShowTokopointNative) {
+            RouteManager.route(getContext(), ApplinkConst.TokoPoints.HOMEPAGE);
+        } else {
+            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    ApplinkConst.RewardFallback.RewardWebview.REWARD_WEBVIEW));
+        }
+        accountAnalytics.eventAccountPromoRewardClick();
     }
 
     @Override
@@ -540,8 +545,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onTokomemberClicked(String url) {
-        accountAnalytics.eventAccountPromoClick(CREATIVE_TOKO_MEMBER, CREATIVE_TOKO_MEMBER, POSITION_TOKOMEMBER);
+    public void onTokomemberClicked(String url, String title) {
+        accountAnalytics.eventAccountPromoClick(title);
         RouteManager.route(getContext(), url);
     }
 

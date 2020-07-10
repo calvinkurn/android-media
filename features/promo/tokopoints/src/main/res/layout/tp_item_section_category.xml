@@ -10,16 +10,17 @@
     app:cardCornerRadius="@dimen/dp_4"
     app:cardUseCompatPadding="true">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_bg"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
-        android:background="@drawable/ic_squircle"
-        android:padding="@dimen/dp_10"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:adjustViewBounds="true"
+        android:background="@drawable/ic_squircle_new"
+        android:padding="@dimen/dp_12"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <View
         android:id="@+id/view_category_new"

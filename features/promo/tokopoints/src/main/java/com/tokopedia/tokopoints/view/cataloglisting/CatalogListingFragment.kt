@@ -203,7 +203,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun onSuccessFilter(filters: CatalogFilterBase) {
         hideLoader()
         //Setting up subcategories types tabs
-        if (filters.categories == null || filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
+        if (filters == null || filters.categories == null || filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
             mViewPagerAdapter!!.setPointsAvailable(isPointsAvailable)
             //TODO please replace with

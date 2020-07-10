@@ -6,16 +6,16 @@
     android:layout_gravity="bottom"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/layout_coupon_swipe"
-        layout="@layout/tp_layput_container_swipe"
-        android:visibility="gone" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_12"
         android:background="@drawable/bg_tp_shadow" />
+
+    <include
+        android:id="@+id/layout_coupon_swipe"
+        layout="@layout/tp_layput_container_swipe"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"

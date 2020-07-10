@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,6 +18,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.section.CategoryTokopointsList;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.tokopoints.view.util.ImageUtil;
+import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.utils.image.ImageUtils;
 
 import java.util.List;
 
@@ -49,7 +53,7 @@ public class SectionCategoryAdapter extends RecyclerView.Adapter<SectionCategory
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View viewCategoryNew;
         private TextView tvTitle;
-        private ImageView ivBg;
+        private AppCompatImageView ivBg;
         public boolean isVisited = false;
 
         public ViewHolder(View itemView) {
@@ -71,7 +75,7 @@ public class SectionCategoryAdapter extends RecyclerView.Adapter<SectionCategory
             }
 
             if (URLUtil.isValidUrl(category.getIconImageURL())) {
-                ImageHandler.loadImageFitCenter(context, ivBg, category.getIconImageURL());
+                ImageHandler.loadImageCircle2(context, ivBg, category.getIconImageURL());
             }
 
             if (!TextUtils.isEmpty(category.getText())) {

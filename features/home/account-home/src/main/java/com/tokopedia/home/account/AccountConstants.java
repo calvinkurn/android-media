@@ -145,7 +145,8 @@ public class AccountConstants {
         public static final String EVENT_CATEGORY_AKUN_PEMBELI = "akun saya pembeli";
         public static final String EVENT_ACTION_CLICK_AVATAR = "click - profile avatar";
         public static final String EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION = "account promotion impression";
-        public static final String EVENT_ACTION_ACCOUNT_PROMOTION_CLICK= "click on account promotion";
+        public static final String EVENT_ACTION_ACCOUNT_PROMOTION_CLICK= "click reward section";
+        public static final String EVENT_ACTION_ACCOUNT_PROMOTION_REWARD_CLICK= "click entry point to reward page";
 
         public static final String FIELD_ID = "id";
         public static final String FIELD_NAME = "name";

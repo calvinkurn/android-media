@@ -13,13 +13,11 @@ interface AccountItemListener {
 
     fun onProfileCompletionClicked(element: BuyerCardViewModel)
 
-    fun onBuyerTokopointClicked(element: String)
+    fun onBuyerTokopointClicked(element: String , title: String)
 
-    fun onBuyerVoucherClicked(element: String)
+    fun onBuyerVoucherClicked(element: String , title: String)
 
     fun onByMeClicked()
-
-    fun onMemberBadgeClicked()
 
     fun onClickMemberDetail()
 
@@ -79,7 +77,7 @@ interface AccountItemListener {
 
     fun onPowerMerchantSettingClicked()
 
-    fun onTokomemberClicked(url: String)
+    fun onTokomemberClicked(url: String, title:String)
 
     fun onAccountItemImpression(data: HashMap<String, Any>)
 
