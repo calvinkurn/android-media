@@ -26,7 +26,7 @@
         android:visibility="visible"
         android:text="@string/telco_title_filter_result" />
 
-    <com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
+    <com.tokopedia.topupbills.telco.prepaid.widget.DigitalTelcoProductWidget
         android:id="@+id/telco_product_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
