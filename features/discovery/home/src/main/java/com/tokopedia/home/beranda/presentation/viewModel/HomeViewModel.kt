@@ -1028,6 +1028,19 @@ open class HomeViewModel @Inject constructor(
                             }
                         }
                     }
+                } else {
+                    val newHomeData = _homeLiveData.value
+                    val newList = newHomeData?.list?: listOf()
+                    if (newList.isNotEmpty()) {
+                        newList.mapIndexed { index, visitable ->
+                            if (visitable is HomeTopAdsBannerDataModel) {
+                                launch(coroutineContext){
+                                    updateWidget(UpdateLiveDataModel(ACTION_DELETE,
+                                            visitable, index))
+                                }
+                            }
+                        }
+                    }
                 }
             }){
                 it.printStackTrace()

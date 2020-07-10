@@ -48,7 +48,9 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
             view.home_topads_image_view.visibility = View.VISIBLE
             element.topAdsImageViewModel?.let {
                 try {
-                    view.home_topads_image_view.loadImage(it)
+                    view.home_topads_image_view.loadImage(it) {
+                        categoryListener.removeViewHolderAtPosition(adapterPosition)
+                    }
                 } catch (glideException: GlideException) {
                     categoryListener.removeViewHolderAtPosition(adapterPosition)
                 }
