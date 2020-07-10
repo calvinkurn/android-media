@@ -203,7 +203,6 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
         val fragment = mAdapter?.getRegisteredFragment(view_pager_sort_type.currentItem) as CouponListingStackedFragment?
         fragment?.apply {
             if(isAdded ){
-                Toast.makeText(context,"SecondLaod = ${categoryId}", Toast.LENGTH_LONG).show()
                 presenter.getCoupons(categoryId)
             }
         }
