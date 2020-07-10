@@ -557,7 +557,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun getSelectedCategoryDisplayName(): String {
-        return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString { it.displayName }?.replace(" ","") ?: ""
+        return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString(separator = ",") { it.displayName } ?: ""
     }
 
 }
