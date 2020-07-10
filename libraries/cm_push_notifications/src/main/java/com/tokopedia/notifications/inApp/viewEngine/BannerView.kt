@@ -73,7 +73,7 @@ internal open class BannerView(activity: Activity) {
 
     private fun viewState(data: CMInApp) {
         when (data.getType()) {
-            TYPE_FULL_SCREEN_IMAGE_ONLY -> {
+            TYPE_INTERSTITIAL_IMAGE_ONLY -> {
                 fullScreenImageOnly(data)
             }
         }
