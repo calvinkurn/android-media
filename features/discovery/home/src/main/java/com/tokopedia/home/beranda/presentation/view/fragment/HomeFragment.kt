@@ -282,6 +282,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshFlag = HomeFlag()
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
+    private var serverOffsetTime: Long = 0L
 
 
     override fun onAttach(context: Context) {
@@ -991,6 +992,7 @@ open class HomeFragment : BaseDaggerFragment(),
         initAutoRefreshHandler()
         if (isEnableToAutoRefresh(homeFlag)) {
             autoRefreshFlag = homeFlag
+            serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(homeFlag.serverTime)
             setAutoRefreshOnHome(homeFlag)
         }
     }
@@ -1009,7 +1011,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag)  {
         initAutoRefreshHandler()
-        val serverOffsetTime = 0L
         val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.eventTime)
         autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
         runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
