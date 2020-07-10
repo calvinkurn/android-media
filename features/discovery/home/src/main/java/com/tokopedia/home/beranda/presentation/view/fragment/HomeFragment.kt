@@ -993,7 +993,6 @@ open class HomeFragment : BaseDaggerFragment(),
             autoRefreshFlag = homeFlag
             setAutoRefreshOnHome(homeFlag)
         }
-//        setDummyButton()
     }
 
     private fun isEnableToAutoRefresh(homeFlag: HomeFlag): Boolean {
@@ -1014,33 +1013,6 @@ open class HomeFragment : BaseDaggerFragment(),
         val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.eventTime)
         autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
         runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
-    }
-
-    private fun setDummyButton() {
-        val layoutDummyBtn: LinearLayout? = activity?.findViewById(R.id.layout_dummy_btn)
-        val btnRefresh: Button? = activity?.findViewById(R.id.btn_refresh_home)
-        val btnSetTimer: Button? = activity?.findViewById(R.id.btn_set_timer)
-
-        layoutDummyBtn?.visibility = View.VISIBLE
-        btnRefresh?.setOnClickListener {
-            initAutoRefreshHandler()
-            doHomeDataRefresh()
-        }
-        btnSetTimer?.setOnClickListener {
-            initAutoRefreshHandler()
-            setRefreshDummy()
-        }
-
-    }
-
-    private fun setRefreshDummy() {
-        val refreshTime = Date(System.currentTimeMillis() + 5000)
-        Toast.makeText(context, "tes 5 detik lagi refresh", Toast.LENGTH_SHORT).show()
-
-        if (!isExpired(getServerRealTime(0), refreshTime)) {
-            autoRefreshRunnable = getAutoRefreshRunnableThread(0, refreshTime, autoRefreshHandler, this)
-            runAutoRefreshJob( autoRefreshHandler, autoRefreshRunnable)
-        }
     }
 
     override fun onHomeAutoRefreshTriggered() {
