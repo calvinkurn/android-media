@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -60,7 +61,7 @@ object PlayBroadcastMocker {
                     else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
                 },
                 isSelectedHandler = { false },
-                stock = (it % 2) * 10,
+                stock = StockAvailable((it % 2) * 10),
                 isSelectable = { Selectable }
         )
     }

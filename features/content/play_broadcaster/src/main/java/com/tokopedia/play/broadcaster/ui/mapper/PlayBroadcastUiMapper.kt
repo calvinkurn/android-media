@@ -9,6 +9,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.type.EtalaseType
+import com.tokopedia.play.broadcaster.type.OutOfStock
+import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -41,7 +43,7 @@ object PlayBroadcastUiMapper {
                 name = it.name,
                 imageUrl = it.pictures.first().urlThumbnail,
                 originalImageUrl = it.pictures.first().urlThumbnail,
-                stock = it.stock,
+                stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
         )
@@ -109,6 +111,16 @@ object PlayBroadcastUiMapper {
         return metricList
     }
 
+    fun mapProductTag(productTag: ProductTagging): List<ProductData> = productTag.productList.map {
+        ProductData(
+                id = it.id,
+                name = it.name,
+                imageUrl = it.imageUrl,
+                originalImageUrl = it.imageUrl,
+                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock
+        )
+    }
+
     private fun mapMetric(data: Metric.MetricData): PlayMetricUiModel {
         val firstSentence = data.firstSentence
         val secondSentence = data.secondSentence
@@ -160,7 +172,7 @@ object PlayBroadcastUiMapper {
                 name = it.productName,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
-                stock = it.quantity
+                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock
         )
     }
 
