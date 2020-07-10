@@ -22,6 +22,14 @@ class PermissionHelperImpl : PermissionHelper {
     private val permissionRequester: (permissions: Array<String>, requestCode: Int) -> Unit
     private val showRationaleHandler: (permission: String) -> Boolean
 
+    /**
+     * @param fragment -> the caller fragment
+     * @param permissionSharedPreferences -> permission shared preferences that saves whether the permission has ever been asked or not
+     *
+     * permissionSharedPreferences will be used as an indicator
+     * whether request permission rationale should be shown even if the user has never been asked or not.
+     * Passing null will ignore it and follows system [Fragment.shouldShowRequestPermissionRationale]
+     */
     constructor(fragment: Fragment, permissionSharedPreferences: PermissionSharedPreferences? = null) {
         mContext = fragment.requireContext()
         permissionRequester = fragment::requestPermissions
@@ -30,6 +38,14 @@ class PermissionHelperImpl : PermissionHelper {
         permissionPref = permissionSharedPreferences
     }
 
+    /**
+     * @param activity -> the caller activity
+     * @param permissionSharedPreferences -> permission shared preferences that saves whether the permission has ever been asked or not
+     *
+     * permissionSharedPreferences will be used as an indicator
+     * whether request permission rationale should be shown even if the user has never been asked or not.
+     * Passing null will ignore it and follows system [Activity.shouldShowRequestPermissionRationale]
+     */
     constructor(activity: Activity, permissionSharedPreferences: PermissionSharedPreferences? = null) {
         mContext = activity
         permissionRequester = { permissions, requestCode ->
