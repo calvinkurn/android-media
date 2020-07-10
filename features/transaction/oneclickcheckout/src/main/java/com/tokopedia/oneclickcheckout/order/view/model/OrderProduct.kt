@@ -9,7 +9,7 @@ data class OrderProduct(
         var productImageUrl: String = "",
         var maxOrderQuantity: Int = 0,
         var minOrderQuantity: Int = 0,
-        var originalPrice: Long = productPrice,
+        var originalPrice: String = "",
         var discountedPercentage: Float = 0f,
         var isFreeOngkir: Boolean = false,
         var freeOngkirImg: String = "",
@@ -24,7 +24,7 @@ data class OrderProduct(
         var productFinsurance: Int = 0,
         var isSlashPrice: Boolean = false,
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
-        var productInvenageTotal: ProductInvenageTotal = ProductInvenageTotal()
+        var tickerMessage: ProductTickerMessage = ProductTickerMessage()
 )
 
 data class WholesalePrice(
@@ -56,33 +56,12 @@ data class QuantityUiModel(
     }
 }
 
-data class ProductInvenageTotal(
-        val isCountedByProduct: Boolean = false,
-        val isCountedByUser: Boolean = false,
-        val byProduct: ByProduct = ByProduct(),
-        val byProductText: ByProductText = ByProductText(),
-        val byUser: ByUser = ByUser(),
-        val byUserText: ByUserText = ByUserText()
+data class ProductTickerMessage(
+        val message: String = "",
+        val replacement: List<ProductTickerMessageReplacement> = emptyList()
 )
 
-data class ByProduct(
-        val inCart: Int = 0,
-        val lastStockLessThan: Int = 0
-)
-
-data class ByProductText(
-        val inCart: String = "",
-        val lastStockLessThan: String = "",
-        val complete: String = ""
-)
-
-data class ByUser(
-        val inCart: Int = 0,
-        val lastStockLessThan: Int = 0
-)
-
-data class ByUserText(
-        val inCart: String = "",
-        val lastStockLessThan: String = "",
-        val complete: String = ""
+data class ProductTickerMessageReplacement(
+        val identifier: String = "",
+        val value: String = ""
 )

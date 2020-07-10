@@ -26,7 +26,8 @@ import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.util.Status
-import com.tokopedia.home_recom.util.fadeShow
+import com.tokopedia.home_recom.view.fragment.ProductInfoFragment.Companion.REQUEST_CODE_LOGIN
+import com.tokopedia.home_recom.view.fragment.ProductInfoFragment.Companion.REQUEST_CODE_PDP
 import com.tokopedia.home_recom.view.fragment.ProductInfoFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -34,8 +35,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.empty_product_info.*
 import kotlinx.android.synthetic.main.error_product_info_layout.*
 import kotlinx.android.synthetic.main.fragment_product_info.*
+import kotlinx.android.synthetic.main.shimmering_product_info.*
 import javax.inject.Inject
 
 /**
@@ -132,26 +135,26 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun initView(productDataModel: ProductInfoDataModel){
         configureContentView(true)
         recommendationItem = mapToRecommendationItem(productDataModel)
-        product_name?.text = productDataModel.productDetailData.name
-        handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
-        product_price?.text = productDataModel.productDetailData.price
-        location?.text = productDataModel.productDetailData.shop.location
+        product_name.text = productDataModel.productDetailData.name
+        product_price.text = productDataModel.productDetailData.price
+        location.text = productDataModel.productDetailData.shop.location
         if (productDataModel.productDetailData.badges.isNotEmpty()) {
-            badge?.show()
+            badge.show()
             ImageHandler.loadImageFitCenter(context, badge, productDataModel.productDetailData.badges[0].imageUrl)
         } else {
-            badge?.hide()
+            badge.hide()
         }
+        setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
         updateWishlist(productDataModel.productDetailData.isWishlist)
         ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
-        setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
+        handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
 
         when(productDataModel.productDetailData.status){
             0 -> {
                 container_loading.hide()
                 container_error.hide()
                 container_product.hide()
-                container_empty.fadeShow()
+                container_empty.show()
             }
             3 -> {
                 add_to_cart.isEnabled = false
@@ -494,7 +497,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * @param productId the product id of primary product
      */
     private fun onSuccessRemoveWishlist(productId: String?) {
-        showToastSuccess(getString(R.string.msg_success_remove_wishlist))
+        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
         updateWishlist(false)
         sendIntentResusltWishlistChange(productId ?: "", false)
     }
@@ -522,7 +525,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * and update icon wishlist
      */
     private fun onSuccessAddWishlist(productId: String?) {
-        showToastSuccess(getString(R.string.msg_success_add_wishlist))
+        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
         updateWishlist(true)
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
@@ -597,13 +600,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun getRatingDrawable(rating: Int): Int {
         return when (rating) {
-            0 -> R.drawable.ic_star_none
-            1 -> R.drawable.ic_star_one
-            2 -> R.drawable.ic_star_two
-            3 -> R.drawable.ic_star_three
-            4 -> R.drawable.ic_star_four
-            5 -> R.drawable.ic_star_five
-            else -> R.drawable.ic_star_none
+            0 -> com.tokopedia.productcard.R.drawable.ic_star_none
+            1 -> com.tokopedia.productcard.R.drawable.ic_star_one
+            2 -> com.tokopedia.productcard.R.drawable.ic_star_two
+            3 -> com.tokopedia.productcard.R.drawable.ic_star_three
+            4 -> com.tokopedia.productcard.R.drawable.ic_star_four
+            5 -> com.tokopedia.productcard.R.drawable.ic_star_five
+            else -> com.tokopedia.productcard.R.drawable.ic_star_none
         }
     }
 
@@ -623,10 +626,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
         context?.let {
             if (wishlisted) {
                 fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_added_28))
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.recom_ic_product_action_wishlist_added_28))
             } else {
                 fab_detail.isActivated = false
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_gray_28))
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.recom_ic_product_action_wishlist_gray_28))
             }
         }
     }
@@ -682,7 +685,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         if(discountPercentage > 0){
             product_discount.show()
             product_slashed_price.show()
-            product_discount.text = String.format(getString(R.string.percentage_template), discountPercentage)
+            product_discount.text = "$discountPercentage%"
             setSplashedText(slashedPrice)
         } else {
             product_discount.gone()
