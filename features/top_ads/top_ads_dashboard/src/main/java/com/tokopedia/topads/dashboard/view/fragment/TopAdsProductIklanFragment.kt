@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
+import android.content.ComponentName
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -36,6 +37,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_PRODUK
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_PRODUCT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardTrackerConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -48,6 +50,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.data.utils.Utils.outputFormat
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.GroupNonGroupPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
@@ -420,7 +423,9 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     private fun openDashboard() {
         if (AppUtil.isSellerInstalled(context)) {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
+            intent.component = ComponentName(SELLER_PACKAGENAME, TopAdsDashboardActivity::class.java.name)
+            startActivity(intent)
         } else {
             RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
         }
