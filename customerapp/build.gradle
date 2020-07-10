@@ -158,7 +158,7 @@ android {
         debug {
             defaultConfig.minSdkVersion project.property("minSdkVersionDebug")
             signingConfig signingConfigs.debug
-            minifyEnabled true
+            minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
