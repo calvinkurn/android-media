@@ -1,15 +1,16 @@
-package com.tokopedia.checkout.subfeature.corner_list
+package com.tokopedia.manageaddress.ui.cornerlist
 
+import com.tokopedia.manageaddress.AddressDummyDataProvider
+import com.tokopedia.manageaddress.domain.GetCornerList
 import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
-import com.tokopedia.checkout.AddressDummyDataProvider
-import com.tokopedia.checkout.subfeature.address_choice.usecase.GetCornerList
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Matchers
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.inOrder
 import org.mockito.runners.MockitoJUnitRunner
 import rx.Observable
 
