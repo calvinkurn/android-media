@@ -48,7 +48,7 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                     expandedView.setOnClickPendingIntent(R.id.img_big,
                             createMainPendingIntent(baseNotificationModel, requestCode))
                     expandedView.setViewVisibility(R.id.img_big, View.VISIBLE)
-                    baseNotificationModel.media?.mediumQuality?.let {mq ->
+                    baseNotificationModel.media?.mediumQuality?.let { mq ->
                         if (mq.startsWith("http") || mq.startsWith("www"))
                             expandedView.setImageViewBitmap(R.id.img_big,
                                     CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality))
@@ -67,7 +67,6 @@ internal class ActionNotification internal constructor(context: Context, baseNot
             addActionButton(baseNotificationModel.actionButton, expandedView)
         }
         setCollapseData(expandedView, baseNotificationModel, false)
-
         return builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
                 .build()
     }
@@ -89,7 +88,7 @@ internal class ActionNotification internal constructor(context: Context, baseNot
 
         remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
         remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
-        remoteView.setOnClickPendingIntent(R.id.collapseMainView, createMainPendingIntent(baseNotificationModel,
+        remoteView.setOnClickPendingIntent(if (isCollapsed) R.id.collapseMainView else R.id.status_bar_latest_event_content, createMainPendingIntent(baseNotificationModel,
                 requestCode))
     }
 

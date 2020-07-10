@@ -156,7 +156,7 @@ public interface ProductListSectionContract {
 
         void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
 
-        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+        void sendGTMTrackingProductClick(ProductItemViewModel item, String userId);
 
         void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
 
@@ -195,8 +195,6 @@ public interface ProductListSectionContract {
 
         void onBannedProductsGoToBrowserClick(String url);
 
-        boolean isUsingBottomSheetFilter();
-
         String getUserId();
 
         boolean isUserLoggedIn();
@@ -224,8 +222,6 @@ public interface ProductListSectionContract {
         void onProductImpressed(ProductItemViewModel item);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
-
-        boolean isTrackingViewPortEnabled();
 
         List<Option> getQuickFilterOptionList();
 

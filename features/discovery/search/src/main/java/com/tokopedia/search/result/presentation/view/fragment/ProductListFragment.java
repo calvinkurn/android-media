@@ -595,10 +595,8 @@ public class ProductListFragment
             return;
         }
 
-        if (bottomSheetListener != null && isUsingBottomSheetFilter()) {
+        if (bottomSheetListener != null) {
             openBottomSheetFilter();
-        } else {
-            FilterSortManager.openFilterPage(getFilterTrackingData(), this, getScreenName(), searchParameter.getSearchParameterHashMap());
         }
     }
 
@@ -656,10 +654,6 @@ public class ProductListFragment
     public void addProductList(List<Visitable> list) {
         isListEmpty = false;
 
-        if (!presenter.isTrackingViewPortEnabled()) {
-            sendProductImpressionTrackingEvent(list);
-        }
-
         adapter.appendItems(list);
     }
 
@@ -691,30 +685,6 @@ public class ProductListFragment
                 });
     }
 
-    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
-        String userId = getUserId();
-        String searchRef = getSearchRef();
-        List<Object> dataLayerList = new ArrayList<>();
-        List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
-        for (Visitable object : list) {
-            if (object instanceof ProductItemViewModel) {
-                ProductItemViewModel item = (ProductItemViewModel) object;
-                if (!item.isTopAds()) {
-                    String filterSortParams
-                            = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
-                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
-                    productItemViewModels.add(item);
-                }
-            }
-        }
-        if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
-                    irisSession.getSessionId());
-        }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
-        }
-    }
-
     @Override
     public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
         String userId = getUserId();
@@ -728,10 +698,10 @@ public class ProductListFragment
         productItemViewModels.add(item);
 
         if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
                     irisSession.getSessionId());
         }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
         }
     }
 
@@ -881,6 +851,7 @@ public class ProductListFragment
         product.setPriceFormat(item.getPrice());
         product.setCategory(new Category(item.getCategoryID()));
         product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
+        product.setCategoryBreadcrumb(item.getCategoryBreadcrumb());
 
         return product;
     }
@@ -937,14 +908,13 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId) {
+    public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId) {
         String filterSortParams
                 = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
         String searchRef = getSearchRef();
         SearchTracking.trackEventClickSearchResultProduct(
-                item,
                 item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
-                item.getPageNumber(),
+                item.isOrganicAds(),
                 getQueryKey(),
                 filterSortParams
         );
@@ -1037,7 +1007,7 @@ public class ProductListFragment
         productCardOptionsModel.setWishlisted(item.isWishlisted());
         productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
         productCardOptionsModel.setProductId(item.getProductID() == null ? "" : item.getProductID());
-        productCardOptionsModel.setTopAds(item.isTopAds());
+        productCardOptionsModel.setTopAds(item.isTopAds() || item.isOrganicAds());
         productCardOptionsModel.setTopAdsWishlistUrl(item.getTopadsWishlistUrl() == null ? "" : item.getTopadsWishlistUrl());
         productCardOptionsModel.setRecommendation(false);
         productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
@@ -1673,10 +1643,6 @@ public class ProductListFragment
         } else {
             SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
         }
-    }
-
-    private boolean isUsingBottomSheetFilter() {
-        return presenter != null && presenter.isUsingBottomSheetFilter();
     }
 
     @Override

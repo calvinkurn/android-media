@@ -15,6 +15,7 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.categorylevels.R
@@ -79,6 +80,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private lateinit var categoryNavComponent: com.tokopedia.categorylevels.di.CategoryNavComponent
 
+    @JvmField
+    @Inject
+    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -90,18 +95,29 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         private const val ORDER_BY = "ob"
         private const val SCREEN_NAME = "/p"
         const val EXTRA_CATEGORY_NAME = "categoryName"
+
+        const val CATEGORY_LEVELS_RESULT_TRACE = "category_levels_result_trace"
+        const val CATEGORY_LEVELS_PLT_PREPARE_METRICS = "category_levels_plt_prepare_metrics"
+        const val CATEGORY_LEVELS_PLT_NETWORK_METRICS = "category_levels_plt_network_metrics"
+        const val CATEGORY_LEVELS_PLT_RENDER_METRICS = "category_levels_plt_render_metrics"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
+        startPerformanceMonitoring()
         setContentView(R.layout.activity_category_nav)
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
         searchNavContainer = findViewById(R.id.category_search_nav_container)
-        initInjector()
         fetchIntentData()
         initToolbar()
         prepareView()
         initializeSearchParameter(intent)
+    }
+
+    private fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startMonitoring(CATEGORY_LEVELS_RESULT_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
     override fun sendScreenAnalytics() {
@@ -175,18 +191,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 STATE_GRID -> {
                     catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "grid")
                     img_display_button.tag = STATE_LIST
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_list_display))
                 }
 
                 STATE_LIST -> {
                     catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "list")
                     img_display_button.tag = STATE_BIG
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_big_display))
                 }
                 STATE_BIG -> {
                     catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "big")
                     img_display_button.tag = STATE_GRID
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_grid_display))
                 }
             }
         }
@@ -266,6 +282,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         loadSection()
         initSwitchButton()
         initBottomSheetListener()
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+        stopPerformanceMonitoring()
     }
 
     private fun openAdultPage() {
@@ -457,7 +475,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.home) {
+        if (item?.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }
@@ -515,5 +533,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     override fun onBannedFragmentAttached() {
         hideBottomNavigation()
+    }
+
+    private fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
     }
 }

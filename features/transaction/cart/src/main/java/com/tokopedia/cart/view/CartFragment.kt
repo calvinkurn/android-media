@@ -101,7 +101,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -170,7 +170,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var cartListData: CartListData? = null
     private var wishLists: List<CartWishlistItemHolderData>? = null
     private var recentViewList: List<CartRecentViewItemHolderData>? = null
-    private var recommendationList: List<CartRecommendationItemHolderData>? = null
+    private var recommendationList: MutableList<CartRecommendationItemHolderData>? = null
     private var recommendationSectionHeader: CartSectionHeaderHolderData? = null
     private var recommendationWishlistActionListener: WishListActionListener? = null
     private var cartAvailableWishlistActionListener: WishListActionListener? = null
@@ -342,7 +342,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 object : TypeToken<ArrayList<CartWishlistItemHolderData>>() {}.type, null)
         recentViewList = saveInstanceCacheManager?.get<List<CartRecentViewItemHolderData>>(CartRecentViewItemHolderData::class.java.simpleName,
                 object : TypeToken<ArrayList<CartRecentViewItemHolderData>>() {}.type, null)
-        recommendationList = saveInstanceCacheManager?.get<List<CartRecommendationItemHolderData>>(CartRecommendationItemHolderData::class.java.simpleName,
+        recommendationList = saveInstanceCacheManager?.get<MutableList<CartRecommendationItemHolderData>>(CartRecommendationItemHolderData::class.java.simpleName,
                 object : TypeToken<ArrayList<CartRecommendationItemHolderData>>() {}.type, null)
         recommendationSectionHeader = saveInstanceCacheManager?.get<CartSectionHeaderHolderData>(CartSectionHeaderHolderData::class.java.simpleName,
                 object : TypeToken<CartSectionHeaderHolderData>() {}.type, null)
@@ -384,7 +384,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDestroy() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         showPromoButtonJob?.cancel()
         super.onDestroy()
@@ -1122,6 +1122,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun onWishlistImpression() {
+        wishLists?.let {
+            sendAnalyticsOnViewProductWishlist(
+                    dPresenter.generateWishlistDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
+            )
+        }
+    }
+
     override fun onRecentViewProductClicked(productId: String) {
         var position = 0
 
@@ -1141,12 +1149,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         onProductClicked(productId)
     }
 
-    override fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String) {
+    override fun onRecentViewImpression() {
+        recentViewList?.let {
+            sendAnalyticsOnViewProductRecentView(
+                    dPresenter.generateRecentViewDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
+            )
+        }
+    }
+
+    override fun onRecommendationProductClicked(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val clickUrl = recommendationItem.clickUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
         var index = 1
         var recommendationItemClick: RecommendationItem? = null
-        for ((recommendationItem) in recommendationList as List<CartRecommendationItemHolderData>) {
-            if (recommendationItem.productId.toString().equals(productId, ignoreCase = true)) {
-                recommendationItemClick = recommendationItem
+        for ((_, item) in recommendationList as List<CartRecommendationItemHolderData>) {
+            if (item.productId.toString().equals(productId, ignoreCase = true)) {
+                recommendationItemClick = item
                 break
             }
             index++
@@ -1159,18 +1181,69 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         when {
             topAds -> {
-                activity?.let { ImpresionTask(it::class.qualifiedName).execute(clickUrl) }
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, clickUrl, productId, productName, imageUrl) }
             }
         }
         onProductClicked(productId)
     }
 
-    override fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String) {
+    override fun onRecommendationProductImpression(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val url = recommendationItem.trackerImageUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
         when {
             topAds -> {
-                activity?.let { ImpresionTask(it::class.qualifiedName).execute(trackingImageUrl) }
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitImpressionUrl(it, url, productId, productName, imageUrl) }
             }
         }
+    }
+
+    override fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData) {
+        if (recommendationList.isNullOrEmpty()) return
+        recommendationList?.let {
+            val currentIndex = it.indexOf(recommendationItem)
+            if (it.size >= 2) {
+                if (currentIndex == it.size - 1) {
+                    if (currentIndex % 2 == 0) {
+                        // edge case : recommendation list size is odd number
+                        // send last single item impression
+                        sendImpressionOneRecommendationItem(it, currentIndex)
+                    } else {
+                        // edge case : recommendation list contains exactly 2 items
+                        // send 2 items impression
+                        sendImpressionTwoRecommendationItems(it, currentIndex)
+                    }
+                } else if (currentIndex > 0 && currentIndex % 2 == 1) {
+                    // send analytics on impression recommendation item odd position
+                    // send analytics every 2 item impression
+                    sendImpressionTwoRecommendationItems(it, currentIndex)
+                }
+            } else {
+                // edge case : recommendation list contains exactly 1 item
+                // edge case : send single item impression if recommendation list only contain 1 item
+                sendImpressionOneRecommendationItem(it, currentIndex)
+            }
+        }
+    }
+
+    private fun sendImpressionOneRecommendationItem(it: List<CartRecommendationItemHolderData>, currentIndex: Int) {
+        val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+        cartRecommendationList.add(it[currentIndex])
+        sendAnalyticsOnViewProductRecommendation(
+                dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
+        )
+    }
+
+    private fun sendImpressionTwoRecommendationItems(it: List<CartRecommendationItemHolderData>, currentIndex: Int) {
+        val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+        cartRecommendationList.add(it[currentIndex - 1])
+        cartRecommendationList.add(it[currentIndex])
+        sendAnalyticsOnViewProductRecommendation(
+                dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
+        )
     }
 
     override fun onButtonAddToCartClicked(productModel: Any) {
@@ -2073,7 +2146,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun clearRecyclerView() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         cartRecyclerView.removeAllViews()
         cartRecyclerView.recycledViewPool.clear()
     }
@@ -2554,10 +2627,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData)
         this.recentViewList = cartRecentViewItemHolderDataList
         shouldReloadRecentViewList = false
-
-        sendAnalyticsOnViewProductRecentView(
-                dPresenter.generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList, FLAG_IS_CART_EMPTY)
-        )
     }
 
     override fun renderWishlist(wishlists: List<Wishlist>?) {
@@ -2575,10 +2644,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecentViewHolderData.wishList = cartWishlistItemHolderDataList
         cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData)
         this.wishLists = cartWishlistItemHolderDataList
-
-        sendAnalyticsOnViewProductWishlist(
-                dPresenter.generateWishlistDataImpressionAnalytics(cartWishlistItemHolderDataList, FLAG_IS_CART_EMPTY)
-        )
     }
 
     override fun renderRecommendation(recommendationWidget: RecommendationWidget?) {
@@ -2588,7 +2653,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             // Render from API
             val recommendationItems = recommendationWidget.recommendationItemList
             for (recommendationItem in recommendationItems) {
-                val cartRecommendationItemHolderData = CartRecommendationItemHolderData(recommendationItem)
+                val cartRecommendationItemHolderData = CartRecommendationItemHolderData(false, recommendationItem)
                 cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData)
             }
         } else {
@@ -2616,12 +2681,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (cartRecommendationItemHolderDataList.size > 0) {
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList)
-            recommendationList = cartRecommendationItemHolderDataList
-
-            recommendationList?.let {
-                sendAnalyticsOnViewProductRecommendation(
-                        dPresenter.generateRecommendationImpressionDataAnalytics(it, FLAG_IS_CART_EMPTY)
-                )
+            if (recommendationList == null) {
+                recommendationList = cartRecommendationItemHolderDataList
+            } else {
+                recommendationList?.addAll(cartRecommendationItemHolderDataList)
             }
         }
     }
@@ -2861,8 +2924,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         shouldReloadRecentViewList = true
     }
 
-    override fun sendATCTrackingURL(clickurl: String) {
-        var url = "$clickurl&click_source=ATC_direct_click";
-        activity?.let { ImpresionTask(it::class.qualifiedName, userSession).execute(url) }
+    override fun sendATCTrackingURL(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+        val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
+
+        activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
 }

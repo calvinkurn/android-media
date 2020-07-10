@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,7 +40,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieCompositionFactory;
 import com.airbnb.lottie.LottieDrawable;
@@ -184,7 +184,7 @@ public class MainParentActivity extends BaseActivity implements
     private BroadcastReceiver newFeedClickedReceiver;
     private SharedPreferences cacheManager;
     private Handler handler = new Handler();
-    private CoordinatorLayout fragmentContainer;
+    private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
 
     private PerformanceMonitoring officialStorePerformanceMonitoring;
@@ -200,50 +200,6 @@ public class MainParentActivity extends BaseActivity implements
     private float OS_STATE_SELECTED = 1f;
     private float OS_STATE_UNSELECTED = 0f;
     private float OS_STATE_ANIMATED = 0.7f;
-
-    @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
-    public static Intent getApplinkIntent(Context context, Bundle bundle) {
-        return start(context);
-    }
-
-    @DeepLink({ApplinkConst.HOME_FEED, ApplinkConst.FEED, ApplinkConst.CONTENT_EXPLORE})
-    public static Intent getApplinkFeedIntent(Context context, Bundle bundle) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    @DeepLink(ApplinkConst.HOME_ACCOUNT)
-    public static Intent getApplinkAccountIntent(Context context, Bundle bundle) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
-        return intent;
-    }
-
-    @DeepLink(ApplinkConst.HOME_ACCOUNT_SELLER)
-    public static Intent getApplinkAccountSellerIntent(Context context) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
-        intent.putExtra(GlobalNavConstant.ACCOUNT_TAB, GlobalNavConstant.ACCOUNT_TAB_SELLER);
-        return intent;
-    }
-
-    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE, ApplinkConst.OFFICIAL_STORE_CATEGORY})
-    public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    @DeepLink({ApplinkConst.HOME_RECOMMENDATION})
-    public static Intent getApplinkRecommendationEvent(Context context) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, RECOMENDATION_LIST);
-        intent.putExtra(SCROLL_RECOMMEND_LIST, true);
-        return intent;
-    }
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -401,15 +357,15 @@ public class MainParentActivity extends BaseActivity implements
         bottomNavigation = findViewById(R.id.bottom_navbar);
         bottomNavigation.setMenuClickListener(this);
 
-        menu.add(new BottomMenu(0L, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(1L, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(2L, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true));
-        menu.add(new BottomMenu(3L, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled,  R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled,  R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
 
         if (userSession.isLoggedIn()) {
-            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), R.raw.bottom_nav_account,   R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
+            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account,   R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
         } else {
-            menu.add(new BottomMenu(4L, getResources().getString(R.string.akun_non_login), null,   null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true));
+            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null,   null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
         }
         bottomNavigation.setMenu(menu);
         showSelectedPage();
@@ -430,7 +386,10 @@ public class MainParentActivity extends BaseActivity implements
     private void showSelectedPage(){
         int tabPosition = HOME_MENU;
         if (getIntent().getExtras() != null) {
-            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+            tabPosition = getTabPositionFromIntent();
+        }
+        if (tabPosition > fragmentList.size() - 1) {
+            tabPosition = HOME_MENU;
         }
         Fragment fragment = fragmentList.get(tabPosition);
         if (fragment != null) {
@@ -439,10 +398,22 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    private int getTabPositionFromIntent() {
+        int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
+        if (position != -1) return position;
+        
+        try {
+            String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
+            return Integer.parseInt(posString);
+        } catch (Exception e) {
+            return HOME_MENU;
+        }
+    }
+
     private void startSelectedPagePerformanceMonitoring(){
         int tabPosition = HOME_MENU;
         if (getIntent().getExtras() != null) {
-            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+            tabPosition = getTabPositionFromIntent();
         }
         switch (tabPosition){
             case HOME_MENU:
@@ -455,7 +426,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
         if (getIntent().getExtras() != null) {
-            int tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+            int tabPosition = getTabPositionFromIntent();
             switch (tabPosition) {
                 case FEED_MENU:
                     bottomNavigation.setSelected(FEED_MENU);
@@ -942,26 +913,7 @@ public class MainParentActivity extends BaseActivity implements
                 Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
             }
 
-            // Note: applink/deeplink router already in DeeplinkHandlerActivity.
-            // Applink should not be passed to home because the analytics at home might be triggered.
-            // It is better to use TaskStackBuilder to build taskstack for home, rather than passwing to home directly.
-            // Below code is still maintained to ensure no deeplink/applink uri is lost
-            try {
-                Intent applinkIntent = new Intent(this, MainParentActivity.class);
-                applinkIntent.setData(Uri.parse(applink));
-                if (getIntent() != null && getIntent().getExtras() != null) {
-                    Intent newIntent = getIntent();
-                    newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
-                    newIntent.removeExtra(DeepLink.REFERRER_URI);
-                    newIntent.removeExtra(DeepLink.URI);
-                    newIntent.removeExtra(ApplinkRouter.EXTRA_APPLINK);
-                    if (newIntent.getExtras() != null)
-                        applinkIntent.putExtras(newIntent.getExtras());
-                }
-                ((ApplinkRouter) getApplicationContext()).applinkDelegate().dispatchFrom(this, applinkIntent);
-            } catch (ActivityNotFoundException ex) {
-                ex.printStackTrace();
-            }
+            RouteManager.route(this, applink);
 
             presenter.setIsRecurringApplink(true);
         }
@@ -1025,7 +977,7 @@ public class MainParentActivity extends BaseActivity implements
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_search_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.main_parent_navigation_ic_search_shortcut))
                             .setIntents(new Intent[]{intentHome, productIntent})
                             .setRank(0)
                             .build();
@@ -1196,7 +1148,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public boolean menuClicked(int index, long id) {
+    public boolean menuClicked(int index, int id) {
         int position = getPositionFragmentByMenu(index);
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
@@ -1225,7 +1177,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void menuReselected(int position, long id) {
+    public void menuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
         scrollToTop(fragment); // enable feature scroll to top for home & feed
     }

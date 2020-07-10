@@ -13,4 +13,8 @@ object ApplinkConsInternalHome {
     const val HOME_SIMILAR_PRODUCT = "$INTERNAL_HOME/rekomendasi/d/.*"
 
     const val HOME_WISHLIST = "$INTERNAL_HOME/wishlist"
+
+    const val HOME_INBOX = "$INTERNAL_HOME/inbox"
+
+    const val HOME_NAVIGATION = "$INTERNAL_HOME/navigation"
 }

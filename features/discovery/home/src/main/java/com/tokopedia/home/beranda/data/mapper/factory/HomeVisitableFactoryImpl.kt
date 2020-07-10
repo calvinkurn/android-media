@@ -22,11 +22,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.visitable.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -228,30 +224,23 @@ class HomeVisitableFactoryImpl(
                     }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
                         createMixLeftComponent(channel, position, isCache)
-                    } else {
-                        createDynamicChannel(
-                                channel = channel
-                        )
-                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = ProductHighlightTracking.getProductHighlightImpression(channel)) }
+                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                        createProductHighlightComponent(channel, position, isCache)
+                    } else {
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingData = ProductHighlightTracking.getProductHighlightImpression(channel))
+                    }
+                }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> {
-                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
                         createMixTopComponent(channel, position, isCache)
-                    } else {
-                        createDynamicChannel(
-                                channel = channel
-                        )
-                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createReminderWidget(ReminderEnum.RECHARGE) }
                 DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> {
@@ -308,6 +297,16 @@ class HomeVisitableFactoryImpl(
 
     private fun createRecommendationListCarouselComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(mappingRecommendationListCarouselComponent(
+                channel,
+                isCache,
+                verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createProductHighlightComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingProductHighlightComponent(
                 channel,
                 isCache,
                 verticalPosition
@@ -427,7 +426,22 @@ class HomeVisitableFactoryImpl(
         )
         if (!isCache) {
             trackingQueue?.putEETracking(
-                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as java.util.HashMap<String, Any>
+                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
+            )
+        }
+        return viewModel
+    }
+
+    private fun mappingProductHighlightComponent(channel: DynamicHomeChannel.Channels,
+                                                  isCache: Boolean,
+                                                  verticalPosition: Int): Visitable<*> {
+        val viewModel = ProductHighlightDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        )
+        if (!isCache) {
+
+            trackingQueue?.putEETracking(
+                    ProductHighlightTracking.getProductHighlightImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
             )
         }
         return viewModel
@@ -436,19 +450,17 @@ class HomeVisitableFactoryImpl(
     private fun mappingMixLeftComponent(channel: DynamicHomeChannel.Channels,
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
-        val viewModel = MixLeftDataModel(
+        return MixLeftDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
-        return viewModel
     }
 
     private fun mappingMixTopComponent(channel: DynamicHomeChannel.Channels,
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
-        val viewModel = MixTopDataModel(
+        return MixTopDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
-        return viewModel
     }
 
     private fun createSpotlight(spotlight: Spotlight, isCache: Boolean) {

@@ -123,7 +123,7 @@ public class CacheHelper {
 
         oName = oName.replaceAll(REGEX_NO_SPECIAL_CHAR, "");
 
-        return oName + "-v" + GlobalConfig.VERSION_NAME;
+        return oName;
     }
 
     private static Map<String, String> getCachingParamMap(String[] items) {

@@ -37,6 +37,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
 
     private fun parseComponent(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        component.position = position
         when (component.name) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
