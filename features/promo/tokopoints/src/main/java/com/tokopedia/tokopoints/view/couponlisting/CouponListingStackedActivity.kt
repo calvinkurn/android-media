@@ -171,7 +171,6 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
                 val ids = getSelectedCategoryId(data)
                 currentItem = ids[1]
                 loadFirstTab(ids[0])
-                Toast.makeText(context,"FirstLaod = ${ids[0]}",Toast.LENGTH_LONG).show()
             }, TAB_SETUP_DELAY_MS.toLong())
         }
         //Setting up sort types tabsK
