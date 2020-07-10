@@ -30,6 +30,7 @@ open class ConfigViewHolder(
 
     override fun bind(element: ConfigUIView?) {
         if (element == null) return
+
         viewState(element)
         txtTitle?.text = element.title
         pgLoader?.show()
@@ -49,8 +50,10 @@ open class ConfigViewHolder(
     private fun pushNotification(element: ConfigUIView) {
         troubleshootStatus(element.status)
 
-        txtMessage?.show()
-        txtMessage?.text = element.message
+        if (element.message.isNotEmpty()) {
+            txtMessage?.show()
+            txtMessage?.text = element.message
+        }
     }
 
     private fun notificationSetting(status: StatusState) {

@@ -7,8 +7,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -20,6 +19,8 @@ import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProv
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import android.media.RingtoneManager.TYPE_NOTIFICATION as TYPE_NOTIFICATION
+import android.media.RingtoneManager.getDefaultUri as getRingtoneUri
 
 interface TroubleshootContract {
     fun getNewToken()
@@ -28,7 +29,6 @@ interface TroubleshootContract {
     fun getSetting()
     fun getImportanceNotification()
     fun getSoundNotification()
-    fun onFlush()
 }
 
 class TroubleshootViewModel @Inject constructor(
@@ -37,7 +37,7 @@ class TroubleshootViewModel @Inject constructor(
         private val instanceManager: FirebaseInstanceManager,
         @TroubleshootContext private val context: Context,
         private val dispatcher: DispatcherProvider
-) : BaseViewModel(dispatcher.io()), TroubleshootContract {
+) : BaseViewModel(dispatcher.io()), TroubleshootContract, LifecycleObserver {
 
     private val _notificationSetting = MutableLiveData<Boolean>()
     val notificationSetting: LiveData<Boolean> get() = _notificationSetting
@@ -51,16 +51,16 @@ class TroubleshootViewModel @Inject constructor(
     private val _troubleshoot = MutableLiveData<NotificationSendTroubleshoot>()
     val troubleshoot: LiveData<NotificationSendTroubleshoot> get() = _troubleshoot
 
-    private val _token = MutableLiveData<String>()
+    private val _token = MediatorLiveData<String>()
     val token: LiveData<String> get() = _token
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
     init {
-        getSetting()
-        getImportanceNotification()
-        getSoundNotification()
+        _token.addSource(_troubleshoot) {
+            getNewToken()
+        }
     }
 
     override fun troubleshoot() {
@@ -74,16 +74,17 @@ class TroubleshootViewModel @Inject constructor(
         })
     }
 
+    override fun updateToken(newToken: String) {
+        messagingManager.onNewToken(newToken)
+    }
+
     override fun getNewToken() {
         instanceManager.getNewToken { token ->
             _token.value = token
         }
     }
 
-    override fun updateToken(newToken: String) {
-        messagingManager.onNewToken(newToken)
-    }
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun getImportanceNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -94,20 +95,17 @@ class TroubleshootViewModel @Inject constructor(
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun getSetting() {
         _notificationSetting.value = NotificationManagerCompat
                 .from(context)
                 .areNotificationsEnabled()
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun getSoundNotification() {
-        _notificationSoundUri.value = RingtoneManager.getDefaultUri(
-                RingtoneManager.TYPE_NOTIFICATION
-        )
-    }
-
-    override fun onFlush() {
-        flush()
+        val ringtone = getRingtoneUri(TYPE_NOTIFICATION)
+        _notificationSoundUri.value = ringtone
     }
 
     companion object {

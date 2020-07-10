@@ -1,11 +1,11 @@
 package com.tokopedia.troubleshooter.notification.ui.fragment
 
-import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_HIGH
+import android.app.NotificationManager.IMPORTANCE_LOW
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +14,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
@@ -29,28 +29,27 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
-import kotlinx.android.synthetic.main.item_notification_ticker.*
 import javax.inject.Inject
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var fcmManager: FirebaseMessagingManager
+
     private lateinit var viewModel: TroubleshootViewModel
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this))
     }
 
-    private var errorText: String = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(TroubleshootViewModel::class.java)
+
+        lifecycle.addObserver(viewModel)
     }
 
     override fun onCreateView(
@@ -63,6 +62,11 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
                 container,
                 false
         ).apply { setupToolbar() }
+    }
+
+    override fun onResume() {
+        adapter.removeTicker()
+        super.onResume()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,7 +92,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
     private fun initObservable() {
         viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
-            adapter.updateStatus(PushNotification, it.isSuccess == 1)
+            adapter.updateStatus(PushNotification, it.isTroubleshootSuccess())
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
@@ -96,21 +100,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         })
 
         viewModel.token.observe(viewLifecycleOwner, Observer {
-            if (!isNewToken(it)) {
-                adapter.updateTroubleshootMessage("Token sudah terbaru")
-            } else {
-                val trimmedToken = it.substring(it.length - 8)
-                var trimmedPrefToken: String?
-                try {
-                    trimmedPrefToken = getTokenFromPref()
-                    trimmedPrefToken = trimmedPrefToken?.substring(trimmedPrefToken.length - 8)
-                } catch (e: Exception) {
-                    trimmedPrefToken = ""
-                }
-                val text = "$trimmedToken \ndari\n $trimmedPrefToken"
-                viewModel.updateToken(it)
-                adapter.updateTroubleshootMessage("Token baru saja diperbarui\n$text")
-            }
+            setTokenStatus(it)
         })
 
         viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
@@ -126,33 +116,39 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         })
     }
 
+    private fun setTokenStatus(newToken: String) {
+        val message = if (fcmManager.isNewToken(newToken)) {
+            viewModel.updateToken(newToken)
+            getString(R.string.notif_token_update)
+        } else {
+            getString(R.string.notif_token_current)
+        }
+
+        adapter.updateTroubleshootMessage(message)
+    }
+
     private fun setNotificationSettingStatus(notificationEnable: Boolean) {
         adapter.updateStatus(Notification, notificationEnable)
 
         if (!notificationEnable){
-            ticker?.show()
-            errorText = "$errorText\nMohon hidupkan pengaturan notifikasi anda."
-            errorText.trimStart()
-            txtDescription?.text = errorText
-        }
-
-        ticker?.setOnClickListener {
-            goToNotificationSettings()
+            val message = getString(R.string.notif_ticker_notif_disabled)
+            adapter.addTicker(message)
         }
     }
 
     private fun setNotificationImportanceStatus(importance: Int) {
         val isImportance = importantNotification(importance)
+        val hasNotCategory = importance == Int.MAX_VALUE
 
         when {
-            importance == Int.MAX_VALUE -> {
+            hasNotCategory -> {
                 adapter.hideNotificationCategory()
                 return
             }
             isImportance -> {
                 adapter.updateStatus(Categories, isImportance)
             }
-            importance != NotificationManager.IMPORTANCE_HIGH -> {
+            importance != IMPORTANCE_HIGH -> {
                 adapter.updateStatus(Categories, false)
                 onShowTicker(importance)
             }
@@ -160,41 +156,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     }
 
     private fun onShowTicker(importance: Int) {
-        ticker?.show()
-
-        when (importance) {
-            NotificationManager.IMPORTANCE_DEFAULT -> {
-                errorText = "$errorText\nPengaturan notifikasi anda sudah memenuhi standar."
-            }
-            NotificationManager.IMPORTANCE_LOW -> {
-                errorText = "$errorText\nNilai prioritas \"Notifikasi\": Low ($importance)." +
-                        "\nNotifikasi muncul, tapi tidak ada suara." +
-                        "\nAtur ke nilai prioritas lebih tinggi." +
-                        "\nKlik untuk ke pengaturan."
-            }
-            else -> {
-                errorText = "$errorText\nNilai prioritas \"Notifikasi\": None ($importance)." +
-                        "\nNotifikasi tidak muncul." +
-                        "\nAtur ke nilai prioritas lebih tinggi."
-            }
-        }
-        errorText.trimStart()
-        txtDescription?.text = errorText
-
-        ticker?.setOnClickListener {
-            goToNotificationSettings()
-        }
-    }
-
-    private fun isNewToken(token: String): Boolean {
-        val prefToken = getTokenFromPref()
-        return prefToken != null && token != prefToken
-    }
-
-    private fun getTokenFromPref(): String? {
-        return PreferenceManager
-                .getDefaultSharedPreferences(context)
-                .getString("pref_fcm_token", "")
+        adapter.addTicker(when (importance) {
+            IMPORTANCE_LOW -> getString(R.string.notif_ticker_importance_low, importance)
+            else -> getString(R.string.notif_ticker_importance_none, importance)
+        })
     }
 
     override fun onRingtoneTest(uri: Uri) {
@@ -223,11 +188,6 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
                 .troubleshootModule(TroubleshootModule(requireContext()))
                 .build()
                 .inject(this)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.onFlush()
     }
 
     override fun getScreenName() = SCREEN_NAME
