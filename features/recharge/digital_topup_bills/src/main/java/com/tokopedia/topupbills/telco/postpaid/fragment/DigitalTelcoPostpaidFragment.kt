@@ -9,7 +9,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.viewpager.widget.ViewPager
+import androidx.recyclerview.widget.DiffUtil
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -17,7 +18,6 @@ import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
-import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -30,16 +30,19 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.common.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
+import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
+import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
+import com.tokopedia.topupbills.telco.common.generateRechargeCheckoutToken
+import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
+import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
 import com.tokopedia.topupbills.telco.data.RechargePrefix
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
-import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryViewModel
-import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
+import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -54,9 +57,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var mainContainer: NestedScrollView
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
+    private lateinit var telcoTabViewModel: TelcoTabViewModel
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var loadingShimmering: LinearLayout
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var separator: View
 
@@ -82,6 +86,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             enquiryViewModel = viewModelProvider.get(DigitalTelcoEnquiryViewModel::class.java)
+            telcoTabViewModel = viewModelProvider.get(TelcoTabViewModel::class.java)
         }
     }
 
@@ -106,10 +111,44 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initViewPager()
         getPrefixOperatorData()
         renderClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+    }
+
+    private fun initViewPager() {
+        val pagerAdapter = TelcoTabAdapter(this, object : TelcoTabAdapter.Listener {
+            override fun getTabList(): List<TelcoTabItem> {
+                return telcoTabViewModel.getAll()
+            }
+        })
+        viewPager.adapter = pagerAdapter
+        viewPager.registerOnPageChangeCallback(viewPagerCallback)
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(p0: TabLayout.Tab?) {
+                //do nothing
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+                //do nothing
+            }
+
+            override fun onTabSelected(p0: TabLayout.Tab) {
+                viewPager.setCurrentItem(p0.position, true)
+            }
+        })
+    }
+
+    private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            tabLayout.getTabAt(position)?.let {
+                it.select()
+            }
+            setTrackingOnTabMenu(listMenu[position].title)
+        }
     }
 
     override fun getTelcoMenuId(): Int {
@@ -122,36 +161,42 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun renderPromoAndRecommendation() {
         if (listMenu.size > 0) {
-            val pagerAdapter = TopupBillsProductTabAdapter(listMenu, childFragmentManager)
-            viewPager.adapter = pagerAdapter
-            viewPager.offscreenPageLimit = listMenu.size
+            tabLayout.removeAllTabs()
+            for (i in 0 until listMenu.size) {
+                tabLayout.addTab(tabLayout.newTab().setText(listMenu[i].title))
+            }
+            changeDataSet { telcoTabViewModel.addAll(listMenu) }
             viewPager.show()
 
             if (listMenu.size > 1) {
                 tabLayout.show()
                 separator.show()
-                tabLayout.setupWithViewPager(viewPager)
-                (viewPager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
-                (viewPager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
             } else {
-                tabLayout.hide()
                 separator.hide()
+                tabLayout.hide()
+            }
+        }
+    }
+
+    private fun changeDataSet(performChange: () -> Unit) {
+        val oldItems = telcoTabViewModel.createIdSnapshot()
+        performChange()
+        val newItems = telcoTabViewModel.createIdSnapshot()
+        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                    oldItems[oldItemPosition] == newItems[newItemPosition]
+
+            override fun getOldListSize(): Int {
+                return oldItems.size
             }
 
-            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrollStateChanged(p0: Int) {
+            override fun getNewListSize(): Int {
+                return newItems.size
+            }
 
-                }
-
-                override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
-
-                }
-
-                override fun onPageSelected(pos: Int) {
-                    setTrackingOnTabMenu(listMenu[pos].title)
-                }
-            })
-        }
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                    areItemsTheSame(oldItemPosition, newItemPosition)
+        }, true).dispatchUpdatesTo(viewPager.adapter!!)
     }
 
     override fun setupCheckoutData() {
@@ -176,8 +221,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             arguments?.run {
                 val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
                 clientNumber = digitalTelcoExtraParam.clientNumber
-                if (digitalTelcoExtraParam.menuId.isNotEmpty()) { menuId = digitalTelcoExtraParam.menuId.toInt() }
-                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) { categoryId = digitalTelcoExtraParam.categoryId.toInt() }
+                if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
+                    menuId = digitalTelcoExtraParam.menuId.toInt()
+                }
+                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
+                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                }
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER)
@@ -412,7 +461,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onDestroy() {
-        enquiryViewModel.flush()
+        viewPager.unregisterOnPageChangeCallback(viewPagerCallback)
         super.onDestroy()
     }
 
