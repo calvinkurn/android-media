@@ -14,6 +14,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtChipVariant"
+        android:contentDescription="button varian"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
@@ -33,6 +34,7 @@
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/promoChipVariant"
+        android:contentDescription="button varian promo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_12"
