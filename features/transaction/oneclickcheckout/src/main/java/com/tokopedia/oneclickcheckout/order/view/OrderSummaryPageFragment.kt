@@ -836,6 +836,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.userId)
             viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
         }
 
@@ -851,7 +852,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        override fun chooseDuration() {
+        override fun chooseDuration(isDurationError: Boolean) {
+            if (isDurationError) {
+                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.userId)
+            }
             if (viewModel.orderTotal.value?.buttonState != ButtonBayarState.LOADING) {
                 orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
             }

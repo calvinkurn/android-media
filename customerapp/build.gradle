@@ -66,8 +66,8 @@ def isFirebasePerformanceLogEnabled() {
 }
 
 project.ext {
-    defaultVersionCode = 417001101;
-    defaultVersionName = "3.70";
+    defaultVersionCode = 418001101;
+    defaultVersionName = "3.80";
     react = [
             nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
             enableHermes         : true,
@@ -86,7 +86,7 @@ buildscript {
         jcenter()
         maven { url 'https://hansel.io/maven' }
         maven {
-            url 'https://jitpack.io'
+            url 'https://www.jitpack.io'
         }
     }
     dependencies {
@@ -275,10 +275,8 @@ dependencies {
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.feedComponent)
-    implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.explore)
-    implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.interestPickCommon)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.goldMerchantResource)
@@ -320,6 +318,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticaddaddress)
+    implementation project(rootProject.ext.features.editshipping)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     if (rootProject.ext.debugToolsEnabled) {
@@ -406,7 +405,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.commonTradein)
-    implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.features.tokopointsNotification)

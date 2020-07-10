@@ -1,10 +1,10 @@
 package com.tokopedia.autocomplete.initialstate.di
 
-import com.tokopedia.autocomplete.initialstate.*
+import com.tokopedia.autocomplete.initialstate.InitialStateMapper
+import com.tokopedia.autocomplete.initialstate.InitialStateRepository
 import com.tokopedia.autocomplete.initialstate.data.InitialStateApi
 import com.tokopedia.autocomplete.initialstate.data.InitialStateDataSource
 import com.tokopedia.autocomplete.initialstate.data.InitialStateRepositoryImpl
-import com.tokopedia.cachemanager.PersistentCacheManager
 import dagger.Module
 import dagger.Provides
 
@@ -19,7 +19,7 @@ class InitialStateRepositoryModule {
             initialStateMapper: InitialStateMapper
     ): InitialStateRepository {
         return InitialStateRepositoryImpl(
-                InitialStateDataSource(initialStateApi, initialStateMapper, PersistentCacheManager.instance)
+                InitialStateDataSource(initialStateApi, initialStateMapper)
         )
     }
 }

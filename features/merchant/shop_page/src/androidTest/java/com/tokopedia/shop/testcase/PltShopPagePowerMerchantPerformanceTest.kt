@@ -44,7 +44,7 @@ class PltShopPagePowerMerchantPerformanceTest {
             val intent = Intent()
             intent.putExtra(ShopPageActivity.SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)
-            activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+            activityRule.activity.deleteDatabase("tokopedia_graphql")
         }
     }
 
@@ -63,44 +63,31 @@ class PltShopPagePowerMerchantPerformanceTest {
     @Test
     fun testPageLoadTimePerformance() {
         waitForData()
-        var headerShopPagePLTPerformanceData: PltPerformanceData = PltPerformanceData()
-        var productTabShopPagePLTPerformanceData: PltPerformanceData = PltPerformanceData()
         activityRule.activity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
-            headerShopPagePLTPerformanceData = it.getPltPerformanceData()
             savePLTPerformanceResultData(
-                headerShopPagePLTPerformanceData,
-                TEST_CASE_SHOP_PAGE_HEADER_LOAD_TIME_PERFORMANCE
+                    it.getPltPerformanceData(),
+                    TEST_CASE_SHOP_PAGE_HEADER_LOAD_TIME_PERFORMANCE
             )
         }
         activityRule.activity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
             savePLTPerformanceResultData(
-                it.getPltPerformanceData(),
-                TEST_CASE_SHOP_PAGE_HOME_TAB_LOAD_TIME_PERFORMANCE
+                    it.getPltPerformanceData(),
+                    TEST_CASE_SHOP_PAGE_HOME_TAB_LOAD_TIME_PERFORMANCE
             )
         }
         activityRule.activity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-            productTabShopPagePLTPerformanceData = it.getPltPerformanceData()
             savePLTPerformanceResultData(
-                productTabShopPagePLTPerformanceData,
-                TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
+                    it.getPltPerformanceData(),
+                    TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
             )
         }
-        savePLTPerformanceResultData(
-            PltPerformanceData(
-                headerShopPagePLTPerformanceData.startPageDuration +
-                    productTabShopPagePLTPerformanceData.startPageDuration,
-                headerShopPagePLTPerformanceData.networkRequestDuration +
-                    productTabShopPagePLTPerformanceData.networkRequestDuration,
-                headerShopPagePLTPerformanceData.renderPageDuration +
-                    productTabShopPagePLTPerformanceData.renderPageDuration,
-                headerShopPagePLTPerformanceData.overallDuration +
-                    productTabShopPagePLTPerformanceData.overallDuration,
-                headerShopPagePLTPerformanceData.isSuccess && productTabShopPagePLTPerformanceData.isSuccess,
-                headerShopPagePLTPerformanceData.isCache && productTabShopPagePLTPerformanceData.isCache
-            ),
-            TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE
-        )
-        activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+        activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
+            savePLTPerformanceResultData(
+                    it.getPltPerformanceData(),
+                    TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE
+            )
+        }
+        activityRule.activity.deleteDatabase("tokopedia_graphql")
         activityRule.activity.finishAndRemoveTask()
     }
 
@@ -110,9 +97,9 @@ class PltShopPagePowerMerchantPerformanceTest {
 
     private fun savePLTPerformanceResultData(performanceData: PltPerformanceData, testCaseName: String) {
         PerformanceDataFileUtils.writePLTPerformanceFile(
-            activityRule.activity,
-            testCaseName,
-            performanceData
+                activityRule.activity,
+                testCaseName,
+                performanceData
         )
     }
 

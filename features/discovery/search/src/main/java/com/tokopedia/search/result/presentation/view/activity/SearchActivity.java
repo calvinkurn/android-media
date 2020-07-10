@@ -52,8 +52,6 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
@@ -124,7 +122,6 @@ public class SearchActivity extends BaseActivity
     private String autocompleteApplink;
 
     @Inject UserSessionInterface userSession;
-    @Inject RemoteConfig remoteConfig;
     @Inject @Named(SearchConstant.Cart.CART_LOCAL_CACHE) LocalCacheHandler localCacheHandler;
     @Inject @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     ViewModelProvider.Factory searchShopViewModelFactory;
@@ -680,24 +677,12 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        configureButtonCart();
+        showButtonCart();
     }
 
     @Override
     public boolean isAllowShake() {
         return false;
-    }
-
-    private void configureButtonCart() {
-        if (isCartIconInSearchEnabled()) {
-            showButtonCart();
-        } else {
-            hideButtonCart();
-        }
-    }
-
-    private boolean isCartIconInSearchEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true);
     }
 
     private void showButtonCart() {
