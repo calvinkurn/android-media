@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="success_update_token">Berhasil perbaharui token.</string>
+    <string name="notif_title">Troubleshooter</string>
+
+    <string name="notif_success_update_token">Berhasil perbaharui token.</string>
+    <string name="notif_ticker_title">Terjadi Kesalahan</string>
     <string name="notif_ticker_resolve">Aktifkan Notifikasi</string>
 
     <string name="notif_ringtone_success">Ringtone berjalan dengan baik.</string>
     <string name="notif_ringtone_error">Ringtone tidak di temukan.</string>
+
+    <string name="notif_token_current">Token sudah terbaru.</string>
+    <string name="notif_token_update">Token baru saja diperbarui.</string>
+
+    <string name="notif_ticker_notif_disabled">Mohon hidupkan pengaturan notifikasi anda.</string>
+
+    <string name="notif_ticker_importance_low">
+        - Nilai prioritas "Notifikasi": Low(%1$d).\n
+        - Notifikasi muncul, tapi tidak ada suara.\n
+        - Atur ke nilai prioritas lebih tinggi.\n
+    </string>
+
+    <string name="notif_ticker_importance_none">
+        - Nilai prioritas "Notifikasi": None(%1$d).\n
+        - Notifikasi muncul.\n
+        - Atur ke nilai prioritas lebih tinggi.\n
+    </string>
+
 </resources>
