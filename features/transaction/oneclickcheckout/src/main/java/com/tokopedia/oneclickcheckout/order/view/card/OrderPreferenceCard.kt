@@ -21,6 +21,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
+import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
@@ -50,6 +51,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private val ivPayment by lazy { view.findViewById<ImageView>(R.id.iv_payment) }
     private val tvPaymentName by lazy { view.findViewById<Typography>(R.id.tv_payment_name) }
     private val tvPaymentDetail by lazy { view.findViewById<Typography>(R.id.tv_payment_detail) }
+    private val tvInstallmentDetail by lazy { view.findViewById<Typography>(R.id.tv_installment_detail) }
     private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_address_name) }
     private val tvAddressReceiver by lazy { view.findViewById<Typography>(R.id.tv_address_receiver) }
     private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_address_detail) }
@@ -253,6 +255,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         } else {
             tvPaymentDetail?.gone()
         }
+        tvInstallmentDetail?.text = "6 Bulan x Rp100.000"
+        tvInstallmentDetail.setOnClickListener {
+            listener.onInstallmentDetailClicked()
+        }
     }
 
     fun setPaymentError(isError: Boolean) {
@@ -358,6 +364,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
+    fun showInstallmentDetailBottomSheet(fragment: OrderSummaryPageFragment) {
+        InstallmentDetailBottomSheet().show(fragment)
+    }
+
     companion object {
         private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
     }
@@ -377,5 +387,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun chooseDuration(isDurationError: Boolean)
 
         fun onPreferenceEditClicked(preference: OrderPreference)
+
+        fun onInstallmentDetailClicked()
     }
 }

@@ -876,6 +876,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
         }
+
+        override fun onInstallmentDetailClicked() {
+            orderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
+        }
     }
 
     fun showPreferenceListBottomSheet() {

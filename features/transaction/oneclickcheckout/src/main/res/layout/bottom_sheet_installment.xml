@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_installment_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        tools:text="Cicilan tidak tersedia untuk jenis kartu ini" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:background="#FAFBFC"
+        android:paddingBottom="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/iv_installment_terms"
+            android:layout_width="@dimen/dp_26"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:src="@color/Red_R600"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:text="Lihat Syarat &amp; Ketentuan"
+            app:layout_constraintEnd_toStartOf="@+id/imageView"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/iv_installment_terms"
+            app:layout_constraintTop_toTopOf="@+id/iv_installment_terms" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_installment_terms"
+            app:srcCompat="@drawable/ic_arrow_drop_down_grey_checkout_module" />
+
+        <View
+            android:id="@+id/bullet1"
+            android:layout_width="@dimen/dp_6"
+            android:layout_height="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_28"
+            android:background="#42B549"
+            app:layout_constraintStart_toStartOf="@+id/iv_installment_terms"
+            app:layout_constraintTop_toBottomOf="@+id/iv_installment_terms" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/header1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="Konversi Cicilan Real-Time"
+            app:layout_constraintBottom_toBottomOf="@+id/bullet1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bullet1"
+            app:layout_constraintTop_toTopOf="@+id/bullet1"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:lineSpacingExtra="7sp"
+            android:text="Transaksi Anda akan langsung terkonversi menjadi cicilan. Syarat dan Ketentuan berlaku."
+            android:textColor="#61000000"
+            app:layout_constraintEnd_toEndOf="@+id/header1"
+            app:layout_constraintStart_toStartOf="@+id/header1"
+            app:layout_constraintTop_toBottomOf="@+id/header1"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <View
+            android:id="@+id/bullet2"
+            android:layout_width="@dimen/dp_6"
+            android:layout_height="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="#42B549"
+            app:layout_constraintStart_toStartOf="@+id/bullet1"
+            app:layout_constraintTop_toBottomOf="@+id/body1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="Biaya Layanan"
+            app:layout_constraintBottom_toBottomOf="@+id/bullet2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bullet2"
+            app:layout_constraintTop_toTopOf="@+id/bullet2"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:lineSpacingExtra="7sp"
+            android:text="Biaya Layanan ini diberlakukan untuk tujuan pemeliharaan sistem dan peningkatan layanan dalam bertransaksi melalui Tokopedia"
+            android:textColor="#61000000"
+            app:layout_constraintEnd_toEndOf="@+id/header2"
+            app:layout_constraintStart_toStartOf="@+id/header2"
+            app:layout_constraintTop_toBottomOf="@+id/header2"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
