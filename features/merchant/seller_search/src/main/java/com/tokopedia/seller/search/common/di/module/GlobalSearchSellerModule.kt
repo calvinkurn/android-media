@@ -44,6 +44,11 @@ class GlobalSearchSellerModule {
 
     @GlobalSearchSellerScope
     @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
+            FirebaseRemoteConfigImpl(context)
+
+    @GlobalSearchSellerScope
+    @Provides
     fun provideGlobalSearchRemoteConfig(remoteConfig: FirebaseRemoteConfigImpl): GlobalSearchConfig {
         return GlobalSearchConfig(remoteConfig)
     }
