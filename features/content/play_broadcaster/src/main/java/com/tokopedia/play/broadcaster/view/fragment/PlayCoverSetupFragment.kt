@@ -228,6 +228,7 @@ class PlayCoverSetupFragment @Inject constructor(
                         }
 
                         viewModel.setDraftCroppedCover(croppedUri)
+                        if (isEditCoverMode) shouldUploadCover(viewModel.savedCoverTitle)
                     }
                 } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
@@ -432,7 +433,6 @@ class PlayCoverSetupFragment @Inject constructor(
                 is CoverSetupState.Cropping -> handleCroppingState(it)
                 is CoverSetupState.Cropped.Draft -> {
                     if (!isEditCoverMode) showInitCoverLayout(it.coverImage)
-                    else shouldUploadCover(coverTitle = viewModel.savedCoverTitle)
                 }
                 is CoverSetupState.Cropped.Uploaded -> {
                     if (!isEditCoverMode) showInitCoverLayout(it.localImage)
