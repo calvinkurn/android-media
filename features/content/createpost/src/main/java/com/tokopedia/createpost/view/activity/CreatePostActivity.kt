@@ -36,13 +36,12 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         intent.data?.let { uri ->
-            if (uri.lastPathSegment == TYPE_EDIT) {
-                val segmentUri = uri.pathSegments
+            val segmentUri = uri.pathSegments
+            if (uri.lastPathSegment == TYPE_EDIT && segmentUri.size == 3) {
                 intent.putExtra(PARAM_POST_ID, segmentUri[segmentUri.size - 2])
                 intent.putExtra(PARAM_TYPE, segmentUri[0])
             }
 
-            val segmentUri = uri.pathSegments
             if (segmentUri[0] == TYPE_CREATE_POST && segmentUri.size == 3) {
                 intent.putExtra(PARAM_PRODUCT_ID, segmentUri[1])
                 intent.putExtra(PARAM_AD_ID, segmentUri[2])
@@ -54,7 +53,7 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
                 intent.putExtra(DRAFT_ID, uri.lastPathSegment)
             }
 
-            if(bundle.getString(PARAM_TYPE)==null){
+            if (intent.getStringExtra(PARAM_TYPE) == null) {
                 if (uri.host?.contains(TYPE_CONTENT, false) == true) {
                     intent.putExtra(PARAM_TYPE, TYPE_CONTENT_SHOP)
                 } else {

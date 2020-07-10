@@ -40,7 +40,7 @@
                     android:pathPattern="@string/applink_cp_path_create_post"
                     android:scheme="@string/internal_scheme" />
                 <data
-                    android:host="@string/host_affiliate"
+                    android:host="@string/host_content"
                     android:pathPattern="@string/path_edit_post_affiliate"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
