@@ -180,6 +180,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun onThreadClicked(questionID: String) {
         TalkReadingTracking.eventClickThread(
+                getSelectedCategories(),
                 viewModel.userId,
                 productId,
                 questionID
