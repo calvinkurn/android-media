@@ -218,7 +218,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
-        android:contentDescription="text product name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -272,7 +271,6 @@
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/text_original_price"
-        android:contentDescription="text original price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
