@@ -83,10 +83,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'event_revamp'
+    artifactId = 'event'
     groupId = 'com.tokopedia.entertainment'
     versionName = "0.0.1"
-    artifactName = "event_revamp-release"
+    artifactName = "event-release"
 }
 
 apply from: '../../../publish_local.gradle'
