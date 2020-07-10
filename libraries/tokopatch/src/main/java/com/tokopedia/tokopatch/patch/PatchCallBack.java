@@ -16,6 +16,7 @@ public interface PatchCallBack {
     void onPatchFetched(Context context, boolean result, boolean isNet);
     void onPatchApplied(Context context, boolean result, Patch patch);
     void logNotify(Context context, String log, String where);
+    void logMessage(Context context, String log);
     void exceptionNotify(Context context, Throwable throwable, String where);
 
 }

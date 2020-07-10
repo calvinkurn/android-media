@@ -2,18 +2,16 @@ package com.tokopedia.tokopatch.patch
 
 import android.app.Application
 import android.content.Intent
-import android.util.Base64
-import android.util.Log
 import androidx.core.app.JobIntentService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.tokopedia.tokopatch.model.Patch
-import com.tokopedia.tokopatch.utils.Utils
 import com.tokopedia.tokopatch.domain.data.DataResponse
 import com.tokopedia.tokopatch.domain.data.RobustDatabase
 import com.tokopedia.tokopatch.domain.repository.PatchRepository
+import com.tokopedia.tokopatch.model.Patch
 import com.tokopedia.tokopatch.utils.Decoder
 import com.tokopedia.tokopatch.utils.PatchLogger
+import com.tokopedia.tokopatch.utils.Utils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -21,9 +19,6 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import javax.crypto.Cipher
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
 
 
 /**
@@ -51,7 +46,7 @@ class PatchService : JobIntentService() {
     override fun onCreate() {
         super.onCreate()
         logger = PatchLogger()
-        Timber.w("P1#ROBUST#PatchService created")
+        logger.logMessage(applicationContext,"P1#ROBUST#PatchService created")
         val dataDao = RobustDatabase.getDatabase(applicationContext).dataDao()
         repository = PatchRepository(
             dataDao,
@@ -70,14 +65,14 @@ class PatchService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         val packageName =
-            Utils.packageName(applicationContext)
+                Utils.packageName(applicationContext)
         val versionName =
-            Utils.versionName(applicationContext)
+                Utils.versionName(applicationContext)
         repository.getPatch(
-            packageName,
-            versionName,
-            this::onSuccessGetPatch,
-            this::onErrorGetPatch
+                packageName,
+                versionName,
+                this::onSuccessGetPatch,
+                this::onErrorGetPatch
         )
     }
 
@@ -118,7 +113,6 @@ class PatchService : JobIntentService() {
                 p.patchesInfoImplClassFullName = PATCHES_CLASS_FULL_NAME
                 p.tempPath = file.absolutePath
                 patchList.add(p)
-                Log.d("Patch File", p.tempPath)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -126,6 +120,6 @@ class PatchService : JobIntentService() {
     }
 
     override fun onDestroy() {
-        Timber.w("P1#ROBUST#PatchService destroyed")
+        logger.logMessage(applicationContext, "P1#ROBUST#PatchService destroyed")
     }
 }

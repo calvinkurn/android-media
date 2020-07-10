@@ -1,6 +1,5 @@
 package com.tokopedia.tokopatch.model
 
-import android.util.Log
 import java.io.File
 
 /**
@@ -18,7 +17,6 @@ data class Patch(
 ) : Cloneable {
 
     fun delete() {
-        Log.d("robust", "delete temp/cache file $tempPath")
         val f = File(tempPath)
         f.delete()
     }

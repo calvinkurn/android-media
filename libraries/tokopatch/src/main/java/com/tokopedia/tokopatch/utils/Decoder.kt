@@ -4,7 +4,6 @@ import android.util.Base64
 import java.math.BigInteger
 import java.security.Key
 import java.security.MessageDigest
-import java.security.Security
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -14,7 +13,9 @@ import javax.crypto.spec.SecretKeySpec
  */
 class Decoder {
     companion object {
-        var cipher: Cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        var cipher: Cipher = Cipher.getInstance(
+                "AES/GCM/NoPadding"
+        )
 
         @Throws(Exception::class)
         fun decrypt(signature: String, encryptedText: String): ByteArray {
@@ -24,9 +25,9 @@ class Decoder {
             val iv = ByteArray(12)
             val ivParameterSpec = IvParameterSpec(iv)
             cipher.init(
-                Cipher.DECRYPT_MODE,
-                secretKey,
-                ivParameterSpec
+                    Cipher.DECRYPT_MODE,
+                    secretKey,
+                    ivParameterSpec
             )
             return cipher.doFinal(encryptedTextByte)
         }
