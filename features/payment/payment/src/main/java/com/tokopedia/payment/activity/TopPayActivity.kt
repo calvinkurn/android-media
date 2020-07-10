@@ -657,7 +657,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
-        private const val ORDER_LIST_EVENT = "order-list?tab=EVENTS"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
 
