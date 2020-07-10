@@ -13,7 +13,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.OPTION_SEPARATOR
 import com.tokopedia.filter.testutils.jsonToObject
 import org.junit.Test
@@ -258,7 +257,7 @@ internal class OnViewCreatedTest: SortFilterBottomSheetViewModelTestFixtures() {
         val selectedOptionBali = selectedFilterLocation.options[4]
         val mapParameter = mutableMapOf<String, String>().also {
             it[selectedOptionJabodetabek.key] =
-                    selectedOptionJabodetabek.value + OptionHelper.OPTION_SEPARATOR + selectedOptionBali.value
+                    selectedOptionJabodetabek.value + OPTION_SEPARATOR + selectedOptionBali.value
         }
 
         `Given initialized SortFilterBottomSheetViewModel`(mapParameter, dynamicFilterModel)
