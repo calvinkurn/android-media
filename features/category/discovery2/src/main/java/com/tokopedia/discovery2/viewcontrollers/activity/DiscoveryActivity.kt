@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,8 +24,6 @@ import javax.inject.Inject
 
 const val NATIVE = "native"
 const val REACT_NATIVE = "react-native"
-
-
 const val DISCOVERY_RESULT_TRACE = "discovery_result_trace"
 const val DISCOVERY_PLT_PREPARE_METRICS = "discovery_plt_prepare_metrics"
 const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
@@ -53,6 +52,12 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             intent.putExtra(END_POINT, endpoint)
             return intent
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initDaggerInject()
+        startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
     }
 
     override fun sendScreenAnalytics() {
@@ -95,7 +100,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         pageLoadTimePerformanceInterface?.startPreparePagePerformanceMonitoring()
     }
 
-    override fun initInject() {
+    fun initDaggerInject() {
         DaggerDiscoveryComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
