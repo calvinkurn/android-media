@@ -145,6 +145,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return PopularKeywordViewHolder.LAYOUT
     }
 
+    override fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int {
+        return TopadsBannerViewHolder.LAYOUT
+    }
+
     //Home-Component
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT

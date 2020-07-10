@@ -271,10 +271,7 @@ class HomeVisitableFactoryImpl(
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
-                    createDynamicChannel(
-                            channel,
-                            isCombined = false
-                    )
+                    createTopAdsBannerModel(channel)
                 }
             }
         }
@@ -517,6 +514,10 @@ class HomeVisitableFactoryImpl(
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+    }
+
+    private fun createTopAdsBannerModel(channel: DynamicHomeChannel.Channels) {
+        visitableList.add(HomeTopAdsBannerDataModel(null, channel = channel))
     }
 
     private fun createReminderWidget(source: ReminderEnum){

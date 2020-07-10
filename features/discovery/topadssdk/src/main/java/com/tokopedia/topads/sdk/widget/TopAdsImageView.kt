@@ -157,7 +157,8 @@ class TopAdsImageView : AppCompatImageView {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        topAdsImageViewViewModel.onClear()
+        if (::topAdsImageViewViewModel.isInitialized) {
+            topAdsImageViewViewModel.onClear()
+        }
     }
-
 }
