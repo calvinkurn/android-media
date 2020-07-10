@@ -55,10 +55,11 @@ interface DynamicProductDetailListener {
     /**
      * ProductReviewViewHolder
      */
-    fun onSeeAllReviewClick(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onSeeAllLastItemImageReview(componentTrackDataModel: ComponentTrackDataModel?)
     fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
     fun onReviewClick()
     fun onImageHelpfulReviewClick(listOfImages: List<String>, position: Int, reviewId: String?, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
      * ProductMerchantVoucherViewHolder
