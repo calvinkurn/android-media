@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -183,7 +184,7 @@ public class MainParentActivity extends BaseActivity implements
     private BroadcastReceiver newFeedClickedReceiver;
     private SharedPreferences cacheManager;
     private Handler handler = new Handler();
-    private CoordinatorLayout fragmentContainer;
+    private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
 
     private PerformanceMonitoring officialStorePerformanceMonitoring;
@@ -356,6 +357,21 @@ public class MainParentActivity extends BaseActivity implements
         showSelectedPage();
         bottomNavigation = findViewById(R.id.bottom_navbar);
         bottomNavigation.setMenuClickListener(this);
+
+        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled,  R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+
+        if (userSession.isLoggedIn()) {
+            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account,   R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        } else {
+            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null,   null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        }
+        bottomNavigation.setMenu(menu);
+        showSelectedPage();
+
+        handleAppLinkBottomNavigation(savedInstanceState);
         initNewFeedClickReceiver();
         registerNewFeedClickedReceiver();
     }
@@ -445,6 +461,10 @@ public class MainParentActivity extends BaseActivity implements
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
         checkApplinkCouponCode(intent);
         checkAgeVerificationExtra(intent);
+
+        setIntent(intent);
+        showSelectedPage();
+        handleAppLinkBottomNavigation(null);
     }
 
     private void initInjector() {
@@ -962,7 +982,7 @@ public class MainParentActivity extends BaseActivity implements
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_search_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.main_parent_navigation_ic_search_shortcut))
                             .setIntents(new Intent[]{intentHome, productIntent})
                             .setRank(0)
                             .build();
@@ -1134,7 +1154,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public boolean menuClicked(int index, long id) {
+    public boolean menuClicked(int index, int id) {
         int position = getPositionFragmentByMenu(index);
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
@@ -1163,7 +1183,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void menuReselected(int position, long id) {
+    public void menuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
         scrollToTop(fragment); // enable feature scroll to top for home & feed
     }

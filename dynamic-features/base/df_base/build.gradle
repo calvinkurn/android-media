@@ -56,12 +56,15 @@ dependencies {
     implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.kategori)
     implementation project(rootProject.ext.features.categoryLevels)
+    implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.findNative)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
     //Content
     implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
+    implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.interestPick)
     //Digital
     implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.digitalHomepage)

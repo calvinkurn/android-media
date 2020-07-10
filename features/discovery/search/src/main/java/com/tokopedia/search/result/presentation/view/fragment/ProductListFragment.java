@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,8 +74,8 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
@@ -87,8 +86,8 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
+import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
@@ -98,6 +97,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
+import com.tokopedia.search.utils.SearchKotlinExtKt;
 import com.tokopedia.search.utils.SearchLogger;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.sortfilter.SortFilter;
@@ -117,6 +117,7 @@ import com.tokopedia.unifycomponents.ChipsUnify;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -595,10 +596,8 @@ public class ProductListFragment
             return;
         }
 
-        if (bottomSheetListener != null && isUsingBottomSheetFilter()) {
+        if (bottomSheetListener != null) {
             openBottomSheetFilter();
-        } else {
-            FilterSortManager.openFilterPage(getFilterTrackingData(), this, getScreenName(), searchParameter.getSearchParameterHashMap());
         }
     }
 
@@ -656,10 +655,6 @@ public class ProductListFragment
     public void addProductList(List<Visitable> list) {
         isListEmpty = false;
 
-        if (!presenter.isTrackingViewPortEnabled()) {
-            sendProductImpressionTrackingEvent(list);
-        }
-
         adapter.appendItems(list);
     }
 
@@ -689,30 +684,6 @@ public class ProductListFragment
                         recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
-    }
-
-    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
-        String userId = getUserId();
-        String searchRef = getSearchRef();
-        List<Object> dataLayerList = new ArrayList<>();
-        List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
-        for (Visitable object : list) {
-            if (object instanceof ProductItemViewModel) {
-                ProductItemViewModel item = (ProductItemViewModel) object;
-                if (!item.isTopAds()) {
-                    String filterSortParams
-                            = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
-                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
-                    productItemViewModels.add(item);
-                }
-            }
-        }
-        if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
-                    irisSession.getSessionId());
-        }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
-        }
     }
 
     @Override
@@ -917,7 +888,7 @@ public class ProductListFragment
         if (redirectionListener == null) return;
 
         if (!TextUtils.isEmpty(applink)) {
-            redirectionListener.startActivityWithApplink(applink);
+            redirectionListener.startActivityWithApplink(SearchKotlinExtKt.decodeQueryParameter(applink));
         } else {
             redirectionListener.startActivityWithUrl(url);
         }
@@ -1673,10 +1644,6 @@ public class ProductListFragment
         } else {
             SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
         }
-    }
-
-    private boolean isUsingBottomSheetFilter() {
-        return presenter != null && presenter.isUsingBottomSheetFilter();
     }
 
     @Override

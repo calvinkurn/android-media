@@ -677,12 +677,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectLink)
     }
 
-    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConstInternalContent.VIDEO_DETAIL,
-                postId
-        )
+    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String, redirectUrl: String) {
+        onGoToLink(redirectUrl)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventShopPageClickPost(
