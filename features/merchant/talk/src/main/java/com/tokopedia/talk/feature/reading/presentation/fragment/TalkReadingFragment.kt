@@ -180,7 +180,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun onThreadClicked(questionID: String) {
         TalkReadingTracking.eventClickThread(
-                getSelectedCategories(),
                 viewModel.userId,
                 productId,
                 questionID
@@ -433,9 +432,18 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun onSuccessCreateQuestion() {
         showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
-        talkReadingHeader.clearAllSort()
         resetSortOptions()
         unselectCategories()
+        (viewModel.discussionAggregate.value as? Success)?.let {
+            talkReadingHeader.clearAllSort(
+                    TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(
+                            it.data.discussionAggregateResponse,
+                            { showBottomSheet() },
+                            this
+                    ), this
+            ) { showBottomSheet() }
+        }
+
     }
 
     private fun onSuccessDeleteQuestion(questionID: String) {

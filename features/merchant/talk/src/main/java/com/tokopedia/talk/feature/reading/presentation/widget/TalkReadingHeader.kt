@@ -46,8 +46,8 @@ class TalkReadingHeader : BaseCustomView {
         }
     }
 
-    fun clearAllSort() {
-        this.readingHeaderChips.resetAllFilters()
+    fun clearAllSort(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener, showBottomSheet: () -> Unit) {
+        initSortFilter(talkReadingHeaderModel, onCategoryModifiedListener, showBottomSheet)
     }
 
     private fun initSortFilter(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener, showBottomSheet: () -> Unit) {

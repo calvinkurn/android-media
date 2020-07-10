@@ -28,7 +28,7 @@ object TalkReadingTracking {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    fun eventClickThread(categories: String, userId: String, productId: String, talkId: String) {
+    fun eventClickThread(userId: String, productId: String, talkId: String) {
         with(TalkTrackingConstants) {
             TrackApp.getInstance().gtm.sendGeneralEvent(
                     mapOf(
@@ -36,7 +36,6 @@ object TalkReadingTracking {
                             TRACKING_EVENT_CATEGORY to EVENT_CATEGORY_TALK,
                             TRACKING_EVENT_ACTION to TalkReadingTrackingConstants.EVENT_ACTION_GO_TO_REPLY,
                             TRACKING_EVENT_LABEL to String.format(TalkReadingTrackingConstants.EVENT_LABEL_GO_TO_REPLY, talkId),
-                            TalkReadingTrackingConstants.TALK_CATEGORY_KEY to "$categories;",
                             TRACKING_SCREEN_NAME to SCREEN_NAME_TALK,
                             TRACKING_CURRENT_SITE to CURRENT_SITE_TALK,
                             TRACKING_USER_ID to userId,
@@ -54,8 +53,7 @@ object TalkReadingTracking {
                             TRACKING_EVENT to EVENT_TALK,
                             TRACKING_EVENT_CATEGORY to EVENT_CATEGORY_TALK,
                             TRACKING_EVENT_ACTION to TalkReadingTrackingConstants.EVENT_ACTION_LOAD_DATA,
-                            TRACKING_EVENT_LABEL to String.format(TalkReadingTrackingConstants.EVENT_LABEL_LOAD_DATA, page),
-                            TalkReadingTrackingConstants.TALK_COUNT_THREAD_KEY to "$threadCount;",
+                            TRACKING_EVENT_LABEL to String.format(TalkReadingTrackingConstants.EVENT_LABEL_LOAD_DATA, page, threadCount),
                             TRACKING_SCREEN_NAME to SCREEN_NAME_TALK,
                             TRACKING_CURRENT_SITE to CURRENT_SITE_TALK,
                             TRACKING_USER_ID to userId,
