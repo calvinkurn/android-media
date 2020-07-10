@@ -196,16 +196,16 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             bottomSheets = BottomSheetUnify()
             val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
             view.bottom_sheet_calendar.run {
-                calendarPickerView?.init(Date(startDate.toLong() * 1000), Date(endDate.toLong() * 1000), listHoliday, getActiveDate(pdpData))
+                calendarPickerView?.init(Date(startDate.toLong() * DATE_MULTIPLICATION), Date(endDate.toLong() * DATE_MULTIPLICATION), listHoliday, getActiveDate(pdpData))
                         ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
-                        ?.withSelectedDate(Date(selectedDate.toLong() * 1000))
+                        ?.withSelectedDate(Date(selectedDate.toLong() * DATE_MULTIPLICATION))
                 calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                     override fun onDateSelected(date: Date) {
                         activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DateFormatUtils.FORMAT_D_MMMM_YYYY)
                         selectedDate = (date.time / 1000L).toString()
                         bottomSheets.dismiss()
                         PACKAGES_ID = ""
-                        AMOUNT_TICKET = 0
+                        AMOUNT_TICKET = EMPTY_QTY
                         eventPDPTracking.onClickPickDate()
                         showViewBottom(false)
                         loadInitialData()
@@ -263,7 +263,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     override fun resetPackage() {
         hashItemMap.clear()
         idPackageActive = ""
-        setTotalPrice(getRupiahFormat(0))
+        setTotalPrice(getRupiahFormat(EMPTY_QTY))
         showViewBottom(false)
     }
 
@@ -348,6 +348,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         val EMPTY_VALUE = "-"
         val EMPTY_QTY = 0
         val REQUEST_CODE_LOGIN = 100
+        const val DATE_MULTIPLICATION = 1000
     }
 
 }
