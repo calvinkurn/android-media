@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.TKPDMapParam;
@@ -49,7 +51,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
                 .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS_V1_3)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
                 .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
-                .header(AuthConstant.HEADER_RELEASE_TRACK, AuthHelper.Companion.getGetReleaseTrack().invoke(GlobalConfig.VERSION_NAME) )
+                .addHeader(AuthConstant.HEADER_RELEASE_TRACK, AuthHelper.Companion.getGetReleaseTrack().invoke(GlobalConfig.VERSION_NAME) )
                 .setMethod(HttpMethod.GET)
                 .addParameters(params)
                 .build();

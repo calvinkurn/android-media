@@ -28,6 +28,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
 
     if (rootProject.ext.debugToolsEnabled) {
