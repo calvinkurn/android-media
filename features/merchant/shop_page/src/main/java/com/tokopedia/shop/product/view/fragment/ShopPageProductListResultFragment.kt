@@ -725,6 +725,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         if (shopProductAdapter.isLoading) {
             return
         }
+        shopPageTracking?.clickClearFilter(
+                isMyShop,
+                customDimensionShopPage
+        )
         sortValue = ""
         val sortName = ""
         shopProductAdapter.changeSelectedSortFilter(sortValue ?: "", sortName)

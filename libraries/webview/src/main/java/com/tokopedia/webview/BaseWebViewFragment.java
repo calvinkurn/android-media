@@ -55,6 +55,7 @@ import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
+import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
@@ -472,6 +473,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
 
     class MyWebViewClient extends WebViewClient {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            if (view.getContext() instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) view.getContext();
+                String title = view.getTitle();
+                String activityTitle = activity.getWebViewTitle();
+                if (TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE)) {
+                    if (activity.getShowTitleBar()) {
+                        activity.setWebViewTitle(title);
+                        activity.updateTitle(title);
+                    }
+                }
+            }
+        }
 
         @Nullable
         @Override
@@ -559,7 +575,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (goToLoginGoogle(uri)) return true;
         String queryParam = null;
         String headerText = null;
-        
+
         try {
             queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
             headerText = uri.getQueryParameter(CUST_HEADER);

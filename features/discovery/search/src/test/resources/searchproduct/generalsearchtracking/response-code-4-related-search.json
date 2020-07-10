@@ -1,768 +1,724 @@
 {
-  "searchProduct": {
-    "query": "bju batik solo bagus",
-    "source": "universe",
-    "isFilter": false,
-    "response_code": 4,
-    "keyword_process": "5",
-    "count": 11,
-    "count_text": "11",
-    "additional_params": "",
-    "isQuerySafe": true,
-    "autocomplete_applink": "tokopedia://search-autocomplete?q=bju%20batik%20solo%20bagus",
-    "errorMessage": "",
-    "lite_url": "",
-    "default_view": 1,
-    "redirection": {
-      "redirect_applink": ""
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 4,
+      "keywordProcess": "5",
+      "totalData": 734255,
+      "totalDataText": "4.3jt+",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
     },
-    "ticker": {
-      "text": "",
-      "query": ""
-    },
-    "suggestion": {
-      "currentKeyword": "",
-      "suggestion": "",
-      "suggestionCount": 0,
-      "instead": "",
-      "insteadCount": 0,
-      "text": "Tidak dapat menemukan hasil untuk <strong>\"bju batik solo bagus\"</strong>. </br> Menampilkan hasil untuk <strong>\"baju batik solo bagus\"</strong>",
-      "query": ""
-    },
-    "related": {
-      "related_keyword": "baju batik solo bagus",
-      "other_related": [
-        {
-          "keyword": "baju kaos anak",
-          "url": "https://staging.tokopedia.com/search?q=baju+kaos+anak&source=related_keyword&st=product",
-          "applink": "tokopedia://search?q=baju kaos anak&source=related_keyword&st=product",
-          "product": [
-            {
-              "id": 15244495,
-              "name": "[Produk Variant] Baju Kaos Oblong",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/fuados-tiga/produk-variant-baju-kaos-oblong-hitam-lebam-xs?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D1_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15244495?",
-              "price_str": ""
-            },
-            {
-              "id": 15138512,
-              "name": "Baju kaos",
-              "price": 100000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/ellassqashop2/baju-kaos?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D2_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15138512?",
-              "price_str": ""
-            },
-            {
-              "id": 15138513,
-              "name": "Baju kaos lagi",
-              "price": 100000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/ellassqashop2/baju-kaos-lagi?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D3_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15138513?",
-              "price_str": ""
-            },
-            {
-              "id": 15213541,
-              "name": "Baju Kaos Anak Laki Hijau Mom n Bab - Buaya",
-              "price": 125000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-hijau-mom-n-bab-buaya?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D4_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15213541?",
-              "price_str": ""
-            },
-            {
-              "id": 15213547,
-              "name": "Baju Kaos Anak Laki (isi 2 pcs) Mom n Bab - Pesawat",
-              "price": 108750,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-isi-2-pcs-mom-n-bab-pesawat?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D5_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15213547?",
-              "price_str": ""
-            },
-            {
-              "id": 15316713,
-              "name": "ibu-bayi/baju-sepatu-bayi/sarung-tangan-kaos-kaki-bayi",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/galadrielos/ibu-bayi-baju-sepatu-bayi-sarung-tangan-kaos-kaki-bayi?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D6_catid%3D561_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15316713?",
-              "price_str": ""
-            }
-          ]
-        },
-        {
-          "keyword": "baju anak",
-          "url": "https://staging.tokopedia.com/search?q=baju+anak&source=related_keyword&st=product",
-          "applink": "tokopedia://search?q=baju anak&source=related_keyword&st=product",
-          "product": [
-            {
-              "id": 15340985,
-              "name": "tes hidden category blazer 1",
-              "price": 150000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D1_catid%3D148_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15340985?",
-              "price_str": ""
-            },
-            {
-              "id": 15340991,
-              "name": "test hidden category oy 1",
-              "price": 24000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D2_catid%3D148_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15340991?",
-              "price_str": ""
-            },
-            {
-              "id": 15327250,
-              "name": "baju anak",
-              "price": 1000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D3_catid%3D2071_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15327250?",
-              "price_str": ""
-            },
-            {
-              "id": 15356072,
-              "name": "Kaos Disco Testing non var 1",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D4_catid%3D2072_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15356072?",
-              "price_str": ""
-            },
-            {
-              "id": 15356071,
-              "name": "Kaos Disco Testing non var 2",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D5_catid%3D2072_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15356071?",
-              "price_str": ""
-            },
-            {
-              "id": 15356070,
-              "name": "Kaos Disco Testing non var 3",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D6_catid%3D2072_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15356070?",
-              "price_str": ""
-            }
-          ]
-        },
-        {
-          "keyword": "baju kaos",
-          "url": "https://staging.tokopedia.com/search?q=baju+kaos&source=related_keyword&st=product",
-          "applink": "tokopedia://search?q=baju kaos&source=related_keyword&st=product",
-          "product": [
-            {
-              "id": 15316424,
-              "name": "Baju atasan pria 1 variant lebih dari 10 kombinasi jogres",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/baju-atasan-pria-1-variant-lebih-dari-10-kombinasi-jogres?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D1_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15316424?",
-              "price_str": ""
-            },
-            {
-              "id": 15239346,
-              "name": "Asian Games Adults Tshirt Unisex Asian Games Colorful Black",
-              "price": 10000,
-              "image_url": "",
-              "rating": 5,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/mustika-ratu/asian-games-adults-tshirt-unisex-asian-games-colorful-black-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D2_catid%3D1769_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15239346?",
-              "price_str": ""
-            },
-            {
-              "id": 15244726,
-              "name": "baju bayi 2 variant",
-              "price": 300000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/baju-bayi-2-variant-hitam-0-3-bulan?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D3_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15244726?",
-              "price_str": ""
-            },
-            {
-              "id": 15244565,
-              "name": "Baju atasan pria 1 variant lebih dari 10 kombinasi",
-              "price": 900000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/baju-atasan-pria-1-variant-lebih-dari-10-kombinasi-05be?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D4_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15244565?",
-              "price_str": ""
-            },
-            {
-              "id": 15244114,
-              "name": "baju bayi a",
-              "price": 200000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/baju-bayi-a-b69a?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D5_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15244114?",
-              "price_str": ""
-            },
-            {
-              "id": 15244520,
-              "name": "Baju pria atasan kantor seller",
-              "price": 200000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/baju-pria-atasan-kantor-seller-20e1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D6_catid%3D2144_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15244520?",
-              "price_str": ""
-            }
-          ]
-        },
-        {
-          "keyword": "kaos anak",
-          "url": "https://staging.tokopedia.com/search?q=kaos+anak&source=related_keyword&st=product",
-          "applink": "tokopedia://search?q=kaos anak&source=related_keyword&st=product",
-          "product": [
-            {
-              "id": 15340985,
-              "name": "tes hidden category blazer 1",
-              "price": 150000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D1_catid%3D148_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15340985?",
-              "price_str": ""
-            },
-            {
-              "id": 15340991,
-              "name": "test hidden category oy 1",
-              "price": 24000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D2_catid%3D148_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15340991?",
-              "price_str": ""
-            },
-            {
-              "id": 15327250,
-              "name": "baju anak",
-              "price": 1000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D3_catid%3D2071_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15327250?",
-              "price_str": ""
-            },
-            {
-              "id": 15356072,
-              "name": "Kaos Disco Testing non var 1",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D4_catid%3D2072_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15356072?",
-              "price_str": ""
-            },
-            {
-              "id": 15356071,
-              "name": "Kaos Disco Testing non var 2",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D5_catid%3D2072_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15356071?",
-              "price_str": ""
-            },
-            {
-              "id": 15356070,
-              "name": "Kaos Disco Testing non var 3",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D6_catid%3D2072_bmexp%3D0&whid=0",
-              "applink": "tokopedia://product/15356070?",
-              "price_str": ""
-            }
-          ]
-        }
-      ]
-    },
-    "products": [
-      {
-        "id": 691446990,
-        "warehouse_id_default": 0,
-        "name": "Kain Batik Solo Motif Bagus Pas Buat Baju Resmi Size 240x110cm K3660PB",
-        "childs": [],
-        "url": "https://www.tokopedia.com/kidung-asmara/kain-batik-solo-motif-bagus-pas-buat-baju-resmi-size-240x110cm-k3660pb?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik+solo+bagus_bmexp%3D47_po%3D1_catid%3D1793_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/2/8/22013656/22013656_f298e89f-d1e6-4ecc-b6ef-fa6c7ae1dfc0_600_600",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/2/8/22013656/22013656_f298e89f-d1e6-4ecc-b6ef-fa6c7ae1dfc0_600_600",
-        "price": "Rp 110.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 6,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/batik-wanita/kain-batik",
-        "department_id": 1793,
-        "department_name": "Kain Batik",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "",
+        "query": ""
+      },
+      "related": {
+        "relatedKeyword": "baju batik solo bagus",
+        "otherRelated": [
           {
-            "title": "Power Badge",
-            "image_url": "https://ecs7.tokopedia.net/img/power_merchant_badge.png",
-            "show": true
-          }
-        ],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 4,
-        "ga_key": "/searchproduct/fashion-wanita/batik-wanita/kain-batik/bju+batik+solo+bagus/kidung-asmara/kain-batik-solo-motif-bagus-pas-buat-baju-resmi-size-240x110cm-k3660pb",
-        "is_preorder": false,
-        "shop": {
-          "id": 2429808,
-          "name": "Batik Kidung Asmara",
-          "url": "https://www.tokopedia.com/kidung-asmara",
-          "is_gold_shop": false,
-          "is_power_badge": true,
-          "location": "Surakarta",
-          "city": "Surakarta",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/2429808",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2429808",
-          "is_official": false
-        }
-      },
-      {
-        "id": 663875560,
-        "warehouse_id_default": 0,
-        "name": "Unit Bagus Rnb Butterfly Setelan Kebaya Batik Modern Baju Batik Solo",
-        "childs": [],
-        "url": "https://www.tokopedia.com/ninaashop/unit-bagus-rnb-butterfly-setelan-kebaya-batik-modern-baju-batik-solo?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik+solo+bagus_bmexp%3D47_po%3D2_catid%3D3052_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/1/15/85055930/85055930_d02774d0-6ae4-435d-a309-e932c02a53f6_720_720",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/1/15/85055930/85055930_d02774d0-6ae4-435d-a309-e932c02a53f6_720_720",
-        "price": "Rp 292.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 2,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/kebaya/setelan-kebaya",
-        "department_id": 3052,
-        "department_name": "Setelan Kebaya",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 100,
-        "ga_key": "/searchproduct/fashion-wanita/kebaya/setelan-kebaya/bju+batik+solo+bagus/ninaashop/unit-bagus-rnb-butterfly-setelan-kebaya-batik-modern-baju-batik-solo",
-        "is_preorder": false,
-        "shop": {
-          "id": 7502332,
-          "name": "ninaa_shop",
-          "url": "https://www.tokopedia.com/ninaashop",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Jakarta Barat",
-          "city": "Jakarta Barat",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/7502332",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=7502332",
-          "is_official": false
-        }
-      },
-      {
-        "id": 454152639,
-        "warehouse_id_default": 0,
-        "name": "Best BAJU SETELAN WANITA BATIK PRAMESTI MURAH SOLO BAGUS CANTIK",
-        "childs": [],
-        "url": "https://www.tokopedia.com/miekesantosa/best-baju-setelan-wanita-batik-pramesti-murah-solo-bagus-cantik?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik+solo+bagus_bmexp%3D47_po%3D3_catid%3D3052_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/4/23/54632892/54632892_c19f1bc6-8290-4388-80bd-c61b8054c874_690_690.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/4/23/54632892/54632892_c19f1bc6-8290-4388-80bd-c61b8054c874_690_690.jpg",
-        "price": "Rp 147.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 1,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/kebaya/setelan-kebaya",
-        "department_id": 3052,
-        "department_name": "Setelan Kebaya",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 32767,
-        "ga_key": "/searchproduct/fashion-wanita/kebaya/setelan-kebaya/bju+batik+solo+bagus/miekesantosa/best-baju-setelan-wanita-batik-pramesti-murah-solo-bagus-cantik",
-        "is_preorder": false,
-        "shop": {
-          "id": 5807527,
-          "name": "Mieke Santosa",
-          "url": "https://www.tokopedia.com/miekesantosa",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Jakarta Utara",
-          "city": "Jakarta Utara",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/5807527",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=5807527",
-          "is_official": false
-        }
-      },
-      {
-        "id": 454152579,
-        "warehouse_id_default": 0,
-        "name": "Best BAJU SETELAN WANITA BATIK PRAMESTI MURAH SOLO BAGUS CANTIK",
-        "childs": [],
-        "url": "https://www.tokopedia.com/mirasavira/best-baju-setelan-wanita-batik-pramesti-murah-solo-bagus-cantik?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik+solo+bagus_bmexp%3D47_po%3D4_catid%3D3052_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/4/23/54632552/54632552_f454324f-6372-4a26-9e3a-e3b6f179b6da_680_680.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/4/23/54632552/54632552_f454324f-6372-4a26-9e3a-e3b6f179b6da_680_680.jpg",
-        "price": "Rp 150.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 1,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/kebaya/setelan-kebaya",
-        "department_id": 3052,
-        "department_name": "Setelan Kebaya",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 32767,
-        "ga_key": "/searchproduct/fashion-wanita/kebaya/setelan-kebaya/bju+batik+solo+bagus/mirasavira/best-baju-setelan-wanita-batik-pramesti-murah-solo-bagus-cantik",
-        "is_preorder": false,
-        "shop": {
-          "id": 5807518,
-          "name": "Mira Savira",
-          "url": "https://www.tokopedia.com/mirasavira",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Jakarta Utara",
-          "city": "Jakarta Utara",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/5807518",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=5807518",
-          "is_official": false
-        }
-      },
-      {
-        "id": 436686657,
-        "warehouse_id_default": 0,
-        "name": "Barang Bagus Hem Batik Solo Pria Baju Kemeja Lengan Pendek Batik",
-        "childs": [],
-        "url": "https://www.tokopedia.com/fadly111/barang-bagus-hem-batik-solo-pria-baju-kemeja-lengan-pendek-batik?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik+solo+bagus_bmexp%3D47_po%3D5_catid%3D1829_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/3/29/52093941/52093941_7d563ee0-d03c-420a-8343-f251bf01609c_700_700.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/3/29/52093941/52093941_7d563ee0-d03c-420a-8343-f251bf01609c_700_700.jpg",
-        "price": "Rp 188.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 2,
-        "condition": 1,
-        "category_id": 1759,
-        "category_name": "Fashion Pria",
-        "category_breadcrumb": "fashion-pria/batik-pria/kemeja-batik-pria",
-        "department_id": 1829,
-        "department_name": "Kemeja Batik Pria",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 32767,
-        "ga_key": "/searchproduct/fashion-pria/batik-pria/kemeja-batik-pria/bju+batik+solo+bagus/fadly111/barang-bagus-hem-batik-solo-pria-baju-kemeja-lengan-pendek-batik",
-        "is_preorder": false,
-        "shop": {
-          "id": 5561541,
-          "name": "fadlyl store",
-          "url": "https://www.tokopedia.com/fadly111",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Jakarta Barat",
-          "city": "Jakarta Barat",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/5561541",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=5561541",
-          "is_official": false
-        }
-      },
-      {
-        "id": 323738086,
-        "warehouse_id_default": 0,
-        "name": "Baju Batik Wanita Dress Trendy Motif Bagus Asli Solo Size M DR8842PB",
-        "childs": [],
-        "url": "https://www.tokopedia.com/kidung-asmara/baju-batik-wanita-dress-trendy-motif-bagus-asli-solo-size-m-dr8842pb?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik+solo+bagus_bmexp%3D47_po%3D6_catid%3D1792_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/8/28/22013656/22013656_32bb5fc5-4a82-437a-a556-d82931c86913_600_600.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/8/28/22013656/22013656_32bb5fc5-4a82-437a-a556-d82931c86913_600_600.jpg",
-        "price": "Rp 170.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 6,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/batik-wanita/dress-batik-wanita",
-        "department_id": 1792,
-        "department_name": "Dress Batik Wanita",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [
-          {
-            "title": "Cashback",
-            "color": "#42b549"
-          }
-        ],
-        "label_groups": [
-          {
-            "position": "promo",
-            "type": "lightGreen",
-            "title": "Cashback"
+            "keyword": "baju kaos anak",
+            "url": "https://staging.tokopedia.com/search?q=baju+kaos+anak&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=baju kaos anak&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15244495,
+                "name": "[Produk Variant] Baju Kaos Oblong",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/fuados-tiga/produk-variant-baju-kaos-oblong-hitam-lebam-xs?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D1_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15244495?",
+                "priceStr": ""
+              },
+              {
+                "id": 15138512,
+                "name": "Baju kaos",
+                "price": 100000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ellassqashop2/baju-kaos?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D2_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15138512?",
+                "priceStr": ""
+              },
+              {
+                "id": 15138513,
+                "name": "Baju kaos lagi",
+                "price": 100000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ellassqashop2/baju-kaos-lagi?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D3_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15138513?",
+                "priceStr": ""
+              },
+              {
+                "id": 15213541,
+                "name": "Baju Kaos Anak Laki Hijau Mom n Bab - Buaya",
+                "price": 125000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-hijau-mom-n-bab-buaya?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D4_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15213541?",
+                "priceStr": ""
+              },
+              {
+                "id": 15213547,
+                "name": "Baju Kaos Anak Laki (isi 2 pcs) Mom n Bab - Pesawat",
+                "price": 108750,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-isi-2-pcs-mom-n-bab-pesawat?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D5_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15213547?",
+                "priceStr": ""
+              },
+              {
+                "id": 15316713,
+                "name": "ibu-bayi/baju-sepatu-bayi/sarung-tangan-kaos-kaki-bayi",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/galadrielos/ibu-bayi-baju-sepatu-bayi-sarung-tangan-kaos-kaki-bayi?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D6_catid%3D561_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15316713?",
+                "priceStr": ""
+              }
+            ]
           },
           {
-            "position": "price",
-            "type": "lightGreen",
-            "title": "Cashback"
-          }
-        ],
-        "badges": [
+            "keyword": "baju anak",
+            "url": "https://staging.tokopedia.com/search?q=baju+anak&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=baju anak&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D1_catid%3D148_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": ""
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D2_catid%3D148_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "priceStr": ""
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D3_catid%3D2071_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": ""
+              },
+              {
+                "id": 15356072,
+                "name": "Kaos Disco Testing non var 1",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D4_catid%3D2072_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15356072?",
+                "priceStr": ""
+              },
+              {
+                "id": 15356071,
+                "name": "Kaos Disco Testing non var 2",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D5_catid%3D2072_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15356071?",
+                "priceStr": ""
+              },
+              {
+                "id": 15356070,
+                "name": "Kaos Disco Testing non var 3",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D6_catid%3D2072_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15356070?",
+                "priceStr": ""
+              }
+            ]
+          },
           {
-            "title": "Power Badge",
-            "image_url": "https://ecs7.tokopedia.net/img/power_merchant_badge.png",
-            "show": true
+            "keyword": "baju kaos",
+            "url": "https://staging.tokopedia.com/search?q=baju+kaos&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=baju kaos&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15316424,
+                "name": "Baju atasan pria 1 variant lebih dari 10 kombinasi jogres",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/baju-atasan-pria-1-variant-lebih-dari-10-kombinasi-jogres?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D1_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15316424?",
+                "priceStr": ""
+              },
+              {
+                "id": 15239346,
+                "name": "Asian Games Adults Tshirt Unisex Asian Games Colorful Black",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 5,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/mustika-ratu/asian-games-adults-tshirt-unisex-asian-games-colorful-black-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D2_catid%3D1769_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15239346?",
+                "priceStr": ""
+              },
+              {
+                "id": 15244726,
+                "name": "baju bayi 2 variant",
+                "price": 300000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/baju-bayi-2-variant-hitam-0-3-bulan?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D3_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15244726?",
+                "priceStr": ""
+              },
+              {
+                "id": 15244565,
+                "name": "Baju atasan pria 1 variant lebih dari 10 kombinasi",
+                "price": 900000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/baju-atasan-pria-1-variant-lebih-dari-10-kombinasi-05be?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D4_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15244565?",
+                "priceStr": ""
+              },
+              {
+                "id": 15244114,
+                "name": "baju bayi a",
+                "price": 200000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/baju-bayi-a-b69a?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D5_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15244114?",
+                "priceStr": ""
+              },
+              {
+                "id": 15244520,
+                "name": "Baju pria atasan kantor seller",
+                "price": 200000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/baju-pria-atasan-kantor-seller-20e1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D6_catid%3D2144_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15244520?",
+                "priceStr": ""
+              }
+            ]
+          },
+          {
+            "keyword": "kaos anak",
+            "url": "https://staging.tokopedia.com/search?q=kaos+anak&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=kaos anak&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D1_catid%3D148_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": ""
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D2_catid%3D148_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "priceStr": ""
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D3_catid%3D2071_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": ""
+              },
+              {
+                "id": 15356072,
+                "name": "Kaos Disco Testing non var 1",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D4_catid%3D2072_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15356072?",
+                "priceStr": ""
+              },
+              {
+                "id": 15356071,
+                "name": "Kaos Disco Testing non var 2",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D5_catid%3D2072_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15356071?",
+                "priceStr": ""
+              },
+              {
+                "id": 15356070,
+                "name": "Kaos Disco Testing non var 3",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D1000_q%3Dbaju+kaos+anak+balapan_bmexp%3D0_po%3D6_catid%3D2072_bmexp%3D0&whid=0",
+                "applink": "tokopedia://product/15356070?",
+                "priceStr": ""
+              }
+            ]
           }
-        ],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 1,
-        "ga_key": "/searchproduct/fashion-wanita/batik-wanita/dress-batik-wanita/bju+batik+solo+bagus/kidung-asmara/baju-batik-wanita-dress-trendy-motif-bagus-asli-solo-size-m-dr8842pb",
-        "is_preorder": false,
-        "shop": {
-          "id": 2429808,
-          "name": "Batik Kidung Asmara",
-          "url": "https://www.tokopedia.com/kidung-asmara",
-          "is_gold_shop": false,
-          "is_power_badge": true,
-          "location": "Surakarta",
-          "city": "Surakarta",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/2429808",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2429808",
-          "is_official": false
-        }
+        ]
       },
-      {
-        "id": 288949730,
-        "warehouse_id_default": 0,
-        "name": "BAJU PRIA BATIK Batik Bagus Danar Hadi Solo",
-        "childs": [],
-        "url": "https://www.tokopedia.com/kaospastipas/baju-pria-batik-batik-bagus-danar-hadi-solo?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik+solo+bagus_bmexp%3D47_po%3D7_catid%3D1829_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/5/13/25298938/25298938_2dc7abde-dd61-4f5e-bf23-6ca077915595_700_700.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/5/13/25298938/25298938_2dc7abde-dd61-4f5e-bf23-6ca077915595_700_700.jpg",
-        "price": "Rp 225.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 1,
-        "condition": 1,
-        "category_id": 1759,
-        "category_name": "Fashion Pria",
-        "category_breadcrumb": "fashion-pria/batik-pria/kemeja-batik-pria",
-        "department_id": 1829,
-        "department_name": "Kemeja Batik Pria",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
+      "products": [
+        {
+          "id": 574261655,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
         },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 32767,
-        "ga_key": "/searchproduct/fashion-pria/batik-pria/kemeja-batik-pria/bju+batik+solo+bagus/kaospastipas/baju-pria-batik-batik-bagus-danar-hadi-solo",
-        "is_preorder": false,
-        "shop": {
-          "id": 3409465,
-          "name": "Kaos Pasti Pas",
-          "url": "https://www.tokopedia.com/kaospastipas",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Bandung",
-          "city": "Bandung",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/3409465",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=3409465",
-          "is_official": false
-        }
-      },
-      {
-        "id": 288946088,
-        "warehouse_id_default": 0,
-        "name": "BAJU KEMEJA Batik Bagus Danar Hadi Solo",
-        "childs": [],
-        "url": "https://www.tokopedia.com/arolazshop/baju-kemeja-batik-bagus-danar-hadi-solo?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik+solo+bagus_bmexp%3D47_po%3D8_catid%3D1829_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/5/13/31183903/31183903_769edb5a-fbd3-47ef-8e1d-ca02b940c929_700_700.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/5/13/31183903/31183903_769edb5a-fbd3-47ef-8e1d-ca02b940c929_700_700.jpg",
-        "price": "Rp 225.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 1,
-        "condition": 1,
-        "category_id": 1759,
-        "category_name": "Fashion Pria",
-        "category_breadcrumb": "fashion-pria/batik-pria/kemeja-batik-pria",
-        "department_id": 1829,
-        "department_name": "Kemeja Batik Pria",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
+        {
+          "id": 574261652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
         },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 32767,
-        "ga_key": "/searchproduct/fashion-pria/batik-pria/kemeja-batik-pria/bju+batik+solo+bagus/arolazshop/baju-kemeja-batik-bagus-danar-hadi-solo",
-        "is_preorder": false,
-        "shop": {
-          "id": 3409493,
-          "name": "AROLAZ SHOP",
-          "url": "https://www.tokopedia.com/arolazshop",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Bandung",
-          "city": "Bandung",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/3409493",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=3409493",
-          "is_official": false
+        {
+          "id": 576261652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574211652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262352,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262659,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 674262652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }

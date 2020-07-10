@@ -170,7 +170,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var cartListData: CartListData? = null
     private var wishLists: List<CartWishlistItemHolderData>? = null
     private var recentViewList: List<CartRecentViewItemHolderData>? = null
-    private var recommendationList: List<CartRecommendationItemHolderData>? = null
+    private var recommendationList: MutableList<CartRecommendationItemHolderData>? = null
     private var recommendationSectionHeader: CartSectionHeaderHolderData? = null
     private var recommendationWishlistActionListener: WishListActionListener? = null
     private var cartAvailableWishlistActionListener: WishListActionListener? = null
@@ -190,6 +190,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
     private var initialPromoButtonPosition = 0f
+    private var recommendationPage = 1
 
     companion object {
 
@@ -342,7 +343,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 object : TypeToken<ArrayList<CartWishlistItemHolderData>>() {}.type, null)
         recentViewList = saveInstanceCacheManager?.get<List<CartRecentViewItemHolderData>>(CartRecentViewItemHolderData::class.java.simpleName,
                 object : TypeToken<ArrayList<CartRecentViewItemHolderData>>() {}.type, null)
-        recommendationList = saveInstanceCacheManager?.get<List<CartRecommendationItemHolderData>>(CartRecommendationItemHolderData::class.java.simpleName,
+        recommendationList = saveInstanceCacheManager?.get<MutableList<CartRecommendationItemHolderData>>(CartRecommendationItemHolderData::class.java.simpleName,
                 object : TypeToken<ArrayList<CartRecommendationItemHolderData>>() {}.type, null)
         recommendationSectionHeader = saveInstanceCacheManager?.get<CartSectionHeaderHolderData>(CartSectionHeaderHolderData::class.java.simpleName,
                 object : TypeToken<CartSectionHeaderHolderData>() {}.type, null)
@@ -384,7 +385,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDestroy() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         showPromoButtonJob?.cancel()
         super.onDestroy()
@@ -553,7 +554,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     if (hasLoadRecommendation) {
-                        dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.currentPage, cartAdapter.allCartItemProductId)
+                        dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
                     }
                 }
             }
@@ -581,8 +582,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val valueY = llPromoCheckout.y + dy
         TRANSLATION_LENGTH += dy
         if (dy != 0) {
-            if (TRANSLATION_LENGTH - dy == 0f) {
-                // Initial position of View
+            if (initialPromoButtonPosition == 0f && TRANSLATION_LENGTH - dy == 0f) {
+                // Initial position of View if previous initialization attempt failed
                 initialPromoButtonPosition = llPromoCheckout.y
             }
 
@@ -890,7 +891,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onClickShopNow() {
         cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart()
-        RouteManager.route(activity, ApplinkConst.HOME)
+        val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     override fun onShowAllItem(appLink: String) {
@@ -1122,6 +1125,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun onWishlistImpression() {
+        wishLists?.let {
+            sendAnalyticsOnViewProductWishlist(
+                    dPresenter.generateWishlistDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
+            )
+        }
+    }
+
     override fun onRecentViewProductClicked(productId: String) {
         var position = 0
 
@@ -1141,10 +1152,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         onProductClicked(productId)
     }
 
+    override fun onRecentViewImpression() {
+        recentViewList?.let {
+            sendAnalyticsOnViewProductRecentView(
+                    dPresenter.generateRecentViewDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
+            )
+        }
+    }
+
     override fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String) {
         var index = 1
         var recommendationItemClick: RecommendationItem? = null
-        for ((recommendationItem) in recommendationList as List<CartRecommendationItemHolderData>) {
+        for ((_, recommendationItem) in recommendationList as List<CartRecommendationItemHolderData>) {
             if (recommendationItem.productId.toString().equals(productId, ignoreCase = true)) {
                 recommendationItemClick = recommendationItem
                 break
@@ -1171,6 +1190,52 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 activity?.let { ImpresionTask(it::class.qualifiedName).execute(trackingImageUrl) }
             }
         }
+    }
+
+    override fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData) {
+        val recommendationList = cartAdapter.getRecommendationItem()
+        if (recommendationList.isNullOrEmpty()) return
+        recommendationList.let {
+            val currentIndex = it.indexOf(recommendationItem)
+            if (it.size >= 2) {
+                if (currentIndex == it.size - 1) {
+                    if (currentIndex % 2 == 0) {
+                        // edge case : recommendation list size is odd number
+                        // send last single item impression
+                        sendImpressionOneRecommendationItem(it, currentIndex)
+                    } else {
+                        // edge case : recommendation list contains exactly 2 items
+                        // send 2 items impression
+                        sendImpressionTwoRecommendationItems(it, currentIndex)
+                    }
+                } else if (currentIndex > 0 && currentIndex % 2 == 1) {
+                    // send analytics on impression recommendation item odd position
+                    // send analytics every 2 item impression
+                    sendImpressionTwoRecommendationItems(it, currentIndex)
+                }
+            } else {
+                // edge case : recommendation list contains exactly 1 item
+                // edge case : send single item impression if recommendation list only contain 1 item
+                sendImpressionOneRecommendationItem(it, currentIndex)
+            }
+        }
+    }
+
+    private fun sendImpressionOneRecommendationItem(it: List<CartRecommendationItemHolderData>, currentIndex: Int) {
+        val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+        cartRecommendationList.add(it[currentIndex])
+        sendAnalyticsOnViewProductRecommendation(
+                dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
+        )
+    }
+
+    private fun sendImpressionTwoRecommendationItems(it: List<CartRecommendationItemHolderData>, currentIndex: Int) {
+        val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+        cartRecommendationList.add(it[currentIndex - 1])
+        cartRecommendationList.add(it[currentIndex])
+        sendAnalyticsOnViewProductRecommendation(
+                dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
+        )
     }
 
     override fun onButtonAddToCartClicked(productModel: Any) {
@@ -1351,6 +1416,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
+        recommendationPage = 1
         cartListData?.let {
             sendAnalyticsScreenName(screenName)
 
@@ -1380,7 +1446,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             if (recommendationList == null) {
-                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.currentPage, cartAdapter.allCartItemProductId)
+                dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
             } else {
                 renderRecommendation(null)
             }
@@ -2007,6 +2073,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.show()
         bottomLayoutShadow.show()
         cardHeader.show()
+        llPromoCheckout.show()
+        llPromoCheckout.post {
+            if (initialPromoButtonPosition == 0f) {
+                initialPromoButtonPosition = llPromoCheckout.y
+            }
+        }
     }
 
     private fun showErrorContainer() {
@@ -2073,7 +2145,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun clearRecyclerView() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         cartRecyclerView.removeAllViews()
         cartRecyclerView.recycledViewPool.clear()
     }
@@ -2554,10 +2626,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData)
         this.recentViewList = cartRecentViewItemHolderDataList
         shouldReloadRecentViewList = false
-
-        sendAnalyticsOnViewProductRecentView(
-                dPresenter.generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList, FLAG_IS_CART_EMPTY)
-        )
     }
 
     override fun renderWishlist(wishlists: List<Wishlist>?) {
@@ -2571,14 +2639,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_wishlist)
         cartSectionHeaderHolderData.showAllAppLink = ApplinkConst.WISHLIST
 
-        val cartRecentViewHolderData = CartWishlistHolderData()
-        cartRecentViewHolderData.wishList = cartWishlistItemHolderDataList
-        cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData)
+        val cartWishlistHolderData = CartWishlistHolderData()
+        cartWishlistHolderData.wishList = cartWishlistItemHolderDataList
+        cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartWishlistHolderData)
         this.wishLists = cartWishlistItemHolderDataList
-
-        sendAnalyticsOnViewProductWishlist(
-                dPresenter.generateWishlistDataImpressionAnalytics(cartWishlistItemHolderDataList, FLAG_IS_CART_EMPTY)
-        )
     }
 
     override fun renderRecommendation(recommendationWidget: RecommendationWidget?) {
@@ -2588,19 +2652,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             // Render from API
             val recommendationItems = recommendationWidget.recommendationItemList
             for (recommendationItem in recommendationItems) {
-                val cartRecommendationItemHolderData = CartRecommendationItemHolderData(recommendationItem)
+                val cartRecommendationItemHolderData = CartRecommendationItemHolderData(false, recommendationItem)
                 cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData)
             }
         } else {
             // Render from Cache
             if (recommendationList?.size != 0) {
+                recommendationList?.forEach {
+                    it.hasSentImpressionAnalytics = false
+                }
                 cartRecommendationItemHolderDataList.addAll(this.recommendationList!!)
             }
         }
 
         var cartSectionHeaderHolderData: CartSectionHeaderHolderData? = null
-        if ((endlessRecyclerViewScrollListener.currentPage == 0 && recommendationWidget == null) ||
-                (recommendationWidget != null && endlessRecyclerViewScrollListener.currentPage == 1 && recommendationSectionHeader == null)) {
+        if (recommendationPage == 1) {
             if (recommendationSectionHeader != null) {
                 cartSectionHeaderHolderData = recommendationSectionHeader
             } else {
@@ -2616,14 +2682,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (cartRecommendationItemHolderDataList.size > 0) {
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList)
-            recommendationList = cartRecommendationItemHolderDataList
-
-            recommendationList?.let {
-                sendAnalyticsOnViewProductRecommendation(
-                        dPresenter.generateRecommendationImpressionDataAnalytics(it, FLAG_IS_CART_EMPTY)
-                )
+            if (recommendationList.isNullOrEmpty()) {
+                recommendationList = cartRecommendationItemHolderDataList
             }
         }
+
+        recommendationPage++;
     }
 
     override fun showItemLoading() {

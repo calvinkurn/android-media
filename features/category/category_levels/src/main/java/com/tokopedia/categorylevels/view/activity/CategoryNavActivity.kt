@@ -175,18 +175,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 STATE_GRID -> {
                     catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "grid")
                     img_display_button.tag = STATE_LIST
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_list_display))
                 }
 
                 STATE_LIST -> {
                     catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "list")
                     img_display_button.tag = STATE_BIG
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_big_display))
                 }
                 STATE_BIG -> {
                     catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "big")
                     img_display_button.tag = STATE_GRID
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_grid_display))
                 }
             }
         }
@@ -256,7 +256,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun removeCatalogTab() {
-        tabs.hide()
+        category_tabs.hide()
         addCatalog = false
     }
 
@@ -365,7 +365,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         categorySectionPagerAdapter = com.tokopedia.categorylevels.adapters.CategoryNavigationPagerAdapter(supportFragmentManager)
         categorySectionPagerAdapter?.setData(categorySectionItemList)
         pager.adapter = categorySectionPagerAdapter
-        tabs.tabLayout.setupWithViewPager(pager)
+        category_tabs.tabLayout.setupWithViewPager(pager)
         setActiveTab()
     }
 
@@ -457,7 +457,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.home) {
+        if (item?.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }

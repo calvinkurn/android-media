@@ -51,15 +51,13 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
                             hasAddToCartButton = true
                     )
             )
-            setOnClickListener(
-                    {
-                        actionListener?.onRecommendationProductClicked(
-                                element.recommendationItem.productId.toString(),
-                                element.recommendationItem.isTopAds,
-                                element.recommendationItem.clickUrl
-                        )
-                    }
-            )
+            setOnClickListener {
+                actionListener?.onRecommendationProductClicked(
+                        element.recommendationItem.productId.toString(),
+                        element.recommendationItem.isTopAds,
+                        element.recommendationItem.clickUrl
+                )
+            }
             setAddToCartOnClickListener {
                 actionListener?.onButtonAddToCartClicked(element)
             }
@@ -75,6 +73,11 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
                         }
                     }
             )
+        }
+
+        if (!element.hasSentImpressionAnalytics) {
+            actionListener?.onRecommendationImpression(element)
+            element.hasSentImpressionAnalytics = true
         }
     }
 

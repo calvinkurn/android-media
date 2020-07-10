@@ -128,7 +128,6 @@
     <string name="template_rates_estimate_start_price">Ongkos Kirim mulai dari %1$s</string>
     <string name="from_x">dari %1$s</string>
     <string name="to_x">ke %1$s</string>
-    <string name="open_shop">Buka Toko GRATIS</string>
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
     <string name="product_is_at_status_x">Product berada dalam status %1$s</string>
     <string name="service_by_tokopedia">Dilayani oleh Tokopedia</string>
@@ -301,4 +300,9 @@
     <string name="shop_chat_speed_in_minute">%1d menit</string>
     <string name="shop_chat_speed_in_one_two_days">1–2 hari</string>
 
+
+    <string name="pdp_tradein_text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IMEI.
+        \n• Menyalakan WiFi
+        \n• Akses accelero meter</string>
+    <string name="pdp_tradein_text_request_access">Meminta Izin Akses</string>
 </resources>

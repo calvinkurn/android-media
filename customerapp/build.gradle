@@ -320,6 +320,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticaddaddress)
+    implementation project(rootProject.ext.features.editshipping)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     if (rootProject.ext.debugToolsEnabled) {
@@ -355,9 +356,9 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
@@ -406,7 +407,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.commonTradein)
-    implementation project(rootProject.ext.features.categoryLevels)
     implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
@@ -420,7 +420,6 @@ dependencies {
     implementation project(rootProject.ext.features.agerestriction)
 
     implementation project(rootProject.ext.features.promotionsTarget)
-    implementation project(rootProject.ext.features.findNative)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
     if (rootProject.ext.debugToolsEnabled) {

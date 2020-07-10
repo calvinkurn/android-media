@@ -469,7 +469,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
         shipmentAdapter.setCartIds(cartIdsStringBuilder.toString());
 
-        shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
+        if (shipmentDonationModel != null) {
+            shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
+            if (shipmentDonationModel.isChecked()) {
+                checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
+            }
+        }
+
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             shipmentAdapter.updateEgold(false);
             shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
@@ -1531,9 +1537,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCancelVoucherLogisticClicked(String pslCode, int position) {
         checkoutAnalyticsCourierSelection.eventCancelPromoStackingLogistic();
         shipmentPresenter.cancelAutoApplyPromoStackLogistic(position, pslCode);
-        if (isToogleYearEndPromoOn()) {
-            shipmentAdapter.cancelAllCourierPromo();
-        }
+        shipmentAdapter.cancelAllCourierPromo();
     }
 
     @Override
@@ -1550,7 +1554,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCheckoutValidationResult(boolean result, Object shipmentData,
                                            int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
-            if (shipmentPresenter.isIneligbilePromoDialogEnabled()) {
+            if (shipmentPresenter.isIneligiblePromoDialogEnabled()) {
                 ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList = new ArrayList<>();
                 ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
                 if (validateUsePromoRevampUiModel != null) {
@@ -1879,9 +1883,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 } else {
                     sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(recommendedCourier.getName());
-                    if (isToogleYearEndPromoOn()) {
-                        sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(recommendedCourier.getShipperProductId());
-                    }
+                    sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(recommendedCourier.getShipperProductId());
 
                     // Clear logistic voucher data when any duration is selected and voucher is not null
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
@@ -1914,7 +1916,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
-        if (isToogleYearEndPromoOn() && !TextUtils.isEmpty(courierItemData.getPromoCode())) {
+        if (!TextUtils.isEmpty(courierItemData.getPromoCode())) {
             String promoCode = courierItemData.getPromoCode();
             shipmentPresenter.processCheckPromoCheckoutCodeFromSelectedCourier(promoCode, itemPosition, false);
         }
@@ -1949,9 +1951,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onShowDurationListWithCourierPromo(boolean isCourierPromo, String duration) {
-        if (isToogleYearEndPromoOn()) {
-            sendAnalyticsOnDisplayDurationThatContainPromo(isCourierPromo, duration);
-        }
+        sendAnalyticsOnDisplayDurationThatContainPromo(isCourierPromo, duration);
     }
 
     @Override
@@ -2068,7 +2068,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
                 shippingCourierUiModels, recipientAddressModel, cartPosition);
         shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
-        if (isToogleYearEndPromoOn() && shippingCourierUiModels != null) {
+        if (shippingCourierUiModels != null) {
             checkHasCourierPromo(shippingCourierUiModels);
         }
 
@@ -2148,15 +2148,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentAdapter.isCourierPromoStillExist()) {
             showToastError(String.format(getString(com.tokopedia.logisticcart.R.string.message_cannot_apply_courier_promo), shipperName));
         }
-    }
-
-    @Override
-    public boolean isToogleYearEndPromoOn() {
-        if (getActivity() != null) {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion");
-        }
-        return false;
     }
 
     @Override

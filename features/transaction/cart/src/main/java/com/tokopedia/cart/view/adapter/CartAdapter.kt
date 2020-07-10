@@ -476,8 +476,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return cartDataList.size
     }
 
-    fun unsubscribeSubscription() {
-        compositeSubscription.unsubscribe()
+    fun clearCompositeSubscription() {
+        compositeSubscription.clear()
     }
 
     fun addAvailableDataList(shopGroupAvailableDataList: List<ShopGroupAvailableData>) {
@@ -1085,5 +1085,24 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
         return count
+    }
+
+    fun getRecommendationItem(): List<CartRecommendationItemHolderData> {
+        var firstRecommendationItemIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartRecommendationItemHolderData) {
+                firstRecommendationItemIndex = index
+                break
+            }
+        }
+
+        var lastIndex = itemCount
+        // Check if last item is not loading view type
+        if (cartDataList[itemCount - 1] !is CartRecommendationItemHolderData) {
+            lastIndex = itemCount - 1
+        }
+        val recommendationList = cartDataList.subList(firstRecommendationItemIndex, lastIndex)
+
+        return recommendationList as List<CartRecommendationItemHolderData>
     }
 }

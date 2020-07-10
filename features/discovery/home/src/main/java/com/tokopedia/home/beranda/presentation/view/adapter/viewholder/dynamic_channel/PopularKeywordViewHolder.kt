@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -34,6 +35,9 @@ class PopularKeywordViewHolder (val view: View,
         val LAYOUT = R.layout.home_popular_keyword
     }
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private val performanceTraceName = "mp_home_popular_keyword_widget_load_time"
+
     private var adapter: PopularKeywordAdapter? = null
     var channelTitle: Typography? = null
     var tvReload: Typography? = null
@@ -45,9 +49,11 @@ class PopularKeywordViewHolder (val view: View,
     init{
         rotateAnimation.duration = 500
         rotateAnimation.interpolator = LinearInterpolator()
+        performanceMonitoring = PerformanceMonitoring()
     }
 
     override fun bind(element: PopularKeywordListDataModel) {
+        performanceMonitoring?.startTrace(performanceTraceName)
         initStub(element)
         initAdapter(element)
     }
@@ -63,6 +69,8 @@ class PopularKeywordViewHolder (val view: View,
             recyclerView.adapter = adapter
         }
         adapter?.submitList(element.popularKeywordList)
+        performanceMonitoring?.stopTrace()
+        performanceMonitoring = null
     }
 
     private fun initStub(element: PopularKeywordListDataModel) {
