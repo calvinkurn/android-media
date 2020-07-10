@@ -15,5 +15,5 @@
     <string name="konten_gagal_ditampilkan">Konten gagal ditampilkan</string>
     <string name="recom_message_retry_general">Ketuk ikon untuk memuat ulang</string>
     <string name="empty_stock">Stok Habis</string>
-    <string name="percentage_template">%1$d%</string>
+    <string name="percentage_template"></string>
 </resources>

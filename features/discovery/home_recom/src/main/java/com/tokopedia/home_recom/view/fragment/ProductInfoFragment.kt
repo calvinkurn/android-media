@@ -26,7 +26,8 @@ import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.util.Status
-import com.tokopedia.home_recom.util.fadeShow
+import com.tokopedia.home_recom.view.fragment.ProductInfoFragment.Companion.REQUEST_CODE_LOGIN
+import com.tokopedia.home_recom.view.fragment.ProductInfoFragment.Companion.REQUEST_CODE_PDP
 import com.tokopedia.home_recom.view.fragment.ProductInfoFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -34,8 +35,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.empty_product_info.*
 import kotlinx.android.synthetic.main.error_product_info_layout.*
 import kotlinx.android.synthetic.main.fragment_product_info.*
+import kotlinx.android.synthetic.main.shimmering_product_info.*
 import javax.inject.Inject
 
 /**
@@ -132,26 +135,26 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun initView(productDataModel: ProductInfoDataModel){
         configureContentView(true)
         recommendationItem = mapToRecommendationItem(productDataModel)
-        product_name?.text = productDataModel.productDetailData.name
-        handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
-        product_price?.text = productDataModel.productDetailData.price
-        location?.text = productDataModel.productDetailData.shop.location
+        product_name.text = productDataModel.productDetailData.name
+        product_price.text = productDataModel.productDetailData.price
+        location.text = productDataModel.productDetailData.shop.location
         if (productDataModel.productDetailData.badges.isNotEmpty()) {
-            badge?.show()
+            badge.show()
             ImageHandler.loadImageFitCenter(context, badge, productDataModel.productDetailData.badges[0].imageUrl)
         } else {
-            badge?.hide()
+            badge.hide()
         }
+        setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
         updateWishlist(productDataModel.productDetailData.isWishlist)
         ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
-        setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
+        handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
 
         when(productDataModel.productDetailData.status){
             0 -> {
                 container_loading.hide()
                 container_error.hide()
                 container_product.hide()
-                container_empty.fadeShow()
+                container_empty.show()
             }
             3 -> {
                 add_to_cart.isEnabled = false
@@ -682,7 +685,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         if(discountPercentage > 0){
             product_discount.show()
             product_slashed_price.show()
-            product_discount.text = String.format(getString(R.string.percentage_template), discountPercentage)
+            product_discount.text = "$discountPercentage%"
             setSplashedText(slashedPrice)
         } else {
             product_discount.gone()

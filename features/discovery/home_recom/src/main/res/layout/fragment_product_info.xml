@@ -224,33 +224,14 @@
                                         android:layout_height="wrap_content"
                                         android:id="@+id/barrier"
                                         app:barrierDirection="bottom"
-                                        app:constraint_referenced_ids="review_count,rating,location,badge,product_image"
-                                        tools:layout_editor_absoluteY="19dp"
-                                        tools:layout_editor_absoluteX="19dp"/>
+                                        app:constraint_referenced_ids="review_count,rating,location,badge,product_image"/>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
-                        <include layout="@layout/error_product_info_layout"
-                            android:id="@+id/container_error"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            tools:visibility="gone"/>
+                        <include layout="@layout/error_product_info_layout" />
 
-                        <include layout="@layout/empty_product_info"
-                            android:id="@+id/container_empty"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            tools:visibility="gone"/>
+                        <include layout="@layout/empty_product_info" />
 
-                        <include layout="@layout/shimmering_product_info"
-                            android:id="@+id/container_loading"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginLeft="5dp"
-                            tools:visibility="visible"/>
+                        <include layout="@layout/shimmering_product_info" />
                 </FrameLayout>
         </com.tokopedia.unifycomponents.CardUnify>
 </com.tokopedia.unifycomponents.ContainerUnify>
