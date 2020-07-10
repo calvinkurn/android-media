@@ -54,9 +54,12 @@ class CashbackVoucherCreateViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    lateinit var mViewModel: CashbackVoucherCreateViewModel
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        mViewModel = CashbackVoucherCreateViewModel(testDispatcher, cashbackRupiahValidationUseCase, cashbackPercentageValidationUseCase)
 
         mViewModel.expenseEstimationLiveData.observeForever(expenseEstimationObserver)
         mViewModel.cashbackPercentageInfoUiModelLiveData.observeForever(cashbackPercentageInfoUiModelObserver)
@@ -71,10 +74,6 @@ class CashbackVoucherCreateViewModelTest {
     }
 
     private val testDispatcher = TestCoroutineDispatcher()
-
-    private val mViewModel by lazy {
-        CashbackVoucherCreateViewModel(testDispatcher, cashbackRupiahValidationUseCase, cashbackPercentageValidationUseCase)
-    }
 
     @Test
     fun `adding rupiah maximum discount text field value will change expense estimation value if quota is already set`() {
@@ -329,11 +328,13 @@ class CashbackVoucherCreateViewModelTest {
         with(mViewModel) {
             changeCashbackType(CashbackType.Rupiah)
 
-            assert(rupiahValueList.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt())) ?: false)
+            assert(rupiahValueList.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt()))
+                    ?: false)
 
             changeCashbackType(CashbackType.Percentage)
 
-            assert(percentageValueList.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt(), anyInt())) ?: false)
+            assert(percentageValueList.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt(), anyInt()))
+                    ?: false)
         }
     }
 
@@ -351,11 +352,13 @@ class CashbackVoucherCreateViewModelTest {
 
             changeCashbackType(CashbackType.Rupiah)
 
-            assert(rupiahErrorPairList.value?.contentEquals(arrayOf(dummyPair, dummyPair, dummyPair)) ?: false)
+            assert(rupiahErrorPairList.value?.contentEquals(arrayOf(dummyPair, dummyPair, dummyPair))
+                    ?: false)
 
             changeCashbackType(CashbackType.Percentage)
 
-            assert(percentageErrorPairList.value?.contentEquals(arrayOf(dummyPair, dummyPair, dummyPair, dummyPair)) ?: false)
+            assert(percentageErrorPairList.value?.contentEquals(arrayOf(dummyPair, dummyPair, dummyPair, dummyPair))
+                    ?: false)
         }
     }
 
