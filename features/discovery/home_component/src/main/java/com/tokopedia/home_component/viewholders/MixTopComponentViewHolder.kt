@@ -83,6 +83,10 @@ class MixTopComponentViewHolder(
         }
     }
 
+    override fun bind(element: MixTopDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         mixTopComponentListener.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
     }
