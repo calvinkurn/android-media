@@ -4,8 +4,7 @@ import android.annotation.SuppressLint
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
 import com.tokopedia.merchantvoucher.common.gql.data.*
-import java.text.SimpleDateFormat
-import java.util.*
+import com.tokopedia.utils.time.RfcDateTimeParser
 import javax.inject.Inject
 
 class VoucherMapper @Inject constructor() {
@@ -50,13 +49,7 @@ class VoucherMapper @Inject constructor() {
     // convert RFC3339 to unix
     @SuppressLint("SimpleDateFormat")
     private fun convertToUnix(voucherFinishTime: String): String {
-        val pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        val timezone = Calendar.getInstance().timeZone
-        val parser = SimpleDateFormat(pattern).apply {
-            timeZone = timezone
-        }
-        // convert to seconds
-        val unix = parser.parse(voucherFinishTime).time / 1000
+        val unix = RfcDateTimeParser.parseDateString(voucherFinishTime).time / 1000
         return unix.toString()
     }
 
