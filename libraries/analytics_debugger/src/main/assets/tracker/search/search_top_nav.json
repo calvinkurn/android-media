@@ -3,7 +3,7 @@
   "query" : [
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav - search - search result page",
+      "eventCategory": "top nav - search result page",
       "eventAction": "click search box",
       "eventLabel": "{{.*}}"
     }
