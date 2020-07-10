@@ -67,7 +67,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     private fun showInquiryDate(date: String) {
         if(date.isNotEmpty()) {
             itemView.readingInquiryDate.apply {
-                text = addBulletPointToDate(date)
+                text = date
                 show()
             }
         } else {
@@ -151,7 +151,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
             itemView.readingRespondentResponseDate.apply {
-                text = addBulletPointToDate(date)
+                text = date
                 show()
             }
         } else {
@@ -166,10 +166,6 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         } else {
             itemView.readingRespondentSellerLabel.hide()
         }
-    }
-
-    private fun addBulletPointToDate(date: String): String {
-        return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
     private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int, questionId: String) {

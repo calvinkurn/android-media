@@ -253,6 +253,7 @@
     <string name="product_detail_discussion_local_load_title">Q&amp;A gagal ditampilkan</string>
     <string name="product_detail_discussion_local_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_detail_discussion_ellipsis">…</string>
+    <string name="product_detail_discussion_dot">•</string>
 
     <!--Ticker-->
     <string name="ticker_desc_shop_close">Tenang, kamu bisa kembali belanja di toko ini mulai %1s. &lt;a href="#"&gt;Selengkapnya.&lt;/a&gt;</string>
