@@ -178,6 +178,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         return true
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.home_recom.R.id.recycler_view
+    }
+
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
