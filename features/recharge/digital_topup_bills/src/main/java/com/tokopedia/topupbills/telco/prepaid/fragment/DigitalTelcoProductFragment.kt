@@ -285,6 +285,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onDestroy() {
+        sortFilter.removeAllViews()
+        super.onDestroy()
+    }
+
     private fun hideShimmering() {
         shimmeringGridLayout.hide()
         shimmeringListLayout.hide()
@@ -297,14 +302,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         const val SELECTED_PRODUCT = "selected_product"
         const val OPERATOR_NAME = "operator_name"
 
-        fun newInstance(titlePage: String, operatorName: String, productType: Int,
-                        selectedProduct: Int): Fragment {
+        fun newInstance(bundle: Bundle): Fragment {
             val fragment = DigitalTelcoProductFragment()
-            val bundle = Bundle()
-            bundle.putString(TITLE_PAGE, titlePage)
-            bundle.putInt(PRODUCT_TYPE, productType)
-            bundle.putInt(SELECTED_PRODUCT, selectedProduct)
-            bundle.putString(OPERATOR_NAME, operatorName)
             fragment.arguments = bundle
             return fragment
         }

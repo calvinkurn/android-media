@@ -84,10 +84,11 @@
             android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <com.tokopedia.design.viewpager.WrapContentViewPager
+            <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="horizontal"
                 android:layout_above="@id/buy_widget"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4" />
