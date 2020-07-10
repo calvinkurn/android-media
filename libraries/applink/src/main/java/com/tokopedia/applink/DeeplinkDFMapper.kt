@@ -30,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_PDP
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_EMAIL
@@ -260,7 +261,7 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_PROMO_GAMIFICATION,R.string.internet_title_gamification))
 
             //Entertainment
-            add(DFP({ it.startsWith(EVENT_HOME) },DF_ENTERTAINMENT, R.string.title_entertainment, {DFWebviewFallbackUrl.ENTERTAINMENT_EVENT}))
+            add(DFP({ it.startsWith(EVENT_HOME) || it.startsWith(EVENT_PDP)},DF_ENTERTAINMENT, R.string.title_entertainment, {DFWebviewFallbackUrl.ENTERTAINMENT_EVENT}))
             // Salam
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))
