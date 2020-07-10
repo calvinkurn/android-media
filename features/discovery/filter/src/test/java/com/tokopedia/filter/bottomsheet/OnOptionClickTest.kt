@@ -58,7 +58,9 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
         var mapParameterContainsClickedOption = false
         mapParameterOptions.forEach { mapParameterOption ->
             val mapParameterOptionValues = mapParameterOption.split(OptionHelper.VALUE_SEPARATOR)
-            mapParameterContainsClickedOption = mapParameterOptionValues.containsAll(optionValues)
+
+            mapParameterContainsClickedOption =
+                    mapParameterOptionValues.size == optionValues.size && mapParameterOptionValues.containsAll(optionValues)
 
             if (mapParameterContainsClickedOption) return
         }
