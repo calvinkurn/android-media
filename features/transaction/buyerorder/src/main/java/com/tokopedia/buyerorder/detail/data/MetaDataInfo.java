@@ -118,6 +118,10 @@ public class MetaDataInfo {
     @Expose
     private String productPrice;
 
+    @SerializedName("product_app_url")
+    @Expose
+    private String productAppUrl;
+
 
     public String getEndDate() {
         return endDate;
@@ -306,4 +310,6 @@ public class MetaDataInfo {
     }
 
     public String getEmail(){return email;}
+
+    public String getProductAppUrl(){return productAppUrl;}
 }

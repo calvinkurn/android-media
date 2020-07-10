@@ -650,7 +650,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 @Override
                 public void onClick(View v) {
                     if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                        presenter.hitEventEmail(actionButton,orderDetails.getMetadata(), actionButtonText);
+                        presenter.hitEventEmail(actionButton,orderDetails.getMetadata(), actionButtonText,actionButtonLayout);
                     } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                         RouteManager.route(getContext(), actionButton.getBody().getAppURL());
                     }

@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -233,12 +235,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText){
+    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText, RelativeLayout actionButtonLayout){
         if (actionButton.getName().equalsIgnoreCase("customer_notification")){
-            HashMap<String, String> mapBody = new HashMap<String, String>();
-            mapBody.put("body", metadata);
             sendEventNotificationUseCase.setPath(actionButton.getUri());
-            sendEventNotificationUseCase.setBody(mapBody);
+            sendEventNotificationUseCase.setBody(metadata);
             sendEventNotificationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
                 @Override
                 public void onCompleted() {
@@ -255,9 +255,19 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 @Override
                 public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
                         if (getView() != null && getView().getAppContext() != null) {
-                            actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_success));
-                            actionButtonText.setClickable(false);
-                            getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_copied));
+                            Type token = new TypeToken<SendEventEmail>() {
+                            }.getType();
+                            RestResponse restResponse = typeDataResponseMap.get(token);
+                            actionButtonLayout.setClickable(false);
+                            if(restResponse.getCode()==200 && restResponse.getErrorBody()==null) {
+                                actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_success));
+                                getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_copied));
+                            } else {
+                                Gson gson = new Gson();
+                                actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_fail));
+                                SendEventEmail dataResponse = gson.fromJson(restResponse.getErrorBody(), SendEventEmail.class);
+                                getView().showSuccessMessageWithAction(dataResponse.getData().getMessage());
+                            }
                         }
                 }
             });
