@@ -185,7 +185,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().setCurrencyCode("IDR");
         AppsFlyerLib.getInstance().setDebugLog(true);
         setUserID(userID);
-        AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
+//        AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
         if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
             AppsFlyerLib.getInstance().setPreinstallAttribution(
                     com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,
