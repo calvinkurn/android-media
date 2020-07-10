@@ -163,8 +163,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_setup)
         if (currentFragment == null || currentFragment::class.java != fragmentClass) {
             destFragment.arguments = extras
-            fragmentTransaction.replace(R.id.fl_setup, destFragment, fragmentClass.name)
-            fragmentTransaction.commit()
+            fragmentTransaction
+                    .replace(R.id.fl_setup, destFragment, fragmentClass.name)
+                    .commit()
         }
     }
 
@@ -177,7 +178,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     override fun showActionBar(shouldShow: Boolean) {
-        if (shouldShow && ::viewActionBar.isInitialized) viewActionBar.show() else viewActionBar.hide()
+        if (!::viewActionBar.isInitialized) return
+        if (shouldShow) viewActionBar.show() else viewActionBar.hide()
     }
 
     override fun getBroadcastComponent(): PlayBroadcastComponent {
