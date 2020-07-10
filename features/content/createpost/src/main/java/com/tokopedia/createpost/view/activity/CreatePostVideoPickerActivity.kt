@@ -2,7 +2,6 @@ package com.tokopedia.createpost.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.videorecorder.main.VideoPickerActivity
@@ -21,7 +20,7 @@ class CreatePostVideoPickerActivity: VideoPickerActivity() {
             dialog.setTitle(getString(R.string.af_title_update_post))
             dialog.setDesc(
                     getString(R.string.af_message_update_choosen_video))
-            dialog.setBtnCancel(getString(R.string.cancel))
+            dialog.setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
             dialog.setBtnOk(getString(R.string.af_continue))
             dialog.setOnOkClickListener{
                 dialog.dismiss()

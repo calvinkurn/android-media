@@ -41,4 +41,6 @@
     <string name="applink_ip_host" translatable="false">interestpick</string>
     <string name="applink_ip_title" translatable="false">Pilih Inspirasi Kamu</string>
 
+    <string name="applink_af_title_create_post">Create Post</string>
+
 </resources>

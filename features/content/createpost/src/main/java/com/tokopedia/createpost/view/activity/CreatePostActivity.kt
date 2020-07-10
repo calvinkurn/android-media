@@ -111,9 +111,9 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
     override fun invalidatePostMenu(isPostEnabled: Boolean) {
         if (isPostEnabled) {
-            action_post.setTextColor(ContextCompat.getColor(this, R.color.green_500))
+            action_post.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_500))
         } else {
-            action_post.setTextColor(ContextCompat.getColor(this, R.color.grey_500))
+            action_post.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500))
         }
     }
 
