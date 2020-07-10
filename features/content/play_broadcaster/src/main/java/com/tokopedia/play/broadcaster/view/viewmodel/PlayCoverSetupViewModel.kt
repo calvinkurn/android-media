@@ -25,15 +25,12 @@ import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 /**
  * @author by furqan on 09/06/2020
@@ -105,21 +102,17 @@ class PlayCoverSetupViewModel @Inject constructor(
         return coverTitle.isNotEmpty() && coverTitle.length <= MAX_CHARS
     }
 
-    suspend fun getOriginalImageUrl(productId: Long, resizedImageUrl: String): String? = suspendCancellableCoroutine {
-        launchCatchError(dispatcher.io, block = {
-            val originalImageUrlList = getOriginalProductImageUseCase.apply {
-                params = GetOriginalProductImageUseCase.createParams(productId)
-            }.executeOnBackground()
-            yield()
-            val resizedUrlLastSegments = resizedImageUrl.split("/")
-                    .let { it[it.lastIndex] }
-            val originalImageUrl = originalImageUrlList.first {
-                it.contains(resizedUrlLastSegments)
-            }
-            it.resume(originalImageUrl)
-        }) { err ->
-            err.printStackTrace()
-            it.resumeWithException(err)
+    suspend fun getOriginalImageUrl(productId: Long, resizedImageUrl: String): String? = withContext(dispatcher.io) {
+        val originalImageUrlList = getOriginalProductImageUseCase.apply {
+            params = GetOriginalProductImageUseCase.createParams(productId)
+        }.executeOnBackground()
+        yield()
+
+        val resizedUrlLastSegments = resizedImageUrl.split("/")
+                .let { it[it.lastIndex] }
+
+        return@withContext originalImageUrlList.first {
+            it.contains(resizedUrlLastSegments)
         }
     }
 
