@@ -28,8 +28,7 @@ object EventDateMapper{
         for (date in dates){
             listActiveDate.add(Date(date.toLong() * 1000))
         }
-
-        return listActiveDate
+        return listActiveDate.sortedBy {it}
     }
 
     fun checkDate(list : List<String>, selectedDate: String): Boolean {
