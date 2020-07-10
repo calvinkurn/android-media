@@ -48,10 +48,6 @@ public interface SearchConstant {
         String KEY_HEADLINE_PARAMS = "headline_params";
     }
 
-    interface RemoteConfigKey {
-        String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
-    }
-
     interface BaseUrl {
         String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
         String ACE_DOMAIN = "https://ace.tokopedia.com/";
@@ -77,7 +73,6 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
-        String PARAMETER_ROWS = "8";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";

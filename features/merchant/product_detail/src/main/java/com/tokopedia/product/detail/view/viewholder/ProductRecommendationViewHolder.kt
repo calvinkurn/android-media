@@ -61,7 +61,7 @@ class ProductRecommendationViewHolder(private val view: View,
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsClickUrl = productRecommendation.clickUrl
                         if (productCardModel.isTopAds) {
-                            listener.sendTopAds(topAdsClickUrl)
+                            listener.sendTopAdsClick(topAdsClickUrl, productRecommendation.productId.toString(), productRecommendation.name, productRecommendation.imageUrl)
                         }
 
                         listener.eventRecommendationClick(productRecommendation, carouselProductCardPosition, product.pageName, product.title, componentTrackDataModel)
@@ -82,7 +82,7 @@ class ProductRecommendationViewHolder(private val view: View,
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsImageUrl = productRecommendation.trackerImageUrl
                         if (productCardModel.isTopAds) {
-                            listener.sendTopAds(topAdsImageUrl)
+                            listener.sendTopAdsImpression(topAdsImageUrl, productRecommendation.productId.toString(), productRecommendation.name, productRecommendation.imageUrl)
                         }
 
                         listener.eventRecommendationImpression(productRecommendation,

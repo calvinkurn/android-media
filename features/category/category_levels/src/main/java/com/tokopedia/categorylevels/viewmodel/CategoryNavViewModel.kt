@@ -3,6 +3,7 @@ package com.tokopedia.categorylevels.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.common_category.data.catalogModel.CatalogListResponse
 import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
 import com.tokopedia.common_category.model.bannedCategory.Data
@@ -19,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val IS_ADULT = 1
 
-class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
+class CategoryNavViewModel @Inject constructor(val pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface?) : ViewModel(), CoroutineScope {
     private val jobs = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + jobs
@@ -34,7 +35,11 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     fun fetchCategoryDetail(departmentId: String) {
         launchCatchError(block = {
+            pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+            pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
             val graphqlResponse = categoryNavRepository.getCategoryDetailWithCatalogCount(departmentId)
+            pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+            pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
             graphqlResponse?.let {
                 it.getData<CatalogListResponse>(CatalogListResponse::class.java).searchCatalog?.let { searchCatalog ->
                     hasCatalog.value = searchCatalog.count != 0
