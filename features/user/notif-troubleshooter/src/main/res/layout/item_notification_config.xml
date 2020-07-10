@@ -32,8 +32,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
         tools:text="Test Push Notification"
         android:textColor="@color/charcoal_grey_96"
         android:textSize="@dimen/sp_16"
@@ -45,6 +45,7 @@
     <TextView
         android:id="@+id/txtMessage"
         android:visibility="gone"
+        tools:visibility="visible"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/sp_6"
