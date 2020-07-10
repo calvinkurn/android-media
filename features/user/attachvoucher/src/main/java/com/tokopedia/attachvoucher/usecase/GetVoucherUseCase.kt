@@ -27,14 +27,14 @@ class GetVoucherUseCase @Inject constructor(
 
     fun getVouchers(
             page: Int,
-            filter: Int,
+            filterVoucherType: Int,
             onSuccess: (List<VoucherUiModel>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         getVouchersJob = launchCatchError(dispatchers.IO,
                 {
                     startLoading()
-                    val params = generateParams(page, filter)
+                    val params = generateParams(page, filterVoucherType)
                     val response = gqlUseCase.apply {
                         setTypeClass(GetMerchantPromotionGetMVListResponse::class.java)
                         setRequestParams(params)

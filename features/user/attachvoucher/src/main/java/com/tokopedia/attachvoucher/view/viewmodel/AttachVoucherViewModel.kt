@@ -45,16 +45,16 @@ class AttachVoucherViewModel @Inject constructor(
         )
     }
 
+    fun hasNoFilter(): Boolean {
+        return filter.value == null || filter.value == NO_FILTER
+    }
+
     private fun onSuccessGetVouchers(vouchers: List<VoucherUiModel>) {
         _vouchers.value = vouchers
     }
 
     private fun onErrorGetVouchers(throwable: Throwable) {
         _error.value = throwable
-    }
-
-    fun hasNoFilter(): Boolean {
-        return filter.value == null || filter.value == NO_FILTER
     }
 
     companion object {
