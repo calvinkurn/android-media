@@ -97,8 +97,7 @@ class TroubleshootViewModel @Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun getSoundNotification() {
-        val ringtone = getRingtoneUri(TYPE_NOTIFICATION)
-        _notificationSoundUri.value = ringtone
+        _notificationSoundUri.value = getRingtoneUri(TYPE_NOTIFICATION)
     }
 
 }

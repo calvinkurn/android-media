@@ -1,6 +1,7 @@
 package com.tokopedia.troubleshooter.notification.ui.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
@@ -39,6 +40,8 @@ class TroubleshootViewModelTest {
     private val troubleshootObservable: Observer<NotificationSendTroubleshoot> = mockk(relaxed = true)
     private val notificationObservable: Observer<Boolean> = mockk(relaxed = true)
     private val errorObservable: Observer<Throwable> = mockk(relaxed = true)
+    private val ringtoneObservable: Observer<Uri?> = mockk(relaxed = true)
+    private val tokenObservable: Observer<String> = mockk(relaxed = true)
     private val channelObservable: Observer<Int> = mockk(relaxed = true)
 
     private val dispatcherProvider = TestDispatcherProvider()
@@ -55,7 +58,9 @@ class TroubleshootViewModelTest {
 
         viewModel.notificationSetting.observeForever(notificationObservable)
         viewModel.notificationImportance.observeForever(channelObservable)
+        viewModel.notificationSoundUri.observeForever(ringtoneObservable)
         viewModel.troubleshoot.observeForever(troubleshootObservable)
+        viewModel.token.observeForever(tokenObservable)
         viewModel.error.observeForever(errorObservable)
     }
 
@@ -94,6 +99,9 @@ class TroubleshootViewModelTest {
         viewModel.getNewToken()
 
         verify { instanceManager.getNewToken(any()) }
+        verify { tokenObservable.onChanged(token) }
+
+        viewModel.token isEqualsTo token
     }
 
     @Test fun `it should update new token`() {
@@ -143,6 +151,11 @@ class TroubleshootViewModelTest {
 
         verify { notificationObservable.onChanged(expectedValue) }
         viewModel.notificationSetting isEqualsTo expectedValue
+    }
+
+    @Test fun `it should return notification ringtone uri`() {
+        viewModel.getSoundNotification()
+        verify { ringtoneObservable.onChanged(any()) }
     }
 
 }
