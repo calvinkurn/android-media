@@ -7,4 +7,5 @@
     <dimen name="phoneverification_dp_20">20dp</dimen>
     <dimen name="phoneverification_dp_25">25dp</dimen>
     <dimen name="phoneverification_dp_30">30dp</dimen>
+    <dimen name="phoneverification_dp_40">40dp</dimen>
 </resources>
