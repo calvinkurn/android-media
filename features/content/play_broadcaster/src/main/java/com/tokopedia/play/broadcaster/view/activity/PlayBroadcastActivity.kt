@@ -82,7 +82,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             window.decorView.systemUiVisibility = value
         }
 
-    private var permissions = arrayOf(Manifest.permission.CAMERA,
+    private val permissions = arrayOf(Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO)
 
     private val permissionHelper by lazy { PermissionHelperImpl(this) }
@@ -344,9 +344,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun requestPermission() {
         permissionHelper.requestMultiPermissionsFullFlow(
-                permissions = arrayOf(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.RECORD_AUDIO),
+                permissions = permissions,
                 requestCode = REQUEST_PERMISSION_CODE,
                 permissionResultListener = object: PermissionResultListener {
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
