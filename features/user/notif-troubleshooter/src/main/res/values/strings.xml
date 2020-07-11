@@ -18,7 +18,7 @@
     <string name="notif_token_update">Token baru saja diperbarui</string>
     <string name="notif_token_error">Terjadi kesalahan, silahkan clear-data aplikasi Tokopedia anda, dan login kembali</string>
 
-    <string name="notif_ticker_notif_disabled">Mohon hidupkan pengaturan notifikasi anda.</string>
+    <string name="notif_ticker_notif_disabled">Mohon hidupkan pengaturan notifikasi anda</string>
 
     <string name="notif_ticker_importance_low">
         <![CDATA[Nilai prioritas "Notifikasi": <b>Low(%1$d)</b>. Notifikasi muncul, tapi tidak ada suara, atur ke nilai prioritas lebih tinggi.]]>
