@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.net.Uri
 import android.os.Build
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterTypeFactory
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Channel as Channel
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.PushNotification as PushNotification
@@ -13,11 +14,10 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Loading a
 
 data class ConfigUIView(
         val state: ConfigState = PushNotification,
-        var title: String = "",
+        var title: Int,
         var message: String = "",
         var status: StatusState = Loading,
-        var ringtone: Uri? = null,
-        var visibility: Boolean = true
+        var ringtone: Uri? = null
 ): Visitable<TroubleshooterTypeFactory> {
 
     override fun type(typeFactory: TroubleshooterTypeFactory): Int {
@@ -27,10 +27,10 @@ data class ConfigUIView(
     companion object {
         fun items(): List<ConfigUIView> {
             return arrayListOf(
-                    ConfigUIView(PushNotification, "Push Notification"),
-                    ConfigUIView(Notification, "Penganturan Notifikasi"),
-                    ConfigUIView(Channel, "Penganturan Kategori"),
-                    ConfigUIView(Ringtone, "Suara Notifikasi")
+                    ConfigUIView(PushNotification, R.string.notif_menu_push),
+                    ConfigUIView(Notification, R.string.notif_menu_setting),
+                    ConfigUIView(Channel, R.string.notif_menu_channel),
+                    ConfigUIView(Ringtone, R.string.notif_menu_ringtone)
             )
         }
 

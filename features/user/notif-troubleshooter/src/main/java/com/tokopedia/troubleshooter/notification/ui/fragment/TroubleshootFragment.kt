@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
@@ -86,7 +87,6 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     private fun initView() {
         lstConfig?.layoutManager = LinearLayoutManager(context)
         lstConfig?.adapter = adapter
-
         adapter.addElement(ConfigUIView.items())
     }
 
@@ -96,12 +96,12 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            adapter.updateTroubleshootMessage(getString(R.string.notif_token_error))
+            adapter.addMessage(PushNotification, getString(R.string.notif_token_error))
             adapter.isTroubleshootError()
         })
 
         viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
-            setTokenStatus(newToken)
+            setUpdateTokenStatus(newToken)
         })
 
         viewModel.notificationSetting.observe(viewLifecycleOwner, Observer { status ->
@@ -117,7 +117,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         })
     }
 
-    private fun setTokenStatus(newToken: String) {
+    private fun setUpdateTokenStatus(newToken: String) {
         val message = if (fcmManager.isNewToken(newToken)) {
             viewModel.updateToken(newToken)
             getString(R.string.notif_token_update)
@@ -125,7 +125,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
             getString(R.string.notif_token_current)
         }
 
-        adapter.updateTroubleshootMessage(message)
+        adapter.addMessage(PushNotification, message)
     }
 
     private fun setNotificationSettingStatus(notificationEnable: Boolean) {
@@ -162,11 +162,11 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
             IMPORTANCE_LOW -> getString(
                     R.string.notif_ticker_importance_low,
                     importance
-            ).trim()
+            ).parseAsHtml().trim()
             else -> getString(
                     R.string.notif_ticker_importance_none,
                     importance
-            ).trim()
+            ).parseAsHtml().trim()
         })
     }
 

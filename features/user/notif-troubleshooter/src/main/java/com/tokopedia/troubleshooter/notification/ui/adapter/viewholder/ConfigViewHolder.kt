@@ -7,7 +7,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
@@ -29,11 +28,16 @@ open class ConfigViewHolder(
     private val context by lazy { itemView.context }
 
     override fun bind(element: ConfigUIView?) {
-        if (element == null || !element.visibility) return
-
+        if (element == null) return
         viewState(element)
-        txtTitle?.text = element.title
+
         pgLoader?.show()
+        txtTitle?.text = context?.getString(element.title)
+
+        if (element.message.isNotEmpty()) {
+            txtMessage?.text = element.message
+            txtMessage?.show()
+        }
     }
 
     private fun viewState(element: ConfigUIView) {
@@ -49,11 +53,6 @@ open class ConfigViewHolder(
 
     private fun pushNotification(element: ConfigUIView) {
         troubleshootStatus(element.status)
-
-        if (element.message.isNotEmpty()) {
-            txtMessage?.show()
-            txtMessage?.text = element.message
-        }
     }
 
     private fun notificationSetting(status: StatusState) {
@@ -66,7 +65,6 @@ open class ConfigViewHolder(
 
     private fun notificationChannel(element: ConfigUIView) {
         troubleshootStatus(element.status)
-
         itemView.setOnClickListener {
             listener.goToNotificationSettings()
         }

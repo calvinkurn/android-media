@@ -2,8 +2,13 @@
 <resources>
     <string name="notif_title">Troubleshooter</string>
 
+    <string name="notif_menu_push">Push Notification</string>
+    <string name="notif_menu_setting">Penganturan Notifikasi</string>
+    <string name="notif_menu_channel">Kategori Notifikasi</string>
+    <string name="notif_menu_ringtone">Suara Notifikasi</string>
+
     <string name="notif_success_update_token">Berhasil perbaharui token</string>
-    <string name="notif_ticker_title">Terjadi Kesalahan</string>
+    <string name="notif_ticker_title">Error!</string>
     <string name="notif_ticker_resolve">Aktifkan Notifikasi</string>
 
     <string name="notif_ringtone_success">Ringtone berjalan dengan baik</string>
@@ -16,11 +21,11 @@
     <string name="notif_ticker_notif_disabled">Mohon hidupkan pengaturan notifikasi anda.</string>
 
     <string name="notif_ticker_importance_low">
-        Nilai prioritas "Notifikasi": Low(%1$d). Notifikasi muncul, tapi tidak ada suara, atur ke nilai prioritas lebih tinggi.
+        <![CDATA[Nilai prioritas "Notifikasi": <b>Low(%1$d)</b>. Notifikasi muncul, tapi tidak ada suara, atur ke nilai prioritas lebih tinggi.]]>
     </string>
 
     <string name="notif_ticker_importance_none">
-        Nilai prioritas "Notifikasi": None(%1$d). Notifikasi muncul, atur ke nilai prioritas lebih tinggi.
+        <![CDATA[Nilai prioritas "Notifikasi": <b>None(%1$d)</b>. Notifikasi muncul, atur ke nilai prioritas lebih tinggi.]]>
     </string>
 
 </resources>

@@ -5,16 +5,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterItemFactory
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
+import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Error
+import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Success
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
-import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView.Companion.addTickerMessage
+import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView.Companion.showTicker
 import com.tokopedia.troubleshooter.notification.util.dropFirst
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Channel as Channel
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.PushNotification as PushNotification
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone as Ringtone
-import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Error as Error
-import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Success as Success
+import com.tokopedia.troubleshooter.notification.util.getWithIndex
 
 internal open class TroubleshooterAdapter(
         factory: TroubleshooterItemFactory
@@ -24,13 +23,13 @@ internal open class TroubleshooterAdapter(
         return visitables?.filterIsInstance(ConfigUIView::class.java)
     }
 
-    private fun configUIViewByState(state: ConfigState): ConfigUIView? {
-        return configUIView()?.first { it.state == state }
+    private fun configUIViewByState(state: ConfigState): Pair<Int, ConfigUIView?>? {
+        return configUIView()?.getWithIndex { it.state == state }
     }
 
     private fun setStatus(state: ConfigState, isSuccess: Boolean): ConfigUIView? {
         val status = if (isSuccess) Success else Error
-        return configUIViewByState(state)?.also { it.status = status }
+        return configUIViewByState(state)?.second?.also { it.status = status }
     }
 
     fun setRingtoneStatus(ringtone: Uri?, isSuccess: Boolean) {
@@ -45,11 +44,12 @@ internal open class TroubleshooterAdapter(
         notifyDataSetChanged()
     }
 
-    fun updateTroubleshootMessage(message: String) {
-        configUIViewByState(PushNotification)?.let {
-            it.message = message
-        }
-        notifyItemChanged(0)
+    fun addMessage(state: ConfigState, message: String) {
+        val viewState = configUIViewByState(state)?: return
+        val index = viewState.first
+        val view = viewState.second
+        view?.let { it.message = message }
+        notifyItemChanged(index)
     }
 
     fun isTroubleshootError() {
@@ -57,15 +57,14 @@ internal open class TroubleshooterAdapter(
     }
 
     fun hideNotificationChannel() {
-        configUIViewByState(Channel)?.let {
-            it.visibility = false
-        }
-        notifyDataSetChanged()
+        val index = configUIViewByState(Channel)?.first?: return
+        visitables.removeAt(index)
+        notifyItemRemoved(index)
     }
 
-    fun addTicker(message: String) {
+    fun addTicker(message: CharSequence) {
         removeTicker()
-        addElement(TICKER_INDEX, addTickerMessage(message))
+        addElement(TICKER_INDEX, showTicker(message))
     }
 
     fun removeTicker() {
