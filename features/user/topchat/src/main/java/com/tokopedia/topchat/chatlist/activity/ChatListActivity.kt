@@ -10,7 +10,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment
 
 
-class ChatListActivity : BaseSimpleActivity() {
+open class ChatListActivity : BaseSimpleActivity() {
 
     override fun getLayoutRes(): Int = R.layout.activity_chat_tab_list
     override fun getParentViewResourceID(): Int = R.id.fragmentContainer

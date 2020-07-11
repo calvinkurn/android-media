@@ -1,20 +1,32 @@
 package com.tokopedia.topchat.stub.chatlist.activity
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.activity.ChatListActivity
+import com.tokopedia.topchat.stub.chatlist.fragment.ChatTabListFragmentStub
+import com.tokopedia.topchat.stub.common.UserSessionStub
 
-class ChatListActivityStub: AppCompatActivity() {
+class ChatListActivityStub : ChatListActivity() {
+
+    lateinit var userSessionInterface: UserSessionStub
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_tab_list)
+        userSessionInterface = UserSessionStub(applicationContext)
     }
 
-    fun setupFragment(fragment: Fragment){
+    override fun inflateFragment() {
+        // Do not inflate fragment immediately
+    }
+
+    fun setupTestFragment() {
+        val newFragment = newFragment ?: return
         supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentContainer, fragment, "TAG_FRAGMENT")
+                .replace(parentViewResourceID, newFragment, tagFragment)
                 .commit()
+    }
+
+    override fun getNewFragment(): Fragment? {
+        return ChatTabListFragmentStub.create(userSessionInterface)
     }
 }

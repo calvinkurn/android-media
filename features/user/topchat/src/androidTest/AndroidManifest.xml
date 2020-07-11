@@ -6,7 +6,7 @@
 
     <application
         android:debuggable="false"
-        android:label="Topchat Chatlist Activity Test"
+        android:label="Chat"
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:debuggable,android:label">
 
