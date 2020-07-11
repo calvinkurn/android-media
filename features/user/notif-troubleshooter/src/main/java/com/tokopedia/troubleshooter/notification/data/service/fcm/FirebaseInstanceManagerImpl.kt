@@ -1,4 +1,4 @@
-package com.tokopedia.troubleshooter.notification.data
+package com.tokopedia.troubleshooter.notification.data.service.fcm
 
 import com.google.firebase.iid.FirebaseInstanceId
 
