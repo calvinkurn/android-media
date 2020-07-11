@@ -140,11 +140,12 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         val isImportance = importantNotification(importance)
         val hasNotCategory = importance == Int.MAX_VALUE
 
+        if (hasNotCategory) {
+            adapter.hideNotificationCategory()
+            return
+        }
+
         when {
-            hasNotCategory -> {
-                adapter.hideNotificationCategory()
-                return
-            }
             isImportance -> {
                 adapter.updateStatus(Categories, isImportance)
             }
@@ -157,8 +158,14 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
     private fun onShowTicker(importance: Int) {
         adapter.addTicker(when (importance) {
-            IMPORTANCE_LOW -> getString(R.string.notif_ticker_importance_low, importance)
-            else -> getString(R.string.notif_ticker_importance_none, importance)
+            IMPORTANCE_LOW -> getString(
+                    R.string.notif_ticker_importance_low,
+                    importance
+            ).trim()
+            else -> getString(
+                    R.string.notif_ticker_importance_none,
+                    importance
+            ).trim()
         })
     }
 
