@@ -5,7 +5,7 @@ import com.tokopedia.sellerhomecommon.domain.model.PieChartSummary
 import com.tokopedia.sellerhomecommon.domain.model.PieChartWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartItemUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.PieChartSummaryUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ChartSummaryUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartUiModel
 import javax.inject.Inject
 
@@ -41,8 +41,8 @@ class PieChartMapper @Inject constructor() {
         }
     }
 
-    private fun mapPieChartSummary(summary: PieChartSummary): PieChartSummaryUiModel {
-        return PieChartSummaryUiModel(
+    private fun mapPieChartSummary(summary: PieChartSummary): ChartSummaryUiModel {
+        return ChartSummaryUiModel(
                 diffPercentage = summary.diffPercentage,
                 diffPercentageFmt = summary.diffPercentageFmt,
                 value = summary.value,
