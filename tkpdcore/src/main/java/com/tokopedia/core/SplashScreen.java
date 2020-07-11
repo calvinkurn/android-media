@@ -114,9 +114,7 @@ public class SplashScreen extends AppCompatActivity {
     @NotNull
     private boolean executeMoveToHomeFlow(boolean status){
         if(!status){
-            Timber.w("P2#PLAY_SERVICE_ERROR#Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
-                    + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
-                    + " | "+Build.TAGS);
+            Timber.w("P1#PLAY_SERVICE_ERROR#splash_screen;fingerprint='%s'", Build.FINGERPRINT);
         }
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
