@@ -29,7 +29,7 @@ open class ConfigViewHolder(
     private val context by lazy { itemView.context }
 
     override fun bind(element: ConfigUIView?) {
-        if (element == null) return
+        if (element == null || !element.visibility) return
 
         viewState(element)
         txtTitle?.text = element.title
@@ -41,7 +41,7 @@ open class ConfigViewHolder(
             when (state) {
                 is ConfigState.PushNotification -> pushNotification(element)
                 is ConfigState.Notification -> notificationSetting(status)
-                is ConfigState.Categories -> notificationCategories(element)
+                is ConfigState.Channel -> notificationChannel(element)
                 is ConfigState.Ringtone -> notificationRingtone(status, ringtone)
             }
         }
@@ -64,8 +64,7 @@ open class ConfigViewHolder(
         }
     }
 
-    private fun notificationCategories(element: ConfigUIView) {
-        if (!element.visibility) itemView.hide()
+    private fun notificationChannel(element: ConfigUIView) {
         troubleshootStatus(element.status)
 
         itemView.setOnClickListener {

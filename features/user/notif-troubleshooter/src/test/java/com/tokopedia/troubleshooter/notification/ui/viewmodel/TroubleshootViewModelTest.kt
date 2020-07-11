@@ -57,8 +57,8 @@ class TroubleshootViewModelTest {
         )
 
         viewModel.notificationSetting.observeForever(notificationObservable)
+        viewModel.notificationRingtoneUri.observeForever(ringtoneObservable)
         viewModel.notificationImportance.observeForever(channelObservable)
-        viewModel.notificationSoundUri.observeForever(ringtoneObservable)
         viewModel.troubleshoot.observeForever(troubleshootObservable)
         viewModel.token.observeForever(tokenObservable)
         viewModel.error.observeForever(errorObservable)

@@ -96,23 +96,24 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
+            adapter.updateTroubleshootMessage(getString(R.string.notif_token_error))
             adapter.isTroubleshootError()
         })
 
-        viewModel.token.observe(viewLifecycleOwner, Observer {
-            setTokenStatus(it)
+        viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
+            setTokenStatus(newToken)
         })
 
-        viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
-            setNotificationSettingStatus(it)
+        viewModel.notificationSetting.observe(viewLifecycleOwner, Observer { status ->
+            setNotificationSettingStatus(status)
         })
 
-        viewModel.notificationImportance.observe(viewLifecycleOwner, Observer {
-            setNotificationImportanceStatus(it)
+        viewModel.notificationImportance.observe(viewLifecycleOwner, Observer { status ->
+            setNotificationImportanceStatus(status)
         })
 
-        viewModel.notificationSoundUri.observe(viewLifecycleOwner, Observer {
-            adapter.updateStatus(Ringtone, it != null)
+        viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, Observer { ringtone ->
+            adapter.setRingtoneStatus(ringtone, ringtone != null)
         })
     }
 
@@ -141,16 +142,16 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         val hasNotCategory = importance == Int.MAX_VALUE
 
         if (hasNotCategory) {
-            adapter.hideNotificationCategory()
+            adapter.hideNotificationChannel()
             return
         }
 
         when {
             isImportance -> {
-                adapter.updateStatus(Categories, isImportance)
+                adapter.updateStatus(Channel, isImportance)
             }
             importance != IMPORTANCE_HIGH -> {
-                adapter.updateStatus(Categories, false)
+                adapter.updateStatus(Channel, false)
                 onShowTicker(importance)
             }
         }

@@ -41,8 +41,8 @@ class TroubleshootViewModel @Inject constructor(
     private val _notificationImportance = MutableLiveData<Int>()
     val notificationImportance: LiveData<Int> get() = _notificationImportance
 
-    private val _notificationSoundUri = MutableLiveData<Uri?>()
-    val notificationSoundUri: LiveData<Uri?> get() = _notificationSoundUri
+    private val _notificationRingtoneUri = MutableLiveData<Uri?>()
+    val notificationRingtoneUri: LiveData<Uri?> get() = _notificationRingtoneUri
 
     private val _troubleshoot = MutableLiveData<NotificationSendTroubleshoot>()
     val troubleshoot: LiveData<NotificationSendTroubleshoot> get() = _troubleshoot
@@ -97,7 +97,7 @@ class TroubleshootViewModel @Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun getSoundNotification() {
-        _notificationSoundUri.value = getRingtoneUri(TYPE_NOTIFICATION)
+        _notificationRingtoneUri.value = getRingtoneUri(TYPE_NOTIFICATION)
     }
 
 }

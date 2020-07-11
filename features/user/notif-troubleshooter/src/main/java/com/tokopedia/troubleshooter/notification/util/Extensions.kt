@@ -4,3 +4,7 @@ fun <T> MutableList<T>.dropFirst() {
     if (isEmpty()) return
     removeAt(0)
 }
+
+fun Any?.isNotNull(): Boolean {
+    return this != null
+}
