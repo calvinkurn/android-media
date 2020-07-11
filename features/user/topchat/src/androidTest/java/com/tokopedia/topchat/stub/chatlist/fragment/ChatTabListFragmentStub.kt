@@ -13,17 +13,14 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
 
     lateinit var stubUserSession: UserSessionInterface
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun createChatListComponent(): ChatListComponent {
-        return DaggerChatListComponentStub
+    override fun initInjector() {
+        DaggerChatListComponentStub
                 .builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .chatListContextModule(ChatListContextModule(context!!))
                 .chatListNetworkModuleStub(ChatListNetworkModuleStub(stubUserSession))
                 .build()
+                .inject(this)
     }
 
     companion object {

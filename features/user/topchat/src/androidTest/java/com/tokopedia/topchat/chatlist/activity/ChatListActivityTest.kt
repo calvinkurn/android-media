@@ -35,6 +35,7 @@ class ChatListActivityTest {
     fun test_user_session() {
         userSessionInterface.hasShop = false
         mActivityTestRule.activity.setupFragment(chatTabListFragmentStub)
+        Thread.sleep(5000)
     }
 
     @Test

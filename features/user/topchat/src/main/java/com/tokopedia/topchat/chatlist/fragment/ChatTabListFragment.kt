@@ -66,17 +66,10 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     lateinit var webSocketViewModel: WebSocketViewModel
     lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
 
-    private var chatListComponent: ChatListComponent? = null
-
     private var fragmentViewCreated = false
 
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        startInject()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_chat_tab_list, container, false)
@@ -115,7 +108,11 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     override fun initInjector() {
-        chatListComponent = createChatListComponent()
+        DaggerChatListComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .chatListContextModule(context?.let { ChatListContextModule(it) })
+                .build()
+                .inject(this)
     }
 
     override fun loadNotificationCounter() {
@@ -145,13 +142,6 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         decreaseNotificationCounter(R.drawable.ic_chat_icon_shop)
     }
 
-    protected open fun createChatListComponent(): ChatListComponent {
-        return DaggerChatListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .chatListContextModule(context?.let { ChatListContextModule(it) })
-                .build()
-    }
-
     private fun initChatCounterObserver() {
         chatNotifCounterViewModel.chatNotifCounter.observe(this,
                 Observer { result ->
@@ -171,10 +161,6 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     private fun bindView(view: View) {
         tabLayout = view.findViewById(R.id.tl_chat_list)
         viewPager = view.findViewById(R.id.vp_chat_list)
-    }
-
-    private fun startInject() {
-        chatListComponent?.inject(this)
     }
 
     private fun initTabList() {
