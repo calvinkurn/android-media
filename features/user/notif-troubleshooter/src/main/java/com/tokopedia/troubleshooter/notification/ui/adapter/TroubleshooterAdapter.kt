@@ -8,6 +8,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView.Companion.addTickerMessage
+import com.tokopedia.troubleshooter.notification.util.dropFirst
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Categories as Categories
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.PushNotification as PushNotification
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Error as Error
@@ -54,13 +55,19 @@ internal open class TroubleshooterAdapter(
     }
 
     fun addTicker(message: String) {
-        visitables.removeAll { it is TickerUIView }
-        addElement(0, addTickerMessage(message))
+        removeTicker()
+        addElement(TICKER_INDEX, addTickerMessage(message))
     }
 
     fun removeTicker() {
-        visitables.removeAll { it is TickerUIView }
-        notifyItemChanged(0)
+        if (visitables.size > 0 && visitables.first() is TickerUIView) {
+            visitables.dropFirst()
+            notifyItemRemoved(TICKER_INDEX)
+        }
+    }
+
+    companion object {
+        private const val TICKER_INDEX = 0
     }
 
 }
