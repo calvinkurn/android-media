@@ -27,9 +27,8 @@ class ChatListActivityTest {
 
     @Before
     fun setup() {
-        chatTabListFragmentStub = ChatTabListFragmentStub.create()
         userSessionInterface = UserSessionStub(mActivityTestRule.activity.applicationContext)
-        chatTabListFragmentStub.stubUserSession = userSessionInterface
+        chatTabListFragmentStub = ChatTabListFragmentStub.create(userSessionInterface)
     }
 
     @Test

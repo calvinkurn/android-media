@@ -27,8 +27,12 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
     }
 
     companion object {
-        fun create(): ChatTabListFragmentStub {
-            return ChatTabListFragmentStub()
+        fun create(
+                userSessionInterface: UserSessionInterface
+        ): ChatTabListFragmentStub {
+            return ChatTabListFragmentStub().apply {
+                stubUserSession = userSessionInterface
+            }
         }
     }
 }
