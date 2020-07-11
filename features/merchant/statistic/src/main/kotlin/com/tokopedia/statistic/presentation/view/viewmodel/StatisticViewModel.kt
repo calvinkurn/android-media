@@ -33,6 +33,7 @@ class StatisticViewModel @Inject constructor(
         private val getCarouselDataUseCase: GetCarouselDataUseCase,
         private val getTableDataUseCase: GetTableDataUseCase,
         private val getPieChartDataUseCase: GetPieChartDataUseCase,
+        private val getBarChartDataUseCase: GetBarChartDataUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -57,6 +58,8 @@ class StatisticViewModel @Inject constructor(
         get() = _tableWidgetData
     val pieChartWidgetData: LiveData<Result<List<PieChartDataUiModel>>>
         get() = _pieChartWidgetData
+    val barChartWidgetData: LiveData<Result<List<BarChartDataUiModel>>>
+        get() = _barChartWidgetData
 
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -67,6 +70,7 @@ class StatisticViewModel @Inject constructor(
     private val _carouselWidgetData = MutableLiveData<Result<List<CarouselDataUiModel>>>()
     private val _tableWidgetData = MutableLiveData<Result<List<TableDataUiModel>>>()
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
+    private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
 
     private var startDate: String = ""
     private var endDate: String = ""
@@ -170,6 +174,18 @@ class StatisticViewModel @Inject constructor(
             _pieChartWidgetData.postValue(result)
         }, onError = {
             _pieChartWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getBarChartWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<BarChartDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, startDate, endDate)
+                return@withContext getBarChartDataUseCase.executeOnBackground()
+            })
+            _barChartWidgetData.postValue(result)
+        }, onError = {
+            _barChartWidgetData.postValue(Fail(it))
         })
     }
 }

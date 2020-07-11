@@ -101,6 +101,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.carouselWidgetData, WidgetType.CAROUSEL)
         observeWidgetData(mViewModel.tableWidgetData, WidgetType.TABLE)
         observeWidgetData(mViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
+        observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
     }
 
     override fun onResume() {
@@ -272,6 +273,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getPieChartWidgetData(dataKeys)
     }
 
+    private fun fetchBarChartData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
+        mViewModel.getBarChartWidgetData(dataKeys)
+    }
+
     private fun selectDateRange() {
         if (!isAdded) return
         dateRangeBottomSheet
@@ -397,6 +404,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         groupedWidgets[WidgetType.POST_LIST]?.run { fetchPostData(this) }
         groupedWidgets[WidgetType.TABLE]?.run { fetchTableData(this) }
         groupedWidgets[WidgetType.PIE_CHART]?.run { fetchPieChartData(this) }
+        groupedWidgets[WidgetType.BAR_CHART]?.run { fetchBarChartData(this) }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {

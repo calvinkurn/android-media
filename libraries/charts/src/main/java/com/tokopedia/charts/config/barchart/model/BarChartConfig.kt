@@ -5,5 +5,6 @@ package com.tokopedia.charts.config.barchart.model
  */
 
 data class BarChartConfig(
-        val isRoundedBar: Boolean = true
+        val isRoundedBar: Boolean = true,
+        val borderRadius: Int
 )

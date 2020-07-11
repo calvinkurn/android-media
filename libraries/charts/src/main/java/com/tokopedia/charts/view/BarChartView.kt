@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.charts.R
 import com.tokopedia.charts.config.barchart.model.BarChartConfig
+import com.tokopedia.charts.utils.RoundedBarChartRenderer
 import kotlinx.android.synthetic.main.view_bar_chart.view.*
 
 /**
@@ -20,7 +21,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
 
     fun init(config: BarChartConfig) {
         with(barChart) {
-
+            renderer = RoundedBarChartRenderer(this, animator, viewPortHandler, config.borderRadius)
         }
     }
 }
