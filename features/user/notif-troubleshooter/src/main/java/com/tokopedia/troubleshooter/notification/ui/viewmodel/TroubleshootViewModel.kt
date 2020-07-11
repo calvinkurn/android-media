@@ -1,41 +1,37 @@
 package com.tokopedia.troubleshooter.notification.ui.viewmodel
 
-import android.app.NotificationManager
-import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
-import android.media.RingtoneManager
+import android.media.RingtoneManager.TYPE_NOTIFICATION
 import android.net.Uri
-import android.os.Build
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.troubleshooter.notification.data.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
-import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
+import com.tokopedia.troubleshooter.notification.data.service.channel.NotificationChannelManager
+import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
+import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
 import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import android.media.RingtoneManager.TYPE_NOTIFICATION as TYPE_NOTIFICATION
 import android.media.RingtoneManager.getDefaultUri as getRingtoneUri
 
 interface TroubleshootContract {
     fun getNewToken()
     fun updateToken(newToken: String)
     fun troubleshoot()
-    fun getSetting()
+    fun isNotificationEnabled()
     fun getImportanceNotification()
     fun getSoundNotification()
 }
 
 class TroubleshootViewModel @Inject constructor(
         private val troubleshootUseCase: TroubleshootStatusUseCase,
+        private val notificationChannel: NotificationChannelManager,
+        private val notificationCompat: NotificationCompatManager,
         private val messagingManager: FirebaseMessagingManager,
         private val instanceManager: FirebaseInstanceManager,
-        @TroubleshootContext private val context: Context,
         private val dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), TroubleshootContract, LifecycleObserver {
 
@@ -86,30 +82,23 @@ class TroubleshootViewModel @Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun getImportanceNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            val channel = manager.getNotificationChannel(CHANNEL_ID)
-            _notificationImportance.value = channel.importance
+        if (notificationChannel.hasNotificationChannel()) {
+            val channel = notificationChannel.getNotificationChannel()
+            _notificationImportance.value = channel
         } else {
             _notificationImportance.value = Int.MAX_VALUE
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    override fun getSetting() {
-        _notificationSetting.value = NotificationManagerCompat
-                .from(context)
-                .areNotificationsEnabled()
+    override fun isNotificationEnabled() {
+        _notificationSetting.value = notificationCompat.isNotificationEnabled()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun getSoundNotification() {
         val ringtone = getRingtoneUri(TYPE_NOTIFICATION)
         _notificationSoundUri.value = ringtone
-    }
-
-    companion object {
-        private const val CHANNEL_ID = "ANDROID_GENERAL_CHANNEL"
     }
 
 }
