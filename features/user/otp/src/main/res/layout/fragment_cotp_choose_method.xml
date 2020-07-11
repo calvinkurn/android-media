@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Neutral_N0"
     >
 
     <ProgressBar
@@ -19,7 +19,7 @@
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/dp_20"
+        android:paddingBottom="@dimen/otp_dp_20"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -29,14 +29,14 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/otp_dp_10"
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
-            android:padding="@dimen/dp_12"
+            android:padding="@dimen/otp_dp_12"
             android:text="@string/my_phone_number_is_inactive"
             android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/sp_13"
-            android:lineSpacingExtra="5sp"
+            android:textSize="@dimen/otp_sp_13"
+            android:lineSpacingExtra="@dimen/otp_sp_5"
             android:textStyle="normal"
             />
 
@@ -45,20 +45,19 @@
                       android:layout_height="wrap_content"
                       android:layout_above="@id/phone_inactive"
                       android:layout_alignParentTop="true"
-                      android:orientation="vertical"
-            >
+                      android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginTop="@dimen/otp_dp_30"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:lineSpacingExtra="6sp"
+                android:lineSpacingExtra="@dimen/otp_sp_6"
                 android:text="@string/choose_verification_method"
-                android:textColor="@color/font_black_primary_70"
-                android:textSize="@dimen/sp_16"
+                android:textColor="@color/otp_black_primary_70"
+                android:textSize="@dimen/fontSize_lvl4"
                 android:textStyle="bold"
                 />
 
@@ -66,23 +65,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/otp_dp_20"
+                android:layout_marginRight="@dimen/otp_dp_20"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:lineSpacingExtra="5sp"
+                android:lineSpacingExtra="@dimen/otp_sp_5"
                 android:text="@string/pick_one_of_these_method_to_get_verification_code"
-                android:textColor="@color/font_black_secondary_54"
-                android:textSize="@dimen/sp_14"
+                android:textColor="@color/otp_black_secondary"
+                android:textSize="@dimen/fontSize_lvl3"
                 android:textStyle="normal"
                 />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/method_list"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="@dimen/dp_15"
+                android:layout_height="@dimen/layout_lvl0"
+                android:layout_marginTop="@dimen/otp_dp_15"
                 android:layout_weight="1"/>
 
         </LinearLayout>
