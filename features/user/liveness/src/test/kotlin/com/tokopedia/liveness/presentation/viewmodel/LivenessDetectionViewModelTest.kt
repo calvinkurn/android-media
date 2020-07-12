@@ -22,9 +22,10 @@ class LivenessDetectionViewModelTest: Spek({
     val uploadLivenessResultUseCase = mockk<UploadLivenessResultUseCase>(relaxed = true)
     val dispatcher : CoroutineDispatcher = Dispatchers.Unconfined
 
-    val viewModel by memoized {
-        LivenessDetectionViewModel(uploadLivenessResultUseCase, dispatcher)
-    }
+    val viewModel = LivenessDetectionViewModel(
+            uploadLivenessResultUseCase = uploadLivenessResultUseCase,
+            dispatcher = dispatcher
+    )
 
     Feature("Liveness Detection Response") {
         val observerSuccess = mockk<Observer<com.tokopedia.usecase.coroutines.Result<LivenessData>>>(relaxed = true)
