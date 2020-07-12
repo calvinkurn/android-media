@@ -60,6 +60,7 @@ public interface ApplinkConst {
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
+    String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://digital/home";
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
     String DIGITAL_SMARTBILLS = "tokopedia://digital/bayarsekaligus";
     String DIGITAL_CART = "tokopedia://digital/cart";
@@ -144,7 +145,6 @@ public interface ApplinkConst {
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String DIGITAL_RECHARGE = "tokopedia://recharge";
-    String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
