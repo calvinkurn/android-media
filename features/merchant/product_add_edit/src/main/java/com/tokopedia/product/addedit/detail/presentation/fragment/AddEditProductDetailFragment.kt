@@ -1089,7 +1089,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
                 selectedImagePathList,
                 placeholderDrawableRes,
-                R.string.label_primary,
+                com.tokopedia.product.addedit.R.string.label_primary,
                 MAX_PRODUCT_PHOTOS, false)
 
         return ImagePickerBuilder(
@@ -1106,14 +1106,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun enableSubmitButton() {
         submitButton?.isClickable = true
-        submitButton?.setBackgroundResource(R.drawable.rect_green_solid)
+        submitButton?.setBackgroundResource(R.drawable.product_add_edit_rect_green_solid)
         context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, android.R.color.white)) }
     }
 
     private fun disableSubmitButton() {
         submitButton?.isClickable = false
         submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N700_32)) }
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32)) }
     }
 
     private fun showDurationUnitOption() {

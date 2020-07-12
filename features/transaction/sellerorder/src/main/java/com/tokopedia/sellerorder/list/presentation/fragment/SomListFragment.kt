@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -36,12 +37,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
-import com.tokopedia.sellerorder.BuildConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
@@ -118,6 +119,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private val ANIMATION_TYPE = "translationY"
     private val TRANSLATION_LENGTH = 500f
 
+    private var searchKeyword = ""
+
     private lateinit var somListItemAdapter: SomListItemAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private var filterList: List<SomListFilter.Data.OrderFilterSom.StatusList> = listOf()
@@ -145,6 +148,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     companion object {
         private val TAG_COACHMARK = "coachMark"
         private const val REQUEST_FILTER = 2888
+        private const val ERROR_GET_TICKERS = "Error when get tickers in seller order list page."
+        private const val ERROR_GET_FILTER = "Error when get filters in seller order list page."
+        private const val ERROR_GET_STATUS_LIST = "Error when get order status list in seller order list page."
+        private const val ERROR_GET_ORDER_LIST = "Error when get list of order in seller order list page."
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomListFragment {
@@ -178,6 +185,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             filterStatusId = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
             isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
+        getDefaultKeywordOptionFromApplink()
         loadTicker()
         loadFilterList()
         activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
@@ -200,6 +208,16 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingStatusList()
         observingOrders()
         context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    private fun getDefaultKeywordOptionFromApplink() {
+        if (GlobalConfig.isSellerApp()) {
+            context?.let {
+                activity?.intent?.data?.apply {
+                    searchKeyword = getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
+                }
+            }
+        }
     }
 
     private fun showSellerMigrationTicker() {
@@ -335,6 +353,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun setListeners() {
+        if (GlobalConfig.isSellerApp()) {
+            if (searchKeyword.isNotBlank()) {
+                paramOrder.search = searchKeyword
+                search_input_view.searchTextView.setText(searchKeyword)
+                search_input_view.searchTextView.text?.length?.let { search_input_view.searchTextView.setSelection(it) }
+            }
+        }
         search_input_view?.setListener(this)
         search_input_view?.setResetListener(this)
         search_input_view?.searchTextView?.setOnClickListener {
@@ -368,6 +393,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 renderInfoTicker(it.data)
             }
             is Fail -> {
+                SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_TICKERS)
                 ticker_info?.visibility = View.GONE
             }
         }
@@ -387,6 +413,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_FILTER)
                     quick_filter?.visibility = View.GONE
                 }
             }
@@ -405,6 +432,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 loadOrderList(nextOrderId)
             }
             is Fail -> {
+                SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_STATUS_LIST)
                 loadOrderList(nextOrderId)
             }
         }
@@ -580,6 +608,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_LIST)
                     renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
                 }
             }

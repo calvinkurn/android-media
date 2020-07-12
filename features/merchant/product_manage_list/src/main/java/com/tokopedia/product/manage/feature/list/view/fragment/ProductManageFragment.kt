@@ -95,7 +95,6 @@ import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
-import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -338,6 +337,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     fun setDefaultFilterOptions(filterOptions: List<FilterOption>) {
         defaultFilterOptions = filterOptions
+    }
+
+    fun setSearchKeywordOptions(keyword: String) {
+        isLoadingInitialData = true
+        tabSortFilter?.show()
+        searchBar?.show()
+        searchBar?.searchTextView?.setText(keyword)
+        showLoadingProgress()
+        getProductList()
+        searchBar.clearFocus()
     }
 
     private fun showProductEmptyState(): Boolean {
@@ -702,6 +711,26 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         view?.let {
             val onClickActionLabel = View.OnClickListener { listener.invoke() }
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel)
+        }
+    }
+
+    private fun showRetryToast() {
+        view?.let {
+            val onClickActionLabel = View.OnClickListener {
+                if (isLoadingInitialData) {
+                    onSwipeRefresh()
+                } else {
+                    endlessRecyclerViewScrollListener.loadMoreNextPage()
+                }
+            }
+            Toaster.make(
+                    it,
+                    getString(R.string.product_manage_snack_bar_fail),
+                    Snackbar.LENGTH_INDEFINITE,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.retry_label),
+                    onClickActionLabel
+            )
         }
     }
 
@@ -1319,6 +1348,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    override fun showGetListError(throwable: Throwable?) {
+        hideLoading()
+        updateStateScrollListener()
+        showRetryToast()
+    }
+
     private fun getTopAdsFreeClaim() {
         val query = GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.gql_get_deposit)
         viewModel.getFreeClaim(query, userSession.shopId)
@@ -1443,7 +1478,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     enableMultiSelect()
                     renderMultiSelectProduct()
                 }
-                is Fail -> showErrorToast()
+                is Fail -> showGetListError(it.throwable)
             }
             hidePageLoading()
             stopPerformanceMonitoring()

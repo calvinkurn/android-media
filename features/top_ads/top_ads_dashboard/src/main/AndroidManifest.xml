@@ -21,9 +21,6 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
                     android:pathPattern="@string/path_topads_dashboard"/>
-                <data
-                    android:scheme="@string/sellerapp_scheme"
-                    android:host="@string/host_topads"/>
             </intent-filter>
         </activity>
         <activity

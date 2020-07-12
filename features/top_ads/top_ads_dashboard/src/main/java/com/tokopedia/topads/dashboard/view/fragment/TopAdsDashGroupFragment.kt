@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
@@ -49,6 +50,7 @@ import javax.inject.Inject
  * Created by Pika on 2/6/20.
  */
 
+private const val CLICK_GROUP_TITLE = "click - group title"
 class TopAdsDashGroupFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: GroupItemsListAdapter
@@ -101,11 +103,12 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
     }
 
-    private fun onGroupClicked(id: Int, priceSpent: String) {
+    private fun onGroupClicked(id: Int, priceSpent: String, groupName: String) {
         val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
         intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
         intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
         startActivityForResult(intent, GROUP_UPDATED)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_GROUP_TITLE, groupName)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

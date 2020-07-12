@@ -11,14 +11,20 @@ import com.airbnb.lottie.LottieTask
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_autoads_onboarding_fragment1_layout.*
 import java.util.zip.ZipInputStream
+import javax.inject.Inject
 
 /**
  * Created by Pika on 27/5/20.
  */
 
 class AutoAdsOnboardingFragScreen1 : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun getScreenName(): String {
         return AutoAdsOnboardingFragScreen1::class.java.name
@@ -37,6 +43,7 @@ class AutoAdsOnboardingFragScreen1 : BaseDaggerFragment() {
         val lottieFileZipStream = ZipInputStream(context?.assets?.open(ANIMATION_JSON))
         val task = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
         addLottieAnimationToView(task)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenOnboardingScreenEvent(userSession.isLoggedIn, userSession.userId)
     }
 
     private fun addLottieAnimationToView(task: LottieTask<LottieComposition>) {

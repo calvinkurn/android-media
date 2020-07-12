@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NOT_VALID
@@ -21,11 +22,12 @@ import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
  * Created by Pika on 2/6/20.
  */
 
+private const val CLICK_ATUR_IKLAN = "click - atur iklan"
 class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
                                private var editDone: ((groupId: Int, groupName: String) -> Unit),
-                               private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemViewModel>(view) {
+                               private var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -79,9 +81,9 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             view.item_card?.setOnClickListener { _ ->
                 if (!selectedMode) {
                     if (item.data.groupPriceDailyBar.isNotEmpty())
-                        onClickItem.invoke(item.data.groupId, item.data.groupPriceDailySpentFmt)
+                        onClickItem.invoke(item.data.groupId, item.data.groupPriceDailySpentFmt, item.data.groupName)
                     else
-                        onClickItem.invoke(item.data.groupId, NOT_VALID)
+                        onClickItem.invoke(item.data.groupId, NOT_VALID, item.data.groupName)
                 } else {
                     view.check_box.isChecked = !view.check_box.isChecked
                     it.isChecked = view.check_box.isChecked
@@ -104,6 +106,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.groupStatus, item.data.groupName)
             sheet.onEditAction = {
                 editDone.invoke(item.data.groupId, item.data.groupName)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")
             }
             sheet.show()
             sheet.onDeleteClick = {
