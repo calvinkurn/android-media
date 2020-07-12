@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationData
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.StockAllocationResult
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
-import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.StockThumbnailUrlUseCase
+import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -19,23 +19,23 @@ import javax.inject.Inject
 
 class CampaignStockViewModel @Inject constructor(
         private val campaignStockAllocationUseCase: CampaignStockAllocationUseCase,
-        private val stockThumbnailUrlUseCase: StockThumbnailUrlUseCase,
+        private val otherCampaignStockDataUseCase: OtherCampaignStockDataUseCase,
         dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
 
     private val mStockAllocationParams = MutableLiveData<Pair<List<String>, String>>()
 
-    private val mGetStockAllocationLiveData = MediatorLiveData<Result<Pair<String, GetStockAllocationData>>>().apply {
+    private val mGetStockAllocationLiveData = MediatorLiveData<Result<StockAllocationResult>>().apply {
         addSource(mStockAllocationParams) { paramsPair ->
             val productIds = paramsPair.first
             val shopId = paramsPair.second
             launchCatchError(
                     block = {
                         value = Success(withContext(Dispatchers.IO) {
-                            stockThumbnailUrlUseCase.params = StockThumbnailUrlUseCase.createRequestParams(productIds.firstOrNull().orEmpty())
                             campaignStockAllocationUseCase.params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId)
-                            val thumbnailUrl = async { stockThumbnailUrlUseCase.executeOnBackground() }
+                            otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productIds.firstOrNull().orEmpty())
                             val stockAllocationData = async { campaignStockAllocationUseCase.executeOnBackground() }
-                            Pair(thumbnailUrl.await(), stockAllocationData.await())
+                            val campaignStockAllocationData = async { otherCampaignStockDataUseCase.executeOnBackground() }
+                            StockAllocationResult(campaignStockAllocationData.await(), stockAllocationData.await())
                         })
                     },
                     onError = {
@@ -44,7 +44,7 @@ class CampaignStockViewModel @Inject constructor(
             )
         }
     }
-    val getStockAllocationData: LiveData<Result<Pair<String, GetStockAllocationData>>>
+    val getStockAllocationData: LiveData<Result<StockAllocationResult>>
         get() = mGetStockAllocationLiveData
 
     fun getStockAllocation(productIds: List<String>,

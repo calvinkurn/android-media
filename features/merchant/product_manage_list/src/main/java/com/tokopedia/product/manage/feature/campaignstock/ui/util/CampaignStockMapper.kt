@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.util
 
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.CampaignStockVariantProduct
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationDetailReserve
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationDetailSellable
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationReservedProduct
@@ -9,13 +10,17 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableSt
 
 object CampaignStockMapper {
 
-    fun mapToParcellableSellableProduct(dataModel: GetStockAllocationDetailSellable): SellableStockProductUIModel =
-            with(dataModel) {
+    const val ACTIVE = "ACTIVE"
+
+    fun mapToParcellableSellableProduct(sellable: GetStockAllocationDetailSellable,
+                                        variantList: List<CampaignStockVariantProduct>): SellableStockProductUIModel =
+            with(sellable) {
                 SellableStockProductUIModel(
                         productId = productId,
                         warehouseId = warehouseId,
                         productName = productName,
-                        stock = stock
+                        stock = stock,
+                        isActive = productId.mapToIsActive(variantList)
                 )
             }
 
@@ -37,5 +42,7 @@ object CampaignStockMapper {
                 ReservedStockProductModel(productId, warehouseId, productName, description, stock)
             }
 
+    private fun String.mapToIsActive(variantList: List<CampaignStockVariantProduct>): Boolean =
+            variantList.firstOrNull { it.productId == this }?.status == ACTIVE
 }
 

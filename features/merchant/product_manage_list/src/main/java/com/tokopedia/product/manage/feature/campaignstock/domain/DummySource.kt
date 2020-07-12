@@ -8,7 +8,7 @@ object DummySource {
         return GetStockAllocationData(
                 summary = GetStockAllocationSummary(
                         isVariant = true,
-                        productName = "Test name",
+                        productName = "Test name ini kalau panjang harusnya dua lines ya plis dong bisa ya ampun plis plisplisplisplisplisplisplisplisplisplisplisplisplisplis",
                         sellableStock = "60",
                         reserveStock = "20",
                         totalStock = "80"
@@ -19,7 +19,13 @@ object DummySource {
                                         productId = "12345",
                                         warehouseId = "",
                                         productName = "Test sellable",
-                                        stock = "60"
+                                        stock = "30"
+                                ),
+                                GetStockAllocationDetailSellable(
+                                        productId = "12346",
+                                        warehouseId = "",
+                                        productName = "Test sellable",
+                                        stock = "30"
                                 )
                         ),
                         reserve = listOf(
@@ -88,6 +94,29 @@ object DummySource {
                                 )
                         )
                 )
+        )
+    }
+
+    fun getOtherCampaignStockData(): OtherCampaignStockData {
+        return OtherCampaignStockData(
+                pictureList = listOf(
+                        CampaignStockPicture(
+                                urlThumbnail = "https://ecs7.tokopedia.net/microsite-production/brand-asset/assets/img-tokopedia-icon.png"
+                        )
+                ),
+                variant = CampaignStockVariant(
+                        products = listOf(
+                                CampaignStockVariantProduct(
+                                        productId = "12345",
+                                        status = "ACTIVE"
+                                ),
+                                CampaignStockVariantProduct(
+                                        productId = "12346",
+                                        status = "INACTIVE"
+                                )
+                        )
+                ),
+                status = "ACTIVE"
         )
     }
 }

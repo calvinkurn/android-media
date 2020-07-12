@@ -19,8 +19,7 @@ class SellableStockProductViewHolder(itemView: View?): AbstractViewHolder<Sellab
         with(itemView) {
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.setValue(element.stock.toIntOrZero())
-            //Todo: pass correct data
-            switch_campaign_stock_variant_editor?.isChecked = false
+            switch_campaign_stock_variant_editor?.isChecked = element.isActive
         }
     }
 }

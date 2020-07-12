@@ -23,21 +23,28 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     companion object {
         @JvmStatic
         fun createInstance(isVariant: Boolean,
-                           sellableProductUIList: ArrayList<SellableStockProductUIModel>): CampaignMainStockFragment {
+                           sellableProductUIList: ArrayList<SellableStockProductUIModel>,
+                           isActive: Boolean): CampaignMainStockFragment {
             return CampaignMainStockFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_VARIANT, isVariant)
+                    putBoolean(EXTRA_IS_ACTIVE, isActive)
                     putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductUIList)
                 }
             }
         }
 
         private const val EXTRA_IS_VARIANT = "extra_is_variant"
+        private const val EXTRA_IS_ACTIVE = "extra_is_active"
         private const val EXTRA_SELLABLE_PRODUCT_LIST = "extra_sellable"
     }
 
     private val isVariant by lazy {
         arguments?.getBoolean(EXTRA_IS_VARIANT) ?: false
+    }
+
+    private val isActive by lazy {
+        arguments?.getBoolean(EXTRA_IS_ACTIVE) ?: false
     }
 
     private val sellableProductList by lazy {
@@ -97,7 +104,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             renderList(variantList)
         } else {
             renderList(listOf(
-                    ActiveProductSwitchUiModel(false),
+                    ActiveProductSwitchUiModel(isActive),
                     TotalStockEditorUiModel(sellableProductList.firstOrNull()?.stock.toIntOrZero())
             ))
         }

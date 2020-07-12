@@ -18,6 +18,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationSummary
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.OtherCampaignStockData
 import com.tokopedia.product.manage.feature.campaignstock.ui.CampaignStockActivity
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.CampaignStockAdapter
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
@@ -93,8 +94,8 @@ class CampaignStockFragment: BaseDaggerFragment() {
         mViewModel.getStockAllocationData.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
                 is Success -> {
-                    result.data.let { productUrlAndStockDataPair ->
-                        applyLayout(productUrlAndStockDataPair.first, productUrlAndStockDataPair.second)
+                    result.data.run {
+                        applyLayout(getStockAllocationData, otherCampaignStockData)
                     }
                     showResult()
                 }
@@ -113,14 +114,16 @@ class CampaignStockFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun applyLayout(productImageUrl: String, data: GetStockAllocationData) {
-        with(data) {
-            setupProductSummary(summary, productImageUrl)
-            setupFragmentTabs(this)
+    private fun applyLayout(getStockAllocationData: GetStockAllocationData,
+                            otherCampaignStockData: OtherCampaignStockData) {
+        with(getStockAllocationData) {
+            setupProductSummary(summary, otherCampaignStockData.pictureList.firstOrNull()?.urlThumbnail.orEmpty())
+            setupFragmentTabs(this, otherCampaignStockData)
         }
     }
 
-    private fun setupProductSummary(summary: GetStockAllocationSummary?, productImageUrl: String) {
+    private fun setupProductSummary(summary: GetStockAllocationSummary?,
+                                    productImageUrl: String) {
         summary?.run {
             layout_campaign_stock_product_info?.run {
                 productImageUrl.let { url ->
@@ -132,9 +135,9 @@ class CampaignStockFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun setupFragmentTabs(data: GetStockAllocationData) {
-        //Todo: set fragment data
-        with(data) {
+    private fun setupFragmentTabs(getStockAllocation: GetStockAllocationData,
+                                  otherCampaignStockData: OtherCampaignStockData) {
+        with(getStockAllocation) {
             tabs_campaign_stock?.run {
                 addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), summary.sellableStock.toIntOrZero()))
                 addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), summary.reserveStock.toIntOrZero()))
@@ -145,8 +148,11 @@ class CampaignStockFragment: BaseDaggerFragment() {
                 adapter = activity?.let {
                     CampaignStockAdapter(it, getFragmentList(
                             summary.isVariant,
-                            detail.sellable.map { sellable -> CampaignStockMapper.mapToParcellableSellableProduct(sellable) } as ArrayList<SellableStockProductUIModel>,
-                            detail.reserve.map { reserved -> CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoUiModel>))
+                            otherCampaignStockData.isActive,
+                            detail.sellable.map { sellable ->
+                                CampaignStockMapper.mapToParcellableSellableProduct(sellable, otherCampaignStockData.variant.products) } as ArrayList<SellableStockProductUIModel>,
+                            detail.reserve.map { reserved ->
+                                CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoUiModel>))
                 }
                 isUserInputEnabled = false
             }
@@ -166,18 +172,20 @@ class CampaignStockFragment: BaseDaggerFragment() {
     }
 
     private fun getMainStockFragment(isVariant: Boolean,
-                                     sellableProductUIList: ArrayList<SellableStockProductUIModel>) =
-            CampaignMainStockFragment.createInstance(isVariant, sellableProductUIList)
+                                     sellableProductUIList: ArrayList<SellableStockProductUIModel>,
+                                     isActive: Boolean) =
+            CampaignMainStockFragment.createInstance(isVariant, sellableProductUIList, isActive)
 
     private fun getReservedStockFragment(isVariant: Boolean,
                                          reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>) =
             CampaignReservedStockFragment.createInstance(isVariant, reservedEventInfoUiList)
 
     private fun getFragmentList(isVariant: Boolean,
+                                isMainStockActive: Boolean,
                                 sellableProductUIList: ArrayList<SellableStockProductUIModel>,
                                 reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>): List<Fragment>{
         return listOf(
-                getMainStockFragment(isVariant, sellableProductUIList),
+                getMainStockFragment(isVariant, sellableProductUIList, isMainStockActive),
                 getReservedStockFragment(isVariant, reservedEventInfoUiList)
         )
     }
