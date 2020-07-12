@@ -25,10 +25,8 @@ class LivenessDetectionViewModel @Inject constructor(
 
     fun uploadImages(ktpPath: String, facePath: String, tkpdProjectId: String) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
-                val livenessResponseResult = uploadLivenessResultUseCase.uploadImages(ktpPath, facePath, tkpdProjectId)
-                _livenessResponse.postValue(Success(livenessResponseResult))
-            }
+            val livenessResponseResult = uploadLivenessResultUseCase.uploadImages(ktpPath, facePath, tkpdProjectId)
+            _livenessResponse.postValue(Success(livenessResponseResult))
         }) {
             _livenessResponse.postValue(Fail(it))
         }
