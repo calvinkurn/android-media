@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.decoration.CampaignStockVariantDividerDecoration
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedStockProductModel
 import kotlinx.android.synthetic.main.item_campaign_stock_variant_action.view.*
 import kotlinx.android.synthetic.main.layout_campaign_stock_variant_accordion.view.*
@@ -31,6 +32,10 @@ class VariantProductStockAccordion @JvmOverloads constructor(
         LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
+    private val itemDecorator by lazy {
+        CampaignStockVariantDividerDecoration(context)
+    }
+
     private var onActionClickListener: (isAccordionOpened: Boolean) -> Unit = {}
 
     fun setEventVariantInfo(actionWording: String,
@@ -46,6 +51,7 @@ class VariantProductStockAccordion @JvmOverloads constructor(
         rv_campaign_stock_variant_list?.run {
             adapter = VariantProductStockAccordionAdapter(variantsProductList)
             layoutManager = linearLayoutManager
+            addItemDecoration(itemDecorator)
         }
 
         setDisplay(isAccordionOpened)
