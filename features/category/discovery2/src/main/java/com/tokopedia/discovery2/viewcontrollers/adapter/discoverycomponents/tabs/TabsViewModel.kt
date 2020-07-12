@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
+const val TAB_DEFAULT_BACKGROUND = "plain"
 class TabsViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
@@ -19,7 +20,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
         components.getComponentsItem()?.let {
             it as ArrayList<ComponentsItem>
-            if(components.properties?.background == "plain") {
+            if(components.properties?.background == TAB_DEFAULT_BACKGROUND) {
                 setUnifyTabs.value = it
             }else {
                 setColorTabs.value = it
@@ -45,7 +46,13 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     }
 
     fun setSelectedState(position: Int,selection:Boolean) {
-        components.getComponentsItem()?.get(position)?.data?.get(0)?.isSelected = selection
+        if(components.getComponentsItem()?.isNotEmpty() == true){
+        val itemData = components.getComponentsItem()?.get(position)
+            if(itemData?.data?.isNotEmpty() == true){
+                itemData.data?.get(0)?.isSelected = selection
+            }
+        }
+
     }
 
     fun onTabClick() {

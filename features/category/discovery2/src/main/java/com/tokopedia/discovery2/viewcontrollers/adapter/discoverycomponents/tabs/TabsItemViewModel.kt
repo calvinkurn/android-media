@@ -14,20 +14,23 @@ class TabsItemViewModel(val application: Application, var components: Components
 
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    private val onSelectedChangeLiveData:MutableLiveData<Boolean> = MutableLiveData()
+    private val onSelectedChangeLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     fun getComponentLiveData(): LiveData<ComponentsItem> {
         return componentData
     }
 
-    fun getSelectionChangeLiveData():LiveData<Boolean> {
+    fun getSelectionChangeLiveData(): LiveData<Boolean> {
         return onSelectedChangeLiveData
     }
 
-    fun setSelectionTabItem(isSelected:Boolean) {
-        components.data?.get(0)?.isSelected = isSelected
-        onSelectedChangeLiveData.value = isSelected
+    fun setSelectionTabItem(isSelected: Boolean) {
+        if (components.data?.isNotEmpty() == true) {
+            components.data?.get(0)?.isSelected = isSelected
+            onSelectedChangeLiveData.value = isSelected
+        }
     }
+
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         componentData.value = components
